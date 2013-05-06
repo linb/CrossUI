@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <meta name="keywords" content="javascript, HTML5, CSS3, Form Builder, JSON Editor, RAD, SPA, IDE, UI, GUI, Ajax, cross-browser, cross-platform, develop" />
+    <meta name="description" content="Built by CrossUI RAD Tools - Develop Once,Deploy Anywhere, HTML5, CSS3 and JavaScript for all platforms" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <title>CrossUI - Develop Once,Deploy Anywhere - Cookbook - Chapter 5 - SButton</title>
+    <link type="text/css" rel="stylesheet" href="sbutton.css" />
+</head>
+    <body>
+        <script type="text/javascript" src="../../../runtime/xui/js/xui.js"></script>
+        <script type="text/javascript" src="SButton.js"></script>
+        <script type="text/javascript">
+            xui.main(function(){
+                (new xui.Template.SButton)
+                .setCaption('Template SButton 1')
+                .onClick(function(){
+                    alert('Hi 1');
+                })
+                .show();
+                
+                (new xui.Template.SButton)
+                .setCaption('Template SButton 2')
+                .onClick(function(){
+                    alert('Hi 2');
+                })
+                .show();
+
+                (new xui.Template.SButton)
+                .setCaption('Template SButton 3')
+                .onClick(function(){
+                    alert('Hi 3');
+                })
+                .show();
+            });
+        </script>
+</body>
+</html>

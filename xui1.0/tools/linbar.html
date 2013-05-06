@@ -1,0 +1,116 @@
+<!-- perl regexp:  [\n\r]+[\s]* -->
+
+<style>
+#xuibar a, #xuibar span{
+    font-size:12px;margin-right:2px;padding:2px;
+}
+#xuibar a{
+    text-decoration:underline;
+}
+#xuibar_more a{
+    text-decoration:none;padding:3px;font-size:12px;text-decoration:none;display:block;
+}
+#xuibar a:hover, #xuibar_more a:hover{
+    text-decoration:none;color:#fff!important;background:#598EDD;
+}
+#xuibar small{
+    font-size:9px;
+}
+#xuibar_more{
+    position:absolute;display:none;top:19px;z-index:6000;border:solid 1px;border-color:#E4F1FD #598EDD #598EDD #598EDD; background:#E4F1FD;
+}
+#xuibar_more{
+    width:100px;
+}
+</style>
+<script>
+var xuibar={
+   byId:function(id){return document.getElementById(id).style},
+   get1:function(){return this.byId('xuibar')},
+   get2:function(id){return this.byId(id)},
+   get3:function(){return this.byId('xuibar_l')},
+   show:function(){
+        var n=this;
+        if(n._t1){
+            clearTimeout(n._t1);
+            delete n._t1;
+        }
+      var s=n.get1();
+      s.height='19px';
+      s.backgroundColor='#E4F1FD';
+      n.get3().display='block';
+   },
+   hide:function(){
+        var n=this;
+        if(n._t1){
+            clearTimeout(n._t1);
+            delete n._t1;
+        }
+        n._t1=setTimeout(function(){
+          var s=n.get1();
+          s.height='3px';
+          s.backgroundColor='#598EDD';
+          n.get3().display='none';
+          if(n.showed)
+            n.get2(n.showed).display='none';
+        },600);
+   },
+    showPop:function(ele){
+        var n=this,id=ele.id.replace(/.*:/,'');
+        if(n.showed&&id!=n.showed)n.get2(n.showed).display='none';
+        if(n._t1){
+            clearTimeout(n._t1);
+            delete n._t1;
+        }
+        if(n._t2){
+            clearTimeout(n._t2);
+            delete n._t2;
+        }
+        n.showed=id;
+        if(ele.id.indexOf('pop:')==0){
+            var s=n.get2(id);
+            s.left=(ele.offsetLeft-4)+'px';
+            s.display='block';
+        }
+    },
+    hidePop:function(){
+        var n=this;
+        if(n._t2){
+            clearTimeout(n._t2);
+            delete n._t2;
+        }
+        n._t2=setTimeout(function(){
+          n.get2('xuibar_more').display='none';
+        },100);
+        n.hide();
+    }
+};
+</script>
+<div id='xuibar' onmouseout="xuibar.hide()"  onmouseover="xuibar.show()" style='position:absolute;width:100%;left:0;top:0;height:3px;z-index:5000;background:#598EDD;line-height:19px;overflow:hidden;'>
+<nobr>
+<a target=_blank href='http://www.crossUI.com/RAD/Builder.html'>RAD Tools</a>
+<a target=_blank href='http://www.crossUI.com/FormBuilder'>Form Builder</a>
+<a target=_blank href='http://www.crossUI.com/PicEditor'>Photo Editor</a>
+<a target=_blank href='http://www.crossUI.com/JSONEditor'>JSONEditor</a>
+
+<a target=_blank href='http://www.crossui.com'><strong>CrossUI Home</strong></a>
+<a target=_blank href="mailto:&#108;&#105;&#110;&#98;&#46;&#110;&#101;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">Contact</a>
+<a target=_blank href='http://xui.googlecode.com/files/xui.package.zip'>Download</a>
+<a target=_blank href='http://xui.googlecode.com/svn/trunk/'>SVN</a>
+<a target=_blank href='http://www.crossUI.com/Forum'>forum</a>
+<a target=_blank href='http://www.crossui.com/API'>API</a>
+<a target=_blank href='http://www.crossui.com/CodeSnip'>CodeSnip</a>
+<a target=_blank href='http://xui.googlecode.com/files/crossui.cookbook.zip'>Cookbook</a>
+<a target=_blank href='http://xui.googlecode.com/files/xui.backend.zip'>Back-end code</a>
+<a target=_blank href='http://www.crossui.com/Examples' id="pop:xuibar_more" onmouseout="xuibar.hidePop()"  onmouseover="xuibar.showPop(this)">Examples</a><small style="margin-left:-3px;">&#9660;</small>
+</nobr>
+</div>
+<div id='xuibar_l' style="left:0;position:absolute;top:19px;display:none;border-top:1px solid #598EDD;font-size:0;line-height:0;width:100%;z-index:5500;"></div>
+<div id='xuibar_more' onmouseout="xuibar.hidePop()"  onmouseover="xuibar.showPop(this)">
+<a target=_blank href='http://www.crossUI.com/PicEditor'>Photo Editor</a>
+<a target=_blank href='http://www.crossui.com/Examples/comb/Themes'>Themes</a>
+<a target=_blank href='http://www.crossui.com/Examples/comb/JSONWSClient'>JSON RPC Client</a>
+<a target=_blank href='http://www.crossui.com/Examples/comb/XMLRPCWSClient'>XML RPC Client</a>
+<a target=_blank href='http://www.crossui.com/Examples/comb/SOAPWSClient'>SOAP Client</a>
+<a target=_blank href='http://www.crossui.com/Examples'>more ...</a>
+</div>
