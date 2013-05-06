@@ -1,0 +1,22 @@
+#
+#Tue Jul 28 13:32:37 CST 2009
+genBasicCompId=false
+sessionFactoryName=
+profile=
+daoSFId=sessionFactory
+version=3.1
+jndiPath=
+detectM2M=false
+reStrategyClass=
+springDaoFile=src/applicationContext.xml
+useJavaTypes=true
+keyGenerator=native
+libInstallFolder=WebRoot/WEB-INF/lib
+addLibs2Project=false
+genVersionTag=false
+sessionFactoryId=sessionFactory
+basePersistenceClass=
+reSettingsFile=
+configFile=/salessensor/src/applicationContext.xml
+createConfigFile=false
+addLibs2Classpath=false

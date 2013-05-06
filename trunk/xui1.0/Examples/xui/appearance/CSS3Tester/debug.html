@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="keywords" content="javascript, HTML5, CSS3, Form Builder, JSON Editor, RAD, SPA, IDE, UI, GUI, Ajax, cross-browser, cross-platform, develop" />
+    <meta name="description" content="Built by CrossUI RAD Tools - Develop Once,Deploy Anywhere, HTML5, CSS3 and JavaScript for all platforms" />
+    <meta name="copyright" content="copyright@www.crossui.com" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <link rel="stylesheet" type="text/css" href="../../runtime/xui/appearance/vista/theme.css" />
+    <title>CrossUI - Develop Once,Deploy Anywhere, HTML5, CSS3 and JavaScript for all platforms - Examples - CSS3 Tester</title>
+</head>
+    <body>
+        <div id='loading'><img src="../../runtime/loading.gif" alt="Loading..." /></div>
+        <script type="text/javascript" src="../../runtime/xui/js/xui-debug.js"></script>
+        <script type="text/javascript" src="../../runtime/xui/js/adv-debug.js"></script>
+        <script type="text/javascript" src="App/js/index.js"></script>        
+        <script type="text/javascript">
+            xui.setTheme('vista',true,function(){
+                xui.Com.load('App', function(){xui('loading').remove();});
+            });
+        </script>
+    </body>
+</html>
