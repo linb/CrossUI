@@ -4944,7 +4944,7 @@ new function(){
                         prop.iframeAutoLoad={url:prop.iframeAutoLoad};
                     var hash=prop.iframeAutoLoad,
                         id="biframe_"+_(),
-                        e=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                        e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
                     if(!hash.query)hash.query={};
                     hash.query._rand=_();

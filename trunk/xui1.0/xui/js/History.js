@@ -13,7 +13,7 @@ Class("xui.History",null,{
         		if(xui.browser.ie) {
         			if(self._lastFI=='')self._lastFI = '#!';
     
-                    if(parseInt(xui.browser.ver,10)<9) {
+                    if(xui.browser.ver<9) {
                         var n=document.createElement("div");
                         n.style.display = "none";
                         document.body.appendChild(n);
@@ -52,7 +52,7 @@ Class("xui.History",null,{
     	    }
 
     		if(xui.browser.ie) {
-		        if(parseInt(xui.browser.ver,10)<9) {
+		        if(xui.browser.ver<9) {
         		    var ihistory = document.getElementById(self._fid), 
         		        iframe = ihistory.contentWindow.document;
         		    hash = iframe.location.hash;
@@ -117,7 +117,7 @@ Class("xui.History",null,{
             if(self._lastFI == '#!' + fi)return false;
 
     		if(xui.browser.ie) {
-    		    if(parseInt(xui.browser.ver,10)<9) {
+    		    if(xui.browser.ver<9) {
         			var ihistory = document.getElementById(self._fid), iframe = ihistory.contentWindow.document;
                     iframe.open();
         			iframe.close();

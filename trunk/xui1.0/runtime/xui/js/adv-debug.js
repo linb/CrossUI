@@ -394,7 +394,7 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                 top:0,
                 //for firefox bug: cursor not show
                 position:'absolute',
-                overflow:(xui.browser.gek&&parseInt(xui.browser.ver,10)<3)?'auto':'hidden',
+                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'hidden',
                 'z-index':'10'
             },
             INPUT:{
@@ -1707,7 +1707,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             BAND:{
                 'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null,
+                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
                 'font-size':'0',
                 'line-height':'0'                
             },

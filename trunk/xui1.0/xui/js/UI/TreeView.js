@@ -135,7 +135,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             ITEMCAPTION:{
                 cursor:'pointer',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'ITEMCAPTION-mouseover':{
                 $order:12,

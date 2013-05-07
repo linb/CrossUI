@@ -53,7 +53,7 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                 top:0,
                 //for firefox bug: cursor not show
                 position:'absolute',
-                overflow:(xui.browser.gek&&parseInt(xui.browser.ver,10)<3)?'auto':'hidden',
+                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'hidden',
                 'z-index':'10'
             },
             INPUT:{

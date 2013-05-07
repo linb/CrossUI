@@ -343,9 +343,9 @@ Class('App.Gradients', 'xui.Com',{
             });
             str = type+"-gradient("+ arr.join(",") + ") ";
             str1 = xui.browser.cssTag1 + str;
-
+try{
             node.css('background', str1);
-
+}catch(e){}
             if(xui.browser.isWebKit){
                 var str2="-webkit-gradient(" + type +",left bottom, right top,";
                 arr=[];
@@ -356,12 +356,13 @@ Class('App.Gradients', 'xui.Com',{
 
                 str += arr.join(",");
                 str2 += ")";
-
+try{
                 node.css('background', str2);
+}catch(e){}
             }
-            
+try{ 
             node.css('background', str);
-            
+}catch(e){}            
             this.i_cssStyle.setValue("background : "+node.css("background"));
         },
         _div1_onrender : function (profile){

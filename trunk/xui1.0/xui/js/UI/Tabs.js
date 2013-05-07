@@ -996,7 +996,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         item.iframeAutoLoad={url:item.iframeAutoLoad};
                     var hash=item.iframeAutoLoad,
                         id="diframe_"+_(),
-                        e=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                        e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
                     item.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
                     if(!hash.query)hash.query={};

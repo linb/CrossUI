@@ -108,7 +108,7 @@ Class('xui.Dom','xui.absBox',{
             return this.$sum(function(){
                 var n = this.cloneNode(deep?true:false),
                     children=n.getElementsByTagName('*'),
-                    ie=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                    ie=xui.browser.ie && xui.browser.ver<9,
                     i=0,o;
                 if(ie) n.removeAttribute('$xid');
                 else delete n.$xid;
@@ -431,7 +431,7 @@ Class('xui.Dom','xui.absBox',{
         loadIframe:function(options){
             if(typeof options=='string')options={url:options};
             var id="aiframe_"+_(),
-                e=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                e=xui.browser.ie && xui.browser.ver<9,
                 ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
             ifr.id=ifr.name=id;
             ifr.src=options.url;
@@ -1085,7 +1085,7 @@ Class('xui.Dom','xui.absBox',{
         setInlineBlock:function(){
             var ns=this;
             if(xui.browser.gek){
-                if(parseFloat(xui.browser.ver)<3)
+                if(xui.browser.ver<3)
                     ns.css('display','-moz-inline-block').css('display','-moz-inline-box').css('display','inline-block');
                 else
                     ns.css('display','inline-block');
@@ -1670,7 +1670,7 @@ type:4
         $setGradients:function(node, value){
             var ns=this,
                 xb=xui.browser,
-                ver=parseFloat(xb.ver),
+                ver=xb.ver,
                 _to255=function(str){
                     var c16="0123456789ABCDEF", s=str.split('');
                     return c16.indexOf(s[0].toUpperCase())*16 + c16.indexOf(s[1].toUpperCase());
@@ -2178,6 +2178,7 @@ type:4
             var n = document.createElement("div"),
                 s = n.style,
                 rt = false,
+                xb = xui.browser,
                 f = function(k){
                     k=k.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
                     if(s[k]!==undefined)
@@ -2200,7 +2201,7 @@ type:4
                     rt = s[key]==='';
                 }break;
                 case "generatedContent":{
-                    var id="tmp:"+_(),
+                    var id="tmp_css3_test"+_.id(),
                         css='#'+n.id+'{line-height:auto;margin:0;padding:0;border:0;font:0/0 a}#'+n.id+':after{content:\'a\';visibility:hidden;line-height:auto;margin:0;padding:0;border:0;font:3px/1 a}';
                     linb.CSS.addStyleSheet(css,id);
                     xui('body').append(n);
@@ -2210,14 +2211,18 @@ type:4
                     rt = v>=3;
                 }break;
                 case "fontFace":{
-                    var id="tmp:"+_(),
-                        css='@font-face {font-family:"font";src:url("https://")}';
-                    linb.CSS.addStyleSheet(css,id);
-                    var s=xui(id).get(0),
-                        sh=s.sheet || s.styleSheet,
-                        ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'',
-                        r=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
-                    rt = r;
+                    if(xb.ie && xb.ver>=6){
+                        rt=true;
+                    }else{
+                        var id="tmp_css3_test"+_.id(),
+                            css='@font-face{font-family:"font";src:url("https://")}',
+                            s=linb.CSS.addStyleSheet(css,id),
+                            sh=s.sheet || s.styleSheet,
+                            ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'';
+                            
+                        rt=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
+                        linb.CSS.remove("id",id);
+                    }
                 }break;
                 case "rgba":{
                     s.cssText = "background-color:rgba(0,0,0,0.1)";
@@ -2250,7 +2255,7 @@ type:4
                 case "transform3d":{
                     var r=f("perspective");
                     if(r && 'webkitPerspective' in document.documentElement.style){
-                        var id="tmp:"+_(),
+                        var id="tmp_css3_test"+_.id(),
                             css='@media (transform-3d),(-webkit-transform-3d){#'+n.id+'{font:0/0;line-height:0;margin:0;padding:0;border:0;left:9px;position:absolute;height:3px;}}';
                         linb.CSS.addStyleSheet(css,id);
                         xui('body').append(n);
@@ -2683,7 +2688,7 @@ type:4
         xui.doc=xui(['!document'],false);
 
         xui.$inlineBlock=xui.browser.gek
-            ? parseFloat(xui.browser.ver)<3
+            ? xui.browser.ver<3
                 ? ['-moz-inline-block', '-moz-inline-box','inline-block']
                 : 'inline-block'
             : xui.browser.ie6
