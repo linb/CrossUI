@@ -41,7 +41,7 @@ Class("xui.UI.CheckBox", "xui.UI.Button",{
                 width:'100%',
                 height:'100%',
                 'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null
+                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             /*span*/
             BOX:{

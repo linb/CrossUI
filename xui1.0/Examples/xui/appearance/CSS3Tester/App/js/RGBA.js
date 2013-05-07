@@ -162,8 +162,9 @@ Class('App.RGBA', 'xui.Com',{
         setTS:function(){
             var values = this._getValues(),
                 node=this.div1.getRoot();
-            
-            node.css('backgroundColor', "rgba(" +values.r+","+values.g+","+values.b+","+values.a+")");
+            try{
+                node.css('backgroundColor', "rgba(" +values.r+","+values.g+","+values.b+","+values.a+")");
+            }catch(e){}
                                       
             this.i_cssStyle.setValue("background-color : "+node.css("backgroundColor"));
         },

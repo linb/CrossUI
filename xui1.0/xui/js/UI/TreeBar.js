@@ -283,7 +283,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                padding:'2px 4px',
                border: '1px solid',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null,
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
                'border-color':'#EDF4FC #698AB3 #698AB3 #EDF4FC',
                'background-color':'#CCE4FC'
             },

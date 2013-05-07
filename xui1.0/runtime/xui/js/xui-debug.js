@@ -1191,7 +1191,7 @@ new function(){
         isAndroid:/android/.test(u)
     },v=function(k,s){
         s=u.split(s)[1].split('.');
-        return k + (b.ver=(s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0])
+        return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
     };
 
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
@@ -1261,7 +1261,7 @@ new function(){
         appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
         img_bg: ini.path+'bg.gif',
         img_busy: ini.path+'busy.gif',
-        img_blank:b.ie&&parseInt(b.ver,10)<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+        img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
     });
     if(!ini.path)
@@ -1771,7 +1771,7 @@ Class('xui.absIO',null,{
             return obj;
         },
         _if:function(doc,id,onLoad){
-            var ie8=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+            var ie8=xui.browser.ie && xui.browser.ver<9,
                 scr=ie8
                     ? ("<iframe "+(id?("name='"+"xui_IAajax_"+id+"'"):"")+(onLoad?(" onload='xui.IAjax._o(\""+id+"\")'"):"")+">")
                     : "iframe";
@@ -6205,8 +6205,8 @@ Class("xui.CSS", null,{
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
                  (b.gek
-                    ? parseFloat(b.ver)<3 
-                        ? ((parseInt(b.ver,10)<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                    ? b.ver<3 
+                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
                         :"display:inline-block;"
                     : b.ie6
                         ?"display:inline-box;display:inline;"
@@ -6238,12 +6238,12 @@ Class("xui.CSS", null,{
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
-            (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (parseInt(b.ver,10)<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
+            (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
             ".xui-node-span, .xui-node-div{border:0;font-size:12px;}"+
             ".xui-node-span, .xui-wrapper span{outline-offset:-1px;"+
             (b.gek
-                ? parseFloat(b.ver)<3 
-                    ? ((parseInt(b.ver,10)<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                ? b.ver<3 
+                    ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
                     :"display:inline-block;"
                 : b.ie6
                     ?"display:inline-box;display:inline;"
@@ -6372,7 +6372,7 @@ Class('xui.Dom','xui.absBox',{
             return this.$sum(function(){
                 var n = this.cloneNode(deep?true:false),
                     children=n.getElementsByTagName('*'),
-                    ie=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                    ie=xui.browser.ie && xui.browser.ver<9,
                     i=0,o;
                 if(ie) n.removeAttribute('$xid');
                 else delete n.$xid;
@@ -6695,7 +6695,7 @@ Class('xui.Dom','xui.absBox',{
         loadIframe:function(options){
             if(typeof options=='string')options={url:options};
             var id="aiframe_"+_(),
-                e=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                e=xui.browser.ie && xui.browser.ver<9,
                 ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
             ifr.id=ifr.name=id;
             ifr.src=options.url;
@@ -7349,7 +7349,7 @@ Class('xui.Dom','xui.absBox',{
         setInlineBlock:function(){
             var ns=this;
             if(xui.browser.gek){
-                if(parseFloat(xui.browser.ver)<3)
+                if(xui.browser.ver<3)
                     ns.css('display','-moz-inline-block').css('display','-moz-inline-box').css('display','inline-block');
                 else
                     ns.css('display','inline-block');
@@ -7934,7 +7934,7 @@ type:4
         $setGradients:function(node, value){
             var ns=this,
                 xb=xui.browser,
-                ver=parseFloat(xb.ver),
+                ver=xb.ver,
                 _to255=function(str){
                     var c16="0123456789ABCDEF", s=str.split('');
                     return c16.indexOf(s[0].toUpperCase())*16 + c16.indexOf(s[1].toUpperCase());
@@ -8442,6 +8442,7 @@ type:4
             var n = document.createElement("div"),
                 s = n.style,
                 rt = false,
+                xb = xui.browser,
                 f = function(k){
                     k=k.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
                     if(s[k]!==undefined)
@@ -8464,7 +8465,7 @@ type:4
                     rt = s[key]==='';
                 }break;
                 case "generatedContent":{
-                    var id="tmp:"+_(),
+                    var id="tmp_css3_test"+_.id(),
                         css='#'+n.id+'{line-height:auto;margin:0;padding:0;border:0;font:0/0 a}#'+n.id+':after{content:\'a\';visibility:hidden;line-height:auto;margin:0;padding:0;border:0;font:3px/1 a}';
                     linb.CSS.addStyleSheet(css,id);
                     xui('body').append(n);
@@ -8474,14 +8475,18 @@ type:4
                     rt = v>=3;
                 }break;
                 case "fontFace":{
-                    var id="tmp:"+_(),
-                        css='@font-face {font-family:"font";src:url("https://")}';
-                    linb.CSS.addStyleSheet(css,id);
-                    var s=xui(id).get(0),
-                        sh=s.sheet || s.styleSheet,
-                        ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'',
-                        r=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
-                    rt = r;
+                    if(xb.ie && xb.ver>=6){
+                        rt=true;
+                    }else{
+                        var id="tmp_css3_test"+_.id(),
+                            css='@font-face{font-family:"font";src:url("https://")}',
+                            s=linb.CSS.addStyleSheet(css,id),
+                            sh=s.sheet || s.styleSheet,
+                            ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'';
+                            
+                        rt=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
+                        linb.CSS.remove("id",id);
+                    }
                 }break;
                 case "rgba":{
                     s.cssText = "background-color:rgba(0,0,0,0.1)";
@@ -8514,7 +8519,7 @@ type:4
                 case "transform3d":{
                     var r=f("perspective");
                     if(r && 'webkitPerspective' in document.documentElement.style){
-                        var id="tmp:"+_(),
+                        var id="tmp_css3_test"+_.id(),
                             css='@media (transform-3d),(-webkit-transform-3d){#'+n.id+'{font:0/0;line-height:0;margin:0;padding:0;border:0;left:9px;position:absolute;height:3px;}}';
                         linb.CSS.addStyleSheet(css,id);
                         xui('body').append(n);
@@ -8947,7 +8952,7 @@ type:4
         xui.doc=xui(['!document'],false);
 
         xui.$inlineBlock=xui.browser.gek
-            ? parseFloat(xui.browser.ver)<3
+            ? xui.browser.ver<3
                 ? ['-moz-inline-block', '-moz-inline-box','inline-block']
                 : 'inline-block'
             : xui.browser.ie6
@@ -11612,7 +11617,7 @@ Class("xui.Tips", null,{
         		if(xui.browser.ie) {
         			if(self._lastFI=='')self._lastFI = '#!';
     
-                    if(parseInt(xui.browser.ver,10)<9) {
+                    if(xui.browser.ver<9) {
                         var n=document.createElement("div");
                         n.style.display = "none";
                         document.body.appendChild(n);
@@ -11651,7 +11656,7 @@ Class("xui.Tips", null,{
     	    }
 
     		if(xui.browser.ie) {
-		        if(parseInt(xui.browser.ver,10)<9) {
+		        if(xui.browser.ver<9) {
         		    var ihistory = document.getElementById(self._fid), 
         		        iframe = ihistory.contentWindow.document;
         		    hash = iframe.location.hash;
@@ -11716,7 +11721,7 @@ Class("xui.Tips", null,{
             if(self._lastFI == '#!' + fi)return false;
 
     		if(xui.browser.ie) {
-    		    if(parseInt(xui.browser.ver,10)<9) {
+    		    if(xui.browser.ver<9) {
         			var ihistory = document.getElementById(self._fid), iframe = ihistory.contentWindow.document;
                     iframe.open();
         			iframe.close();
@@ -17066,7 +17071,7 @@ new function(){
                         prop.iframeAutoLoad={url:prop.iframeAutoLoad};
                     var hash=prop.iframeAutoLoad,
                         id="biframe_"+_(),
-                        e=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                        e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
                     if(!hash.query)hash.query={};
                     hash.query._rand=_();
@@ -19292,7 +19297,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 height:'100%',
                 position:'absolute',
                 'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null
+                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             /*span*/
             BOX:{
@@ -19499,7 +19504,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 width:'100%',
                 height:'100%',
                 'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null
+                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             /*span*/
             BOX:{
@@ -20283,7 +20288,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 //for firefox bug: cursor not show
                 position:'absolute',
-                overflow:(xui.browser.gek&&parseInt(xui.browser.ver,10)<3)?'auto':'hidden'
+                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'hidden'
             },
             BOX:{
                 left:0,
@@ -27387,7 +27392,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             'KEY a:focus, POP a:focus':{
                 'outline-offset':'',
-                '-moz-outline-offset': (xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'':null
+                '-moz-outline-offset': (xui.browser.gek && xui.browser.ver<3)?'':null
             },
             'KEY .xui-ui-btn, POP .xui-ui-btn':{
                 'margin-right':'3px'
@@ -28568,7 +28573,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         item.iframeAutoLoad={url:item.iframeAutoLoad};
                     var hash=item.iframeAutoLoad,
                         id="diframe_"+_(),
-                        e=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+                        e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
                     item.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
                     if(!hash.query)hash.query={};
@@ -29597,7 +29602,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                padding:'2px 4px',
                border: '1px solid',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null,
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
                'border-color':'#EDF4FC #698AB3 #698AB3 #EDF4FC',
                'background-color':'#CCE4FC'
             },
@@ -30231,7 +30236,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             ITEMCAPTION:{
                 cursor:'pointer',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'ITEMCAPTION-mouseover':{
                 $order:12,
@@ -34948,7 +34953,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden',
                 '-moz-box-flex':'1',
                 'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null,
+                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
                 height:'100%',
                 color:'#000',
                 //ie need this

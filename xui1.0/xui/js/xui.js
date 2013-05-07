@@ -1191,7 +1191,7 @@ new function(){
         isAndroid:/android/.test(u)
     },v=function(k,s){
         s=u.split(s)[1].split('.');
-        return k + (b.ver=(s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0])
+        return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
     };
 
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
@@ -1261,7 +1261,7 @@ new function(){
         appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
         img_bg: ini.path+'bg.gif',
         img_busy: ini.path+'busy.gif',
-        img_blank:b.ie&&parseInt(b.ver,10)<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+        img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
     });
     if(!ini.path)
@@ -1771,7 +1771,7 @@ Class('xui.absIO',null,{
             return obj;
         },
         _if:function(doc,id,onLoad){
-            var ie8=xui.browser.ie && parseInt(xui.browser.ver,10)<9,
+            var ie8=xui.browser.ie && xui.browser.ver<9,
                 scr=ie8
                     ? ("<iframe "+(id?("name='"+"xui_IAajax_"+id+"'"):"")+(onLoad?(" onload='xui.IAjax._o(\""+id+"\")'"):"")+">")
                     : "iframe";

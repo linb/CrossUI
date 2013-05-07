@@ -287,8 +287,8 @@ Class("xui.CSS", null,{
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
                  (b.gek
-                    ? parseFloat(b.ver)<3 
-                        ? ((parseInt(b.ver,10)<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                    ? b.ver<3 
+                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
                         :"display:inline-block;"
                     : b.ie6
                         ?"display:inline-box;display:inline;"
@@ -320,12 +320,12 @@ Class("xui.CSS", null,{
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
-            (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (parseInt(b.ver,10)<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
+            (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
             ".xui-node-span, .xui-node-div{border:0;font-size:12px;}"+
             ".xui-node-span, .xui-wrapper span{outline-offset:-1px;"+
             (b.gek
-                ? parseFloat(b.ver)<3 
-                    ? ((parseInt(b.ver,10)<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                ? b.ver<3 
+                    ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
                     :"display:inline-block;"
                 : b.ie6
                     ?"display:inline-box;display:inline;"

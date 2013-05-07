@@ -1415,7 +1415,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden',
                 '-moz-box-flex':'1',
                 'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'-1px !important':null,
+                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
                 height:'100%',
                 color:'#000',
                 //ie need this

@@ -214,7 +214,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             'KEY a:focus, POP a:focus':{
                 'outline-offset':'',
-                '-moz-outline-offset': (xui.browser.gek && parseInt(xui.browser.ver,10)<3)?'':null
+                '-moz-outline-offset': (xui.browser.gek && xui.browser.ver<3)?'':null
             },
             'KEY .xui-ui-btn, POP .xui-ui-btn':{
                 'margin-right':'3px'
