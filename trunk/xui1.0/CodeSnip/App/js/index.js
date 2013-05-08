@@ -134,7 +134,7 @@ Class('App', 'xui.Com',{
                             host.openinbuild.setVisibility('visible');
                             
                             var path='http://www.crossui.com/RAD/Builder.html';
-                            host.openinbuild.setHref(b + "#url=" + encodeURIComponent(path))
+//                            host.openinbuild.setHref(path + "#url=" + encodeURIComponent(path))
                             
                             host.$path=path;
                         }else

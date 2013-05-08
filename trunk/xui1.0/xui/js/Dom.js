@@ -2173,6 +2173,9 @@ type:4
         css3Support:function(key){
             var self=arguments.callee,
                 _c=self._c||(self._c={});
+            
+            key=key.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
+            
             if(key in _c)return _c[key];
 
             var n = document.createElement("div"),
