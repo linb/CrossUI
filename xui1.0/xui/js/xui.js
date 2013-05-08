@@ -1780,7 +1780,7 @@ Class('xui.absIO',null,{
             if(!ie8 && onLoad)n.onload=onLoad;
             n.style.display = "none";
             doc.body.appendChild(n);
-            w=frames[frames.length-1];
+            w=frames[frames.length-1].window;
             return [n,w,w.document];
         },
         isCrossDomain:function(uri){
@@ -2116,8 +2116,12 @@ Class('xui.IAjax','xui.absIO',{
                 //in opera, "set location" will trigger location=='about:blank' at first
                 if(xui.browser.opr)try{if(w.location=='about:blank')return}catch(e){}
                 self.OK=1;
-
-                w.location.replace(c._getDummy()+'#'+xui.ini.dummy_tag);
+                
+                try{
+                    w.name;
+                }catch(e){
+                    w.location.replace(c._getDummy()+'#'+xui.ini.dummy_tag);
+                }
                 // for in firefox3, we have to asyRun to get the window.name
                 _.asyRun(function(){
                     // "w.name" cant throw exception in chrome

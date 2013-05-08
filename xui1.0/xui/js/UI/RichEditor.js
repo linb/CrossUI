@@ -176,9 +176,13 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 // rendered already
                 if(!self.$once){
                     self.$once=true;
-                    var kprf=this;
-                    var iframe=document.createElement("iframe"),
-                        //_updateToolbar event
+                    try{
+                        var iframe = self.$ifr=document.createElement("IFRAME");
+                    }catch(e){
+                        var iframe = self.$ifr=document.createElement("<iframe name='"+id+"' id='"+id+"'></iframe>");
+                    }
+                    //_updateToolbar event
+                    var kprf=this,
                         event=self._event=function(e){
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
     
@@ -223,17 +227,17 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         doc,win,
                         checkF = function(){
                             // removed from DOM already
-                            if(!frames[id])return false;
+                            if(!frames[id])return;
                             // not ready
                             if(!frames[id].document)return;
                             
-                            if(frames[id].document!=doc || doc.readyState=='complete'){
+                            if(self.$win!=frames[id]){
                                 win=self.$win=frames[id];
     
                                 self.$doc=doc=frames[id].document;
 
                                 doc.open();
-                                doc.write('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style type="text/css">body{border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;padding:3px;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body>'+(self.properties.$UIvalue||"")+'</body></html>');
+                                doc.write('<!DOCTYPE html><html style="height:100%;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style type="text/css">body{height:100%;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body>'+(self.properties.$UIvalue||"")+'</body></html>');
                                 doc.close();
     
                                 try{doc.execCommand("styleWithCSS", 0, false)}catch(e){
@@ -334,10 +338,17 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                     self.$beforeDestroy=function(){
                                         var win=this.$win,
                                             doc=this.$doc,
+                                            ifr=this.$ifr,
                                             event=this._event;
                                         // for opera
                                         if(xui.browser.opr)
                                             if(prf.$repeatT)prf.$repeatT.abort();
+                                        
+                                        if(ifr.detachEvent){
+                                            ifr.detachEvent('onload',checkF);
+                                        }else{
+                                            ifr.onload=null;
+                                        }
 
                                         try{win.removeEventListener("unload",win._gekfix,false);}catch(e){}
 
@@ -364,18 +375,13 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                         prf=gekfix=event=win=doc=null;
                                     }
                                 }
-    
                                 iframe.style.visibility='';
-    
-                                event=self=checkF=doc=null;
-    
-                                return false;
                             }
                         };
                     self.$frameId=id;
                     iframe.id=iframe.name=id;
                     iframe.className=div.className;
-                    iframe.src="javascript:false;";
+                    iframe.src="about:blank";
                     iframe.frameBorder=0;
                     iframe.border=0;
                     iframe.marginWidth=0;
@@ -384,13 +390,18 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     iframe.allowTransparency="allowtransparency";
                     iframe.style.visibility='hidden';
 
+                    if(iframe.attachEvent){
+                        iframe.attachEvent('onload',checkF);
+                    }else{
+                        iframe.onload=checkF;
+                    }
+                    
                     //replace the original one
                     xui.$cache.domPurgeData[iframe.$xid=div.$xid].element=iframe;
                     div.parentNode.replaceChild(iframe,div);
     
                     doc=frames[frames.length-1].document;
     
-                    xui.Thread.repeat(checkF,50);
                     div=null;
                 }
             }

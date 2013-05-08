@@ -855,7 +855,11 @@ Class("xui.UI",  "xui.absObj", {
                 if(!o.renderId)return;
 
                 box=o.box;
-
+                
+                var autoDestroy;
+                if(o.host&&o.host['xui.Com']&&o.host.autoDestroy){
+                    o.host.autoDestroy=false;
+                }
                 //save related id
                 $xid=o.$xid;
                 serialId=o.serialId;
@@ -948,6 +952,9 @@ Class("xui.UI",  "xui.absObj", {
                 if(ar){
                     o.get(0).$afterRefresh=ar;
                     ar(o.get(0));
+                }
+                if(_.isSet(autoDestroy&&o.host&&o.host['xui.Com'])){
+                    o.host.autoDestroy=autoDestroy;
                 }
             });
         },

@@ -257,7 +257,7 @@ Class('xui.Com',null,{
                 _.arr.each(self._nodes,function(o){
                     if(o.box && o.box["xui.UI"] && !o.box.$noDomRoot){
                         o.$afterdestory=function(){
-                            if(!self.destroyed)
+                            if(self.autoDestroy && !self.destroyed)
                                 self.destroy();
                             self=null;
                         };
