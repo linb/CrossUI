@@ -184,6 +184,7 @@ _.merge(_,{
     */
     get:function(hash,path){
         if(!path) return hash;
+        if(!_.isSet(hash))return undefined;
         else if(typeof path=='string') return hash[path];
         else{
             for(var i=0,l=path.length;i<l;)

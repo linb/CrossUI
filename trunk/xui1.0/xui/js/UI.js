@@ -3695,6 +3695,10 @@ Class("xui.UI",  "xui.absObj", {
             if('caption' in dm && prop.caption!==null)
                 prop.caption = prop.caption===undefined ? profile.alias : prop.caption;
 
+            if('html' in dm && prop.html)
+                prop.html = xui.adjustRes(prop.html);
+            if('src' in dm && prop.src)
+                prop.src = xui.adjustRes(prop.src);
 
             //give border width
             if('$hborder' in dm)
@@ -4824,7 +4828,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(v);
+                        this.getRoot().html(xui.adjustRes(v));
                     }
                 },
                 attributes:{
@@ -4872,7 +4876,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(v);
+                        this.getRoot().html(xui.adjustRes(v));
                     }
                 },
                 overflow:{
@@ -4919,7 +4923,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(v);
+                        this.getRoot().html(xui.adjustRes(v));
                     }
                 },
                 overflow:{

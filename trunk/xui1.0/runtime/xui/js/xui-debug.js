@@ -184,6 +184,7 @@ _.merge(_,{
     */
     get:function(hash,path){
         if(!path) return hash;
+        if(!_.isSet(hash))return undefined;
         else if(typeof path=='string') return hash[path];
         else{
             for(var i=0,l=path.length;i<l;)
@@ -15829,6 +15830,10 @@ Class("xui.UI",  "xui.absObj", {
             if('caption' in dm && prop.caption!==null)
                 prop.caption = prop.caption===undefined ? profile.alias : prop.caption;
 
+            if('html' in dm && prop.html)
+                prop.html = xui.adjustRes(prop.html);
+            if('src' in dm && prop.src)
+                prop.src = xui.adjustRes(prop.src);
 
             //give border width
             if('$hborder' in dm)
@@ -16958,7 +16963,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(v);
+                        this.getRoot().html(xui.adjustRes(v));
                     }
                 },
                 attributes:{
@@ -17006,7 +17011,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(v);
+                        this.getRoot().html(xui.adjustRes(v));
                     }
                 },
                 overflow:{
@@ -17053,7 +17058,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(v);
+                        this.getRoot().html(xui.adjustRes(v));
                     }
                 },
                 overflow:{
@@ -18704,7 +18709,7 @@ Class("xui.UI.Resizer","xui.UI",{
             html:{
                 html:1,
                 action:function(v){
-                    this.getSubNode('PANEL').html(v);
+                    this.getSubNode('PANEL').html(xui.adjustRes(v));
                 }
             },
             overflow:{
@@ -21260,11 +21265,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             // not ready
                             if(!frames[id].document)return;
                             
-                            if(self.$win!=frames[id]){
-                                win=self.$win=frames[id];
-    
-                                self.$doc=doc=frames[id].document;
+                            if(self.$win!=frames[id].window){
+                                win=self.$win=frames[id].window;
 
+                                doc=self.$doc=win.document;
                                 doc.open();
                                 doc.write('<!DOCTYPE html><html style="height:100%;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style type="text/css">body{height:100%;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body>'+(self.properties.$UIvalue||"")+'</body></html>');
                                 doc.close();
@@ -21418,20 +21422,16 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     iframe.tabIndex=-1;
                     iframe.allowTransparency="allowtransparency";
                     iframe.style.visibility='hidden';
+                    
+                    //replace the original one
+                    xui.$cache.domPurgeData[iframe.$xid=div.$xid].element=iframe;
+                    div.parentNode.replaceChild(iframe,div);
 
                     if(iframe.attachEvent){
                         iframe.attachEvent('onload',checkF);
                     }else{
                         iframe.onload=checkF;
                     }
-                    
-                    //replace the original one
-                    xui.$cache.domPurgeData[iframe.$xid=div.$xid].element=iframe;
-                    div.parentNode.replaceChild(iframe,div);
-    
-                    doc=frames[frames.length-1].document;
-    
-                    div=null;
                 }
             }
         },
@@ -23370,7 +23370,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             },
             html:{
                 action:function(v){
-                    this.getSubNode('PANEL').html(v);
+                    this.getSubNode('PANEL').html(xui.adjustRes(v));
                 }
             },
             toggleBtn:{
@@ -27030,7 +27030,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             },
             html:{
                 action:function(v){
-                    this.getSubNode('PANEL').html(v);
+                    this.getSubNode('PANEL').html(xui.adjustRes(v));
                 }
             },
             toggle:{
@@ -38876,7 +38876,7 @@ if(xui.browser.ie){
             html:{
                 html:1,
                 action:function(v){
-                    this.getSubNode('PANEL').html(v);
+                    this.getSubNode('PANEL').html(xui.adjustRes(v));
                 }
             },
             overflow:{

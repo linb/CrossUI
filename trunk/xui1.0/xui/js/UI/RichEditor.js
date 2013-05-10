@@ -231,11 +231,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             // not ready
                             if(!frames[id].document)return;
                             
-                            if(self.$win!=frames[id]){
-                                win=self.$win=frames[id];
-    
-                                self.$doc=doc=frames[id].document;
+                            if(self.$win!=frames[id].window){
+                                win=self.$win=frames[id].window;
 
+                                doc=self.$doc=win.document;
                                 doc.open();
                                 doc.write('<!DOCTYPE html><html style="height:100%;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style type="text/css">body{height:100%;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body>'+(self.properties.$UIvalue||"")+'</body></html>');
                                 doc.close();
@@ -389,20 +388,16 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     iframe.tabIndex=-1;
                     iframe.allowTransparency="allowtransparency";
                     iframe.style.visibility='hidden';
+                    
+                    //replace the original one
+                    xui.$cache.domPurgeData[iframe.$xid=div.$xid].element=iframe;
+                    div.parentNode.replaceChild(iframe,div);
 
                     if(iframe.attachEvent){
                         iframe.attachEvent('onload',checkF);
                     }else{
                         iframe.onload=checkF;
                     }
-                    
-                    //replace the original one
-                    xui.$cache.domPurgeData[iframe.$xid=div.$xid].element=iframe;
-                    div.parentNode.replaceChild(iframe,div);
-    
-                    doc=frames[frames.length-1].document;
-    
-                    div=null;
                 }
             }
         },
