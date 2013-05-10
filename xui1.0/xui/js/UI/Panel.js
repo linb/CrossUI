@@ -311,7 +311,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             },
             html:{
                 action:function(v){
-                    this.getSubNode('PANEL').html(v);
+                    this.getSubNode('PANEL').html(xui.adjustRes(v));
                 }
             },
             toggle:{
