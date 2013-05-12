@@ -963,7 +963,7 @@ Class("xui.UI",  "xui.absObj", {
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
-            var pro=this.get(0),parentNode;
+            var pro=this.get(0),prop=pro.properties, parentNode;
 
             if(pro.beforeAppend && false===this.beforeAppend(pro,target))
                 return;
@@ -977,7 +977,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(pro.renderId){
                     if(subId=typeof subId=='string'?subId:null)subId=pro.getSubIdByItemId(subId);
                     parentNode=pro.keys.PANEL?pro.getSubNode(pro.keys.PANEL, subId):pro.getRoot();
-                    if(!parentNode.isEmpty())
+                    if((!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none'))
                         parentNode.append(target);
                 }
                 else{
@@ -994,7 +994,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(pro.renderId){
                     if(subId=typeof subId=='string'?subId:null)subId=pro.getSubIdByItemId(subId);
                     parentNode=pro.keys.PANEL?pro.getSubNode(pro.keys.PANEL, subId):pro.getRoot();
-                    if(!parentNode.isEmpty())
+                    if((!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none'))
                         parentNode.append(target);
                 }else{
                     if(!target['xui.UI']){
