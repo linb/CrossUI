@@ -2,10 +2,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     /*Instance*/
     Instance:{
         _adjustV:function(v){
-            var profile=this.get(0);
+            var profile=this.get(0),p=profile.properties;
             if(profile.$isNumber){
                 v=(''+v).replace(/[^\d.-]/g,'');
-                v=_.isNumb(parseFloat(v))?parseFloat(v):null;
+                v=_.isNumb(parseFloat(v))?_.toFixedNumber(v,p.precision):null;
             }else if(profile.properties.type=='datepicker'||profile.properties.type=='date'||profile.properties.type=='datetime'){
                 v=_.isDate(v)?v:_.isFinite(v)?new Date(parseInt(v,10)):null;                
             }

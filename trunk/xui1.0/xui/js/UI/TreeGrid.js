@@ -3122,7 +3122,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 }),
                 f2=me._f2=(me._f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""}),
-                f3=me._f3=(me._f3=function(v){return (v||v===0) ? ((v.toFixed(4)*100)+'%') : ""}),
+                f3=me._f3=(me._f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""}),
                 f5=me._f5=(me._f5=function(v,profile,cell){
                     if(v||v===0){
                         v=parseFloat(v);

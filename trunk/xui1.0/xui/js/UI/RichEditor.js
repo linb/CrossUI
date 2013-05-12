@@ -7,16 +7,24 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             if(!_.isSet(value))value='';
             return this.each(function(profile){
                 var doc=profile.$doc, body=doc && (doc.body||doc.documentElement);
-                if(body)
-                    body.innerHTML=value;
+                if(body){
+                    var sp=window['/'];
+                    if(sp && sp.indexOf(':/')!=-1)
+                        value=value.replace(/{\/}/g,sp);
+                    body.innerHTML=xui.adjustRes(value);
+                }
             });
         },
         _getCtrlValue:function(){
             var profile=this.get(0),
                 doc=profile.$doc,
                 body=doc && (doc.body||doc.documentElement);
-             if(body)
-                return body.innerHTML;
+             if(body){
+                var v=body.innerHTML,sp=window['/'];
+                if(sp && sp.indexOf(':/')!=-1)
+                    v=v.replace(new RegExp(sp,'g'), '{/}');
+                return v;
+            }
              return '';
         }
     },
@@ -236,7 +244,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
 
                                 doc=self.$doc=win.document;
                                 doc.open();
-                                doc.write('<!DOCTYPE html><html style="height:100%;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style type="text/css">body{height:100%;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body>'+(self.properties.$UIvalue||"")+'</body></html>');
+                                doc.write('<html style="height:100%;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style type="text/css">body{height:100%;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body></body></html>');
                                 doc.close();
     
                                 try{doc.execCommand("styleWithCSS", 0, false)}catch(e){
@@ -374,6 +382,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                         prf=gekfix=event=win=doc=null;
                                     }
                                 }
+                                
+                                self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
+                                
                                 iframe.style.visibility='';
                             }
                         };
@@ -740,9 +751,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         _ensureValue:function(profile, value){
             var p=xui.$getGhostDiv();
             p.innerHTML=(_.isSet(value)?value:'')+"";
-            v=p.innerHTML;
-            p=null;
-            return v;
+            value=p.innerHTML;
+            p.innerHTML="";
+            return value;
         },
         _onresize:function(profile,width,height){
             var size={},_top=0;
