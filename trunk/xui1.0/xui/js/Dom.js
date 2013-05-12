@@ -1686,14 +1686,6 @@ type:4
                     transX=r[2];
                     transY=r[3];
                 }
-linb.log(angle)
-linb.log(scaleX)
-linb.log(scaleY)
-linb.log(skewX)
-linb.log(skewY)
-linb.log(transX)
-linb.log(transY);
-
                 angle=parseFloat(angle)||0;
                 scaleX=parseFloat(scaleX)||1;
                 scaleY=parseFloat(scaleY)||1;
