@@ -7999,6 +7999,28 @@ type:4
                 }
             }
         },
+        $textShadowIE:function(node, value){
+            if(!value){
+                var f=function(s){
+                    return s.replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"");
+                },
+                s1=node.style.filter,
+                s2=node.style.msfilter;
+                if(s1)node.style.filter=f(s1);
+                if(s2)node.style.msfilter=f(s2);
+                node.style.backgroundColor="";
+            }else{
+                var f=function(x,y,r,c){
+                    return "progid:DXImageTransform.Microsoft.Chroma(Color=#cccccc) progid:DXImageTransform.Microsoft.DropShadow(Color="+c+", OffX="+x+", OffY="+y+")"
+                    + (parseFloat(r)>0 ?" progid:DXImageTransform.Microsoft.Glow(Strength="+r+", Color="+c+")":"");
+                },
+                r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
+                if(r){
+                    node.style.msfilter=node.style.filter=f(r[1],r[2],r[4],r[6]||"#000000");
+                    node.style.backgroundColor="#cccccc";
+                }
+            }
+        },
         /*
         *type:linear, or radial
         *orient:LT/T/RT/R/RB/B/LB/L, + C for radial
@@ -8613,6 +8635,9 @@ type:4
                     if(!ns.css3Support(name)){
                         if(name=="transform" && xb.ie && xb.ver<9){
                             linb.Dom.$transformIE(node,value);
+                        }
+                        if(name=="textShadow" && xb.ie && xb.ver<10){
+                            linb.Dom.$textShadowIE(node,value);
                         }
                         return this;
                     }else{
