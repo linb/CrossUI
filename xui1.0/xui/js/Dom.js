@@ -2154,7 +2154,7 @@ type:4
             },
             css1=function(node,orient,stops, shape, size, rate){
                 var arr1=[],arr2=[],style=node.style;
-                _.arr.each(stops,function(o,i){
+                _.arr.each(stops,function(o){
                     var clr=o.clr;
                     if(_.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
@@ -2162,10 +2162,7 @@ type:4
                     }
                     arr1.push(clr + " " + o.pos);
                     if(xb.isWebKit){
-                        if(i===0)
-                            arr2.push("from(" + clr + ")");
-                        else
-                            arr2.push("color-stop(" + o.pos + ',' + clr + ")");
+                        arr2.push("color-stop(" + o.pos + ',' + clr + ")");
                     }
                 });
 
@@ -2192,8 +2189,7 @@ type:4
                     }
 
                     if(xb.isWebKit){
-                        var v2="-webkit-gradient(radial,"+position+", 0px, "+position+", 100%," + arr2.join(",") + ")";
-                        style.backgroundImage = v2;
+                        style.backgroundImage = "-webkit-gradient(radial,"+position+", 0px, "+position+", 100%," + arr2.join(",") + ")";
                     }
     
                     var v1="radial-gradient("+ position +"," + shape + " "+ size +"," + arr1.join(",") + ")";
@@ -2205,7 +2201,7 @@ type:4
             },
             css2=function(node,orient,stops){
                 var arr1=[],arr2=[],style=node.style;
-                _.arr.each(stops,function(o,i){
+                _.arr.each(stops,function(o){
                     var clr=o.clr;
                     if(_.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
@@ -2213,10 +2209,7 @@ type:4
                     }
                     arr1.push(clr + " " + o.pos);
                     if(xb.isWebKit){
-                        if(i===0)
-                            arr2.push("from(" + clr + ")");
-                        else
-                            arr2.push("color-stop(" + o.pos + ',' + clr + ")");
+                        arr2.push("color-stop(" + o.pos + ',' + clr + ")");
                     }
                 });
 
@@ -2272,8 +2265,7 @@ type:4
                     }
 
                     if(xb.isWebKit){
-                        var v2="-webkit-gradient(linear,"+directionwebkit+", " + arr2.join(",") + ")";
-                        style.backgroundImage = v2;
+                        style.backgroundImage = "-webkit-gradient(linear,"+directionwebkit+", " + arr2.join(",") + ")";
                     }
                 
                     var v1="linear-gradient({#}," + arr1.join(",") + ")";
