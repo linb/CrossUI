@@ -4804,7 +4804,7 @@ new function(){
         }
     });
     
-    Class(u+".Node", u,{
+    Class(u+".Element", u,{
         Static:{
             Templates:{
                 tagName:'{nodeName}',
@@ -4848,6 +4848,11 @@ new function(){
                     }
                 }
             },
+            Appearances:{
+                KEY:{
+                    'line-height':'1'
+                }
+            },
             RenderTrigger:function(){
                 var v=this.properties.attributes;
                 if(!_.isEmpty(v)){
@@ -4887,6 +4892,11 @@ new function(){
                     }
                 }
             },
+            Appearances:{
+                KEY:{
+                    'line-height':'1'
+                }
+            },
             _prepareData:function(profile){
                 var data=arguments.callee.upper.call(this, profile);
                 if(_.isStr(data.overflow))
@@ -4903,6 +4913,7 @@ new function(){
                    // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
                     outline:xui.browser.gek?'none':null,
                     zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
+                    'line-height':'1',
                     background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
                 }
             },
@@ -5053,6 +5064,11 @@ new function(){
             Behaviors:{
                 DroppableKeys:['KEY'],
                 PanelKeys:['KEY']
+            },
+            Appearances:{
+                KEY:{
+                    'line-height':'1'
+                }
             },
             RenderTrigger:function(){
                 // only div

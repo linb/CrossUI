@@ -174,6 +174,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 left:0,
                 top:0,
                 overflow:'hidden',
+                'line-height':'1',
                 zoom:xui.browser.ie6?1:null
             },
 

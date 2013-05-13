@@ -101,6 +101,11 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             width:100,
             height:100
         },
+        Appearances:{
+            KEY:{
+                'line-height':'1'
+            }
+        },
         RenderTrigger:function(){
             // only div
             var ns=this;

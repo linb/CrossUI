@@ -2031,7 +2031,7 @@ type:4
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
                 if(!orient){
-                    node.style.backgroundImage=node.style.backgroundImage.replace(/url\(\"data\:image\/svg\+xml;base64\,[^)]*\"\)/ig,'');
+                    node.style.backgroundImage="";
                 }else{
                     rate=rate||1;
                 	var id='svg:'+_.id(),
@@ -2092,12 +2092,12 @@ type:4
                     +'<rect x="-50" y="-50" width="101" height="101" fill="url(#'+id+')" />'
                     +'</svg>';
 
-                	node.style.backgroundImage += ' '+'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
+                	node.style.backgroundImage = 'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
                 }
             },
             svgcracker2=function(node,orient,stops){   
                 if(!orient){
-                    node.style.backgroundImage=node.style.backgroundImage.replace(/url\(\"data\:image\/svg\+xml;base64\,[^)]*\"\)/ig,'');
+                    node.style.backgroundImage='';
                 }else{
                 	var id='svg'+_.id(),x1='0%',y1='0%',x2='0%',y2='100%';
                 	
@@ -2149,12 +2149,12 @@ type:4
                     +'<rect x="0" y="0" width="1" height="1" fill="url(#'+id+')" />'
                     +'</svg>';
     
-                	node.style.backgroundImage += ' '+'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
+                	node.style.backgroundImage = 'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
                 }
             },
             css1=function(node,orient,stops, shape, size, rate){
-                var arr1=[],arr2=[];
-                _.arr.each(stops,function(o){
+                var arr1=[],arr2=[],style=node.style;
+                _.arr.each(stops,function(o,i){
                     var clr=o.clr;
                     if(_.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
@@ -2162,15 +2162,15 @@ type:4
                     }
                     arr1.push(clr + " " + o.pos);
                     if(xb.isWebKit){
-                        arr2.push("color-stop(" + o.pos + ',' + clr + ")");
+                        if(i===0)
+                            arr2.push("from(" + clr + ")");
+                        else
+                            arr2.push("color-stop(" + o.pos + ',' + clr + ")");
                     }
                 });
 
             	if(!orient){
-            	    var bi=node.style.backgroundImage;
-            	    bi=bi.replace(/-webkit-gradient\(\s*radial\s*,[^)]*\)/ig,'')
-            	         .replace(/[\w-]*radial-gradient\(((\([^)]+\))|[^)])*\)/ig,'');
-                    node.style.backgroundImage=bi;
+                    style.backgroundImage="";
                 }else{
                     var position;
                 	if(_.isObj(orient)){
@@ -2192,20 +2192,20 @@ type:4
                     }
 
                     if(xb.isWebKit){
-                        var v2="-webkit-gradient(radial,"+position+", 0px, "+position+" 100%," + arr2.join(",") + ")";
-                        node.style["backgroundImage"] += " "+ v2;
+                        var v2="-webkit-gradient(radial,"+position+", 0px, "+position+", 100%," + arr2.join(",") + ")";
+                        style.backgroundImage = v2;
                     }
     
                     var v1="radial-gradient("+ position +"," + shape + " "+ size +"," + arr1.join(",") + ")";
                     if(xb.cssTag1){
-                        node.style["backgroundImage"] += " " + xb.cssTag1+v1;
+                        style.backgroundImage = xb.cssTag1+v1;
                     }
-                    node.style["backgroundImage"] += " "+"radial-gradient(" + size + " "+ shape + " at " + position +"," + arr1.join(",") + ")";
+                    style.backgroundImage = "radial-gradient(" + size + " "+ shape + " at " + position +"," + arr1.join(",") + ")";
                 }
             },
             css2=function(node,orient,stops){
-                var arr1=[],arr2=[];
-                _.arr.each(stops,function(o){
+                var arr1=[],arr2=[],style=node.style;
+                _.arr.each(stops,function(o,i){
                     var clr=o.clr;
                     if(_.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
@@ -2213,15 +2213,15 @@ type:4
                     }
                     arr1.push(clr + " " + o.pos);
                     if(xb.isWebKit){
-                        arr2.push("color-stop(" + o.pos + ',' + clr + ")");
+                        if(i===0)
+                            arr2.push("from(" + clr + ")");
+                        else
+                            arr2.push("color-stop(" + o.pos + ',' + clr + ")");
                     }
                 });
 
             	if(!orient){
-            	    var bi=node.style.backgroundImage;
-            	    bi=bi.replace(/-webkit-gradient\(\s*linear\s*,[^)]*\)/ig,'')
-            	         .replace(/[\w-]*linear-gradient\(((\([^)]+\))|[^)])*\)/ig,'');
-                    node.style.backgroundImage=bi;
+                    style.backgroundImage="";
                 }else{
                 	var direction = 'to bottom';
                 	var directionmoz="top";
@@ -2273,14 +2273,14 @@ type:4
 
                     if(xb.isWebKit){
                         var v2="-webkit-gradient(linear,"+directionwebkit+", " + arr2.join(",") + ")";
-                        node.style["backgroundImage"] += " "+v2;
+                        style.backgroundImage = v2;
                     }
                 
                     var v1="linear-gradient({#}," + arr1.join(",") + ")";
                     if(xb.cssTag1){
-                        node.style["backgroundImage"] += " "+ xb.cssTag1+v1.replace("{#}",directionmoz);
+                        style.backgroundImage = xb.cssTag1+v1.replace("{#}",directionmoz);
                     }
-                    node.style["backgroundImage"] += " "+ v1.replace("{#}",direction);
+                    style.backgroundImage = v1.replace("{#}",direction);
                 }
             };
 
