@@ -939,10 +939,10 @@ _.merge(xui,{
         if(s==r)r=i;
         return '<span id="'+xui.$localeDomId+'" class="'+s+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
-    adjustRes:function(str, wrap){
+    adjustRes:function(str, wrap, onlyBraces){
         wrap=wrap?xui.wrapRes:xui.getRes;
         return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n){
-            return c=='$' ? d : f=='$' ? wrap(g) : (i=='@'||m=="{") ? ((j=xui.SC.get(i=="@"?j:n)) || (_.isSet(j)?j:"")) : a;
+            return c=='$' ? d : f=='$' ? wrap(g) : ((onlyBraces?0:i=='@')||m=="{") ? ((j=xui.SC.get(i=="@"?j:n)) || (_.isSet(j)?j:"")) : a;
             }): str;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){

@@ -506,7 +506,7 @@ if(xui.browser.ie){
             html:{
                 html:1,
                 action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v));
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
                 }
             },
             overflow:{
