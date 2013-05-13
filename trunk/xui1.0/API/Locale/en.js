@@ -14083,11 +14083,11 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Node"], {
+    _.set(xui.Locale,["en","doc","xui","UI","Element"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.UI.Node Class",
+        $desc:"xui.UI.Element Class",
         constructor:{
-            desc:"Creates a xui.UI.Node Object."
+            desc:"Creates a xui.UI.Element Object."
         },
         prototype:{
             KEY:{$desc:"Class Name"},

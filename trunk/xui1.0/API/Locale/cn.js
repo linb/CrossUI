@@ -14010,11 +14010,11 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","UI","Node"], {
+    _.set(xui.Locale,["cn","doc","xui","UI","Element"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.UI.Node 类",
+        $desc:"xui.UI.Element 类",
         constructor:{
-            $desc:"生成一个xui.UI.Node对象."
+            $desc:"生成一个xui.UI.Element对象."
         },
         prototype:{
             KEY:{$desc:"本类名"},
