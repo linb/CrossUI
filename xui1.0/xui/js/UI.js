@@ -1130,13 +1130,13 @@ Class("xui.UI",  "xui.absObj", {
                                 if((b=o.split(':')).length>=2){
                                     i=b.shift();o=b.join(':');
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                    node.css(i, flag?'':xui.adjustRes(o));
+                                    node.css(i, flag?'':xui.adjustRes(o,0,1));
                                 }
                             });
                          else if(_.isHash(h[i]))
                             _.each(h[i],function(o,i){
                                 i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                node.css(i, flag?'':xui.adjustRes(o));
+                                node.css(i, flag?'':xui.adjustRes(o,0,1));
                             });                            
                     }
                 }));
@@ -3031,7 +3031,7 @@ Class("xui.UI",  "xui.absObj", {
             for(i in hashIn){
                 if(i.charAt(0)=='$')continue;
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
-                    hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? o : xui.adjustRes(o,true) : o;
+                    hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1) : xui.adjustRes(o,true) : o;
             }
 
             if('disabled' in dm)
@@ -3696,9 +3696,9 @@ Class("xui.UI",  "xui.absObj", {
                 prop.caption = prop.caption===undefined ? profile.alias : prop.caption;
 
             if('html' in dm && prop.html)
-                prop.html = xui.adjustRes(prop.html);
+                data.html = xui.adjustRes(prop.html,0,1);
             if('src' in dm && prop.src)
-                prop.src = xui.adjustRes(prop.src);
+                data.src = xui.adjustRes(prop.src,0,1);
 
             //give border width
             if('$hborder' in dm)
@@ -4828,7 +4828,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(xui.adjustRes(v));
+                        this.getRoot().html(xui.adjustRes(v,0,1));
                     }
                 },
                 attributes:{
@@ -4876,7 +4876,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(xui.adjustRes(v));
+                        this.getRoot().html(xui.adjustRes(v,0,1));
                     }
                 },
                 overflow:{
@@ -4923,7 +4923,7 @@ new function(){
                 html:{
                     html:1,
                     action:function(v){
-                        this.getRoot().html(xui.adjustRes(v));
+                        this.getRoot().html(xui.adjustRes(v,0,1));
                     }
                 },
                 overflow:{

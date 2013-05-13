@@ -129,7 +129,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             },
             html:{
                 action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v));
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
                 }
             },
             toggleBtn:{
