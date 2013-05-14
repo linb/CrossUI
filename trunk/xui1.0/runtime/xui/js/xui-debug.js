@@ -7963,6 +7963,8 @@ type:4
                 transX=parseFloat(transX)||0;
                 transY=parseFloat(transY)||0;
             
+                node.style.filter = node.style.filter.replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.marginTop=node.style.marginLeft="";
                 var ow=node.offsetWidth,oh=node.offsetHeight;
             
                 var m11=1,m21=0,m12=0,m22=1;
@@ -7988,7 +7990,7 @@ type:4
                     m21 += Math.tan(toD(skewY));
                 }
                 
-                node.style.filter += " "+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')";
+                node.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')";
                 
                 var w=node.offsetWidth,h=node.offsetHeight;
                 if(w!=ow || transX){
@@ -7999,7 +8001,7 @@ type:4
                 }
             }
         },
-        $textShadowIE:function(node, value){
+        $textShadowIE:function(node, value, box){
             if(!value){
                 var f=function(s){
                     return s.replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"");
@@ -8008,16 +8010,19 @@ type:4
                 s2=node.style.msfilter;
                 if(s1)node.style.filter=f(s1);
                 if(s2)node.style.msfilter=f(s2);
-                node.style.backgroundColor="";
+                if(!box)
+                    node.style.backgroundColor="";
             }else{
                 var f=function(x,y,r,c){
-                    return "progid:DXImageTransform.Microsoft.Chroma(Color=#cccccc) progid:DXImageTransform.Microsoft.DropShadow(Color="+c+", OffX="+x+", OffY="+y+")"
-                    + (parseFloat(r)>0 ?" progid:DXImageTransform.Microsoft.Glow(Strength="+r+", Color="+c+")":"");
+                    return (box?"":"progid:DXImageTransform.Microsoft.Chroma(Color=#cccccc) ")
+                    + "progid:DXImageTransform.Microsoft.DropShadow(Color="+c+", OffX="+x+", OffY="+y+") "
+                    + (parseFloat(r)>0 ?"progid:DXImageTransform.Microsoft.Glow(Strength="+r+", Color="+c+")":"");
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
                     node.style.msfilter=node.style.filter=f(r[1],r[2],r[4],r[6]||"#000000");
-                    node.style.backgroundColor="#cccccc";
+                    if(!box)
+                        node.style.backgroundColor="#cccccc";
                 }
             }
         },
@@ -8157,7 +8162,7 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s["filter"] += ' '+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)';
+                	s["filter"] = 'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)';
                     
                     // the first node
                     if(node.firstChild)
@@ -8166,7 +8171,7 @@ type:4
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
                 	if(stops[stops.length-1].opacity)
-                	    node.style["filter"] = " " + "progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    node.style["filter"] = "progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
                 }
             },
             iecracker21=function(node, orient, stops){
@@ -8174,7 +8179,12 @@ type:4
                 if(!node || node.nodeType != 1 || !node.style)return;
                 var tmp1=ns.getStyle(node,'overflow'),
                     tmp2=ns.getStyle(node,'display');
-                if(tmp1!='hidden' || (tmp2!='block' && tmp2!='relative'))return;
+                if(tmp1!='hidden'){
+                    ns.setStyle(node,'overflow','hidden');
+                }
+                if(tmp2!='block' && tmp2!='relative'){
+                    ns.setStyle(node,'display','relative');
+                }
 
                 if(!orient){
                     var i,a=node.childNodes,l=a.length;
@@ -8234,7 +8244,7 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s["filter"] += ' '+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')';
+                	s["filter"] = 'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')';
                     
                     // the first node
                     if(node.firstChild)
@@ -8243,7 +8253,7 @@ type:4
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
                 	if(stops[stops.length-1].opacity)
-                	    node.style["filter"] = " " + "progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    node.style["filter"] = "progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
                 }
             },
             iecracker2=function(node,orient,stops){
@@ -8294,8 +8304,7 @@ type:4
                 	        outerColor=t;
                     	break;
                 	}
-                	var str="progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")";
-                	node.style["filter"] += ' ' + str;
+                	node.style["filter"] = "progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")";
                 }
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
@@ -8625,8 +8634,15 @@ type:4
                     }
                 }else if(_.arr.indexOf(css3prop,n1)!=-1){
                     if(!ns.css3Support(name)){
-                        if(name=="transform" && xb.ie && xb.ver<9){
-                            linb.Dom.$transformIE(node,value);
+                        if(xb.ie && xb.ver<9){
+                            switch(name){
+                                case "transform":
+                                linb.Dom.$transformIE(node,value);
+                                break;
+                                case "boxShadow":
+                                linb.Dom.$textShadowIE(node,value, true);
+                                break;
+                            }
                         }
                         if(name=="textShadow" && xb.ie && xb.ver<10){
                             linb.Dom.$textShadowIE(node,value);

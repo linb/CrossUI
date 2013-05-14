@@ -1,11 +1,8 @@
 <?php
-    // input keys
-    define('LINB_KEYWORD_CALLBACK', "callback");
-
-    // output keys
-    define('LINB_KEYWORD_DATA', "data");
-    define('LINB_KEYWORD_ERROR', "error");
-
+    // input and output keys
+    define('XUI_KEYWORD_CALLBACK', "callback");
+    define('XUI_KEYWORD_DATA', "data");
+    define('XUI_KEYWORD_ERROR', "error");
 
     // for json
     if(!function_exists('json_encode')){
@@ -19,9 +16,8 @@
     }
 
     // handle request data
-    function linb_getRequestData(){
-        $callback = LINB_KEYWORD_CALLBACK;
-
+    function xui_getRequestData(){
+        $callback = XUI_KEYWORD_CALLBACK;
         $inputData=new stdClass;
 
         // 1. for "post" request
@@ -57,11 +53,10 @@
     }
     
     // echo response data, or error info
-    function linb_echoResponse($inputData, $outputData, $ok=true){
-        $callback = LINB_KEYWORD_CALLBACK;
-
-        $data = LINB_KEYWORD_DATA;
-        $err = LINB_KEYWORD_ERROR;
+    function xui_echoResponse($inputData, $outputData, $ok=true){
+        $callback = XUI_KEYWORD_CALLBACK;
+        $data = XUI_KEYWORD_DATA;
+        $err = XUI_KEYWORD_ERROR;
 
         if(isset($inputData)){
             if(isset($inputData->$callback))
@@ -78,28 +73,31 @@
 
         $outputDataWrapped=json_encode($outputDataWrapped);
 
-        // wrap result data
- 	    // script tag ajax    	    
+        // wrap result data for xui.IAjax and xui.SAjax
  	    if(_.isset($callbackV)){
+ 	        // for xui.IAjax
  	        if($callbackV=="window.name"){
  	            $outputDataWrapped="<script type='text' id='json'>".$outputDataWrapped."</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
- 	        }else{
+ 	        }
+ 	        // for xui.SAjax
+ 	        else{
  	            $outputDataWrapped = $callbackV.'('.$outputDataWrapped.')';
  	        }
  	    }
+ 	    // for xui.Ajax
         echo $outputDataWrapped;
     }
     
     /* example
     public function action(){
-        $inputData = linb_getRequestData();
+        $inputData = xui_getRequestData();
         $outputData = null;
         $ok=true;
 
         // $outputData=...
         // $ok=true;
 
-        linb_echoResponse($inputData, $outputData, $ok);
+        xui_echoResponse($inputData, $outputData, $ok);
     }
     */
 ?>

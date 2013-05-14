@@ -1,6 +1,6 @@
 <?php
     // include lib
-    include_once("linb.php");
+    include_once("xuiservice.php");
 
     /**
     * the following code may be in a controller function( for Yii, CodeIgniter etc..)
@@ -10,9 +10,8 @@
 
     try{
         // get request data
-        $inputData = linb_getRequestData();
+        $inputData = xui_getRequestData();
         
-    
         if(rand(0,1)>0.5){
             // successful
             $ok=true;
@@ -42,5 +41,5 @@
     }
 
     // echo result
-    linb_echoResponse($inputData, $outputData, $ok);
+    xui_echoResponse($inputData, $outputData, $ok);
 ?>
