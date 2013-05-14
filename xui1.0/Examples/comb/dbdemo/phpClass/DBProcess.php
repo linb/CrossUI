@@ -2,12 +2,9 @@
 class DBProcess extends Unit
 {
     const DB_HOST='localhost';
-//    const DB_USER='root';
-//    const DB_PASS='root';
-//    const DB_DBNAME='testDB';    
-    const DB_USER='radoncec_linb';
-    const DB_PASS='radoncec_linb';
-    const DB_DBNAME='radoncec_linb';
+    const DB_USER='root';
+    const DB_PASS='root';
+    const DB_DBNAME='testDB';    
 
     public function stimulate(&$hash){        
         $db = new MYSQL;
