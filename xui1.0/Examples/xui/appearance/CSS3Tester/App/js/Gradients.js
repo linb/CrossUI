@@ -282,8 +282,8 @@ Class('App.Gradients', 'xui.Com',{
                 .setTop(170)
                 .setWidth(190)
                 .setType("listbox")
-                .setItems([{"id":"l2r", "caption":"horizontal      →"}, {"id":"t2d", "caption":"vertical      ↓"}, {"id":"lt2br", "caption":"diagonal      ↘"}, {"id":"lb2tr", "caption":"diagonal      ↗"}, {"id":"radial", "caption":"radial      ○"}])
-                .setValue("l2r")
+                .setItems([{"id":"linear-LT", "caption":"Linear - from LeftTop"}, {"id":"linear-T", "caption":"Linear - from Top"}, {"id":"linear-RT", "caption":"Linear - from RightTop"}, {"id":"linear-R", "caption":"Linear - from Right"}, {"id":"linear-RB", "caption":"Linear - from RightBottom"}, {"id":"linear-B", "caption":"Linear - from Bottom"}, {"id":"linear-LB", "caption":"Linear - from LeftBottom"}, {"id":"linear-L", "caption":"Linear - from Left"}, {"id":"none", "disabled":true, "caption":"-------------"}, {"id":"radial-C", "caption":"Radial - at Center"}, {"id":"radial-LT", "caption":"Radial - at LeftTop"}, {"id":"radial-T", "caption":"Radial - at Top"}, {"id":"radial-RT", "caption":"Radial - at RightTop"}, {"id":"radial-R", "caption":"Radial - at Right"}, {"id":"radial-RB", "caption":"Radial - at RightBottom"}, {"id":"radial-B", "caption":"Radial - at Bottom"}, {"id":"radial-LB", "caption":"Radial - at LeftBottom"}, {"id":"radial-L", "caption":"Radial - at Left"}])
+                .setValue("linear-T")
                 .afterUIValueSet("_t_sd_afteruivalueset")
             );
             
@@ -292,18 +292,29 @@ Class('App.Gradients', 'xui.Com',{
         },
         _getValues:function(){
             var ns=this,
-                arr=[];
-            arr.push({step:ns.g_step1.getValue(),clr:ns.g_step1clr.getValue()||"#ffffff"});
-            arr.push({step:ns.g_step2.getValue(),clr:ns.g_step2clr.getValue()||"#ffffff"});
-            arr.push({step:ns.g_step3.getValue(),clr:ns.g_step3clr.getValue()||"#ffffff"});
-            arr.push({step:ns.g_step4.getValue(),clr:ns.g_step4clr.getValue()||"#ffffff"});
+                arr=[],h,i;
 
-            arr.sort(function(x,y){
-               x=x.step; y=y.step;
-               return x>y?1:x==y?0:-1;
-            });
-            arr.unshift({step:0,clr:ns.g_startclr.getValue()||"#ffffff"});
-            arr.push({step:100,clr:ns.g_endclr.getValue()||"#ffffff"});
+            h={pos:ns.g_step1.getValue()+"%",clr:ns.g_step1clr.getValue()||"#ffffff"};
+            arr.push(h);
+
+            h={pos:ns.g_step2.getValue()+"%",clr:ns.g_step2clr.getValue()||"#ffffff"};
+            arr.push(h);
+
+            h={pos:ns.g_step3.getValue()+"%",clr:ns.g_step3clr.getValue()||"#ffffff"};
+            arr.push(h);
+
+            h={pos:ns.g_step4.getValue()+"%",clr:ns.g_step4clr.getValue()||"#ffffff"};
+            arr.push(h);
+
+            if(arr.length)
+                arr.sort(function(x,y){
+                   x=parseFloat(x.pos); y=parseFloat(y.pos);
+                   return x>y?1:x==y?0:-1;
+                });
+            return  arr;
+            
+            arr.unshift({pos:0,clr:ns.g_startclr.getValue()||"#ffffff"});
+            arr.push({pos:100,clr:ns.g_endclr.getValue()||"#ffffff"});
             return  arr;
         },
         _t_sd_afteruivalueset : function (profile){
@@ -312,57 +323,19 @@ Class('App.Gradients', 'xui.Com',{
         setTS:function(){
             var ns=this,
                 ori = ns.t_otype.getValue(),
-                type = "linear",
-                str,str1,str2,
-                arr=[];
-            switch(ori){
-                case "l2r":
-                    deg="left";
-                    break;
-                case "t2d":
-                    deg="top";
-                    break;
-                case "lt2br":
-                    deg="-45deg";
-                    break;
-                case "lb2tr":
-                    deg="45deg";
-                    break;
-                case "radial":
-                    type = "radial";
-                    deg="center";
-                    break;
-            }
-            arr.push(deg);
+                v={
+                    stops:ns._getValues()
+                };
+            ori=ori.split('-');
+            v.type=ori[0];
+            v.orient=ori[1];
 
-            var values = this._getValues(),
-                node=this.div1.getRoot();
+            var node=ns.div1.getRoot();
+            xui.Dom.$setGradients(node.get(0), {type:'linear'});
+            xui.Dom.$setGradients(node.get(0), {type:'radial'});
 
-            _.arr.each(values,function(o){
-                arr.push(o.clr + " " + o.step+'%');
-            });
-            str = type+"-gradient("+ arr.join(",") + ") ";
-            str1 = xui.browser.cssTag1 + str;
-try{
-            node.css('background', str1);
-}catch(e){}
-            if(xui.browser.isWebKit){
-                var str2="-webkit-gradient(" + type +",left bottom, right top,";
-                arr=[];
+            xui.Dom.$setGradients(node.get(0), v);
 
-                _.arr.each(values,function(o){
-                    arr.push("color-stop(" + o.step + '%,' + o.clr + ")");
-                });
-
-                str += arr.join(",");
-                str2 += ")";
-try{
-                node.css('background', str2);
-}catch(e){}
-            }
-try{ 
-            node.css('background', str);
-}catch(e){}            
             this.i_cssStyle.setValue("background : "+node.css("background"));
         },
         _div1_onrender : function (profile){
