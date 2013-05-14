@@ -46,9 +46,9 @@ Class('App', 'xui.Com',{
         _treebar3_ongetcontent:function (profile, item, callback) {
             switch(item.id){
             case 'string':
-                return '<div><strong>HTML String was loaded!</strong></div>';
+                return '<div style="height:30px;font-size:12px;line-height:1;"><strong>HTML String was loaded!</strong></div>';
             case 'template':
-                return new xui.Template('<div> <div>{p1} was loaded!</div></div>',{p1:'template'});
+                return new xui.Template('<div  style="height:30px;font-size:12px;line-height:1;"> <div>{p1} was loaded!</div></div>',{p1:'template'});
             case 'ui':
                 var btn1=new xui.UI.Button({caption:'button 1',position:'relative'}),
                     btn2=new xui.UI.ComboInput({type:'color',position:'relative'})
