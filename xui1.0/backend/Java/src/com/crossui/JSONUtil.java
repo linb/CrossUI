@@ -1,4 +1,4 @@
-package net.linb;
+package com.crossui;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,11 +83,11 @@ public class JSONUtil {
 	 * @param jsonObject
 	 * @return HashMap
 	 */
-	@SuppressWarnings(value = { "unchecked" })
 	private static Map<String, Object> JSON2JavaObj(JSONObject jsonObject) {
 		Map<String, Object> tempObjectMap = new HashMap<String, Object>();
-		Iterator ite = jsonObject.entrySet().iterator();
+		Iterator<?> ite = jsonObject.entrySet().iterator();
 		while (ite.hasNext()) {
+			@SuppressWarnings("rawtypes")
 			Map.Entry paraMap = (Map.Entry) ite.next();
 			String strKey = (String) paraMap.getKey();
 			Object objTemp = paraMap.getValue();

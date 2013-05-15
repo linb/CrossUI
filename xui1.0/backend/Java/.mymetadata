@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-module
   type="WEB"
-  name="linb"
+  name="xuiService"
   id="myeclipse.1248590349671"
-  context-root="/salessensor"
+  context-root="/xuiService"
   j2ee-spec="1.4"
-  archive="linb.war">
+  archive="xuiService.war">
   <attributes>
     <attribute name="webrootdir" value="WebRoot" />
   </attributes>

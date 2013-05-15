@@ -5,7 +5,7 @@
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>demo</servlet-name>
-		<servlet-class>net.linb.DemoServlet</servlet-class>
+		<servlet-class>com.crossui.DemoServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

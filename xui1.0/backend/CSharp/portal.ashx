@@ -6,7 +6,7 @@ using System.Web;
 using System.Collections;
 using System.Collections.Specialized;
 
-using SharpLinb;
+using xuiService;
 
 public class Portal : IHttpHandler
 {
@@ -18,7 +18,7 @@ public class Portal : IHttpHandler
          Hashtable hResponseData = new Hashtable();
          try
          {
-             hRequestData = LINB.getRequestData(context);
+             hRequestData = xui.getRequestData(context);
 
              if ((new Random()).NextDouble() > 0.5)
              {
@@ -43,7 +43,7 @@ public class Portal : IHttpHandler
              hResponseData.Add("code", e.GetType());
              hResponseData.Add("message", e.Message);
          }
-         LINB.echoResponse(context, hRequestData, hResponseData, ok);
+         xui.echoResponse(context, hRequestData, hResponseData, ok);
      }
      // Override the IsReusable property.
      public bool IsReusable

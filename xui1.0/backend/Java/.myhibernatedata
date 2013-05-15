@@ -17,6 +17,6 @@ genVersionTag=false
 sessionFactoryId=sessionFactory
 basePersistenceClass=
 reSettingsFile=
-configFile=/salessensor/src/applicationContext.xml
+configFile=/xuiService/src/applicationContext.xml
 createConfigFile=false
 addLibs2Classpath=false

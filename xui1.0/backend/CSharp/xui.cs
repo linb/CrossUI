@@ -7,24 +7,24 @@ using Jayrock.Json;
 using Jayrock.Json.Conversion;
 
 
-namespace SharpLinb
+namespace xuiService
 {
-    public class LINBException : Exception
+    public class xuiException : Exception
     {
-        public LINBException()
+        public xuiException()
         {
         }
-        public LINBException(string message)
+        public xuiException(string message)
             : base(message)
         {
         }
-        public LINBException(string message, Exception inner)
+        public xuiException(string message, Exception inner)
             : base(message, inner)
         {
         }
     }
 
-    public class LINB
+    public class xui
     {
         public const string ERR = "error";
         public const string DATA = "data";
@@ -38,7 +38,7 @@ namespace SharpLinb
             //get request data from POST
             if (context.Request.Form.HasKeys())
             {
-                LINB.merge(context.Request.Form, hRequest);
+                xui.merge(context.Request.Form, hRequest);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace SharpLinb
                 if (sRawPostData != null && sRawPostData.Trim().Length > 0)
                 {
                     JsonObject obj = (JsonObject)JsonConvert.Import(sRawPostData);
-                    LINB.merge(obj, hRequest);
+                    xui.merge(obj, hRequest);
                 }
 
             }
@@ -54,7 +54,7 @@ namespace SharpLinb
             //get request data from GET
             if (context.Request.QueryString.HasKeys())
             {
-                LINB.merge(context.Request.QueryString, hRequest);
+                xui.merge(context.Request.QueryString, hRequest);
             }
             else
             {
@@ -63,7 +63,7 @@ namespace SharpLinb
                 {
                     sQueryString = context.Server.UrlDecode(sQueryString);
                     JsonObject obj = (JsonObject)JsonConvert.Import(sQueryString);
-                    LINB.merge(obj, hRequest);
+                    xui.merge(obj, hRequest);
                 }
             }
 

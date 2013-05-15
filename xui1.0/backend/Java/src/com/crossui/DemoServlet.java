@@ -1,4 +1,4 @@
-package net.linb;
+package com.crossui;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class DemoServlet extends HttpServlet {
 		boolean ok=true;
 
 		try {
-			hRequestData = LINBUtils.getRequestData(req);
+			hRequestData = xuiUtils.getRequestData(req);
 			
 			if(Math.random()>0.5){
 				ok=true;
@@ -57,6 +57,6 @@ public class DemoServlet extends HttpServlet {
 			hResponseData.put("message", sb.toString());
 		}
 		
-		LINBUtils.echoResponse(req, resp, hRequestData, hResponseData, ok);
+		xuiUtils.echoResponse(req, resp, hRequestData, hResponseData, ok);
 	}
 }

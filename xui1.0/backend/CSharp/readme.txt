@@ -1,1 +1,1 @@
-In file demo.html, modify "<script type="text/javascript" src="../../runtime/xui/js/xui-debug.js"></script>" to the right path.
+In demo.html, correct the lib path in "<script type="text/javascript" src="../../runtime/xui/js/xui-debug.js"></script>".
