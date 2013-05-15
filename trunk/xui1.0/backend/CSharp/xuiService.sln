@@ -1,11 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLinb", "SharpLinb.csproj", "{FC5D6B9C-F17E-4A96-B142-7E2474E1097B}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xuiService", "xuiService.csproj", "{FC5D6B9C-F17E-4A96-B142-7E2474E1097B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,15 +1,12 @@
-package net.linb;
+package com.crossui;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 
-public class LINBUtils {
+public class xuiUtils {
     // input keys
 	public static final String LINB_KEYWORD_CALLBACK = "callback";
 
@@ -77,7 +74,7 @@ public class LINBUtils {
 	    }
 	    String strResponse = JSONUtil.toJSON(outputDataWrapped);
 		if(callbackValue!=null){
-		    if(callbackValue.equals("window.name"){
+		    if(callbackValue.equals("window.name")){
 		        strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
 		    }else{
 		        strResponse = callbackValue + '(' + strResponse + ')';
