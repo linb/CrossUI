@@ -160,7 +160,7 @@ Class('xui.Debugger', null, {
             if(xui.browser.id)
                 div.ieRemedy();
 
-            if(me.last && div!=me.last){
+            if(me.last && me.last.get(0) && div!=me.last){
                 var last=me.last;
                 var l=last.left();
                 if(last._thread&&last._thread.id&&last._thread.isAlive())last._thread.abort();

@@ -46,7 +46,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
                 // default to center dlg
                 if(!profile._inited && p.initPos!='auto'){
-                    var pr = parent.get(0)==xui('body').get(0)?xui.win:parent;
+                    var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent);
                     switch(p.initPos){
                         case 'auto':
                         top=(top||top===0)?top:p.top;

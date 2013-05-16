@@ -11,6 +11,8 @@ Class('App', 'xui.Com',{
                 .setQueryURL("data.js")
                 .setProxyType("Ajax")
                 .setName("databinder_1")
+                .afterUpdateDataFromUI("_databinder_1_afterupdatedatafromui")
+                .afterInvoke("_databinder_1_afterinvoke")
                 .afterRead("_databinder_1_afterread")
             );
             
@@ -31,42 +33,15 @@ Class('App', 'xui.Com',{
                 (new xui.UI.Image)
                 .setHost(host,"ctl_image3")
                 .setLeft(10)
-                .setTop(91)
+                .setTop(97)
                 .setSrc("img/databinder.png")
-            );
-            
-            host.ctl_panel3.append(
-                (new xui.UI.SButton)
-                .setHost(host,"ctl_updateValue")
-                .setLeft(170)
-                .setTop(151)
-                .setCaption("updateValue")
-                .onClick("_ctl_updatevalue_onclick")
-            );
-            
-            host.ctl_panel3.append(
-                (new xui.UI.SButton)
-                .setHost(host,"ctl_checkValue")
-                .setLeft(255)
-                .setTop(151)
-                .setCaption("checkValue")
-                .onClick("_ctl_checkvalue_onclick")
-            );
-            
-            host.ctl_panel3.append(
-                (new xui.UI.SButton)
-                .setHost(host,"ctl_getDirtied")
-                .setLeft(335)
-                .setTop(151)
-                .setCaption("getDirtied")
-                .onClick("_ctl_getdirtied_onclick")
             );
             
             host.ctl_panel3.append(
                 (new xui.UI.SButton)
                 .setHost(host,"ctl_updateDataToUI")
                 .setLeft(120)
-                .setTop(202)
+                .setTop(203)
                 .setCaption("updateDataToUI")
                 .onClick("_ctl_updatedatatoui_onclick")
             );
@@ -75,7 +50,7 @@ Class('App', 'xui.Com',{
                 (new xui.UI.SButton)
                 .setHost(host,"ctl_updateDataFromUI")
                 .setLeft(310)
-                .setTop(202)
+                .setTop(203)
                 .setCaption("updateDataFromUI")
                 .onClick("_ctl_updatedatafromui_onclick")
             );
@@ -83,8 +58,8 @@ Class('App', 'xui.Com',{
             host.ctl_panel3.append(
                 (new xui.UI.SButton)
                 .setHost(host,"ctl_getData")
-                .setLeft(50)
-                .setTop(268)
+                .setLeft(469)
+                .setTop(269)
                 .setCaption("getData")
                 .onClick("_ctl_getdata_onclick")
             );
@@ -92,8 +67,8 @@ Class('App', 'xui.Com',{
             host.ctl_panel3.append(
                 (new xui.UI.SButton)
                 .setHost(host,"ctl_setData")
-                .setLeft(470)
-                .setTop(268)
+                .setLeft(51)
+                .setTop(269)
                 .setCaption("setData")
                 .onClick("_ctl_setdata_onclick")
             );
@@ -102,7 +77,7 @@ Class('App', 'xui.Com',{
                 (new xui.UI.SButton)
                 .setHost(host,"ctl_read")
                 .setLeft(95)
-                .setTop(329)
+                .setTop(330)
                 .setCaption("read")
                 .onClick("_ctl_read_onclick")
             );
@@ -110,11 +85,11 @@ Class('App', 'xui.Com',{
             host.ctl_panel3.append(
                 (new xui.UI.Group)
                 .setHost(host,"ctl_group1")
-                .setLeft(45)
-                .setTop(10)
-                .setWidth(477)
-                .setHeight(70)
-                .setCaption("The bound UI")
+                .setLeft(61)
+                .setTop(11)
+                .setWidth(450)
+                .setHeight(94)
+                .setCaption("UI Demo")
                 .setToggleBtn(false)
             );
             
@@ -124,7 +99,7 @@ Class('App', 'xui.Com',{
                 .setDataBinder("databinder_1")
                 .setDataField("Name")
                 .setLeft(70)
-                .setTop(10)
+                .setTop(40)
                 .setLabelCaption("ctl_input1")
             );
             
@@ -134,7 +109,7 @@ Class('App', 'xui.Com',{
                 .setDataBinder("databinder_1")
                 .setDataField("Gender")
                 .setLeft(270)
-                .setTop(10)
+                .setTop(40)
                 .setWidth(80)
                 .setLabelCaption("ctl_comboinput2")
                 .setType("listbox")
@@ -145,7 +120,7 @@ Class('App', 'xui.Com',{
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel1")
                 .setLeft(20)
-                .setTop(14)
+                .setTop(44)
                 .setCaption("Name")
             );
             
@@ -153,9 +128,47 @@ Class('App', 'xui.Com',{
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel2")
                 .setLeft(220)
-                .setTop(12)
+                .setTop(42)
                 .setHeight(19)
                 .setCaption("Gender")
+            );
+            
+            host.ctl_group1.append(
+                (new xui.UI.SButton)
+                .setHost(host,"ctl_updateValue")
+                .setLeft(200)
+                .setTop(0)
+                .setCaption("updateValue")
+                .onClick("_ctl_updatevalue_onclick")
+            );
+            
+            host.ctl_group1.append(
+                (new xui.UI.SButton)
+                .setHost(host,"ctl_checkValue")
+                .setLeft(284)
+                .setTop(0)
+                .setCaption("checkValue")
+                .onClick("_ctl_checkvalue_onclick")
+            );
+            
+            host.ctl_group1.append(
+                (new xui.UI.SButton)
+                .setHost(host,"ctl_getDirtied")
+                .setLeft(362)
+                .setTop(0)
+                .setCaption("getDirtied")
+                .onClick("_ctl_getdirtied_onclick")
+            );
+            
+            host.ctl_panel3.append(
+                (new xui.UI.Input)
+                .setHost(host,"innerData")
+                .setDisabled(true)
+                .setLeft(241)
+                .setTop(248)
+                .setWidth(220)
+                .setHeight(65)
+                .setMultiLines(true)
             );
             
             return children;
@@ -163,7 +176,7 @@ Class('App', 'xui.Com',{
         },
         
         customAppend : function(parent, subId, left, top){
-            // "return false" 表示默认情况下所有的第一层内部界面控件会被加入到父容器
+            // "return false"
             return false;
         },
         events : {},
@@ -200,8 +213,9 @@ Class('App', 'xui.Com',{
             xui.message("Values in DataBinder : "+_.stringify(this.databinder_1.getData()));
         },
         _ctl_setdata_onclick : function (profile, e, src, value) {
-            this.databinder_1.setData({Name:"Jack Lee", Gender:"male", Memo:"The author of CrossUI Framework"});
-            this.databinder_1.updateDataToUI();
+            var data={Name:"Jack Lee", Gender:"male", Memo:"The author of CrossUI Framework"};
+            this.databinder_1.setData(data);
+            this.innerData.setValue(_.stringify(data),true);
             xui.message("Values in DataBinder : "+_.stringify(this.databinder_1.getData()));
         },
         _ctl_read_onclick : function (profile, e, src, value) {
@@ -213,7 +227,7 @@ Class('App', 'xui.Com',{
                 xui.message("onStart");                
             }, function(){
                 xui.message("onEnd");                
-            }, "busy", null, null, 
+            }, "busy", null, null,
             // you can adjust data here                       
             function(data){
                 if(data && data.Name){
@@ -228,6 +242,12 @@ Class('App', 'xui.Com',{
                 data.Name = data.Name.split(" ")[0];
             }
             return data;
+        },
+        _databinder_1_afterupdatedatafromui : function (profile, dataFromUI){
+            this.innerData.setValue(_.stringify(dataFromUI),true);
+        },
+        _databinder_1_afterinvoke : function (profile,rspData){
+            this.innerData.setValue(_.stringify(rspData),true);
         }
     }
 });

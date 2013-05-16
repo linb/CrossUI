@@ -12311,7 +12311,7 @@ Class("xui.Tips", null,{
             if(xui.browser.id)
                 div.ieRemedy();
 
-            if(me.last && div!=me.last){
+            if(me.last && me.last.get(0) && div!=me.last){
                 var last=me.last;
                 var l=last.left();
                 if(last._thread&&last._thread.id&&last._thread.isAlive())last._thread.abort();
@@ -38679,7 +38679,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
                 // default to center dlg
                 if(!profile._inited && p.initPos!='auto'){
-                    var pr = parent.get(0)==xui('body').get(0)?xui.win:parent;
+                    var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent);
                     switch(p.initPos){
                         case 'auto':
                         top=(top||top===0)?top:p.top;
