@@ -370,12 +370,15 @@ class IO{
 	 * @param string $path
 	 * @return bool
 	 */
-	function dirMake($path="", $short=false) {
+	function dirMake($path="", $short=false, $abs=false) {
 	    if($short){
-	        $path=$this->absPath($path);
+	        if(!$abs)
+	            $path=$this->absPath($path);
 	        if (!@mkdir($path))  throw new LINB_E("Can\'t make dir --$path");
 	    }else{
-    		$i = explode(DIRECTORY_SEPARATOR, $this->absPath($path));
+	        if(!$abs)
+	            $path=$this->absPath($path);
+    		$i = explode(DIRECTORY_SEPARATOR, $path);
     		$path = array_shift($i);
     		for ($j=0,$k=count($i);$j<$k;$j++) {
     			$path .= DIRECTORY_SEPARATOR.$i[$j];
