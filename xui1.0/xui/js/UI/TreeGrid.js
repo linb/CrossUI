@@ -1432,6 +1432,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:'100%',
                 'background-color':'#00ffff',
                 'text-align':'center',
+                'line-height':'22px',
                 overflow:'visible',
                 opacity:0.7,
                 '*filter':'alpha(opacity=70)'
