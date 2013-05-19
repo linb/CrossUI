@@ -1453,11 +1453,7 @@ type:4
             }else
                 target=ns;
 
-            if(xui._emulateMouse)
-                if(!doc.onmousedown)doc.onmousedown=xui.Event.$eventhandler;
-            else
-                if(!doc.ontouchstart)doc.body.ontouchstart=xui.Event.$eventhandler;
-
+            if(!doc.onmousedown)doc.onmousedown=xui.Event.$eventhandler;            target.each(function(o){if(!o.id)o.id=xui.Dom._pickDomId()});
             target.each(function(o){if(!o.id)o.id=xui.Dom._pickDomId()});
             //remove this trigger
             if(!trigger){
@@ -3006,8 +3002,13 @@ type:4
         xui.win.afterUnload(function(){
             window.onresize=null;
 
-            if(window.removeEventListener)
+            if(window.removeEventListener){
                 window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
+                if(xui.browser.isTouch){
+                    document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
+                    //document.removeEventListener("touchmove", xui.Event._stopDftTouchmove,false);
+                }
+            }
             document.onmousewheel=window.onmousewheel=null;
 
             if(xui.browser.ie && document.body)
