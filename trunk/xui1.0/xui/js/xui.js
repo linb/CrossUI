@@ -1331,8 +1331,6 @@ new function(){
         el=null;
         return c[name]=support;  
       };
-      
-      xui._emulateMouse=xui.browser.isTouch && !xui.isEventSupported('mousedown');
 };
 /*xui.Thread
 *  dependency: _ ; Class ; xui
