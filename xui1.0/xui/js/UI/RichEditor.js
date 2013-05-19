@@ -719,7 +719,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             }
                             if(v){
                                 var doc=editor.$doc;
-                                doc.execCommand(cmd,false,v);
+                                doc.execCommand(cmd,false,xui.adjustRes(v));
                                 doc=null;
                             }
                         },function(){

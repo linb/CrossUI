@@ -300,7 +300,7 @@ Class('xui.DragDrop',null,{
         },
         _end:function(){
             var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup";
-            if(xui.browser.isTouch){
+            if(xui._emulateMouse){
                 md="ontouchstart",mm="ontouchmove",mu="ontouchend"
             }
             
@@ -343,7 +343,7 @@ Class('xui.DragDrop',null,{
             if(typeof profile.dragIcon == 'string') profile.dragType="icon";
 
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup";
-            if(xui.browser.isTouch){
+            if(xui._emulateMouse){
                 md="ontouchstart",mm="ontouchmove",mu="ontouchend"
             }
             
@@ -424,7 +424,7 @@ Class('xui.DragDrop',null,{
                 d.$mouseup = doc[mu];
                 doc[mu] = function(e){
                     xui.DragDrop._end()._reset();
-                    return _.tryF(xui.browser.isTouch?document.ontouchend:document.onmouseup,[e],null,true);
+                    return _.tryF(xui._emulateMouse?document.ontouchend:document.onmouseup,[e],null,true);
                 };
                 //for mousemove before drag
                 d.$mousemove = doc[mm];
@@ -522,7 +522,7 @@ Class('xui.DragDrop',null,{
 //                }catch(a){}finally{
                 d._reset();
                 evt.stopBubble(e);
-                _.tryF(xui.browser.isTouch?document.ontouchend:document.onmouseup,[e]);
+                _.tryF(xui._emulateMouse?document.ontouchend:document.onmouseup,[e]);
                 return !!r;
 //                }
         },
