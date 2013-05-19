@@ -1453,7 +1453,7 @@ type:4
             }else
                 target=ns;
 
-            if(xui.browser.isTouch)
+            if(xui._emulateMouse)
                 if(!doc.onmousedown)doc.onmousedown=xui.Event.$eventhandler;
             else
                 if(!doc.ontouchstart)doc.body.ontouchstart=xui.Event.$eventhandler;

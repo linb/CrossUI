@@ -893,7 +893,13 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"xui([document])的快捷访问.",
             $rtn:"xui.Dom"
         },
-
+        isEventSupported:{
+            $desc:"检测是否支持某事件.",
+            $rtn:"Boolean",
+            $paras:[
+                "name [必需参数]: String, 事件名."
+            ]
+        },
         create:{
             $desc:"生成一个DOM element 或 xui.UI 对象.",
             $rtn:"xui.Dom/xui.UI",

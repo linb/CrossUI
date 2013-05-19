@@ -896,7 +896,13 @@ _.set(xui.Locale,["en","app"], {
             $desc:"The shortcut of xui([document]).",
             $rtn:"xui.Dom"
         },
-
+        isEventSupported:{
+            $desc:"To detect whether a given event is supported or not.",
+            $rtn:"Boolean",
+            $paras:[
+                "name [Required]: String, the event name."
+            ]
+        },
         create:{
             $desc:"To create DOM element or xui.UI Object.",
             $rtn:"xui.Dom/xui.UI",

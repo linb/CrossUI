@@ -134,7 +134,7 @@ Class('xui.Event',null,{
                 if(src.$xid==dragdrop._dropElement)
                     r=false;
             }
-            if(xui && xui.browser.isTouch && ('mousedown'==type || 'mouseover'==type || 'mouseup'==type))
+            if(xui && xui._emulateMouse && ('mousedown'==type || 'mouseover'==type || 'mouseup'==type))
                 r=false;
 
             if(r===false)self.stopBubble(event);
@@ -270,7 +270,7 @@ Class('xui.Event',null,{
         },
         getPos:function(event){
             event = event || window.event;
-            if(xui.browser.isTouch && event.changedTouches && event.changedTouches[0])
+            if(xui._emulateMouse && event.changedTouches && event.changedTouches[0])
                 event = event.changedTouches[0];
             if('pageX' in event)
                 return {left:event.pageX, top:event.pageY};
@@ -456,7 +456,7 @@ Class('xui.Event',null,{
             a1=['before','on','after'],
             t1,t2,s;
 
-        if(xui.browser.isTouch){
+        if(xui._emulateMouse){
             _.merge(m1,{
                 mousedown:'ontouchstart',
                 mousemove:'ontouchmove',
@@ -480,7 +480,7 @@ Class('xui.Event',null,{
             t1[o]=[a1[0]+s, a1[1]+s, a1[2]+s];
         });
         
-        if(xui.browser.isTouch){
+        if(xui._emulateMouse){
             t1['touchstart']=t1['mousedown'];
             t1['touchmove']=t1['mousemove'];
             t1['touchend']=t1['mouseup'];

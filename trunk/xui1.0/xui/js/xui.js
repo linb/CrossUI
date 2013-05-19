@@ -1187,7 +1187,7 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
 
-        isTouch:"ontouchend" in d,
+        isTouch:"ontouchend" in d || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u)
     },v=function(k,s){
@@ -1313,6 +1313,27 @@ new function(){
     xui._localParts=xui._uriReg.exec(xui._curHref.toLowerCase())||[];
 };
 
+new function(){
+      var TAGNAMES={
+        'select':'input','change':'input',  
+        'submit':'form','reset':'form',  
+        'error':'img','load':'img','abort':'img'  
+      },c={};
+      xui.isEventSupported=function(name){
+        if(name in c)return c[name];
+        var el=document.createElement(TAGNAMES[name]||'div'),
+            en='on'+name,
+            support=(en in el);
+        if(!support) {  
+          el.setAttribute(en, 'return;');  
+          support=typeof el[en]=='function';  
+        }  
+        el=null;
+        return c[name]=support;  
+      };
+      
+      xui._emulateMouse=xui.browser.isTouch && !xui.isEventSupported('mousedown');
+};
 /*xui.Thread
 *  dependency: _ ; Class ; xui
 parameters:

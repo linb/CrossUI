@@ -1187,7 +1187,7 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
 
-        isTouch:"ontouchend" in d,
+        isTouch:"ontouchend" in d || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u)
     },v=function(k,s){
@@ -1313,6 +1313,27 @@ new function(){
     xui._localParts=xui._uriReg.exec(xui._curHref.toLowerCase())||[];
 };
 
+new function(){
+      var TAGNAMES={
+        'select':'input','change':'input',  
+        'submit':'form','reset':'form',  
+        'error':'img','load':'img','abort':'img'  
+      },c={};
+      xui.isEventSupported=function(name){
+        if(name in c)return c[name];
+        var el=document.createElement(TAGNAMES[name]||'div'),
+            en='on'+name,
+            support=(en in el);
+        if(!support) {  
+          el.setAttribute(en, 'return;');  
+          support=typeof el[en]=='function';  
+        }  
+        el=null;
+        return c[name]=support;  
+      };
+      
+      xui._emulateMouse=xui.browser.isTouch && !xui.isEventSupported('mousedown');
+};
 /*xui.Thread
 *  dependency: _ ; Class ; xui
 parameters:
@@ -4205,7 +4226,7 @@ Class('xui.Event',null,{
                 if(src.$xid==dragdrop._dropElement)
                     r=false;
             }
-            if(xui && xui.browser.isTouch && ('mousedown'==type || 'mouseover'==type || 'mouseup'==type))
+            if(xui && xui._emulateMouse && ('mousedown'==type || 'mouseover'==type || 'mouseup'==type))
                 r=false;
 
             if(r===false)self.stopBubble(event);
@@ -4341,7 +4362,7 @@ Class('xui.Event',null,{
         },
         getPos:function(event){
             event = event || window.event;
-            if(xui.browser.isTouch && event.changedTouches && event.changedTouches[0])
+            if(xui._emulateMouse && event.changedTouches && event.changedTouches[0])
                 event = event.changedTouches[0];
             if('pageX' in event)
                 return {left:event.pageX, top:event.pageY};
@@ -4527,7 +4548,7 @@ Class('xui.Event',null,{
             a1=['before','on','after'],
             t1,t2,s;
 
-        if(xui.browser.isTouch){
+        if(xui._emulateMouse){
             _.merge(m1,{
                 mousedown:'ontouchstart',
                 mousemove:'ontouchmove',
@@ -4551,7 +4572,7 @@ Class('xui.Event',null,{
             t1[o]=[a1[0]+s, a1[1]+s, a1[2]+s];
         });
         
-        if(xui.browser.isTouch){
+        if(xui._emulateMouse){
             t1['touchstart']=t1['mousedown'];
             t1['touchmove']=t1['mousemove'];
             t1['touchend']=t1['mouseup'];
@@ -7722,7 +7743,7 @@ type:4
             }else
                 target=ns;
 
-            if(xui.browser.isTouch)
+            if(xui._emulateMouse)
                 if(!doc.onmousedown)doc.onmousedown=xui.Event.$eventhandler;
             else
                 if(!doc.ontouchstart)doc.body.ontouchstart=xui.Event.$eventhandler;
@@ -10993,7 +11014,7 @@ Class('xui.DragDrop',null,{
         },
         _end:function(){
             var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup";
-            if(xui.browser.isTouch){
+            if(xui._emulateMouse){
                 md="ontouchstart",mm="ontouchmove",mu="ontouchend"
             }
             
@@ -11036,7 +11057,7 @@ Class('xui.DragDrop',null,{
             if(typeof profile.dragIcon == 'string') profile.dragType="icon";
 
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup";
-            if(xui.browser.isTouch){
+            if(xui._emulateMouse){
                 md="ontouchstart",mm="ontouchmove",mu="ontouchend"
             }
             
@@ -11117,7 +11138,7 @@ Class('xui.DragDrop',null,{
                 d.$mouseup = doc[mu];
                 doc[mu] = function(e){
                     xui.DragDrop._end()._reset();
-                    return _.tryF(xui.browser.isTouch?document.ontouchend:document.onmouseup,[e],null,true);
+                    return _.tryF(xui._emulateMouse?document.ontouchend:document.onmouseup,[e],null,true);
                 };
                 //for mousemove before drag
                 d.$mousemove = doc[mm];
@@ -11215,7 +11236,7 @@ Class('xui.DragDrop',null,{
 //                }catch(a){}finally{
                 d._reset();
                 evt.stopBubble(e);
-                _.tryF(xui.browser.isTouch?document.ontouchend:document.onmouseup,[e]);
+                _.tryF(xui._emulateMouse?document.ontouchend:document.onmouseup,[e]);
                 return !!r;
 //                }
         },
@@ -22003,7 +22024,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             }
                             if(v){
                                 var doc=editor.$doc;
-                                doc.execCommand(cmd,false,v);
+                                doc.execCommand(cmd,false,xui.adjustRes(v));
                                 doc=null;
                             }
                         },function(){
