@@ -19,7 +19,7 @@ Class('xui.Event',null,{
         type = event.type;
         
         // if touable, use only simulatedMousedown
-        if('mousedown'==type && xui.browser.isTouch && self.__realtouch && !self.__simulatedMousedown)
+        if(('mousedown'==type || 'dblclick'==type) && xui.browser.isTouch && self.__realtouch && !self.__simulatedMousedown)
             return false;
 
         //for correct mouse hover problems;
@@ -162,6 +162,7 @@ Class('xui.Event',null,{
                 //dont use resize in IE
                 "move,size," +
                 //dragstart dragdrop dragout will not work in IE(using innerHTML)
+                // Use "dragbegin instead of dragstart" to avoid native DnD
                 "dragbegin,drag,dragstop,dragleave,dragenter,dragover,drop,"+
                 // 3 touch event
                 "touchstart,touchmove,touchend,touchcancel")
@@ -448,20 +449,21 @@ Class('xui.Event',null,{
                               first.screenX, first.screenY,
                               first.clientX, first.clientY, false,
                               false, false, false, 0/*left*/, null);
-            // has real touch event
+            // For touch-only platform: has real touch event
             xui.Event.__realtouch=1;
-            
+
             xui.Event.__simulatedMousedown=1;
             first.target.dispatchEvent(evn);
+            setTimeout(function(){
+                if(xui.Event.__simulatedMousedown){
+                    
+                }
+            },400);
             xui.Event.__simulatedMousedown=0;
-        }/*,
-        _stopDftTouchmove : function(event){
-            var touches = event.changedTouches,
-                first = touches[0],
-                target=first.target;
-             if(target==document)
-                event.preventDefault(); 
-        }*/
+        },
+        stopPageTouchmove:function(){
+            document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+        }
     },
     Initialize:function(){
         var ns=this;
@@ -508,7 +510,6 @@ Class('xui.Event',null,{
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
             document.addEventListener("touchstart", xui.Event._simulateMousedown, true);
-            //document.addEventListener("touchmove", xui.Event._stopDftTouchmove,false);
         }
     }
 });
