@@ -4553,12 +4553,7 @@ Class('xui.Event',null,{
             xui.Event.__simulatedMousedown=0;
         },
         stopPageTouchmove:function(){
-            document.addEventListener("touchmove", function(){
-                var touches = event.changedTouches,
-                    first = touches[0],
-                    target=first.target;
-                event.preventDefault(); 
-            },false);
+            document.addEventListener('touchmove', function(e){ e.preventDefault(); });
         }
     },
     Initialize:function(){
@@ -35260,7 +35255,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'padding-bottom':'2px'
             },
             CELLS:{
-                'border-bottom': '1px solid #A2BBD9'
+                'border-bottom': '1px solid #A2BBD9',
+                overflow:'visible'
             },
             'CELLS-group':{
                 $order:1,
