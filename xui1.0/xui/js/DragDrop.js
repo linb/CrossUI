@@ -238,8 +238,8 @@ Class('xui.DragDrop',null,{
                 d._onDragover.tasks.length=0;
                 delete d._onDragover.tasks;
             }
-            d._cssPos=d._box=d._dropElement=d._source=d._proxy=d._proxystyle=d._onDrag=d._onDragover=NULL;
-
+            if(d._c_droppable){d._c_droppable.length=0;}
+            d._c_droppable=d._c_dropactive=d._cssPos=d._box=d._dropElement=d._source=d._sourceid=d._proxy=d._proxystyle=d._onDrag=d._onDragover=NULL;
             //reset profile
             d._profile={
                 // the unqiue id for dd
@@ -335,6 +335,7 @@ Class('xui.DragDrop',null,{
                return true;
 
             d._source = profile.targetNode = xui(targetNode);
+            d._sourceid=d._source.get(0).$xid;
             d._cursor = d._source.css('cursor');
 
             if((t=profile.targetNode.get(0)) && !t.id){
@@ -415,6 +416,33 @@ Class('xui.DragDrop',null,{
                 d._source.afterDragbegin();
                 //for delay, call ondrag now
                 if(p.dragDefer>0)d.$onDrag.call(d, e);
+                
+                // For touch-only platform
+                // In ipad or other touch-only platform, you have to decide the droppable order by youself
+                // The later added to DOM the higher the priority
+                // Add droppable links
+                if(xui.browser.isTouch && xui.Event.__realtouch){
+                    d._c_droppable=[];
+                    var cdata=xui.$cache.droppable[p.dragKey],purge=[];
+                    _.arr.each(cdata,function(i){
+                        if(!xui.use(i).get(0)){
+                            purge.push(i);
+                            return;
+                        }
+                        var ni=xui.use(i),h=ni.offsetHeight(),w=ni.offsetWidth(),v=ni.css('visibility'),hash;
+                        if(w&&h&&v!='hidden'){
+                            hash=ni.offset();
+                            hash.width=w;hash.height=h;hash.id=i;
+                            d._c_droppable.unshift(hash);
+                        }
+                    });
+                    // self clear
+                    if(purge.length){
+                        _.arr.each(purge,function(key){
+                            _.arr.removeValue(cdata,key);
+                        });
+                    }
+                }
             //                  }catch(e){d._end()._reset();}
             };
             if(xui.browser.ie){
@@ -439,7 +467,7 @@ Class('xui.DragDrop',null,{
                 d.$mouseup = doc[mu];
                 doc[mu] = function(e){
                     xui.DragDrop._end()._reset();
-                    return _.tryF(xui._emulateMouse?document.ontouchend:document.onmouseup,[e],null,true);
+                    return _.tryF(document.onmouseup,[e],null,true);
                 };
                 if(xui.browser.isTouch){
                     d.$touchend = doc[mu2];
@@ -520,6 +548,52 @@ Class('xui.DragDrop',null,{
                         d._source.onDrag(true,xui.Event.getEventPara(e, _pos));
                     }
                 }
+                
+                // For touch-only platform
+                // In ipad or other touch-only platform, you have to decide the droppable order by youself
+                // The later joined the higher the priority
+                if(xui.browser.isTouch && xui.Event.__realtouch){
+                    if(d._c_droppable){
+                        var i=0,o,e,l=d._c_droppable.length,oactive=d._c_dropactive;
+                        for(;i<l;i++){
+                            o=d._c_droppable[i];
+                            if(p.x>=o.left&&p.y>=o.top&&p.x<=(o.left+o.width)&&p.y<=(o.top+o.height)){
+                                if(oactive==o.id){
+                                    console.log('in ' +o.id );
+                                }else{
+                                    e=document.createEvent("MouseEvent");
+                                    e.initMouseEvent("mouseover",true,true, window, 1,
+                                          p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
+                                    xui.use(o.id).get(0).dispatchEvent(e);
+                                    d._c_dropactive=o.id;
+
+                                    console.log('active ' +o.id);
+                                    if(oactive){
+                                        e=document.createEvent("MouseEvent");
+                                        e.initMouseEvent("mouseout",true,true, window, 1,
+                                          p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
+                                        xui.use(oactive).get(0).dispatchEvent(e);
+                                    
+                                        console.log('deactive ' + oactive);
+                                    }
+                                }
+                                break;
+                            }else{
+                                if(oactive==o.id){
+                                    e=document.createEvent("MouseEvent");
+                                    e.initMouseEvent("mouseout",true,true, window, 1,
+                                      p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
+                                    xui.use(oactive).get(0).dispatchEvent(e);
+                                    d._c_dropactive=null;
+                                    
+                                    console.log('deactive ' + oactive);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                    
             //}catch(e){xui.DragDrop._end()._reset();}finally{
                return false;
             //}
@@ -545,7 +619,7 @@ Class('xui.DragDrop',null,{
 //                }catch(a){}finally{
                 d._reset();
                 evt.stopBubble(e);
-                _.tryF(xui._emulateMouse?document.ontouchend:document.onmouseup,[e]);
+                _.tryF(document.onmouseup,[e]);
                 return !!r;
 //                }
         },
@@ -749,7 +823,13 @@ Class('xui.DragDrop',null,{
                 .$removeEvent('beforeMouseout', eh)
                 .$removeEvent('beforeMousemove', eh);
 
-            xui.setNodeData(node.$xid, ['_dropKeys',key]);
+            var o=xui.getNodeData(node.$xid, ['_dropKeys']),c=xui.$cache.droppable;            
+            if(o)
+                for(var i in o)
+                    if(c[i])
+                        _.arr.removeValue(c[i],node.$xid);
+
+            xui.setNodeData(node.$xid, ['_dropKeys']);
         },
         _register:function(node, key){
             var eh=this._eh;
@@ -768,8 +848,10 @@ Class('xui.DragDrop',null,{
                     var t=xui.DragDrop,p=t._profile;
                      if(p.dragKey && xui.getNodeData(i,['_dropKeys', p.dragKey])){
                         xui.use(i).onDragleave(true);
-                        t.setDropElement(t._onDragover=null);
-                        _.resetRun('setDropFace', t.setDropFace, 0, [null], t);
+                        if(t._dropElement==i){
+                            t.setDropElement(t._onDragover=null);
+                            _.resetRun('setDropFace', t.setDropFace, 0, [null], t);
+                        }
                     }
                 }, eh)
                 .beforeMousemove(function(a,e,i){
@@ -786,7 +868,21 @@ Class('xui.DragDrop',null,{
                         }
                     }
                 }, eh);
-            xui.setNodeData(node.$xid, ['_dropKeys', key], true);
+
+            var o=xui.getNodeData(node.$xid, ['_dropKeys']),c=xui.$cache.droppable;            
+            if(o)
+                for(var i in o)
+                    if(c[i])
+                        _.arr.removeValue(c[i],node.$xid);
+
+            var h={},a=key.split(/[^\w-]+/)
+            for(var i=0,l=a.length;i<l;i++){
+                h[a[i]]=1;
+                c[a[i]]=c[a[i]]||[];
+                c[a[i]].push(node.$xid);
+            }
+            xui.setNodeData(node.$xid, ['_dropKeys'], h);
+            
         }
     },
     After:function(){

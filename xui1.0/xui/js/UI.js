@@ -4,7 +4,7 @@ Class('xui.UIProfile','xui.Profile', {
         //readonly please
         renderId:null,
         _render:function(){
-            var ns=this,t,map=xui.$cache.profileMap;
+            var ns=this,ins=ns.boxing(),t,map=xui.$cache.profileMap;
 
             //first render
             if(!ns.renderId){
@@ -28,9 +28,29 @@ Class('xui.UIProfile','xui.Profile', {
             }
 
             if(ns.CS){
-                ns.boxing().setCustomStyle(ns.CS);
+                ins.setCustomStyle(ns.CS);
             }
 
+            // For touch-only platform
+            // In ipad or other touch-only platform, you have to decide the droppable order by youself
+            // The later added to DOM the higher the priority
+            // Add droppable links
+            if(xui.browser.isTouch/* && xui.Event.__realtouch*/){
+                if((t=ns.box.$Behaviors.DroppableKeys) && t.length){
+                    _.arr.each(t,function(o){
+                        ins.getSubNode(o,true).each(function(node){
+                            var key=ns.box.getDropKeys(ns,node.$xid);
+                            if(key){
+                                var c=xui.$cache.droppable,a=key.split(/[^\w-]+/)
+                                for(var i=0,l=a.length;i<l;i++){
+                                    c[a[i]]=c[a[i]]||[];
+                                    c[a[i]].push(node.$xid);
+                                }
+                            }
+                        });
+                    });
+                }
+            }
             //RenderTrigger
             if(t=ns.RenderTrigger){
                 for(var i=0,l=t.length;i<l;i++)
@@ -2962,6 +2982,8 @@ Class("xui.UI",  "xui.absObj", {
                 afterDrop:h2,
                 beforeDrop:h2
             });
+            
+            
             return self;
         },
         _draggable:function(key){
