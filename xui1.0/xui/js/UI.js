@@ -51,6 +51,27 @@ Class('xui.UIProfile','xui.Profile', {
                     });
                 }
             }
+            
+            if(xui.browser.isTouch && xui.browser.isAndroid){
+                var check={'auto':1,'scroll':1};
+                // for UI's appearances overflow
+                _.each(ns.box.$Appearances,function(o,i){
+                    if(check[o.overflow]){
+                        ns.getSubNode(i,true).$touchscroll('xy');
+                    }else{
+                        if(check[o['overflow-x']]){
+                            ns.getSubNode(i,true).$touchscroll('x');
+                        }else if(check[o['overflow-y']]){
+                            ns.getSubNode(i,true).$touchscroll('y');
+                        }
+                    }
+                });
+                // for UI's overflow property
+                if(check[ns.properties.overflow]){
+                    ins.setOverflow(ns.properties.overflow,true);
+                }
+            }
+
             //RenderTrigger
             if(t=ns.RenderTrigger){
                 for(var i=0,l=t.length;i<l;i++)
@@ -4907,8 +4928,8 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:undefined,
-                    listbox:['','visible','hidden','scroll','auto','inherited'],
+                    ini:'auto',
+                    listbox:['','visible','hidden','scroll','auto'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
                     }
@@ -4960,7 +4981,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:undefined,
+                    ini:'auto',
                     listbox:['','visible','hidden','scroll','auto','inherited'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');

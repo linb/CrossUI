@@ -168,9 +168,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
         EventHandlers:{
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},
-            beforeExpend:function(profile){},
+            beforeExpand:function(profile){},
             afterFold:function(profile){},
-            afterExpend:function(profile){}
+            afterExpand:function(profile){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile),
@@ -212,7 +212,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 profile._toggle = p.toggle = !!value;
     
                 if(value){
-                    if(ins.beforeExpend && false===ins.beforeExpend(profile))return;
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
                 }else{
                     if(ins.beforeFold && false===ins.beforeFold(profile))return;
                 }
@@ -226,8 +226,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
                 
                 if(value){
-                    if(ins.afterExpend)
-                        ins.afterExpend(profile);
+                    if(ins.afterExpand)
+                        ins.afterExpand(profile);
                 }else{
                     if(ins.afterFold)
                         ins.afterFold(profile);

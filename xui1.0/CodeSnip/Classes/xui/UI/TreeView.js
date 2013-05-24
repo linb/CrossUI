@@ -33,7 +33,7 @@ Class('App.xui_UI_TreeView', 'xui.Com',{
                 .onGetContent("_ctl_treeview1_ongetcontent")
                 .onItemSelected("_ctl_treeview1_onitemselected")
                 .afterFold("_ctl_treeview1_afterfold")
-                .afterExpend("_ctl_treeview1_afterexpend")
+                .afterExpand("_ctl_treeview1_afterexpand")
             );
             
             return children;
@@ -79,7 +79,7 @@ Class('App.xui_UI_TreeView', 'xui.Com',{
         _ctl_treeview1_afterfold : function (profile, item) {
             xui.message(item.id + " is fold!");
         },
-        _ctl_treeview1_afterexpend : function (profile, item) {
+        _ctl_treeview1_afterexpand : function (profile, item) {
              xui.message(item.id + " is expand!");
         }
     }

@@ -1188,7 +1188,7 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
 
-        isTouch:"ontouchend" in d || u.msPointerEnabled,
+        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u)
     },v=function(k,s){

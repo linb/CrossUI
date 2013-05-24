@@ -9977,15 +9977,15 @@ _.set(xui.Locale,["en","app"], {
             },
 
 
-            beforeExpend:{
-                $desc:"Fired before group expends. If returns false, function will be ignored.",
+            beforeExpand:{
+                $desc:"Fired before group expands. If returns false, function will be ignored.",
                 $paras:[
                     "profile : xui.UIProfile."
                 ],
                 $snippet:[
                     "var id='xui.temp.fs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Group;"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -9998,13 +9998,13 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fs6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Group;"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
             },
-            afterExpend:{
-                $desc:"Fired after group expends."
+            afterExpand:{
+                $desc:"Fired after group expands."
             },
             afterFold:{
                 $desc:"Fired after group collapses."
@@ -10017,7 +10017,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Group;"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -12061,15 +12061,15 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
-            beforeExpend:{
-                $desc:"Fired before panel expends. If returns false, function will be ignored.",
+            beforeExpand:{
+                $desc:"Fired before panel expands. If returns false, function will be ignored.",
                 $paras:[
                     "profile : xui.UIProfile."
                 ],
                 $snippet:[
                     "var id='xui.temp.panel9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Panel({toggleBtn:true,html:'content'});"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -12082,13 +12082,13 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Panel({toggleBtn:true,html:'content'});"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
             },
-            afterExpend:{
-                $desc:"Fired after panel expends."
+            afterExpand:{
+                $desc:"Fired after panel expands."
             },
             afterFold:{
                 $desc:"Fired after panel collapses."
@@ -12101,7 +12101,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Panel({toggleBtn:true,html:'content'});"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -15129,11 +15129,11 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             toggleNode:{
-                $desc:"Expends or folds the specified node.",
+                $desc:"Expands or folds the specified node.",
                 $rtn:"[self]",
                 $paras:[
                     "id [Required] : String, The node id.",
-                    "expend [Optional] : Boolean, true=>expend;false=>fold.",
+                    "expand [Optional] : Boolean, true=>expand;false=>fold.",
                     "recursive [Optional] : Boolean, it's recursive or not."
                 ],
                 $snippet:[
@@ -15181,8 +15181,8 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            beforeExpend:{
-                $desc:"Fired before a node expends. If returns false, function will be ignored.",
+            beforeExpand:{
+                $desc:"Fired before a node expands. If returns false, function will be ignored.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "item: Object, list item Object."
@@ -15195,8 +15195,8 @@ _.set(xui.Locale,["en","app"], {
                     "item: Object, list item Object."
                 ]
             },
-            afterExpend:{
-                $desc:"Fired after a node expends."
+            afterExpand:{
+                $desc:"Fired after a node expands."
             },
             afterFold:{
                 $desc:"Fired after a node collapses."
@@ -15844,10 +15844,10 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             toggleRow:{
-                $desc:"Expends or folds the specified row. It makes sense with rows containing children only.",
+                $desc:"Expands or folds the specified row. It makes sense with rows containing children only.",
                 $paras:[
                     "id [Required] : String, The node id.",
-                    "expend [Optional] : Boolean, true=>expend;false=>fold."
+                    "expand [Optional] : Boolean, true=>expand;false=>fold."
                 ],
                 $snippet:[
                     "var id='xui.temp.grid129'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

@@ -824,8 +824,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             height:200,
             position:'absolute',
             overflow:{
-                ini:undefined,
-                listbox:['','visible','hidden','scroll','auto','inherited'],
+                ini:'auto',
+                listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL',true).css('overflow',v||'');
                 }

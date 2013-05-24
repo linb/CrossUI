@@ -55,7 +55,7 @@ Class('App.xui_UI_Fieldset', 'xui.Com',{
                 .setZIndex(1)
                 .setPosition("relative")
                 .setCaption("fieldset1")
-                .setExpend(false)
+                .setExpand(false)
             );
             
             host.fieldset3.append((new xui.UI.Pane)

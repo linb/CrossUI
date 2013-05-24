@@ -122,23 +122,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             });
         },
-        _toggleNodes:function(items, expend, recursive){
+        _toggleNodes:function(items, expand, recursive){
             var self=this;
             if(_.isArr(items))
                 _.arr.each(items,function(o){
-                    self.toggleNode(o.id, expend, recursive)
+                    self.toggleNode(o.id, expand, recursive)
                 });
             return self;
         },
         /*
-        *expend:true->expend false->fold
+        *expand:true->expand false->fold
         *recursive:true open recursively
         */
-        toggleNode:function(id, expend, recursive){
+        toggleNode:function(id, expand, recursive){
             var profile=this.get(0),
                 o=profile.getItemByItemId(id);
             if(o && o.sub)
-                profile.box._setSub(profile, o, typeof expend=="boolean"?expend:!o._checked, recursive);
+                profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive);
             return this;
         },
         /*
@@ -395,9 +395,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
             beforeFold:function(profile,item){},
-            beforeExpend:function(profile,item){},
+            beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
-            afterExpend:function(profile,item){}
+            afterExpand:function(profile,item){}
         },
         DataModel:{
             listKey:null,
@@ -696,7 +696,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }else{
                 //open
                 if(flag){
-                    if(ins.beforeExpend && false===ins.beforeExpend(profile,item)){
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
                         return;
                     }
 
@@ -759,8 +759,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             callback(r);
                         }                                                              }
                 }
-                if(ins.afterExpend)
-                    ins.afterExpend(profile,item);
+                if(ins.afterExpand)
+                    ins.afterExpand(profile,item);
 
                 if(recursive && item.sub){
                     _.arr.each(item.sub,function(o){

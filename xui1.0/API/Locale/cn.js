@@ -9904,7 +9904,7 @@ _.set(xui.Locale,["cn","app"], {
             },
 
 
-            beforeExpend:{
+            beforeExpand:{
                 $desc:"在编组框打开前调用.如返回 false, 编组框不会打开.",
                 $paras:[
                     "profile : xui.UIProfile."
@@ -9912,7 +9912,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.fs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Group;"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -9925,12 +9925,12 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.fs6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Group;"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
             },
-            afterExpend:{
+            afterExpand:{
                 $desc:"在编组框打开后调用."
             },
             afterFold:{
@@ -9944,7 +9944,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.fs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Group;"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -11987,7 +11987,7 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
-            beforeExpend:{
+            beforeExpand:{
                 $desc:"在面板打开前调用.如返回 false, 面板不会打开.",
                 $paras:[
                     "profile : xui.UIProfile."
@@ -11995,7 +11995,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.panel9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Panel({toggleBtn:true,html:'content'});"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -12008,12 +12008,12 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.panel10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Panel({toggleBtn:true,html:'content'});"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
             },
-            afterExpend:{
+            afterExpand:{
                 $desc:"在面板打开后调用."
             },
             afterFold:{
@@ -12027,7 +12027,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.panel11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Panel({toggleBtn:true,html:'content'});"+
-                    "o.beforeExpend(function(){alert('beforeExpend')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
+                    "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -15060,7 +15060,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "id [必需参数] : String, 父节点id.",
-                    "expend [可选参数] : Boolean, true表示打开,false表示折叠.",
+                    "expand [可选参数] : Boolean, true表示打开,false表示折叠.",
                     "recursive [可选参数] : Boolean, 是否递归应用于父节点的所有子节点."
                 ],
                 $snippet:[
@@ -15108,7 +15108,7 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-            beforeExpend:{
+            beforeExpand:{
                 $desc:"在某个节点展开前调用. 如返回 false,节点将不会展开.",
                 $paras:[
                     "profile : xui.UIProfile.",
@@ -15122,7 +15122,7 @@ _.set(xui.Locale,["cn","app"], {
                     "item: Object, 项对象."
                 ]
             },
-            afterExpend:{
+            afterExpand:{
                 $desc:"在某个节点展开后调用."
             },
             afterFold:{
@@ -15772,7 +15772,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"打开或折叠指定的行. 该函数只对带有子行的行有效.",
                 $paras:[
                     "id [必需参数] : String, 节点id.",
-                    "expend [可选参数] : Boolean, true为打开,false为折叠. 如果不制定本参数,展开的会折叠,折叠的会展开."
+                    "expand [可选参数] : Boolean, true为打开,false为折叠. 如果不制定本参数,展开的会折叠,折叠的会展开."
                 ],
                 $snippet:[
                     "var id='xui.temp.grid129'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

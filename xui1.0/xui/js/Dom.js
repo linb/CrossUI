@@ -557,19 +557,56 @@ Class('xui.Dom','xui.absBox',{
                 return r;
             }
         },
+        $touchscroll:function(type){
+            if(xui.browser.isTouch && xui.browser.isAndroid){
+                var hash={x:1,y:1,xy:1},ox=0,oy=0,nodes=this._nodes;
+                if(!hash[type])type=null;
+                xui(nodes).onTouchstart(hash[type]?function(p,e,src){
+                    var s=e.touches[0],t=xui(src).get(0);
+                    if(t){
+                        if(type=='xy'||type=='x')
+                            ox=t.scrollLeft+s.pageX;
+                        if(type=='xy'||type=='y')
+                            oy=t.scrollTop+s.pageY;
+                        e.preventDefault();
+                    }
+                }:null);
+                xui(nodes).onTouchmove(hash[type]?function(p,e,src){
+                    var s=e.touches[0],t=xui(src).get(0);
+                    if(t){
+                        if(type=='xy'||type=='x')
+                            t.scrollLeft=ox-s.pageX;
+                        if(type=='xy'||type=='y')
+                            t.scrollTop=oy-s.pageY;
+                        e.preventDefault();
+                    }
+                }:null);
+            }
+            return this;
+        },
         /*
         name format: 'xxxYxx', not 'xxx-yyy'
         left/top/width/height like, must specify 'px'
         Does't fire onResize onMove event
         */
         css:function(name, value){
-            return (typeof name=='object' || value!==undefined)
-                ?
+            if(typeof name=='object' || value!==undefined){
                 this.each(function(o){
                     xui.Dom.setStyle(o,name,value)
-                })
-                :
-                xui.Dom.getStyle(this.get(0), name)
+                });
+                
+                if(xui.browser.isTouch && xui.browser.isAndroid){
+                    if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
+                        if(value=='auto'||value=='scroll')
+                            this.$touchscroll(name=='overflow'?'xy':name=='overflow-x'?'x':'y');
+                        else
+                            this.$touchscroll(null);
+                    }
+                }
+                return this;
+            }else{
+                return xui.Dom.getStyle(this.get(0), name);
+            };
         },
         /*
         *IE/opera \r\n will take 2 chars
