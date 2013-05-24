@@ -155,11 +155,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
             profile.$cache_editor={};
         },
-        _toggleRows:function(rows, expend){
+        _toggleRows:function(rows, expand){
             var self=this;
             if(rows && rows.length)
                 _.arr.each(rows,function(o){
-                    self.toggleRow(o.id, expend);
+                    self.toggleRow(o.id, expand);
                 });
         },
         autoRowHeight:function(rowId){
@@ -202,7 +202,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         isDirtied:function(){
             var dirty=false;
             _.each(this.get(0).cellMap,function(v){
-                if(v.oValue!==v.value){
+                if(v._oValue!==v.value){
                     dirty=true;
                     return false;
                 }
@@ -280,11 +280,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }          
         },
 
-        toggleRow:function(id, expend){
+        toggleRow:function(id, expand){
             var profile = this.get(0),
             row = profile.rowMap[profile.rowMap2[id]];
             if(row && row.sub)
-                profile.box._setSub(profile, row, typeof expend=="boolean"?expend:!row._checked);
+                profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked);
             return this;
 
         },
@@ -613,8 +613,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         resetRowValue:function(rowId){
             var profile=this.get(0),row=this.getRowbyRowId(rowId),arr=[],prop=profile.properties;
             _.arr.each(row.cells,function(o){
-                if(o.oValue!==o.value){
-                    o.oValue=o.value;
+                if(o._oValue!==o.value){
+                    o._oValue=o.value;
                     delete o.dirty;
                     if(prop.dirtyMark)
                         arr.push(profile.getSubNode('CELLA',o._serialId).get(0));
@@ -626,8 +626,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         resetColValue:function(colId){
             var profile=this.get(0),col=this.getHeaderByColId(colId),arr=[],prop=profile.properties;
             _.arr.each(col.cells,function(o){
-                if(o.oValue!==o.value){
-                    o.oValue=o.value;
+                if(o._oValue!==o.value){
+                    o._oValue=o.value;
                     delete o.dirty;
                     if(prop.dirtyMark)
                         arr.push(profile.getSubNode('CELLA',o._serialId).get(0));
@@ -888,7 +888,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return this.each(function(profile){
                 var prop=profile.properties;
                 _.each(profile.cellMap,function(v){
-                    v.oValue=v.value;
+                    v._oValue=v.value;
                     delete v.dirty;
                 });
                 if(prop.dirtyMark && prop.showDirtyMark)
@@ -898,8 +898,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getDirtied:function(rowId, colId){
             var map={};
             _.each(this.get(0).cellMap,function(v){
-                if(v.oValue!==v.value &&(rowId?(rowId==v._row.id):1) &&(colId?(colId==v._col.id):1)){
-                    map[v.id]={rowId:v._row.id, colId:v._col.id, value:v.value, oValue:v.oValue};
+                if(v._oValue!==v.value &&(rowId?(rowId==v._row.id):1) &&(colId?(colId==v._col.id):1)){
+                    map[v.id]={rowId:v._row.id, colId:v._col.id, value:v.value, _oValue:v._oValue};
                 }
             });
             //dont return inner value
@@ -3436,7 +3436,7 @@ editorDropListHeight
             self._renderCell(profile, cell, uicell);
 
             //next
-            cell.oValue=cell.value;
+            cell._oValue=cell.value;
         },
         _setSub:function(profile, item, flag){
             var id=profile.domId,
@@ -3571,9 +3571,9 @@ editorDropListHeight
             //if update value
             if('value' in options){
                 if(!pdm || dirtyMark===false)
-                    cell.oValue=cell.value;
+                    cell._oValue=cell.value;
                 else{
-                    if(cell.value===cell.oValue){
+                    if(cell.value===cell._oValue){
                         if(psdm)
                             node.removeClass('xui-ui-dirty');
                         delete cell.dirty;
@@ -3727,7 +3727,7 @@ editorDropListHeight
                 if(cell._row && (!lc || (lc._row && lc._row!=cell._row))){
                     var dirty=false;
                     _.arr.each(cell._row.cells,function(v){
-                        if(v.oValue!==v.value){
+                        if(v._oValue!==v.value){
                             dirty=true;
                             return false;
                         }

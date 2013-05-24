@@ -239,7 +239,7 @@ Class('xui.DragDrop',null,{
                 delete d._onDragover.tasks;
             }
             if(d._c_droppable){d._c_droppable.length=0;}
-            d._c_droppable=d._c_dropactive=d._cssPos=d._box=d._dropElement=d._source=d._sourceid=d._proxy=d._proxystyle=d._onDrag=d._onDragover=NULL;
+            d._c_droppable=d._c_dropactive=d._cssPos=d._box=d._dropElement=d._source=d._proxy=d._proxystyle=d._onDrag=d._onDragover=NULL;
             //reset profile
             d._profile={
                 // the unqiue id for dd
@@ -335,7 +335,6 @@ Class('xui.DragDrop',null,{
                return true;
 
             d._source = profile.targetNode = xui(targetNode);
-            d._sourceid=d._source.get(0).$xid;
             d._cursor = d._source.css('cursor');
 
             if((t=profile.targetNode.get(0)) && !t.id){

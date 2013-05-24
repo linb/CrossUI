@@ -99,7 +99,7 @@ Class('App.xui_UI_Panel', 'xui.Com',{
                 .setPopBtn(true)
                 .onIniPanelView("_panelbar7_oninipanelview")
                 .beforeFold("_panelbar7_onfold")
-                .beforeExpend("_panelbar7_onexpend")
+                .beforeExpand("_panelbar7_onexpand")
                 .onShowOptions("_panelbar7_onshowoptions")
             );
             
@@ -112,8 +112,8 @@ Class('App.xui_UI_Panel', 'xui.Com',{
         _panelbar7_onfold:function (profile) {
             xui.message('fold');
         }, 
-        _panelbar7_onexpend:function (profile) {
-            xui.message('expend');
+        _panelbar7_onexpand:function (profile) {
+            xui.message('expand');
         }, 
         _panelbar7_onshowoptions:function (profile, e, src) {
             xui.message('onShowOptions');

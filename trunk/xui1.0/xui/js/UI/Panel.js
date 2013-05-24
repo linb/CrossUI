@@ -381,9 +381,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             beforeClose:function(profile){},
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},
-            beforeExpend:function(profile){},
+            beforeExpand:function(profile){},
             afterFold:function(profile){},
-            afterExpend:function(profile){},
+            afterExpand:function(profile){},
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
             onClickBar:function(profile, src){}
@@ -456,7 +456,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 profile._toggle = p.toggle = !!value;
 
                 if(value){
-                    if(ins.beforeExpend && false===ins.beforeExpend(profile))return;
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
                 }else{
                     if(ins.beforeFold && false===ins.beforeFold(profile))return;
                 }
@@ -473,8 +473,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 profile.getRoot().height(h?h:p.toggle?p.height:'auto');
 
                 if(value){
-                    if(ins.afterExpend)
-                        ins.afterExpend(profile);
+                    if(ins.afterExpand)
+                        ins.afterExpand(profile);
                 }else{
                     if(ins.afterFold)
                         ins.afterFold(profile);

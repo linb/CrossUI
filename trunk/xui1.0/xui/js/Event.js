@@ -442,8 +442,7 @@ Class('xui.Event',null,{
         _simulateMousedown:function(event){
             var touches = event.changedTouches,
                 first = touches[0],
-                type = event.type;
-            type=type=="touchstart"?"mousedown":type=="touchmove"?"mousemove":"mouseup";
+                type = "mousedown";
             var evn = document.createEvent("MouseEvent");
             evn.initMouseEvent(type, true, true, window, 1,
                               first.screenX, first.screenY,
@@ -454,11 +453,6 @@ Class('xui.Event',null,{
 
             xui.Event.__simulatedMousedown=1;
             first.target.dispatchEvent(evn);
-            setTimeout(function(){
-                if(xui.Event.__simulatedMousedown){
-                    
-                }
-            },400);
             xui.Event.__simulatedMousedown=0;
         },
         stopPageTouchmove:function(){

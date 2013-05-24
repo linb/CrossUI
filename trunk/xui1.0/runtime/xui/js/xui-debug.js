@@ -1188,7 +1188,7 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
 
-        isTouch:"ontouchend" in d || u.msPointerEnabled,
+        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u)
     },v=function(k,s){
@@ -4533,8 +4533,7 @@ Class('xui.Event',null,{
         _simulateMousedown:function(event){
             var touches = event.changedTouches,
                 first = touches[0],
-                type = event.type;
-            type=type=="touchstart"?"mousedown":type=="touchmove"?"mousemove":"mouseup";
+                type = "mousedown";
             var evn = document.createEvent("MouseEvent");
             evn.initMouseEvent(type, true, true, window, 1,
                               first.screenX, first.screenY,
@@ -4545,11 +4544,6 @@ Class('xui.Event',null,{
 
             xui.Event.__simulatedMousedown=1;
             first.target.dispatchEvent(evn);
-            setTimeout(function(){
-                if(xui.Event.__simulatedMousedown){
-                    
-                }
-            },400);
             xui.Event.__simulatedMousedown=0;
         },
         stopPageTouchmove:function(){
@@ -6855,19 +6849,56 @@ Class('xui.Dom','xui.absBox',{
                 return r;
             }
         },
+        $touchscroll:function(type){
+            if(xui.browser.isTouch && xui.browser.isAndroid){
+                var hash={x:1,y:1,xy:1},ox=0,oy=0,nodes=this._nodes;
+                if(!hash[type])type=null;
+                xui(nodes).onTouchstart(hash[type]?function(p,e,src){
+                    var s=e.touches[0],t=xui(src).get(0);
+                    if(t){
+                        if(type=='xy'||type=='x')
+                            ox=t.scrollLeft+s.pageX;
+                        if(type=='xy'||type=='y')
+                            oy=t.scrollTop+s.pageY;
+                        e.preventDefault();
+                    }
+                }:null);
+                xui(nodes).onTouchmove(hash[type]?function(p,e,src){
+                    var s=e.touches[0],t=xui(src).get(0);
+                    if(t){
+                        if(type=='xy'||type=='x')
+                            t.scrollLeft=ox-s.pageX;
+                        if(type=='xy'||type=='y')
+                            t.scrollTop=oy-s.pageY;
+                        e.preventDefault();
+                    }
+                }:null);
+            }
+            return this;
+        },
         /*
         name format: 'xxxYxx', not 'xxx-yyy'
         left/top/width/height like, must specify 'px'
         Does't fire onResize onMove event
         */
         css:function(name, value){
-            return (typeof name=='object' || value!==undefined)
-                ?
+            if(typeof name=='object' || value!==undefined){
                 this.each(function(o){
                     xui.Dom.setStyle(o,name,value)
-                })
-                :
-                xui.Dom.getStyle(this.get(0), name)
+                });
+                
+                if(xui.browser.isTouch && xui.browser.isAndroid){
+                    if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
+                        if(value=='auto'||value=='scroll')
+                            this.$touchscroll(name=='overflow'?'xy':name=='overflow-x'?'x':'y');
+                        else
+                            this.$touchscroll(null);
+                    }
+                }
+                return this;
+            }else{
+                return xui.Dom.getStyle(this.get(0), name);
+            };
         },
         /*
         *IE/opera \r\n will take 2 chars
@@ -10962,7 +10993,7 @@ Class('xui.DragDrop',null,{
                 delete d._onDragover.tasks;
             }
             if(d._c_droppable){d._c_droppable.length=0;}
-            d._c_droppable=d._c_dropactive=d._cssPos=d._box=d._dropElement=d._source=d._sourceid=d._proxy=d._proxystyle=d._onDrag=d._onDragover=NULL;
+            d._c_droppable=d._c_dropactive=d._cssPos=d._box=d._dropElement=d._source=d._proxy=d._proxystyle=d._onDrag=d._onDragover=NULL;
             //reset profile
             d._profile={
                 // the unqiue id for dd
@@ -11058,7 +11089,6 @@ Class('xui.DragDrop',null,{
                return true;
 
             d._source = profile.targetNode = xui(targetNode);
-            d._sourceid=d._source.get(0).$xid;
             d._cursor = d._source.css('cursor');
 
             if((t=profile.targetNode.get(0)) && !t.id){
@@ -12571,6 +12601,27 @@ Class('xui.UIProfile','xui.Profile', {
                     });
                 }
             }
+            
+            if(xui.browser.isTouch && xui.browser.isAndroid){
+                var check={'auto':1,'scroll':1};
+                // for UI's appearances overflow
+                _.each(ns.box.$Appearances,function(o,i){
+                    if(check[o.overflow]){
+                        ns.getSubNode(i,true).$touchscroll('xy');
+                    }else{
+                        if(check[o['overflow-x']]){
+                            ns.getSubNode(i,true).$touchscroll('x');
+                        }else if(check[o['overflow-y']]){
+                            ns.getSubNode(i,true).$touchscroll('y');
+                        }
+                    }
+                });
+                // for UI's overflow property
+                if(check[ns.properties.overflow]){
+                    ins.setOverflow(ns.properties.overflow,true);
+                }
+            }
+
             //RenderTrigger
             if(t=ns.RenderTrigger){
                 for(var i=0,l=t.length;i<l;i++)
@@ -17427,8 +17478,8 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:undefined,
-                    listbox:['','visible','hidden','scroll','auto','inherited'],
+                    ini:'auto',
+                    listbox:['','visible','hidden','scroll','auto'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
                     }
@@ -17480,7 +17531,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:undefined,
+                    ini:'auto',
                     listbox:['','visible','hidden','scroll','auto','inherited'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
@@ -19136,8 +19187,8 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             overflow:{
-                ini:undefined,
-                listbox:['','visible','hidden','scroll','auto','inherited'],
+                ini:'auto',
+                listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL').css('overflow',v||'');
                 }
@@ -23848,9 +23899,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
         EventHandlers:{
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},
-            beforeExpend:function(profile){},
+            beforeExpand:function(profile){},
             afterFold:function(profile){},
-            afterExpend:function(profile){}
+            afterExpand:function(profile){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile),
@@ -23892,7 +23943,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 profile._toggle = p.toggle = !!value;
     
                 if(value){
-                    if(ins.beforeExpend && false===ins.beforeExpend(profile))return;
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
                 }else{
                     if(ins.beforeFold && false===ins.beforeFold(profile))return;
                 }
@@ -23906,8 +23957,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
                 
                 if(value){
-                    if(ins.afterExpend)
-                        ins.afterExpend(profile);
+                    if(ins.afterExpand)
+                        ins.afterExpand(profile);
                 }else{
                     if(ins.afterFold)
                         ins.afterFold(profile);
@@ -27540,9 +27591,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             beforeClose:function(profile){},
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},
-            beforeExpend:function(profile){},
+            beforeExpand:function(profile){},
             afterFold:function(profile){},
-            afterExpend:function(profile){},
+            afterExpand:function(profile){},
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
             onClickBar:function(profile, src){}
@@ -27615,7 +27666,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 profile._toggle = p.toggle = !!value;
 
                 if(value){
-                    if(ins.beforeExpend && false===ins.beforeExpend(profile))return;
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
                 }else{
                     if(ins.beforeFold && false===ins.beforeFold(profile))return;
                 }
@@ -27632,8 +27683,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 profile.getRoot().height(h?h:p.toggle?p.height:'auto');
 
                 if(value){
-                    if(ins.afterExpend)
-                        ins.afterExpend(profile);
+                    if(ins.afterExpand)
+                        ins.afterExpand(profile);
                 }else{
                     if(ins.afterFold)
                         ins.afterFold(profile);
@@ -28867,8 +28918,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             height:200,
             position:'absolute',
             overflow:{
-                ini:undefined,
-                listbox:['','visible','hidden','scroll','auto','inherited'],
+                ini:'auto',
+                listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL',true).css('overflow',v||'');
                 }
@@ -29907,23 +29958,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             });
         },
-        _toggleNodes:function(items, expend, recursive){
+        _toggleNodes:function(items, expand, recursive){
             var self=this;
             if(_.isArr(items))
                 _.arr.each(items,function(o){
-                    self.toggleNode(o.id, expend, recursive)
+                    self.toggleNode(o.id, expand, recursive)
                 });
             return self;
         },
         /*
-        *expend:true->expend false->fold
+        *expand:true->expand false->fold
         *recursive:true open recursively
         */
-        toggleNode:function(id, expend, recursive){
+        toggleNode:function(id, expand, recursive){
             var profile=this.get(0),
                 o=profile.getItemByItemId(id);
             if(o && o.sub)
-                profile.box._setSub(profile, o, typeof expend=="boolean"?expend:!o._checked, recursive);
+                profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive);
             return this;
         },
         /*
@@ -30180,9 +30231,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
             beforeFold:function(profile,item){},
-            beforeExpend:function(profile,item){},
+            beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
-            afterExpend:function(profile,item){}
+            afterExpand:function(profile,item){}
         },
         DataModel:{
             listKey:null,
@@ -30481,7 +30532,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }else{
                 //open
                 if(flag){
-                    if(ins.beforeExpend && false===ins.beforeExpend(profile,item)){
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
                         return;
                     }
 
@@ -30544,8 +30595,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             callback(r);
                         }                                                              }
                 }
-                if(ins.afterExpend)
-                    ins.afterExpend(profile,item);
+                if(ins.afterExpand)
+                    ins.afterExpand(profile,item);
 
                 if(recursive && item.sub){
                     _.arr.each(item.sub,function(o){
@@ -33164,8 +33215,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             width:200,
             height:200,
             overflow:{
-                ini:undefined,
-                listbox:['','visible','hidden','scroll','auto','inherited'],
+                ini:'auto',
+                listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL',true).css('overflow',v||'');
                 }
@@ -34159,11 +34210,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
             profile.$cache_editor={};
         },
-        _toggleRows:function(rows, expend){
+        _toggleRows:function(rows, expand){
             var self=this;
             if(rows && rows.length)
                 _.arr.each(rows,function(o){
-                    self.toggleRow(o.id, expend);
+                    self.toggleRow(o.id, expand);
                 });
         },
         autoRowHeight:function(rowId){
@@ -34206,7 +34257,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         isDirtied:function(){
             var dirty=false;
             _.each(this.get(0).cellMap,function(v){
-                if(v.oValue!==v.value){
+                if(v._oValue!==v.value){
                     dirty=true;
                     return false;
                 }
@@ -34284,11 +34335,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }          
         },
 
-        toggleRow:function(id, expend){
+        toggleRow:function(id, expand){
             var profile = this.get(0),
             row = profile.rowMap[profile.rowMap2[id]];
             if(row && row.sub)
-                profile.box._setSub(profile, row, typeof expend=="boolean"?expend:!row._checked);
+                profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked);
             return this;
 
         },
@@ -34617,8 +34668,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         resetRowValue:function(rowId){
             var profile=this.get(0),row=this.getRowbyRowId(rowId),arr=[],prop=profile.properties;
             _.arr.each(row.cells,function(o){
-                if(o.oValue!==o.value){
-                    o.oValue=o.value;
+                if(o._oValue!==o.value){
+                    o._oValue=o.value;
                     delete o.dirty;
                     if(prop.dirtyMark)
                         arr.push(profile.getSubNode('CELLA',o._serialId).get(0));
@@ -34630,8 +34681,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         resetColValue:function(colId){
             var profile=this.get(0),col=this.getHeaderByColId(colId),arr=[],prop=profile.properties;
             _.arr.each(col.cells,function(o){
-                if(o.oValue!==o.value){
-                    o.oValue=o.value;
+                if(o._oValue!==o.value){
+                    o._oValue=o.value;
                     delete o.dirty;
                     if(prop.dirtyMark)
                         arr.push(profile.getSubNode('CELLA',o._serialId).get(0));
@@ -34892,7 +34943,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return this.each(function(profile){
                 var prop=profile.properties;
                 _.each(profile.cellMap,function(v){
-                    v.oValue=v.value;
+                    v._oValue=v.value;
                     delete v.dirty;
                 });
                 if(prop.dirtyMark && prop.showDirtyMark)
@@ -34902,8 +34953,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getDirtied:function(rowId, colId){
             var map={};
             _.each(this.get(0).cellMap,function(v){
-                if(v.oValue!==v.value &&(rowId?(rowId==v._row.id):1) &&(colId?(colId==v._col.id):1)){
-                    map[v.id]={rowId:v._row.id, colId:v._col.id, value:v.value, oValue:v.oValue};
+                if(v._oValue!==v.value &&(rowId?(rowId==v._row.id):1) &&(colId?(colId==v._col.id):1)){
+                    map[v.id]={rowId:v._row.id, colId:v._col.id, value:v.value, _oValue:v._oValue};
                 }
             });
             //dont return inner value
@@ -37440,7 +37491,7 @@ editorDropListHeight
             self._renderCell(profile, cell, uicell);
 
             //next
-            cell.oValue=cell.value;
+            cell._oValue=cell.value;
         },
         _setSub:function(profile, item, flag){
             var id=profile.domId,
@@ -37575,9 +37626,9 @@ editorDropListHeight
             //if update value
             if('value' in options){
                 if(!pdm || dirtyMark===false)
-                    cell.oValue=cell.value;
+                    cell._oValue=cell.value;
                 else{
-                    if(cell.value===cell.oValue){
+                    if(cell.value===cell._oValue){
                         if(psdm)
                             node.removeClass('xui-ui-dirty');
                         delete cell.dirty;
@@ -37731,7 +37782,7 @@ editorDropListHeight
                 if(cell._row && (!lc || (lc._row && lc._row!=cell._row))){
                     var dirty=false;
                     _.arr.each(cell._row.cells,function(v){
-                        if(v.oValue!==v.value){
+                        if(v._oValue!==v.value){
                             dirty=true;
                             return false;
                         }
@@ -39323,8 +39374,8 @@ if(xui.browser.ie){
                 }
             },
             overflow:{
-                ini:undefined,
-                listbox:['','visible','hidden','scroll','auto','inherited'],
+                ini:'auto',
+                listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL').css('overflow',v||'');
                 }
