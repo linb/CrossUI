@@ -22287,7 +22287,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 _top=(itb?(tbh-1):0);
                 if(!height)
                     height=profile.properties.height;
-                size.height=height-_top-1;
+                size.height=height-_top-2;
                 
                 if(width)
                     size.width=width-2;
