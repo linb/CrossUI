@@ -15059,7 +15059,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"打开或折叠某个父节点.",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 父节点id.",
+                    "id [必需参数] : String, 父节点id, 如果为空,表示根节点.",
                     "expand [可选参数] : Boolean, true表示打开,false表示折叠.",
                     "recursive [可选参数] : Boolean, 是否递归应用于父节点的所有子节点."
                 ],
