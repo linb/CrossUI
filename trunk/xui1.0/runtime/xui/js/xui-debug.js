@@ -912,7 +912,7 @@ _.merge(xui,{
     $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,
-    _langReg:/((\$)([^\w]))|((\$)([\w][\w\.]*[\w]+))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\{)([\S]+)(\}))/g,
+    _langReg:/((\$)([^\w]))|((\$)([\w][\w\.]*[\w]+))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
     getRes:function(path){
         var arr,conf,tmp,params=arguments;
         if(typeof path=='string'){
@@ -35984,8 +35984,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!col)return;
                     if(p.disabled || col.disabled)return false;
 
-                    var data=xui.DragDrop.getProfile().dragData;
-                    if(!data||data.dragKey!=profile.$xid + ":col")return;
+                    var dp=xui.DragDrop.getProfile();
+                    if(!dp.dragData||dp.dragKey!=profile.$xid + ":col")return;
 
                     var psrc=xui.use(src).parent().xid();
                     if(false===profile.box._colDragCheck(profile,psrc))return;
@@ -36002,8 +36002,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!col)return;
                     if(p.disabled || col.disabled)return false;
 
-                    var data=xui.DragDrop.getProfile().dragData;
-                    if(!data||data.dragKey!=profile.$xid + ":col")return;
+                   var dp=xui.DragDrop.getProfile();
+                    if(!dp.dragData||dp.dragKey!=profile.$xid + ":col")return;
 
                     var psrc=xui.use(src).parent().xid();
                     xui.DragDrop.setDropElement(null).setDropFace(null,'none');
