@@ -29976,10 +29976,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         *recursive:true open recursively
         */
         toggleNode:function(id, expand, recursive){
-            var profile=this.get(0),
-                o=profile.getItemByItemId(id);
-            if(o && o.sub)
-                profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive);
+            var profile=this.get(0),ns=this,self=arguments.callee;
+            if(id){
+                var o=profile.getItemByItemId(id);
+                if(o && o.sub)
+                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive);
+            }else{
+                _.arr.each(profile.properties.items,function(item){
+                    self.call(ns,item.id,expand,recursive);
+                })
+            }
             return this;
         },
         /*
@@ -30493,8 +30499,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
-            if(item._checked){
-                if(!flag){
+            if(!flag){
+                if(item._checked){
                     if(ins.beforeFold && false===ins.beforeFold(profile,item)){
                         return;
                     }
@@ -30524,19 +30530,19 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         item.sub=true;
                         delete item._inited;
                     }
+                    if(ins.afterFold)
+                        ins.afterFold(profile,item);
                 }
-                if(ins.afterFold)
-                    ins.afterFold(profile,item);
-                    
+
                 if(recursive && item.sub && !properties.dynDestory){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
-                            profile.box._setSub(profile, o, false, true);
+                            profile.box._setSub(profile, o, flag, recursive);
                     });
                 }
             }else{
                 //open
-                if(flag){
+                if(!item._checked){
                     if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
                         return;
                     }
@@ -30599,14 +30605,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 item._inited=true;
                             callback(r);
                         }                                                              }
+                    if(ins.afterExpand)
+                        ins.afterExpand(profile,item);
                 }
-                if(ins.afterExpand)
-                    ins.afterExpand(profile,item);
-
                 if(recursive && item.sub){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length && !o._checked)
-                            profile.box._setSub(profile, o, true, true);
+                            profile.box._setSub(profile, o, flag, recursive);
                     });
                 }
             }

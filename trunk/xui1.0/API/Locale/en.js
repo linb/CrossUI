@@ -15132,7 +15132,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Expands or folds the specified node.",
                 $rtn:"[self]",
                 $paras:[
-                    "id [Required] : String, The node id.",
+                    "id [Required] : String, The node id. The root node can be represented as [empty] or [null].",
                     "expand [Optional] : Boolean, true=>expand;false=>fold.",
                     "recursive [Optional] : Boolean, it's recursive or not."
                 ],
