@@ -17478,7 +17478,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:'auto',
+                    ini:xui.browser.isTouch?'auto':undefined,
                     listbox:['','visible','hidden','scroll','auto'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
@@ -17531,7 +17531,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:'auto',
+                    ini:xui.browser.isTouch?'auto':undefined,
                     listbox:['','visible','hidden','scroll','auto','inherited'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
@@ -19187,7 +19187,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             overflow:{
-                ini:'auto',
+                ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL').css('overflow',v||'');
@@ -28923,7 +28923,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             height:200,
             position:'absolute',
             overflow:{
-                ini:'auto',
+                ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL',true).css('overflow',v||'');
@@ -33225,7 +33225,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             width:200,
             height:200,
             overflow:{
-                ini:'auto',
+                ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL',true).css('overflow',v||'');
@@ -39384,7 +39384,7 @@ if(xui.browser.ie){
                 }
             },
             overflow:{
-                ini:'auto',
+                ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL').css('overflow',v||'');

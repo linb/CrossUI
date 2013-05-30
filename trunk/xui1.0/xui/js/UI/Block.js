@@ -46,7 +46,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 }
             },
             overflow:{
-                ini:'auto',
+                ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL').css('overflow',v||'');

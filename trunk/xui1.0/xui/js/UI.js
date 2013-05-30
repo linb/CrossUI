@@ -4928,7 +4928,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:'auto',
+                    ini:xui.browser.isTouch?'auto':undefined,
                     listbox:['','visible','hidden','scroll','auto'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
@@ -4981,7 +4981,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:'auto',
+                    ini:xui.browser.isTouch?'auto':undefined,
                     listbox:['','visible','hidden','scroll','auto','inherited'],
                     action:function(v){
                         this.getContainer().css('overflow',v||'');
