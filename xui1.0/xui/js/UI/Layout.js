@@ -587,7 +587,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             width:200,
             height:200,
             overflow:{
-                ini:'auto',
+                ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
                     this.getSubNode('PANEL',true).css('overflow',v||'');

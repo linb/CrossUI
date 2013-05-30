@@ -173,6 +173,7 @@ Class('App', 'xui.Com',{
                 .setCaption("$app.search")
                 .setMaxBtn(false)
                 .setCloseBtn(false)
+                .setOverflow('hidden')
             );
             
             host.dialog2.append((new xui.UI.Block)
