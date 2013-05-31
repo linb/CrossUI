@@ -38189,6 +38189,7 @@ editorDropListHeight
             }
         },
         _ajdustBody:function(profile, callback){
+            profile.getSubNode('SCROLL').css('overflow','hidden');
             _.resetRun(profile.$xid+'4',function(){
                 profile.box._adjustRelWith(profile);
 
@@ -38253,6 +38254,7 @@ editorDropListHeight
                 }
                 t=last=null;  
                 
+                profile.getSubNode('SCROLL').css('overflow','');
                 if(callback)callback();              
             });
         },
@@ -38452,15 +38454,10 @@ editorDropListHeight
             if(width)t1.width(width);
             if(height)rh=t1.offsetHeight();
             t2.cssSize({width:width, height: height?(height-rh):null});
-            
-            t2.css('overflow','hidden');
-            
-            this._ajdustBody(profile,function(){                
-                t2.css('overflow','');
-                _.asyRun(function(){t2.onScroll()});
-            });
 
-            
+            this._ajdustBody(profile,function(){
+                _.asyRun(function(){t2.onScroll()});
+            });            
         }
    }
 });
