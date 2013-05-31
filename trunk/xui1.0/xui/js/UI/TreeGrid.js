@@ -413,6 +413,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         ns.getSubNode('FHANDLER',rid).css('display',(options.rowResizer=t)?"block":'none');
                     }
 
+                    if('hidden' in options){
+                        var  b = !!options.hidden;
+                        if(b){
+                            if(orow.hidden!==true){
+                                ns.getSubNode('ROW',rid).css('display','none');
+                            }
+                        }else{
+                            if(orow.hidden===true){
+                                ns.getSubNode('ROW',rid).css('display','');
+                            }
+                        }
+                    }
+
                     _.merge(orow, options, 'all');
                 }
             }else{
@@ -1016,6 +1029,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rows:{
                     ROW:{
                         tagName:'div',
+                        style:'{rowDisplay}',
                         PREVIEW:{
                             $order:1,
                             tagName:'div',
@@ -3358,6 +3372,8 @@ editorDropListHeight
                     t.summaryDisplay='display:block;';
                 if(row.preview)
                     t.previewDisplay='display:block;';
+                if(row.hidden)
+                    t.rowDisplay=NONE;
 
                 t._row0DfW=pro.rowHandlerWidth?('width:'+pro.rowHandlerWidth+'px'):'';
                 t._rulerW=4+_layer*mm;
