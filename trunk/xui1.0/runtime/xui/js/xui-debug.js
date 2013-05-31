@@ -34190,7 +34190,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _refreshHeader:function(header){
             var profile=this.get(0),
-                pro=profile.properties;
+                pro=profile.properties,
+                oheader=this.getHeader('data');
 
             _.breakO(profile.colMap,2);
 
@@ -34202,11 +34203,31 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var arr = profile.box._prepareHeader(profile, header);
 
             pro.header = header;
+            
+            var keepRows=false;
+            if(oheader.length==arr.length){
+                keepRows=true;
+                _.arr.each(header,function(col,i){
+                    if(col.type!=oheader[i].type){
+                        return keepRows=false;
+                    }
+                });
+            }
+
+            if(keepRows){
+                var rows=this.getRows("data");
+            }
+
             this.removeAllRows();
+            
             profile.getSubNode('HCELL', true).remove();
             if(arr.length)
                 profile.getSubNode('HCELLS').append(profile._buildItems('header', arr));
 
+            if(keepRows){
+                this.setRows(rows);
+            }
+            
             profile.box._ajdustBody(profile);
 
             // clear collist cache
@@ -36684,7 +36705,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             header:{
                 ini:{},
-                set:function(value){
+                set:function(value,ov){
                     var o=this;
                     if(o.renderId){
                         o.boxing()._refreshHeader(value);
