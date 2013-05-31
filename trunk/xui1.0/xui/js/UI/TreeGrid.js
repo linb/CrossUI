@@ -1531,12 +1531,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
-                    o=xui(src),
+                        id = profile.getSubId(src)
+                        col = profile.colMap[id];
+                    if('relWidth' in col)return;
+                    
+                    var o=xui(src),
                     minW =o.parent(2).width()-p._minColW,
                     scroll = profile.getSubNode('SCROLL'),
-                    maxW = scroll.offset().left + scroll.width() - xui.Event.getPos(e).left - 4,
-                    id = profile.getSubId(src),
-                    col = profile.colMap[id];
+                    maxW = scroll.offset().left + scroll.width() - xui.Event.getPos(e).left - 4;
 
                     if(p.disabled)return false;
                     if(col && col.disabled)return false;
@@ -1580,6 +1582,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         w=o.width() + xui.DragDrop.getProfile().offset.x,
                         col=profile.colMap[profile.getSubId(src)];
 
+                    if('maxWidth' in col)
+                        w=Math.min(col.maxWidth,w);
+                    if('minWidth' in col)
+                        w=Math.max(col.minWidth,w);
+
                     if(profile.beforeColResized && false===profile.boxing().beforeColResized(profile,col?col.id:null,w)){
                         profile._limited=0;
                         return;
@@ -1611,6 +1618,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return false
                 },
                 onDblclick:function(profile, e, src){
+                    var p=profile.properties,
+                        id = profile.getSubId(src)
+                        col = profile.colMap[id];
+                    if('relWidth' in col)return;
+                    
                     //for row0
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.HFCELL){
                         profile.box._setRowHanderW(profile,true);
@@ -1619,10 +1631,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.getRootNode().clientHeight<=0)return;
                     
                     //for other rows
-                    var p = profile.properties,
-                        sid = profile.getSubId(src),
-                        header = profile.colMap[sid],
-                        cells=header._cells,
+                    var cells=col._cells,
                         cls=profile.getClass('CELLA','-inline'),
                         n,ns=[],ws=[],w;
                     _.each(cells,function(o){
@@ -1636,15 +1645,20 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     w=parseInt(Math.max.apply(null,ws),10);
                     if(w>p._maxColW)w=p._maxColW;
 
-                    if(profile.beforeColResized && false===profile.boxing().beforeColResized(profile,header?header.id:null,w))
+                    if(profile.beforeColResized && false===profile.boxing().beforeColResized(profile,col?col.id:null,w))
                         return;
 
+                    if('maxWidth' in col)
+                        w=Math.min(col.maxWidth,w);
+                    if('minWidth' in col)
+                        w=Math.max(col.minWidth,w);
+
                     xui(ns).parent().width(w);
-                    xui.use(src).parent(2).width(header.width=w);
+                    xui.use(src).parent(2).width(col.width=w);
                     xui(ns).removeClass(cls);
 
                     if(profile.afterColResized)
-                        profile.boxing().afterColResized(profile,header.id,w);
+                        profile.boxing().afterColResized(profile,col.id,w);
 
                     profile.box._ajdustBody(profile);
                     return false;
@@ -3068,14 +3082,27 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b[temp]=o;
                 o.width = o.width||pro._colDfWidth;
 
+                if(!o.hasOwnProperty('relWidth')){
+                    if(o.hasOwnProperty('minWidth')){
+                        o.width=Math.max(o.minWidth);
+                    }
+                    if(o.hasOwnProperty('maxWidth')){
+                        o.width=Math.min(o.minWidth);
+                    }
+                }
+
                 t={
                     sortDisplay : NONE,
                     rowHandlerDisplay : pro.rowHandler?'':NONE
                 };
+
                 t[SubID]=temp;
                 t._tabindex=pro.tabindex;
 
-                t.colDDDisplay = (('colResizer' in o)?o.colResizer:pro.colResizer)?'':'display:none';
+                t.colDDDisplay = (('colResizer' in o)?o.colResizer:pro.colResizer)?'':NONE;
+
+                if(o.relWidth)
+                    t.colDDDisplay = NONE;
 
                 //  Forward-compatible with 'visibility'
                 if(o.hasOwnProperty('visibility') && !o.hasOwnProperty('hidden'))
@@ -4075,8 +4102,10 @@ editorDropListHeight
                 profile.box._sethotrowoutterblur(profile);
             }
         },
-        _ajdustBody:function(profile){
+        _ajdustBody:function(profile, callback){
             _.resetRun(profile.$xid+'4',function(){
+                profile.box._adjustRelWith(profile);
+
                 var body=profile.getSubNode('BODY'),
                     header=profile.getSubNode('HCELLS'),
                     t,l,last,keys=profile.keys,ww;
@@ -4136,7 +4165,9 @@ editorDropListHeight
                     });
                     body.width(w);
                 }
-                t=last=null;
+                t=last=null;  
+                
+                if(callback)callback();              
             });
         },
         _adjustHeader:function(arr){
@@ -4236,17 +4267,114 @@ editorDropListHeight
                 xui.Tips.hide();
             return true;
         },
+        _adjustRelWith:function(profile){
+            var prop=profile.properties,
+                cols=profile.colMap,
+                t2=profile.getSubNode('SCROLL'),
+                width=t2.width(),
+                borderW=0,
+                borderC=0;
+                
+            profile.getSubNodes('HCELL',true).each(function(hc){
+                if(hc.clientHeight){
+                    borderW=hc.offsetWidth-parseInt(hc.style.width);
+                    return false;
+                }
+            }); 
+                
+            var fixW=0,relWTotal=0,relWCol=[],relWCol2=[];
+            if(prop.rowHandler){
+                borderC++;
+                fixW=prop.rowHandlerWidth;
+            }
+            _.each(profile.colMap,function(col){
+                if(col.hidden)return;
+                if(!col.hasOwnProperty('relWidth')){
+                    fixW+=col.width;
+                }else{
+                    relWTotal+=parseFloat(col.width);
+                    relWCol.push(col)
+                    relWCol2.push(col);
+                }
+                borderC++;
+            });
+
+            if(!relWCol.length)
+                return;
+            
+            while(relWCol.length && width!=fixW+borderC*borderW){
+                var fW=width-(fixW+borderC*borderW),
+                    fW1=0,
+                    l=relWCol.length, 
+                    retry=0;
+                for(var i=l-1;i>=0;i--){
+                    var col=relWCol[i],
+                        w = i===0?(fW-fW1):Math.round(fW*(col.width/relWTotal));
+
+                    if(w<0)w=0;
+                    col.__tw=w;
+                    if(col.hasOwnProperty('minWidth')){
+                        if(col.minWidth>w){
+                            fixW+=col.minWidth;
+                            col.__tw=col.minWidth;
+                            _.arr.removeFrom(relWCol,i);
+                            retry++;
+                        }   
+                    }
+                    if(col.hasOwnProperty('maxWidth')){
+                        if(col.maxWidth<w){
+                            fixW+=col.maxWidth;
+                            col.__tw=col.maxWidth;
+                            _.arr.removeFrom(relWCol,i);
+                            retry++;
+                        }
+                    }
+                    fW1+=col.__tw;
+                }
+                // break while;
+                if(retry===0||retry===l)
+                    break;
+            }
+            if(relWCol2.length){
+                _.arr.each(relWCol2,function(col){
+                    var n,nodes=[];
+                    _.each(col._cells,function(o){
+                        n=profile.getSubNode('CELL',o);
+                        if(n._nodes.length){
+                            nodes.push(n.get(0));
+                        }
+                    });
+                    n=profile.getSubNode('HCELL',col._serialId);
+                    if(n._nodes.length){
+                        nodes.push(n.get(0));
+                    }
+                    xui(nodes).width(col.__tw);
+                    delete col.__tw;
+                });
+            }            
+        },
         _onresize:function(profile,width,height){
             profile.getSubNode('BORDER').cssSize({ width :width, height :height});
-            var t1=profile.getSubNode('HEADER'),
+            var prop=profile.properties,
+                t1=profile.getSubNode('HEADER'),
                 t2=profile.getSubNode('SCROLL'),
+                cols=profile.colMap,
                 rh=0;
+            width=Math.round(width);
+
             profile.getSubNode('BOX').cssSize({width: width, height:height});
             if(width)t1.width(width);
             if(height)rh=t1.offsetHeight();
             t2.cssSize({width:width, height: height?(height-rh):null});
+            
+            t2.css('overflow','hidden');
+            
+            this._ajdustBody(profile,function(){                
+                t2.css('overflow','');
+                _.asyRun(function(){t2.onScroll()});
+            });
 
-            _.asyRun(function(){t2.onScroll()});
+            
         }
    }
 });
