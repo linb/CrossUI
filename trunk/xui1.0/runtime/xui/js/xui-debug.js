@@ -35619,7 +35619,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var p=profile.properties,
                         id = profile.getSubId(src)
                         col = profile.colMap[id];
-                    if('relWidth' in col)return;
+                    if(col && 'relWidth' in col)return;
                     
                     var o=xui(src),
                     minW =o.parent(2).width()-p._minColW,
@@ -35667,11 +35667,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var o=xui(src).parent(2),
                         w=o.width() + xui.DragDrop.getProfile().offset.x,
                         col=profile.colMap[profile.getSubId(src)];
-
-                    if('maxWidth' in col)
-                        w=Math.min(col.maxWidth,w);
-                    if('minWidth' in col)
-                        w=Math.max(col.minWidth,w);
+                    if(col){
+                        if('maxWidth' in col)
+                            w=Math.min(col.maxWidth,w);
+                        if('minWidth' in col)
+                            w=Math.max(col.minWidth,w);
+                    }
 
                     if(profile.beforeColResized && false===profile.boxing().beforeColResized(profile,col?col.id:null,w)){
                         profile._limited=0;
@@ -35707,7 +35708,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var p=profile.properties,
                         id = profile.getSubId(src)
                         col = profile.colMap[id];
-                    if('relWidth' in col)return;
+                    if(col && 'relWidth' in col)return;
                     
                     //for row0
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.HFCELL){
@@ -35734,10 +35735,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.beforeColResized && false===profile.boxing().beforeColResized(profile,col?col.id:null,w))
                         return;
 
-                    if('maxWidth' in col)
-                        w=Math.min(col.maxWidth,w);
-                    if('minWidth' in col)
-                        w=Math.max(col.minWidth,w);
+                    if(col){
+                        if('maxWidth' in col)
+                            w=Math.min(col.maxWidth,w);
+                        if('minWidth' in col)
+                            w=Math.max(col.minWidth,w);
+                    }
 
                     xui(ns).parent().width(w);
                     xui.use(src).parent(2).width(col.width=w);
