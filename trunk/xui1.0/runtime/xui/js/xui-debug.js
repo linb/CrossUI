@@ -21524,7 +21524,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     var sp=window['/'];
                     if(sp && sp.indexOf(':/')!=-1)
                         value=value.replace(/{\/}/g,sp);
-                    body.innerHTML=xui.adjustRes(value);
+                    body.innerHTML=xui.adjustRes(value,0,1);
                 }
             });
         },
@@ -22237,7 +22237,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             }
                             if(v){
                                 var doc=editor.$doc;
-                                doc.execCommand(cmd,false,xui.adjustRes(v));
+                                doc.execCommand(cmd,false,xui.adjustRes(v,0,1));
                                 doc=null;
                             }
                         },function(){
