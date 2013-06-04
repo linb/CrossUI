@@ -6851,6 +6851,7 @@ Class('xui.Dom','xui.absBox',{
         },
         $touchscroll:function(type){
             if(xui.browser.isTouch && xui.browser.isAndroid){
+                if(xui.DragDrop._profile.isWorking) return true;
                 var hash={x:1,y:1,xy:1},ox=0,oy=0,nodes=this._nodes;
                 if(!hash[type])type=null;
                 xui(nodes).onTouchstart(hash[type]?function(p,e,src){
@@ -6860,22 +6861,18 @@ Class('xui.Dom','xui.absBox',{
                             ox=t.scrollLeft+s.pageX;
                         if(type=='xy'||type=='y')
                             oy=t.scrollTop+s.pageY;
-                       // e.preventDefault();
                     }
+                    return true;
                 }:null);
                 xui(nodes).onTouchmove(hash[type]?function(p,e,src){
-                    var s=e.touches[0],t=xui(src).get(0),x1,y1;
+                    if(xui.DragDrop._profile.isWorking) return true;
+                    var s=e.touches[0],t=xui(src).get(0);
                     if(t){
-                        if(type=='xy'||type=='x'){
-                            x1=t.scrollLeft;
+                        if(type=='xy'||type=='x')
                             t.scrollLeft=ox-s.pageX;
-                        }
-                        if(type=='xy'||type=='y'){
-                            y1=t.scrollTop;
+                        if(type=='xy'||type=='y')
                             t.scrollTop=oy-s.pageY;
-                        }
-                        if(x1!=t.scrollLeft || y1!=t.scrollTop)
-                            e.preventDefault();
+                        return false;
                     }
                 }:null);
             }
