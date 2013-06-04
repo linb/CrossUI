@@ -568,17 +568,22 @@ Class('xui.Dom','xui.absBox',{
                             ox=t.scrollLeft+s.pageX;
                         if(type=='xy'||type=='y')
                             oy=t.scrollTop+s.pageY;
-                        e.preventDefault();
+                       // e.preventDefault();
                     }
                 }:null);
                 xui(nodes).onTouchmove(hash[type]?function(p,e,src){
-                    var s=e.touches[0],t=xui(src).get(0);
+                    var s=e.touches[0],t=xui(src).get(0),x1,y1;
                     if(t){
-                        if(type=='xy'||type=='x')
+                        if(type=='xy'||type=='x'){
+                            x1=t.scrollLeft;
                             t.scrollLeft=ox-s.pageX;
-                        if(type=='xy'||type=='y')
+                        }
+                        if(type=='xy'||type=='y'){
+                            y1=t.scrollTop;
                             t.scrollTop=oy-s.pageY;
-                        e.preventDefault();
+                        }
+                        if(x1!=t.scrollLeft || y1!=t.scrollTop)
+                            e.preventDefault();
                     }
                 }:null);
             }
