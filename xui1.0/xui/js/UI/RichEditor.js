@@ -234,163 +234,166 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         },
                         doc,win,
                         checkF = function(){
-                            // removed from DOM already
-                            if(!frames[id])return;
-                            // not ready
-                            if(!frames[id].document)return;
-                            
-                            if(self.$win!=frames[id].window){
-                                win=self.$win=frames[id].window;
-
-                                doc=self.$doc=win.document;
-                                doc.open();
-                                doc.write('<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>');
-                                doc.close();
+                            setTimeout(function(){
+                                // removed from DOM already
+                                if(!frames[id])return;
+                                // not ready
+                                if(!frames[id].document)return;
                                 
-                                //if(xui.browser.isTouch && xui.browser.isAndroid){
-                                //    xui(doc.body).$touchscroll('xy');
-                                //}
+                                if(self.$win!=frames[id].window){
+                                    win=self.$win=frames[id].window;
     
-                                try{doc.execCommand("styleWithCSS", 0, false)}catch(e){
-                                    try {doc.execCommand("useCSS", 0, true)}catch(e){}
-                                }
+                                    doc=self.$doc=win.document;
+                                    
+                                    doc.open();
+                                    doc.write('<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>');
+                                    doc.close();
+                                    
+                                    //if(xui.browser.isTouch && xui.browser.isAndroid){
+                                    //    xui(doc.body).$touchscroll('xy');
+                                    //}
+        
+                                    try{doc.execCommand("styleWithCSS", 0, false)}catch(e){
+                                        try {doc.execCommand("useCSS", 0, true)}catch(e){}
+                                    }
+        
+                                    var disabled=self.properties.disabled||self.properties.readonly;
+        
+                                    if (doc.body.contentEditable != undefined && xui.browser.ie)
+                                       doc.body.contentEditable = disabled?"false":"true";
+                                    else
+                                       doc.designMode=disabled?"off":"on";
+                                    
+                                    // ensure toolbar disable
+                                    if(disabled){
+                                        self.box._iniToolBar(self, false);
+                                    }
+        
+                                    win._gekfix=gekfix;
+        
+                                    if(xui.browser.ie){
+                                        doc.attachEvent("unload",gekfix);
+        
+                                        if(!disabled){
+                                            doc.attachEvent("onmousedown",event);
+                                            doc.attachEvent("ondblclick",event);
+                                            doc.attachEvent("onclick",event);
+                                            doc.attachEvent("onkeyup",event);
+                                            doc.attachEvent("onkeydown",event);
+                                            win.attachEvent("onfocus",_focus);
+                                            win.attachEvent("onblur",_blur);
+                                            self.$beforeDestroy=function(){
+                                                var win=this.$win,
+                                                    doc=this.$doc,
+                                                    event=this._event;
+                                                if(this._onchangethread){
+                                                    clearInterval(this._onchangethread);
+                                                    this._onchangethread=null;
+                                                }
     
-                                var disabled=self.properties.disabled||self.properties.readonly;
+                                                // crack for ie7/8 eat focus
+                                                // error raise in ie6
+                                                try{
+                                                    var status=doc.designMode;
+                                                    doc.designMode="off";
+                                                    doc.designMode="on";
+                                                    doc.designMode=status;
+                                                }catch(e){}
     
-                                if (doc.body.contentEditable != undefined && xui.browser.ie)
-                                   doc.body.contentEditable = disabled?"false":"true";
-                                else
-                                   doc.designMode=disabled?"off":"on";
-                                
-                                // ensure toolbar disable
-                                if(disabled){
-                                    self.box._iniToolBar(self, false);
-                                }
+                                                win._gekfix=undefined;
     
-                                win._gekfix=gekfix;
+                                                try{doc.detachEvent("unload",win._gekfix);}catch(e){}
     
-                                if(xui.browser.ie){
-                                    doc.attachEvent("unload",gekfix);
+                                                if(!this.properties.disabled && !this.properties.readonly){
+                                                    doc.detachEvent("onmousedown",event);
+                                                    doc.detachEvent("ondblclick",event);
+                                                    doc.detachEvent("onclick",event);
+                                                    doc.detachEvent("onkeyup",event);
+                                                    doc.detachEvent("onkeydown",event);
+                                                    win.detachEvent("onfocus",_focus);
+                                                    win.detachEvent("onblur",_blur);
+                                                }
+                                                win=doc=event=null;
+                                            }
+                                        }
+                                    }else{
+                                        var prf=self;
+                                        // for opera
+                                        if(xui.browser.opr || !win.addEventListener){
+                                            prf.$repeatT=xui.Thread.repeat(function(){
+                                                if(!frames[id])
+                                                    return false;
+                                                else{
+                                                    if(!prf.$win.document || !prf.$win.document.defaultView)
+                                                        prf.boxing().refresh(); 
+                                                }
+                                            }, 99);
+                                        }else
+                                            win.addEventListener("unload",gekfix,false);
     
-                                    if(!disabled){
-                                        doc.attachEvent("onmousedown",event);
-                                        doc.attachEvent("ondblclick",event);
-                                        doc.attachEvent("onclick",event);
-                                        doc.attachEvent("onkeyup",event);
-                                        doc.attachEvent("onkeydown",event);
-                                        win.attachEvent("onfocus",_focus);
-                                        win.attachEvent("onblur",_blur);
+                                        if(!disabled){
+                                            doc.addEventListener("mousedown",event,false);
+                                            doc.addEventListener("dblclick",event,false);
+                                            doc.addEventListener("click",event,false);
+                                            doc.addEventListener("keyup",event,false);
+                                            if(xui.browser.gek || !win.addEventListener){
+                                                doc.addEventListener("focus",_focus,false);
+                                                doc.addEventListener("blur",_blur,false);
+                                                doc.addEventListener("keypress",event,false);
+                                            }else{
+                                                win.addEventListener("focus",_focus,false);
+                                                win.addEventListener("blur",_blur,false);
+                                                doc.addEventListener("keydown",event,false);
+                                            }
+                                        }
+        
+                                        //don't ues $ondestory, opera will set doc to null
                                         self.$beforeDestroy=function(){
                                             var win=this.$win,
                                                 doc=this.$doc,
+                                                ifr=this.$ifr,
                                                 event=this._event;
-                                            if(this._onchangethread){
-                                                clearInterval(this._onchangethread);
-                                                this._onchangethread=null;
-                                            }
-
-                                            // crack for ie7/8 eat focus
-                                            // error raise in ie6
-                                            try{
-                                                var status=doc.designMode;
-                                                doc.designMode="off";
-                                                doc.designMode="on";
-                                                doc.designMode=status;
-                                            }catch(e){}
-
-                                            win._gekfix=undefined;
-
-                                            try{doc.detachEvent("unload",win._gekfix);}catch(e){}
-
-                                            if(!this.properties.disabled && !this.properties.readonly){
-                                                doc.detachEvent("onmousedown",event);
-                                                doc.detachEvent("ondblclick",event);
-                                                doc.detachEvent("onclick",event);
-                                                doc.detachEvent("onkeyup",event);
-                                                doc.detachEvent("onkeydown",event);
-                                                win.detachEvent("onfocus",_focus);
-                                                win.detachEvent("onblur",_blur);
-                                            }
-                                            win=doc=event=null;
-                                        }
-                                    }
-                                }else{
-                                    var prf=self;
-                                    // for opera
-                                    if(xui.browser.opr || !win.addEventListener){
-                                        prf.$repeatT=xui.Thread.repeat(function(){
-                                            if(!frames[id])
-                                                return false;
-                                            else{
-                                                if(!prf.$win.document || !prf.$win.document.defaultView)
-                                                    prf.boxing().refresh(); 
-                                            }
-                                        }, 99);
-                                    }else
-                                        win.addEventListener("unload",gekfix,false);
-
-                                    if(!disabled){
-                                        doc.addEventListener("mousedown",event,false);
-                                        doc.addEventListener("dblclick",event,false);
-                                        doc.addEventListener("click",event,false);
-                                        doc.addEventListener("keyup",event,false);
-                                        if(xui.browser.gek || !win.addEventListener){
-                                            doc.addEventListener("focus",_focus,false);
-                                            doc.addEventListener("blur",_blur,false);
-                                            doc.addEventListener("keypress",event,false);
-                                        }else{
-                                            win.addEventListener("focus",_focus,false);
-                                            win.addEventListener("blur",_blur,false);
-                                            doc.addEventListener("keydown",event,false);
-                                        }
-                                    }
-    
-                                    //don't ues $ondestory, opera will set doc to null
-                                    self.$beforeDestroy=function(){
-                                        var win=this.$win,
-                                            doc=this.$doc,
-                                            ifr=this.$ifr,
-                                            event=this._event;
-                                        // for opera
-                                        if(xui.browser.opr)
-                                            if(prf.$repeatT)prf.$repeatT.abort();
-                                        
-                                        if(ifr.detachEvent){
-                                            ifr.detachEvent('onload',checkF);
-                                        }else{
-                                            ifr.onload=null;
-                                        }
-
-                                        try{win.removeEventListener("unload",win._gekfix,false);}catch(e){}
-
-                                        win._gekfix=undefined;
-    
-                                        //for firefox
-                                        delete frames[this.$frameId];
-    
-                                        if(!this.properties.disabled && !this.properties.readonly && doc.removeEventListener){
-                                            doc.removeEventListener("mousedown",event,false);
-                                            doc.removeEventListener("dblclick",event,false);
-                                            doc.removeEventListener("click",event,false);
-                                            doc.removeEventListener("keyup",event,false);
-                                            if(xui.browser.gek || !win.removeEventListener){
-                                                doc.removeEventListener("focus",_focus,false);
-                                                doc.removeEventListener("blur",_blur,false);
-                                                doc.removeEventListener("keypress",event,false);
+                                            // for opera
+                                            if(xui.browser.opr)
+                                                if(prf.$repeatT)prf.$repeatT.abort();
+                                            
+                                            if(ifr.detachEvent){
+                                                ifr.detachEvent('onload',checkF);
                                             }else{
-                                                win.removeEventListener("focus",_focus,false);
-                                                win.removeEventListener("blur",_blur,false);
-                                                doc.removeEventListener("keydown",event,false);
+                                                ifr.onload=null;
                                             }
+    
+                                            try{win.removeEventListener("unload",win._gekfix,false);}catch(e){}
+    
+                                            win._gekfix=undefined;
+        
+                                            //for firefox
+                                            delete frames[this.$frameId];
+        
+                                            if(!this.properties.disabled && !this.properties.readonly && doc.removeEventListener){
+                                                doc.removeEventListener("mousedown",event,false);
+                                                doc.removeEventListener("dblclick",event,false);
+                                                doc.removeEventListener("click",event,false);
+                                                doc.removeEventListener("keyup",event,false);
+                                                if(xui.browser.gek || !win.removeEventListener){
+                                                    doc.removeEventListener("focus",_focus,false);
+                                                    doc.removeEventListener("blur",_blur,false);
+                                                    doc.removeEventListener("keypress",event,false);
+                                                }else{
+                                                    win.removeEventListener("focus",_focus,false);
+                                                    win.removeEventListener("blur",_blur,false);
+                                                    doc.removeEventListener("keydown",event,false);
+                                                }
+                                            }
+                                            prf=gekfix=event=win=doc=null;
                                         }
-                                        prf=gekfix=event=win=doc=null;
                                     }
+                                    
+                                    self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
+                                    
+                                    iframe.style.visibility='';
                                 }
-                                
-                                self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
-                                
-                                iframe.style.visibility='';
-                            }
+                            });
                         };
                     self.$frameId=id;
                     iframe.id=iframe.name=id;
