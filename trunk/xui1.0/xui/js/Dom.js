@@ -559,29 +559,45 @@ Class('xui.Dom','xui.absBox',{
         },
         $touchscroll:function(type){
             if(xui.browser.isTouch && xui.browser.isAndroid){
-                if(xui.DragDrop._profile.isWorking) return true;
-                var hash={x:1,y:1,xy:1},ox=0,oy=0,nodes=this._nodes;
+                var hash={"x":1,"y":1,"xy":1},opx=0,opy=0,ox=null,oy=null,nodes=this._nodes;
                 if(!hash[type])type=null;
                 xui(nodes).onTouchstart(hash[type]?function(p,e,src){
+                    if(xui.DragDrop._profile.isWorking) return true;
                     var s=e.touches[0],t=xui(src).get(0);
                     if(t){
                         if(type=='xy'||type=='x')
-                            ox=t.scrollLeft+s.pageX;
+                            opx=s.pageX;
                         if(type=='xy'||type=='y')
-                            oy=t.scrollTop+s.pageY;
+                            opy=s.pageY;
                     }
                     return true;
                 }:null);
                 xui(nodes).onTouchmove(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-                    var s=e.touches[0],t=xui(src).get(0);
+                    var s=e.touches[0],t=xui(src).get(0),x1,y1,first;
                     if(t){
-                        if(type=='xy'||type=='x')
+                        x1=t.scrollLeft;y1=t.scrollTop;
+                        if(type=='xy'||type=='x'){
+                            // for multi-layers scroll
+                            if(ox===null){
+                                first=1;
+                                ox=t.scrollLeft+s.pageX+(opx==s.pageX?0:opx>s.pageX?1:-1)*10;
+                            }
                             t.scrollLeft=ox-s.pageX;
-                        if(type=='xy'||type=='y')
+                        }
+                        if(type=='xy'||type=='y'){
+                            if(oy===null){
+                                first=1;
+                                oy=t.scrollTop+s.pageY+(opy==s.pageY?0:opy>s.pageY?1:-1)*10;
+                            }
                             t.scrollTop=oy-s.pageY;
-                        return false;
+                        }
+                        return (!first)&&x1==t.scrollLeft&&y1==t.scrollTop;
                     }
+                }:null);
+                xui(nodes).onTouchend(hash[type]?function(p,e,src){
+                    if(xui.DragDrop._profile.isWorking) return true;
+                    ox=oy=null;
                 }:null);
             }
             return this;

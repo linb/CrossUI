@@ -4192,7 +4192,8 @@ editorDropListHeight
                 }
                 t=last=null;  
                 
-                profile.getSubNode('SCROLL').css('overflow','');
+                // must use 'auto' for Android
+                profile.getSubNode('SCROLL').css('overflow','auto');
                 if(callback)callback();              
             });
         },
