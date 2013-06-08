@@ -207,6 +207,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
         },
+        autoColHeight:function(){
+            return this.each(function(prf){
+                if(prf.renderId)
+                    prf.getSubNode('FHANDLER').onDblclick(true);
+            });
+        },
         addHotRow:function(focusColId){
             var prf=this.get(0);
             if(prf.renderId)
@@ -1750,7 +1756,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     o.height(h);
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.HFCELL){
                         profile.properties.headerHeight=h;
-                        xui.UI.$tryResize(profile,null,profile.getRoot().height(),true);
+                        xui.UI.$tryResize(profile,profile.getRoot().width(),profile.getRoot().height(),true);
                     }else
                         row.height=h;
                         
@@ -1783,7 +1789,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         cells.height(profile.properties.headerHeight=h);
                         
-                        xui.UI.$tryResize(profile,null,profile.getRoot().height(),true);
+                        xui.UI.$tryResize(profile, profile.getRoot().width(), profile.getRoot().height(),true);
                     }
 
                     if(profile.afterRowResized)
