@@ -15278,6 +15278,9 @@ _.set(xui.Locale,["en","app"], {
                     "colId [Optional] : String, col id."
                 ]
             },
+            autoColHeight:{
+                $desc:"To auto adjust header height."
+            },
             editCell:{
                 $desc:"To bind a specified cell to a specified editor.",
                 $paras:[
