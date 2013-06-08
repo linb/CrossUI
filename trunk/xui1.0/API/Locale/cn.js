@@ -15203,6 +15203,9 @@ _.set(xui.Locale,["cn","app"], {
                     "colId [可选参数] : String, 列id. 没有列id表示自动适应所有的列宽."
                 ]
             },
+            autoColHeight:{
+                $desc:"自动适应表头高."
+            },
             editCell:{
                 $desc:"将单元格绑定到指定的编辑器上.",
                 $paras:[
