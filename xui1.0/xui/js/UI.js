@@ -52,7 +52,7 @@ Class('xui.UIProfile','xui.Profile', {
                 }
             }
             
-            if(xui.browser.isTouch && xui.browser.isAndroid){
+            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                 var check={'auto':1,'scroll':1};
                 // for UI's appearances overflow
                 _.each(ns.box.$Appearances,function(o,i){

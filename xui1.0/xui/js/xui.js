@@ -1190,7 +1190,8 @@ new function(){
 
         isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
-        isAndroid:/android/.test(u)
+        isAndroid:/android/.test(u),
+        isBB:/blackberry/.test(u)
     },v=function(k,s){
         s=u.split(s)[1].split('.');
         return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
