@@ -1190,7 +1190,8 @@ new function(){
 
         isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
-        isAndroid:/android/.test(u)
+        isAndroid:/android/.test(u),
+        isBB:/blackberry/.test(u)
     },v=function(k,s){
         s=u.split(s)[1].split('.');
         return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
@@ -6850,7 +6851,7 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         $touchscroll:function(type){
-            if(xui.browser.isTouch && xui.browser.isAndroid){
+            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                 var hash={"x":1,"y":1,"xy":1},opx=0,opy=0,ox=null,oy=null,nodes=this._nodes;
                 if(!hash[type])type=null;
                 xui(nodes).onTouchstart(hash[type]?function(p,e,src){
@@ -6905,7 +6906,7 @@ Class('xui.Dom','xui.absBox',{
                     xui.Dom.setStyle(o,name,value)
                 });
                 
-                if(xui.browser.isTouch && xui.browser.isAndroid){
+                if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                     if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
                         if(value=='auto'||value=='scroll')
                             this.$touchscroll(name=='overflow'?'xy':name=='overflow-x'?'x':'y');
@@ -12620,7 +12621,7 @@ Class('xui.UIProfile','xui.Profile', {
                 }
             }
             
-            if(xui.browser.isTouch && xui.browser.isAndroid){
+            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                 var check={'auto':1,'scroll':1};
                 // for UI's appearances overflow
                 _.each(ns.box.$Appearances,function(o,i){
@@ -21780,7 +21781,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                     doc.write('<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>');
                                     doc.close();
                                     
-                                    //if(xui.browser.isTouch && xui.browser.isAndroid){
+                                    //if(xui.browser.isTouch && (xui.browser.isAndroid||||xui.browser.isBB)){
                                     //    xui(doc.body).$touchscroll('xy');
                                     //}
         

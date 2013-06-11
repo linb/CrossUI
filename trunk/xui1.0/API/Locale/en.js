@@ -15269,7 +15269,7 @@ _.set(xui.Locale,["en","app"], {
             autoRowHeight:{
                 $desc:"To auto adjust row height for a certain row or all rows.",
                 $paras:[
-                    "rowId [Optional] : String, row id."
+                    "rowId [Optional] : String, row id. [null] for all rows."
                 ]
             },
             autoColWidth:{

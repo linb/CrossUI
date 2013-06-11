@@ -558,7 +558,7 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         $touchscroll:function(type){
-            if(xui.browser.isTouch && xui.browser.isAndroid){
+            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                 var hash={"x":1,"y":1,"xy":1},opx=0,opy=0,ox=null,oy=null,nodes=this._nodes;
                 if(!hash[type])type=null;
                 xui(nodes).onTouchstart(hash[type]?function(p,e,src){
@@ -613,7 +613,7 @@ Class('xui.Dom','xui.absBox',{
                     xui.Dom.setStyle(o,name,value)
                 });
                 
-                if(xui.browser.isTouch && xui.browser.isAndroid){
+                if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                     if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
                         if(value=='auto'||value=='scroll')
                             this.$touchscroll(name=='overflow'?'xy':name=='overflow-x'?'x':'y');
