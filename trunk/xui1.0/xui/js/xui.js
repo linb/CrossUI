@@ -1229,7 +1229,7 @@ new function(){
                 b[v('safari','version/')]=true;
         }else if(b.isChrome)
             b[v('chrome','chrome/')]=true;
-        
+
         if(b.isWebKit){
             b.cssTag1="-webkit-";
             b.cssTag2="Webkit";
@@ -1237,6 +1237,12 @@ new function(){
             b.cssTag1="-khtml-";
             b.cssTag2="Khtml";    
         }
+    }
+    // BB 6/7 is AppleWebKit
+    if(b.isBB && !b.ver){
+        // BB 4.2 to 5.0
+        b.ver=parseFloat(ua.split("/")[1].substring(0, 3));
+        b["bb"+b.ver]=true;
     }
 
     b.contentBox = function(n){
@@ -1274,8 +1280,15 @@ new function(){
     //for dom ready
     var f = function(){
         if(xui.isDomReady)return;
-        if(d.addEventListener && !b.kde)
-            d.removeEventListener("DOMContentLoaded",arguments.callee,false);
+
+        if(d.addEventListener ) {
+			d.removeEventListener("DOMContentLoaded", f, false );
+			w.removeEventListener("load", f, false );
+		} else {
+			d.detachEvent("onreadystatechange", f);
+			w.detachEvent( "onload", f);
+		}
+
         try{
             for(var i=0,l=xui._m.length;i<l;i++)
                 _.tryF(xui._m[i])
@@ -1286,21 +1299,26 @@ new function(){
         }
     };
 
-    /* for Mozilla/Opera9 */
-    if (d.addEventListener && !b.kde)
+    if (d.addEventListener){
         d.addEventListener("DOMContentLoaded", f, false);
-    //for ie
-    else if (b.ie)
-        (function(){try{
-            //for ie7 iframe(doScroll is always ok)
-            d.activeElement.id;
-            d.documentElement.doScroll('left');f()}catch(e){setTimeout(arguments.callee,9)}})();
-    //kde
-    else
-        (function(){/loaded|complete/.test(d.readyState)?f():setTimeout(arguments.callee,9)})();
+        w.addEventListener("load", f, false);
+    }//IE
+    else{
+		d.attachEvent("onreadystatechange", f);
+        w.attachEvent("onload", f);
 
-    // ex
-    (function(){/in/.test(d.readyState)?setTimeout(arguments.callee,9):f()})();
+        (function(){
+            if(xui.isDomReady)return;
+            try{
+                //for ie7 iframe(doScroll is always ok)
+                d.activeElement.id;
+                d.documentElement.doScroll('left');f()
+            }catch(e){setTimeout(arguments.callee,9)}
+        })();
+    }
+    
+    // to ensure
+    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?setTimeout(arguments.callee,9):f()})();
 };
 // for loction url info
 new function(){
