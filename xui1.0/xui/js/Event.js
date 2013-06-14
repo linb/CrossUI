@@ -19,8 +19,14 @@ Class('xui.Event',null,{
         type = event.type;
         
         // if touable, use only simulatedMousedown
-        if(('mousedown'==type || 'dblclick'==type) && xui.browser.isTouch && self.__realtouch && !self.__simulatedMousedown)
-            return false;
+        if(xui.browser.isTouch && self.__realtouch){
+            if(('mousedown'==type || 'dblclick'==type) && !self.__simulatedMousedown)
+                return false;
+            else if('click'==type && !self.__simulatedClick)
+                return false;
+            else if('focus'==type && !self.__simulatedFocus)
+                return false;
+        }
 
         //for correct mouse hover problems;
         if('mouseover'==type || 'mouseout'==type){
@@ -440,6 +446,7 @@ Class('xui.Event',null,{
             :-e.detail/3
         },
         _simulateMousedown:function(event){
+            if(xui.Event.__simulatedMousedown)return;
             var touches = event.changedTouches,
                 first = touches[0],
                 type = "mousedown";
@@ -454,6 +461,30 @@ Class('xui.Event',null,{
             xui.Event.__simulatedMousedown=1;
             first.target.dispatchEvent(evn);
             xui.Event.__simulatedMousedown=0;
+        },
+        _simulateClick:function(event){
+            var touches = event.changedTouches,
+                first = touches[0],
+                type = "click";
+            if(first.target.tagName == "INPUT"){
+                switch(e.target.type){
+                case "button":
+                    event.preventDefault();
+                    var evn = document.createEvent("MouseEvent");
+                    evn.initMouseEvent(type, true, true, window, 1,
+                                   first.screenX, first.screenY,
+                                   first.clientX, first.clientY, false,
+                                   false, false, false, 0/*left*/, null);
+                    xui.Event.__simulatedClick=1;
+                    first.target.dispatchEvent(evn);
+                    xui.Event.__simulatedClick=0;
+                break;
+                default:
+                    xui.Event.__simulatedFocus=1;
+                    first.target.focus();
+                    xui.Event.__simulatedFocus=0;
+                }
+            }
         },
         stopPageTouchmove:function(){
             document.addEventListener('touchmove', function(e){ e.preventDefault(); });
@@ -504,6 +535,9 @@ Class('xui.Event',null,{
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
             document.addEventListener("touchstart", xui.Event._simulateMousedown, true);
+            if(xui.browser.isBB && xui.browser.ver>=7){
+                document.addEventListener("touchend", xui.Event._simulateClick, true);
+            }
         }
     }
 });
