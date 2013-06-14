@@ -3061,7 +3061,9 @@ type:4
                 window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
                 if(xui.browser.isTouch){
                     document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
-                    //document.removeEventListener("touchmove", xui.Event._stopDftTouchmove,false);
+                    if(xui.browser.isBB && xui.browser.ver>=7){
+                        document.removeEventListener("touchend", xui.Event._simulateClick, true);
+                    }
                 }
             }
             document.onmousewheel=window.onmousewheel=null;

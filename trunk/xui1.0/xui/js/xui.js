@@ -1286,7 +1286,7 @@ new function(){
 			w.removeEventListener("load", f, false );
 		} else {
 			d.detachEvent("onreadystatechange", f);
-			w.detachEvent( "onload", f);
+			w.detachEvent("onload", f);
 		}
 
         try{
