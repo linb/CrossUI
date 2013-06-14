@@ -4132,10 +4132,6 @@ Class('xui.Event',null,{
         if(xui.browser.isTouch && self.__realtouch){
             if(('mousedown'==type || 'dblclick'==type) && !self.__simulatedMousedown)
                 return false;
-            else if('click'==type && !self.__simulatedClick)
-                return false;
-            else if('focus'==type && !self.__simulatedFocus)
-                return false;
         }
 
         //for correct mouse hover problems;
@@ -4572,7 +4568,7 @@ Class('xui.Event',null,{
             first.target.dispatchEvent(evn);
             xui.Event.__simulatedMousedown=0;
         },
-        _simulateClick:function(event){
+        _simulateFocus:function(event){
             var touches = event.changedTouches,
                 first = touches[0];
             if(first.target.tagName == "INPUT"){
@@ -4590,9 +4586,7 @@ Class('xui.Event',null,{
                     xui.Event.__simulatedClick=0;
                 break;
                 default:
-                    xui.Event.__simulatedFocus=1;
                     first.target.focus();
-                    xui.Event.__simulatedFocus=0;
                 }
             }
         },
@@ -4646,7 +4640,7 @@ Class('xui.Event',null,{
         if(xui.browser.isTouch){
             document.addEventListener("touchstart", xui.Event._simulateMousedown, true);
             if(xui.browser.isAndroid||xui.browser.isBB){
-                document.addEventListener("touchend", xui.Event._simulateClick, true);
+                document.addEventListener("touchend", xui.Event._simulateFocus, true);
             }
         }
     }
@@ -9407,7 +9401,7 @@ type:4
                 if(xui.browser.isTouch){
                     document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
                     if(xui.browser.isAndroid||xui.browser.isBB){
-                        document.removeEventListener("touchend", xui.Event._simulateClick, true);
+                        document.removeEventListener("touchend", xui.Event._simulateFocus, true);
                     }
                 }
             }

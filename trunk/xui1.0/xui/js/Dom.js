@@ -3062,7 +3062,7 @@ type:4
                 if(xui.browser.isTouch){
                     document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
                     if(xui.browser.isAndroid||xui.browser.isBB){
-                        document.removeEventListener("touchend", xui.Event._simulateClick, true);
+                        document.removeEventListener("touchend", xui.Event._simulateFocus, true);
                     }
                 }
             }
