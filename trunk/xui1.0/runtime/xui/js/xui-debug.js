@@ -4574,13 +4574,13 @@ Class('xui.Event',null,{
         },
         _simulateClick:function(event){
             var touches = event.changedTouches,
-                first = touches[0],
-                type = "click";
+                first = touches[0];
             if(first.target.tagName == "INPUT"){
-                switch(e.target.type){
+                switch(first.target.type){
                 case "button":
                     event.preventDefault();
-                    var evn = document.createEvent("MouseEvent");
+                    var evn = document.createEvent("MouseEvent"),
+                        type = "click";
                     evn.initMouseEvent(type, true, true, window, 1,
                                    first.screenX, first.screenY,
                                    first.clientX, first.clientY, false,
@@ -4645,7 +4645,7 @@ Class('xui.Event',null,{
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
             document.addEventListener("touchstart", xui.Event._simulateMousedown, true);
-            if(xui.browser.isBB && xui.browser.ver>=7){
+            if(xui.browser.isAndroid||xui.browser.isBB){
                 document.addEventListener("touchend", xui.Event._simulateClick, true);
             }
         }
@@ -9405,8 +9405,8 @@ type:4
             if(window.removeEventListener){
                 window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
                 if(xui.browser.isTouch){
-                    document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);                    
-                    if(xui.browser.isBB && xui.browser.ver>=7){
+                    document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
+                    if(xui.browser.isAndroid||xui.browser.isBB){
                         document.removeEventListener("touchend", xui.Event._simulateClick, true);
                     }
                 }
