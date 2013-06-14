@@ -1191,7 +1191,7 @@ new function(){
         isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || u.msPointerEnabled,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u),
-        isBB:/blackberry/.test(u)
+        isBB:/blackberry/.test(u) || /BB[\d]+;.+\sMobile\s/.test(navigator.userAgent)
     },v=function(k,s){
         s=u.split(s)[1].split('.');
         return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
