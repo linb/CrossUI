@@ -6333,7 +6333,17 @@ Class("xui.CSS", null,{
             ".xui-node-h1,.xui-node-h2,.xui-node-h3,.xui-node-h4,.xui-node-h5,.xui-node-h6,.xui-node-strong{font-weight:bold;}"+
             ".xui-node-em{font-style:italic;}"+
             ".xui-node-legend{color:#000;}"+
-            (b.ie6?("#"+xui.$localeDomId+"{vertical-align:baseline;}"):"");
+            (b.ie6?("#"+xui.$localeDomId+"{vertical-align:baseline;}"):"")+
+            
+            // some cross browser css solution
+            ".xui-cls-wordwrap{"+
+                "white-space: pre-wrap;" + // css-3
+                (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999
+                (b.opr?"white-space: -pre-wrap;":"") + // Opera 4-6
+                (b.opr?"white-space: -o-pre-wrap;":"") + // Opera 7
+                (b.ie?"word-wrap: break-word;":"")+ // Internet Explorer 5.5+
+           "}"
+           ;
 
         this.addStyleSheet(css, 'xui.CSS');
     }   
@@ -37329,7 +37339,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=me._f1=(me._f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 }),
-                f2=me._f2=(me._f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""}),
+                f2=me._f2=(me._f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ').replace(/ /g,' ').replace(/(\r\n|\n|\r)/g,"<br />"):""}),
                 f3=me._f3=(me._f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""}),
                 f5=me._f5=(me._f5=function(v,profile,cell){
                     if(v||v===0){
@@ -37403,6 +37413,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
+                    cell.cellClass = "xui-cls-wordwrap "+cell.cellClass;
                     caption= capOut ||ren(profile,cell,ncell,f2);
                     if(dom)
                         node.html(caption,false);
