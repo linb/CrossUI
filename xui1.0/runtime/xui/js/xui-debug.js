@@ -37339,7 +37339,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=me._f1=(me._f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 }),
-                f2=me._f2=(me._f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ').replace(/ /g,' ').replace(/(\r\n|\n|\r)/g,"<br />"):""}),
+                f2=me._f2=(me._f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ')/*.replace(/ /g,' ')*/.replace(/(\r\n|\n|\r)/g,"<br />"):""}),
                 f3=me._f3=(me._f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""}),
                 f5=me._f5=(me._f5=function(v,profile,cell){
                     if(v||v===0){
