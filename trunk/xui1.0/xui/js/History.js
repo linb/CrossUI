@@ -114,16 +114,17 @@ Class("xui.History",null,{
     	    var self=this;
     	    if(!self._callback)return;
     	    if(fi)fi=(''+fi).replace(/^[#!]+/,'');
-            if(self._lastFI == '#!' + fi)return false;
+    	    fi='!'+fi;
+            if(self._lastFI == '#' + fi)return false;
 
     		if(xui.browser.ie) {
     		    if(xui.browser.ver<9) {
         			var ihistory = document.getElementById(self._fid), iframe = ihistory.contentWindow.document;
                     iframe.open();
         			iframe.close();
-        			iframe.location.hash = location.hash = self._lastFI = '#!' + fi;
+        			iframe.location.hash = location.hash = self._lastFI = '#' + fi;
     		    }else{
-    		        location.hash=self._lastFI = '#!' + fi;
+    		        location.hash=self._lastFI = '#' + fi;
         		}
     		}else if(xui.browser.kde && !xui.browser.isChrome) {
     			self.dontCheck = true;
@@ -133,7 +134,7 @@ Class("xui.History",null,{
     			_.asyRun(function(){t.dontCheck=false;t=null;},300);
     			location.hash = self._lastFI = fi;
     		}else
-    		    location.hash = self._lastFI = '#!' + fi;
+    		    location.hash = self._lastFI = '#' + fi;
             if(triggerCallback!==false)
 		        _.tryF(self._callback,[fi]);
     	}
