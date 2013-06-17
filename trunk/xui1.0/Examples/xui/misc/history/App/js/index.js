@@ -80,7 +80,7 @@ Class('App', 'xui.Com',{
             xui.History.setCallback(function(str){
                 //set history, for back/forword button in browser
                 SPA.divInfo.setHtml(str);
-            })
+            });
         }, 
         _list2_onitemselected:function (profile, item, src) {
             //set history
