@@ -1,108 +1,59 @@
 Class("xui.History",null,{
     Static:{
         _fid:'xui:history',
+        _type:(xui.browser.ie && (xui.browser.ver<8))?'iframe':("onhashchange" in window)?'event':'timer',
         /* set callback function
         callback: function(hashStr<"string after #!">)
         */
     	setCallback: function(callback){
-    	    var self=this;
+    	    var self=this,
+    		    hash = location.hash;
+            if(!hash)hash ='';
     		self._callback = callback;
-    		var hash = location.hash;
+
             if(callback){
         		self._lastFI = hash;
-        		if(xui.browser.ie) {
-        			if(self._lastFI=='')self._lastFI = '#!';
-    
-                    if(xui.browser.ver<9) {
-                        var n=document.createElement("div");
-                        n.style.display = "none";
-                        document.body.appendChild(n);
-            			n.innerHTML = '<iframe id="'+this._fid+'" style="display: none;"></iframe>';
-            			var ihistory = document.getElementById(this._fid), iframe = ihistory.contentWindow.document;
-            			iframe.open();
-            			iframe.close();
-            			iframe.location.hash = hash;
-            			n=null;
-            		}else{
-            		    location.hash = hash;
-            		}
-        		}else if(xui.browser.kde && !xui.browser.isChrome) {
-        			// etablish back/forward stacks
-        			self.backStack = [];
-        			self.backStack.length = history.length;
-        			self.forwardStack = [];
-        		}
-        		self._callback(hash.replace(/^[#!]+/, ''));
-                clearInterval(self._itimer);
-                self._itimer = setInterval(self._timer,100);
-            }else
-                clearInterval(self._itimer);
-
+                switch(self._type){
+                    case 'event':
+                        window.onhashchange=self._checker;
+                    break;
+                    case "iframe":
+                        document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));
+                        var doc=document.getElementById(self._fid).contentWindow.document;
+                        doc.open("javascript:'<html></html>'");
+                        doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('');</scri" + "pt></head><body></body></html>");
+                        doc.close();
+                    case 'timer':
+                        if(self._itimer)
+                            clearInterval(self._itimer);
+                        self._itimer = setInterval(self._checker,100);
+                    break;
+                }
+        		self._callback(decodeURIComponent(hash.replace(/^#!/, '')));
+            }else{
+                if(self._itimer)
+                    clearInterval(self._itimer);
+            }
     		return self;
     	},
-        //cross case=>
-	    //  1: goto another url, and back
-	    //  2: back to another url, and forward
-        //check location.hash change periodically
-    	_timer: function(){
-    	    var self=xui.History,hash;
+    	_checker: function(hash){
+    	    var self=xui.History;
     	    if(typeof self._callback!='function'){
-    	        clearInterval(self._itimer);
+    	        if(self._itimer)
+    	            clearInterval(self._itimer);
     	        return;
     	    }
-
-    		if(xui.browser.ie) {
-		        if(xui.browser.ver<9) {
-        		    var ihistory = document.getElementById(self._fid), 
-        		        iframe = ihistory.contentWindow.document;
-        		    hash = iframe.location.hash;
-        			if(hash != self._lastFI) {
-        				self._lastFI = location.hash = hash;
-        				self._callback(hash.replace(/^[#!]+/, ''));
+            switch(self._type){
+                case "iframe":
+                    if(_.isSet(hash))
+                        location.hash=hash;
+                case 'event':
+                case 'timer':
+        			if(location.hash != self._lastFI) {
+        				self._lastFI = location.hash;
+        				self._callback(decodeURIComponent(location.hash.replace(/^#!/, '')));
         			}
-		        }else{
-		            hash=location.hash;
-        			if(hash != self._lastFI) {
-        				self._lastFI = hash;
-        				self._callback(hash.replace(/^[#!]+/, ''));
-        			}
-		        }    			
-    		}else if(xui.browser.kde && !xui.browser.isChrome) {
-    			if(!self.dontCheck) {
-    			    var backStack=self.backStack,
-    			        forwardStack=self.forwardStack,
-    				    historyDelta = history.length - backStack.length;
-    				//for back button or forward button
-    				if(historyDelta) {
-                        //back button case
-    					if(historyDelta<0)
-    						for (var i = 0; i < Math.abs(historyDelta); i++) forwardStack.unshift(backStack.pop());
-    					//forward button case
-    					else
-    						for (var i = 0; i < historyDelta; i++) backStack.push(forwardStack.shift())
-    					
-    					var cachedHash = backStack[backStack.length-1];
-    					if (cachedHash !== undefined) {
-    						self._lastFI = location.hash;
-    						self._callback(cachedHash);
-    					}else{
-    					    //cross case=>
-    					}
-    				}else if(backStack[backStack.length-1]===undefined){
-    				    if(self._lastFI != location.hash){
-    				        //cross case=>
-        				    self._lastFI = location.hash;
-        				    self._callback(location.hash);
-        				}
-    				}
-    			}
-    		}else{
-    			// otherwise, check for location.hash
-    			hash = location.hash;
-    			if(hash != self._lastFI) {
-    				self._lastFI = hash;
-    				self._callback(hash.replace(/^[#!]+/, ''));
-    			}
+    			break;
     		}
     	},
     	getFI:function(){
@@ -113,30 +64,24 @@ Class("xui.History",null,{
     	setFI:function(fi,triggerCallback){
     	    var self=this;
     	    if(!self._callback)return;
-    	    if(fi)fi=(''+fi).replace(/^[#!]+/,'');
-    	    fi='!'+fi;
-            if(self._lastFI == '#' + fi)return false;
-
-    		if(xui.browser.ie) {
-    		    if(xui.browser.ver<9) {
-        			var ihistory = document.getElementById(self._fid), iframe = ihistory.contentWindow.document;
-                    iframe.open();
-        			iframe.close();
-        			iframe.location.hash = location.hash = self._lastFI = '#' + fi;
-    		    }else{
-    		        location.hash=self._lastFI = '#' + fi;
-        		}
-    		}else if(xui.browser.kde && !xui.browser.isChrome) {
-    			self.dontCheck = true;
-        		self.backStack.push(fi);
-        		self.forwardStack.length = 0;
-    			var t=self;
-    			_.asyRun(function(){t.dontCheck=false;t=null;},300);
-    			location.hash = self._lastFI = fi;
-    		}else
-    		    location.hash = self._lastFI = '#' + fi;
+    	    if(fi)fi='#!' + encodeURIComponent((''+fi).replace(/^#!/,''));
+            if(self._lastFI == fi)return false;
+            
+            switch(self._type){
+                case "iframe":
+        			var doc=document.getElementById(self._fid).contentWindow.document;
+                    doc.open("javascript:'<html></html>'");
+                    doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('#!"+encodeURIComponent(fi.replace(/^#!/,''))+"');</scri" + "pt></head><body></body></html>");
+                    doc.close();                        
+                break;
+                case 'event':
+                case 'timer':
+        			location.hash = self._lastFI = fi;            			
+                break;
+            }
+                
             if(triggerCallback!==false)
-		        _.tryF(self._callback,[fi]);
+		        _.tryF(self._callback,[decodeURIComponent(fi.replace(/^#!/,''))]);
     	}
     }
 });

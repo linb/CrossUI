@@ -3071,6 +3071,8 @@ type:4
             if(xui.browser.ie && document.body)
                 document.body.onselectstart=null;
 
+            if("onhashchange" in window)window.onhashchange=null;
+            
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
