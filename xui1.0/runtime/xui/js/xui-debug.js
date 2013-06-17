@@ -12155,7 +12155,7 @@ Class("xui.Tips", null,{
                         location.hash=hash;
                 case 'event':
                 case 'timer':
-        			if(location.hash != self._lastFI) {
+        			if(decodeURIComponent(location.hash) != decodeURIComponent(self._lastFI)) {
         				self._lastFI = location.hash;
         				self._callback(decodeURIComponent(location.hash.replace(/^#!/, '')));
         			}
