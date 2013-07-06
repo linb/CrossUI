@@ -53,7 +53,8 @@ class MYSQL{
     * list all databases
     **/
     function listdbs($assoc=false) {
-        $i = @mysql_list_dbs($this->link_id);
+        $i = @mysql_query("show databases",$this->link_id); 
+        //$i = @mysql_list_dbs($this->link_id);
         $r = $this->_fetch_all($i, $assoc);
         $this->_release($i);
         return $r;

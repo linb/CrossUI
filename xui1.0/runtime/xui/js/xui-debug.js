@@ -35626,14 +35626,17 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _.each(profile.rowMap,function(o){
                         rows.push(o.id);
                     });
+
                     if(profile._$checkAll){
                         delete profile._$checkAll;
                         profile.boxing().setUIValue("");
                         xui.use(src).tagClass('-checked',false)
+                        profile.boxing().onRowSelected(profile, "allrows", e, src, -1);
                     }else{
                         profile._$checkAll=true;
                         xui.use(src).tagClass('-checked')
                         profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator));
+                        profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
                     return false;
                 }
