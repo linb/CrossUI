@@ -91,9 +91,13 @@ Class('App', 'xui.Com',{
             var widget, type, ns=[], nodes=[], t, strA=[],
                 idc=new _.id;
                 databinder = form.dbbinder|| (form.dbbinder='db'+_()),
-            cols=cols||form.cols||2;
-            parent=parent?xui(parent):xui('body');
+                cols=cols||form.cols||2;
+                parent=parent?xui(parent):xui('body');
 
+            // clear data
+            var dtbd=xui.DataBinder.getFromName(databinder);
+            if(dtbd)dtbd.setData();
+            
             _.each(form.ctrls,function(o){
                 if(!o.id)o.id=idc.next();
 
