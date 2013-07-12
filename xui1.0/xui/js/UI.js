@@ -4962,7 +4962,7 @@ new function(){
             },
             Templates:{
                 tagName:'div',
-                className:'{_className}',
+                className:'xui-nooutline {_className}',
                 style:'{_style};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex:'-1',
