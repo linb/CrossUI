@@ -4082,6 +4082,12 @@ editorDropListHeight
                             options.tagVar=pro.properties.tagVar;
         
                         grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
+                        
+                        //activate editor
+                        _.asyRun(function(){
+                            if(profile&&cell&&profile.boxing())
+                                profile.boxing().focusCell(cell);
+                        });
                     })
                     .beforeNextFocus(function(pro, e){
                         if(editor){
