@@ -5388,6 +5388,21 @@ _.set(xui.Locale,["en","app"], {
                     "alias [Optional : String, the alias value."
                 ]
             },
+            getUIValue:{
+                $desc:"To get all bound controls' UI values",
+                $rtn:"Object, key/value pairs.",
+                $paras:[
+                    "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]",
+                    "dirtied [Optional] : Boolean, to determine whether return dirtied controls only"
+                ]
+            },
+            getDirtied:{
+                $desc:"To get all dirtied bound controls' UI values",
+                $rtn:"Object, key/value pairs.",
+                $paras:[
+                    "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]"
+                ]
+            },
             updateValue:{
                 $desc:"Copies the  inner UI controls' 'UI value' to 'value'",
                 $rtn:"[self]"
@@ -5583,10 +5598,6 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : String. JSON,XML,SOAP ֮һ",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
-            },
-            getDirtied:{
-                $desc:"To determine whether the inner data is dirtied or not.",
-                $rtn:"Boolean"
             },
             updateDataToUI:{
                 $desc:"Updates data from the inner data to the bound UI.",

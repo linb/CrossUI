@@ -66,7 +66,7 @@ Class("xui.DataBinder","xui.absObj",{
         checkValid:function(){
             return xui.absValue.pack(this.get(0)._n,false).checkValid();
         },
-        getDirtied:function(withCaption){
+        getUIValue:function(withCaption, dirtied){
             var ns=this,
                 prf=ns.get(0),
                 hash={};
@@ -74,10 +74,9 @@ Class("xui.DataBinder","xui.absObj",{
                 var p=profile.properties,
                     b = profile.boxing(),
                     // maybe return array
-                    v = b.getValue(),
                     uv = b.getUIValue();
                 // v and uv can be object(Date,Number)
-                if((uv+" ")!==(v+" ")){
+                if(!dirtied || (uv+" ")!==(b.getValue()+" ")){
                     if(withCaption && b.getCaption){
                         hash[p.dataField]={value:uv,caption:b.getCaption()};
                     }else{
@@ -86,6 +85,10 @@ Class("xui.DataBinder","xui.absObj",{
                 }
             });
             return hash;
+        },
+        // get dirtied UI Value
+        getDirtied:function(withCaption){
+            return this.getUIValue(withCaption, true);
         },
         updateValue:function(){
             xui.absValue.pack(this.get(0)._n,false).updateValue();
