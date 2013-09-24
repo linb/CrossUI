@@ -5401,6 +5401,21 @@ _.set(xui.Locale,["cn","app"], {
                     "alias [可选参数 : String, 别名字符串."
                 ]
             },
+            getUIValue:{
+                $desc:"得到绑定控件的界面值",
+                $rtn:"Object, 键值对.",
+                $paras:[
+                    "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false",
+                    "dirtied [可选参数] : Boolean, 是否只获得脏控件的界面值"
+                ]
+            },
+            getDirtied:{
+                $desc:"得到脏绑定控件的界面值",
+                $rtn:"Object, 键值对.",
+                $paras:[
+                    "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false"
+                ]
+            },
             updateValue:{
                 $desc:"将绑定控件的内部值更新为界面值,并去掉脏标识.",
                 $rtn:"[self]"
@@ -5595,10 +5610,6 @@ _.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String. JSON,XML,SOAP 之一",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
-            },
-            getDirtied:{
-                $desc:"获取内部数据是否已经更改.",
-                $rtn:"Boolean"
             },
             updateDataToUI:{
                 $desc:"从内部数据data设置数据到所绑定的UI.",
