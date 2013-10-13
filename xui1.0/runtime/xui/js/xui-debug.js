@@ -6239,7 +6239,7 @@ Class("xui.CSS", null,{
                     for(j=m-1; j>=0; j--){
                         if((v=o[j]).selectorText && !v.disabled){
                             selectorText = ns._rep(v.selectorText);
-                            if(_.arr.indexOf(selectorText.split(','),selector)!=-1){
+                            if(_.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
                                 if(!cssValue){
                                     // replace is crack for opera
                                     return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
