@@ -37,7 +37,7 @@ Class("xui.UI.FusionChartFree", "xui.UI.Flash",{
                             });
                         },null,null,{asy:false,rspType:'xml'}).start();
                     }
-                    prop.src=prop.FC_swfPath + this.box._FC_SWFFILEPRETAG + prop.FC_chartType + ".swf",
+                    prop.src=prop.FC_swfPath + this.box._FC_SWFFILEPRETAG + prop.FC_chartType + ".swf";
  
                     this.boxing().refreshChart();
                 }

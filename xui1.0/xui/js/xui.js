@@ -212,8 +212,9 @@ _.merge(_,{
             if(hash.hasOwnProperty && hash.hasOwnProperty(path))
                 delete hash[path];
             else hash[path]=undefined;
-        }else
+        }else{
             return hash[path]=value;
+        }
     },
     /* try to excute a function
     fun:target function
