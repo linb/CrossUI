@@ -158,7 +158,7 @@ Class("xui.Tips", null,{
                     _ruler = self._ruler;
                     //ensure zindex is the top
                     if(document.body.lastChild!=node.get(0))
-                        xui('body').append(node);
+                        xui('body').append(node,false,true);
 
                     s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item ;
                     if(typeof s=='function')

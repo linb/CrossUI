@@ -318,10 +318,15 @@ Class('xui.UIProfile','xui.Profile', {
             });
         },
         _buildItems:function(key, items, addEventHandler){
-            var self=this,
-                box=self.box,
-                str=box._rpt(self, xui.UI.$doTemplate(self, _.get(xui.$cache.template,[box.KEY, self._hash]), items, key));
-            return xui.UI.$toDom(str.replace(self._cacheR2,''), addEventHandler);
+            var ns=this,
+                box=ns.box,
+                str=box._rpt(ns, xui.UI.$doTemplate(ns, _.get(xui.$cache.template,[box.KEY, ns._hash]), items, key)),
+                nodes = xui.UI.$toDom(str.replace(ns._cacheR2,''), addEventHandler);
+            // set custom styles for the given nodes only
+            if(ns.CS){
+                ns.boxing().setCustomStyle(ns.CS,undefined,nodes);
+            }
+            return nodes;
         },
         serialize:function(rtnString, keepHost){
             var t,m,
@@ -1160,24 +1165,33 @@ Class("xui.UI",  "xui.absObj", {
                 }
             });
         },
-        setCustomStyle:function(key,value){
+        setCustomStyle:function(key,value,nodes){
             var me=arguments.callee,
-                fun=(me.fun||(me.fun=function(pro,i,h, flag){
-                    if(!h[i])return;
-                    var node=pro.getSubNode(i,true),b;
-                    if(!node.isEmpty()){
-                        if(_.isStr(h[i]))
-                            _.arr.each(h[i].split(';'),function(o,i){
+                fun=(me.fun||(me.fun=function(pro,key,CSObj,clear,nodes){
+                    if(!CSObj[key])return;
+                    var hkey=pro.keys[key] || key,
+                        tnodes,b;
+                    // get target nodes fromin given nodes
+                    if(nodes){
+                        tnodes=nodes.query('*', 'id', hkey==pro.keys.KEY?pro.domId:new RegExp('^'+hkey+':'+pro.serialId));
+                    }
+                    // get target nodes from the whole widget
+                    else{
+                        tnodes=pro.getSubNode(key,true);
+                    }
+                    if(!tnodes.isEmpty()){
+                        if(_.isStr(CSObj[key]))
+                            _.arr.each(CSObj[key].split(';'),function(o,i){
                                 if((b=o.split(':')).length>=2){
                                     i=b.shift();o=b.join(':');
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                    node.css(i, flag?'':xui.adjustRes(o,0,1));
+                                    tnodes.css(i, clear?'':xui.adjustRes(o,0,1));
                                 }
                             });
-                         else if(_.isHash(h[i]))
-                            _.each(h[i],function(o,i){
+                         else if(_.isHash(CSObj[key]))
+                            _.each(CSObj[key],function(o,i){
                                 i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                node.css(i, flag?'':xui.adjustRes(o,0,1));
+                                tnodes.css(i, clear?'':xui.adjustRes(o,0,1));
                             });                            
                     }
                 }));
@@ -1188,29 +1202,29 @@ Class("xui.UI",  "xui.absObj", {
                 if(typeof key=='string'){
                     if(o.renderId)
                         if(key in bak)
-                            fun(o, key, bak, true);
+                            fun(o, key, bak, true, nodes);
 
                     if(!value)
                         delete o.CS[key];
                     else{
                         o.CS[key]=value;
                         if(o.renderId)
-                            fun(o, key, o.CS);
+                            fun(o, key, o.CS, false,nodes);
                     }
                 //set hash dir
                 }else if(!!key && typeof key=='object'){
                     if(o.renderId){
                         for(var i in key)
-                            fun(o, i, bak, true);
+                            fun(o, i, bak, true, nodes);
                         for(var i in key)
-                            fun(o, i, key);
+                            fun(o, i, key, false, nodes);
                     }
                     o.CS=key;
                 //clear all
                 }else{
                     if(o.renderId)
                         for(var i in bak)
-                            fun(o, i, bak, true);
+                            fun(o, i, bak, true, nodes);
                     o.CS={};
                 }
             });
