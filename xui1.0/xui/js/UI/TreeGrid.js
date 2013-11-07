@@ -4048,6 +4048,7 @@ editorDropListHeight
                         editor.undo=null;
                         if(profile.onEndEdit)
                             profile.boxing().onEndEdit(profile, cell, editor);
+                        editor=null;
                     };
         
                     //editor change value, update cell value
@@ -4082,12 +4083,6 @@ editorDropListHeight
                             options.tagVar=pro.properties.tagVar;
         
                         grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
-                        
-                        //activate editor
-                        _.asyRun(function(){
-                            if(profile&&cell&&profile.boxing())
-                                profile.boxing().focusCell(cell);
-                        });
                     })
                     .beforeNextFocus(function(pro, e){
                         if(editor){

@@ -95,6 +95,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     drop.boxing().destroy();
                     delete profile.$drop;
+                    if(focus)
+                        profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
                         profile.__tryToHide= _.asyRun(function(){
