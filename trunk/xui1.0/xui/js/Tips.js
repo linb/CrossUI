@@ -12,9 +12,10 @@ Class("xui.Tips", null,{
 
         //for: span(display:-moz-inline-box) cant wrap in firefox
         xui.CSS.addStyleSheet(
-            ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;} "+
-            ".xui-tips-i{font-size:12px;overflow:hidden;}"+
-            ".xui-tips-i span{display:inline;}"
+            ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;} "+
+            ".xui-tips-i{font-size:12px;overflow:hidden;position:relative;}"+
+            ".xui-tips-i span{display:inline;}"+
+            ".xui-tips-c {border:solid gray 1px;background-color:#FFF8DC;padding:1px 2px 2px 2px;}"
         , this.KEY);
 
         xui.doc
@@ -146,7 +147,7 @@ Class("xui.Tips", null,{
                     var self=this,node,_ruler,s,w,h;
                     if(!(node=self.node) || !node.get(0)){
                         node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips"><div class="xui-node xui-wrapper xui-node-div xui-tips-i"></div></div>');
-                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips" style="position:absolute;visibility:hidden;left:-10000px;"><div class="xui-node xui-node-div xui-tips-i" style="position:relative;"></div></div>');
+                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips"><div class="xui-node xui-node-div xui-tips-i"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
                         if(typeof node.addShadow == 'function'){
@@ -171,7 +172,7 @@ Class("xui.Tips", null,{
                         });
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div" style="border:solid gray 1px;background-color:#FFF8DC;padding:1px 2px 2px 2px;">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div xui-tips-c">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 

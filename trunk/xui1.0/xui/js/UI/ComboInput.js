@@ -592,6 +592,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'z-index':'3',
                 border:0,
                 height:'100%',
+                width:'100%',
                 position:'absolute',
                 top:0,
                 right:0,
