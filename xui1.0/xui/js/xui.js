@@ -2706,6 +2706,9 @@ Class('xui.absBox',null, {
         get:function(index){
             return this._get(index);
         },
+        size:function(){
+            return this._nodes.length;
+        },
         _each:function(fun){
             var self=this,n;
             for(var i=0,j=self._nodes,l=j.length;i<l;i++)

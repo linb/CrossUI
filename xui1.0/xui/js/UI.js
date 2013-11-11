@@ -1063,11 +1063,19 @@ Class("xui.UI",  "xui.absObj", {
             var prf=this.get(0);
             if(prf)return prf.childrenId;
         },
-        getChildren:function(subId){
-            var a=[];
-            _.arr.each(this.get(0).children,function(v){
-                if(subId?v[1]==subId:1)
+        getChildren:function(subId, all){
+            var a=[],f=function(prf){
+                _.arr.each(prf.children,function(v){
                     a.push(v[0]);
+                    if(v[0].children && v[0].children.length)
+                        f(v[0]);
+                });
+            };
+            _.arr.each(this.get(0).children,function(v){
+                if((subId&&typeof(subId)=="string")?v[1]===subId:1){
+                    if(all)f(v[0]);
+                    else a.push(v[0]);
+                }
             });
             return xui.UI.pack(a);
         },

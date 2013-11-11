@@ -2238,6 +2238,10 @@ _.set(xui.Locale,["en","app"], {
                     "var n=xui(['xui.UI.Layout:a:','btnLang']); alert(n.get(1).id); alert(n.get()[0].id+' , '+n.get()[1].id);"
                 ]
             },
+            size:{
+                $desc:"To get the size of elements.",
+                $rtn:"Number"
+            },
             isEmpty:{
                 $desc:"To determine if the current xui.absBox Object includes any element.",
                 $rtn:"Boolean.",
@@ -5284,7 +5288,7 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [Required] : String, the Com id.",
-                "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
@@ -6973,7 +6977,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Gets the current widget's children.",
                 $rtn:"xui.UI",
                 $paras:[
-                    "subId [Optional] : String, the sub id."
+                    "subId [Optional] : String, the sub container's id. [true] for all sub containers",
+                    "all [Optional] : Boolean, returns all inner objects or just the first layer"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui-1e'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7057,7 +7062,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Removes a set of xui.UIProfile objects from each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [Optional] : String, the sub id that determines which profile will be removeed."
+                    "subId [Optional] : String, the sub id that determines which profile will be removed. [true] for all profiles."
                 ],
                 $snippet:[
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
