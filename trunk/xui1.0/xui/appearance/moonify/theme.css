@@ -2,6 +2,12 @@
 html, .xui-uibg-base{
     background-color:#48525f;
 }
+.xui-dbg-header{
+    background-color:#5A6371;
+}
+.xui-dbg-content, .xui-dbg-tail, .xui-dbg-con1, .xui-dbg-con3, .xui-dbg-con4{
+    background-color:#48525f;
+}
 .xui-node{
     color:#FFFFFF;
 }

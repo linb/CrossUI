@@ -2249,6 +2249,10 @@ _.set(xui.Locale,["cn","app"], {
                     "var n=xui(['xui.UI.Layout:a:','btnLang']); alert(n.get(1).id); alert(n.get()[0].id+' , '+n.get()[1].id);"
                 ]
             },
+            size:{
+                $desc:"得到箱内元素的个数.",
+                $rtn:"Number"
+            },
             isEmpty:{
                 $desc:"是否目前的箱为空.",
                 $rtn:"Boolean.",
@@ -5297,7 +5301,7 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id.",
-                "onEnd [可选参数] : Function, the 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(threadid:String, com: xui.Com), the 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
                 "singleton [可选参数] : Boolean, 默认为 true. 当 singleton 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
@@ -6995,7 +6999,8 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"得到目前控件的所有子控件.",
                 $rtn:"xui.UI",
                 $paras:[
-                    "subId [可选参数] : String, sub id."
+                    "subId [可选参数] : String, 子容器的id，不指定或[true]表示全部子容器. ",
+                    "all [可选参数] : Boolean, 是否返回所有层对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.ui-1e'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7079,7 +7084,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"移除内部所有的子控件.",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除.",
+                    "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有.",
                     "bDestroy [可选参数] : Boolean, 是否移除的子控件会被销毁."
                 ],
                 $snippet:[
