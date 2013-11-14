@@ -150,7 +150,10 @@ Class("xui.Tips", null,{
                         _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips"><div class="xui-node xui-node-div xui-tips-i"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
-                        if(typeof node.addShadow == 'function'){
+                        if(xui.Dom.css3Support("boxShadow")){
+                            node.css("boxShadow","4px 4px 4px #888");
+                            _ruler.css("boxShadow","4px 4px 4px #888");
+                        }else if(typeof node.addShadow == 'function'){
                             node.addShadow();
                             _ruler.addShadow();
                         }
