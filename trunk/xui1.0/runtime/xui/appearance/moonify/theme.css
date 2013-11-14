@@ -217,10 +217,10 @@ html, .xui-uibg-base{
 .xui-input-box, .xui-comboinput-box, .xui-texteditor-box, .xui-texteditor-input{
     background: #292D34;
     border: solid 1px;
-    border-color: #292D34 #626F82 #626F82 #292D34;
+    border-color: #161A21 #626F82 #626F82 #161A21;
 }
-.xui-input-readonly .xui-input-box, .xui-comboinput-readonly .xui-comboinput-box,
-.xui-comboinput-readonly .xui-comboinput-box, .xui-comboinput-inputreadonly .xui-comboinput-box {
+.xui-input-readonly .xui-input-box, .xui-input-disabled .xui-input-box, 
+.xui-comboinput-readonly .xui-comboinput-box, .xui-comboinput-inputreadonly .xui-comboinput-box, .xui-comboinput-disabled .xui-comboinput-box {
    background:#4E5866;
 }
 
@@ -387,16 +387,14 @@ html, .xui-uibg-base{
 .xui-treeview-bar .xui-treeview-itemicon,
 .xui-treeview-bar-expand .xui-treeview-itemicon,
 .xui-treeview-image-vertical, 
-.xui-treeview-image-path-1, 
-.xui-treeview-image-path-2, 
-.xui-treeview-image-path-3, 
-.xui-treeview-image-fold-1, 
-.xui-treeview-image-fold-2, 
-.xui-treeview-image-fold-3{
-    background-image: url(Public/icons.gif);
-}
+.xui-treeview-image-path-1, .xui-treeview-image-path-2, .xui-treeview-image-path-3, 
+.xui-treeview-image-fold-1, .xui-treeview-image-fold-2, .xui-treeview-image-fold-3,
 .xui-treeview-mark{
     background-image: url(Public/icons.gif);
+}
+.xui-treeview-itemcaption-mouseover
+{
+    background-color: #38404C;
 }
 
 /*xui.UI.Tabs*/
@@ -599,6 +597,9 @@ html, .xui-uibg-base{
 .xui-treegrid-mark, .xui-treegrid-arrow{
     background-image: url(Public/icons.gif);
 }
+.xui-treegrid-cell-disabled{
+    background-color:#4E5866;
+}
 .xui-treegrid-body{
     background: #292D34;
 }
@@ -651,7 +652,9 @@ html, .xui-uibg-base{
 .xui-treegrid-hcell-mouseover {
     background: #5D6878 url(TreeGrid/head_mouseover.gif) repeat-x left bottom;
 }
-  
+.xui-treegrid-cells-hot{
+    background: #5DA778;
+}
 /**
 *
 * advance

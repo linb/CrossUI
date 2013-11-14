@@ -892,7 +892,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 return h;
             }())),
             reg=me._r||(me._r=/rgb\(([^)]*)\)/);
-            if(!v || typeof v !='string')return 'FFFFFF';
+            if(!v || typeof v !='string')return 'transparent';
             if(reg.test(v)){
                 v=v.replace(reg,'$1');
                 v=v.split(',');

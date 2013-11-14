@@ -351,25 +351,26 @@ _.merge(_,{
     *be careful for dead lock
     */
     clone:function(hash,filter,deep){
+        var layer=arguments[3]||0;
         if(hash && typeof hash=='object'){
             var c=hash.constructor,a=c==Array;
             if(a||c==Object){
                 var me=arguments.callee,h=a?[]:{},v,i=0,l;
                 if(!deep){
-                    if(deep===0)return hash;
+                    if(deep<=0)return hash;
                     else deep=100;
                 }
                 if(a){
                     l=hash.length;
                     for(;i<l;i++){
-                        if(typeof filter=='function'&&false===filter.call(hash,hash[i],i))continue;
-                        h[h.length]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1):v;
+                        if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
+                        h[h.length]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
                     }
                 }else{
                     for(i in hash){
-                        if(filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(hash,hash[i],i):0)
+                        if(filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
                             continue;
-                        h[i]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1):v;
+                        h[i]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
                     }
                 }
                 return h;
@@ -16307,7 +16308,9 @@ Class("xui.UI",  "xui.absObj", {
 
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
-                p.items = _.clone(p.items,function(o,i){return !t[(i+'').charAt(0)]&&o!=undefined});
+                p.items = _.clone(p.items,function(o,i,d){
+                    return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined
+                });
             }
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;
@@ -23677,7 +23680,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return d?String(profile.properties.type=='datetime'?d.getTime():xui.Date.getTimSpanStart(d,'d',1).getTime()):"";
                 case 'color':
                 case 'colorpicker':
-                    return '#'+xui.UI.ColorPicker._ensureValue(null,value);
+                    var c=xui.UI.ColorPicker._ensureValue(null,value);
+                    return (c!=="transparent"?'#':'')+c;
                 case 'time':
                 case 'timepicker':
                     return xui.UI.TimePicker._ensureValue(null,value);
@@ -24929,7 +24933,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 return h;
             }())),
             reg=me._r||(me._r=/rgb\(([^)]*)\)/);
-            if(!v || typeof v !='string')return 'FFFFFF';
+            if(!v || typeof v !='string')return 'transparent';
             if(reg.test(v)){
                 v=v.replace(reg,'$1');
                 v=v.split(',');
@@ -37020,7 +37024,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.afterHotRowAdded)
                     ins.afterHotRowAdded(profile, prop.rows[prop.rows.length-1]);
                 if(prop.hotRowMode=='show'){
-                    this._addTempRow(profile);
+                    if(!profile.__hastmpRow)
+                        this._addTempRow(profile);
                 }
                 return true;
             }
@@ -37178,8 +37183,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 pp=profile.properties,
                 map=xui.absObj.$specialChars,
                 t;
-            o.properties.header = _.clone(pp.header, function(o,i){return !map[(i+'').charAt(0)]});
-            o.properties.rows = _.clone(pp.rows, function(o,i){return !map[(i+'').charAt(0)]});
+            o.properties.header = _.clone(pp.header, function(o,i,d){
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+            });
+            o.properties.rows = _.clone(pp.rows, function(o,i,d){
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+            });
             if(o.properties.header.length===0)delete o.properties.header;
             if(o.properties.rows.length===0)delete o.properties.rows;
             return o;
@@ -37408,7 +37417,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'color':
                 case 'colorpicker':
-                    cell.value=cell.value?("#"+xui.UI.ColorPicker._ensureValue(0,cell.value)):"";
+                    var c=xui.UI.ColorPicker._ensureValue(0,cell.value);
+                    cell.value=cell.value?((c!=="transparent"?'#':'')+c):"";
                     caption= capOut ||ren(profile,cell,ncell);
                     if(cell.value){
                         t1=xui.UI.ColorPicker.getTextColor(cell.value);
@@ -37422,10 +37432,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }else{
                         if(dom){
                             node.html(caption,false);
-                            node.css('color','#000').css('backgroundColor',"#fff");
+                            node.css('color','').css('backgroundColor','');
                         }else{
-                            node.color='color:#000;';
-                            node.bgcolor='background-color:#fff;';
+                            //node.color='color:#000;';
+                            //node.bgcolor='background-color:#fff;';
                         }
                     }
                 break;
@@ -38134,14 +38144,15 @@ editorDropListHeight
                         profile.$curEditor=null;
                         profile.$cellInEditor=null;
                         // row dirty alert
-                        profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
+                        if(profile.box)
+                            profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
 
                         if(editor.get(0)){
                             // for ie's setBlurTrigger doesn't trigger onchange event
                             editor.getSubNode('INPUT').onBlur(true);
                         
                             editor.getRoot().setBlurTrigger(profile.$xid+":editor");
-                            if(!profile.properties.directInput){
+                            if(profile.properties && !profile.properties.directInput){
                                 editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null);                    
                                 editor.setValue('',true);
                             }
@@ -38386,6 +38397,7 @@ editorDropListHeight
                         edit=false;
                     }else{
                         edit=true;
+                        xui(src).parent().tagClass('-mousedown', false);
                         box._editCell(profile, cell._serialId);
                         _.asyRun(function(){
                             xui.use(src).parent().onMouseout(true,{$force:true})
