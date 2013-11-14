@@ -11924,7 +11924,10 @@ Class("xui.Tips", null,{
                         _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips"><div class="xui-node xui-node-div xui-tips-i"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
-                        if(typeof node.addShadow == 'function'){
+                        if(xui.Dom.css3Support("boxShadow")){
+                            node.css("boxShadow","4px 4px 4px #888");
+                            _ruler.css("boxShadow","4px 4px 4px #888");
+                        }else if(typeof node.addShadow == 'function'){
                             node.addShadow();
                             _ruler.addShadow();
                         }
@@ -29765,6 +29768,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 position:'relative',
                 height:'16px',
                 padding:'3px',
+                cursor:'pointer',
                 'font-size':0,
                 'line-height':0,
                 'white-space':'nowrap'
@@ -38126,36 +38130,43 @@ editorDropListHeight
                     //undo function is a must
                     editor.undo=function(){
                         var editor=this;
-                        // for ie's setBlurTrigger doesn't trigger onchange event
-                        editor.getSubNode('INPUT').onBlur(true);
                         
+                        profile.$curEditor=null;
+                        profile.$cellInEditor=null;
                         // row dirty alert
                         profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
 
-                        profile.$curEditor=null;
-                        profile.$cellInEditor=null;
+                        if(editor.get(0)){
+                            // for ie's setBlurTrigger doesn't trigger onchange event
+                            editor.getSubNode('INPUT').onBlur(true);
                         
-                        editor.getRoot().setBlurTrigger(profile.$xid+":editor");
-                        if(!profile.properties.directInput){
-                            editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null);                    
-                            editor.setValue('',true);
-                        }
-                        // clear those setting
-                        if(editorFormat){
-                            if(editor.beforeFormatCheck)editor.beforeFormatCheck(null);
-                            if(editor.setValueFormat)editor.setValueFormat('');
-                        }
-                        if(editorMask)
-                            if(editor.setMask)editor.setMask('');
-                        if(editorReadonly)
-                            if(editor.setInputReadonly)editor.setInputReadonly(false);
-                        if(editorDropListWidth)
-                            if(editor.setDropListWidth)editor.setDropListWidth(0);
-                        if(editorDropListHeight)
-                            if(editor.setDropListHeight)editor.setDropListHeight(0);
-                        if(oldProp){
-                            editor.setProperties(oldProp);
-                            oldProp=null;
+                            editor.getRoot().setBlurTrigger(profile.$xid+":editor");
+                            if(!profile.properties.directInput){
+                                editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null);                    
+                                editor.setValue('',true);
+                            }
+                            // clear those setting
+                            if(editorFormat){
+                                if(editor.beforeFormatCheck)editor.beforeFormatCheck(null);
+                                if(editor.setValueFormat)editor.setValueFormat('');
+                            }
+                            if(editorMask)
+                                if(editor.setMask)editor.setMask('');
+                            if(editorReadonly)
+                                if(editor.setInputReadonly)editor.setInputReadonly(false);
+                            if(editorDropListWidth)
+                                if(editor.setDropListWidth)editor.setDropListWidth(0);
+                            if(editorDropListHeight)
+                                if(editor.setDropListHeight)editor.setDropListHeight(0);
+                            if(oldProp){
+                                editor.setProperties(oldProp);
+                                oldProp=null;
+                            }
+                            delete editor.get(0).$cell;
+                            delete editor.get(0)._smartnav;
+                            
+                            //don't use disply:none, firfox has many bugs about Caret or renderer
+                            editor.setVisibility('hidden');
                         }
                         if(editorEvents){
                             var h={};
@@ -38164,12 +38175,6 @@ editorDropListHeight
                             });
                             editor.setEvents(h);
                         }
-                        
-                        delete editor.get(0).$cell;
-                        delete editor.get(0)._smartnav;
-                        //don't use disply:none, firfox has many bugs about Caret or renderer
-                        editor.setVisibility('hidden');
-                        
                         // execute once
                         editor.undo=null;
                         if(profile.onEndEdit)

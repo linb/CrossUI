@@ -378,9 +378,6 @@ html, .xui-uibg-base{
 .xui-treebar-checked{
     background-image: url(Public/icons.gif);
 }
-.xui-treegrid-mark{
-    background-image: url(Public/icons.gif);
-}
 
 /*xui.UI.TreeView*/
 .xui-treeview-box{
@@ -599,6 +596,9 @@ html, .xui-uibg-base{
 }
 
 /*xui.UI.TreeGrid*/
+.xui-treegrid-mark, .xui-treegrid-arrow{
+    background-image: url(Public/icons.gif);
+}
 .xui-treegrid-body{
     background: #292D34;
 }
@@ -651,7 +651,7 @@ html, .xui-uibg-base{
 .xui-treegrid-hcell-mouseover {
     background: #5D6878 url(TreeGrid/head_mouseover.gif) repeat-x left bottom;
 }
-
+  
 /**
 *
 * advance
@@ -663,20 +663,20 @@ html, .xui-uibg-base{
     background-image: url(Public/icons.gif);
     background-repeat: no-repeat;
     background-position: -12px -130px;
-    border-left:solid 1px #7C9CBC;
-    border-right:solid 1px #7C9CBC;
+    border-left:solid 1px #292F37;
+    border-right:solid 1px #292F37;
 }
 .xui-statusbuttons-item-left{
     background-image: url(Public/icons.gif);
     background-repeat: no-repeat;
     background-position: left -130px;
-    border-right:solid 1px #7C9CBC;
+    border-right:solid 1px #292F37;
 }
 .xui-statusbuttons-item-right{
     background-image: url(Public/icons.gif);
     background-repeat: no-repeat;
     background-position: right -130px;
-    border-left:solid 1px #7C9CBC;
+    border-left:solid 1px #292F37;
 }
 .xui-statusbuttons-item-left-mouseover{
     background-position: left -153px;

@@ -30,6 +30,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 position:'relative',
                 height:'16px',
                 padding:'3px',
+                cursor:'pointer',
                 'font-size':0,
                 'line-height':0,
                 'white-space':'nowrap'
