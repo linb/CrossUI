@@ -351,25 +351,26 @@ _.merge(_,{
     *be careful for dead lock
     */
     clone:function(hash,filter,deep){
+        var layer=arguments[3]||0;
         if(hash && typeof hash=='object'){
             var c=hash.constructor,a=c==Array;
             if(a||c==Object){
                 var me=arguments.callee,h=a?[]:{},v,i=0,l;
                 if(!deep){
-                    if(deep===0)return hash;
+                    if(deep<=0)return hash;
                     else deep=100;
                 }
                 if(a){
                     l=hash.length;
                     for(;i<l;i++){
-                        if(typeof filter=='function'&&false===filter.call(hash,hash[i],i))continue;
-                        h[h.length]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1):v;
+                        if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
+                        h[h.length]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
                     }
                 }else{
                     for(i in hash){
-                        if(filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(hash,hash[i],i):0)
+                        if(filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
                             continue;
-                        h[i]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1):v;
+                        h[i]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
                     }
                 }
                 return h;

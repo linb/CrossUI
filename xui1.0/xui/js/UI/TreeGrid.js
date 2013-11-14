@@ -2890,7 +2890,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.afterHotRowAdded)
                     ins.afterHotRowAdded(profile, prop.rows[prop.rows.length-1]);
                 if(prop.hotRowMode=='show'){
-                    this._addTempRow(profile);
+                    if(!profile.__hastmpRow)
+                        this._addTempRow(profile);
                 }
                 return true;
             }
@@ -3048,8 +3049,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 pp=profile.properties,
                 map=xui.absObj.$specialChars,
                 t;
-            o.properties.header = _.clone(pp.header, function(o,i){return !map[(i+'').charAt(0)]});
-            o.properties.rows = _.clone(pp.rows, function(o,i){return !map[(i+'').charAt(0)]});
+            o.properties.header = _.clone(pp.header, function(o,i,d){
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+            });
+            o.properties.rows = _.clone(pp.rows, function(o,i,d){
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+            });
             if(o.properties.header.length===0)delete o.properties.header;
             if(o.properties.rows.length===0)delete o.properties.rows;
             return o;
@@ -3278,7 +3283,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'color':
                 case 'colorpicker':
-                    cell.value=cell.value?("#"+xui.UI.ColorPicker._ensureValue(0,cell.value)):"";
+                    var c=xui.UI.ColorPicker._ensureValue(0,cell.value);
+                    cell.value=cell.value?((c!=="transparent"?'#':'')+c):"";
                     caption= capOut ||ren(profile,cell,ncell);
                     if(cell.value){
                         t1=xui.UI.ColorPicker.getTextColor(cell.value);
@@ -3292,10 +3298,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }else{
                         if(dom){
                             node.html(caption,false);
-                            node.css('color','#000').css('backgroundColor',"#fff");
+                            node.css('color','').css('backgroundColor','');
                         }else{
-                            node.color='color:#000;';
-                            node.bgcolor='background-color:#fff;';
+                            //node.color='color:#000;';
+                            //node.bgcolor='background-color:#fff;';
                         }
                     }
                 break;
@@ -4004,14 +4010,15 @@ editorDropListHeight
                         profile.$curEditor=null;
                         profile.$cellInEditor=null;
                         // row dirty alert
-                        profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
+                        if(profile.box)
+                            profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
 
                         if(editor.get(0)){
                             // for ie's setBlurTrigger doesn't trigger onchange event
                             editor.getSubNode('INPUT').onBlur(true);
                         
                             editor.getRoot().setBlurTrigger(profile.$xid+":editor");
-                            if(!profile.properties.directInput){
+                            if(profile.properties && !profile.properties.directInput){
                                 editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null);                    
                                 editor.setValue('',true);
                             }
@@ -4256,6 +4263,7 @@ editorDropListHeight
                         edit=false;
                     }else{
                         edit=true;
+                        xui(src).parent().tagClass('-mousedown', false);
                         box._editCell(profile, cell._serialId);
                         _.asyRun(function(){
                             xui.use(src).parent().onMouseout(true,{$force:true})

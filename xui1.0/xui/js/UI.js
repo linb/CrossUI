@@ -3721,7 +3721,9 @@ Class("xui.UI",  "xui.absObj", {
 
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
-                p.items = _.clone(p.items,function(o,i){return !t[(i+'').charAt(0)]&&o!=undefined});
+                p.items = _.clone(p.items,function(o,i,d){
+                    return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined
+                });
             }
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;

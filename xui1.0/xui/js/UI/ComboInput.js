@@ -1314,7 +1314,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return d?String(profile.properties.type=='datetime'?d.getTime():xui.Date.getTimSpanStart(d,'d',1).getTime()):"";
                 case 'color':
                 case 'colorpicker':
-                    return '#'+xui.UI.ColorPicker._ensureValue(null,value);
+                    var c=xui.UI.ColorPicker._ensureValue(null,value);
+                    return (c!=="transparent"?'#':'')+c;
                 case 'time':
                 case 'timepicker':
                     return xui.UI.TimePicker._ensureValue(null,value);
