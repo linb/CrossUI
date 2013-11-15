@@ -282,7 +282,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                             doc.attachEvent("onkeydown",event);
                                             win.attachEvent("onfocus",_focus);
                                             win.attachEvent("onblur",_blur);
-                                            self.$beforeDestroy=function(){
+                                            (self.$beforeDestroy=(self.$beforeDestroy||{}))["ifmClearMem"]=function(){
                                                 var win=this.$win,
                                                     doc=this.$doc,
                                                     event=this._event;
@@ -314,7 +314,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                     win.detachEvent("onblur",_blur);
                                                 }
                                                 win=doc=event=null;
-                                            }
+                                            };
                                         }
                                     }else{
                                         var prf=self;
@@ -348,7 +348,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                         }
         
                                         //don't ues $ondestory, opera will set doc to null
-                                        self.$beforeDestroy=function(){
+                                        (self.$beforeDestroy=(self.$beforeDestroy||{}))["ifmClearMem"]=function(){
                                             var win=this.$win,
                                                 doc=this.$doc,
                                                 ifr=this.$ifr,
@@ -386,7 +386,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                 }
                                             }
                                             prf=gekfix=event=win=doc=null;
-                                        }
+                                        };
                                     }
                                     
                                     self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
