@@ -224,6 +224,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
     
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
+
+                // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
+                profile.getRoot().height(p.toggle?p.height:'auto');
+                profile.getSubNode("FIELDSET").height(p.toggle?p.height:'auto');
                 
                 if(value){
                     if(ins.afterExpand)

@@ -80,10 +80,10 @@ Class("xui.UI.Flash", "xui.UI",{
             }
         },
         RenderTrigger:function(){
-            this.$beforeDestroy=function(){
+            (this.$beforeDestroy=(this.$beforeDestroy||{}))["flashClearMem"]=function(){
                 if(this.box)
                     this.box._clearMemory(this);
-            }
+            };
             // add swf
             this.boxing().refreshFlash();
         },

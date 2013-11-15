@@ -10024,7 +10024,7 @@ Class('xui.Com',null,{
             if(self.autoDestroy)
                 _.arr.each(self._nodes,function(o){
                     if(o.box && o.box["xui.UI"] && !o.box.$noDomRoot){
-                        o.$afterdestory=function(){
+                        (o.$afterDestroy=(o.$afterDestroy||{}))["comDestroyTrigger"]=function(){
                             if(self.autoDestroy && !self.destroyed)
                                 self.destroy();
                             self=null;
@@ -12704,9 +12704,10 @@ Class('xui.UIProfile','xui.Profile', {
         __gc:function(){
             var ns=this, t;
             if(ns.destroyed)return;
-            // special one
             if(ns.$beforeDestroy){
-                _.tryF(ns.$beforeDestroy,[],ns);
+                _.each(ns.$beforeDestroy,function(f){
+                    _.tryF(f,[],ns);
+                });
                 delete ns.$beforeDestroy;
             }
             _.tryF(ns.$ondestory,[],ns);
@@ -12722,11 +12723,6 @@ Class('xui.UIProfile','xui.Profile', {
 
             //clear cache things
             ns.clearCache();
-
-            //for dock case
-            if(t=ns.$dockParent)
-                if(t=ns.constructor.getFromDom(t))
-                    _.tryF(t.clearCache,[],t);
 
             //for refresh function
             if(!ns.$noReclaim){
@@ -12763,7 +12759,12 @@ Class('xui.UIProfile','xui.Profile', {
             //set once
             ns.destroyed=true;
             //afterDestroy
-            _.tryF(ns.$afterdestory,[],ns);
+            if(ns.$afterDestroy){
+                _.each(ns.$afterDestroy,function(f){
+                    _.tryF(f,[],ns);
+                });
+                delete ns.$afterDestroy;
+            }
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             _.breakO([ns.properties,ns.events, ns.CF, ns.CB, ns.CC, ns.CS, ns],2);
             //set again
@@ -13228,12 +13229,19 @@ Class("xui.UI",  "xui.absObj", {
         destroy:function(){
             this.each(function(o){
                 if(o.destroyed)return;
-                // special one
                 if(o.$beforeDestroy){
-                    _.tryF(o.$beforeDestroy,[],o);
+                    _.each(o.$beforeDestroy,function(f){
+                        _.tryF(f,[],o);
+                    });
                     delete o.$beforeDestroy;
                 }
                 if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
+                if(o.$afterDestroy){
+                    _.each(o.$afterDestroy,function(f){
+                        _.tryF(f,[],o);
+                    });
+                    delete o.$afterDestroy;
+                }
                 if(o.renderId)o.getRoot().remove();
                 else o.__gc();
             });
@@ -14585,6 +14593,9 @@ Class("xui.UI",  "xui.absObj", {
         });
 
         xui.UI.$cache_css2 += xui.UI.buildCSSText({
+            '.xui-css-dockparent':{
+                overflow:'hidden'
+             },
             '.xui-ui-dirty':{
                 $order:1,
                 'background-image': xui.UI.$bg('icons.gif', '', true),
@@ -16255,20 +16266,50 @@ Class("xui.UI",  "xui.absObj", {
 
                     //set shortuct
                     profile.$dockFun=f;
-
                 }
-                if(isWin){
-                    var f=xui.win.$getEvent('onSize','dock');
-                    if(f && f.dockall && f.dockall.length){
-                        xui('html').addClass('xui-css-viewport');
-                        if(t=xui('body').get(0))
-                            t.scroll='no';
+                
+                var fun=function(p,isWin){
+                    var f,t;
+                    if(isWin){
+                        f=xui.win.$getEvent('onSize','dock');
+                        if(f && f.dockall && f.dockall.length){
+                            xui('html').addClass('xui-css-viewport');
+                            if(t=xui('body').get(0))
+                                t.scroll='no';
+                        }else{
+                            xui('html').removeClass('xui-css-viewport');
+                            if(t=xui('body').get(0))
+                                t.scroll='';
+                        }
                     }else{
-                        xui('html').removeClass('xui-css-viewport');
-                        if(t=xui('body').get(0))
-                            t.scroll='';
+                        if(p && p.get(0)){
+                            f=p.$getEvent('onSize','dock');
+                            if(f && f.dockall && f.dockall.length){
+                                p.addClass('xui-css-dockparent');
+                            }else{
+                                p.removeClass('xui-css-dockparent');
+                            }
+                        }
                     }
+                };
+                fun(p,isWin);
+                
+                if(value != 'none'){
+                    (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["releaseDock"]=function(){
+                        profile.unLink('$dockall');
+                        profile.unLink('$dock');
+                        profile.unLink('$dock1');
+                        profile.unLink('$dock2');
+                        fun(p,isWin);
+                        
+                        if( p && p.get(0) && (p=xui.UIProfile.getFromDom(p.id())) )
+                            _.tryF(p.clearCache,[],p);
+                    }
+                }else{
+                    if(profile.$beforeDestroy)
+                         delete profile.$beforeDestroy["releaseDock"];
                 }
+
             }
 
             //run once now
@@ -17944,10 +17985,10 @@ new function(){
             }
         },
         RenderTrigger:function(){
-            this.$beforeDestroy=function(){
+            (this.$beforeDestroy=(this.$beforeDestroy||{}))["flashClearMem"]=function(){
                 if(this.box)
                     this.box._clearMemory(this);
-            }
+            };
             // add swf
             this.boxing().refreshFlash();
         },
@@ -21856,7 +21897,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                             doc.attachEvent("onkeydown",event);
                                             win.attachEvent("onfocus",_focus);
                                             win.attachEvent("onblur",_blur);
-                                            self.$beforeDestroy=function(){
+                                            (self.$beforeDestroy=(self.$beforeDestroy||{}))["ifmClearMem"]=function(){
                                                 var win=this.$win,
                                                     doc=this.$doc,
                                                     event=this._event;
@@ -21888,7 +21929,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                                     win.detachEvent("onblur",_blur);
                                                 }
                                                 win=doc=event=null;
-                                            }
+                                            };
                                         }
                                     }else{
                                         var prf=self;
@@ -21922,7 +21963,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                         }
         
                                         //don't ues $ondestory, opera will set doc to null
-                                        self.$beforeDestroy=function(){
+                                        (self.$beforeDestroy=(self.$beforeDestroy||{}))["ifmClearMem"]=function(){
                                             var win=this.$win,
                                                 doc=this.$doc,
                                                 ifr=this.$ifr,
@@ -21960,7 +22001,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                                 }
                                             }
                                             prf=gekfix=event=win=doc=null;
-                                        }
+                                        };
                                     }
                                     
                                     self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
@@ -24028,6 +24069,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
     
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
+
+                // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
+                profile.getRoot().height(p.toggle?p.height:'auto');
+                profile.getSubNode("FIELDSET").height(p.toggle?p.height:'auto');
                 
                 if(value){
                     if(ins.afterExpand)
