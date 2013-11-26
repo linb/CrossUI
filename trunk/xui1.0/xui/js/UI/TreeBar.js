@@ -385,7 +385,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 },
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu)
-                        return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
+                        return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
                 }
             },
             BOX:{
@@ -399,6 +399,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         EventHandlers:{
             onDblclick:function(profile, item, e, src){},
             onGetContent:function(profile, item, callback){},
+
+            onClick:function(profile, item, e, src){},
+            beforeClick:function(profile, item, e, src){},
+            afterClick:function(profile, item, e, src){},
+            
             onItemSelected:function(profile, item, e, src, type){},
             beforeFold:function(profile,item){},
             beforeExpand:function(profile,item){},
@@ -459,7 +464,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 box = profile.boxing(),
                 ks=xui.Event.getKey(e);
     
+            if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return;
+                
             if(properties.disabled|| item.disabled)return false;
+
+            if(profile.onClick)
+                box.onClick(profile,item,e,src);
+
+            
             //group not fire event
             if(item.sub && (item.hasOwnProperty('group')?item.group:properties.group)){
                 profile.getSubNode('TOGGLE', itemId).onClick();
@@ -526,6 +538,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
                 break;
             }
+            if(profile.afterClick)box.afterClick(profile,item,e,src);
         },
         _onkeydownbar:function(profile, e, src){
             var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey, ctrl=keys.ctrlKey,

@@ -158,6 +158,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 onDblclick:null,
                 onClick:null,
                 onKeydown:null,
+                onContextmenu:null,
                 afterMouseover:null,
                 afterMouseout:null,
                 afterMousedown:null,
@@ -180,6 +181,10 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 },
                 onKeydown:function(profile, e, src){
                     return profile.box._onkeydownbar(profile,e,xui.use(src).parent().xid());
+                },
+                onContextmenu:function(profile, e, src){
+                    if(profile.onContextmenu)
+                        return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
                 }
             },
             MARK:{

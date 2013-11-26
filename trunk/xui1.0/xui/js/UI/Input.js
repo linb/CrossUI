@@ -17,12 +17,11 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         activate:function(){
             var profile = this.get(0);
-            if(profile.renderId){
+            if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
                 if(node){
                     try{
                         node.focus();
-                        if(!node.readOnly && node.select)node.select();
                     }catch(e){}
                 }
             }
@@ -372,19 +371,39 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     }
                     b._asyCheck(profile);
                 },
+                onMouseup:function(profile, e, src){
+                    if(profile.properties.selectOnFocus && profile._justFocus){
+                        var node=xui.use(src).get(0);
+                        if(!node.readOnly && node.select){
+                            _.asyRun(function(){try{node.select()}catch(e){}})
+                        }
+                        delete profile._justFocus;
+                    }
+                },
                 onFocus:function(profile, e, src){
                     var p=profile.properties,b=profile.box;
                     if(p.disabled)return false;
                     if(profile.onFocus)profile.boxing().onFocus(profile);
                     profile.getSubNode('BORDER').tagClass('-focus');
+                    
+                    var node=xui.use(src).get(0);
+                                        
                     //if no value, add mask
                     if(p.mask){
-                        var value=xui.use(src).get(0).value;
+                        var value=node.value;
                         if(!value)
                             _.asyRun(function(){
                                 profile.boxing().setUIValue(value=profile.$Mask);
-                                b._setCaret(profile,xui.use(src).get(0))
+                                b._setCaret(profile,node)
                             });
+                    }
+                    if(p.selectOnFocus && !node.readOnly && node.select){
+                        profile._justFocus=1;
+                        if(xui.browser.kde)
+                            _.asyRun(function(){try{node.select()}catch(e){}})
+                        else{
+                            try{node.select()}catch(e){}
+                        }
                     }
                     //show tips color
                     profile.boxing()._setTB(3);
@@ -417,7 +436,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             tipsOK:'',
 
             dynCheck:false,
-
+            selectOnFocus:true,
             labelSize:{
                 ini:0,
                 action: function(v){
@@ -782,7 +801,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 vf1 = (p.mask&&profile.$MaskFormat) ,
                 vf2 = p.valueFormat || profile.$valueFormat;
             if( (profile.beforeFormatCheck && (profile.boxing().beforeFormatCheck(profile, value)===false)) ||
-                (vf1 && typeof vf1=='string' && !(new RegExp(vf1)).test((value===0?'0':value)||'')) ||
+                // if inputs, check mask valid, or don't
+                (((value&&value.length) && profile.$Mask!==value) && (vf1 && typeof vf1=='string' && !(new RegExp(vf1)).test((value===0?'0':value)||''))) ||
                 (vf2 && typeof vf2=='string' && !(new RegExp(vf2)).test((value===0?'0':value)||''))
             ){
                 profile._inValid=2;

@@ -148,9 +148,14 @@ Class('xui.Debugger', null, {
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();
-               xui('body').append(div);
                allmsg.push(div);
+               if(xui.Dom.css3Support("boxShadow")){
+                   div.css("boxShadow","4px 4px 4px #888");
+               }
             }
+            if(document.body.lastChild!=div.get(0))
+                xui('body').append(div,false,true);
+
             div.__hide=0;
 
             div.css({left:left+'px', width:width+'px', visibility:'visible'})

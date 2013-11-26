@@ -844,51 +844,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             selMode:{
                 ini:'single',
                 listbox:['single', 'multi']
-            },
-            //use ilist defualt items
-            items:{
-                set:function(value){
-                    var o=this;
-                    if(o.renderId){
-                        var box = o.boxing(),
-                            p,
-                            temp = xui.$getGhostDiv(),
-                            children = _.copy(o.children);
-                        o.children.length=0;
-                        _.arr.each(children,function(o){
-                            //for flush dock
-                            delete o[0].$dockParent;
-                            //keep it in dom
-                            temp.appendChild(o[0].getRootNode());
-                        });
-
-                        //bak value
-                        var bv = o.properties.value;
-
-                        //clear all
-                        box.clearItems();
-
-                        //inset items
-                        box.insertItems(value);
-
-                        //restore children
-                        _.arr.each(children,function(v){
-                            box.append.apply(box,v);
-                        });
-
-                        //clear
-                        temp.innerHTML='';
-
-                        //set value
-                        box.setValue(bv,true);
-
-                        //resize
-                        var t=o.getRootNode().style;
-                        xui.UI.$tryResize(o, t.width, t.height,true);
-                        t=null;
-                    }else
-                        o.properties.items = _.copy(value);
-                }
             }
         },
         EventHandlers:{

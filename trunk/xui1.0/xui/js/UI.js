@@ -752,6 +752,9 @@ Class("xui.UI",  "xui.absObj", {
             html=typeof html=='string'?html:'<span style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:16px;">'+message+'</span>';
             return this.each(function(profile){
                 _.resetRun(profile.$xid+':busy',function(profile,key,subId){
+                    // destroyed
+                    if(!profile.box)return;
+
                     var keys=profile.keys,node;
                     key=keys[key]||keys['BORDER']||keys['PANEL']||keys['KEY'];
                     var parentNode=profile.getSubNode(key,subId);
@@ -3239,7 +3242,7 @@ Class("xui.UI",  "xui.absObj", {
             beforeDestroy:function(profile){},
             afterDestroy:function(profile){},
             onShowTips:function(profile, node, pos){},
-            onContextmenu:function(profile, e, node, item){}
+            onContextmenu:function(profile, e, src, item){}
         },
         RenderTrigger:function(){
             var self=this, b=self.boxing(),p=self.properties;
@@ -3300,6 +3303,8 @@ Class("xui.UI",  "xui.absObj", {
                     if(!args){
                         args=profile._$rs_args=[profile,null,null];
                         profile._$rs_timer=_.asyRun(function(){
+                            // destroyed
+                            if(!profile.box)return;
                             if(profile && profile._$rs_args)
                                 xui.UI.$doResize.apply(null,profile._$rs_args);
                         });
@@ -3488,6 +3493,9 @@ Class("xui.UI",  "xui.absObj", {
                                             }
                                         }catch(e){
                                             _.asyRun(function(){
+                                                // destroyed
+                                                if(!o.node)return;
+                                                
                                                 o.width+=1;o.height+=1;
                                                 o.node.cssRegion(o);
                                                 o.width-=1;o.height-=1;
@@ -4179,11 +4187,82 @@ Class("xui.absList", "xui.absObj",{
             items:{
                 ini:[],
                 set:function(value){
-                    var o=this;
-                    if(o.renderId)
-                        o.boxing().clearItems().insertItems(value);
-                    else
-                        o.properties.items = _.copy(value);
+                    var o=this,
+                        ins=o.boxing(),
+                        items=o.properties.items,
+                        children,ia,bv;
+
+                    //bak value
+                    if(typeof ins.setValue=='function'){
+                        bv=o.properties.value;
+                        if(bv && value && value.length){
+                            var i=_.arr.indexOf(value,bv);
+                            if(i===-1)
+                                i=_.arr.subIndexOf(value,"id",o.properties.value);
+                            if(i===-1)
+                                bv=value?value[0]?value[0].id?value[0].id:value[0]:"":"";
+                        }
+                    }
+
+                    // keep children objects
+                    if(items && items.length){
+                        if(o.children && o.children.length){
+                            children=[]
+                            _.arr.each(o.children,function(arr){
+                                children.push(ia=[arr[0].serialize(false,true),null,null]);
+                                if(ia[1]=arr[1]){
+                                    var i=_.arr.indexOf(items,arr[1]);
+                                    if(i===-1)
+                                        i=_.arr.subIndexOf(items,"id",arr[1]);
+                                    if(i!==-1)
+                                        ia[2]=i;
+                                }
+                            });
+                            // destroy all
+                            ins.removeChildren(true,true);
+                        }
+                        ins.clearItems();
+                    }
+ 
+                    ins.insertItems(value?_.copy(value):null);
+
+                    // restore children
+                    if(value && value.length && children){
+                        var hash={},rhash={},len=value.length;
+                        _.arr.each(value,function(item,i){
+                            hash[item.id||item]=i;
+                            rhash[i]=item.id||item;
+                        });
+                        _.arr.each(children,function(arr){
+                            var added;
+                            if(_.isSet(arr[1])){
+                                // add by id
+                                if(hash[arr[1]]){
+                                    ins.append(arr[0],arr[1]);
+                                    added=1;
+                                }else{
+                                    // add by index
+                                    if(rhash[arr[2]]){
+                                        ins.append(arr[0],rhash[arr[2]]);
+                                        added=1;
+                                    }
+                                }
+                            }
+                            if(!added){
+                                ins.append(arr[0],bv);
+                            }
+                        });
+                    }
+                    //try to set value
+                    if(_.isSet(bv)){
+                        ins.setValue(bv,true);
+                    }
+                    if(o.renderId){
+                        //resize
+                        var t=o.getRootNode().style;
+                        xui.UI.$tryResize(o, t.width, t.height,true);
+                        t=null;
+                    }
                 }
             },
             valueSeparator:';'
@@ -4281,7 +4360,8 @@ Class("xui.absValue", "xui.absObj",{
             if(prf.box.$DataModel.selMode && (prop.selMode=='multi'||prop.selMode=='multibycheckbox') && returnArr){
                 if(_.isStr(v))
                     v=v.split(prop.valueSeparator);
-                v.sort();
+                if(v && _.isArr(v) && v.length>1)
+                    v.sort();
             }
             return v;
         },
@@ -4290,7 +4370,7 @@ Class("xui.absValue", "xui.absObj",{
                 prop=prf.properties;
            
             if(!prf.renderId)
-                return prop.value;
+                return prop&&prop.value;
 
             var cv=this._getCtrlValue(),v;
             if(!prf.box._checkValid || false!==prf.box._checkValid(prf,cv))
@@ -4305,7 +4385,8 @@ Class("xui.absValue", "xui.absObj",{
             if(prf.box.$DataModel.selMode && (prop.selMode=='multi'||prop.selMode=='multibycheckbox') && returnArr){
                 if(_.isStr(v))
                     v=v.split(prop.valueSeparator);
-                v.sort();
+                if(v && _.isArr(v) && v.length>1)
+                    v.sort();
             }
             return v;
         },
@@ -4422,9 +4503,7 @@ Class("xui.absValue", "xui.absObj",{
         $abstract:true,
         DataModel:{
             dataBinder:{
-                combobox:function(){
-                    return _.toArr(xui.DataBinder._pool,true);
-                },
+                ini:'',
                 set:function(value,ovalue){
                     var profile=this,
                         p=profile.properties;
@@ -4723,7 +4802,15 @@ new function(){
                             FOCUS:{
                                 tabindex: '{tabindex}',
                                 style:"{_align}",
-                                text:'{caption}'
+                                ICON:{
+                                    $order:1,
+                                    className:'xui-ui-icon {imageClass}',
+                                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                                },
+                                CAPTION:{
+                                    $order:2,
+                                    text:'{caption}'
+                                }
                             }
                         }
                     }
@@ -4745,6 +4832,10 @@ new function(){
                     'font-size':'12px',
                     'text-align':'center',
                     display:'block'
+                },
+                CAPTION:{
+                    'vertical-align':xui.browser.ie6?'baseline':'middle',
+                    display:'inline'
                 }
             },
             Behaviors:{
@@ -4787,11 +4878,25 @@ new function(){
                     }
                 },
 */
+                image:{
+                    format:'image',
+                    action: function(value){
+                        this.getSubNode('ICON')
+                            .css('display',value?'':'none')
+                            .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                    }
+                },
+                imagePos:{
+                    action: function(value){
+                        this.getSubNode('ICON')
+                            .css('backgroundPosition', value);
+                    }
+                },
                 caption:{
                     ini:undefined,
                     action: function(v){
                         v=(_.isSet(v)?v:"")+"";
-                        this.getSubNode('FOCUS').html(xui.adjustRes(v,true));
+                        this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
                     }
                 },
                 hAlign:{
@@ -4848,10 +4953,16 @@ new function(){
                 FOCUS:{
                     tabindex: '{tabindex}',
                     MARK:{
+                        $order:0,
                         className:'xui-uicmd-check'
                     },
-                    CAPTION:{
+                    ICON:{
                         $order:1,
+                        className:'xui-ui-icon {imageClass}',
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                    },
+                    CAPTION:{
+                        $order:2,
                         text:'{caption}'
                     }
                 }
@@ -4895,6 +5006,20 @@ new function(){
             },
             DataModel:{
                 value:false,
+                image:{
+                    format:'image',
+                    action: function(value){
+                        this.getSubNode('ICON')
+                            .css('display',value?'':'none')
+                            .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                    }
+                },
+                imagePos:{
+                    action: function(value){
+                        this.getSubNode('ICON')
+                            .css('backgroundPosition', value);
+                    }
+                },
                 caption:{
                     ini:undefined,
                     action: function(v){

@@ -43,7 +43,7 @@ Class('App', 'xui.Com',{
             SPA.btnLang.setCaption(xui.getRes('app.'+xui.getLang()));
             xui.UI.Border.$abstract=xui.UI.Shadow.$abstract=xui.UI.Resizer.$abstract=true;
             xui.History.setCallback(function(str){
-                var str2=str.replace('#','');
+                var str2=str.replace('#!','');
                 str=str2;
                 if(!str)return;
                 var obj, t, id1, id2, id3, id4;
@@ -325,10 +325,10 @@ Class('App', 'xui.Com',{
         }, 
         _objtree_aftercreated:function (profile) {
             var items=[
-                {id:'Namespace', href:'#Namespace', caption:'Namespace', image:'img/img.gif', imagePos:'left -48px'},
-                {id:'Class', href:'#Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'},
-                {id:'_', href:'#_', caption:'_', image:'img/img.gif', imagePos:'left -48px', sub:[]},
-                {id:'xui', href:'#xui', caption:'xui',image:'img/img.gif', imagePos:'left top', sub:[]}
+                {id:'Namespace', href:'#!Namespace', caption:'Namespace', image:'img/img.gif', imagePos:'left -48px'},
+                {id:'Class', href:'#!Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'},
+                {id:'_', href:'#!_', caption:'_', image:'img/img.gif', imagePos:'left -48px', sub:[]},
+                {id:'xui', href:'#!xui', caption:'xui',image:'img/img.gif', imagePos:'left top', sub:[]}
             ];
             var self=this,
                 o=items[2], id=o.id, sub=o.sub,
@@ -338,7 +338,7 @@ Class('App', 'xui.Com',{
                         if('prototype'!=i && 'constructor' != i&& 'upper' !=i)
                             if(typeof o[i]=='function'&& o[i].$xui$){
 
-                                temp={id:id+'.'+i, href:'#'+id+'.'+i, caption:id+'.'+i, image:'img/img.gif',imagePos:ref._iconPosMap['cls']};
+                                temp={id:id+'.'+i, href:'#!'+id+'.'+i, caption:id+'.'+i, image:'img/img.gif',imagePos:ref._iconPosMap['cls']};
                                 if(typeof xui.getRes('doc.'+id+'.'+i)!='object')
                                     temp.itemClass='ccss-item';
                                 sub=arguments.callee(xui.SC.get(id+'.'+i),ref);
@@ -354,7 +354,7 @@ Class('App', 'xui.Com',{
             for(var i in o){
                 for(var j in o[i]){
                      if('prototype'!=j&&'constructor'!=j&&j.charAt(0)!='_'&&j.charAt(0)!='$'){
-                        sub.push({id:id+'.'+i, href:'#'+id+'.'+i, caption:id+'.'+i, image:'img/img.gif', imagePos:self._iconPosMap[typeof o[i]=='function'?'fun':'hash']});
+                        sub.push({id:id+'.'+i, href:'#!'+id+'.'+i, caption:id+'.'+i, image:'img/img.gif', imagePos:self._iconPosMap[typeof o[i]=='function'?'fun':'hash']});
                         break;
                     }
                 }
@@ -381,7 +381,7 @@ Class('App', 'xui.Com',{
 (flag !==false?((t=xui.SC.get(key)) && (t.$event$||t.$xui$||t.$auto$) ?"":'<a href="javascript:;" onclick="return SPA.showCode(event,\''+key+'\');">&nbsp;&nbsp;&nbsp;&nbsp;['+xui.getRes('app.oCode')+']</a>'):"") +
                     '</h4>' +
                     (con?'<div class="con">'+con+'</div>':"") +
-                    (flag!==false?'<a class="totop" href="#'+okey+'._list"> ^ </a>':'')+
+                    (flag!==false?'<a class="totop" href="#!'+okey+'._list"> ^ </a>':'')+
                     '</div>'
                     ;
         }, 
@@ -399,7 +399,7 @@ Class('App', 'xui.Com',{
                 arr.push('<h2 id="'+key+'._parent'+'" class="inherite"><span class="xui-custom-cmd"></span>'+xui.getRes('app.supCls')+'</h2>');
                 arr.push('<div class="xui-custom-block">')
                 _.arr.each(obj.parent,function(o){
-                    arr.push('<div class="p"><a href="#'+o+'"><div><span class="xui-custom-icon" style="background-position:' +ipm.cls+';"></span>'+ o +'</div></a></div>');
+                    arr.push('<div class="p"><a href="#!'+o+'"><div><span class="xui-custom-icon" style="background-position:' +ipm.cls+';"></span>'+ o +'</div></a></div>');
                 });
                 arr.push('</div>')
             }
@@ -408,7 +408,7 @@ Class('App', 'xui.Com',{
                 arr.push('<h2 id="'+key+'._children'+'" class="inherite"><span class="xui-custom-cmd"></span>'+xui.getRes('app.subCls')+'</h2>');
                 arr.push('<div class="xui-custom-block">')
                 _.arr.each(obj.children,function(o){
-                    arr.push('<div class="p"><a href="#'+o+'"><div><span class="xui-custom-icon" style="background-position:' +ipm.cls+';"></span>'+ o +'</div></a></div>');
+                    arr.push('<div class="p"><a href="#!'+o+'"><div><span class="xui-custom-icon" style="background-position:' +ipm.cls+';"></span>'+ o +'</div></a></div>');
                 });
                 arr.push('</div>')
             }
@@ -437,7 +437,7 @@ Class('App', 'xui.Com',{
                 _.arr.each(obj.vars,function(o){
                     tt=key + dot + o;
                     a1.push(getItem(ipm.mem,o, tt, tt, false));
-                    a2.push("<a id='short-abc' href='#"+tt+"' >"+o+"</a> &nbsp;&nbsp;&nbsp;");
+                    a2.push("<a id='short-abc' href='#!"+tt+"' >"+o+"</a> &nbsp;&nbsp;&nbsp;");
                 });
                 arr.push('<div class="xui-custom-block">'+'<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join('')+'</div>')
             }
@@ -450,7 +450,7 @@ Class('App', 'xui.Com',{
                     _.arr.each(obj.funs.self,function(o){
                         tt=key + dot + o[0];
                         a1.push(getItem(ipm.fun,o[1], tt));
-                        a2.push("<a id='short-abc' name='"+tt+"._list' href='#"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
+                        a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
                     });
                     arr.push('<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join(''))
                 }
@@ -463,7 +463,7 @@ Class('App', 'xui.Com',{
                             tt=i + dot + o[0];
                             a1.push(getItem(ipm.fun,o[1], tt, key+dot+o[0]));
                             tt=key + dot + o[0];
-                            a2.push("<a id='short-abc' name='"+tt+"._list' href='#"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
+                            a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
                         });
                         arr.push('<div class="xui-custom-block">'+'<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join('')+'</div>')
                     }
@@ -477,7 +477,7 @@ Class('App', 'xui.Com',{
                 _.arr.each(obj.provars,function(o){
                     tt=key + pdot + o;
                     a1.push(getItem(ipm.mem,o, tt, tt,false));
-                    a2.push("<a id='short-abc' href='#"+tt+"' >"+o+"</a> &nbsp;&nbsp;&nbsp;");
+                    a2.push("<a id='short-abc' href='#!"+tt+"' >"+o+"</a> &nbsp;&nbsp;&nbsp;");
                 });
                 arr.push('<div class="xui-custom-block">'+'<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join('')+'</div>')
             }
@@ -490,7 +490,7 @@ Class('App', 'xui.Com',{
                     _.arr.each(obj.profuns.self,function(o){
                         tt=key + pdot + o[0];
                         a1.push(getItem(ipm.fun,o[1], tt));
-                        a2.push("<a id='short-abc' name='"+tt+"._list' href='#"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
+                        a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
                     });
                     arr.push('<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join(''))
                 }
@@ -503,7 +503,7 @@ Class('App', 'xui.Com',{
                             tt=i + pdot + o[0];
                             a1.push(getItem(ipm.fun,o[1], tt,key+pdot+o[0]));
                             tt=key + pdot + o[0];
-                            a2.push("<a id='short-abc' name='"+tt+"._list' href='#"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
+                            a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
                         });
                         arr.push('<div class="xui-custom-block">'+'<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join('')+'</div>')
                     }
@@ -521,7 +521,7 @@ Class('App', 'xui.Com',{
                     _.arr.each(obj.events.self,function(o){
                         tt=key + pdot + o[0];
                         a1.push(getItem(ipm.event,o[1], tt, tt));
-                        a2.push("<a id='short-abc' name='"+tt+"._list' href='#"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
+                        a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
                     });
                     arr.push('<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join(''))
                 }
@@ -534,7 +534,7 @@ Class('App', 'xui.Com',{
                             tt=i + pdot + o[0];
                             a1.push(getItem(ipm.event,o[1], tt,key+pdot+o[0]));
                             tt=key + pdot + o[0];
-                            a2.push("<a id='short-abc' name='"+tt+"._list' href='#"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
+                            a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
                         });
                         arr.push('<div class="xui-custom-block">'+'<div class="xui-custom-list">'+a2.join('')+'</div>'+a1.join('')+'</div>')
                     }
@@ -698,7 +698,7 @@ Class('App', 'xui.Com',{
         }, 
         _clickForLoca:function(){
             var a=this,
-                id = a.href.split('#')[1],
+                id = a.href.split(/#[!]?/)[1],
                 node = xui([this]).parent(2).query('a','name',id).next().first();
             if(!node.isEmpty()){
                 node.animate({opacity:[0,1]}, 0,0, 2000, 20).start();

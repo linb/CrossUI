@@ -13,7 +13,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ITEM:{
                     tabindex:'{_tabindex}',
                     className:'{itemClass} {disabled}  {readonly}',
-                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
+                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{itemDisplay}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
                         tagName:'div',

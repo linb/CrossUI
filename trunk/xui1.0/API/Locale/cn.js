@@ -223,7 +223,8 @@ _.set(xui.Locale,["cn","app"], {
                     "value [必需参数]: Number, 数字.",
                     "precision [可选参数]: Number, 小数点后精度. 默认为 2.",
                     "groupingSeparator[可选参数]: String, 千位分隔符. 默认为 ','.",
-                    "decimalSeparator[可选参数]: String, 小数分隔符. 默认为 '.'."
+                    "decimalSeparator[可选参数]: String, 小数分隔符. 默认为 '.'.",
+                    "forceFillZero[可选参数]: Boolean, 是否强制精度默认填充0. 默认为[true]"
                 ]
             },
             clone:{
@@ -4914,6 +4915,9 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"本Com是否随着第一个内UI控件的销毁而销毁.",
                 $rtn:"Boolean"
             },
+            isDestroyed:{
+                $desc:"判断当前对象是否已被销毁."
+            },
             fireEvent:{
                 $desc:"触发自定义的事件",
                 $rtn:"Object",
@@ -5413,6 +5417,10 @@ _.set(xui.Locale,["cn","app"], {
                     "dirtied [可选参数] : Boolean, 是否只获得脏控件的界面值"
                 ]
             },
+            isDirtied:{
+                $desc:"判断绑定控件是否已经被修改.",
+                $rtn:"Boolean"
+            },
             getDirtied:{
                 $desc:"得到脏绑定控件的界面值",
                 $rtn:"Object, 键值对.",
@@ -5897,7 +5905,7 @@ _.set(xui.Locale,["cn","app"], {
     _.set(xui.Locale,["cn","doc","xui","absList"], {
         prototype:{
             activate:{
-                $desc:"激活当前控件(获取焦点状态).",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.abs10-l2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8885,7 +8893,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活按钮(获取焦点状态).",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.sbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8916,6 +8924,30 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.SButton);"+
                     "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getImage :{
+                $desc:"获取图标url路径",
+                $rtn:"String"
+            },
+            setImage :{
+                $desc:"设置图标url路径, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] :String, 图标url路径.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getImagePos :{
+                $desc:"获取图标的css position属性",
+                $rtn:"String"
+            },
+            setImagePos :{
+                $desc:"设置图标的css position属性, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 图标的显示位置.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
             getHAlign :{
@@ -9002,7 +9034,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活(获取焦点状态).",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.SCbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9035,7 +9067,30 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-
+            getImage :{
+                $desc:"获取图标url路径",
+                $rtn:"String"
+            },
+            setImage :{
+                $desc:"设置图标url路径, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] :String, 图标url路径.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getImagePos :{
+                $desc:"获取图标的css position属性",
+                $rtn:"String"
+            },
+            setImagePos :{
+                $desc:"设置图标的css position属性, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 图标的显示位置.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
             onChecked:{
                 $desc:"Fired when SCheckBox is checked.",
                 $paras:[
@@ -9078,7 +9133,7 @@ _.set(xui.Locale,["cn","app"], {
                 $memo:"调用该函数时,以下两个事件将被触发beforeUIValueSet and afterUIValueSet."
             },
             activate:{
-                $desc:"激活按钮(获取焦点状态).",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.btn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9308,7 +9363,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活编辑框(获取焦点状态).",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.input0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9535,6 +9590,18 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getSelectOnFocus:{
+                $desc:"获取是否在获得焦点时自动选择文本.",
+                $rtn:"Boolean"
+            },
+            setSelectOnFocus:{
+                $desc:"设置是否在获得焦点时自动选择文本.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
             getType:{
                 $desc:"获取输入框的类型. 可以是'input'(普通输入框)或 'password'(密码输入框). 默认为 'input'.",
                 $rtn:"String",
@@ -9722,7 +9789,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活文本编辑器.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.TextEditor0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9789,7 +9856,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             activate:{
-                $desc:"激活编组框对象.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.grp0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10177,6 +10244,18 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
+            getForceFillZero:{
+                $desc:"得到是否强制用0填充精度选项.",
+                $rtn:"Boolean"
+            },
+            setForceFillZero:{
+                $desc:"设置是否强制用0填充精度选项.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getPopCtrlProp:{
                 $desc:"得到固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的属性.",
                 $rtn:"Object"
@@ -10215,7 +10294,19 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置货币的显示模板",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String. 必须是[^1-9.,]之外的，并且带有*号的字符串",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getNumberTpl:{
+                $desc:"得到数字的显示模板",
+                $rtn:"String"
+            },
+            setNumberTpl:{
+                $desc:"设置数字的显示模板",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 必须是[^1-9.,-]之外的，并且带有*号的字符串",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -10391,7 +10482,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"当上载文件选择对话框打开时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "node : String, input DOM 元素的 xid."
+                    "src : String, 事件源的 xid."
                 ],
                 $snippet:[
                     "var id='xui.temp.ci99'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10419,13 +10510,13 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"在弹出窗口显示前调用.如返false,弹出窗口不会显示.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "popCtl : xui.UI, 弹出窗口对象."
+                    "popCtl : xui.UIProfile, 弹出窗口对象."
                 ]
             },
             afterPopShow:{
                 $desc:"在弹出窗口显示后调用.",
                 $paras:[
-                    "profile : xui.UIProfile.",
+                    "profile : xui.UIdestroyed.",
                     "popCtl : xui.UI, 弹出窗口对象."
                 ]
             },
@@ -10442,7 +10533,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"当command按钮按下时调用. 只对带有保存按钮的多选框有效",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "node : String, save按钮 DOM 元素的xid."
+                    "src : String, 按钮 DOM 元素的xid."
                 ],
                 $snippet:[
                     "var id='xui.temp.ci11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10661,7 +10752,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                 $desc:"激活该控件,使它获得焦点.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]"
             },
             getColorName:{
@@ -10759,7 +10850,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                 $desc:"激活该控件,使它获得焦点.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]"
             },
             getTimeInput:{
@@ -10877,7 +10968,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                 $desc:"激活该控件,使它获得焦点.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]"
             },
             getCloseBtn:{
@@ -11220,7 +11311,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             activate:{
-                $desc:"激活该控件,使它获得焦点.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.list0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11763,7 +11854,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             activate:{
-                $desc:"激活这个Panel.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $paras:[
                     "flag [可选参数] : Boolean, false表示去掉激活."
@@ -12867,7 +12958,7 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             activate:{
-                $desc:"激活当前控件(获取焦点状态).",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]"
             },
             getTagInput:{
@@ -13590,7 +13681,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活对话框窗口.",
+                $desc:"激活控件(获得焦点).",
                 $rtn:"[self]",
                 $paras:[
                     "flag [可选参数] : Boolean, false表示去掉激活"
@@ -13602,6 +13693,9 @@ _.set(xui.Locale,["cn","app"], {
             close:{
                 $desc:"关闭对话框.",
                 $rtn:"[self]",
+                $paras:[
+                    "triggerEvent [可选参数] : Boolean, 指示是否触发beforeClose事件. 默认为[true]"
+                ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.close();},1000);"
                 ]
@@ -15124,6 +15218,33 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            beforeClick:{
+                $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onClick:{
+                $desc:"在单击条目的时候触发该事件.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            afterClick:{
+                $desc:"在单击条目后触发该事件",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
             beforeExpand:{
                 $desc:"在某个节点展开前调用. 如返回 false,节点将不会展开.",
                 $paras:[
@@ -15157,7 +15278,7 @@ _.set(xui.Locale,["cn","app"], {
         constructor:{
             $desc:"生成xui.UI.TreeGrid对象."
         },
-        getCellPro:{
+        getCellOption:{
             $desc:"获取指定单元格的属性值,属性名称由参数指定.",
             $rtn:"String",
             $paras:[
@@ -15169,13 +15290,24 @@ _.set(xui.Locale,["cn","app"], {
                 "var id='xui.temp.grid0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                 "var o=new xui.UI.TreeGrid({editable:false, position:'relative'});"+
                 "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                "o.setActiveMode('cell').afterCellActive(function(profile, cell){xui.message(profile.box.getCellPro(profile,cell,'type'))});"+
+                "o.setActiveMode('cell').afterCellActive(function(profile, cell){xui.message(profile.box.getCellOption(profile,cell,'type'))});"+
                 "xui(id).prepend(o);"+
                 "}"
             ]
         },
+        isHotRow:{
+            $desc:"是否是热行.",
+            $rtn:"Boolean",
+            $paras:[
+                "row [必需参数] : String/Object, 行对象或id."
+            ]
+        },
         prototype:{
             KEY:{$desc:"本类名"},
+            activate:{
+                $desc:"激活控件(获得焦点).",
+                $rtn:"[self]"
+            },
             getActiveMode :{
                 $desc:"获取表格的选取模式.",
                 $rtn:"String, 'cell', 'row' 或 'none'.",
@@ -15273,6 +15405,18 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getNumberTpl:{
+                $desc:"得到数字的显示模板",
+                $rtn:"String"
+            },
+            setNumberTpl:{
+                $desc:"设置数字的显示模板",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 必须是无数字的，并且带有*号的字符串",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -16116,6 +16260,13 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            adjustEditor:{
+                $desc:"调节单元格编辑器.",
+                $rtn:"[self]",
+                $paras:[
+                    "adjustFun [可选参数] : Function(/Object:editor, Object:cell/), 调节函数，如果不输入调节函数，会自动调节编辑器的位置和大小."
+                ]
+            },
             getRowNumbered :{
                 $desc:"判断是否在行前显示行号",
                 $rtn:"Boolean",
@@ -16381,8 +16532,16 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            beforeCellKeydown:{
+                $desc:"在单元格键盘事件前被调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell : Object, 单元格对象.",
+                    "keys : Object, 参见xui.Event.getKey函数"
+                ]
+            },
             afterCellFocused:{
-                $desc:"在单元格或得焦点后被调用.",
+                $desc:"在单元格获得焦点后被调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "cell : Object, 单元格对象.",
@@ -16623,7 +16782,7 @@ _.set(xui.Locale,["cn","app"], {
                ]
             },
             beforeComboPop :{
-                $desc:"当单元格按钮被单击时调用,只对单元格为'button/getter/popbox/cmdbox'时有效.",
+                $desc:"当单元格的编辑控件Pop按钮被单击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "cell: Object, cell 对象.",
@@ -16641,6 +16800,33 @@ _.set(xui.Locale,["cn","app"], {
                     "o.beforeComboPop(function(p,cell){xui.message(cell.value)});" +
                     "}"
                ]
+            },
+            beforePopShow :{
+                $desc:"在单元格的编辑控件的下拉框被显示前调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object, cell 对象.",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
+                    "popCtl : xui.UIProfile, 弹出窗口对象."
+                ]
+            },
+            afterPopShow :{
+                $desc:"在单元格的编辑控件的下拉框被显示后调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object, cell 对象.",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
+                    "popCtl : xui.UIProfile, 弹出窗口对象."
+                ]
+            },
+            onCommand :{
+                $desc:"在单元格的编辑控件的命令按钮被点击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object, cell 对象.",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
+                    "src : String, 按钮 DOM 元素的xid."
+                ]
             },
             onClickGridHandler:{
                 $desc:"当点击列头和行头的共同区域时触发.",

@@ -655,7 +655,8 @@ Class('xui.DragDrop',null,{
                 if(!region || !region.get(0)){
                     region=d._Region=xui.create(s1+'top'+s2+'left:0;top:0;width:100%;height:0;"></div>'+s1+'right'+s2+'right:0;top:0;height:100%;width:0;"></div>'+s1+'bottom'+s2+'bottom:0;left:0;width:100%;height:0;"></div>'+s1+'left:solid 2px #ff6600;width:0;left:0;top:0;height:100%;"></div>');
                     rh=d._rh=xui([region.get(1),region.get(3)]);
-                }target=xui(target);
+                }
+                target=xui(target);
                 if(xui.browser.ie6)rh.height('100%');
                 if(target.css('display')=='block'){
                     xui.setNodeData(region.get(0),'zIndexIgnore', 1);

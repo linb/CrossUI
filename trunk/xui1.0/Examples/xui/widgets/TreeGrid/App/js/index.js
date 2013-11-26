@@ -270,7 +270,7 @@ Class('App', 'xui.Com',{
             xui.message(cell._row.id+'/'+cell._col.id+' clicked!');
         },
         _tg1_beforeComboPop:function(profile, cell, proEditor){
-            switch(profile.box.getCellPro(profile, cell, 'type')){
+            switch(profile.box.getCellOption(profile, cell, 'type')){
                 case 'getter':
                     proEditor.boxing().setUIValue(_());
                 return false;
