@@ -22870,7 +22870,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             if(pro.dropListHeight)
                                 o.setHeight(pro.dropListHeight);
                             else
-                                o.adjustSize();
+                                o.setHeight('auto');
                             o.afterClick(function(){
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
@@ -23720,7 +23720,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                         // if popped
                         if(o.$poplink)
-                            o.$poplink.boxing().setItems(value).adjustSize();
+                            o.$poplink.boxing().setItems(value);
                         else
                             o.boxing().clearPopCache();
                     }
@@ -26879,12 +26879,17 @@ Class("xui.UI.Group", "xui.UI.Div",{
         },
         adjustSize:function(){
             return this.each(function(profile){
-                var items = profile.getSubNode('ITEMS'),pp=profile.properties;
-                items.height('auto');
-                var h = Math.min(pp.maxHeight, items.offsetHeight());
-                pp.height=h;
-                items.height(h);
-                profile.getRoot().height(h);
+                if(profile.properties.height!='auto'){
+                    var items = profile.getSubNode('ITEMS'),pp=profile.properties;
+                    items.height('auto');
+                    var h = Math.min(pp.maxHeight, items.offsetHeight());
+                    pp.height=h;
+                    items.height(h);
+                    profile.getRoot().height(h);
+                }else{
+                    items.height('auto');
+                    profile.getRoot().height('auto');
+                }
             });
         },
         activate:function(){

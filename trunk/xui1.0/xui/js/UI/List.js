@@ -56,12 +56,17 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         },
         adjustSize:function(){
             return this.each(function(profile){
-                var items = profile.getSubNode('ITEMS'),pp=profile.properties;
-                items.height('auto');
-                var h = Math.min(pp.maxHeight, items.offsetHeight());
-                pp.height=h;
-                items.height(h);
-                profile.getRoot().height(h);
+                if(profile.properties.height!='auto'){
+                    var items = profile.getSubNode('ITEMS'),pp=profile.properties;
+                    items.height('auto');
+                    var h = Math.min(pp.maxHeight, items.offsetHeight());
+                    pp.height=h;
+                    items.height(h);
+                    profile.getRoot().height(h);
+                }else{
+                    items.height('auto');
+                    profile.getRoot().height('auto');
+                }
             });
         },
         activate:function(){
