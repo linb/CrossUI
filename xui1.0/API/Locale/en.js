@@ -222,7 +222,8 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required]: Number,  the target number.",
                     "precision [Optional]: Number, the number of digits after the decimal point. Default is 2.",
                     "groupingSeparator[Optional]: String, thousands separator. Default is  ','.",
-                    "decimalSeparator[Optional]: String, decimal separator. Default is  '.'."
+                    "decimalSeparator[Optional]: String, decimal separator. Default is  '.'.",
+                    "forceFillZero[Optional]: Boolean, forces to fill zeros for precision or doesn't. Default is [true]"
                 ]
             },
             clone:{
@@ -4900,6 +4901,9 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To determine whether the first inner UI control's detory will trigger com's destroy or not.",
                 $rtn:"Boolean"
             },
+            isDestroyed:{
+                $desc:"To determine whether the current object is destroyed or not."
+            },
             fireEvent:{
                 $desc:"Fires event.",
                 $rtn:"Object",
@@ -5399,6 +5403,10 @@ _.set(xui.Locale,["en","app"], {
                     "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]",
                     "dirtied [Optional] : Boolean, to determine whether return dirtied controls only"
                 ]
+            },
+            isDirtied:{
+                $desc:"To check whether or not bound UI controls are modified.",
+                $rtn:"Boolean"
             },
             getDirtied:{
                 $desc:"To get all dirtied bound controls' UI values",
@@ -8945,7 +8953,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates this button.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.sbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8976,6 +8984,30 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.SButton);"+
                     "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getImage :{
+                $desc:"Gets image url.",
+                $rtn:"String"
+            },
+            setImage :{
+                $desc:"Sets image url, and reflects the value to UI.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] :String,  image path.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getImagePos :{
+                $desc:"Gets image postion.",
+                $rtn:"String"
+            },
+            setImagePos :{
+                $desc:"Sets image image postion, and reflects the value to UI.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getHAlign :{
@@ -9064,7 +9096,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates this checkbox.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.scbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9095,6 +9127,30 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.SCheckBox);"+
                     "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getImage :{
+                $desc:"获取图标url路径",
+                $rtn:"String"
+            },
+            setImage :{
+                $desc:"设置图标url路径, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] :String, 图标url路径.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getImagePos :{
+                $desc:"获取图标的css position属性",
+                $rtn:"String"
+            },
+            setImagePos :{
+                $desc:"设置图标的css position属性, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 图标的显示位置.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
             onChecked:{
@@ -9137,7 +9193,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             activate:{
-                $desc:"Activates this button.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.btn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9368,7 +9424,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates the current input box.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.input0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9595,6 +9651,17 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getSelectOnFocus:{
+                $desc:"Gets the property value, which determines whether inner text will be selected when it's focused, or won't.",
+            },
+            setSelectOnFocus:{
+                $desc:"Sets this property to determine whether inner text will be selected when it's focused, or won't.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : 'input' or 'password'. Default is 'input'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getType:{
                 $desc:"Gets input box type. ",
                 $rtn:"String",
@@ -9795,7 +9862,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates the current UI Object.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.TextEditor0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9862,7 +9929,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             activate:{
-                $desc:"Activates the current UI Object.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.grp0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10251,6 +10318,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
+            getForceFillZero:{
+                $desc:"Gets the property of 'whether fills zero for precision or doesnt'.",
+                $rtn:"Boolean"
+            },
+            setForceFillZero:{
+                $desc:"Sets the property of 'whether fills zero for precision or doesnt'.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getPopCtrlProp:{
                 $desc:"Gets properties of the standard pop control('combobox,listbox,helpinput,date,time,datetime,color').",
                 $rtn:"Object"
@@ -10289,7 +10368,19 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the currency template",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : String. Must be a string with a '*' and no number char.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getNumberTpl:{
+                $desc:"Gets the number template",
+                $rtn:"String"
+            },
+            setNumberTpl:{
+                $desc:"Sets the number template",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. Must be a string with a '*' and no number char.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -10493,7 +10584,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired before the pop-up window shows. If returns false, the default pop action won't show.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "popCtl : xui.UI, pop-up window UI Control."
+                    "popCtl : xui.UIProfile, pop-up window UI Control."
                 ]
             },
             afterPopShow:{
@@ -10735,7 +10826,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates it.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]"
             },
             getColorName:{
@@ -10833,7 +10924,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates it.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]"
             },
             getTimeInput:{
@@ -10951,7 +11042,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates the current UI Object.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]"
             },
             getCloseBtn:{
@@ -11294,7 +11385,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             activate:{
-                $desc:"Activates the current UI Object.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.list0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11837,7 +11928,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             activate:{
-                $desc:"Activates Panel.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $paras:[
                     "flag [Optional] : Boolean, false represents deactive."
@@ -12942,7 +13033,7 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             activate:{
-                $desc:"Activates the current UI Object.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]"
             },
             getTagInput:{
@@ -13664,7 +13755,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             activate:{
-                $desc:"Activates dialog.",
+                $desc:"Activates it(set focus).",
                 $rtn:"[self]",
                 $paras:[
                     "flag [Optional] : Boolean, false represents deactive."
@@ -13676,6 +13767,9 @@ _.set(xui.Locale,["en","app"], {
             close:{
                 $desc:"To close the dialog.",
                 $rtn:"[self]",
+                $paras:[
+                    "triggerEvent [Optional] : Boolean, indicates if the function trigger beforeClose event or not. Defalut is [true]"
+                ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.close();},1000);"
                 ]
@@ -15197,6 +15291,33 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            beforeClick:{
+                $desc:"Fired before a list item was clicked. If returns false, click function will be ignored.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, the DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onClick:{
+                $desc:"Fired when a list item was clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, the DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            afterClick:{
+                $desc:"Fired after a list item was clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, the DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
             beforeExpand:{
                 $desc:"Fired before a node expands. If returns false, function will be ignored.",
                 $paras:[
@@ -15232,25 +15353,36 @@ _.set(xui.Locale,["en","app"], {
         constructor:{
             $desc:"Creates a xui.UI.TreeGrid Object."
         },
-        getCellPro:{
+        getCellOption:{
             $desc:"Gets the spcefied cell's property value according to the given property key.",
             $rtn:"String",
             $paras:[
-                "profile [Required] : the xui.UIProfile of TreeGrid.",
-                "cell [Required] : the cell Object.",
+                "profile [Required] : xui.UIProfile, the xui.UIProfile of TreeGrid.",
+                "cell [Required] : Object, the cell Object.",
                 "key [Required] : String, the target property key."
             ],
             $snippet:[
                 "var id='xui.temp.grid0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                 "var o=new xui.UI.TreeGrid({editable:false, position:'relative'});"+
                 "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                "o.setActiveMode('cell').afterCellActive(function(profile, cell){xui.message(profile.box.getCellPro(profile,cell,'type'))});"+
+                "o.setActiveMode('cell').afterCellActive(function(profile, cell){xui.message(profile.box.getCellOption(profile,cell,'type'))});"+
                 "xui(id).prepend(o);"+
                 "}"
             ]
         },
+        isHotRow:{
+            $desc:"To determine whether or not the row is the Hot Row.",
+            $rtn:"Boolean",
+            $paras:[
+                "row [Required] : String/Object, the row id or object."
+            ]
+        },
         prototype:{
             KEY:{$desc:"Class Name"},
+            activate:{
+                $desc:"Activates it(set focus).",
+                $rtn:"[self]"
+            },
             getActiveMode :{
                 $desc:"To determine grid active mode.",
                 $rtn:"String, 'cell', 'row' or 'none'. ",
@@ -15347,7 +15479,19 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the currency template",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : String. Must be a string with a '*' and be not in [^1-9.,].",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getNumberTpl:{
+                $desc:"Gets the number template",
+                $rtn:"String"
+            },
+            setNumberTpl:{
+                $desc:"Sets the number template",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. Must be a string with a '*' and be not in [^1-9.,-].",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -16191,6 +16335,13 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            adjustEditor:{
+                $desc:"To adjust cell editor.",
+                $rtn:"[self]",
+                $paras:[
+                    "adjustFun [Optional] : Function(/Object:editor, Object:cell/), adjust function(if it's no-specified, 'adjustEditor' will adjust editor's positoin/size according to cell)."
+                ]
+            },
             getRowNumbered :{
                 $desc:"Gets the RowNumbered property value on the first UIProfile",
                 $rtn:"Boolean",
@@ -16455,6 +16606,14 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            beforeCellKeydown:{
+                $desc:"Fired before cell keyboard event.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell : Object, cell object.",
+                    "keys : Object, Refer to xui.Event.getKey "
+                ]
+            },
             afterCellFocused:{
                 $desc:"Fired after the cell is focused.",
                 $paras:[
@@ -16714,7 +16873,7 @@ _.set(xui.Locale,["en","app"], {
                ]
             },
             beforeComboPop :{
-                $desc:"Fired when a cell which type is 'getter/popbox/cmdbox' is clicked.",
+                $desc:"Fired when a cell's editor pop button is clicked. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "cell: Object.",
@@ -16732,6 +16891,33 @@ _.set(xui.Locale,["en","app"], {
                     "o.beforeComboPop(function(p,cell){xui.message(cell.value)});" +
                     "}"
                ]
+            },
+            beforePopShow :{
+                $desc:"Fired before cell's editor drop window is showed. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color'.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object.",
+                    "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
+                    "popCtl : xui.UIProfile, pop-up window UI Control."
+                ]
+            },
+            afterPopShow :{
+                $desc:"Fired after cell's editor drop window is showed. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color'.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object.",
+                    "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
+                    "popCtl : xui.UIProfile, pop-up window UI Control."
+                ]
+            },
+            onCommand :{
+                $desc:"Fired when a cell's editor command button is clicked. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object.",
+                    "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
+                    "src : String, command button's xid."
+                ]
             },
             onClickGridHandler:{
                 $desc:"Fired when the left/top cell is clicked.",

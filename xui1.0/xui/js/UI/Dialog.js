@@ -52,8 +52,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         top=(top||top===0)?top:p.top;
                         left=(left||left===0)?left:p.left;
                         case 'center':
-                        top=(top||top===0)?top:((pr.height()-p.height)/2);
-                        left=(left||left===0)?left:((pr.width()-p.width)/2);
+                        top=(top||top===0)?top:Math.max(0,(pr.height()-p.height)/2);
+                        left=(left||left===0)?left:Math.max(0,(pr.width()-p.width)/2);
                         break;
                     }
                     if(left<0)left=0;
@@ -99,9 +99,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             });
             return this;
         },
-        close:function(){
+        close:function(triggerEvent){
             return this.each(function(profile){
-                if(profile.beforeClose && false === profile.boxing().beforeClose(profile))
+                if(false!==triggerEvent && profile.beforeClose && false === profile.boxing().beforeClose(profile))
                     return;
                 if(profile.inClosing)return;
                 profile.inClosing=1;
@@ -494,9 +494,7 @@ if(xui.browser.ie){
             tips:null,
             border:null,
             disabled:null,
-            dock:{
-                hidden:true
-            },
+            dock:'none',
             initPos:{
                 ini:'center',
                 listbox:['auto','center']

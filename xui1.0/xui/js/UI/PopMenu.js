@@ -368,7 +368,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'white-space': 'nowrap',
                 'font-size':'1px',
                 'line-height':'1px',
-                padding:'1px',
+                padding:'2px 0',
                 margin:'2px 2px 2px 26px',
                 background: xui.UI.$bg('split_horizontal.gif', 'repeat-x left top', true)
             },

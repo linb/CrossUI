@@ -195,6 +195,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
     
                             _.resetRun('RichEditor:'+domId, function(){
+                                // destroyed
+                                if(!kprf.box)return;
                                 xui.UI.RichEditor._updateToolbar(domId)
                             },100);
     
@@ -212,6 +214,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             if(kprf.properties.disabled||kprf.properties.readonly)return;
                             
                             _.resetRun('RichEditor:'+domId, function(){
+                                // destroyed
+                                if(!kprf.box)return;
                                 xui.UI.RichEditor._updateToolbar(domId, true)
                             },100);
 
@@ -228,6 +232,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             if(kprf){
                                 var ins=kprf.boxing();
                                 _.asyRun(function(){
+                                    // destroyed
+                                    if(!kprf.box)return;
                                     ins.refresh(); 
                                 });
                             }
@@ -592,6 +598,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         node.setBlurTrigger(editor.$xid);
                         xui.Event.keyboardHook('esc');
                         _.asyRun(function(){
+                            // destroyed
+                            if(!editor||!editor.$win)return;
                             editor.$win.focus()
                         });
                     };
@@ -616,7 +624,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     //for esc
                     xui.Event.keyboardHook('esc',0,0,0,function(){
                         _clear();
-                    });
+                    },null,null,prfile.domId);
                 }
                 //set beforeUIValueSet function
                 switch(cmd){

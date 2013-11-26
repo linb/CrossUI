@@ -9,8 +9,13 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     className:'{itemClass} {_endsClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
+                    ICON:{
+                        $order:10,
+                        className:'xui-ui-icon {imageClass}',
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                    },
                     CAPTION:{
-                        $order:1,
+                        $order:11,
                         text:'{caption}'
                     }
                 }

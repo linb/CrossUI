@@ -321,6 +321,9 @@ Class('xui.Com',null,{
             });
             return self;
         },
+        isDestroyed:function(){
+            return !!this.destroyed;
+        },
         destroy:function(threadid){
             var self=this,ns=self._nodes;
             self.threadid=threadid;

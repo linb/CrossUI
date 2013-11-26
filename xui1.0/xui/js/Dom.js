@@ -2653,7 +2653,7 @@ type:4
 
             method=method||'get';
             action=action||'';
-            target=target||'_blank';
+            target=target||(action.substring(0,6).toLowerCase()=='mailto'?'_self':'_blank');
             var _t=[];
             if(!_.isEmpty(data)){
                 if(method.toLowerCase()=='get'){
@@ -2987,13 +2987,20 @@ type:4
                 if(ks[0].length==1)ks[0]=ks[0].toLowerCase();
                 set = xui.$cache.hookKey[ks.join(":")];
                 //if hot function return false, stop bubble
-                if(set)
-//                    try{
-                        if(_.tryF(set[0],set[1],set[2])===false){
-                            event.stopBubble(e);
-                            return false;
+                if(set){
+                    // auto clear function
+                    if(set[3]){
+                        if(typeof set[3]=='function'?false===(set[3])():(!xui(set[3]).size())){
+                            delete xui.$cache.hookKey[ks.join(":")];
+                            return;
                         }
-//                    }catch(e){}
+                    }
+                    if(_.tryF(set[0],set[1],set[2])===false){
+                        event.stopBubble(e);
+                        return false;
+                    }
+                }
+
             }
             return true;
         },"document")
@@ -3006,13 +3013,19 @@ type:4
                 if(ks[0].length==1)ks[0]=ks[0].toLowerCase();
                 set = xui.$cache.hookKeyUp[ks.join(":")];
                 //if hot function return false, stop bubble
-                if(set)
-//                    try{
-                        if(_.tryF(set[0],set[1],set[2])===false){
-                            event.stopBubble(e);
-                            return false;
+                if(set){
+                    // auto clear function
+                    if(set[3]){
+                        if(typeof set[3]=='function'?false===(set[3])():(!xui(set[3]).size())){
+                            delete xui.$cache.hookKeyUp[ks.join(":")];
+                            return;
                         }
-//                    }catch(e){}
+                    }
+                    if(_.tryF(set[0],set[1],set[2])===false){
+                        event.stopBubble(e);
+                        return false;
+                    }
+                }
             }
             return true;
         },"document");

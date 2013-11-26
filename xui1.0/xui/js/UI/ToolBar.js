@@ -252,7 +252,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             'SPLIT':{
                 $order:1,
                 width:'6px',
-                height:'19px',
+                height:'15px',
                 'vertical-align':'middle',
                 background: xui.UI.$bg('split_vertical.gif', 'repeat-y left top', true)
             },
@@ -408,7 +408,19 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         if(!profile.$attached)profile.$attached=[];
                         profile.$attached.push(t);
                     }else{
-                        if(item.type=='split'){
+                        switch(item.type){
+                            case "split":
+                                item.split=true;
+                            break;
+                            case "statusButton":
+                                item.statusButton=true;
+                            break;
+                            case "dropButton":
+                                item.dropButton=true;
+                            break;
+                        }
+                        
+                        if(item.split){
                             item.split=true;
                         }else{
                             if(!item.caption)
@@ -439,7 +451,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 a=sitem.sub||[];
 
                 pid=sitem.id;
-                oitem.mode2 = ('handler'in sitem)?(sitem.handler?'':dn):(profile.properties.handler?'':dn);
+                oitem.mode2 = ('handler' in sitem)?(sitem.handler?'':dn):(profile.properties.handler?'':dn);
                 oitem.grpDisplay=sitem.hidden?dn:'';
                 oitem.sub = arr;
 

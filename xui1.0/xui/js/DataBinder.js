@@ -86,6 +86,17 @@ Class("xui.DataBinder","xui.absObj",{
             });
             return hash;
         },
+        isDirtied:function(){
+            var prf=this.get(0);
+            for(var i=0,l=prf._n.length;i<l;i++){
+                var profile=prf._n[i],
+                    ins = profile.boxing();
+                if((ins.getUIValue()+" ")!==(ins.getValue()+" ")){
+                    return true;
+                }
+            }
+            return false;
+        },
         // get dirtied UI Value
         getDirtied:function(withCaption){
             return this.getUIValue(withCaption, true);
@@ -403,10 +414,19 @@ Class("xui.DataBinder","xui.absObj",{
         setData:function(key,value){
             var prop=this.get(0).properties;
 
-            if(!_.isSet(key))
+            //clear data
+            if(key===false){
+                _.each(prop.data,function(o,i){
+                    prop.data[i]=null;
+                });
+            }
+            // reset all data
+            else if(!_.isSet(key))
                 prop.data={};
+            // reset all data
             else if(_.isHash(key))
                 prop.data=key;
+            // reset one
             else
                 prop.data[key]=value;
 
@@ -557,26 +577,25 @@ Class("xui.DataBinder","xui.absObj",{
                     var o=this,
                         c=xui.DataBinder,
                         _p=c._pool,
-                        to=_p[ovalue],
-                        t=_p[value],
+                        _old=_p[ovalue],
+                        _new=_p[value],
                         ui;
 
                     //if it exists, overwrite it dir
-                    //if(to && t)
+                    //if(_old && _new)
                     //    throw new Error(value+' exists!');
 
                     _p[o.properties.name=value]=o;
                     //modify name
-                    if(to && !t && o._n.length){
+                    if(_old && !_new && o._n.length){
                         ui=xui.absValue.pack(_.copy(o._n));
                         _.arr.each(o._n, function(v){c._unBind(ovalue,v)});
                         ui.setDataBinder(value);
                     }
-                    //pointer to the old one
-                    if(t && !to) o._n=t._n;
+                    //pointer _old the old one
+                    if(_new && !_old) o._n=_new._n;
                     //delete the old name from pool
-                    if(to)delete _p[ovalue];
-
+                    if(_old)delete _p[ovalue];
                 }
             },
             proxyInvoker:{

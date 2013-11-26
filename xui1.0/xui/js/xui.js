@@ -326,15 +326,18 @@ _.merge(_,{
              value=_.toFixedNumber(value,precision);
         return value;            
     },
-    formatNumeric:function(value, precision, groupingSeparator, decimalSeparator){
+    formatNumeric:function(value, precision, groupingSeparator, decimalSeparator, forceFillZero){
         if(_.isSet(precision))precision=parseInt(precision,10);
-        precision=(precision||precision===0)?precision:2;
+        precision=(precision||precision===0)?precision:0;
         groupingSeparator=_.isSet(groupingSeparator)?groupingSeparator:",";
         decimalSeparator=decimalSeparator||".";
         value=""+parseFloat(value);
         if(value.indexOf('e')==-1){
             value=_.toFixedNumber(value,precision) + "";
             value= value.split(".");
+            if(forceFillZero!==false){
+                if((value[1]?value[1].length:0)<precision)value[1]=(value[1]||"")+_.str.repeat('0',precision-(value[1]?value[1].length:0));
+            }
             value[0] = value[0].split("").reverse().join("").replace(/(\d{3})(?=\d)/g, "$1"+groupingSeparator).split("").reverse().join("");
             return value.join(decimalSeparator);
         }else
@@ -2899,6 +2902,7 @@ Class('xui.Profile','xui.absProfile',{
             var o=_.get(ns,['box','_namePool']);
             if(o)delete o[self.alias];
             _.breakO([ns.properties, ns.events, ns],2);
+            ns.destroyed=1;
         },
         boxing:function(){
             //cache boxing

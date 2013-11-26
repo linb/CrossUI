@@ -418,19 +418,19 @@ Class('xui.Event',null,{
             event.returnValue = false;
         },
         //key:control:shift:alt
-        keyboardHook:function(key, ctrl, shift, alt, fun,args,scope){
+        keyboardHook:function(key, ctrl, shift, alt, fun, args, scope, host){
             if(key){
                 var p = xui.$cache.hookKey, k = (key||'').toLowerCase() + ":"  + (ctrl?'1':'') + ":"  +(shift?'1':'')+ ":" + (alt?'1':'');
                 if(typeof fun!='function')delete p[k];
-                else p[k]=[fun,args,scope];
+                else p[k]=[fun,args,scope,host];
              }
             return this;
         },
-        keyboardHookUp:function(key, ctrl, shift, alt, fun,args,scope){
+        keyboardHookUp:function(key, ctrl, shift, alt, fun,args,scope, host){
             if(key){
                 var p = xui.$cache.hookKeyUp, k = (key||'').toLowerCase() + ":"  + (ctrl?'1':'') + ":"  +(shift?'1':'')+ ":" + (alt?'1':'');
                 if(typeof fun!='function')delete p[k];
-                else p[k]=[fun,args,scope];
+                else p[k]=[fun,args,scope,host];
              }
             return this;
         },
