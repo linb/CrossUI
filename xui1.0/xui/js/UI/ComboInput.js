@@ -265,7 +265,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             if(pro.dropListHeight)
                                 o.setHeight(pro.dropListHeight);
                             else
-                                o.adjustSize();
+                                o.setHeight('auto');
                             o.afterClick(function(){
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
@@ -1115,7 +1115,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                         // if popped
                         if(o.$poplink)
-                            o.$poplink.boxing().setItems(value).adjustSize();
+                            o.$poplink.boxing().setItems(value);
                         else
                             o.boxing().clearPopCache();
                     }
