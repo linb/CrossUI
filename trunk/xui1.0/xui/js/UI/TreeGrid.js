@@ -418,9 +418,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ns.getSubNode('CELLS',rid).removeClass(cls);
                     }
                     if(t=options.firstCellStyle)
-                        (tt=ns.getSubNode('FCELL',rid)).fisrt().attr('style',tt.attr('style')+";"+t);
+                        (tt=ns.getSubNode('FCELL',rid)).first().attr('style',tt.attr('style')+";"+t);
                     if(t=options.firstCellClass)
-                        ns.getSubNode('FCELL',rid).fisrt().addClass(t);
+                        ns.getSubNode('FCELL',rid).first().addClass(t);
 
                     if(options.hasOwnProperty('caption'))
                         ns.getSubNode('FCELLCAPTION',rid).get(0).innerHTML=options.caption;
