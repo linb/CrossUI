@@ -4413,7 +4413,7 @@ Class("xui.absValue", "xui.absObj",{
             self._setDirtyMark();
             return self;
         },
-        setUIValue:function(value, force){
+        setUIValue:function(value, force, triggerEventOly){
             var self=this;
             this.each(function(profile){
                 var prop=profile.properties, r,
@@ -4439,7 +4439,7 @@ Class("xui.absValue", "xui.absObj",{
                     }
 
                     //before value copy
-                    if(profile.renderId)box._setCtrlValue(value);
+                    if(profile.renderId && !triggerEventOly)box._setCtrlValue(value);
                     //value copy
                     prop.$UIvalue = value;
 
