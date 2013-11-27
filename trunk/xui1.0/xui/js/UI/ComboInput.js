@@ -36,7 +36,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     : ns.getShowValue(value);
 
                 if(type!=='none'&& type!=='input'&& type!=='password' && !profile.properties.multiLines && typeof value=='string' && r1.test(value))value=value.replace(r2,'');
+                
+                if(profile.$Mask && !value){
+                    value=profile.$Mask;
+                }
+                profile.$_inner=1;
                 o.attr('value',value||'');
+                delete profile.$_inner;
                 if(type=='colorpicker'||type=='color')
                     o.css({backgroundColor:value, color:xui.UI.ColorPicker.getTextColor(value)});
             })
@@ -893,7 +899,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.properties.selectOnFocus && profile._justFocus){
                         var node=xui.use(src).get(0);
                         if(!node.readOnly && node.select){
-                            _.asyRun(function(){try{node.select()}catch(e){}})
+                            profile.$mouseupDelayFun=_.asyRun(function(){
+                                delete profile.$mouseupDelayFun;
+                                try{node.select()}catch(e){}
+                            })
                         }
                         delete profile._justFocus;
                     }
@@ -908,11 +917,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var instance=profile.boxing(),
                         uiv=p.$UIvalue,
                         v=instance._toEditor(uiv),
-                        node=xui.use(src).get(0);
-                    //string compare
-                    if(node.value!==v){
-                        //here, dont use $valueFormat, valueFormat or onValueFormat
-                        //use $getShowValue, $toEditor, $fromEditor related functions
+                        node=xui.use(src).get(0),
+                        nodev=node.value;
+
+                    // if _toEditor adjust value, ensure node value
+                    if(uiv!==v && nodev!==v){
                         profile.$_onedit=true;
                         node.value=v;
                         delete profile.$_onedit;
@@ -921,27 +930,40 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //if no value, add mask
                     if(p.mask){
                         var value=node.value;
-                        if(!value)
-                            _.asyRun(function(){
+                        if(!value){
+                            profile.$focusDelayFun=_.asyRun(function(){
                                 // destroyed
                                 if(!profile.box)return;
-                                profile.boxing().setUIValue(value=profile.$Mask);
-                                b._setCaret(profile,node)
+                                delete profile.$focusDelayFun;
+                                profile.$_onedit=true;
+                                profile.boxing()._setCtrlValue(value=profile.$Mask);
+                                delete profile.$_onedit;
+                                b._setCaret(profile,node);
                             });
+                        }
                     }
-
                     if(p.selectOnFocus && !node.readOnly && node.select){
                         profile._justFocus=1;
-                        if(xui.browser.kde)
-                            _.asyRun(function(){try{node.select()}catch(e){}})
-                        else{
+                        if(xui.browser.kde){
+                            profile.$focusDelayFun2=_.asyRun(function(){
+                                delete profile.$focusDelayFun2;
+                                try{node.select()}catch(e){}
+                            });
+                        }else{
                             try{node.select()}catch(e){}
                         }
                     }
                     //show tips color
-                    profile.boxing()._setTB(3);                
+                    profile.boxing()._setTB(3);   
+                    
+                    b._asyCheck(profile);             
                 },
                 onBlur:function(profile, e, src){
+                    _.resetRun(profile.$xid+":asycheck");
+                    if(profile.$focusDelayFun)clearTimeout(profile.$focusDelayFun);
+                    if(profile.$focusDelayFun2)clearTimeout(profile.$focusDelayFun2);
+                    if(profile.$focusDelayFun2)clearTimeout(profile.$mouseupDelayFun);
+                    
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return false;
                     if(profile.onBlur)profile.boxing().onBlur(profile);
@@ -950,7 +972,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var b=profile.box,
                         instance=profile.boxing(),
                         uiv=p.$UIvalue,
-                        v = instance._fromEditor(xui.use(src).get(0).value);
+                        v = xui.use(src).get(0).value;
+                        
+                    if(profile.$Mask && profile.$Mask==v){
+                        v="";
+                        uiv=profile.$Mask;
+                    }
+                    v=instance._fromEditor(v);
 
                     profile.getSubNode('BORDER').tagClass('-focus',false);
 
@@ -960,7 +988,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         instance._setCtrlValue(uiv);
                     }
                     instance._setDirtyMark();
-                    b._asyCheck(profile);
+                    b._asyCheck(profile,false);
                 },
                 onKeydown : function(profile, e, src){
                    var  p=profile.properties;
@@ -1351,7 +1379,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var me=arguments.callee, reg=me._reg||(me._reg=/^#[\w]{6}$/),prop=profile.properties;
             //if value is empty
             if(!_.isSet(value) || value==='')return '';
-
+            if(profile.$Mask && profile.$Mask==value){
+                value='';
+            }
             switch(profile.properties.type){
                 case 'date':
                 case 'datepicker':

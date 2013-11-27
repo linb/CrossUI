@@ -30,12 +30,21 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         _setCtrlValue:function(value){
             if(_.isNull(value) || !_.isDefined(value))value='';
             return this.each(function(profile){
+                if(profile.$Mask && !value){
+                    value=profile.$Mask;
+                }
+                profile.$_inner=1;
                 profile.getSubNode('INPUT').attr('value',value+"");
+                delete profile.$_inner;
             });
         },
         _getCtrlValue:function(){
-            var node=this.getSubNode('INPUT');
-            return (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : null;
+            var node=this.getSubNode('INPUT'),
+                v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
+            if(this.get(0).$Mask && this.get(0).$Mask==v){
+                v="";
+            }
+            return v;
         },
         _setDirtyMark:function(){
             return this.each(function(profile){
@@ -290,9 +299,14 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             INPUT:{
                 onChange:function(profile, e, src){
+                    if(profile.$_onedit||profile.$_inner)return;
                     var p=profile.properties,b=profile.box,
                         o=profile._inValid,
                         value=xui.use(src).get(0).value;
+                    
+                    if(profile.$Mask && profile.$Mask==value){
+                        value="";
+                    }
                     // trigger events
                     profile.boxing().setUIValue(value);
                     // input/textarea is special, ctrl value will be set before the $UIvalue
@@ -375,14 +389,17 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(profile.properties.selectOnFocus && profile._justFocus){
                         var node=xui.use(src).get(0);
                         if(!node.readOnly && node.select){
-                            _.asyRun(function(){try{node.select()}catch(e){}})
+                            profile.$mouseupDelayFun=_.asyRun(function(){
+                                delete profile.$mouseupDelayFun;
+                                try{node.select()}catch(e){}
+                            })
                         }
                         delete profile._justFocus;
                     }
                 },
                 onFocus:function(profile, e, src){
                     var p=profile.properties,b=profile.box;
-                    if(p.disabled)return false;
+                    if(p.disabled || p.readonly)return false;
                     if(profile.onFocus)profile.boxing().onFocus(profile);
                     profile.getSubNode('BORDER').tagClass('-focus');
                     
@@ -391,17 +408,26 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     //if no value, add mask
                     if(p.mask){
                         var value=node.value;
-                        if(!value)
-                            _.asyRun(function(){
-                                profile.boxing().setUIValue(value=profile.$Mask);
-                                b._setCaret(profile,node)
+                        if(!value){
+                            profile.$focusDelayFun=_.asyRun(function(){
+                                // destroyed
+                                if(!profile.box)return;
+                                delete profile.$focusDelayFun;
+                                profile.$_inner=true;
+                                node.value=profile.$Mask;
+                                delete profile.$_inner;
+                                b._setCaret(profile,node);
                             });
+                        }
                     }
                     if(p.selectOnFocus && !node.readOnly && node.select){
                         profile._justFocus=1;
-                        if(xui.browser.kde)
-                            _.asyRun(function(){try{node.select()}catch(e){}})
-                        else{
+                        if(xui.browser.kde){
+                            profile.$focusDelayFun2=_.asyRun(function(){
+                                delete profile.$focusDelayFun2;
+                                try{node.select()}catch(e){}
+                            });
+                        }else{
                             try{node.select()}catch(e){}
                         }
                     }
@@ -411,19 +437,25 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     b._asyCheck(profile);
                 },
                 onBlur:function(profile, e, src){
-                    var p=profile.properties,b=profile.box;
-                    if(p.disabled || p.readonly)return false;
+                    _.resetRun(profile.$xid+":asycheck");
+                    if(profile.$focusDelayFun)clearTimeout(profile.$focusDelayFun);
+                    if(profile.$focusDelayFun2)clearTimeout(profile.$focusDelayFun2);
+                    if(profile.$focusDelayFun2)clearTimeout(profile.$mouseupDelayFun);
 
+                    var p=profile.properties,b=profile.box;
+                    if(p.disabled || p.readonly)return false;                    
                     if(profile.onBlur)profile.boxing().onBlur(profile);
                     profile.getSubNode('BORDER').tagClass('-focus',false);
                     var value=xui.use(src).get(0).value;
+                    if(profile.$Mask && profile.$Mask==value){
+                        value="";
+                    }
                     //onblur check it
                     if(p.$UIvalue==value)
                         profile.box._checkValid(profile, value);
 
                     profile.boxing()._setDirtyMark();
-
-                    b._asyCheck(profile);
+                    b._asyCheck(profile,false);
                 }
             }
         },
@@ -666,7 +698,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 b=ns.box,
                 f=function(o){
                     if(ie && ('propertyName' in o) && o.propertyName!='value')return;
-                    b._asyCheck(ns);
+                    b._asyCheck(ns,false);
                 };
             if(ie){
                 src.attachEvent("onpropertychange",f);
@@ -708,78 +740,99 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
     //v=value.substr(0,caret);
     //i=v.lastIndexOf(ms);
 
-        _changeMask:function(profile,src,v,dir){
-            var ns=this,
-                p=profile.properties,
-                map=ns._maskMap,
-                ms=ns._maskSpace,
-                maskTxt=p.mask,
-                maskStr = profile.$Mask,
-                input = xui(src),
-                caret = input.caret();
-            //for backspace
-            if(dir===false && caret[0]==caret[1] && caret[0]>0)
-                input.caret(caret[0]-1,caret[0]);
-
-            //for delete
-            if(dir===undefined && caret[0]==caret[1])
-                input.caret(caret[0],caret[0]+1);
-
-            //for caret is from a fix char, nav to the next 'input allow' char
-            if(dir===true){
-                if(maskStr.charAt(caret[0])!=ms){
-                    var from = caret[0] + maskStr.substr(caret[0],maskStr.length).indexOf(ms);
-                    input.caret(from,Math.max(caret[1],from))
+        _changeMask:function(profile,src,v,dir,resetCaret){
+            if(false!==resetCaret){
+                var ns=this,
+                    p=profile.properties,
+                    map=ns._maskMap,
+                    ms=ns._maskSpace,
+                    maskTxt=p.mask,
+                    maskStr = profile.$Mask,
+                    input = xui(src),
+                    caret = input.caret();
+                //for backspace
+                if(dir===false && caret[0]==caret[1] && caret[0]>0)
+                    input.caret(caret[0]-1,caret[0]);
+    
+                //for delete
+                if(dir===undefined && caret[0]==caret[1])
+                    input.caret(caret[0],caret[0]+1);
+    
+                //for caret is from a fix char, nav to the next 'input allow' char
+                if(dir===true){
+                    if(maskStr.charAt(caret[0])!=ms){
+                        var from = caret[0] + maskStr.substr(caret[0],maskStr.length).indexOf(ms);
+                        input.caret(from,Math.max(caret[1],from))
+                    }
                 }
-            }
+    
+                var caret = input.caret(),
+                    value=src.value,
+                    cc=p.mask.charAt(caret[0]),
+                    reg = ns._maskMap[cc],
+                    i,t;
+    
+                if(reg && v && v.length==1){
+                    if(cc=='l')
+                        v=v.toLowerCase();
+                    else if(cc=='u')
+                        v=v.toUpperCase();
+                }
 
-            var caret = input.caret(),
-                value=src.value,
-                cc=p.mask.charAt(caret[0]),
-                reg = ns._maskMap[cc],
-                i,t;
-
-            if(reg && v && v.length==1){
-                if(cc=='l')
-                    v=v.toLowerCase();
-                else if(cc=='u')
-                    v=v.toUpperCase();
-            }
-
-            if(reg && new RegExp('^'+reg+'$').test(v) || v==''){
-                t=value;
-                //if select some text
-                if(caret[0]!=caret[1])
-                    t=t.substr(0,caret[0]) + maskStr.substr(caret[0],caret[1]-caret[0]) + t.substr(caret[1],t.length-caret[1]);
-                //if any char input
-                if(v)
-                    t=t.substr(0,caret[0])+v+t.substr(caret[0]+1,t.length-caret[0]-1);
-
+                if(reg && new RegExp('^'+reg+'$').test(v) || v==''){
+                    t=value;
+                    //if select some text
+                    if(caret[0]!=caret[1])
+                        t=t.substr(0,caret[0]) + maskStr.substr(caret[0],caret[1]-caret[0]) + t.substr(caret[1],t.length-caret[1]);
+                    //if any char input
+                    if(v)
+                        t=t.substr(0,caret[0])+v+t.substr(caret[0]+1,t.length-caret[0]-1);
+    
+                    //get corret string according to maskTxt
+                    var a=[];
+                    _.arr.each(maskTxt.split(''),function(o,i){
+                        a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
+                    });
+    
+                    //if input visible char
+                    if(dir===true){
+                        v=maskStr.substr(caret[0]+1,value.length-caret[0]-1);
+                        i=v.indexOf(ms);
+                        i=caret[0] + (i==-1?0:i) + 1;
+                    }else
+                        i=caret[0];
+                    //in opera, delete/backspace cant be stopbubbled
+                    //add a dummy maskSpace
+                    if(xui.browser.opr){
+                        //delete
+                        if(dir===undefined)
+                            _.arr.insertAny(a,ms,i);
+                        //backspace
+                        if(dir===false)
+                            _.arr.insertAny(a,ms,i++);
+                    }
+                    value=a.join('');
+                    src.value=value;
+                    // maybe cant fire _setCtrlValue
+                    profile.boxing().setUIValue(value==maskStr?"":value);
+                    ns._setCaret(profile,src,i);
+                }
+            }else{
+                var ns=this,
+                    p=profile.properties,
+                    map=ns._maskMap,
+                    maskTxt=p.mask,
+                    maskStr=profile.$Mask,
+                    t=src.value,
+                    a=[];
                 //get corret string according to maskTxt
-                var a=[];
                 _.arr.each(maskTxt.split(''),function(o,i){
                     a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
                 });
-
-                //if input visible char
-                if(dir===true){
-                    v=maskStr.substr(caret[0]+1,value.length-caret[0]-1);
-                    i=v.indexOf(ms);
-                    i=caret[0] + (i==-1?0:i) + 1;
-                }else
-                    i=caret[0];
-                //in opera, delete/backspace cant be stopbubbled
-                //add a dummy maskSpace
-                if(xui.browser.opr){
-                    //delete
-                    if(dir===undefined)
-                        _.arr.insertAny(a,ms,i);
-                    //backspace
-                    if(dir===false)
-                        _.arr.insertAny(a,ms,i++);
-                }
-                profile.boxing().setUIValue(src.value=a.join(''));
-                ns._setCaret(profile,src,i);
+                value=a.join('');
+                src.value=value;
+                // maybe cant fire _setCtrlValue
+                profile.boxing().setUIValue(value==maskStr?"":value);
             }
 
         },
@@ -812,22 +865,30 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 return true;
             }
         },
-        _asyCheck:function(profile){
+        _asyCheck:function(profile,resetCaret){
+            if(!profile.properties.dynCheck && !profile.properties.mask)return;
+
             _.resetRun(profile.$xid+":asycheck",function(){
                 if(!profile.renderId)return;
 
                 var input=profile.getSubNode("INPUT"),
                     src=input.get(0);
                 if(!src)return;
-
-                //for onchange event
-                if(profile.properties.dynCheck)
-                    profile.boxing().setUIValue(src.value);
-
+                    
                 //for mask
                 if(profile.properties.mask){
                     if(src.value.length != profile.$Mask.length)
-                        profile.box._changeMask(profile,src,'',true);
+                        profile.box._changeMask(profile,src,'',true,resetCaret);
+                }
+
+                //for onchange event
+                if(profile.properties.dynCheck){
+                    var v=src.value;
+                    if(profile.$Mask && profile.$Mask==v){
+                        v="";
+                    }
+                    // dont trigger _setContrlValue
+                    profile.boxing().setUIValue(v,undefined,true);
                 }
             });
         },

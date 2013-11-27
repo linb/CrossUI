@@ -231,7 +231,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             PANEL:{
                 position:'absolute',
-                overflow:'hidden',
+                overflow:'auto',
                 /*for opera, opera defalut set border to 3 ;( */
                 'border-width':xui.browser.opr?'0px':null,
                 'font-size':xui.browser.ie?0:null,

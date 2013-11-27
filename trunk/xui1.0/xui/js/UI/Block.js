@@ -21,7 +21,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         _.merge(t,{
             PANEL:{
                 position:'relative',
-                overflow:'hidden'
+                overflow:'auto'
             }
         });
         //set back
