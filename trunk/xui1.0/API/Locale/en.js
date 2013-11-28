@@ -8194,6 +8194,18 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){alert(o.getResizer())});"+
                     "}"
                 ]
+            },
+            getResizerProp:{
+                $desc:"To get Resizer's properties.",
+                $rtn:"Object"
+            },
+            setResizerProp:{
+                $desc:"To set Resizer's properties.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object. {forceVisible:/*Boolean*/,forceMovable:/*Boolean*/,singleDir:/*Boolean*/,vertical:/*Boolean*/,horizontal:/*Boolean*/,minHeight:/*Number*/,minWidth:/*Number*/,maxHeight:/*Number*/,maxWidth:/*Number*/,handlerSize:/*Number*/,handlerOffset:/*Number*/}",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
             }
         }
     });
@@ -13763,6 +13775,10 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate()},500); _.asyRun(function(){dlg2.activate()},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
                 ]
+            },
+            isPinned:{
+                $desc:"To determine whether it is pinned or is't.",
+                $rtn:"Boolean"
             },
             close:{
                 $desc:"To close the dialog.",

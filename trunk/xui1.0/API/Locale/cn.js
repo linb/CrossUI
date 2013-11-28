@@ -8217,6 +8217,18 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){alert(o.getResizer())});"+
                     "}"
                 ]
+            },
+            getResizerProp:{
+                $desc:"得到Resizer的属性.",
+                $rtn:"Object"
+            },
+            setResizerProp:{
+                $desc:"设置Resizer的属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object. {forceVisible:/*Boolean*/,forceMovable:/*Boolean*/,singleDir:/*Boolean*/,vertical:/*Boolean*/,horizontal:/*Boolean*/,minHeight:/*Number*/,minWidth:/*Number*/,maxHeight:/*Number*/,maxWidth:/*Number*/,handlerSize:/*Number*/,handlerOffset:/*Number*/}",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
             }
         }
     });
@@ -13689,6 +13701,10 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate()},500); _.asyRun(function(){dlg2.activate()},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
                 ]
+            },
+            isPinned:{
+                $desc:"是否被固定.",
+                $rtn:"Boolean"
             },
             close:{
                 $desc:"关闭对话框.",

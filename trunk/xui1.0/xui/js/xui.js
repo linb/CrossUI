@@ -769,7 +769,8 @@ _.merge(xui,{
         template:{},
         //cache [key]=>[event handler] map for UIProfile
         UIKeyMapEvents:{},
-        droppable:{}
+        droppable:{},
+        unique:{}
     },
     subscribe:function(topic, subscriber, receiver, asy){
         if(topic===null||topic===undefined||subscriber===null||subscriber===undefined||typeof receiver!='function')return;
