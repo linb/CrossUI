@@ -13736,8 +13736,9 @@ Class("xui.UI",  "xui.absObj", {
                         if(o.afterRemove)
                             o.boxing().afterRemove(o,v[0],v[1],bDestroy);
 
-                        if(bDestroy)
-                            v[0].boxing().destroy();                    }
+                        if(bDestroy && !v[0].destroyed)
+                            v[0].boxing().destroy();
+                    }
                 });
             });
         },
