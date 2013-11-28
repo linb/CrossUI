@@ -769,7 +769,8 @@ _.merge(xui,{
         template:{},
         //cache [key]=>[event handler] map for UIProfile
         UIKeyMapEvents:{},
-        droppable:{}
+        droppable:{},
+        unique:{}
     },
     subscribe:function(topic, subscriber, receiver, asy){
         if(topic===null||topic===undefined||subscriber===null||subscriber===undefined||typeof receiver!='function')return;
@@ -18821,6 +18822,10 @@ Class("xui.UI.Resizer","xui.UI",{
                         _.each('minHeight,minWidth,maxHeight,maxWidth'.split(','),function(i){
                             if(i in t)arg[i]=t[i];
                         });
+                        
+                        if(t.resizerProp && !_.isEmpty(t.resizerProp)){
+                            _.merge(arg,t.resizerProp,'all');
+                        }
                         if(t.tagVar.resizerProp){
                             _.merge(arg,t.tagVar.resizerProp,'all');
                         }
@@ -18828,6 +18833,9 @@ Class("xui.UI.Resizer","xui.UI",{
                     }else
                         b._unResizer();
                 }
+            },
+            resizerProp:{
+                ini:{}
             }
         });
 
@@ -39745,6 +39753,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 //set default focus, the min tabzindex
                 _.resetRun("dlg_focus:"+profile.$xid,function(){profile.getRoot().nextFocus()});
             }
+        },
+        isPinned:function(){
+            return !!_.get(this.get(0),['properties','pinned']);
         }
     },
     Initialize:function(){
@@ -40439,7 +40450,7 @@ if(xui.browser.ie){
         },
         _active:function(profile,flag){
             var self=this;
-            if(flag!==false && self.activeWndId==profile.$xid)return;
+            if(flag!==false && xui.$cache.unique.activeWndId==profile.$xid)return;
 
             self._deActive();
             if(flag!==false){
@@ -40450,14 +40461,14 @@ if(xui.browser.ie){
                 o.css('zIndex',t1>t2?t1:t2);
 
                 profile.getSubNode('TBAR').tagClass('-focus');
-                self.activeWndId = profile.$xid;
+                xui.$cache.unique.activeWndId = profile.$xid;
             }
         },
         _deActive:function(){
             var profile;
-            if(profile=xui.UI._cache['$'+this.activeWndId])
+            if(profile=xui.UI._cache['$'+xui.$cache.unique.activeWndId])
                 profile.getSubNode('TBAR').tagClass('-focus',false);
-            delete this.activeWndId;
+            delete xui.$cache.unique.activeWndId;
         },
         _modal:function(profile){
             var s=profile.getRoot(),temp,p=s.parent(),cover;

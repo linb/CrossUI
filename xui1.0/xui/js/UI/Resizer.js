@@ -146,6 +146,10 @@ Class("xui.UI.Resizer","xui.UI",{
                         _.each('minHeight,minWidth,maxHeight,maxWidth'.split(','),function(i){
                             if(i in t)arg[i]=t[i];
                         });
+                        
+                        if(t.resizerProp && !_.isEmpty(t.resizerProp)){
+                            _.merge(arg,t.resizerProp,'all');
+                        }
                         if(t.tagVar.resizerProp){
                             _.merge(arg,t.tagVar.resizerProp,'all');
                         }
@@ -153,6 +157,9 @@ Class("xui.UI.Resizer","xui.UI",{
                     }else
                         b._unResizer();
                 }
+            },
+            resizerProp:{
+                ini:{}
             }
         });
 
