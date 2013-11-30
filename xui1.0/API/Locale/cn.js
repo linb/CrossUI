@@ -12628,7 +12628,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"清空Tab的容器,并恢复到最初状态.",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 标签项的subId字符串, [true]表示全部子容器."
+                    "subId [必需参数] : String, 标签项的subId字符串, [true]表示全部子容器.",
                     "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
                     "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
                 ]

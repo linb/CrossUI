@@ -66,8 +66,9 @@ Class('xui.Event',null,{
                     if(obj._w==w&&obj._h==h){
                         src=null;
                         return;
+                    }else{
+                        obj._w=w;obj._h=h;
                     }
-                    obj._w=w;obj._h=h;
                 }
             }
 
@@ -100,14 +101,23 @@ Class('xui.Event',null,{
             };
             f.tasks=funs;
             r = f(event, src.$xid);
-
+            // add a patch for resize
+            if(window===src && type=="size"){
+                _.asyRun(function(){
+                    f(event, src.$xid);
+                    f.tasks.length=0;
+                    delete f.tasks;
+                    f=src=null;
+                },150);
+            }
+    
             if(dragdrop){
                 //shortcut for onDrag('mousemove')
                 if(type=='drag')
                     dragdrop._onDrag=f;
                 else if(type=='dragover')
                     dragdrop._onDragover=f;
-            }else{
+            }else if(type!=="size"){
                 f.tasks.length=0;
                 delete f.tasks;
                 f=null;
@@ -142,7 +152,6 @@ Class('xui.Event',null,{
             }
 
             if(r===false)self.stopBubble(event);
-            src=null;                
             return r;
         }
     },
