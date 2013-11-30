@@ -9937,8 +9937,13 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Resets the group's panel view -- removes all children and fold it.",
                 $rtn:"[self]",
                 $paras:[
-                    "destroyChildren [Optional] : Boolean, To determine whether children will be destroyed or not."
+                    "remvoeChildren [Optional] : Boolean, to determine whether children will be remove or not.",
+                    "destroyChildren [Optional] : Boolean, to determine whether children will be destroyed or not."
                 ]
+            },
+            iniPanelView:{
+                $desc:"To fire onIniPanelView event.",
+                $rtn:"[self]"
             },
             activate:{
                 $desc:"Activates it(set focus).",
@@ -11936,8 +11941,13 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Resets the group's panel view -- removes all children and fold it.",
                 $rtn:"[self]",
                 $paras:[
+                    "remvoeChildren [Optional] : Boolean, to determine whether children will be remove or not.",
                     "destroyChildren [Optional] : Boolean, to determine whether children will be destroyed or not."
                 ]
+            },
+            iniPanelView:{
+                $desc:"To fire onIniPanelView event.",
+                $rtn:"[self]"
             },
             activate:{
                 $desc:"Activates it(set focus).",
@@ -12687,6 +12697,22 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "_.asyRun(function(){o.fireItemClickEvent('a')},1000);"+
                     "}"
+                ]
+            },
+            resetPanelView:{
+                $desc:"Resets the Tab's panel container -- removes all children in it.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [Required] : String, item's subId, [true] for all panels.",
+                    "remvoeChildren [Optional] : Boolean, to determine whether children will be remove or not.",
+                    "destroyChildren [Optional] : Boolean, to determine whether children will be destroyed or not."
+                ]
+            },
+            iniPanelView:{
+                $desc:"To fire onIniPanelView event.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [Required] : String, item's subId."
                 ]
             },
             setItems:{
@@ -16357,6 +16383,14 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "adjustFun [Optional] : Function(/Object:editor, Object:cell/), adjust function(if it's no-specified, 'adjustEditor' will adjust editor's positoin/size according to cell)."
                 ]
+            },
+            getEditor:{
+                $desc:"Gets the cell editor.",
+                $rtn:"Object"
+            },
+            getEditCell:{
+                $desc:"Gets the editing cell object.",
+                $rtn:"Object"
             },
             getRowNumbered :{
                 $desc:"Gets the RowNumbered property value on the first UIProfile",

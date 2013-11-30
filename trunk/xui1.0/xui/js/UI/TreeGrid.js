@@ -176,6 +176,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile.$col_pop.destroy();
                 delete profile.$col_pop;
             }
+            //clear editor cache
+            _.each(profile.$cache_editor,function(o){
+                if(!o.destroyed)o.destroy();
+            });
+            profile.$cache_editor={};
         },
         _toggleRows:function(rows, expand){
             var self=this;
@@ -267,9 +272,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 if(type=='min'){
                     _.arr.each(a,function(o,i){
-                        _.each(b=a[i]=a[i].cells,function(v,j){
-                            b[j] = v.value;
-                        });
+                        if(a[i].cells)
+                            _.each(b=a[i]=(a[i].cells||a[i]),function(v,j){
+                                b[j] = v.value;
+                            });
+                        else{
+                            
+                        }
+                            
                     });
                 }
                 return a;
@@ -949,6 +959,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     colId ? ns.getHeaderByColId(colId):
                     rowId ? ns.getRowbyRowId(rowId):null;
             return ns.getSubNode(key, (t&&t._serialId)||true);
+        },
+        getEditor:function(){
+            return _.get(this.get(0),["$curEditor"]);
+        },
+        getEditCell:function(){
+            return _.get(this.get(0),["$cellInEditor"]);
         },
         offEditor:function(){
             var profile=this.get(0),editor;
@@ -2807,6 +2823,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 pro.header.length=0;
                 pro.rows.length=0;
             };
+            ns.$cache_editor={};
             if(!pro.iniFold)
                 ins._toggleRows(pro.rows,true);
             ns.box._asy(ns);
@@ -3928,6 +3945,7 @@ editorDropListHeight
                 // if beforeIniEditor doesnt return an editor
                 if(!editor || !editor['xui.UI']){
                     var type=getPro('type')||'input',
+                        editorCacheKey = getPro('editorCacheKey'),
                         editorProperties = getPro('editorProperties'),
                         editorEvents = getPro('editorEvents'),
                         editorFormat = getPro('editorFormat'),
@@ -3944,8 +3962,12 @@ editorDropListHeight
                     }else if(type=='button'||type=='label')
                         return;
 
-                    // 4. create a ComboInput Editor
-                    editor=new xui.UI.ComboInput({dirtyMark:false,cachePopWnd:false,left:-1000,top:-1000,position:'absolute',visibility:'hidden',zIndex:100});
+                    // 4. try to get editor from cache
+                    if(editorCacheKey && profile.$cache_editor[editorCacheKey])
+                        editor=profile.$cache_editor[editorCacheKey];
+                    // 5. else, create a ComboInput Editor, and cache it
+                    if(!editor)
+                        editor=new xui.UI.ComboInput({dirtyMark:false,cachePopWnd:false,left:-1000,top:-1000,position:'absolute',visibility:'hidden',zIndex:100});
                     switch(type){
                         case 'number':
                         case 'spin':
@@ -4034,7 +4056,10 @@ editorDropListHeight
                         break;
                     }
                     baseNode.append(editor);
-
+                    //cache the stantdard editor
+                    if(editorCacheKey)
+                        profile.$cache_editor[editorCacheKey] = editor;
+                        
                     if(editor.setInputReadonly && editorReadonly)
                         editor.setInputReadonly(true);
                     if(editor.setDropListWidth && editorDropListWidth)
@@ -4153,7 +4178,7 @@ editorDropListHeight
                             profile.boxing().onEndEdit(profile, cell, editor);
                             
                         // don't cache it
-                        if(editor.get(0)){
+                        if(!editorCacheKey && editor.get(0)){
                             editor.destroy();
                         }
                         editor=null;

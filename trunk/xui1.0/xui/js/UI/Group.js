@@ -5,17 +5,28 @@ Class("xui.UI.Group", "xui.UI.Div",{
             profile.getSubNode('HANDLE').focus();
             return this;
         },
-        resetPanelView:function(destroyChildren){
+        resetPanelView:function(removeChildren,destroyChildren){
+            if(!_.isSet(removeChildren))removeChildren=true;
             if(!_.isSet(destroyChildren))destroyChildren=true;
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
                     delete profile.$ini;
-                    ins=profile.boxing();
-                    ins.removeChildren(true,destroyChildren)
+                    if(removeChildren){
+                        ins=profile.boxing();
+                        ins.removeChildren(true,destroyChildren);
+                    }
                     if(profile.properties.toggle)
                         ins.setToggle(false);
                 }
+            });
+        },
+        iniPanelView:function(){
+            return this.each(function(profile){
+                var ins=profile.boxing();
+                if(ins.onIniPanelView && ins.onIniPanelView(profile)!==false){
+                    profile.$ini=true;
+                }                
             });
         }
     },

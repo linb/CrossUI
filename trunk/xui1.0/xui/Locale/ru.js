@@ -1,4 +1,5 @@
 (xui.Locale.ru||(xui.Locale.ru={})).inline={
+    $_$:1,
     ok:'Принять',
     cancel:'Отменить',
     set:'установить',

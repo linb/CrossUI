@@ -414,12 +414,12 @@ html, .xui-uibg-base{
 
 /*xui.UI.Layout*/
 .xui-layout-move-top, .xui-layout-move-bottom{
-    height:8px;
+    height:6px;
     border-top:solid 1px #6d6d6d;
     border-bottom:solid 1px #6d6d6d;
 }
 .xui-layout-move-left, .xui-layout-move-right{
-    width:8px;
+    width:6px;
     border-left:solid 1px #6d6d6d;
     border-right:solid 1px #6d6d6d;
 }
@@ -434,25 +434,25 @@ html, .xui-uibg-base{
 .xui-layout-cmd-top{
     margin-left:-18px;
     width:35px;
-    height:10px;
+    height:8px;
     background-position:-365px -232px;
 }
 .xui-layout-cmd-bottom{
     margin-left:-18px;
     width:35px;
-    height:10px;
+    height:8px;
     background-position:-365px -258px;
 }
 .xui-layout-cmd-left{
     margin-top:-18px;
     height:35px;
-    width:10px;
+    width:8px;
     background-position:-313px -242px;
 }
 .xui-layout-cmd-right{
     margin-top:-18px;
     height:35px;
-    width:10px;
+    width:8px;
     background-position:-339px -242px;
 }
 .xui-layout-cmd-top-mouseover{
@@ -739,7 +739,7 @@ html, .xui-uibg-base{
     border-right-width:1px;
 }
 .setting-xui-layout{
-    width:10px;
+    width:8px;
 }
 /***the last one***/
 .setting-uikey{

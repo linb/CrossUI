@@ -265,7 +265,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'combobox':
                         case 'listbox':
                         case 'helpinput':
-                            o = xui.create('List').render();
+                            o = xui.create('List');
                             o.setHost(profile).setDirtyMark(false).setItems(_.copy(pro.items)).setListKey(pro.listKey||'');
                             o.setWidth(pro.dropListWidth || (pro.width-(pro.labelSize||0)));
                             if(pro.dropListHeight)
@@ -295,7 +295,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             break;
                         case 'time':
                         case 'timepicker':
-                            o = xui.create('TimePicker').render();
+                            o = xui.create('TimePicker');
                             o.setHost(profile);
                             o.beforeClose(function(){
                                if(!this.destroyed)
@@ -312,7 +312,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'date':
                         case 'datepicker':
                         case 'datetime':
-                            o = xui.create('DatePicker').render();
+                            o = xui.create('DatePicker');
 
                             if(type=='datetime')
                                 o.setTimeInput(true);
@@ -335,7 +335,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             break;
                         case 'color':
                         case 'colorpicker':
-                            o = xui.create('ColorPicker').render();
+                            o = xui.create('ColorPicker');
                             o.setHost(profile);
                             o.beforeClose(function(){
                                 if(!this.destroyed)
@@ -362,6 +362,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //set to global cache
                     if(cachekey)
                         profile.box.$drop[cachekey]=profile.$drop;
+
+                    o.render();
                 }
 
                 o=profile.$drop.boxing();
@@ -393,7 +395,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
                     return;
-
                 //pop
                 var node=o.reBoxing();
                 node.popToTop(profile.getSubNode('BOX'));
@@ -446,6 +447,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _.merge(t.FRAME.BORDER,{
             SBTN:{
                 $order:10,
+                className:'xui-ui-unselectable',
                 style:"{_saveDisplay}",
                 STOP:{},
                 SMID:{
@@ -1301,6 +1303,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 case 'spin':
                     t.RBTN={
                         $order:20,
+                        className:'xui-ui-unselectable',
                         style:"{rDisplay}",
                         R1:{
                             R1T:{},
@@ -1316,6 +1319,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 case 'file':
                     t.FILE={
                         $order:20,
+                        className:'xui-ui-unselectable',
                         tagName:'input',
                         type:'file',
                         hidefocus:xui.browser.ie?"hidefocus":null,
@@ -1328,6 +1332,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 default:
                     t.BTN={
                         $order:20,
+                        className:'xui-ui-unselectable',
                         style:"{_popbtnDisplay}",
                         TOP:{},
                         MID:{

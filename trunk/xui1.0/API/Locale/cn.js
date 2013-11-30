@@ -9861,11 +9861,16 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             resetPanelView:{
-                $desc:"删除Group的所有子控件,然后折叠.",
+                $desc:"清空Group的容器,恢复到初始状态，然后折叠.",
                 $rtn:"[self]",
                 $paras:[
-                    "destroyChildren [可选参数] : Boolean, 是否destroy子控件."
+                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
+                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
                 ]
+            },
+            iniPanelView:{
+                $desc:"触发onIniPanelView事件.",
+                $rtn:"[self]"
             },
             activate:{
                 $desc:"激活控件(获得焦点).",
@@ -11859,11 +11864,16 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             resetPanelView:{
-                $desc:"删除Group的所有子控件,然后折叠.",
+                $desc:"清空Panel容器，到初始状态,然后折叠.",
                 $rtn:"[self]",
                 $paras:[
-                    "destroyChildren [可选参数] : Boolean, 是否destroy子控件."
+                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
+                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
                 ]
+            },
+            iniPanelView:{
+                $desc:"触发onIniPanelView事件.",
+                $rtn:"[self]"
             },
             activate:{
                 $desc:"激活控件(获得焦点).",
@@ -12612,6 +12622,22 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "_.asyRun(function(){o.fireItemClickEvent('a')},1000);"+
                     "}"
+                ]
+            },
+            resetPanelView:{
+                $desc:"清空Tab的容器,并恢复到最初状态.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [必需参数] : String, 标签项的subId字符串, [true]表示全部子容器."
+                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
+                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
+                ]
+            },
+            iniPanelView:{
+                $desc:"触发onIniPanelView事件.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [必需参数] : String, 标签项的subId字符串."
                 ]
             },
             setItems:{
@@ -16282,6 +16308,14 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "adjustFun [可选参数] : Function(/Object:editor, Object:cell/), 调节函数，如果不输入调节函数，会自动调节编辑器的位置和大小."
                 ]
+            },
+            getEditor:{
+                $desc:"得到当前的单元格编辑器.",
+                $rtn:"Object"
+            },
+            getEditCell:{
+                $desc:"得到当前正在编辑的单元格.",
+                $rtn:"Object"
             },
             getRowNumbered :{
                 $desc:"判断是否在行前显示行号",

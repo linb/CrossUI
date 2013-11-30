@@ -161,14 +161,14 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 width:'4px',
                 height:'200px',
                 cursor:'e-resize',
-                'background-color':'#f4f4f4',
+                'background-color':'#f0f0f0',
                 'border-width':xui.browser.opr?'0':null,
                 'font-size':xui.browser.ie?0:'',
                 'line-height':xui.browser.ie?0:''
             },
             'MOVE-mouseover':{
                 $order:1,
-                'background-color': '#f0f0f0'
+                'background-color': '#e4e4e4'
             },
             ITEM:{
                 position:'static',
@@ -214,7 +214,6 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     xui.use(src).startDrag(e,{
                         dragType:'copy',
                         targetReposition:false,
-                        targetCSS:{background:"none"},
                         horizontalOnly:true,
                         widthIncrement:10,
                         maxLeftOffset:offset1,
@@ -237,11 +236,10 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                             profile._limited=0;
                         }
                     }
-                    profile._pre.width(profile._preW + p.offset.x);
-                    profile._next.width(profile._nextW - p.offset.x);
                 },
                 onDragstop:function(profile, e, src){
-                    var arr=profile.getSubNode('ITEM',true).get(),
+                     var p=xui.DragDrop.getProfile(),
+                        arr=profile.getSubNode('ITEM',true).get(),
                         n=xui.use(src),
                         l=profile.getSubNode('ITEMS').width(),
                         a=[],t,
@@ -264,6 +262,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                         n.css('backgroundColor',profile._bg);
                         profile._limited=0;
                     }
+                    profile._pre.width(profile._preW + p.offset.x);
+                    profile._next.width(profile._nextW - p.offset.x);
                     if(profile.onColResize)profile.boxing().onColResize(profile, a);
                 }
             },

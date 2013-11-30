@@ -56,17 +56,31 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         },
         adjustSize:function(){
             return this.each(function(profile){
+                var root = profile.getRoot(),
+                    items = profile.getSubNode('ITEMS'),
+                    pp=profile.properties,h,flag;
+                if(root.css('display')=='none'){
+                    flag=1;
+                    root.css('visibility','hidden');
+                }
                 if(profile.properties.height!='auto'){
-                    var items = profile.getSubNode('ITEMS'),pp=profile.properties;
                     items.height('auto');
-                    var h = Math.min(pp.maxHeight, items.offsetHeight());
+                    h=Math.min(pp.maxHeight, items.offsetHeight());
                     pp.height=h;
                     items.height(h);
-                    profile.getRoot().height(h);
                 }else{
                     items.height('auto');
-                    profile.getRoot().height('auto');
+                    h=items.offsetHeight();
+                    if(h>pp.maxHeight){
+                        items.height(pp.maxHeight);
+                        profile.getRoot().height(pp.maxHeight);                        
+                    }
                 }
+                if(flag){
+                    root.css('visibility','');
+                    root.css('display','none');
+                }
+                profile.getRoot().height('auto');
             });
         },
         activate:function(){
@@ -360,7 +374,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             noCtrlKey:true,
             width:120,
             height:150,
-            maxHeight:300
+            maxHeight:420
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
@@ -418,9 +432,19 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
         },
         _onresize:function(profile,width,height){
-            var size=profile.properties.borderType!='none'?2:0;
-            if(height)
+            var pp=profile.properties,
+                size=pp.borderType!='none'?2:0,
+                dock=pp.dock,
+                max=pp.maxHeight;
+            if(height){
                 profile.getSubNode('ITEMS').height(height=='auto'?height:(height-size));
+                if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
+                    if(profile.getSubNode('ITEMS').height()>max){
+                        profile.getSubNode('ITEMS').height(max);
+                        profile.getRoot().height('auto');
+                    }
+                }
+            }
             if(width)
                 profile.getSubNode('ITEMS').width(width=='auto'?width:(width-size));
         }

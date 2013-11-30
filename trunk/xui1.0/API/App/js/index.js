@@ -154,154 +154,155 @@ Class('App', 'xui.Com',{
         }, 
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools
-            var host=this, children=[], append=function(child){children.push(child.get(0))};
+            var host=this, children=[], append=function(child){children.push(child.get(0));};
             
-            append((new xui.UI.PopMenu)
-                .setHost(host,"popLang")
-                .setItems([{"id":"en", "caption":"$app.en"}, {"id":"cn", "caption":"$app.cn"}])
-                .onMenuSelected("_pop_onmenuselected")
+            append((new xui.UI.PopMenu())
+            .setHost(host,"popLang")
+            .setItems([{"id":"en", "caption":"$app.en"}, {"id":"cn", "caption":"$app.cn"}])
+            .onMenuSelected("_pop_onmenuselected")
             );
             
-            append((new xui.UI.Dialog)
-                .setHost(host,"dialog2")
-                .setTop(40)
-                .setWidth(420)
-                .setHeight(360)
-                .setRight(1)
-                .setZIndex(100)
-                .setResizer(false)
-                .setCaption("$app.search")
-                .setMaxBtn(false)
-                .setCloseBtn(false)
-                .setOverflow('hidden')
+            append((new xui.UI.Dialog())
+            .setHost(host,"dialog2")
+            .setTop(40)
+            .setWidth(420)
+            .setHeight(360)
+            .setRight(1)
+            .setZIndex(100)
+            .setResizer(false)
+            .setOverflow("hidden")
+            .setCaption("$app.search")
+            .setMaxBtn(false)
+            .setCloseBtn(false)
             );
             
-            host.dialog2.append((new xui.UI.Block)
-                .setHost(host,"blockQ")
-                .setDock("fill")
-                .setZIndex(100)
+            host.dialog2.append((new xui.UI.Block())
+            .setHost(host,"blockQ")
+            .setDock("fill")
+            .setZIndex(100)
             );
             
-            host.blockQ.append((new xui.UI.Div)
-                .setHost(host,"divQ")
-                .setWidth("auto")
-                .setHeight("auto")
-                .setPosition("relative")
+            host.blockQ.append((new xui.UI.Div())
+            .setHost(host,"divQ")
+            .setWidth("auto")
+            .setHeight("auto")
+            .setPosition("relative")
             );
             
-            host.blockQ.append((new xui.UI.List)
-                .setHost(host,"listQ")
-                .setDirtyMark(false)
-                .setDock("fill")
-                .setSelMode("none")
-                .setValue("")
-                .onItemSelected("_listq_onitemselected")
+            host.blockQ.append((new xui.UI.List())
+            .setHost(host,"listQ")
+            .setDirtyMark(false)
+            .setDock("fill")
+            .setSelMode("none")
+            .setValue("")
+            .onItemSelected("_listq_onitemselected")
             );
             
-            host.blockQ.append((new xui.UI.Block)
-                .setHost(host,"block20")
-                .setDock("bottom")
-                .setHeight(32)
-                .setBorderType("groove")
+            host.blockQ.append((new xui.UI.Block())
+            .setHost(host,"block20")
+            .setDock("bottom")
+            .setHeight(32)
+            .setBorderType("groove")
             );
             
-            host.block20.append((new xui.UI.PageBar)
-                .setHost(host,"pbQ")
-                .setLeft(2)
-                .setTop(2)
-                .setCaption("")
-                .onClick("_pbq_onclick")
+            host.block20.append((new xui.UI.PageBar())
+            .setHost(host,"pbQ")
+            .setLeft(2)
+            .setTop(2)
+            .setCaption("")
+            .onClick("_pbq_onclick")
             );
             
-            host.blockQ.append((new xui.UI.Block)
-                .setHost(host,"block6")
-                .setDock("top")
-                .setHeight(32)
-                .setBorderType("groove")
+            host.blockQ.append((new xui.UI.Block())
+            .setHost(host,"block6")
+            .setDock("top")
+            .setHeight(32)
+            .setOverflow("hidden")
+            .setBorderType("groove")
             );
             
-            host.block6.append((new xui.UI.SLabel)
-                .setHost(host,"lQ1")
-                .setLeft(5)
-                .setTop(6)
-                .setWidth(66)
-                .setCaption("$app.lQ1")
+            host.block6.append((new xui.UI.SLabel())
+            .setHost(host,"lQ1")
+            .setLeft(5)
+            .setTop(6)
+            .setWidth(66)
+            .setCaption("$app.lQ1")
             );
             
-            host.block6.append((new xui.UI.Input)
-                .setHost(host,"iQ1")
-                .setDirtyMark(false)
-                .setLeft(73)
-                .setTop(3)
-                .setWidth(100)
-                .setDynCheck(true)
-                .onChange("_iq1_afteruivalueset")
+            host.block6.append((new xui.UI.Input())
+            .setHost(host,"iQ1")
+            .setDirtyMark(false)
+            .setLeft(73)
+            .setTop(3)
+            .setWidth(100)
+            .setDynCheck(true)
+            .onChange("_iq1_afteruivalueset")
             );
             
-            host.block6.append((new xui.UI.SLabel)
-                .setHost(host,"lQ2")
-                .setLeft(176)
-                .setTop(6)
-                .setWidth(110)
-                .setCaption("$app.lQ2")
+            host.block6.append((new xui.UI.SLabel())
+            .setHost(host,"lQ2")
+            .setLeft(176)
+            .setTop(6)
+            .setWidth(110)
+            .setCaption("$app.lQ2")
             );
             
-            host.block6.append((new xui.UI.Input)
-                .setHost(host,"iQ2")
-                .setDirtyMark(false)
-                .setLeft(289)
-                .setTop(3)
-                .setWidth(110)
-                .setDynCheck(true)
-                .onChange("_iq2_afteruivalueset")
+            host.block6.append((new xui.UI.Input())
+            .setHost(host,"iQ2")
+            .setDirtyMark(false)
+            .setLeft(289)
+            .setTop(3)
+            .setWidth(110)
+            .setDynCheck(true)
+            .onChange("_iq2_afteruivalueset")
             );
             
-            append((new xui.UI.Block)
-                .setHost(host,"paneTop")
-                .setDock("top")
-                .setHeight(40)
+            append((new xui.UI.Block())
+            .setHost(host,"paneTop")
+            .setDock("top")
+            .setHeight(40)
             );
             
-            host.paneTop.append((new xui.UI.Label)
-                .setHost(host,"labelName")
-                .setLeft(10)
-                .setTop(10)
-                .setWidth(270)
-                .setCaption("$app.apititle")
-                .setHAlign("left")
-                .setFontSize("16px")
-                .setFontWeight("bold")
+            host.paneTop.append((new xui.UI.Label())
+            .setHost(host,"labelName")
+            .setLeft(10)
+            .setTop(10)
+            .setWidth(270)
+            .setCaption("$app.apititle")
+            .setHAlign("left")
+            .setFontSize("16px")
+            .setFontWeight("bold")
             );
             
-            host.paneTop.append((new xui.UI.Button)
-                .setHost(host,"btnLang")
-                .setDomId("btnLang")
-                .setTop(9)
-                .setWidth(80)
-                .setRight(10)
-                .setCaption("btnLang")
-                .setType("drop")
-                .onClick("_butlang_onclickdrop")
-                .onClickDrop("_butlang_onclickdrop")
+            host.paneTop.append((new xui.UI.Button())
+            .setHost(host,"btnLang")
+            .setDomId("btnLang")
+            .setTop(9)
+            .setWidth(80)
+            .setRight(10)
+            .setCaption("btnLang")
+            .setType("drop")
+            .onClick("_butlang_onclickdrop")
+            .onClickDrop("_butlang_onclickdrop")
             );
             
-            append((new xui.UI.Layout)
-                .setHost(host,"mainLayout")
-                .setItems([{"id":"before", "pos":"before", "locked":false, "size":240, "min":100, "max":400, "folded":false, "cmd":true, "caption":"before"}, {"id":"main", "min":10, "caption":"main"}])
-                .setType("horizontal")
+            append((new xui.UI.Layout())
+            .setHost(host,"mainLayout")
+            .setItems([{"id":"before", "pos":"before", "locked":false, "size":240, "min":100, "max":400, "folded":false, "cmd":true, "hidden":false}, {"id":"main", "min":10}])
+            .setType("horizontal")
             );
             
-            host.mainLayout.append((new xui.UI.TreeBar)
-                .setHost(host,"objTree")
-                .onRender("_objtree_aftercreated")
-                .onItemSelected("__itemsel")
-            , 'before');
+            host.mainLayout.append((new xui.UI.TreeBar())
+            .setHost(host,"objTree")
+            .onRender("_objtree_aftercreated")
+            .onItemSelected("__itemsel")
+            , "before");
             
-            host.mainLayout.append((new xui.UI.Div)
-                .setHost(host,"divHead")
-                .setDock("fill")
-                .setCustomStyle({"KEY":"overflow:auto;"})
-            , 'main');
+            host.mainLayout.append((new xui.UI.Div())
+            .setHost(host,"divHead")
+            .setDock("fill")
+            .setCustomStyle({"KEY":"overflow:auto;"})
+            , "main");
             
             return children;
             // ]]Code created by CrossUI RAD Tools
@@ -817,55 +818,56 @@ Class('App', 'xui.Com',{
             return false;
         }, 
 
-indexing:function(){
-    var t,
-        doc=xui.Locale[xui.getLang()].doc,
-        map1={_:1,$:1},
-        map2={prototype:1,constructor:1,toString:1,valueOf:1,upper:1,Constructor:1,After:1,Before:1,KEY:1},
-        reg=/\./,
-        hash={},
-        getAPI=function(o,tag){
-            var k=o.KEY;
-            for(var i in o){
-                if(!map1[i.charAt(0)] && !map2[i] && !reg.test(i)){
-                    if(typeof o[i]=='function'&& o[i].$xui$)
-                        getAPI(o[i],tag+'.'+i);
-                    else{
-                        if(typeof (t=o[i])!='function' || !(t=t.$original$) || t==k)
-                            hash[tag+'.'+i]=1;
+    indexing:function(){
+        var t,
+            doc=xui.Locale[xui.getLang()].doc,
+            map1={_:1,$:1},
+            map2={prototype:1,constructor:1,toString:1,valueOf:1,upper:1,Constructor:1,After:1,Before:1,KEY:1},
+            reg=/\./,
+            hash={},
+            getAPI=function(o,tag){
+                var k=o.KEY;
+                for(var i in o){
+                    if(!map1[i.charAt(0)] && !map2[i] && !reg.test(i)){
+                        if(typeof o[i]=='function'&& o[i].$xui$)
+                            getAPI(o[i],tag+'.'+i);
+                        else{
+                            if(typeof (t=o[i])!='function' || !(t=t.$original$) || t==k)
+                                hash[tag+'.'+i]=1;
+                        }
                     }
                 }
-            }
-            o=o.prototype;
-            for(var i in o)
-                if(!map1[i.charAt(0)])
-                    if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k))
-                        hash[tag+'.prototype.'+i]=1;
-        };
-    _.arr.each(['_','_.fun','_.str','_.arr','Class','Namespace','xui'],function(o,i){
-        hash[o]=1;
-        getAPI(xui.SC.get(o),o);
-    });
-    _.each(hash,function(o,i){
-        hash[i]=_.get(doc,(i+'.$desc').split('.'));
-        if(hash[i]){
-            if(hash[i].indexOf('<')!=-1)
-                hash[i]=hash[i].split('<')[0];
-            if(hash[i].length>30)hash[i]=hash[i].slice(0,30)+'...';
-        }else
-            hash[i]='';
-    });
-
-
-    /*
-    var no={},l=0;
-    _.each(hash,function(o,i){
-        l++;
-        if(!o)no[i]=1;
-    });
-    */
-
-    return SPA.$api_pool=hash;
-}, $S_CLS:{'Namespace':1,'Class':1,'_':1,'_.fun':1,'_.arr':1,'_.str':1,'xui':1}, $CLS_FUN:{'Namespace':1,'Class':1,'_':1,'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
+                o=o.prototype;
+                for(var i in o)
+                    if(!map1[i.charAt(0)])
+                        if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k))
+                            hash[tag+'.prototype.'+i]=1;
+            };
+        _.arr.each(['_','_.fun','_.str','_.arr','Class','Namespace','xui'],function(o,i){
+            hash[o]=1;
+            getAPI(xui.SC.get(o),o);
+        });
+        _.each(hash,function(o,i){
+            hash[i]=_.get(doc,(i+'.$desc').split('.'));
+            if(hash[i]){
+                if(hash[i].indexOf('<')!=-1)
+                    hash[i]=hash[i].split('<')[0];
+                if(hash[i].length>30)hash[i]=hash[i].slice(0,30)+'...';
+            }else
+                hash[i]='';
+        });
+    
+    
+        /*
+        var no={},l=0;
+        _.each(hash,function(o,i){
+            l++;
+            if(!o)no[i]=1;
+        });
+        */
+    
+        return SPA.$api_pool=hash;
+    }, 
+    $S_CLS:{'Namespace':1,'Class':1,'_':1,'_.fun':1,'_.arr':1,'_.str':1,'xui':1}, $CLS_FUN:{'Namespace':1,'Class':1,'_':1,'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }
 });

@@ -167,6 +167,27 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return arr;
         },
 
+        resetPanelView:function(subId, removeChildren, destroyChildren){
+            if(!_.isSet(removeChildren))removeChildren=true;
+            if(!_.isSet(destroyChildren))destroyChildren=true;
+            var ins,item;
+            return this.each(function(profile){
+                if(profile.renderId){
+                    _.arr.each(profile.properties.items,function(o){
+                        if(subId===true || subId===o.id)
+                            delete o._$ini;
+                    });
+                    if(removeChildren)
+                        profile.boxing().removeChildren(subId,destroyChildren)
+                }
+            });
+        },
+        iniPanelView:function(subId){
+            return this.each(function(profile){
+                profile.box._forIniPanelView(profile, profile.getItemByItemId(subId), subId);
+            });
+        },
+        
         ////
         fireItemClickEvent:function(subId){
             this.getSubNodeByItemId('ITEM', subId).onMousedown();
@@ -326,6 +347,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 tagName : 'div',
                 ITEMS:{
                     tagName : 'div',
+                    className:'xui-ui-unselectable',
                     text:"{items}",
                     style:'{HAlign}'
                 },
@@ -940,6 +962,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
         },
         _forIniPanelView:function(profile, item, value){
+            if(!item)return;
             var prop=profile.properties,box=profile.boxing();
             if(!item._$ini){
                 if(box.onIniPanelView(profile,item)!==false)

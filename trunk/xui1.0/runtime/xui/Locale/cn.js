@@ -1,4 +1,5 @@
 (xui.Locale.cn||(xui.Locale.cn={})).inline={
+    $_$:1,
     ok:'确定',
     cancel:'取消',
     set:'设置',

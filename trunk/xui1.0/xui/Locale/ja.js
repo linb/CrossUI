@@ -1,4 +1,5 @@
 (xui.Locale.ja||(xui.Locale.ja={})).inline={
+    $_$:1,
     ok:'O K',
     cancel:'キャンセル',
     today:'今日',
