@@ -3463,7 +3463,7 @@ Class("xui.UI",  "xui.absObj", {
                             //window resize: check time span, for window resize in firefox
                             //force call when input $dockid
                             //any node resize
-                            if( arg.$dockid || !win || (_() - xui.$cache._resizeTime > 100)){
+                            if( arg.$dockid || !win || ((_() - xui.$cache._resizeTime) > 50)){
                                 //recruit call, give a short change
                                 obj = {left:0,top:0,right:0,bottom:0,width:parseInt(style&&style.width,10)||node.width(),height:parseInt(style&&style.height,10)||node.height()};
 
