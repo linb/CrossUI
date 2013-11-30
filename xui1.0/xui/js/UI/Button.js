@@ -43,6 +43,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
         _.merge(t.FRAME,{
             FOCUS:{
                 $order:2,
+                className:"xui-ui-unselectable",
                 tabindex: '{tabindex}',
                 TB:{
                     cellpadding:"0",

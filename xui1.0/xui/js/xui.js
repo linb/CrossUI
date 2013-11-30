@@ -844,7 +844,8 @@ _.merge(xui,{
             if(k)xui.include(z+'.'+k,xui.getPath('Locale.' + key, '.js'),f,f);
             else f();
         };
-        xui.include(z,xui.getPath(z, '.js'),m,m);
+        // use special key to invoid other lang setting was loaded first
+        xui.include(z+'.$_$', xui.getPath(z, '.js'),m,m);
     },
     getTheme:function(a){
         try{
@@ -2171,7 +2172,17 @@ Class('xui.IAjax','xui.absIO',{
                 // for in firefox3, we have to asyRun to get the window.name
                 _.asyRun(function(){
                     // "w.name" cant throw exception in chrome
-                    if(xui.browser.kde && w.name===undefined){
+                    var flag;
+                    if(xui.browser.kde){
+                        try{
+                            if(w.name===undefined){
+                                flag=1;
+                            }
+                        }catch(e){
+                            flag=1
+                        }
+                    }
+                    if(flag){
                         _.asyRun(arguments.callee);
                         return;
                     }else{

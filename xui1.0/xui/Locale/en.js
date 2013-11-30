@@ -1,4 +1,5 @@
 (xui.Locale.en||(xui.Locale.en={})).inline={
+    $_$:1,
     ok:'O K',
     cancel:'Cancel',
     set:'SET',

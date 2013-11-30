@@ -19,16 +19,18 @@
         <script type="text/javascript">
 xui.CSS.resetCSS();
 xui.setAppLangKey("app");
-xui.Com.load('App', function(){xui('loading').remove();}, (function(){
-    var dft='en-us',
-       map={
-          'en-us':'en',
-          'zh-cn':'cn'
-       },
-       n=navigator,
-       l=(n.language || n.userLanguage || n.systemLanguage || n.browserLanguage || '').toLowerCase();
-       return map[l] || map[dft];
-})());
+xui.setTheme("vista",true,function(){
+    xui.Com.load('App', function(){xui('loading').remove();}, (function(){
+        var dft='en-us',
+           map={
+              'en-us':'en',
+              'zh-cn':'cn'
+           },
+           n=navigator,
+           l=(n.language || n.userLanguage || n.systemLanguage || n.browserLanguage || '').toLowerCase();
+           return map[l] || map[dft];
+    })());
+});
         </script>
 </body>
 </html>

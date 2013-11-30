@@ -3777,6 +3777,8 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;
+            if(_.isEmpty(p.resizerProp))
+                delete p.resizerProp;
             if(p.items&&(p.items.length==0||p.listKey))
                 delete p.items;
 
@@ -4053,19 +4055,22 @@ Class("xui.absList", "xui.absObj",{
         },
         clearItems:function(key){
             return this.each(function(profile){
-                if(!profile.SubSerialIdMapItem)return;
-                //empty dom
-                profile.getSubNode(profile.keys[profile.box._ITEMKEY||'ITEM'], true).remove();
-                //save subid
-                _.each(profile.SubSerialIdMapItem, function(o,serialId){
-                    profile.reclaimSubId(serialId, 'items');
-                });
+                if(profile.SubSerialIdMapItem){
+                    //empty dom
+                    if(profile.renderId){
+                        profile.getSubNode(profile.keys[profile.box._ITEMKEY||'ITEM'], true).remove();
+                    }
+                    //save subid
+                    _.each(profile.SubSerialIdMapItem, function(o,serialId){
+                        profile.reclaimSubId(serialId, 'items');
+                    });
+                    //clear cache
+                    profile.SubSerialIdMapItem={};
+                    profile.ItemIdMapSubSerialId={};
+                }
+
                 //delete items
                 profile.properties.items.length=0;
-                //clear cache
-                profile.SubSerialIdMapItem={};
-                profile.ItemIdMapSubSerialId={};
-
                 profile.properties.$UIvalue=null;
                 //keep the value
                 //profile.properties.value=null;
@@ -4792,7 +4797,7 @@ new function(){
         },
         Static:{
             Templates:{
-                className:'{_clsName} {_className}',
+                className:'xui-ui-unselectable {_clsName} {_className}',
                 style:'{_style}',
                 BTN:{
                     className:'xui-ui-btn',

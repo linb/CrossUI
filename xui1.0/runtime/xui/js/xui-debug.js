@@ -844,7 +844,8 @@ _.merge(xui,{
             if(k)xui.include(z+'.'+k,xui.getPath('Locale.' + key, '.js'),f,f);
             else f();
         };
-        xui.include(z,xui.getPath(z, '.js'),m,m);
+        // use special key to invoid other lang setting was loaded first
+        xui.include(z+'.$_$', xui.getPath(z, '.js'),m,m);
     },
     getTheme:function(a){
         try{
@@ -2171,7 +2172,17 @@ Class('xui.IAjax','xui.absIO',{
                 // for in firefox3, we have to asyRun to get the window.name
                 _.asyRun(function(){
                     // "w.name" cant throw exception in chrome
-                    if(xui.browser.kde && w.name===undefined){
+                    var flag;
+                    if(xui.browser.kde){
+                        try{
+                            if(w.name===undefined){
+                                flag=1;
+                            }
+                        }catch(e){
+                            flag=1
+                        }
+                    }
+                    if(flag){
                         _.asyRun(arguments.callee);
                         return;
                     }else{
@@ -3887,6 +3898,7 @@ Class('xui.absObj',"xui.absBox",{
         }
     }
 });(xui.Locale.en||(xui.Locale.en={})).inline={
+    $_$:1,
     ok:'O K',
     cancel:'Cancel',
     set:'SET',
@@ -16410,6 +16422,8 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;
+            if(_.isEmpty(p.resizerProp))
+                delete p.resizerProp;
             if(p.items&&(p.items.length==0||p.listKey))
                 delete p.items;
 
@@ -16686,19 +16700,22 @@ Class("xui.absList", "xui.absObj",{
         },
         clearItems:function(key){
             return this.each(function(profile){
-                if(!profile.SubSerialIdMapItem)return;
-                //empty dom
-                profile.getSubNode(profile.keys[profile.box._ITEMKEY||'ITEM'], true).remove();
-                //save subid
-                _.each(profile.SubSerialIdMapItem, function(o,serialId){
-                    profile.reclaimSubId(serialId, 'items');
-                });
+                if(profile.SubSerialIdMapItem){
+                    //empty dom
+                    if(profile.renderId){
+                        profile.getSubNode(profile.keys[profile.box._ITEMKEY||'ITEM'], true).remove();
+                    }
+                    //save subid
+                    _.each(profile.SubSerialIdMapItem, function(o,serialId){
+                        profile.reclaimSubId(serialId, 'items');
+                    });
+                    //clear cache
+                    profile.SubSerialIdMapItem={};
+                    profile.ItemIdMapSubSerialId={};
+                }
+
                 //delete items
                 profile.properties.items.length=0;
-                //clear cache
-                profile.SubSerialIdMapItem={};
-                profile.ItemIdMapSubSerialId={};
-
                 profile.properties.$UIvalue=null;
                 //keep the value
                 //profile.properties.value=null;
@@ -17425,7 +17442,7 @@ new function(){
         },
         Static:{
             Templates:{
-                className:'{_clsName} {_className}',
+                className:'xui-ui-unselectable {_clsName} {_className}',
                 style:'{_style}',
                 BTN:{
                     className:'xui-ui-btn',
@@ -19906,6 +19923,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
         _.merge(t.FRAME,{
             FOCUS:{
                 $order:2,
+                className:"xui-ui-unselectable",
                 tabindex: '{tabindex}',
                 TB:{
                     cellpadding:"0",
@@ -22499,7 +22517,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     //for esc
                     xui.Event.keyboardHook('esc',0,0,0,function(){
                         _clear();
-                    },null,null,prfile.domId);
+                    },null,null,profile.domId);
                 }
                 //set beforeUIValueSet function
                 switch(cmd){
@@ -22940,7 +22958,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'combobox':
                         case 'listbox':
                         case 'helpinput':
-                            o = xui.create('List').render();
+                            o = xui.create('List');
                             o.setHost(profile).setDirtyMark(false).setItems(_.copy(pro.items)).setListKey(pro.listKey||'');
                             o.setWidth(pro.dropListWidth || (pro.width-(pro.labelSize||0)));
                             if(pro.dropListHeight)
@@ -22970,7 +22988,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             break;
                         case 'time':
                         case 'timepicker':
-                            o = xui.create('TimePicker').render();
+                            o = xui.create('TimePicker');
                             o.setHost(profile);
                             o.beforeClose(function(){
                                if(!this.destroyed)
@@ -22987,7 +23005,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'date':
                         case 'datepicker':
                         case 'datetime':
-                            o = xui.create('DatePicker').render();
+                            o = xui.create('DatePicker');
 
                             if(type=='datetime')
                                 o.setTimeInput(true);
@@ -23010,7 +23028,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             break;
                         case 'color':
                         case 'colorpicker':
-                            o = xui.create('ColorPicker').render();
+                            o = xui.create('ColorPicker');
                             o.setHost(profile);
                             o.beforeClose(function(){
                                 if(!this.destroyed)
@@ -23037,6 +23055,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //set to global cache
                     if(cachekey)
                         profile.box.$drop[cachekey]=profile.$drop;
+
+                    o.render();
                 }
 
                 o=profile.$drop.boxing();
@@ -23068,7 +23088,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
                     return;
-
                 //pop
                 var node=o.reBoxing();
                 node.popToTop(profile.getSubNode('BOX'));
@@ -23121,6 +23140,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _.merge(t.FRAME.BORDER,{
             SBTN:{
                 $order:10,
+                className:'xui-ui-unselectable',
                 style:"{_saveDisplay}",
                 STOP:{},
                 SMID:{
@@ -23976,6 +23996,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 case 'spin':
                     t.RBTN={
                         $order:20,
+                        className:'xui-ui-unselectable',
                         style:"{rDisplay}",
                         R1:{
                             R1T:{},
@@ -23991,6 +24012,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 case 'file':
                     t.FILE={
                         $order:20,
+                        className:'xui-ui-unselectable',
                         tagName:'input',
                         type:'file',
                         hidefocus:xui.browser.ie?"hidefocus":null,
@@ -24003,6 +24025,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 default:
                     t.BTN={
                         $order:20,
+                        className:'xui-ui-unselectable',
                         style:"{_popbtnDisplay}",
                         TOP:{},
                         MID:{
@@ -24202,17 +24225,28 @@ Class("xui.UI.Group", "xui.UI.Div",{
             profile.getSubNode('HANDLE').focus();
             return this;
         },
-        resetPanelView:function(destroyChildren){
+        resetPanelView:function(removeChildren,destroyChildren){
+            if(!_.isSet(removeChildren))removeChildren=true;
             if(!_.isSet(destroyChildren))destroyChildren=true;
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
                     delete profile.$ini;
-                    ins=profile.boxing();
-                    ins.removeChildren(true,destroyChildren)
+                    if(removeChildren){
+                        ins=profile.boxing();
+                        ins.removeChildren(true,destroyChildren);
+                    }
                     if(profile.properties.toggle)
                         ins.setToggle(false);
                 }
+            });
+        },
+        iniPanelView:function(){
+            return this.each(function(profile){
+                var ins=profile.boxing();
+                if(ins.onIniPanelView && ins.onIniPanelView(profile)!==false){
+                    profile.$ini=true;
+                }                
             });
         }
     },
@@ -26979,17 +27013,31 @@ Class("xui.UI.Group", "xui.UI.Div",{
         },
         adjustSize:function(){
             return this.each(function(profile){
+                var root = profile.getRoot(),
+                    items = profile.getSubNode('ITEMS'),
+                    pp=profile.properties,h,flag;
+                if(root.css('display')=='none'){
+                    flag=1;
+                    root.css('visibility','hidden');
+                }
                 if(profile.properties.height!='auto'){
-                    var items = profile.getSubNode('ITEMS'),pp=profile.properties;
                     items.height('auto');
-                    var h = Math.min(pp.maxHeight, items.offsetHeight());
+                    h=Math.min(pp.maxHeight, items.offsetHeight());
                     pp.height=h;
                     items.height(h);
-                    profile.getRoot().height(h);
                 }else{
                     items.height('auto');
-                    profile.getRoot().height('auto');
+                    h=items.offsetHeight();
+                    if(h>pp.maxHeight){
+                        items.height(pp.maxHeight);
+                        profile.getRoot().height(pp.maxHeight);                        
+                    }
                 }
+                if(flag){
+                    root.css('visibility','');
+                    root.css('display','none');
+                }
+                profile.getRoot().height('auto');
             });
         },
         activate:function(){
@@ -27283,7 +27331,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             noCtrlKey:true,
             width:120,
             height:150,
-            maxHeight:300
+            maxHeight:420
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
@@ -27341,9 +27389,19 @@ Class("xui.UI.Group", "xui.UI.Div",{
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
         },
         _onresize:function(profile,width,height){
-            var size=profile.properties.borderType!='none'?2:0;
-            if(height)
+            var pp=profile.properties,
+                size=pp.borderType!='none'?2:0,
+                dock=pp.dock,
+                max=pp.maxHeight;
+            if(height){
                 profile.getSubNode('ITEMS').height(height=='auto'?height:(height-size));
+                if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
+                    if(profile.getSubNode('ITEMS').height()>max){
+                        profile.getSubNode('ITEMS').height(max);
+                        profile.getRoot().height('auto');
+                    }
+                }
+            }
             if(width)
                 profile.getSubNode('ITEMS').width(width=='auto'?width:(width-size));
         }
@@ -27698,17 +27756,28 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 cls.activeWndId=profile.$xid;
             }
         },
-        resetPanelView:function(destroyChildren){
+        resetPanelView:function(removeChildren,destroyChildren){
+            if(!_.isSet(removeChildren))removeChildren=true;
             if(!_.isSet(destroyChildren))destroyChildren=true;
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
                     delete profile.$ini;
-                    ins=profile.boxing();
-                    ins.removeChildren(true,destroyChildren)
+                    if(removeChildren){
+                        ins=profile.boxing();
+                        ins.removeChildren(true,destroyChildren);
+                    }
                     if(profile.properties.toggle)
                         ins.setToggle(false);
                 }
+            });
+        },
+        iniPanelView:function(){
+            return this.each(function(profile){
+                var ins=profile.boxing();
+                if(ins.onIniPanelView && ins.onIniPanelView(profile)!==false){
+                    profile.$ini=true;
+                }                
             });
         }
     },
@@ -28736,6 +28805,27 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return arr;
         },
 
+        resetPanelView:function(subId, removeChildren, destroyChildren){
+            if(!_.isSet(removeChildren))removeChildren=true;
+            if(!_.isSet(destroyChildren))destroyChildren=true;
+            var ins,item;
+            return this.each(function(profile){
+                if(profile.renderId){
+                    _.arr.each(profile.properties.items,function(o){
+                        if(subId===true || subId===o.id)
+                            delete o._$ini;
+                    });
+                    if(removeChildren)
+                        profile.boxing().removeChildren(subId,destroyChildren)
+                }
+            });
+        },
+        iniPanelView:function(subId){
+            return this.each(function(profile){
+                profile.box._forIniPanelView(profile, profile.getItemByItemId(subId), subId);
+            });
+        },
+        
         ////
         fireItemClickEvent:function(subId){
             this.getSubNodeByItemId('ITEM', subId).onMousedown();
@@ -28895,6 +28985,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 tagName : 'div',
                 ITEMS:{
                     tagName : 'div',
+                    className:'xui-ui-unselectable',
                     text:"{items}",
                     style:'{HAlign}'
                 },
@@ -29509,6 +29600,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
         },
         _forIniPanelView:function(profile, item, value){
+            if(!item)return;
             var prop=profile.properties,box=profile.boxing();
             if(!item._$ini){
                 if(box.onIniPanelView(profile,item)!==false)
@@ -34170,14 +34262,14 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 width:'4px',
                 height:'200px',
                 cursor:'e-resize',
-                'background-color':'#f4f4f4',
+                'background-color':'#f0f0f0',
                 'border-width':xui.browser.opr?'0':null,
                 'font-size':xui.browser.ie?0:'',
                 'line-height':xui.browser.ie?0:''
             },
             'MOVE-mouseover':{
                 $order:1,
-                'background-color': '#f0f0f0'
+                'background-color': '#e4e4e4'
             },
             ITEM:{
                 position:'static',
@@ -34223,7 +34315,6 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     xui.use(src).startDrag(e,{
                         dragType:'copy',
                         targetReposition:false,
-                        targetCSS:{background:"none"},
                         horizontalOnly:true,
                         widthIncrement:10,
                         maxLeftOffset:offset1,
@@ -34246,11 +34337,10 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                             profile._limited=0;
                         }
                     }
-                    profile._pre.width(profile._preW + p.offset.x);
-                    profile._next.width(profile._nextW - p.offset.x);
                 },
                 onDragstop:function(profile, e, src){
-                    var arr=profile.getSubNode('ITEM',true).get(),
+                     var p=xui.DragDrop.getProfile(),
+                        arr=profile.getSubNode('ITEM',true).get(),
                         n=xui.use(src),
                         l=profile.getSubNode('ITEMS').width(),
                         a=[],t,
@@ -34273,6 +34363,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                         n.css('backgroundColor',profile._bg);
                         profile._limited=0;
                     }
+                    profile._pre.width(profile._preW + p.offset.x);
+                    profile._next.width(profile._nextW - p.offset.x);
                     if(profile.onColResize)profile.boxing().onColResize(profile, a);
                 }
             },
@@ -34702,6 +34794,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile.$col_pop.destroy();
                 delete profile.$col_pop;
             }
+            //clear editor cache
+            _.each(profile.$cache_editor,function(o){
+                if(!o.destroyed)o.destroy();
+            });
+            profile.$cache_editor={};
         },
         _toggleRows:function(rows, expand){
             var self=this;
@@ -34793,9 +34890,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 if(type=='min'){
                     _.arr.each(a,function(o,i){
-                        _.each(b=a[i]=a[i].cells,function(v,j){
-                            b[j] = v.value;
-                        });
+                        if(a[i].cells)
+                            _.each(b=a[i]=(a[i].cells||a[i]),function(v,j){
+                                b[j] = v.value;
+                            });
+                        else{
+                            
+                        }
+                            
                     });
                 }
                 return a;
@@ -35475,6 +35577,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     colId ? ns.getHeaderByColId(colId):
                     rowId ? ns.getRowbyRowId(rowId):null;
             return ns.getSubNode(key, (t&&t._serialId)||true);
+        },
+        getEditor:function(){
+            return _.get(this.get(0),["$curEditor"]);
+        },
+        getEditCell:function(){
+            return _.get(this.get(0),["$cellInEditor"]);
         },
         offEditor:function(){
             var profile=this.get(0),editor;
@@ -37333,6 +37441,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 pro.header.length=0;
                 pro.rows.length=0;
             };
+            ns.$cache_editor={};
             if(!pro.iniFold)
                 ins._toggleRows(pro.rows,true);
             ns.box._asy(ns);
@@ -38454,6 +38563,7 @@ editorDropListHeight
                 // if beforeIniEditor doesnt return an editor
                 if(!editor || !editor['xui.UI']){
                     var type=getPro('type')||'input',
+                        editorCacheKey = getPro('editorCacheKey'),
                         editorProperties = getPro('editorProperties'),
                         editorEvents = getPro('editorEvents'),
                         editorFormat = getPro('editorFormat'),
@@ -38470,8 +38580,12 @@ editorDropListHeight
                     }else if(type=='button'||type=='label')
                         return;
 
-                    // 4. create a ComboInput Editor
-                    editor=new xui.UI.ComboInput({dirtyMark:false,cachePopWnd:false,left:-1000,top:-1000,position:'absolute',visibility:'hidden',zIndex:100});
+                    // 4. try to get editor from cache
+                    if(editorCacheKey && profile.$cache_editor[editorCacheKey])
+                        editor=profile.$cache_editor[editorCacheKey];
+                    // 5. else, create a ComboInput Editor, and cache it
+                    if(!editor)
+                        editor=new xui.UI.ComboInput({dirtyMark:false,cachePopWnd:false,left:-1000,top:-1000,position:'absolute',visibility:'hidden',zIndex:100});
                     switch(type){
                         case 'number':
                         case 'spin':
@@ -38560,7 +38674,10 @@ editorDropListHeight
                         break;
                     }
                     baseNode.append(editor);
-
+                    //cache the stantdard editor
+                    if(editorCacheKey)
+                        profile.$cache_editor[editorCacheKey] = editor;
+                        
                     if(editor.setInputReadonly && editorReadonly)
                         editor.setInputReadonly(true);
                     if(editor.setDropListWidth && editorDropListWidth)
@@ -38679,7 +38796,7 @@ editorDropListHeight
                             profile.boxing().onEndEdit(profile, cell, editor);
                             
                         // don't cache it
-                        if(editor.get(0)){
+                        if(!editorCacheKey && editor.get(0)){
                             editor.destroy();
                         }
                         editor=null;

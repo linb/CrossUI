@@ -624,7 +624,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     //for esc
                     xui.Event.keyboardHook('esc',0,0,0,function(){
                         _clear();
-                    },null,null,prfile.domId);
+                    },null,null,profile.domId);
                 }
                 //set beforeUIValueSet function
                 switch(cmd){
