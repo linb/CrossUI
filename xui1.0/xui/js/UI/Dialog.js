@@ -25,10 +25,13 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             root=profile.getRoot();
                         
                         var tt=profile._$rs_args;
-                        // resize immidiately here, maybe max here
-                        xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
-                        root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null);
-
+                        
+                        if(p.status=='normal'){
+                            // resize immidiately here, maybe max here
+                            xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
+                            root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null);
+                        }
+                        
                         if(p.iframeAutoLoad||p.ajaxAutoLoad)
                             xui.UI.Div._applyAutoLoad(profile);
 
@@ -63,6 +66,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 }else{
                     top=(top||top===0)?top:p.top;
                     left=(left||left===0)?left:p.left;                    
+                }
+                p.left=left;
+                p.top=top;
+                if(p.status=='max'){
+                    left=top=0;
                 }
 
                 profile.inShowing=1;
@@ -756,7 +764,7 @@ if(xui.browser.ie){
 
             t.status='max';
 
-            ins.setDock('fill');
+            ins.setDock('cover',true);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),

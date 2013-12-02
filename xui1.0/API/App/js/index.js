@@ -639,7 +639,6 @@ Class('App', 'xui.Com',{
                             }
                         }
                     }
-
                     //add xui.Com event
                     if(o.KEY=='xui.Com'){
                         if(!obj.events)obj.events={};
@@ -762,7 +761,17 @@ Class('App', 'xui.Com',{
         }, 
 
         getDoc:function(key){
+            var map={
+               "xui.UI.TreeGrid.prototype.getColumn":"xui.UI.TreeGrid.prototype.getHeader",
+               "xui.UI.TreeGrid.prototype.updateColumn":"xui.UI.TreeGrid.prototype.updateHeader",
+               "xui.UI.TreeGrid.prototype.getColByDom":"xui.UI.TreeGrid.prototype.getHeaderByDom",
+               "xui.UI.TreeGrid.prototype.getColByColId":"xui.UI.TreeGrid.prototype.getHeaderByColId",
+               "xui.UI.TreeGrid.prototype.getColByCell":"xui.UI.TreeGrid.prototype.getHeaderByCell"
+            };
             if(!key)return '';
+            
+            if(map[key])key=map[key];
+            
             var o = xui.getRes("doc."+key);
             if(typeof o == 'string')
                 return o;
@@ -838,10 +847,12 @@ Class('App', 'xui.Com',{
                     }
                 }
                 o=o.prototype;
-                for(var i in o)
-                    if(!map1[i.charAt(0)])
-                        if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k))
-                            hash[tag+'.prototype.'+i]=1;
+                if(o){
+                    for(var i in o)
+                        if(!map1[i.charAt(0)])
+                            if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k))
+                                hash[tag+'.prototype.'+i]=1;
+                }
             };
         _.arr.each(['_','_.fun','_.str','_.arr','Class','Namespace','xui'],function(o,i){
             hash[o]=1;
