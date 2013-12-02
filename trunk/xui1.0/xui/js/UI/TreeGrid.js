@@ -995,6 +995,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     Initialize:function(){
         this.addTemplateKeys(['ALT','PROGRESS']);
         this.getCellPro = this.getCellOption;
+
+        var p=this.prototype;
+
+        p.getColumn=p.getHeader;
+        p.updateColumn=p.updateHeader;
+
+        p.getColByDom=p.getHeaderByDom;
+        p.getColByColId=p.getHeaderByColId;
+        p.getColByCell=p.getHeaderByCell;
     },
     Static:{
         Templates:{

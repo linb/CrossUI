@@ -16342,7 +16342,7 @@ _.set(xui.Locale,["en","app"], {
                     "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one."
                 ]
             },
-            getHeaderbyCell:{
+            getHeaderByCell:{
                 $desc:"Gets a header(col) item Object according to a cell Object.",
                 $rtn:"Object",
                 $paras:[

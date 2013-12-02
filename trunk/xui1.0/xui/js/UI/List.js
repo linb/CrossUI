@@ -431,6 +431,12 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _prepareItem:function(profile, item){
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
         },
+        RenderTrigger:function(){
+            if(this.key!="xui.UI.List")return;
+
+            var p=this.properties;
+            xui.UI.$doResize(this,p.width,p.height);
+        },
         _onresize:function(profile,width,height){
             var pp=profile.properties,
                 size=pp.borderType!='none'?2:0,
