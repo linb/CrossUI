@@ -278,15 +278,15 @@ _.merge(_,{
     breakO:function(target,depth){
         var n=depth||1, l=1+(arguments[2]||0), self=arguments.callee, _t='___gc_', i;
         if(target && (typeof target=='object' || typeof target=='function') && target!==window&&target!==document&&target.nodeType!==1){
-            if(target.hasOwnProperty(_t))return; else try{target[_t]=null}catch(e){return}
-            for(i in target){
+            try{if(target.hasOwnProperty(_t))return; else target[_t]=null}catch(e){return}
+            try{for(i in target){
                 if(target.hasOwnProperty(i) && target[i]){
                     if(typeof target[i]=='object' || typeof target[i]=='function')
                         if(l<n)
                             self(target[i],n,l);
                     try{target[i]=null}catch(e){}
                 }
-            }
+            }}catch(e){return}
             if(target.length)target.length=0;
             delete target[_t];
         }

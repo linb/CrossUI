@@ -125,11 +125,7 @@ Class('xui.Debugger', null, {
         //shorcut
         xui.log = function(){
             if(!xui.debugMode)return false;
-
-            if(window.console && !window.console.$xui)
-                window.console.log.apply(window.console,arguments);
-            else
-                xui.Debugger.log.apply(xui.Debugger,arguments);
+            xui.Debugger.log.apply(xui.Debugger,arguments);
         };
         xui.message = function(body, head, width, time){
            width = width || 200;
@@ -217,13 +213,7 @@ Class('xui.Debugger', null, {
         };
 
         if(!_.isDefined(window.console) || (typeof window.console.log !="function")){
-            window.console={log:xui.log,$xui:1};
-        }else{
-            var f=window.console.log;
-            window.console.log=function(){
-                if(!xui.debugMode)return false;
-                f.apply(f,arguments);
-            }
+            xui.log=window.console.log;
         }
             
     }

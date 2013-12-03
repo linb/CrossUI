@@ -1153,7 +1153,7 @@ Class('xui.Dom','xui.absBox',{
         topZindex:function(flag){
             //set the minimum to 1000
             var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o;
-            if(xui.browser.ie && (p.tagName+"").toUpperCase()=="HTML"){
+            if(xui.browser.ie && (!p||(p.tagName+"").toUpperCase()=="HTML")){
                 p=xui("body").get(0);
             }
             if(node.nodeType !=1 || !p)return 1;
