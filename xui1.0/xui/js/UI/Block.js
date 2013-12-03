@@ -103,7 +103,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         },
         Appearances:{
             KEY:{
-                'line-height':'1'
+                'line-height':'1.22em'
             }
         },
         RenderTrigger:function(){

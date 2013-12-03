@@ -5089,7 +5089,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1'
+                    'line-height':'1.22em'
                 }
             },
             RenderTrigger:function(){
@@ -5133,7 +5133,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1'
+                    'line-height':'1.22em'
                 }
             },
             _prepareData:function(profile){
@@ -5152,7 +5152,7 @@ new function(){
                    // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
                     outline:xui.browser.gek?'none':null,
                     zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                    'line-height':'1',
+                    'line-height':'1.22em',
                     background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
                 }
             },
@@ -5306,7 +5306,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1'
+                    'line-height':'1.22em'
                 }
             },
             RenderTrigger:function(){
