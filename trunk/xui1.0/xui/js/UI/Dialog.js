@@ -124,8 +124,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var profile=this.get(0);
             profile.box._active(profile,flag);
             if(flag!==false){
-                //set default focus, the min tabzindex
-                _.resetRun("dlg_focus:"+profile.$xid,function(){profile.getRoot().nextFocus()});
+                try{profile.getSubNode('CAPTION').focus();}catch(e){}
             }
         },
         isPinned:function(){
@@ -176,6 +175,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     },
                     CAPTION:{
                         $order:1,
+                        tabindex: '{tabindex}',
                         text:'{caption}'
                     }
                 },

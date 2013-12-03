@@ -1463,8 +1463,7 @@ Class("xui.UI",  "xui.absObj", {
                 padding:'0 4px'
             },
             '.xui-ui-btnc a, .xui-ui-btnc span, .xui-ui-btnc button':{
-                // for chrome's focus border break parent onde bug
-                'line-height':xui.browser.ie?'22px':null
+                'line-height':'22px'
             },
             '.xui-ui-btni':{
                 $order:1,

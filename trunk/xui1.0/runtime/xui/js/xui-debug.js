@@ -278,15 +278,15 @@ _.merge(_,{
     breakO:function(target,depth){
         var n=depth||1, l=1+(arguments[2]||0), self=arguments.callee, _t='___gc_', i;
         if(target && (typeof target=='object' || typeof target=='function') && target!==window&&target!==document&&target.nodeType!==1){
-            if(target.hasOwnProperty(_t))return; else try{target[_t]=null}catch(e){return}
-            for(i in target){
+            try{if(target.hasOwnProperty(_t))return; else target[_t]=null}catch(e){return}
+            try{for(i in target){
                 if(target.hasOwnProperty(i) && target[i]){
                     if(typeof target[i]=='object' || typeof target[i]=='function')
                         if(l<n)
                             self(target[i],n,l);
                     try{target[i]=null}catch(e){}
                 }
-            }
+            }}catch(e){return}
             if(target.length)target.length=0;
             delete target[_t];
         }
@@ -7556,7 +7556,7 @@ Class('xui.Dom','xui.absBox',{
         topZindex:function(flag){
             //set the minimum to 1000
             var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o;
-            if(xui.browser.ie && (p.tagName+"").toUpperCase()=="HTML"){
+            if(xui.browser.ie && (!p||(p.tagName+"").toUpperCase()=="HTML")){
                 p=xui("body").get(0);
             }
             if(node.nodeType !=1 || !p)return 1;
@@ -12562,11 +12562,7 @@ Class("xui.Tips", null,{
         //shorcut
         xui.log = function(){
             if(!xui.debugMode)return false;
-
-            if(window.console && !window.console.$xui)
-                window.console.log.apply(window.console,arguments);
-            else
-                xui.Debugger.log.apply(xui.Debugger,arguments);
+            xui.Debugger.log.apply(xui.Debugger,arguments);
         };
         xui.message = function(body, head, width, time){
            width = width || 200;
@@ -12654,13 +12650,7 @@ Class("xui.Tips", null,{
         };
 
         if(!_.isDefined(window.console) || (typeof window.console.log !="function")){
-            window.console={log:xui.log,$xui:1};
-        }else{
-            var f=window.console.log;
-            window.console.log=function(){
-                if(!xui.debugMode)return false;
-                f.apply(f,arguments);
-            }
+            xui.log=window.console.log;
         }
             
     }
@@ -14129,8 +14119,7 @@ Class("xui.UI",  "xui.absObj", {
                 padding:'0 4px'
             },
             '.xui-ui-btnc a, .xui-ui-btnc span, .xui-ui-btnc button':{
-                // for chrome's focus border break parent onde bug
-                'line-height':xui.browser.ie?'22px':null
+                'line-height':'22px'
             },
             '.xui-ui-btni':{
                 $order:1,
@@ -39907,8 +39896,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             var profile=this.get(0);
             profile.box._active(profile,flag);
             if(flag!==false){
-                //set default focus, the min tabzindex
-                _.resetRun("dlg_focus:"+profile.$xid,function(){profile.getRoot().nextFocus()});
+                try{profile.getSubNode('CAPTION').focus();}catch(e){}
             }
         },
         isPinned:function(){
@@ -39959,6 +39947,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     },
                     CAPTION:{
                         $order:1,
+                        tabindex: '{tabindex}',
                         text:'{caption}'
                     }
                 },
