@@ -124,9 +124,12 @@ Class('xui.Debugger', null, {
 
         //shorcut
         xui.log = function(){
-            if(xui.browser.gek && window.console)
-                console.log.apply(console,arguments);
-            xui.Debugger.log.apply(xui.Debugger,arguments);
+            if(!xui.debugMode)return false;
+
+            if(window.console && !window.console.$xui)
+                window.console.log.apply(window.console,arguments);
+            else
+                xui.Debugger.log.apply(xui.Debugger,arguments);
         };
         xui.message = function(body, head, width, time){
            width = width || 200;
@@ -142,7 +145,7 @@ Class('xui.Debugger', null, {
 
            if(!div){
                div =
-               '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset" style="font-size:0;line-height:0;border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;z-index:'+xui.Dom.TOP_ZINDEX+'">' +
+               '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset" style="font-size:0;line-height:0;border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
                    '<div class="xui-node xui-node-div" style="font-size:14px;overflow:hidden;font-weight:bold;padding:2px;"></div>'+
                    '<div class="xui-node xui-node-div" style="font-size:12px;padding:5px;overflow:hidden;"></div>'+
                '</div>';
@@ -153,6 +156,7 @@ Class('xui.Debugger', null, {
                    div.css("boxShadow","4px 4px 4px #888");
                }
             }
+            div.topZindex(true);
             if(document.body.lastChild!=div.get(0))
                 xui('body').append(div,false,true);
 
@@ -211,9 +215,16 @@ Class('xui.Debugger', null, {
                 },100,10).start();
             }, time||5000);
         };
-        
-        if(!_.isDefined(window.console)){
-            window.console={log:xui.log};
+
+        if(!_.isDefined(window.console) || (typeof window.console.log !="function")){
+            window.console={log:xui.log,$xui:1};
+        }else{
+            var f=window.console.log;
+            window.console.log=function(){
+                if(!xui.debugMode)return false;
+                f.apply(f,arguments);
+            }
         }
+            
     }
 });

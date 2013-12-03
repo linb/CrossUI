@@ -18,29 +18,25 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             ins.setLeft(left);
                         if(top||top===0)
                             ins.setTop(top);
-
                         parent.append(ins);
-
                         var box=profile.box,
                             root=profile.getRoot();
                         
                         var tt=profile._$rs_args;
-                        
                         if(p.status=='normal'){
                             // resize immidiately here, maybe max here
                             xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
                             root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null);
                         }
-                        
                         if(p.iframeAutoLoad||p.ajaxAutoLoad)
                             xui.UI.Div._applyAutoLoad(profile);
 
                         if(modal && !profile.$inModal)
                             box._modal(profile);
-
                         ins.activate();
 
                         if(profile.onShow)profile.boxing().onShow(profile);
+
                         if(profile.properties.status=='normal')
                             box._refreshRegion(profile);
 
@@ -876,9 +872,12 @@ if(xui.browser.ie){
                             cover.height(Math.max(p.height(),p.scrollHeight()));
                         });
                     },"dialog:"+profile.serialId);
+                    
+                    var i=(parseInt(cover.css('zIndex'),10)||0)+1;
+                    s.css('zIndex',i);
 
-                    s.css('zIndex',(parseInt(cover.css('zIndex'),10)||0)+1);
-
+                    if(i>=xui.Dom.TOP_ZINDEX)
+                        xui.Dom.TOP_ZINDEX =i+1000;
                     /*
                     //bak dlg tabzindnex
                     var hash={},a=profile.getRoot().query('*',function(o){return o.tabIndex>0}).get();
@@ -1297,8 +1296,8 @@ if(xui.browser.ie){
         },
         //
         _onresize:function(profile,width,height,force){
-        		if(width && profile.properties.status=='min')
-        			width=profile.properties.minWidth;
+    		if(width && profile.properties.status=='min')
+    			width=profile.properties.minWidth;
 
             var size = arguments.callee.upper.apply(this,arguments),
                 isize={},
