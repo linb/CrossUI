@@ -277,7 +277,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'background-position':'-32px center'
             },
             BOX:{
-                height:'22px'
+                height:'auto'
             },
             'LABEL, CAPTION':{
                 'vertical-align':'middle',
