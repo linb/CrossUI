@@ -2064,8 +2064,11 @@ Class('xui.SAjax','xui.absIO',{
             if(xui.browser.gek)
                 n.onerror=_cb;
 
-            //w.getElementsByTagName("head")[0].appendChild(n);
-            w.body.appendChild(n);
+
+            if(w.body)
+                w.body.appendChild(n);
+            else
+                w.getElementsByTagName("head")[0].appendChild(n);
 
             n=null;
 
