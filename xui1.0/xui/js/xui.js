@@ -1293,16 +1293,15 @@ new function(){
 
     //for dom ready
     var f = xui._domReadyFuns= function(){
-        if(xui.isDomReady)return;
-
-        if(d.addEventListener ) {
-			d.removeEventListener("DOMContentLoaded", f, false );
-			w.removeEventListener("load", f, false );
-		} else {
-			d.detachEvent("onreadystatechange", f);
-			w.detachEvent("onload", f);
-		}
-
+        if(!xui.isDomReady){
+            if(d.addEventListener ) {
+    			d.removeEventListener("DOMContentLoaded", f, false );
+    			w.removeEventListener("load", f, false );
+    		} else {
+    			d.detachEvent("onreadystatechange", f);
+    			w.detachEvent("onload", f);
+    		}
+    	}
         try{
             for(var i=0,l=xui._m.length;i<l;i++)
                 _.tryF(xui._m[i])
