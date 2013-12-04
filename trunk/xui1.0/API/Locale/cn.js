@@ -3237,7 +3237,8 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"通过iframe加载一个的html文件到当前节点内.",
                 $rtn:"[self]",
                 $paras:[
-                    "options [必需参数] : String或Object, 包括url的加载参数."
+                    "options [必需参数] : String或Object, 包括url的加载参数.",
+                    "domId [可选参数] : String, IFrame的DOM ID."
                 ]
             },
             outerHTML:{

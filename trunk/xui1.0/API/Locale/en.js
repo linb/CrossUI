@@ -3225,7 +3225,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To load a html file throught iframe.",
                 $rtn:"[self]",
                 $paras:[
-                    "options [Required] : String/Object."
+                    "options [Required] : String/Object.",
+                    "domId [Optional] : String, IFrame's DOM ID."
                 ]
             },
             outerHTML:{

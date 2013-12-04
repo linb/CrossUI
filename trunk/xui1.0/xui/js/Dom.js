@@ -428,10 +428,13 @@ Class('xui.Dom','xui.absBox',{
                 _.tryF(onEnd);
             }, null, options.options).start();
         },
-        loadIframe:function(options){
+        loadIframe:function(options, domId){
             if(typeof options=='string')options={url:options};
-            var id="aiframe_"+_(),
-                e=xui.browser.ie && xui.browser.ver<9,
+            var id=domId||("aiframe_"+_()),t;
+            if(t=xui.Dom.byId(domId)){
+                t.remove();
+            }
+            var e=xui.browser.ie && xui.browser.ver<9,
                 ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
             ifr.id=ifr.name=id;
             ifr.src=options.url;

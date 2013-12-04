@@ -212,7 +212,7 @@ Class('xui.Debugger', null, {
             }, time||5000);
         };
 
-        if(!_.isDefined(window.console) || (typeof window.console.log !="function")){
+        if(_.isDefined(window.console) && (typeof window.console.log=="function")){
             xui.log=window.console.log;
         }
             
