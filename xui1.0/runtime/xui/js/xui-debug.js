@@ -997,7 +997,13 @@ _.merge(xui,{
         });
     */
     _m:[],
-    main:function(fun){xui._m.push(fun)},
+    main:function(fun){
+        xui._m.push(fun);
+        // run it now
+        if(xui.isDomReady){
+            xui._domReadyFuns();
+        }
+    },
     /*
     key: xui.UI.xxx
     tag: file tag
@@ -1286,7 +1292,7 @@ new function(){
 
 
     //for dom ready
-    var f = function(){
+    var f = xui._domReadyFuns= function(){
         if(xui.isDomReady)return;
 
         if(d.addEventListener ) {
