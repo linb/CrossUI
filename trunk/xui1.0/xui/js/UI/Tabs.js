@@ -86,10 +86,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             });
         },
-        append:function(target,subId){
+        append:function(target,subId, pre, base){
             var p=this.get(0).properties;
             if(subId=subId||p.$UIvalue||p.value)
-                arguments.callee.upper.call(this, target, subId);
+                arguments.callee.upper.call(this, target, subId, pre, base);
             return this;
         },
         getCurPanel:function(){
