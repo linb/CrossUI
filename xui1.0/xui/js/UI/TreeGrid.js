@@ -1338,7 +1338,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'line-height':'18px'
             },
             HCELLS:{
-                'padding-bottom':'2px'
+                'padding-bottom':'2px',
+                overflow:'visible'
             },
             CELLS:{
                 'border-bottom': '1px solid #A2BBD9',

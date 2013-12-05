@@ -176,8 +176,8 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         dragType:'move',
                         targetReposition:true,
                         horizontalOnly:true,
-                        maxLeftOffset: Math.floor(profile._v1),
-                        maxRightOffset: Math.floor(profile._v2-profile._v1),
+                        maxLeftOffset: (profile._v1),
+                        maxRightOffset: (profile._v2-profile._v1),
                         dragCursor:'default'
                     });
                     xui.use(src).css('zIndex',10).focus();
@@ -195,7 +195,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         f,
                         arr = p.$UIvalue.split(':');
                     profile._v1=d.curPos.left;
-                    arr[0]= Math.floor((profile._v1)/rate + p.min);
+                    arr[0]= ((profile._v1)/rate + p.min);
                     box.setUIValue(arr.join(':'));
 
                     if(profile._v1==profile._v2){
@@ -221,8 +221,8 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         dragType:'move',
                         targetReposition:true,
                         horizontalOnly:true,
-                        maxLeftOffset: Math.floor(profile._v2-profile._v1),
-                        maxRightOffset: Math.floor(300 - profile._v2),
+                        maxLeftOffset: (profile._v2-profile._v1),
+                        maxRightOffset: (300 - profile._v2),
                         dragCursor:'default'
                     });
                     xui.use(src).css('zIndex',10).focus();
@@ -240,13 +240,14 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         f,
                         arr = p.$UIvalue.split(':');
                     profile._v2=d.curPos.left;
-                    arr[1]= Math.floor((profile._v2)/rate + p.min);
+                    arr[1]= ((profile._v2)/rate + p.min);
                     box.setUIValue(arr.join(':'));
                 }
             }
         },
         DataModel:{
             position:'absolute',
+            
             width:{
                 ini:300,
                 readonly:true
@@ -335,7 +336,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
             : tpl.replace(/\{fromvalue\}/g,arr[0]).replace(/\{tovalue\}/g,arr[1]).replace(/\{unit\}/g,unit);
         },
         _x2y:function(x){
-            return Math.floor(15 + 1 - (x) * (15/300));
+            return (15 + 1 - (x) * (15/300));
         },
         _keydown:function(profile, e, src,type){
             var key=xui.Event.getKey(e);
@@ -368,10 +369,10 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     arr = pro.$UIvalue.split(':');
                 if(type===0){
                     profile._v1=left;
-                    arr[0]= Math.floor((profile._v1)/rate + pro.min);
+                    arr[0]= ((profile._v1)/rate + pro.min);
                 }else{
                     profile._v2=left;
-                    arr[1]= Math.floor((profile._v2)/rate + pro.min);
+                    arr[1]= ((profile._v2)/rate + pro.min);
                 }
                 profile.boxing().setUIValue(arr.join(':'));                
             }
@@ -391,7 +392,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
              //adjust top
             xui.use(src).get(0).style.top = this._x2y(left) + 'px';
 
-            t = Math.floor((left)/profile._rate + p.min);
+            t = ((left)/profile._rate + p.min);
 
             if(tag){
                 arr[1] = t;

@@ -110,6 +110,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         type : '{_type}',
                         maxlength:'{maxlength}',
                         tabindex:'{tabindex}',
+                        placeholder:"{placeholder}",
                         style:'{_css};{hAlign};'
                     }
                 }
@@ -443,6 +444,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;                    
                     if(profile.onBlur)profile.boxing().onBlur(profile);
+                    
+                    // allow destory control inonBlur event
+                    if (profile.destroyed) return false;
+                     
                     profile.getSubNode('BORDER').tagClass('-focus',false);
                     var value=xui.use(src).get(0).value;
                     if(profile.$Mask && profile.$Mask==value){
@@ -472,6 +477,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            placeholder: {
+                ini: '',
+                action: function (value) {
+                    this.getSubNode('INPUT').attr('placeholder', value);
                 }
             },
             labelPos:{
