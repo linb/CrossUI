@@ -2811,7 +2811,7 @@ Class('xui.absProfile',null,{
         getId:function(){
             return this.$xid;
         },
-        link:function(obj,id,target){
+        link:function(obj,id,target,index){
             var self=this,
                 //avoid Number;
                 uid='$'+self.$xid;
@@ -2821,7 +2821,8 @@ Class('xui.absProfile',null,{
 
             //double link
             obj[uid]=target;
-            if(_.isArr(obj))obj.push(target);
+            if(_.isArr(obj))
+                _.arr.insertAny(obj,target,index,true);
 
             //antilink track
             self._links[id]=obj;
