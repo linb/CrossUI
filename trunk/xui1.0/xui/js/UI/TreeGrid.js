@@ -93,7 +93,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             _.arr.each(arr,function(o){
                 o._row0DfW = hw?('width:'+hw+'px'):'';
                 _.arr.each(o.cells,function(v,i){
-                    v.width=v._col.width;
+                    v.width=v._col._pxWidth;
                 })
             });
 
@@ -1083,7 +1083,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 /*the other header in table header*/
                 header:{
                     HCELL:{
-                        style:"width:{width}px;{colDisplay};",
+                        style:"width:{_pxWidth}px;{colDisplay};",
                         className:'{cellCls}',
                         HCELLA:{
                             className:'{headerClass}',
@@ -1674,7 +1674,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
 
                     o.width(w);
-                    if(col)col.width=w;
+                    if(col)col._pxWidth=col.width=w;
 
                     //collect cell id
                     var ids=[],ws=[];
@@ -1737,7 +1737,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
 
                     xui(ns).parent().width(w);
-                    xui.use(src).parent(2).width(col.width=w);
+                    xui.use(src).parent(2).width(col._pxWidth=col.width=w);
                     xui(ns).removeClass(cls);
 
                     if(profile.afterColResized)
@@ -3214,6 +3214,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o.width=Math.min(o.minWidth);
                     }
                 }
+                o._pxWidth=o.width;
 
                 t={
                     sortDisplay : NONE,
@@ -3603,7 +3604,7 @@ editorDropListHeight
             //first
             xui.UI.adjustData(profile, cell, uicell);
 
-            if(!uicell.width)uicell.width=col.width;
+            if(!uicell.width)uicell.width=col._pxWidth;
             uicell._tabindex=pro.tabindex;
             uicell.cellDisplay=col.hidden===true?'display:none;':'';
 
@@ -4500,11 +4501,11 @@ editorDropListHeight
                         w = i===0?(fW-fW1):Math.round(fW*(col.width/relWTotal));
 
                     if(w<0)w=0;
-                    col.__tw=w;
+                    col._pxWidth=w;
                     if(col.hasOwnProperty('minWidth')){
                         if(col.minWidth>w){
                             fixW+=col.minWidth;
-                            col.__tw=col.minWidth;
+                            col._pxWidth=col.minWidth;
                             _.arr.removeFrom(relWCol,i);
                             retry++;
                         }   
@@ -4512,12 +4513,12 @@ editorDropListHeight
                     if(col.hasOwnProperty('maxWidth')){
                         if(col.maxWidth<w){
                             fixW+=col.maxWidth;
-                            col.__tw=col.maxWidth;
+                            col._pxWidth=col.maxWidth;
                             _.arr.removeFrom(relWCol,i);
                             retry++;
                         }
                     }
-                    fW1+=col.__tw;
+                    fW1+=col._pxWidth;
                 }
                 // break while;
                 if(retry===0||retry===l)
@@ -4536,8 +4537,7 @@ editorDropListHeight
                     if(n._nodes.length){
                         nodes.push(n.get(0));
                     }
-                    xui(nodes).width(col.__tw);
-                    delete col.__tw;
+                    xui(nodes).width(col._pxWidth);
                 });
             }            
         },
