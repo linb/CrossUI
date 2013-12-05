@@ -432,7 +432,7 @@ Class('xui.Dom','xui.absBox',{
             if(typeof options=='string')options={url:options};
             var id=domId||("aiframe_"+_()),t;
             if(t=xui.Dom.byId(domId)){
-                t.remove();
+                xui(t).remove();
             }
             var e=xui.browser.ie && xui.browser.ver<9,
                 ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");

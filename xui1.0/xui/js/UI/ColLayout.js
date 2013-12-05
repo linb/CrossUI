@@ -90,10 +90,10 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             }
             return this;
         },
-        append:function(target,subId){
+        append:function(target,subId, pre, base){
             var p=this.get(0).properties;
             if(subId=subId||(p.items && p.items[0] && p.items[0].id))
-                arguments.callee.upper.call(this, target, subId);
+                arguments.callee.upper.call(this, target, subId, pre, base);
             return this;
         }
     },

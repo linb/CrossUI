@@ -3,9 +3,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         getPanel:function(subId){
             return this.get(0).getSubNodeByItemId('PANEL', subId);
         },
-        append:function(target, subId){
+        append:function(target, subId,  pre, base){
             var pro=this.get(0);
-            return arguments.callee.upper.call(this, target, subId||'main');
+            return arguments.callee.upper.call(this, target, subId||'main', pre, base);
         },
         insertItems:function(arr, base, before){
             return this._insertItems(arr, base, before);

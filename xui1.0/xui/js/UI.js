@@ -200,7 +200,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(subId=typeof subId=='string'?subId:null)subId=this.getSubIdByItemId(subId);
             return this.box._CONTAINERKEY?this.getSubNode(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNode(this.keys.PANEL, subId):this.getRoot();
         },
-        linkParent:function(parentProfile, linkId){
+        linkParent:function(parentProfile, linkId, index){
             var profile=this;
             //unlink first
             profile.unlinkParent();
@@ -208,7 +208,7 @@ Class('xui.UIProfile','xui.Profile', {
             //link
             profile.parent = parentProfile;
             profile.childrenId = linkId;
-            profile.link(parentProfile.children, '$parent', [profile, linkId]);
+            profile.link(parentProfile.children, '$parent', [profile, linkId], index);
             return profile;
         },
         _cacheR1:/^\w[\w_-]*$/,
@@ -1015,55 +1015,88 @@ Class("xui.UI",  "xui.absObj", {
                 }
             });
         },
-        append:function(target, subId){
+        append:function(target, subId, pre, base){
+            var pro=this.get(0),prop=pro.properties, parentNode;
+            // default is append to last
+            var index,baseN;
+            // add to first, or previous of base
+            pre=!!pre;
+            if(base){
+                if(base['xui.UIProfile']){
+                }else if(p['xui.UI']){
+                    base=base.get(0);
+                }
+                _.arr.each(pro.children,function(o,i){
+                    if(o[0]===base){
+                        index=i;
+                        return false;
+                    }
+                });
+                if(_.isNumb(index)){
+                    index=pre?index:(index+1);
+                    baseN=base.getRoot();
+                    if(baseN.isEmpty())baseN=null;
+                }
+            }else{
+                index=pre?0:-1;
+            }
+            
             if(_.isHash(target) || _.isStr(target))
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
-            var pro=this.get(0),prop=pro.properties, parentNode;
-
-            if(pro.beforeAppend && false===this.beforeAppend(pro,target))
+            if(pro.beforeAppend && false===this.beforeAppend(pro,target,subId,pre,base))
                 return;
 
             if(target['xui.Com']){
                 if(subId!==false){
+                    var i=index;
                     target.getUIComponents().each(function(profile){
-                        profile.linkParent(pro,subId);
+                        profile.linkParent(pro,subId,base?(i++):i);
                     });
                 }
                 if(pro.renderId){
                     if(subId=typeof subId=='string'?subId:null)subId=pro.getSubIdByItemId(subId);
                     parentNode=pro.keys.PANEL?pro.getSubNode(pro.keys.PANEL, subId):pro.getRoot();
-                    if((!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none'))
-                        parentNode.append(target);
+                    if((!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
+                        if(!base){
+                            parentNode[pre?'prepend':'append'](target);
+                        }else if(baseN){
+                            baseN[pre?'addPrev':'addNext'](target);
+                        }
+                    }
                 }
                 else{
-                    (pro.excoms||(pro.excoms=[])).push([target,subId]);
+                    _.arr.insertAny(pro.excoms||(pro.excoms=[]),[target,subId],index,true);
                 }
             }else{
                 if(subId!==false){
                     if(target['xui.UI']){
+                        var i=index;
                         target.each(function(profile){
-                            profile.linkParent(pro,subId);
+                             profile.linkParent(pro,subId,base?(i++):i);
                         });
                     }
                 }
                 if(pro.renderId){
                     if(subId=typeof subId=='string'?subId:null)subId=pro.getSubIdByItemId(subId);
                     parentNode=pro.keys.PANEL?pro.getSubNode(pro.keys.PANEL, subId):pro.getRoot();
-                    if((!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none'))
-                        parentNode.append(target);
+                    if((!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
+                        if(!base){
+                            parentNode[pre?'prepend':'append'](target);
+                        }else if(baseN){
+                            baseN[pre?'addPrev':'addNext'](target);
+                        }
+                    }
                 }else{
                     if(!target['xui.UI']){
-                        if(!pro.exchildren)
-                            pro.exchildren=[];
-                        pro.exchildren.push([target,subId]);
+                        _.arr.insertAny(pro.exchildren||(pro.exchildren=[]),[target,subId],index,true);
                     }
                 }
             }
 
             if(pro.afterAppend)
-                this.afterAppend(pro,target);
+                this.afterAppend(pro,target,subId,pre,base);
             return this;
         },
         getParent:function(){
