@@ -590,7 +590,17 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
-                    this.getSubNode('PANEL',true).css('overflow',v||'');
+                    var node=this.getSubNode('PANEL',true);
+                    if(v){
+                        if(v.indexOf(':')!=-1){
+                            _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                var a=s.split(/\s*:\s*/g);
+                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
+                            });
+                            return;
+                        }
+                    }
+                    node.css('overflow',v||'');
                 }
             },
             items:{

@@ -5127,7 +5127,17 @@ new function(){
                     ini:xui.browser.isTouch?'auto':undefined,
                     listbox:['','visible','hidden','scroll','auto'],
                     action:function(v){
-                        this.getContainer().css('overflow',v||'');
+                        var node=this.getContainer();
+                        if(v){
+                            if(v.indexOf(':')!=-1){
+                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                    var a=s.split(/\s*:\s*/g);
+                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
+                                });
+                                return;
+                            }
+                        }
+                        node.css('overflow',v||'');
                     }
                 }
             },
@@ -5180,7 +5190,17 @@ new function(){
                     ini:xui.browser.isTouch?'auto':undefined,
                     listbox:['','visible','hidden','scroll','auto','inherited'],
                     action:function(v){
-                        this.getContainer().css('overflow',v||'');
+                        var node=this.getContainer();
+                        if(v){
+                            if(v.indexOf(':')!=-1){
+                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                    var a=s.split(/\s*:\s*/g);
+                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
+                                });
+                                return;
+                            }
+                        }
+                        node.css('overflow',v||'');
                     }
                 }
             },

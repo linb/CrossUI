@@ -2404,7 +2404,7 @@ type:4
                 if(name=="$gradients"){
                     return ns.$setGradients(node,value);
                 }else if(name=='opacity'){
-                    value=_.isNumb(value)?
+                    value=_.isFinite(value)?
                             parseFloat(value)>1?
                                 1
                                 :parseFloat(value)<=0?

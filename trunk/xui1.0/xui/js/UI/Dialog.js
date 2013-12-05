@@ -518,7 +518,17 @@ if(xui.browser.ie){
                 ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
-                    this.getSubNode('PANEL').css('overflow',v||'');
+                                        var node=this.getSubNode('PANEL');
+                    if(v){
+                        if(v.indexOf(':')!=-1){
+                            _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                var a=s.split(/\s*:\s*/g);
+                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
+                            });
+                            return;
+                        }
+                    }
+                    node.css('overflow',v||'');
                 }
             },
             // setCaption and getCaption
