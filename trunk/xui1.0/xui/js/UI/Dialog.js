@@ -121,11 +121,21 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             });
         },
         activate:function(flag){
-            var profile=this.get(0);
+            var self=this, profile=this.get(0);
             profile.box._active(profile,flag);
             if(flag!==false){
                 try{profile.getSubNode('CAPTION').focus();}catch(e){}
             }
+            this.getChildren().each(function(o){
+                if(_.get(o,['properties','defaultFocus'])){
+                    try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
+                    return false;
+                }
+            });
+            _.asyRun(function(){
+                if(self.onActivated)self.onActivated(profile);                        
+            });
+
         },
         isPinned:function(){
             return !!_.get(this.get(0),['properties','pinned']);
@@ -654,7 +664,8 @@ if(xui.browser.ie){
             beforeClose:function(profile){},
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
-            onLand:function(profile, e, src){}
+            onLand:function(profile, e, src){},
+            onActivated:function(profile){}
         },
         RenderTrigger:function(){
             this.destroyTrigger = function(){

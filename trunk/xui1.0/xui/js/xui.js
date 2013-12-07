@@ -2172,44 +2172,32 @@ Class('xui.IAjax','xui.absIO',{
                 //in opera, "set location" will trigger location=='about:blank' at first
                 if(xui.browser.opr)try{if(w.location=='about:blank')return}catch(e){}
                 self.OK=1;
-                
-                try{
-                    w.name;
-                }catch(e){
+                // first round: try to syn domain
+                var flag=0;
+                try{if(w.name===undefined)flag=1}catch(e){flag=1}
+                if(flag){
                     w.location.replace(c._getDummy()+'#'+xui.ini.dummy_tag);
                 }
-                // for in firefox3, we have to asyRun to get the window.name
-                _.asyRun(function(){
-                    // "w.name" cant throw exception in chrome
-                    var flag;
-                    if(xui.browser.kde){
-                        try{
-                            if(w.name===undefined){
-                                flag=1;
-                            }
-                        }catch(e){
-                            flag=1
-                        }
-                    }
+                
+                // get data
+                (function(){
+                    // second round: try to get data
+                    var flag=0;
+                    try{if(w.name===undefined)flag=1}catch(e){flag=1}
                     if(flag){
-                        _.asyRun(arguments.callee);
-                        return;
-                    }else{
-                        // for in firefox3, we have to asyRun to get the window.name
-                        try{w.name}catch(e){
-                            _.asyRun(arguments.callee);
-                            return;
-                        }
+                        return _.asyRun(arguments.callee);
                     }
+                    
                     var data;
                     if(("xui_IAajax_"+self.id)==w.name){
                         //clear first
                         self._clear();
                         self._onError(new Error('IAjax no return value'));
                         return;
-                    }else
+                    }else{
                         data=w.name;
-
+                    }
+    
                     if(data && (o=_.unserialize(data)) && (t=c._pool[self.id]) ){
                         for(var i=0,l=t.length;i<l;i++){
                             t[i]._response=o;
@@ -2220,7 +2208,7 @@ Class('xui.IAjax','xui.absIO',{
                         self._clear();
                         self._onError(new Error("IAjax return value formatting error, or no matched 'id'-- "+data));
                     }
-                });
+                })();
             };
 
             //create form

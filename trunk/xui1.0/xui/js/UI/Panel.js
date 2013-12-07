@@ -200,7 +200,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             DraggableKeys:['TBAR'],
-            NoDraggableKeys:['INFO','OPT','CLOSE','POP','REFRESH','TOGGLE','CAPTION'],
+            NoDraggableKeys:['INFO','OPT','CLOSE','POP','REFRESH','TOGGLE'],
             HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE'},
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE'},
             onSize:xui.UI.$onSize,

@@ -605,6 +605,14 @@ Class('xui.Dom','xui.absBox',{
             }
             return this;
         },
+        isScrollBarShowed:function(type){
+            type=type=='x'?'scrollLeft':'scrollTop';
+            if(this[type]()!==0)return true;
+            this[type](1);
+            if(this[type]()===0)return false;
+            this[type](0);
+            return true;
+        },
         /*
         name format: 'xxxYxx', not 'xxx-yyy'
         left/top/width/height like, must specify 'px'
@@ -2909,14 +2917,17 @@ type:4
         });
         _.arr.each(['scrollLeft','scrollTop'],function(o){
             self.plugIn(o,function(value){
+                var a=document.documentElement,b=document.body;
                 if(value !==undefined)
                     return this.each(function(v){
-                        v[o]=value;
+                        if(v===window || v===document){
+                            a[o]=b[0]=value;
+                        }else
+                            v[o]=value;
                     });
                 else{
                     var v=this.get(0);
                     if(v===window || v===document){
-                        var a=document.documentElement,b=document.body;
                         if("scrollTop"==o)return window.pageYOffset || Math.max(a[o], b[o]);
                         if("scrollLeft"==o)return window.pageXOffset || Math.max(a[o], b[o]);
                     }

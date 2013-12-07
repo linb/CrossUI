@@ -1,13 +1,15 @@
 Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
     Dependency:['xui.UI.Panel'],
     Instance:{
-        addPanel:function(args, col, basePrf, before){
+        addPanel:function(args, col, basePrf, before, type){
             var profile=this.get(0),
                 items=profile.properties.items,
                 prop=profile.properties;
             if(!col)
                 col=items[0].id;
-                
+
+            if(!type)type="manual";
+
             if(_.arr.subIndexOf(items, 'id',col)==-1)
                 return this;
             
@@ -27,23 +29,30 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 dragKey: prop.disabled?null:profile.box.KEY+":"+profile.$xid,                
                 closeBtn:!prop.disabled 
             });
+            _.set(args,['CC','TBAR'],{});
+            args.CC['TBAR']+=" xui-ui-unselectable";
+
             var panel=new xui.UI.Panel(args.properties, args.events, args.host, args.theme, args.CS, args.CC, args.CB, args.CF);
 
-            return this.movePanel(panel.get(0), col, basePrf, before);
+            return this.movePanel(panel.get(0), col, basePrf, before,type);
         },
-        movePanel:function(prf, col, basePrf, before){
+        movePanel:function(prf, col, basePrf, before,type){
             var profile=this.get(0);
+            if(!type)type="manual";
+            prf.ColLayoutColumn=parseInt(col,10)-1;
+            var old=prf.ColLayoutSize;            
+            prf.ColLayoutSize=profile._warr[prf.ColLayoutColumn];
+
             if(prf["xui.UI"])prf=prf.get(0);
             if(basePrf && basePrf["xui.UI"])basePrf=basePrf.get(0);
 
             if(prf && prf!=basePrf){
-
-                var flag,items=profile.children;
+                var flag2,items=profile.children;
 
                 // add to collayout, or move to the right container first
                 if(prf.parent!=profile || prf.childrenId != col){
                     this.append(prf, col);
-                    flag=1;
+                    flag2=1;
                 }
                 
                 var node,
@@ -54,13 +63,13 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     node=this.getSubNodeByItemId('PANEL', col);
                     if(node.last().isEmpty() || node.last().id()!=tnode.id){
                         node.append(tnode);
-                        flag=1;
+                        flag2=1;
                     }
                 }else if(before){
                     node=basePrf.getRoot();
                     if(node.prev().isEmpty() || node.prev().id()!=tnode.id){
                         node.addPrev(tnode);
-                        flag=1;
+                        flag2=1;
                         
                         var i1=_.arr.subIndexOf(items,'0',basePrf),
                             i2=_.arr.subIndexOf(items,'0',prf);
@@ -74,7 +83,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     node=basePrf.getRoot();
                     if(node.next().isEmpty() || node.next().id()!=tnode.id){
                         node.addNext(tnode);
-                        flag=1;
+                        flag2=1;
 
                         var i1=_.arr.subIndexOf(items,'0',basePrf),
                             i2=_.arr.subIndexOf(items,'0',prf);
@@ -85,8 +94,14 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                         }
                     }
                 }
+                var flag=xui.browser.ie6 && (!old || old>prf.ColLayoutSize);
+                if(flag)prf.getRootNode().parentNode.style.display= 'block';
 
-                if(flag && profile.onRelayout)this.onRelayout(profile);
+                if(flag2 && profile.onRelayout)this.onRelayout(profile, type, prf, prf.ColLayoutSize);
+
+                if(flag)_.asyRun(function(){
+                    prf.getRootNode().parentNode.style.display='';
+                });
             }
             return this;
         },
@@ -119,6 +134,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                             // must be first one
                             $order:1,
                             tagName:'div',
+                            className:'xui-ui-unselectable',
                             style:'{_display}'
                         },
                         PANEL:{
@@ -133,6 +149,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
         Appearances:{
             KEY:{
                 position:'absolute',
+                'overflow':'auto',
                 'overflow-x':'hidden',
                 'overflow-y':'auto',
                 border:'none',
@@ -140,6 +157,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             },            
             ITEMS:{
                 position:'relative',
+                // ensure to get heigth
                 overflow:'hidden',
                 border:'none',
                 zoom:xui.browser.ie6?1:null
@@ -164,7 +182,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 'background-color':'#f0f0f0',
                 'border-width':xui.browser.opr?'0':null,
                 'font-size':xui.browser.ie?0:'',
-                'line-height':xui.browser.ie?0:''
+                'line-height':xui.browser.ie?0:'',
+                zoom:xui.browser.ie6?1:null
             },
             'MOVE-mouseover':{
                 $order:1,
@@ -176,7 +195,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 overflow:'hidden',
                 'border-width':'0',
                 'font-size':xui.browser.ie?0:'',
-                'line-height':xui.browser.ie?0:''
+                'line-height':xui.browser.ie?0:'',
+                zoom:xui.browser.ie6?1:null
             },
             PANEL:{
                 position:'static',
@@ -191,13 +211,14 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
         Behaviors:{
             HoverEffected:{MOVE:'MOVE'},
             DroppableKeys:['KEY'],
+            onSize:xui.UI.$onSize,
             MOVE:{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var pro=profile.properties;
                     if(pro.disabled)return;
                     
-                    var    min=pro.minWidth,
+                    var min=pro.minWidth,
                         cursor=xui.use(src).css('cursor'),
                         pre=profile._pre=xui.use(src).parent(),
                         preW=profile._preW=pre.offsetWidth(),
@@ -211,6 +232,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
 
                     profile._bg=null;
                     profile._limited=0;
+                        
                     xui.use(src).startDrag(e,{
                         dragType:'copy',
                         targetReposition:false,
@@ -223,48 +245,43 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     
                 },
                 onDrag:function(profile, e, src){
-                    var p=xui.DragDrop.getProfile();
-                    if(p.x<=p.restrictedLeft || p.x>=p.restrictedRight){
+                    var p=xui.DragDrop.getProfile(),b=0;
+                    if(p.x<=p.restrictedLeft || p.x>=p.restrictedRight)b=true;
+                    if(b){
                         if(!profile._limited){
-                            profile._bg=xui.use(src).css('backgroundColor');
-                            xui.use(src).css('backgroundColor','#ff6600');
+                            profile._bg=p.proxyNode.css('backgroundColor');
+                            p.proxyNode.css('backgroundColor','#ff6600');
                             profile._limited=true;
                         }
                     }else{
                         if(profile._limited){
-                            xui.use(src).css('backgroundColor',profile._bg);
+                            p.proxyNode.css('backgroundColor',profile._bg);
                             profile._limited=0;
                         }
                     }
                 },
                 onDragstop:function(profile, e, src){
-                     var p=xui.DragDrop.getProfile(),
+                    var pro=profile.properties,
+                        min=pro.minWidth,
+                        items=pro.items,
+                        mins=[],
+                        p=xui.DragDrop.getProfile(),
                         arr=profile.getSubNode('ITEM',true).get(),
                         n=xui.use(src),
-                        l=profile.getSubNode('ITEMS').width(),
-                        a=[],t,
-                        k=0;
+                        l=profile.getRoot().width(),
+                        a=[],t;
 
                     _.arr.each(arr,function(o,i){
-                        if(i!=arr.length-1)
-                            a[i]=xui([o]).offsetWidth();
+                        a[i]=xui([o]).offsetWidth();
+                        if(o==profile._pre.get(0))
+                            a[i]+=p.offset.x;
+                        else if(o==profile._next.get(0))
+                            a[i]-=p.offset.x;
+                    });                    
+                    _.arr.each(items,function(o,i){
+                        o.width=((a[i]/l)*100)+"";
                     });
-                    _.arr.each(arr,function(o,i){
-                        if(i!=arr.length-1){
-                            t=((a[i]/l)*100).toFixed(4);
-                            k += +t;
-                            a[i]=o.style.width = t + '%';
-                        }
-                    });
-                    a[arr.length-1]=arr[arr.length-1].style.width = (99-k).toFixed(4) + '%';
-                    
-                    if(profile._limited){
-                        n.css('backgroundColor',profile._bg);
-                        profile._limited=0;
-                    }
-                    profile._pre.width(profile._preW + p.offset.x);
-                    profile._next.width(profile._nextW - p.offset.x);
-                    if(profile.onColResize)profile.boxing().onColResize(profile, a);
+                    xui.UI.$doResize(profile,l,null,true);
                 }
             },
             onMousemove:function(profile,e){
@@ -301,7 +318,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             listKey:null,
             width:200,
             height:200,
-            minWidth:150,
+            minWidth:200,
             disabled:{
                 ini:false,
                 action: function(v){
@@ -309,14 +326,14 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 }
             },
             items:[
-                {id:'1',width:'30.4%'},
-                {id:'2',width:'30.4%'},
-                {id:'3',width:'38.2%',_display:'display:none'}
+                {id:'1',width:'33.4%'},
+                {id:'2',width:'33.4%'},
+                {id:'3',width:'33.2%',_display:'display:none'}
             ]
         },
         EventHandlers:{
             onColResize:function(profile, sizes){},
-            onRelayout:function(profile){}
+            onRelayout:function(profile, type, panel, size){}
         },
         _preparePosSizeEtc:function(profile){
             var root=profile.getRoot(),
@@ -492,10 +509,10 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     if(col){
                         if(exists){
                             // move only
-                            profile.boxing().movePanel(targetPrf,col,base,before);
+                            profile.boxing().movePanel(targetPrf,col,base,before,'repos');
                         }else{
                             // add
-                            profile.boxing().addPanel(ddd.data.properties,ddd.data.events,col,base,before);
+                            profile.boxing().addPanel(ddd.data.properties,ddd.data.events,col,base,before,'dropadd');
                         }
                     }
                 }
@@ -512,6 +529,89 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             return arguments.callee.upper.call(this, profile);
         },
         _onresize:function(profile,width,height){
+            if(!width)return;
+            var ins=profile.boxing(),
+                root=profile.getRoot(),
+                pro=profile.properties,
+                min=pro.minWidth,
+                items=pro.items,
+                mins=[],othersl=0,
+                arr=profile.getSubNode('ITEM',true).get(),
+                arr2=profile.getSubNode('PANEL',true).get(),
+                itemsN=profile.getSubNode('ITEMS'),
+                ll=width,
+                a=[],t,needRec;
+
+            //1
+            _.arr.each(items,function(o,i){
+                t=parseFloat(o.width)/100;
+                a[i]=width*t;
+                // fix
+                if(a[i]<min){
+                    a[i]=min;
+                    ll-=min;
+                    mins.push(o);
+                    needRec=true;
+                }
+                // need recaculate
+                else{
+                    othersl+=t;
+                }
+            });
+            //2
+            if(needRec){
+                width=ll;
+                needRec=false;
+                _.arr.each(items,function(o,i){
+                    if(_.arr.indexOf(mins,o)==-1){
+                        t=parseFloat(o.width)/100;
+                        a[i]=width*(t/othersl);
+                        // fix
+                        if(a[i]<min){
+                            a[i]=min;
+                            ll-=min;
+                            mins.push(o);
+                            needRec;
+                        }
+                    }
+                });
+            }
+            //3
+            if(needRec){
+                _.arr.each(items,function(o,i){
+                    if(_.arr.indexOf(mins,o)==-1){
+                        a[i]=ll;
+                        if(a[i]<min){
+                            a[i]=min;
+                        }
+                    }
+                });
+            }
+            // set items' with
+            width=0;
+            _.arr.each(a,function(o,i){
+                width+=o;
+            });
+            itemsN.width(width);
+
+            // set item's width
+            _.arr.each(arr,function(o,i){
+                var flag=xui.browser.ie6 && parseFloat(o.style.width)>a[i];
+                if(flag)arr2[i].style.display = 'block';
+                o.style.width = a[i] + 'px';
+                if(flag)_.asyRun(function(){
+                    arr2[i].style.display='';
+                });
+            });
+            profile._warr=a;
+            if(profile.onColResize)ins.onColResize(profile, a);
+            
+            if(profile.onRelayout){
+                ins.getChildren().each(function(panel){
+                    panel.ColLayoutSize=profile._warr[panel.ColLayoutColumn];
+                    ins.onRelayout(profile, 'resize', panel, panel.ColLayoutSize);
+                });
+            }
         }
     }
 });

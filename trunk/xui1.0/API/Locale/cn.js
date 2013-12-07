@@ -2871,6 +2871,13 @@ _.set(xui.Locale,["cn","app"], {
                     "name [必需参数] : String, 事件名称."
                 ]
             },
+            isScrollBarShowed:{
+                $desc:"是否有滚动栏.",
+                $rtn:"Boolean",
+                $paras:[
+                    "type [必需参数] : x表示横向滚动栏，y表示纵向滚动栏."
+                ]
+            },
             css:{
                 $desc:"获取第一个元素的某个CSS属性值, 或设置所有元素的某个属性值.",
                 $rtn:"String/[self]",
@@ -7551,6 +7558,18 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
                     "}"
+                ]
+            },
+            getDefaultFocus:{
+                $desc:"控件是否为自动获得焦点",
+                $rtn:"Boolean"
+            },
+            setDefaultFocus:{
+                $desc:"设置控件是否为自动获得焦点",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean, 默认为[false].",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getDock:{
@@ -12575,7 +12594,10 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"内部子容器重新排列时触发.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile."
+                    "profile : xui.UIProfile.",
+                    "type : String.",
+                    "panel : xui.UIProfile.",
+                    "size : Number."
                 ]
             }
         }
@@ -14164,8 +14186,13 @@ _.set(xui.Locale,["cn","app"], {
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
+            },
+            onActivated:{
+                $desc:"在对话框被激活时(获得焦点)调用.",
+                $paras:[
+                    "profile : xui.UIProfile."
+                ]
             }
-
         }
     });
 
