@@ -2860,6 +2860,13 @@ _.set(xui.Locale,["en","app"], {
                     "name [required] : String, Event name."
                 ]
             },
+            isScrollBarShowed:{
+                $desc:"To determine whether the scroll bar is showed or not.",
+                $rtn:"Boolean",
+                $paras:[
+                    "type [required] : x or y."
+                ]
+            },
             css:{
                 $desc:"Gets a css property on the first element, or sets a css property(or key/value Object as css properties) to all elements.",
                 $rtn:"String/[self]",
@@ -7528,6 +7535,18 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
                     "}"
+                ]
+            },
+            getDefaultFocus:{
+                $desc:"To determine whether the control be focused automatically not",
+                $rtn:"Boolean"
+            },
+            setDefaultFocus:{
+                $desc:"To set whether the control be focused automatically not",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean, default is [false]",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getDock:{
@@ -12650,7 +12669,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired when inner panels relayout.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile."
+                    "profile : xui.UIProfile.",
+                    "type : String.",
+                    "panel : xui.UIProfile.",
+                    "size : Number."
                 ]
             }
         }
@@ -14236,6 +14258,12 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile.",
                     "e: DOM event Object.",
                     "src : String, the event source DOM element's xid."
+                ]
+            },
+            onActivated:{
+                $desc:"Fired when the dialog activated.",
+                $paras:[
+                    "profile : xui.UIProfile."
                 ]
             }
 

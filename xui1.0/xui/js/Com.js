@@ -129,8 +129,14 @@ Class('xui.Com',null,{
                     if(!(parent && parent['xui.UI'] && !parent.get(0).renderId))
                         self.render();
 
-                    if(false===_.tryF(self.customAppend,[parent,subId,left,top,threadid], self))
+                    if(false===_.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
                         (parent||xui('body')).append(self.getUIComponents(),subId);
+                        self.getUIComponents().each(function(o){
+                            if(_.get(o,['properties','defaultFocus'])){
+                               try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
+                            }
+                        });
+                    }
                     _.tryF(onEnd,[self, threadid],self.host);
                 }
             };

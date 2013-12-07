@@ -1022,8 +1022,7 @@ Class("xui.UI",  "xui.absObj", {
             // add to first, or previous of base
             pre=!!pre;
             if(base){
-                if(base['xui.UIProfile']){
-                }else if(p['xui.UI']){
+                if(base['xui.UI']){
                     base=base.get(0);
                 }
                 _.arr.each(pro.children,function(o,i){
@@ -3217,6 +3216,7 @@ Class("xui.UI",  "xui.absObj", {
                         i.removeClass('xui-ui-disabled');
                 }
             },
+            defaultFocus:false,
             dock:{
                 ini:'none',
                 listbox:['none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'],
@@ -3491,14 +3491,17 @@ Class("xui.UI",  "xui.absObj", {
                                 return;
 
                              var style=node.get(0).style,
-                                obj,i,k,o,key,target;
+                                obj,i,k,o,key,target,width,height;
+
+                            width=(style&&parseInt(style.width,10))||node.width();
+                            height=(style&&parseInt(style.height,10))||node.height();
 
                             //window resize: check time span, for window resize in firefox
                             //force call when input $dockid
                             //any node resize
                             if( arg.$dockid || !win || ((_() - xui.$cache._resizeTime) > 50)){
                                 //recruit call, give a short change
-                                obj = {left:0,top:0,right:0,bottom:0,width:parseInt(style&&style.width,10)||node.width(),height:parseInt(style&&style.height,10)||node.height()};
+                                obj = {left:0,top:0,right:0,bottom:0,width:width,height:height};
 
                                 for(k=0;key=arr[k++];){
                                     target = me[key];

@@ -895,6 +895,7 @@ Class('xui.DragDrop',null,{
             },
             draggable:function(flag, profile, dragKey, dragData){
                 var self=this, dd=xui.DragDrop;
+                self.addClass('xui-ui-unselectable');
                 if(flag===undefined)
                     flag=true;
                 else if(typeof flag=='object'){
