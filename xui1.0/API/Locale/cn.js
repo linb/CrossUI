@@ -7850,6 +7850,14 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            setCustomAttr:{
+                $desc:"设置自定义的DOM节点属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [可选参数] : String/Object, 模板字符串键, 或键值对.",
+                    "value [可选参数] : Object, DOM节点属性对象."
+                ]
+            },
             setCustomStyle:{
                 $desc:"设置自定义的CSS对象.",
                 $rtn:"[self]",
@@ -11557,7 +11565,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemWidth:{
-                $desc:"获取画状态按钮的宽度.",
+                $desc:"获取状态按钮的宽度.",
                 $rtn:"Number"
             },
             setItemWidth:{
@@ -12736,6 +12744,30 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "alert(o.getHAlign());_.asyRun(function(){o.setHAlign('right')},1000);"+
                     "}"
+                ]
+            },
+            getItemAlign:{
+                $desc:"获取按钮的对齐方式.",
+                $rtn:"String"
+            },
+            setItemAlign:{
+                $desc:"设置按钮的对齐方式.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 'left', 'center' or 'right'.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getItemWidth:{
+                $desc:"获取按钮的宽度.",
+                $rtn:"Number"
+            },
+            setItemWidth:{
+                $desc:"设置按钮的宽度, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getLazyAppend :{

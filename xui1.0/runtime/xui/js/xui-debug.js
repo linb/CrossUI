@@ -12700,7 +12700,10 @@ Class('xui.UIProfile','xui.Profile', {
 
                 ele=null;
             }
-
+            
+            if(ns.CA){
+                ins.setCustomAttr(ns.CA);
+            }
             if(ns.CS){
                 ins.setCustomStyle(ns.CS);
             }
@@ -12853,7 +12856,7 @@ Class('xui.UIProfile','xui.Profile', {
                 delete ns.$afterDestroy;
             }
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
-            _.breakO([ns.properties,ns.events, ns.CF, ns.CB, ns.CC, ns.CS, ns],2);
+            _.breakO([ns.properties,ns.events, ns.CF, ns.CB, ns.CC, ns.CA, ns.CS, ns],2);
             //set again
             ns.destroyed=true;
         },
@@ -13001,6 +13004,9 @@ Class('xui.UIProfile','xui.Profile', {
             if(ns.CS){
                 ns.boxing().setCustomStyle(ns.CS,undefined,nodes);
             }
+            if(ns.CA){
+                ns.boxing().setCustomAttr(ns.CA,undefined,nodes);
+            }
             return nodes;
         },
         serialize:function(rtnString, keepHost){
@@ -13044,6 +13050,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(!_.isEmpty(o.CC)) r.CC=_.copy(o.CC);
             if(!_.isEmpty(o.CF)) r.CF=_.copy(o.CF);
             if(!_.isEmpty(o.CS)) r.CS=_.copy(o.CS);
+            if(!_.isEmpty(o.CA)) r.CA=_.copy(o.CA);
             if(typeof o.theme == "string") r.theme=o.theme;
 
             //children
@@ -13356,7 +13363,7 @@ Class("xui.UI",  "xui.absObj", {
             return arr;
         },
 
-        _ini:function(properties, events, host, theme, CS, CC, CB, CF){
+        _ini:function(properties, events, host, theme, CS, CC, CB, CF, CA){
             var self=this,
                 c=self.constructor,
                 profile,
@@ -13390,6 +13397,7 @@ Class("xui.UI",  "xui.absObj", {
             profile.CB = CB?_.copy(CB):(profile.CB||{});
             profile.CC = CC?_.copy(CC):(profile.CC||{});
             profile.CF = CF?_.copy(CF):(profile.CF||{});
+            profile.CA = CA?_.copy(CA):(profile.CA||{});
             if(typeof theme =="string")profile.theme = theme;
 
             profile.template = c.getTemplate();
@@ -13890,6 +13898,53 @@ Class("xui.UI",  "xui.absObj", {
                     o.CC={};
                 }
             });
+        },
+        setCustomAttr:function(key,value,nodes){
+            var me=arguments.callee,
+                fun=(me.fun||(me.fun=function(pro,key,CAObj,clear,nodes){
+                    if(!CAObj[key])return;
+                    var hkey=pro.keys[key] || key,
+                        tnodes,b;
+                    // get target nodes fromin given nodes
+                    if(nodes){
+                        tnodes=nodes.query('*', 'id', hkey==pro.keys.KEY?pro.domId:new RegExp('^'+hkey+':'+pro.serialId));
+                    }
+                    // get target nodes from the whole widget
+                    else{
+                        tnodes=pro.getSubNode(key,true);
+                    }
+                    if(!tnodes.isEmpty()){
+                        if(_.isHash(CAObj[key])){
+                            _.each(CAObj[key],function(o,i){
+                                tnodes.attr(i, clear?'':xui.adjustRes(o,0,1));
+                            });
+                        }          
+                    }
+                }));
+            return this.each(function(o){
+                var bak = _.copy(o.CA);
+                //set key and value
+                if(!!key && typeof key=='object'){
+                    if(key){
+                        _.filter(key,function(o,i){
+                            return i!='id' && i!='class' && i!='style' && i!='$xid'
+                        });
+                    }
+                    if(o.renderId){
+                        for(var i in key)
+                            fun(o, i, bak, true, nodes);
+                        for(var i in key)
+                            fun(o, i, key, false, nodes);
+                    }
+                    o.CA=key;
+                //clear all
+                }else{
+                    if(o.renderId)
+                        for(var i in bak)
+                            fun(o, i, bak, true, nodes);
+                    o.CA={};
+                }
+            });        
         },
         setCustomStyle:function(key,value,nodes){
             var me=arguments.callee,
@@ -15048,7 +15103,8 @@ Class("xui.UI",  "xui.absObj", {
 
             delete template['class'];
 
-            arr[arr.length]=' {_attributes}>';
+            arr[arr.length]= u.$tag_special + (key||'KEY') + '_CA'+u.$tag_special;
+            arr[arr.length]='>';
 
             if(!map2[tagName] && text)
                 arr[arr.length]=text;
@@ -15075,17 +15131,25 @@ Class("xui.UI",  "xui.absObj", {
             var me=arguments.callee,
                 ui=xui.UI,
                 tag=ui.$tag_special,
-                r=me._r||(me._r=new RegExp( tag+'([0-9A-Z_]+)_C([CT])'+tag + '|'+ tag+'([\\w_\\-\\.]*)'+tag, 'img')),
+                ca=function(h,s,i){
+                    s="";
+                    for(i in h)s+= (i+'="'+h[i]+'" ');
+                    return s;
+                },
+                r=me._r||(me._r=new RegExp( tag+'([0-9A-Z_]+)_C([CTA])'+tag + '|'+ tag+'([\\w_\\-\\.]*)'+tag, 'img')),
                 h1={
                     id:profile.serialId,
                     cls:profile.getClass('KEY'),
                     domid:profile.$domId
                 },
                 h2={
+                    A:profile.CA,
                     C:profile.CC,
                     T:profile._CT
                 };
-            return temp.replace(r, function(a,b,c,d){return h1[d] || (h2[c]?(h2[c][b]||""):'')}).replace(ui.$x01r,'\x01');
+            return temp.replace(r, function(a,b,c,d){
+                return h1[d] || (h2[c]? (c=="A"?ca(h2[c][b]) : (h2[c][b]||"")):'');
+            }).replace(ui.$x01r,'\x01');
         },
         _build:function(profile, data){
             var template, t, m,
@@ -17997,6 +18061,7 @@ new function(){
                 });
                 _.merge(profile.CS,tagProfile.CS,'all');
                 _.merge(profile.CC,tagProfile.CC,'all');
+                _.merge(profile.CA,tagProfile.CA,'all');
                 if(typeof tagProfile.theme =="string")
                     profile.theme=tagProfile.theme;
 
@@ -29127,6 +29192,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         },
                                         CAPTION:{
                                             text: '{caption}',
+                                            style:'{itemWidth};{itemAlign}',
                                             $order:1
                                         },
                                         CMDS:{
@@ -29611,6 +29677,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                 }
             },
+            itemWidth:{
+                ini:0,
+                action:function(value){
+                    this.getSubNode('CAPTION',true).width(value);
+                }
+            },
+            itemAlign:{
+                ini:"",
+                listbox:['','left','center','right'],
+                action:function(value){
+                    this.getSubNode('CAPTION',true).css('text-align',value);
+                }
+            },
             HAlign:{
                 ini:'left',
                 listbox:['left','center','right'],
@@ -29653,16 +29732,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return data;
         },
         _prepareItem:function(profile, item){
-            var dpn = 'display:none',prop=profile.properties;
+            var dpn = 'display:none',p=profile.properties,t;
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
             item._opt = item.optBtn?'':dpn;
             item.itemDisplay = item.hidden?dpn:'';
-
+            if(t = item.itemWidth || p.itemWidth)
+                item.itemWidth="width:"+item.itemWidth+(_.isFinite(item.itemWidth)?"px":"");
+            if(t = item.itemAlign || p.itemAlign)
+                item.itemAlign = "text-align:"+ t;
             if(_.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
-            else if(_.isStr(prop.overflow))
-                item._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
+            else if(_.isStr(p.overflow))
+                item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):("overflow:"+p.overflow);
         },
         getDropKeys:function(profile,node){
             return profile.properties[profile.getKey(xui.use(node).id())==profile.keys.PANEL?'dropKeys':'dropKeysPanel'];
