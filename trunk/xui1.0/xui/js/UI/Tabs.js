@@ -379,6 +379,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         },
                                         CAPTION:{
                                             text: '{caption}',
+                                            style:'{itemWidth};{itemAlign}',
                                             $order:1
                                         },
                                         CMDS:{
@@ -863,6 +864,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                 }
             },
+            itemWidth:{
+                ini:0,
+                action:function(value){
+                    this.getSubNode('CAPTION',true).width(value);
+                }
+            },
+            itemAlign:{
+                ini:"",
+                listbox:['','left','center','right'],
+                action:function(value){
+                    this.getSubNode('CAPTION',true).css('text-align',value);
+                }
+            },
             HAlign:{
                 ini:'left',
                 listbox:['left','center','right'],
@@ -905,16 +919,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return data;
         },
         _prepareItem:function(profile, item){
-            var dpn = 'display:none',prop=profile.properties;
+            var dpn = 'display:none',p=profile.properties,t;
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
             item._opt = item.optBtn?'':dpn;
             item.itemDisplay = item.hidden?dpn:'';
-
+            if(t = item.itemWidth || p.itemWidth)
+                item.itemWidth="width:"+item.itemWidth+(_.isFinite(item.itemWidth)?"px":"");
+            if(t = item.itemAlign || p.itemAlign)
+                item.itemAlign = "text-align:"+ t;
             if(_.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
-            else if(_.isStr(prop.overflow))
-                item._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
+            else if(_.isStr(p.overflow))
+                item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):("overflow:"+p.overflow);
         },
         getDropKeys:function(profile,node){
             return profile.properties[profile.getKey(xui.use(node).id())==profile.keys.PANEL?'dropKeys':'dropKeysPanel'];

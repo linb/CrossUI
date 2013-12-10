@@ -7827,6 +7827,14 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            setCustomAttr:{
+                $desc:"Sets customized DOM attributes Object.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [Optional] : String or Object. the template string key, or key/value pairs.",
+                    "value [Optional] : String, DOM attributes Obejct."
+                ]
+            },
             setCustomStyle:{
                 $desc:"Sets customized CSS Object to the set of UIProfiles.",
                 $rtn:"[self]",
@@ -12811,6 +12819,30 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "alert(o.getHAlign());_.asyRun(function(){o.setHAlign('right')},1000);"+
                     "}"
+                ]
+            },
+            getItemAlign:{
+                $desc:"Gets item's text align.",
+                $rtn:"String"
+            },
+            setItemAlign:{
+                $desc:"Sets item's text align, and reflects the value to UI.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. 'left', 'center' or 'right'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getItemWidth:{
+                $desc:"Gets item width.",
+                $rtn:"Number"
+            },
+            setItemWidth:{
+                $desc:"Sets item width, and reflects the value to UI.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getLazyAppend:{

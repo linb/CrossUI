@@ -655,6 +655,9 @@ html, .xui-uibg-base{
 .xui-treegrid-cells-hot{
     background: #5DA778;
 }
+.xui-treegrid-alt {
+    background-color: #194040;
+}
 /**
 *
 * advance
