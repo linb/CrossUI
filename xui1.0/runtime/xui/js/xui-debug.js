@@ -9961,6 +9961,7 @@ Class('xui.Com',null,{
             var self=this,f=function(){
                 // no UI control in com
                 if(self.getUIComponents().isEmpty()){
+                    _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
                     _.tryF(onEnd,[self, threadid],self.host);
                 }else{
                     // if parent is an ui object without rendered, dont render the com
