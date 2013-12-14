@@ -111,7 +111,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 if(typeof callback=='function')
                     callback();
                 profile.pause=false;
-            },200,Math.max(5,(x2-x1)/100),'sineInOut').start();
+            },Math.max(300,(x2-x1)/10),0,'sineInOut').start();
         },
         scrollToRight:function(callback){
             var profile=this.get(0);                    
@@ -132,7 +132,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     if(typeof callback=='function')
                         callback();
                     profile.pause=false;
-                },200,Math.max(5,(x1-x2)/100),'sineInOut').start();
+                },Math.max(300,(x2-x1)/10),0,'sineInOut').start();
             }
         }
     },

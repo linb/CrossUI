@@ -1276,32 +1276,35 @@ Class('xui.Dom','xui.absBox',{
                 };
                 return '#' + f(from,to, value, 'red') + f(from,to, value, 'green') + f(from,to, value, 'blue');
             });
+            
+            // Estimate time by steps
+            if(step||0>0)
+                time=step*16;
+            else
+                time = time||300;
 
-            time = time||100;
-            step = step||5;
             type = hash[type]!==undefined?type:'expoIn';
 
-            var self=this, count=0,
-                funs=[function(threadid){
-                    //try{
-                       // if(++count > step)throw new Error;
-                        if(++count > step){
-                            xui.Thread(threadid).abort();
-                            return false;
-                        }
-                        _.each(args,function(o,i){
-                            if(typeof o == 'function') o(hash[type](count,step));
-                            else{
-                                var value = String( _.str.endWith(i.toLowerCase(),'color') ? color(type, o, step, count) : (o[0] + (o[1]-o[0])*hash[type](count,step)));
-                                (self[i]) ? (self[i](value+(unit||''))) :(self.css(i, value+(unit||'')));
-                            }
-                        });
-                    //}catch(e){
-                    //    xui.Thread(threadid).abort();
-                    //    color=hash=null;
-                   // }
-                }];
-            return xui.Thread(threadid||_.id(), funs, Math.max(time/step-9,0), null, onStart, onEnd ,true);
+            var startTime,self=this, funs=[function(threadid){
+                var off = _() - startTime;
+                // the last time
+                if(off >= time)off=time;
+                _.each(args,function(o,i){
+                    if(typeof o == 'function') o(hash[type](off,time));
+                    else{
+                        var value = String( _.str.endWith(i.toLowerCase(),'color') ? color(type, o, time, off) : (o[0] + (o[1]-o[0])*hash[type](off,time)));
+                        (self[i]) ? (self[i](value+(unit||''))) :(self.css(i, value+(unit||'')));
+                    }
+                });
+                if(off==time){
+                    xui.Thread(threadid).abort();
+                    return false;
+                }
+            }];
+            return xui.Thread(threadid||_.id(), funs, 0, null, function(){
+                startTime=_();
+                _.tryF(onStart,arguments,this);
+            }, onEnd ,true);
         },
         /*
         pos: {left:,top:} or dom element

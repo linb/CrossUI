@@ -173,7 +173,7 @@ Class('xui.Debugger', null, {
                     last.left(l);
                 },function(){
                     last.left(l+(last.width+width)/2+20);
-                },100,5).start();
+                }).start();
                 
                 var lh=last.offsetHeight();
                _.filter(allmsg,function(ind){
@@ -200,7 +200,7 @@ Class('xui.Debugger', null, {
                 div.top(st-h-20);
             },function(){
                 div.top(st+20);
-            },100,5,'expoOut').start();
+            },300,0,'expoOut').start();
 
             _.asyRun(function(){
                 if(div._thread&&div._thread.id&&div._thread.isAlive())div._thread.abort();
@@ -208,7 +208,7 @@ Class('xui.Debugger', null, {
                      stack.push(div); 
                      div.hide();
                      div.__hide=1;
-                },100,10).start();
+                },300,0).start();
             }, time||5000);
         };
 

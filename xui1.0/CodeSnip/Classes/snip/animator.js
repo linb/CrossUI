@@ -118,9 +118,11 @@ Class('App.snip_animator', 'xui.Com',{
                 _.each(args,function(o,i){
                     args2[i]=[o[1],o[0]];
                 });
-                node.animate(args,null,null,1000,20,type).links(
-                    node.animate(args2,null,null,600,20,type)
-                ).start();
+                node.animate(args,null,function(){
+                    _.asyRun(function(){
+                        node.animate(args2,null,null,600,0, type).start();
+                    },300);
+                },600,0,type).start();
             }
         }
     }

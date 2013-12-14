@@ -156,7 +156,31 @@ _.merge=function(target, source, type){
     }
     return target;
 };
+(function() {
+    var lastTime=0,vendors=['ms','moz','webkit','o'],w=window,i=0,l=vendors.length,tag;
+    for(;i<l && !w.requestAnimationFrame && (tag=vendors[i++]);) {
+        w.requestAnimationFrame = w[tag+'RequestAnimationFrame'];
+        w.cancelAnimationFrame = w[tag+'CancelAnimationFrame']||w[tag+'CancelRequestAnimationFrame'];
+    }
+    if (!w.requestAnimationFrame)
+        w.requestAnimationFrame=function(callback,element){
+            var currTime=(new Date()).getTime(),
+                timeToCall=Math.max(0, 16-(currTime-lastTime)),
+                id=setTimeout(function(){callback(currTime + timeToCall)}, timeToCall);
+            lastTime=currTime+timeToCall;
+            return id;
+        };
+    if (!w.cancelAnimationFrame)
+        w.cancelAnimationFrame = function(id){clearTimeout(id)};
+}());
 _.merge(_,{
+    setTimeout:function(callback,delay){
+        return (delay||0)>16?setTimeout(callback,delay):requestAnimationFrame(callback);
+    },
+    clearTimeout:function(id){
+        cancelAnimationFrame(id);
+        clearTimeout(id);
+    },
     fun:function(){return function(){}},
     exec:function(script){
         var me=this,
@@ -233,7 +257,7 @@ _.merge(_,{
     */
     asyRun:function(fun, defer, args, scope){
         //defer must set in opera
-        return setTimeout(typeof fun=='string' ? fun : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
+        return _.setTimeout(typeof fun=='string' ? function(){_.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
     },
     asyHTML:function(content, callback, defer, size){
         var div = document.createElement('div'),
@@ -244,7 +268,7 @@ _.merge(_,{
             while(--i && div.firstChild)
                 fragment.appendChild(div.firstChild);
             if(div.firstChild)
-                setTimeout(arguments.callee, defer||0);
+                _.setTimeout(arguments.callee, defer||0);
             else
                 callback(fragment);
         })();
@@ -261,9 +285,9 @@ _.merge(_,{
     */
     resetRun:function(key, fun, defer ,args, scope){
         var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
-        if(cache[k]){clearTimeout(cache[k])}
+        if(cache[k]){_.clearTimeout(cache[k])}
         if(typeof fun=='function')
-            cache[k] = setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
+            cache[k] = _.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
         else delete cache[k];
     },
     //Dependency: xui.Dom xui.Thread
@@ -835,7 +859,7 @@ _.merge(xui,{
                     if(typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
-                    setTimeout(arguments.callee,0);
+                    _.setTimeout(arguments.callee,0);
                 _.tryF(callback);
             }())
         },
@@ -1326,12 +1350,12 @@ new function(){
                 //for ie7 iframe(doScroll is always ok)
                 d.activeElement.id;
                 d.documentElement.doScroll('left');f()
-            }catch(e){setTimeout(arguments.callee,9)}
+            }catch(e){_.setTimeout(arguments.callee,9)}
         })();
     }
     
     // to ensure
-    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?setTimeout(arguments.callee,9):f()})();
+    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?_.setTimeout(arguments.callee,9):f()})();
 };
 // for loction url info
 new function(){
@@ -1507,24 +1531,28 @@ Class('xui.Thread',null,{
 
             // clear the mistake trigger task
             if(p._asy!=-1)
-                clearTimeout(p._asy);
+                _.clearTimeout(p._asy);
             
             p._asy = _.asyRun(self._task, p._left, [], self);
             
             p.time=_();
             return self;
         },
-        suspend:function(){
+        suspend:function(time){
             var n,p=this.profile;
             if(p.status=="pause")return;
             p.status="pause";
             if(p._asy!==-1){
-                clearTimeout(p._asy);
+                _.clearTimeout(p._asy);
                 if(p.index>0)p.index--;
             }
             n=p._left-(_() - p.time);
 
             p._left=(n>=0?n:0);
+
+            if((Number(time) || 0))
+                this.resume(time);
+
             return this;
         },
         /*time
@@ -1549,7 +1577,7 @@ Class('xui.Thread',null,{
         abort:function(){
             var t=this.profile;
             t.status="stop";
-            clearTimeout(t._asy);
+            _.clearTimeout(t._asy);
             _.tryF(t.onEnd, [t.id]);
             this.__gc();
         },
@@ -1770,7 +1798,7 @@ Class('xui.absIO',null,{
             if(!self._end){
                 self._end=true;
                 if(self._flag>0){
-                    clearTimeout(self._flag);
+                    _.clearTimeout(self._flag);
                     self._flag=0
                 }
                 xui.Thread.resume(self.threadid);
