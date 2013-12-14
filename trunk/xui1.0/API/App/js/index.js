@@ -701,7 +701,7 @@ Class('App', 'xui.Com',{
                 id = a.href.split(/#[!]?/)[1],
                 node = xui([this]).parent(2).query('a','name',id).next().first();
             if(!node.isEmpty()){
-                node.animate({opacity:[0,1]}, 0,0, 2000, 20).start();
+                node.animate({opacity:[0,1]}, 0,0, 500).start();
                 if(node.next().css('display')=='none')node.onClick();
             }
         }, 

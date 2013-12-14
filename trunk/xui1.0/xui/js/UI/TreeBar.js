@@ -681,7 +681,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(properties.animCollapse)
                         subNs.animate({'height':[h,0]},null,function(){
                             subNs.css({display:'none'})
-                        }, 100, 5, 'expoIn', profile.key+profile.id).start();
+                        }, 200, 0, 'expoIn', profile.key+profile.id).start();
                     else
                         subNs.css({
                             display:'none',
@@ -749,7 +749,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                             subNs.css({display:''})
                                         },function(){
                                             subNs.css({height:'auto'})
-                                        },100, 5, 'expoOut', profile.key+profile.id).start();
+                                        },200, 0, 'expoOut', profile.key+profile.id).start();
                                 else
                                     subNs.css({display:'',height:'auto'});
                             }else

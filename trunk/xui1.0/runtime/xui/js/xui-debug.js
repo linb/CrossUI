@@ -156,7 +156,31 @@ _.merge=function(target, source, type){
     }
     return target;
 };
+(function() {
+    var lastTime=0,vendors=['ms','moz','webkit','o'],w=window,i=0,l=vendors.length,tag;
+    for(;i<l && !w.requestAnimationFrame && (tag=vendors[i++]);) {
+        w.requestAnimationFrame = w[tag+'RequestAnimationFrame'];
+        w.cancelAnimationFrame = w[tag+'CancelAnimationFrame']||w[tag+'CancelRequestAnimationFrame'];
+    }
+    if (!w.requestAnimationFrame)
+        w.requestAnimationFrame=function(callback,element){
+            var currTime=(new Date()).getTime(),
+                timeToCall=Math.max(0, 16-(currTime-lastTime)),
+                id=setTimeout(function(){callback(currTime + timeToCall)}, timeToCall);
+            lastTime=currTime+timeToCall;
+            return id;
+        };
+    if (!w.cancelAnimationFrame)
+        w.cancelAnimationFrame = function(id){clearTimeout(id)};
+}());
 _.merge(_,{
+    setTimeout:function(callback,delay){
+        return (delay||0)>16?setTimeout(callback,delay):requestAnimationFrame(callback);
+    },
+    clearTimeout:function(id){
+        cancelAnimationFrame(id);
+        clearTimeout(id);
+    },
     fun:function(){return function(){}},
     exec:function(script){
         var me=this,
@@ -233,7 +257,7 @@ _.merge(_,{
     */
     asyRun:function(fun, defer, args, scope){
         //defer must set in opera
-        return setTimeout(typeof fun=='string' ? fun : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
+        return _.setTimeout(typeof fun=='string' ? function(){_.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
     },
     asyHTML:function(content, callback, defer, size){
         var div = document.createElement('div'),
@@ -244,7 +268,7 @@ _.merge(_,{
             while(--i && div.firstChild)
                 fragment.appendChild(div.firstChild);
             if(div.firstChild)
-                setTimeout(arguments.callee, defer||0);
+                _.setTimeout(arguments.callee, defer||0);
             else
                 callback(fragment);
         })();
@@ -261,9 +285,9 @@ _.merge(_,{
     */
     resetRun:function(key, fun, defer ,args, scope){
         var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
-        if(cache[k]){clearTimeout(cache[k])}
+        if(cache[k]){_.clearTimeout(cache[k])}
         if(typeof fun=='function')
-            cache[k] = setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
+            cache[k] = _.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
         else delete cache[k];
     },
     //Dependency: xui.Dom xui.Thread
@@ -835,7 +859,7 @@ _.merge(xui,{
                     if(typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
-                    setTimeout(arguments.callee,0);
+                    _.setTimeout(arguments.callee,0);
                 _.tryF(callback);
             }())
         },
@@ -1326,12 +1350,12 @@ new function(){
                 //for ie7 iframe(doScroll is always ok)
                 d.activeElement.id;
                 d.documentElement.doScroll('left');f()
-            }catch(e){setTimeout(arguments.callee,9)}
+            }catch(e){_.setTimeout(arguments.callee,9)}
         })();
     }
     
     // to ensure
-    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?setTimeout(arguments.callee,9):f()})();
+    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?_.setTimeout(arguments.callee,9):f()})();
 };
 // for loction url info
 new function(){
@@ -1507,24 +1531,28 @@ Class('xui.Thread',null,{
 
             // clear the mistake trigger task
             if(p._asy!=-1)
-                clearTimeout(p._asy);
+                _.clearTimeout(p._asy);
             
             p._asy = _.asyRun(self._task, p._left, [], self);
             
             p.time=_();
             return self;
         },
-        suspend:function(){
+        suspend:function(time){
             var n,p=this.profile;
             if(p.status=="pause")return;
             p.status="pause";
             if(p._asy!==-1){
-                clearTimeout(p._asy);
+                _.clearTimeout(p._asy);
                 if(p.index>0)p.index--;
             }
             n=p._left-(_() - p.time);
 
             p._left=(n>=0?n:0);
+
+            if((Number(time) || 0))
+                this.resume(time);
+
             return this;
         },
         /*time
@@ -1549,7 +1577,7 @@ Class('xui.Thread',null,{
         abort:function(){
             var t=this.profile;
             t.status="stop";
-            clearTimeout(t._asy);
+            _.clearTimeout(t._asy);
             _.tryF(t.onEnd, [t.id]);
             this.__gc();
         },
@@ -1770,7 +1798,7 @@ Class('xui.absIO',null,{
             if(!self._end){
                 self._end=true;
                 if(self._flag>0){
-                    clearTimeout(self._flag);
+                    _.clearTimeout(self._flag);
                     self._flag=0
                 }
                 xui.Thread.resume(self.threadid);
@@ -7676,32 +7704,35 @@ Class('xui.Dom','xui.absBox',{
                 };
                 return '#' + f(from,to, value, 'red') + f(from,to, value, 'green') + f(from,to, value, 'blue');
             });
+            
+            // Estimate time by steps
+            if(step||0>0)
+                time=step*16;
+            else
+                time = time||300;
 
-            time = time||100;
-            step = step||5;
             type = hash[type]!==undefined?type:'expoIn';
 
-            var self=this, count=0,
-                funs=[function(threadid){
-                    //try{
-                       // if(++count > step)throw new Error;
-                        if(++count > step){
-                            xui.Thread(threadid).abort();
-                            return false;
-                        }
-                        _.each(args,function(o,i){
-                            if(typeof o == 'function') o(hash[type](count,step));
-                            else{
-                                var value = String( _.str.endWith(i.toLowerCase(),'color') ? color(type, o, step, count) : (o[0] + (o[1]-o[0])*hash[type](count,step)));
-                                (self[i]) ? (self[i](value+(unit||''))) :(self.css(i, value+(unit||'')));
-                            }
-                        });
-                    //}catch(e){
-                    //    xui.Thread(threadid).abort();
-                    //    color=hash=null;
-                   // }
-                }];
-            return xui.Thread(threadid||_.id(), funs, Math.max(time/step-9,0), null, onStart, onEnd ,true);
+            var startTime,self=this, funs=[function(threadid){
+                var off = _() - startTime;
+                // the last time
+                if(off >= time)off=time;
+                _.each(args,function(o,i){
+                    if(typeof o == 'function') o(hash[type](off,time));
+                    else{
+                        var value = String( _.str.endWith(i.toLowerCase(),'color') ? color(type, o, time, off) : (o[0] + (o[1]-o[0])*hash[type](off,time)));
+                        (self[i]) ? (self[i](value+(unit||''))) :(self.css(i, value+(unit||'')));
+                    }
+                });
+                if(off==time){
+                    xui.Thread(threadid).abort();
+                    return false;
+                }
+            }];
+            return xui.Thread(threadid||_.id(), funs, 0, null, function(){
+                startTime=_();
+                _.tryF(onStart,arguments,this);
+            }, onEnd ,true);
         },
         /*
         pos: {left:,top:} or dom element
@@ -12087,7 +12118,7 @@ Class("xui.Tips", null,{
                     s = s.charAt(0)=='$'?xui.wrapRes(s.slice(1)):s;
                     this.node.html(s).css('zIndex',xui.Dom.TOP_ZINDEX).cssPos(pos);
                     var w=this.node.width(),h=this.node.height();
-                    this.node.cssSize({ width :0, height :0}).css('display','block').animate({width:[0,w],height:[0,h]},0,0,240,8,'expoOut',this.threadid).start();
+                    this.node.cssSize({ width :0, height :0}).css('display','block').animate({width:[0,w],height:[0,h]},0,0,300,0,'expoOut',this.threadid).start();
                 };
                 this.hide = function(){
                     xui.Thread.abort(this.threadid);
@@ -12629,7 +12660,7 @@ Class("xui.Tips", null,{
                     last.left(l);
                 },function(){
                     last.left(l+(last.width+width)/2+20);
-                },100,5).start();
+                }).start();
                 
                 var lh=last.offsetHeight();
                _.filter(allmsg,function(ind){
@@ -12656,7 +12687,7 @@ Class("xui.Tips", null,{
                 div.top(st-h-20);
             },function(){
                 div.top(st+20);
-            },100,5,'expoOut').start();
+            },300,0,'expoOut').start();
 
             _.asyRun(function(){
                 if(div._thread&&div._thread.id&&div._thread.isAlive())div._thread.abort();
@@ -12664,7 +12695,7 @@ Class("xui.Tips", null,{
                      stack.push(div); 
                      div.hide();
                      div.__hide=1;
-                },100,10).start();
+                },300,0).start();
             }, time||5000);
         };
 
@@ -31249,7 +31280,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(properties.animCollapse)
                         subNs.animate({'height':[h,0]},null,function(){
                             subNs.css({display:'none'})
-                        }, 100, 5, 'expoIn', profile.key+profile.id).start();
+                        }, 200, 0, 'expoIn', profile.key+profile.id).start();
                     else
                         subNs.css({
                             display:'none',
@@ -31317,7 +31348,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                             subNs.css({display:''})
                                         },function(){
                                             subNs.css({height:'auto'})
-                                        },100, 5, 'expoOut', profile.key+profile.id).start();
+                                        },200, 0, 'expoOut', profile.key+profile.id).start();
                                 else
                                     subNs.css({display:'',height:'auto'});
                             }else
@@ -38562,7 +38593,7 @@ editorDropListHeight
                     if(pro.animCollapse)
                         subNs.animate({'height':[h,0]},null,function(){
                             subNs.css({display:'none'})
-                        }, 100, 5, 'expoIn', profile.key+profile.id).start();
+                        }, 200, 0, 'expoIn', profile.key+profile.id).start();
                     else
                         subNs.css({
                             display:'none',
@@ -38603,7 +38634,7 @@ editorDropListHeight
                                 subNs.css({display:''})
                             },function(){
                                 subNs.css({height:'auto'})
-                            }, 100, 5, 'expoOut', profile.key+profile.id).start();
+                            }, 200, 0, 'expoOut', profile.key+profile.id).start();
                         else
                             subNs.css({display:'',height:'auto'});
 
@@ -40143,7 +40174,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
                 profile.inShowing=1;
                 if(t=p.fromRegion)
-                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,fun,360,12,'expoIn').start();
+                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,fun,500,0,'expoIn').start();
                 else
                     fun();
             });
@@ -40169,7 +40200,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     delete profile.inHiding;
                 };
                 if(t)
-                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, fun,360,12,'expoOut').start();
+                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, fun,500,0,'expoOut').start();
                 else
                     fun();
             });
@@ -40187,7 +40218,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 };
 
                 if(t)
-                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,360,12,'expoOut').start();
+                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,500,0,'expoOut').start();
                 else
                     fun();
             });

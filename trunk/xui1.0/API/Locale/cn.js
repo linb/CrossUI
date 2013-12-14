@@ -1401,6 +1401,9 @@ _.set(xui.Locale,["cn","app"], {
             suspend:{
                 $desc:"挂起该线程",
                 $rtn:"[self]",
+                $paras:[
+                    "time [可选参数]: Number: 等待多少毫秒后继续。不输入表示只挂起，不继续。"
+                ],
                 $snippet:[
                     "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume()},3000)},function(){xui.message(2)}]).start();"
                 ]
@@ -2361,13 +2364,13 @@ _.set(xui.Locale,["cn","app"], {
                 "args [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
                 "onStart [可选参数]: Function, 参数: [threadid]. 线程第一个任务开始前的回调函数.",
                 "onEnd [可选参数]: Function, 参数: [threadid]. 整个shell线程结束后的回调函数.",
-                "time [可选参数]: Number(ms), 动画的持续时间. 默认为200.",
-                "step [可选参数]: Number, 动画步长, 越短越消耗资源. 默认为5.",
+                "time [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
+                "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated]建议不要使用.",
                 "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'.  默认为'linear'.",
                 "threadid [可选参数]: String, shell线程的全局识别id."
             ],
             $snippet:[
-                "xui.Dom.animate({backgroundColor:'#ff0000'},{left:[0,200],top:[0,300],width:[30,300],height:[30,300],opacity:[1,0]}, null, null, 500, 50, 'sineOut').start()"
+                "xui.Dom.animate({backgroundColor:'#ff0000'},{left:[0,200],top:[0,300],width:[30,300],height:[30,300],opacity:[1,0]}, null, null, 500, 0, 'sineOut').start()"
             ]
         },
         getEmptyDiv:{
@@ -2679,16 +2682,16 @@ _.set(xui.Locale,["cn","app"], {
                     "args [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
                     "onStart [可选参数]: Function, 参数: [threadid]. 线程第一个任务开始前的回调函数.",
                     "onEnd [可选参数]: Function, 参数: [threadid]. 整个shell线程结束后的回调函数.",
-                    "time [可选参数]: Number(ms), 动画的持续时间. 默认为200.",
-                    "step [可选参数]: Number, 动画步长, 越短越消耗资源. 默认为5.",
+                    "time [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
+                    "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated] 建议不要使用.",
                     "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'. 默认为'linear'.",
                     "threadid [可选参数]: String, shell线程的全局识别id."
                 ],
                 $snippet:[
                     "var node=xui.create('div').css({opacity:0,zIndex:xui.Dom.TOP_ZINDEX, backgroundColor:'#0000ff', position:'absolute',left:'100px', top:'100px',width:'100px',height:'100px'});"+
                     "xui('body').append(node);"+
-                    "var fx1 = node.animate({opacity:[0,1]},null,null,1000,10,'sineIn');"+
-                    "var fx2 = node.animate({left:[100,300],top:[100,300]},null,null,500,20,'sineOut');"+
+                    "var fx1 = node.animate({opacity:[0,1]},null,null,1000,0,'sineIn');"+
+                    "var fx2 = node.animate({left:[100,300],top:[100,300]},null,null,500,0,'sineOut');"+
                     "var fx3 = node.animate({left:[300,100],top:[300,100]});"+
                     "var fx4 = node.animate({opacity:[1,0]},null,function(){node.remove()});"+
                     "fx1.links(fx2.links(fx3.links(fx4))).start();"

@@ -142,7 +142,7 @@ Class('App', 'xui.Com',{
                 xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pos.left,tpos.left],top:[pos.top,tpos.top],width:[size.width,width],height:[size.height, 20]}, null,function(){
                     grid.insertRows([item]);
                     SPA.inSelectProcess=false;
-                },360,12,'expoOut').start();
+                },300,0,'expoOut').start();
             }
 
         }, 
