@@ -34395,7 +34395,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             if(!type)type="manual";
             prf.ColLayoutColumn=parseInt(col,10)-1;
             var old=prf.ColLayoutSize;            
-            prf.ColLayoutSize=profile._warr[prf.ColLayoutColumn];
+            prf.ColLayoutSize=profile._warr?profile._warr[prf.ColLayoutColumn]:300;
 
             if(prf["xui.UI"])prf=prf.get(0);
             if(basePrf && basePrf["xui.UI"])basePrf=basePrf.get(0);
@@ -34962,7 +34962,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             
             if(profile.onRelayout){
                 ins.getChildren().each(function(panel){
-                    panel.ColLayoutSize=profile._warr[panel.ColLayoutColumn];
+                    panel.ColLayoutSize=profile._warr?profile._warr[panel.ColLayoutColumn]:300;
                     ins.onRelayout(profile, 'resize', panel, panel.ColLayoutSize);
                 });
             }
