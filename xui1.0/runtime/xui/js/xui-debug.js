@@ -1116,7 +1116,8 @@ _.merge(xui,{
             proMap=cache.profileMap,
             ch=cache.UIKeyMapEvents,
             pdata=cache.domPurgeData,
-            children=xui.browser.ie ? node.all : node.getElementsByTagName('*'),
+            // ie<=10
+            children=(xui.browser.ie && node.all )? node.all : node.getElementsByTagName('*'),
             l=children.length,
             bak=[],
             i,j,o,t,v,w,id;
@@ -1211,7 +1212,8 @@ new function(){
     var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
         kde:/webkit/.test(u),
         opr:/opera/.test(u),
-        ie:/msie/.test(u) && !/opera/.test(u),
+        ie:(/msie/.test(u) && !/opera/.test(u)),
+        newie:/trident\/.* rv:([0-9]{1,}[.0-9]{0,})/.test(u),
         gek:/mozilla/.test(u) && !/(compatible|webkit)/.test(u),
 
         isStrict:d.compatMode=="CSS1Compat",
@@ -1238,7 +1240,12 @@ new function(){
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
 
     _.filter(b,function(o){return !!o});
-    if(b.ie){
+    if(b.newie){
+        b["newie"+(b.ver=dm)]=true;
+        b.cssTag1="-ms-";
+        b.cssTag2="ms";
+    }else if(b.ie){
+        // IE 8+
         if(_.isNumb(dm))
             b["ie"+(b.ver=dm)]=true;
         else
@@ -1339,7 +1346,8 @@ new function(){
     if (d.addEventListener){
         d.addEventListener("DOMContentLoaded", f, false);
         w.addEventListener("load", f, false);
-    }//IE
+    }
+    //IE<=10
     else{
 		d.attachEvent("onreadystatechange", f);
         w.attachEvent("onload", f);
