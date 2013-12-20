@@ -870,7 +870,7 @@ _.merge(xui,{
             else f();
         };
         // use special key to invoid other lang setting was loaded first
-        xui.include(z+'.$_$', xui.getPath(z, '.js'),m,m);
+        xui.include(z+'.inline.$_$', xui.getPath(z, '.js'),m,m);
     },
     getTheme:function(a){
         try{
