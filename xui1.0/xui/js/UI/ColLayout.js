@@ -95,7 +95,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     }
                 }
                 var flag=xui.browser.ie6 && (!old || old>prf.ColLayoutSize);
-                if(flag)prf.getRootNode().parentNode.style.display= 'block';
+                if(flag)prf.getRootNode().parentNode.style.display= 'none';
 
                 if(flag2 && profile.onRelayout)this.onRelayout(profile, type, prf, prf.ColLayoutSize);
 
@@ -597,11 +597,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             // set item's width
             _.arr.each(arr,function(o,i){
                 var flag=xui.browser.ie6 && parseFloat(o.style.width)>a[i];
-                if(flag)arr2[i].style.display = 'block';
-                o.style.width = a[i] + 'px';
-                if(flag)_.asyRun(function(){
-                    arr2[i].style.display='';
-                });
+                if(!flag)o.style.width = a[i] + 'px';
             });
             profile._warr=a;
             if(profile.onColResize)ins.onColResize(profile, a);
@@ -612,6 +608,11 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     ins.onRelayout(profile, 'resize', panel, panel.ColLayoutSize);
                 });
             }
+            if(xui.browser.ie6)
+                _.arr.each(arr,function(o,i){
+                    var flag=parseFloat(o.style.width)>a[i];
+                    if(flag)o.style.width = a[i] + 'px';
+                });
         }
     }
 });

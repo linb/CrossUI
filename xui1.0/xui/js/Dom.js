@@ -1,4 +1,3 @@
-
 Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
         if(arguments.callee.upper)arguments.callee.upper.call(this);
@@ -1144,7 +1143,7 @@ Class('xui.Dom','xui.absBox',{
             this.removeClass("xui-ui-selectable").removeClass("xui-ui-unselectable");
             this.addClass(value?"xui-ui-selectable":"xui-ui-unselectable");
             return this.each(function(o){
-                if(xui.browser.ie)
+                if(xui.browser.ie6)
                     o._onxuisel=value?"true":"false";
             })
         },
@@ -3073,12 +3072,15 @@ type:4
                 }
             },'hookA',0);
 
-        if(xui.browser.ie && document.body)
+        if(xui.browser.ie6 && document.body)
             document.body.onselectstart=function(n){
                 n=event.srcElement;
                 while(n&&n.tagName&&n.tagName!="BODY"&&n.tagName!="HTML"){
                     if('_onxuisel' in n)
                         return n._onxuisel!='false';
+                    // check self only
+                    if(n.tagName=="INPUT"||n.tagName=="TEXTAREA")
+                        break;
                     n=n.parentNode;
                 }
                 return true;

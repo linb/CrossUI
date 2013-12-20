@@ -6791,6 +6791,13 @@ _.set(xui.Locale,["en","app"], {
                 "alert(xui.UI.getFromDom('xui.UI.TreeBar-CMD:a:1').getAlias());"
             ]
         },
+        setDftProp:{
+            $desc:"to specify defult properties for all UI class.",
+            $rtn:"xui.UI",
+            $paras:[
+                "prop [Required] : key/value pairs."
+            ]
+        },
         buildCSSText:{
             $desc:"Builds CSS text from a key/value pairs Object.",
             $rtn:"String",
