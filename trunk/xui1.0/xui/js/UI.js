@@ -16,6 +16,10 @@ Class('xui.UIProfile','xui.Profile', {
                 if(ns.domId!=ns.$domId)
                     ele.id=ns.domId;
 
+                // unselectable="on" will kill onBlur
+                if(xui.browser.ie && xui.browser.ver<10 && 'selectable' in ns.properties)
+                    xui.setNodeData(ele,"_onxuisel",ns.properties.selectable?"true":"false");
+
                 map[ns.domId] = map[ns.$domId] = ns;
 
                 //e.g. use div.innerHTML = ui.toHtml();
@@ -2029,6 +2033,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-user-select': xui.browser.kde?'none':null,
                 '-webkit-user-select': xui.browser.kde?'none':null,
                 '-o-user-select':xui.browser.opr?'none':null,
+                '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'none':null,
                 'user-select':'none'
             },
             '.xui-ui-selectable':{
@@ -2037,6 +2042,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-user-select': xui.browser.kde?'text':null,
                 '-webkit-user-select': xui.browser.kde?'text':null,
                 '-o-user-select':xui.browser.opr?'text':null,
+                '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
                 'user-select':'text'
             },
             '.xui-ui-ctrl':{
@@ -2378,7 +2384,7 @@ Class("xui.UI",  "xui.absObj", {
                     //custom class here
                     bak + ' ' +
                     //add a special
-                    (lkey==profile.key ? ('xui-ui-ctrl '+(xui.browser.ie?'':'{_selectable} ')) : '' ) +
+                    (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' ) +
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
@@ -2423,13 +2429,6 @@ Class("xui.UI",  "xui.absObj", {
             }
             //<span id="" style="">
             arr[arr.length]='<'+tagName+' ';
-
-            // add "unselectable" to node
-            if(lkey==profile.key){
-                // unselectable="on" will kill onBlur
-                if(xui.browser.ie6)
-                    b._onxuisel="{_selectable}";
-            }
 
             for(var i in b)
                 if(b[i])
@@ -3969,8 +3968,8 @@ Class("xui.UI",  "xui.absObj", {
 
 
             if('selectable' in dm)
-                data._selectable=xui.browser.ie
-                    ? (prop.selectable?"true":"false")
+                data._selectable=(xui.browser.ie && xui.browser.ver<10)
+                    ? ""
                     : (prop.selectable?"xui-ui-selectable":"xui-ui-unselectable");
 
             //default prepare

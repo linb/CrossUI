@@ -1143,8 +1143,8 @@ Class('xui.Dom','xui.absBox',{
             this.removeClass("xui-ui-selectable").removeClass("xui-ui-unselectable");
             this.addClass(value?"xui-ui-selectable":"xui-ui-unselectable");
             return this.each(function(o){
-                if(xui.browser.ie6)
-                    o._onxuisel=value?"true":"false";
+                if(xui.browser.ie && xui.browser.ver<10)
+                    xui.setNodeData(o,"_onxuisel",value?"true":"false");
             })
         },
         setInlineBlock:function(){
@@ -2619,7 +2619,8 @@ type:4
 
             if((o1=xui(id)).isEmpty()){
                 xui('body').prepend(o1=xui.create('<div id="'+ id +'" style="position:absolute;display:none;left:0;top:0;background-image:url('+xui.ini.img_bg+')"><div id="'+id2+'" style="position:absolute;font-size:12px"></div></div>'));
-                xui.setNodeData(o1.get(0),'zIndexIgnore',1)
+                o1.setSelectable(false);
+                xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
             o2=xui(id2);
 
@@ -3072,12 +3073,12 @@ type:4
                 }
             },'hookA',0);
 
-        if(xui.browser.ie6 && document.body)
-            document.body.onselectstart=function(n){
+        if(xui.browser.ie && xui.browser.ver<10 && document.body)
+            document.body.onselectstart=function(n,v){
                 n=event.srcElement;
                 while(n&&n.tagName&&n.tagName!="BODY"&&n.tagName!="HTML"){
-                    if('_onxuisel' in n)
-                        return n._onxuisel!='false';
+                    if(v=xui.getNodeData(n,"_onxuisel"))
+                        return v!='false';
                     // check self only
                     if(n.tagName=="INPUT"||n.tagName=="TEXTAREA")
                         break;
