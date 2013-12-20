@@ -552,4 +552,4 @@ xui.Locale.cn.editor={
     fontsizeList:'1,1(8pt);2,2(10pt);3,3(12pt);4,4(14pt);5,5(18pt);6,6(24pt);...,...',
     fontnameList:'宋体;黑体;仿宋;楷体;Arial;Arial Black;Times New Roman;...',
     formatblockList:'p,正文;h1,标题1;h2,标题2;h3,标题3;h4,标题4;h5,标题5;h6,标题6;...,...'
-}
+};
