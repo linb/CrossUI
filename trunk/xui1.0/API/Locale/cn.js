@@ -6813,6 +6813,13 @@ _.set(xui.Locale,["cn","app"], {
                 "alert(xui.UI.getFromDom('xui.UI.TreeBar-CMD:a:1').getAlias());"
             ]
         },
+        setDftProp:{
+            $desc:"指定所有控件类的默认属性.",
+            $rtn:"xui.UI",
+            $paras:[
+                "prop [必需参数] : 键值对."
+            ]
+        },
         buildCSSText:{
             $desc:"由指定的键值对生成CSS样式.",
             $rtn:"String",

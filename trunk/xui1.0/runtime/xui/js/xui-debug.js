@@ -6434,8 +6434,7 @@ Class("xui.CSS", null,{
 
         this.addStyleSheet(css, 'xui.CSS');
     }   
-});
-Class('xui.DomProfile', 'xui.absProfile', {
+});Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
         if(arguments.callee.upper)arguments.callee.upper.call(this);
         xui.$cache.profileMap[this.domId=domId]=this;
@@ -7580,7 +7579,7 @@ Class('xui.Dom','xui.absBox',{
             this.removeClass("xui-ui-selectable").removeClass("xui-ui-unselectable");
             this.addClass(value?"xui-ui-selectable":"xui-ui-unselectable");
             return this.each(function(o){
-                if(xui.browser.ie)
+                if(xui.browser.ie6)
                     o._onxuisel=value?"true":"false";
             })
         },
@@ -9509,12 +9508,15 @@ type:4
                 }
             },'hookA',0);
 
-        if(xui.browser.ie && document.body)
+        if(xui.browser.ie6 && document.body)
             document.body.onselectstart=function(n){
                 n=event.srcElement;
                 while(n&&n.tagName&&n.tagName!="BODY"&&n.tagName!="HTML"){
                     if('_onxuisel' in n)
                         return n._onxuisel!='false';
+                    // check self only
+                    if(n.tagName=="INPUT"||n.tagName=="TEXTAREA")
+                        break;
                     n=n.parentNode;
                 }
                 return true;
@@ -13008,18 +13010,26 @@ Class('xui.UIProfile','xui.Profile', {
         _cacheR2:/<!--\x03([^>^\s]*)\x04-->/g,
         toHtml:function(force){
             var self=this,
+                prop=self.properties,
                 c = self.box,
                 h={},
                 str,
                 k1='xui.UIProfile',
                 k2='xui.Profile',
                 id, i, o, m, a, b, data;
+            if(prop && (m=xui.UI.__resetDftProp)){
+                for(i in m){
+                    if(prop.hasOwnProperty(i) && m.hasOwnProperty(i)){
+                        prop[i]=m[i]
+                    }
+                }
+            };
             //before _dynamicTemplate
             data=c._prepareData(self);
             if(c._dynamicTemplate)c._dynamicTemplate(self);
             str = c._build(self, data);
 
-            if((!self.properties.lazyAppend||force) && (m=self.children)){
+            if((!prop.lazyAppend||force) && (m=self.children)){
                 for(i=0; o=m[i++];)
                     if(o[0][k1]){
                         id=o[1]||'';
@@ -14922,6 +14932,10 @@ Class("xui.UI",  "xui.absObj", {
             children.length=0;
             node=null;
         },
+        setDftProp:function(prop){
+            this.__resetDftProp=prop;
+            return this;
+        },
         getFromDom:function(id){
             if(id=xui.UIProfile.getFromDom(id))
                 return id.boxing();
@@ -15129,7 +15143,7 @@ Class("xui.UI",  "xui.absObj", {
             // add "unselectable" to node
             if(lkey==profile.key){
                 // unselectable="on" will kill onBlur
-                if(xui.browser.ie)
+                if(xui.browser.ie6)
                     b._onxuisel="{_selectable}";
             }
 
@@ -21162,7 +21176,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
                 if(node){
-                    try{node.focus();}catch(e){}
+                    try{node.focus();node.select();}catch(e){}
                 }
             }
             return this;
@@ -34449,7 +34463,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     }
                 }
                 var flag=xui.browser.ie6 && (!old || old>prf.ColLayoutSize);
-                if(flag)prf.getRootNode().parentNode.style.display= 'block';
+                if(flag)prf.getRootNode().parentNode.style.display= 'none';
 
                 if(flag2 && profile.onRelayout)this.onRelayout(profile, type, prf, prf.ColLayoutSize);
 
@@ -34951,11 +34965,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             // set item's width
             _.arr.each(arr,function(o,i){
                 var flag=xui.browser.ie6 && parseFloat(o.style.width)>a[i];
-                if(flag)arr2[i].style.display = 'block';
-                o.style.width = a[i] + 'px';
-                if(flag)_.asyRun(function(){
-                    arr2[i].style.display='';
-                });
+                if(!flag)o.style.width = a[i] + 'px';
             });
             profile._warr=a;
             if(profile.onColResize)ins.onColResize(profile, a);
@@ -34966,6 +34976,11 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                     ins.onRelayout(profile, 'resize', panel, panel.ColLayoutSize);
                 });
             }
+            if(xui.browser.ie6)
+                _.arr.each(arr,function(o,i){
+                    var flag=parseFloat(o.style.width)>a[i];
+                    if(flag)o.style.width = a[i] + 'px';
+                });
         }
     }
 });

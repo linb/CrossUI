@@ -20,7 +20,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
                 if(node){
-                    try{node.focus();}catch(e){}
+                    try{node.focus();node.select();}catch(e){}
                 }
             }
             return this;

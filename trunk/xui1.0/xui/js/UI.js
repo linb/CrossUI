@@ -294,18 +294,26 @@ Class('xui.UIProfile','xui.Profile', {
         _cacheR2:/<!--\x03([^>^\s]*)\x04-->/g,
         toHtml:function(force){
             var self=this,
+                prop=self.properties,
                 c = self.box,
                 h={},
                 str,
                 k1='xui.UIProfile',
                 k2='xui.Profile',
                 id, i, o, m, a, b, data;
+            if(prop && (m=xui.UI.__resetDftProp)){
+                for(i in m){
+                    if(prop.hasOwnProperty(i) && m.hasOwnProperty(i)){
+                        prop[i]=m[i]
+                    }
+                }
+            };
             //before _dynamicTemplate
             data=c._prepareData(self);
             if(c._dynamicTemplate)c._dynamicTemplate(self);
             str = c._build(self, data);
 
-            if((!self.properties.lazyAppend||force) && (m=self.children)){
+            if((!prop.lazyAppend||force) && (m=self.children)){
                 for(i=0; o=m[i++];)
                     if(o[0][k1]){
                         id=o[1]||'';
@@ -2208,6 +2216,10 @@ Class("xui.UI",  "xui.absObj", {
             children.length=0;
             node=null;
         },
+        setDftProp:function(prop){
+            this.__resetDftProp=prop;
+            return this;
+        },
         getFromDom:function(id){
             if(id=xui.UIProfile.getFromDom(id))
                 return id.boxing();
@@ -2415,7 +2427,7 @@ Class("xui.UI",  "xui.absObj", {
             // add "unselectable" to node
             if(lkey==profile.key){
                 // unselectable="on" will kill onBlur
-                if(xui.browser.ie)
+                if(xui.browser.ie6)
                     b._onxuisel="{_selectable}";
             }
 
