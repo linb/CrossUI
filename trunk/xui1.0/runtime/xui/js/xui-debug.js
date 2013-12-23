@@ -31294,13 +31294,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'{itemClass} {disabled}  {readonly}',
+                        className:'{itemClass}',
                         style:'{itemStyle}{itemDisplay}',
                         tagName : 'div',
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'{cls_group} {cls_fold}',
+                            className:'{cls_group} {cls_fold}  {disabled}  {readonly}',
                             RULER:{
                                 $order:0,
                                 style:'{rulerStyle}',
