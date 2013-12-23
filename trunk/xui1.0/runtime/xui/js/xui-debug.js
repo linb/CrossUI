@@ -31300,7 +31300,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'{cls_group} {cls_fold}  {disabled}  {readonly}',
+                            className:'{cls_group} {cls_fold} {disabled} {readonly}',
                             RULER:{
                                 $order:0,
                                 style:'{rulerStyle}',
