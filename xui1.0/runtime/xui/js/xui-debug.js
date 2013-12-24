@@ -14250,6 +14250,10 @@ Class("xui.UI",  "xui.absObj", {
                 padding:'0'
             },
             '.xui-ui-draggable':{},
+            '.xui-inline-block':{
+                display:xui.$inlineBlock,
+                zoom:xui.browser.ie?1:null
+            },
             '.xui-ui-btn, .xui-ui-btni, .xui-ui-btnc':{
                 height:'22px',
                 'line-height':'22px',
@@ -29717,7 +29721,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
-                                        var node=this.getSubNode('PANEL',true);
+                    var node=this.getSubNode('PANEL',true);
                     if(v){
                         if(v.indexOf(':')!=-1){
                             _.arr.each(v.split(/\s*;\s*/g),function(s){

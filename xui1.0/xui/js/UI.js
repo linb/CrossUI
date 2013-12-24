@@ -1533,6 +1533,10 @@ Class("xui.UI",  "xui.absObj", {
                 padding:'0'
             },
             '.xui-ui-draggable':{},
+            '.xui-inline-block':{
+                display:xui.$inlineBlock,
+                zoom:xui.browser.ie?1:null
+            },
             '.xui-ui-btn, .xui-ui-btni, .xui-ui-btnc':{
                 height:'22px',
                 'line-height':'22px',

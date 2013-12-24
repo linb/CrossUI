@@ -850,7 +850,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 ini:xui.browser.isTouch?'auto':undefined,
                 listbox:['','visible','hidden','scroll','auto'],
                 action:function(v){
-                                        var node=this.getSubNode('PANEL',true);
+                    var node=this.getSubNode('PANEL',true);
                     if(v){
                         if(v.indexOf(':')!=-1){
                             _.arr.each(v.split(/\s*;\s*/g),function(s){
