@@ -16,15 +16,15 @@ Class('xui.UIProfile','xui.Profile', {
                 if(ns.domId!=ns.$domId)
                     ele.id=ns.domId;
 
-                // unselectable="on" will kill onBlur
-                if(xui.browser.ie && xui.browser.ver<10 && 'selectable' in ns.properties)
-                    xui.setNodeData(ele,"_onxuisel",ns.properties.selectable?"true":"false");
-
                 map[ns.domId] = map[ns.$domId] = ns;
 
                 //e.g. use div.innerHTML = ui.toHtml();
                 if(!ele.$xid)
                     xui.UI.$addEventsHanlder(ele, true);
+
+                // unselectable="on" will kill onBlur
+                if(xui.browser.ie && xui.browser.ver<10 && 'selectable' in ns.properties)
+                    xui.setNodeData(ele,"_onxuisel",ns.properties.selectable?"true":"false");
 
                 ns.rendered=ns.renderId=ele.$xid;
 
