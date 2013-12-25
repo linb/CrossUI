@@ -709,7 +709,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(ie && ('propertyName' in o) && o.propertyName!='value')return;
                     b._asyCheck(ns,false);
                 };
-            if(ie){
+            if(ie && src.attachEvent){
                 src.attachEvent("onpropertychange",f);
                 src.attachEvent("ondrop",f);
                 ns.$ondestory=function(){

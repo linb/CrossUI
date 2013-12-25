@@ -83,7 +83,7 @@ Class("xui.CSS", null,{
                 e.type="text/css";
                 if(id)e.id=id;
                 //for ie
-                if(xui.browser.ie)
+                if(xui.browser.ie && e.styleSheet && "cssText" in e.styleSheet)
                     e.styleSheet.cssText = txt||'';
                 else
                     try{e.appendChild(document.createTextNode(txt||''))}catch(p){e.styleSheet.cssText = txt||''}

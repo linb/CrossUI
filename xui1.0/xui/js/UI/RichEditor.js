@@ -277,7 +277,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         
                                     win._gekfix=gekfix;
         
-                                    if(xui.browser.ie){
+                                    if(xui.browser.ie && doc.attachEvent){
                                         doc.attachEvent("unload",gekfix);
         
                                         if(!disabled){
