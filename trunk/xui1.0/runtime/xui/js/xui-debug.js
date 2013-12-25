@@ -6163,7 +6163,7 @@ Class("xui.CSS", null,{
                 e.type="text/css";
                 if(id)e.id=id;
                 //for ie
-                if(xui.browser.ie)
+                if(xui.browser.ie && e.styleSheet && "cssText" in e.styleSheet)
                     e.styleSheet.cssText = txt||'';
                 else
                     try{e.appendChild(document.createTextNode(txt||''))}catch(p){e.styleSheet.cssText = txt||''}
@@ -21869,7 +21869,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     if(ie && ('propertyName' in o) && o.propertyName!='value')return;
                     b._asyCheck(ns,false);
                 };
-            if(ie){
+            if(ie && src.attachEvent){
                 src.attachEvent("onpropertychange",f);
                 src.attachEvent("ondrop",f);
                 ns.$ondestory=function(){
@@ -22397,7 +22397,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         
                                     win._gekfix=gekfix;
         
-                                    if(xui.browser.ie){
+                                    if(xui.browser.ie && doc.attachEvent){
                                         doc.attachEvent("unload",gekfix);
         
                                         if(!disabled){
