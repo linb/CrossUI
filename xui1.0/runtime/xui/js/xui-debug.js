@@ -25484,7 +25484,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             ex.html(p.$clrN2||'',false);
         },
         _to3:function(s){
-            if(!s)s="FFFFFF";
+            if(!s||(s.toLowerCase()=="transparent"))s="FFFFFF";
             return [s.substr(0, 2), s.substr(2, 2), s.substr(4, 2)];
         },
         //0...255 to 00...FF
@@ -25677,7 +25677,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         // Converts a hex string to rgb
         hex2rgb: function(hex) {
             var ns=this;
-            if(!hex)hex="FFFFFF";
+            if(!hex||(hex.toLowerCase()=="transparent"))hex="FFFFFF";
             if(hex.charAt(0)=='#')hex=hex.slice(1);
             return [ns._to255(hex.substr(0, 2)), ns._to255(hex.substr(2, 2)), ns._to255(hex.substr(4, 2))];
         },
