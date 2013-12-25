@@ -22152,7 +22152,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         Templates:{
             tagName:'div',
             style:'{_style}',
-            className:'{_className}',
+            className:'{_className} xui-ui-selectable',
             EDITOR:{
                 tagName:'div'
             },
@@ -24707,8 +24707,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
             return this.each(function(profile){
                 if(!profile.renderId)return;
                 var cls = profile.box,
-                    p = profile.properties,
-                    hex = profile.$hex = cls._to3(value),
+                    p = profile.properties;
+                if(value && value.toLowerCase()=='transparent')value='FFFFFF';
+
+                var hex = profile.$hex = cls._to3(value),
                     hexs=profile.$hex.join(''),
                     rgb = profile.$rgb = cls.hex2rgb(value),
                     hsv = profile.$hsv = cls.rgb2hsv(rgb),
@@ -25484,7 +25486,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             ex.html(p.$clrN2||'',false);
         },
         _to3:function(s){
-            if(!s||(s.toLowerCase()=="transparent"))s="FFFFFF";
+            if(!s)s="FFFFFF";
             return [s.substr(0, 2), s.substr(2, 2), s.substr(4, 2)];
         },
         //0...255 to 00...FF
@@ -25677,13 +25679,15 @@ Class("xui.UI.Group", "xui.UI.Div",{
         // Converts a hex string to rgb
         hex2rgb: function(hex) {
             var ns=this;
-            if(!hex||(hex.toLowerCase()=="transparent"))hex="FFFFFF";
+            if(!hex)hex="FFFFFF";
             if(hex.charAt(0)=='#')hex=hex.slice(1);
             return [ns._to255(hex.substr(0, 2)), ns._to255(hex.substr(2, 2)), ns._to255(hex.substr(4, 2))];
         },
         getTextColor:function(value){
             var ns=this;
             value=ns._ensureValue(0,value);
+            if(value && value.toLowerCase()==)return '#000000';
+
             value=ns.hex2rgb(value);
             value=ns.rgb2hsv(value);
             return (value&&value[2])>0.6?'#000000':'#FFFFFF';
