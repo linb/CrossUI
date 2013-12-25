@@ -32,7 +32,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         Templates:{
             tagName:'div',
             style:'{_style}',
-            className:'{_className}',
+            className:'{_className} xui-ui-selectable',
             EDITOR:{
                 tagName:'div'
             },
