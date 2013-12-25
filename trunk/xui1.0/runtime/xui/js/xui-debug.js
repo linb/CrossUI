@@ -12733,15 +12733,15 @@ Class('xui.UIProfile','xui.Profile', {
                 if(ns.domId!=ns.$domId)
                     ele.id=ns.domId;
 
-                // unselectable="on" will kill onBlur
-                if(xui.browser.ie && xui.browser.ver<10 && 'selectable' in ns.properties)
-                    xui.setNodeData(ele,"_onxuisel",ns.properties.selectable?"true":"false");
-
                 map[ns.domId] = map[ns.$domId] = ns;
 
                 //e.g. use div.innerHTML = ui.toHtml();
                 if(!ele.$xid)
                     xui.UI.$addEventsHanlder(ele, true);
+
+                // unselectable="on" will kill onBlur
+                if(xui.browser.ie && xui.browser.ver<10 && 'selectable' in ns.properties)
+                    xui.setNodeData(ele,"_onxuisel",ns.properties.selectable?"true":"false");
 
                 ns.rendered=ns.renderId=ele.$xid;
 
@@ -31547,13 +31547,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item = profile.getItemByDom(domId),
                 itemId =profile.getSubId(domId),
                 box = profile.boxing(),
-                ks=xui.Event.getKey(e);
-    
-            if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return;
+                ks = xui.Event.getKey(e),
+                sk = profile.getKey(xui.Event.getSrc(e).id||""),
+                ignoreClick = sk==profile.keys.TOGGLE||sk==profile.keys.MARK;
+
+            if(!ignoreClick && profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return;
                 
             if(properties.disabled|| item.disabled)return false;
 
-            if(profile.onClick)
+            if(!ignoreClick && profile.onClick)
                 box.onClick(profile,item,e,src);
 
             
@@ -31572,7 +31574,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             case 'multibycheckbox':
                 if(properties.readonly|| item.readonly)return false;
                 if(profile.keys.MARK){
-                    if(profile.getKey(xui.Event.getSrc(e).id||"")!=profile.keys.MARK){
+                    if(sk!=profile.keys.MARK){
                         box.onItemSelected(profile, item, e, src, 0);
                         break;
                     }
@@ -31623,7 +31625,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
                 break;
             }
-            if(profile.afterClick)box.afterClick(profile,item,e,src);
+            if(!ignoreClick && profile.afterClick)box.afterClick(profile,item,e,src);
         },
         _onkeydownbar:function(profile, e, src){
             var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey, ctrl=keys.ctrlKey,
