@@ -763,8 +763,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         var arr=[];
                         _.arr.each(profile.children,function(o){
                             if(o[1]==id){
-                                // removed the lazy render flag
-                                delete o[0]['parent:'+profile.$xid];
                                 arr.push(o[0]);
                             }
                         });
@@ -942,9 +940,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];
                 _.arr.each(arr,function(o){
-                    if(o[1]==value && !o[0]['parent:'+profile.$xid]){
+                    if(o[1]==value && 
+                        // not rendered, or node not in
+                        (!o[0].renderId || xui.UIProfile.getFromDom(xui(o[0].renderId).parent().id())!=profile )
+                    ){
                         a.push(o[0]);
-                        o[0]['parent:'+profile.$xid]=1;
                     }
                 });
                 if(a.length)
