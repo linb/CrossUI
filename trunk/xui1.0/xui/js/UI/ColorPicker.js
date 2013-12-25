@@ -987,7 +987,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
         getTextColor:function(value){
             var ns=this;
             value=ns._ensureValue(0,value);
-            if(value && value.toLowerCase()==)return '#000000';
+            if(value && value.toLowerCase()=="transparent")return '#000000';
 
             value=ns.hex2rgb(value);
             value=ns.rgb2hsv(value);
