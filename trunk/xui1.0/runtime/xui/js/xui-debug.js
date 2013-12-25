@@ -13029,6 +13029,13 @@ Class('xui.UIProfile','xui.Profile', {
                     }
                 }
             };
+            if(prop && (m=self.box.__resetDftProp)){
+                for(i in m){
+                    if(prop.hasOwnProperty(i) && m.hasOwnProperty(i)){
+                        prop[i]=m[i]
+                    }
+                }
+            };
             //before _dynamicTemplate
             data=c._prepareData(self);
             if(c._dynamicTemplate)c._dynamicTemplate(self);
