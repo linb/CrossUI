@@ -175,11 +175,11 @@ _.merge=function(target, source, type){
 }());
 _.merge(_,{
     setTimeout:function(callback,delay){
-        return (delay||0)>16?setTimeout(callback,delay):requestAnimationFrame(callback);
+        return (delay||0)>16?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
     },
     clearTimeout:function(id){
-        cancelAnimationFrame(id);
-        clearTimeout(id);
+        if(id>=0)cancelAnimationFrame(id);
+        else clearTimeout(Math.abs(id));
     },
     fun:function(){return function(){}},
     exec:function(script){
@@ -3075,8 +3075,8 @@ Class('xui.absObj',"xui.absBox",{
                     r=_.str.initial(i);
                     delete ds[i];
                     delete properties[i]
-                    delete ps['get'+r];
-                    delete ps['set'+r];
+                    if(ps[j='get'+r]&&ps[j].$auto$)delete ps[j];
+                    if(ps[j='set'+r]&&ps[j].$auto$)delete ps[j];
                 //Here, if $DataModel inherites from it's parent class, properties[i] will pointer to parent's object.
                 }else{
                     t=typeof o;
