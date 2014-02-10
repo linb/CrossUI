@@ -43,7 +43,7 @@ Class('xui.ComFactory',null,{
                 config,
                 clsPath;
 
-            if(singleton && c[id]){
+            if(singleton && c[id] && !c[id].destroyed){
                 _.tryF(onEnd, [threadid,c[id]], c[id]);
                 return c[id];
             }else{
