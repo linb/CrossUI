@@ -18069,7 +18069,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["cn","doc","xui","UI","SVGPaper"], {
+    _.set(xui.Locale,["en","doc","xui","UI","SVGPaper"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.SVGPaper Class",
         constructor:{
@@ -18084,24 +18084,148 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getPaper:{
-                $desc:"Gets SVG Paper object.",
+                $desc:"Gets SVG Paper object(Raphael Paper).",
                 $rtn:'Object'
             }
         }
     });
     
     //svg
-    _.set(xui.Locale,["cn","doc","xui","svg"], {
+    _.set(xui.Locale,["en","doc","xui","svg"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg Class",
         constructor:{
             $desc:"Creates a xui.svg Object."
         },
         prototype:{
+            getLeft:{
+                $desc:"Returns the distance between the left side of an element and the left side of its parent paper.",
+                $rtn:"Number"
+            },
+            setLeft:{
+                $desc:"Sets the distance between the left side of an element and the left side of its parent paper.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number"
+                ]
+            },
+            getTop:{
+                $desc:"Returns the distance between the top side of an element and the left side of its parent paper¡£",
+                $rtn:"Number"
+            },
+            setTop:{
+                $desc:"Sets the distance between the top side of an element and the left side of its parent paper.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number."
+                ]
+            },
+            getWidth:{
+                $desc:"Gets the element width.",
+                $rtn:"Number"
+            },
+            setWidth:{
+                $desc:"Sets the element width.",
+                $rtn:"[self]",
+                 $paras:[
+                    "value [Required] : nonnegative Number."
+                ]
+            },
+            getHeight:{
+                $desc:"Gets the element height.",
+                $rtn:"Number"
+            },
+            setHeight:{
+                $desc:"Sets the element height.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : nonnegative Number."
+                ]
+            },
+            toFront:{
+                $desc:"Moves the element so it is the closest to the viewer¡¯s eyes, on top of other elements.",
+                $rtn:"[self]"
+            },
+            toBack:{
+                $desc:"Moves the element so it is the furthest from the viewer¡¯s eyes, behind other elements.",
+                $rtn:"[self]"
+            },
+            getAttr:{
+                $desc:"Gets the attributes of the element.",
+                $rtn:"Object",
+                $paras:[
+                    "key [Required] : the sub node key."
+                ]
+            },
+            setAttr:{
+                $desc:"Sets the attributes of the element.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [Required] : String, the sub node key.",
+                    "atrr [Required] : Object, attributes object.",
+                    "reset [Optional] : Boolean, to determine whether reset other attributes by its default value or not. Default is [true]",
+                    "notify [Optional] : Boolean, to determine whether notify other elements of the control or not. Default is [true]"
+                ]
+            },
+            getAllNodes:{
+                $desc:"Gets all dom elements.",
+                $rtn:"xui.Dom"
+            },
+            getElemSet:{
+                $desc:"Gets the elements set(Raphael Set).",
+                $rtn:"Object"
+            },
+            getPaper:{
+                $desc:"Gets it's SVG Paper object(Raphael Paper).",
+                $rtn:'Object'
+            },
+            animate:{
+                $desc:"Creates and starts animation for all elements.",
+                $rtn:'Object',
+                $paras:[
+                    "params [Required] : Object, final attributes.",
+                    "ms [Required] : Number, number of milliseconds for animation to run.",
+                    "easing [Optional] : String, easing type. 'linear', '<' or 'easeIn' or 'ease-in', '>' or 'easeOut' or 'ease-out', '<>' or 'easeInOut' or 'ease-in-out', 'backIn' or 'back-in', 'backOut' or 'back-out', 'elastic', 'bounce'. Default is 'linear'.",
+                    "callback [Optional] : Function, callback function. Will be called at the end of animation."
+                ]
+            },
+            getShadow:{
+                $desc:"To determine whether this widget has shadow.",
+                $rtn:"Boolean"
+            },
+            setShadow:{
+                $desc:"Specifys whether this widget has shadow, and reflects it to DOM UI",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getSvgTag:{
+                $desc:"Gets the svg tag value on the first UIProfile",
+                $rtn:"String"
+            },
+            setSvgTag:{
+                $desc:"Sets the svg tag value on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            onClick:{
+                $desc:"onClick event handler.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element xui id."
+                ]
+            }
+
         }
     });
     
-    _.set(xui.Locale,["cn","doc","xui","svg","circle"], {
+    _.set(xui.Locale,["en","doc","xui","svg","circle"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.circle Class",
         constructor:{
@@ -18111,7 +18235,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
     
-    _.set(xui.Locale,["cn","doc","xui","svg","ellipse"], {
+    _.set(xui.Locale,["en","doc","xui","svg","ellipse"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.ellipse Class",
         constructor:{
@@ -18121,7 +18245,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","rect"], {
+    _.set(xui.Locale,["en","doc","xui","svg","rect"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.rect Class",
         constructor:{
@@ -18131,7 +18255,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","image"], {
+    _.set(xui.Locale,["en","doc","xui","svg","image"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.image Class",
         constructor:{
@@ -18141,7 +18265,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","text"], {
+    _.set(xui.Locale,["en","doc","xui","svg","text"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.text Class",
         constructor:{
@@ -18151,27 +18275,88 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","path"], {
+    _.set(xui.Locale,["en","doc","xui","svg","path"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.path Class",
         constructor:{
             $desc:"Creates a xui.svg.path Object."
         },
         prototype:{
+            getPath:{
+                $desc:"Gets the path string.",
+                $rtn:"String"
+            }
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","absComb"], {
+    _.set(xui.Locale,["en","doc","xui","svg","absComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.absComb Class",
         constructor:{
             $desc:"Creates a xui.svg.absComb Object."
         },
         prototype:{
+            getAttr:{
+                $desc:"Gets the attributes of the element.",
+                $rtn:"Object",
+                $paras:[
+                    "key [Required] : the sub node key."
+                ]
+            },
+            setAttr:{
+                $desc:"Sets the attributes of the element.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [Required] : String, the sub node key.",
+                    "atrr [Required] : Object, attributes object.",
+                    "reset [Optional] : Boolean, to determine whether reset other attributes by its default value or not. Default is [true]",
+                    "notify [Optional] : Boolean, to determine whether notify other elements of the control or not. Default is [true]"
+                ]
+            },
+            getHAlign :{
+                $desc:"Gets the HAlign property of the text element",
+                $rtn:"String"
+            },
+            setHAlign :{
+                $desc:"Sets the HAlign property to the text element.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left','25%','center','75%','right','outterleft','outterright'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getVAlign :{
+                $desc:"Gets the VAlign property of the text element",
+                $rtn:"String"
+            },
+            setVAlign :{
+                $desc:"Sets the VAlign property value to the text element.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            onClick:{
+                $desc:"onClick event handler.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element xui id."
+                ]
+            },
+            onTextClick:{
+                $desc:"onClick event handler for text element.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element xui id."
+                ]
+            }
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","rectComb"], {
+    _.set(xui.Locale,["en","doc","xui","svg","rectComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.rectComb Class",
         constructor:{
@@ -18181,7 +18366,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","circleComb"], {
+    _.set(xui.Locale,["en","doc","xui","svg","circleComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.circleComb Class",
         constructor:{
@@ -18191,7 +18376,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
  
-    _.set(xui.Locale,["cn","doc","xui","svg","ellipseComb"], {
+    _.set(xui.Locale,["en","doc","xui","svg","ellipseComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.ellipseComb Class",
         constructor:{
@@ -18201,7 +18386,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
     
-    _.set(xui.Locale,["cn","doc","xui","svg","pathComb"], {
+    _.set(xui.Locale,["en","doc","xui","svg","pathComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.pathComb Class",
         constructor:{
@@ -18211,7 +18396,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","imageComb"], {
+    _.set(xui.Locale,["en","doc","xui","svg","imageComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.imageComb Class",
         constructor:{
@@ -18221,13 +18406,90 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","svg","connector"], {
+    _.set(xui.Locale,["en","doc","xui","svg","connector"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.connector Class",
         constructor:{
             $desc:"Creates a xui.svg.connector Object."
         },
         prototype:{
+            getType:{
+                $desc:"Gets the connector's type.",
+                $rtn:"String",
+            },
+            setType:{
+                $desc:"Sets the connector's type (only valid before the control was rendered).",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'straight','bezier','flowchart'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getFromObj:{
+                $desc:"Gets the connector's 'connect from' object alias",
+                $rtn:"String",
+            },
+            setFromObj:{
+                $desc:"Sets the connector's 'connect from' object alias",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, object alias.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getFromPoint:{
+                $desc:"Gets the connector's 'connect from' point.",
+                $rtn:"String",
+            },
+            setFromPoint:{
+                $desc:"Sets the connector's 'connect from' point.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left','top','right','bottom'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getToObj:{
+                $desc:"Gets the connector's 'connect to' object alias",
+                $rtn:"String",
+            },
+            setToObj:{
+                $desc:"Sets the connector's 'connect to' object alias",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, object alias.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getToPoint:{
+                $desc:"Gets the connector's 'connect to' point.",
+                $rtn:"String",
+            },
+            setToPoint:{
+                $desc:"Sets the connector's 'connect to' point.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left','top','right','bottom'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getAttr:{
+                $desc:"Gets the attributes of the element.",
+                $rtn:"Object",
+                $paras:[
+                    "key [Required] : the sub node key."
+                ]
+            },
+            setAttr:{
+                $desc:"Sets the attributes of the element.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [Required] : String, the sub node key.",
+                    "atrr [Required] : Object, attributes object.",
+                    "reset [Optional] : Boolean, to determine whether reset other attributes by its default value or not. Default is [true]",
+                    "notify [Optional] : Boolean, to determine whether notify other elements of the control or not. Default is [true]"
+                ]
+            }
         }
     });
 

@@ -8258,7 +8258,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getResizer:{
-                $desc:"判断控件终端用户是否可以调整大小.",
+                $desc:"判断控件是否可以调整大小.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.w5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8268,7 +8268,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setResizer:{
-                $desc:"设置控件终端用户是否可以调整大小, 并刷新界面",
+                $desc:"设置控件是否可以调整大小, 并刷新界面",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -8739,7 +8739,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getVAlign :{
-                $desc:"获取标签水平垂直方式",
+                $desc:"获取标签垂直对齐方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.lbl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8749,7 +8749,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setVAlign :{
-                $desc:"设置标签水平垂直方式, 并刷新界面.",
+                $desc:"设置标签垂直对齐方式, 并刷新界面.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top', 'middle' or 'bottom'.",
@@ -9050,7 +9050,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"当终端用户单击按钮时调用.",
+                $desc:"当单击按钮时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -9363,7 +9363,7 @@ _.set(xui.Locale,["cn","app"], {
             },
 
             onClick:{
-                $desc:"当终端用户单击按钮时调用.",
+                $desc:"当单击按钮时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -9377,7 +9377,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickDrop:{
-                $desc:"当终端用户单击按钮时调用（当按钮的 type 为'drop'时才有效）.",
+                $desc:"当单击按钮时调用（当按钮的 type 为'drop'时才有效）.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -9900,7 +9900,7 @@ _.set(xui.Locale,["cn","app"], {
 
 
             onChange:{
-                $desc:"当终端用户改变文字时调用.",
+                $desc:"当改变文字时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "oV : String, 旧值.",
@@ -10846,7 +10846,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getAdvance:{
-                $desc:"判断是否显示颜色框又半部分以便终端用户选择更多颜色.",
+                $desc:"判断是否显示颜色框又半部分以便选择更多颜色.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10856,7 +10856,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAdvance:{
-                $desc:"设置是否显示颜色框又半部分以便终端用户选择更多颜色, 并刷新界面.",
+                $desc:"设置是否显示颜色框又半部分以便选择更多颜色, 并刷新界面.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11072,7 +11072,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClose:{
-                $desc:"在终端用户关闭选择器前调用. 返回false将阻止选择器关闭.",
+                $desc:"在关闭选择器前调用. 返回false将阻止选择器关闭.",
                 $paras:[
                     "profile : xui.UIProfile."
                 ],
@@ -12225,7 +12225,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickBar:{
-                $desc:"当终端用户单击标题栏时调用.",
+                $desc:"当单击标题栏时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "src: String, 事件所属DOM元素的xid."
@@ -15672,7 +15672,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColHidable:{
-                $desc:"判断终端用户是否可手工隐藏列.",
+                $desc:"判断是否可手工隐藏列.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid8.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15684,7 +15684,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColHidable :{
-                $desc:"设置终端用户是否可手工隐藏列, 并刷新界面.",
+                $desc:"设置是否可手工隐藏列, 并刷新界面.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15700,7 +15700,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColMovable :{
-                $desc:"判断终端用户是否可手工移动列的相对位置.",
+                $desc:"判断是否可手工移动列的相对位置.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15712,7 +15712,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColMovable :{
-                $desc:"设置终端用户是否可手工移动列的相对位置, 并刷新界面.",
+                $desc:"设置是否可手工移动列的相对位置, 并刷新界面.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15728,7 +15728,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColResizer :{
-                $desc:"判断终端用户是否可手工拖动列的宽度.",
+                $desc:"判断是否可手工拖动列的宽度.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15756,7 +15756,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColSortable :{
-                $desc:"判断终端用户是否可手工对列进行排序.",
+                $desc:"判断是否可手工对列进行排序.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15768,7 +15768,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColSortable :{
-                $desc:"设置终端用户是否可手工对列进行排序, 并刷新界面.",
+                $desc:"设置是否可手工对列进行排序, 并刷新界面.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15952,7 +15952,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowResizer :{
-                $desc:"判断终端用户是否可以拖动改变行高.",
+                $desc:"判断是否可以拖动改变行高.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid22'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15964,7 +15964,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowResizer :{
-                $desc:"设置终端用户是否可以拖动改变行高, 并刷新界面.",
+                $desc:"设置是否可以拖动改变行高, 并刷新界面.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16194,7 +16194,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowDraggable :{
-                $desc:"判断终端用户是否可以拖动行以改变行排序或父子关系",
+                $desc:"判断是否可以拖动行以改变行排序或父子关系",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid32'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16206,7 +16206,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowDraggable :{
-                $desc:"设置终端用户是否可以拖动行以改变行排序或父子关系, 并刷新界面.",
+                $desc:"设置是否可以拖动行以改变行排序或父子关系, 并刷新界面.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16761,7 +16761,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeColMoved:{
-                $desc:"在终端用户改变列位置前被调用. 返回false将阻止列位置被改变.",
+                $desc:"在改变列位置前被调用. 返回false将阻止列位置被改变.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "colId : String, 被移动的列id.",
@@ -16779,7 +16779,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterColMoved:{
-                $desc:"在终端用户改变列位置后被调用.",
+                $desc:"在改变列位置后被调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "colId : String, 被移动的列id.",
@@ -16859,7 +16859,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeColDrag:{
-                $desc:"在终端用户拖动列之前被调用. 返回false将阻止列拖动.",
+                $desc:"在拖动列之前被调用. 返回false将阻止列拖动.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "colId : String, 列id."
@@ -17077,7 +17077,7 @@ _.set(xui.Locale,["cn","app"], {
                ]
             },
             beforeCellUpdated: {
-                $desc:"在单元格的值被终端用户更新前调用. 返回false将阻止单元格值被更新.",
+                $desc:"在单元格的值被更新前调用. 返回false将阻止单元格值被更新.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "cell : Object,  cell 对象.",
@@ -17094,7 +17094,7 @@ _.set(xui.Locale,["cn","app"], {
                ]
             },
             afterCellUpdated: {
-                $desc:"在单元格的值被终端用户更新后调用",
+                $desc:"在单元格的值被更新后调用",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "cell : Object, 单元格对象.",
@@ -18001,7 +18001,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPaper:{
-                $desc:"得到SVG的Paper对象.",
+                $desc:"得到SVG的Paper对象(Raphael Paper).",
                 $rtn:'Object'
             }
         }
@@ -18015,6 +18015,129 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.svg对象."
         },
         prototype:{
+            getLeft:{
+                $desc:"获取控件的左边坐标.",
+                $rtn:"Number"
+            },
+            setLeft:{
+                $desc:"设置控件的左边坐标.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number"
+                ]
+            },
+            getTop:{
+                $desc:"获取控件的上边沿坐标.",
+                $rtn:"Number"
+            },
+            setTop:{
+                $desc:"设置控件的上边沿坐标.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number."
+                ]
+            },
+            getWidth:{
+                $desc:"获取控件的宽度.",
+                $rtn:"Number"
+            },
+            setWidth:{
+                $desc:"设置控件的宽度.",
+                $rtn:"[self]",
+                 $paras:[
+                    "value [必需参数] : nonnegative Number."
+                ]
+            },
+            getHeight:{
+                $desc:"获取控件的高度.",
+                $rtn:"Number"
+            },
+            setHeight:{
+                $desc:"设置控件的高度.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : 非负 Number."
+                ]
+            },
+            toFront:{
+                $desc:"把控件移到最上层.",
+                $rtn:"[self]"
+            },
+            toBack:{
+                $desc:"把控件移到最下层.",
+                $rtn:"[self]"
+            },
+            getAttr:{
+                $desc:"获得控件中某节点的属性.",
+                $rtn:"Object",
+                $paras:[
+                    "key [必须参数] : 节点的键值."
+                ]
+            },
+            setAttr:{
+                $desc:"设置控件中某节点的属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [必须参数] : String, 节点的键值.",
+                    "atrr [必须参数] : Object, 属性键值对.",
+                    "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
+                    "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
+                ]
+            },
+            getAllNodes:{
+                $desc:"获得控件的全部节点.",
+                $rtn:"xui.Dom"
+            },
+            getElemSet:{
+                $desc:"获得控件的全部元素集合(Raphael Set).",
+                $rtn:"Object"
+            },
+            getPaper:{
+                $desc:"获得控件的容器(Raphael Paper).",
+                $rtn:"xui.Dom"
+            },
+            animate:{
+                $desc:"控件所有元素的动画.",
+                $rtn:'Object',
+                $paras:[
+                    "params [必须参数] : Object, 元素在动画末的最终属性.",
+                    "ms [必须参数] : Number, 动画持续的毫秒数.",
+                    "easing [可选参数] : String, 动画类型. 'linear', '<' or 'easeIn' or 'ease-in', '>' or 'easeOut' or 'ease-out', '<>' or 'easeInOut' or 'ease-in-out', 'backIn' or 'back-in', 'backOut' or 'back-out', 'elastic', 'bounce'. 默认是 'linear'.",
+                    "callback [可选参数] : Function, 动画完毕调用的回调函数."
+                ]
+            },
+            getShadow:{
+                $desc:"判断控件是否显示阴影.",
+                $rtn:"Boolean"
+            },
+            setShadow:{
+                $desc:"设置控件是否显示阴影, 并刷新界面",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getSvgTag:{
+                $desc:"获取控件的svg tag值",
+                $rtn:"String"
+            },
+            setSvgTag:{
+                $desc:"设置控件的svg tag值.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            onClick:{
+                $desc:"当单击控件时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            }
         }
     });
     
@@ -18075,6 +18198,10 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.svg.path对象."
         },
         prototype:{
+            getPath:{
+                $desc:"得到路径",
+                $rtn:"String"
+            }
         }
     });
 
@@ -18085,6 +18212,63 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.svg.absComb对象."
         },
         prototype:{
+            getAttr:{
+                $desc:"获得控件中某节点的属性.",
+                $rtn:"Object",
+                $paras:[
+                    "key [必须参数] : 节点的键值."
+                ]
+            },
+            setAttr:{
+                $desc:"设置控件中某节点的属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [必须参数] : String, 节点的键值.",
+                    "atrr [必须参数] : Object, 属性键值对.",
+                    "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
+                    "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
+                ]
+            },
+            getHAlign :{
+                $desc:"获取标签水平对齐方式",
+                $rtn:"String"
+            },
+            setHAlign :{
+                $desc:"设置标签水平对齐方式, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left','25%','center','75%','right','outterleft','outterright'.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getVAlign :{
+                $desc:"获取标签垂直对齐方式",
+                $rtn:"String"
+            },
+            setVAlign :{
+                $desc:"设置标签垂直对齐方式, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            onClick:{
+                $desc:"当单击控件时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onTextClick:{
+                $desc:"当单击控件文字时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            }
         }
     });
 
@@ -18145,6 +18329,83 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.svg.connector对象."
         },
         prototype:{
+            getType:{
+                $desc:"得到链接器的类型.",
+                $rtn:"String",
+            },
+            setType:{
+                $desc:"设置链接器的类型（只有在控件渲染前有效）.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'straight','bezier','flowchart', 默认为 'straight'.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getFromObj:{
+                $desc:"得到链接器的'链接自'对象名.",
+                $rtn:"String",
+            },
+            setFromObj:{
+                $desc:"设置连接器的'链接自'对象名.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 与链接器在同一画布上的对象别名",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getFromPoint:{
+                $desc:"得到链接器的'链接自'位置.",
+                $rtn:"String",
+            },
+            setFromPoint:{
+                $desc:"设置连接器的'链接自'位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left','top','right','bottom'之一",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getToObj:{
+                $desc:"得到链接器的'链接至'对象名.",
+                $rtn:"String",
+            },
+            setToObj:{
+                $desc:"设置连接器的'链接至'对象名.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 与链接器在同一画布上的对象别名",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getToPoint:{
+                $desc:"得到链接器的'链接至'位置.",
+                $rtn:"String",
+            },
+            setToPoint:{
+                $desc:"设置连接器的'链接至'位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left','top','right','bottom'之一",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getAttr:{
+                $desc:"获得控件中某节点的属性.",
+                $rtn:"Object",
+                $paras:[
+                    "key [必须参数] : 节点的键值."
+                ]
+            },
+            setAttr:{
+                $desc:"设置控件中某节点的属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "key [必须参数] : String, 节点的键值.",
+                    "atrr [必须参数] : Object, 属性键值对.",
+                    "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
+                    "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
+                ]
+            }
         }
     });    
 })();
