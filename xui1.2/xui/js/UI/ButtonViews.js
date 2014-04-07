@@ -38,7 +38,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 cursor:'pointer',
                 'padding-right':'4px',
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat right -270px',true)
+                'background-image':xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -270px'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -53,7 +55,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'padding-left':'4px',
                 //keep this same with ITEM
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat left -330px', true)
+                'background-image':xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -330px'
             },
             'ITEM-mouseover ITEMI':{
                 $order:1,
@@ -69,7 +73,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'vertical-align':'top',
                 height:'20px',
                 padding:'2px 0',
-                background: xui.UI.$bg('button.gif', 'repeat-x left -300px', true)
+                'background-image':xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -300px'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
                 $order:2,

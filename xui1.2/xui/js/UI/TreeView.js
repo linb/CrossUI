@@ -49,7 +49,8 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 'background-color':'#FFF'
             },
             'BAR ITEMICON':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat 0 0', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
                 'background-position' : '-244px -236px'
             },
             'BAR-fold ITEMICON':{
@@ -62,7 +63,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             },
             'IMAGE-vertical, IMAGE-path-1, IMAGE-path-2, IMAGE-path-3, IMAGE-fold-1, IMAGE-fold-2, IMAGE-fold-3':{
                 $order:1,
-                background: xui.UI.$bg('icons.gif', 'no-repeat 0 0', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'0 0',
                 width:'16px',
                 height:'18px',
                 'vertical-align':'middle'

@@ -165,7 +165,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-                background: xui.UI.$bg('item.gif', 'repeat-x')
+               'background-image':xui.UI.$bg('item.gif', ''),
+               'background-repeat':'repeat-x'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -188,7 +189,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                width:'16px',
                height:'16px',
                'vertical-align':'middle',
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true)
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20px -70px'
             },
             'ITEM-checked MARK':{
                 $order:2,

@@ -281,7 +281,9 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 width:'16px',
                 height:'16px',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat right top', true),
+                'background-image':xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'right top',
                 _zoom:1
             },
             'TODAY-mouseover':{
@@ -299,7 +301,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 height:'15px',
                 'vertical-align': 'middle',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true),
+                'background-image':xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
                 _zoom:1
             },
             'PRE, TPRE':{

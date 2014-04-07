@@ -169,56 +169,72 @@ Class("xui.UI.Border","xui.UI",{
                 left:0,
                 top:'-1px',
                 height:'3px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left top')
+                'background-image':xui.UI.$bg('vertical.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'left top'
             },
             B:{
                 width:'100%',
                 left:0,
                 bottom:'-1px',
                 height:'3px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left bottom')
+                'background-image':xui.UI.$bg('vertical.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom'
             },
             L:{
                 height:'100%',
                 top:0,
                 left:'-1px',
                 width:'3px',
-                background: xui.UI.$bg('horizontal.gif', 'repeat-y left top')
+                'background-image':xui.UI.$bg('horizontal.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             R:{
                height:'100%',
                top:0,
                right:'-1px',
                width:'3px',
-               background: xui.UI.$bg('horizontal.gif', 'repeat-y right top')
+                'background-image':xui.UI.$bg('horizontal.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'right top'
             },
             LT:{
                 top:'-1px',
                 left:'-1px',
                 width:'3px',
                 height:'3px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left top')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             RT:{
                top:'-1px',
                right:'-1px',
                width:'3px',
                height:'3px',
-               background: xui.UI.$bg('corner.gif', 'no-repeat right top')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'right top'
             },
             RB:{
                 right:'-1px',
                 bottom:'-1px',
                 width:'3px',
                 height:'3px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat right bottom')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'right bottom'
             },
             LB:{
                 left:'-1px',
                 bottom:'-1px',
                 width:'3px',
                 height:'3px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left bottom')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom'
             }/*,
             'KEY-mouseover T, KEY-mouseover B':{
                 $order:1,

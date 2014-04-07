@@ -230,7 +230,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                background: xui.UI.$bg('handler.gif', ' left top', true),
+                'background-image': xui.UI.$bg('handler.gif', '', true),
+                'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
@@ -254,7 +255,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 width:'6px',
                 height:'15px',
                 'vertical-align':'middle',
-                background: xui.UI.$bg('split_vertical.gif', 'repeat-y left top', true)
+                'background-image': xui.UI.$bg('split_vertical.gif', '', true),
+                'background-position':'left top',
+                'background-repeat':'repeat-y'
             },
             BTN:{
                 'padding-right':'3px'
@@ -266,7 +269,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 width:'14px',
                 height:'16px',
                 'vertical-align':'middle',
-                background: xui.UI.$bg('drop.gif', 'no-repeat left center', 'Button')
+                'background-image': xui.UI.$bg('drop.gif', '', 'Button'),
+                'background-position':'left center',
+                'background-repeat':'no-repeat'
             },
             'BTN-mouseover DROP':{
                 $order:2,

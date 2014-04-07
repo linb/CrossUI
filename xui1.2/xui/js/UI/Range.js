@@ -129,12 +129,16 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                 position:'absolute'
             },
             IND1:{
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -225px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -225px',
                 left:'0px',
                 top:'11px'
             },
             IND2:{
-                background: xui.UI.$bg('icons.gif', 'no-repeat -15px -225px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-15px -225px',
                 left:'300px',
                 top:'1px'
             },

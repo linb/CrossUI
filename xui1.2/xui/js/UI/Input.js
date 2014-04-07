@@ -157,7 +157,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 left:0,
                 top:0,
                 position:'absolute',
-                background:xui.UI.$bg('inputbg.gif', '#fff repeat-x',"Input"),
+                'background-image':xui.UI.$bg('inputbg.gif', '','Input'),
+                'background-repeat':'repeat-x',
+                'background-color':'#fff',
                 'border':'solid 1px #B5B8C8',
                 'z-index':10
             },
@@ -203,7 +205,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 top:'2px',
                 display:'none',
                 'font-size':0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -244px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -244px',
                 'z-index':'50'
             },
 //border<<<
@@ -217,12 +221,16 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             'KEY-b-t':{
                 height:'2px',
                 top:'-1px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left top','Input')
+                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top'
             },
             'KEY-b-b':{
                 height:'2px',
                 bottom:'-1px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left bottom','Input')
+                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom'
             },
             'BOX-focus KEY-b-t, BOX-focus KEY-b-b, BOX-mouseover KEY-b-t, BOX-mouseover KEY-b-b':{
                 $order:1,
@@ -231,12 +239,16 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             'KEY-b-l':{
                 width:'2px',
                 left:'-1px',
-                background: xui.UI.$bg('horizontal.gif', 'repeat-y left top','Input')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             'KEY-b-r':{
                width:'2px',
                right:'-1px',
-               background: xui.UI.$bg('horizontal.gif', 'repeat-y right top','Input')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
+                'background-repeat':'repeat-y',
+                'background-position':'right top'
             },
             'BOX-focus KEY-b-l, BOX-focus KEY-b-r, BOX-mouseover KEY-b-l, BOX-mouseover KEY-b-r':{
                 $order:1,
@@ -247,28 +259,36 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 height:'2px',
                left:'-1px',
                top:'-1px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left top','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             'KEY-b-rt':{
                width:'2px',
                height:'2px',
                right:'-1px',
                top:'-1px',
-               background: xui.UI.$bg('corner.gif', 'no-repeat right top','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'right top'
             },
             'KEY-b-rb':{
                 width:'2px',
                 height:'2px',
                 right:'-1px',
                 bottom:'-1px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat right bottom','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'right bottom'
             },
             'KEY-b-lb':{
                 width:'2px',
                 height:'2px',
                 left:'-1px',
                 bottom:'-1px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left bottom','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom'
             },
             'BOX-focus KEY-b-lt, BOX-focus KEY-b-rt, BOX-focus KEY-b-rb, BOX-focus KEY-b-lb, BOX-mouseover KEY-b-lt, BOX-mouseover KEY-b-rt, BOX-mouseover KEY-b-rb, BOX-mouseover KEY-b-lb':{
                 $order:1,

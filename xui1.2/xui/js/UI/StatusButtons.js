@@ -41,16 +41,22 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 'white-space':'nowrap'
             },
             "ITEM-none":{
-                background: xui.UI.$bg('icons.gif', 'no-repeat -12px -130px', true),
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-12px -130px',
                 'border-left':'solid 1px #7C9CBC',
                 'border-right':'solid 1px #7C9CBC'
             },
             "ITEM-left":{
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -130px', true),
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -130px',
                 'border-right':'solid 1px #7C9CBC'
             },
             "ITEM-right":{
-                background: xui.UI.$bg('icons.gif', 'no-repeat right -130px', true),
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -130px',
                 'border-left':'solid 1px #7C9CBC'
             },
             // ignore xui.UI.List setting

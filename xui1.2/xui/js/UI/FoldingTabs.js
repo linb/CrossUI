@@ -210,11 +210,15 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 zoom:xui.browser.ie?1:null,
                 position:'relative',
                 overflow:'auto',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top', 'FoldingList')
+                'background-image':xui.UI.$bg('border_left.gif', '','FoldingList'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             BODYI:{
                 padding:'0 8px',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top', 'FoldingList')
+                'background-image':xui.UI.$bg('border_left.gif', '','FoldingList'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             PANEL:{
                 overflow:'auto',
@@ -237,7 +241,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 'font-size':0,
                 'line-height':0,
                 width:'8px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat', 'FoldingList')
+                'background-image':xui.UI.$bg('corner.gif', '','FoldingList'),
+                'background-repeat':'no-repeat'
             },
             'HL, HR':{
                 height:'30px'
@@ -280,7 +285,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             HANDLE:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                background: xui.UI.$bg('border_top.gif', '#fff repeat-x left top', 'FoldingList'),
+                'background-image':xui.UI.$bg('border_top.gif', '','FoldingList'),
+                'background-repeat':'repeat-x',
+                'background-color':'#fff',
+                'background-position':'left top',
                 overflow:'hidden'
             },
             TITLE:{
@@ -299,7 +307,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 'font-size':0,
                 'line-height':0,
                 height:'5px',
-                background: xui.UI.$bg('border_bottom.gif', 'repeat-x left bottom #EEE', 'FoldingList')
+                'background-image':xui.UI.$bg('border_bottom.gif', '','FoldingList'),
+                'background-repeat':'repeat-x',
+                'background-color':'#EEE',
+                'background-position':'left bottom'
             },
             'CAPTION, MESSAGE':{
                 padding:'3px',

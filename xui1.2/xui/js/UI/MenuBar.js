@@ -175,7 +175,8 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                background: xui.UI.$bg('handler.gif', ' left top', true),
+                'background-image':xui.UI.$bg('handler.gif', '',true),
+                'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
@@ -189,8 +190,9 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'background-color':'#E4E4E4'
             },
             'ITEM-mouseover, ITEM-mouseover ITEMI, ITEM-mouseover ITEMC, ITEM-mousedown, ITEM-mousedown ITEMI, ITEM-mousedown ITEMC':{
-                background:xui.UI.$bg('button.gif', 'no-repeat',true)
-            },
+                'background-image':xui.UI.$bg('button.gif', '',true),
+                'background-repeat':'no-repeat'
+           },
             ITEM:{
                 height:'22px',
                 'white-space': 'nowrap',

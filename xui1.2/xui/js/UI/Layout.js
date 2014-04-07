@@ -278,7 +278,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0
             },
             'CMD-TOP, CMD-BOTTOM, CMD-LEFT, CMD-RIGHT':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true)
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat'
             },
             'CMD-TOP':{
                 $order:1,

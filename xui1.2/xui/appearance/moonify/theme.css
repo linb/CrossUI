@@ -238,7 +238,7 @@ html, .xui-uibg-base{
 .xui-comboinput-input {
     background:transparent none;
 }
-.xui-comboinput-r1, .xui-comboinput-r2, .xui-comboinput-btn, .xui-comboinput-sbtn, .xui-comboinput-stop, .xui-comboinput-top,.xui-comboinput-r1t, .xui-comboinput-r2t, .xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-smin, .xui-comboinput-min, .xui-comboinput-mid, .xui-comboinput-smid
+.xui-comboinput-r1, .xui-comboinput-r2, .xui-comboinput-btn, .xui-comboinput-sbtn, .xui-comboinput-stop, .xui-comboinput-top,.xui-comboinput-r1t, .xui-comboinput-r2t, .xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid
 {
     background-image: url(ComboInput/bg.gif);
 }
@@ -777,11 +777,11 @@ html, .xui-uibg-base{
 }
 .xui-timeline-biglabel{
     background-color:#48525F;
-    border-bottom:solid 1px ##626F82;
+    border-bottom:solid 1px #626F82;
 }
 .xui-timeline-smalllabel{
     background-color:#48525F;
-    border-bottom:solid 1px ##626F82;
+    border-bottom:solid 1px #626F82;
 }
 .xui-timeline-biglabel div, .xui-timeline-smalllabel div{
     border-left:solid 1px #BECFD9;

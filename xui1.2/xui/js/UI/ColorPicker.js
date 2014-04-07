@@ -459,8 +459,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 width:'15px',
                 height:'15px',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -300px -70px', true),
-                zoom:xui.browser.ie6?1:null
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-300px -70px',
+                 zoom:xui.browser.ie6?1:null
             },
             'TOGGLE-mouseover':{
                 'background-position': '-300px -90px'

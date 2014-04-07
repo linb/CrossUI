@@ -1651,11 +1651,14 @@ Class("xui.UI",  "xui.absObj", {
                 margin:'0 2px'
             },
             '.xui-ui-busy':{
-                background: 'url('+xui.ini.img_busy+') no-repeat center center',
-                'background-position' : 'center'
+                'background-image': 'url('+xui.ini.img_busy+')',
+                'background-repeat':'no-repeat', 
+                'background-position': 'center center'
             },
             '.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-refresh, .xui-uicmd-toggle, .xui-uicmd-toggle2, .xui-uicmd-min, .xui-uicmd-max,.xui-uicmd-restore,.xui-uicmd-pin, .xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add, .xui-uicmd-remove':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat 0 0', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat', 
+                'background-position': 'left top',
                 width:'16px',
                 height:'16px',
                 'margin-right':'2px',
@@ -1920,7 +1923,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1,
-                background: xui.UI.$bg('bar_vertical.gif', 'no-repeat 0 0', true)
+                'background-image': xui.UI.$bg('bar_vertical.gif', '', true),
+                'background-repeat':'no-repeat', 
+                'background-position': 'left top'
             },
 //uibar-top
             /*set table height for ff2, set uibar height for performance*/
@@ -1982,13 +1987,18 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0,
                 'z-index':1,
                 overflow:'visible',
-                background: xui.UI.$bg('bar_horizontal.gif', 'repeat-y -595px top', true)
+                'background-image': xui.UI.$bg('bar_horizontal.gif', '', true),
+                'background-repeat':'repeat-y', 
+                'background-position': '-595px top'
             },
             '.xui-uicon-maini':{
                 'padding-right':'4px',
                 'font-size':0,
                 'line-height':0,
-                background: xui.UI.$bg('container_right.gif', '#AAD2FA repeat-y right top', true)
+                'background-image': xui.UI.$bg('container_right.gif', '', true),
+                'background-repeat':'repeat-y', 
+                'background-color':'#AAD2FA', 
+                'background-position': 'right top'
             },
 //uibar-bottom
             '.xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t':{
@@ -5474,7 +5484,7 @@ new function(){
             Templates:{
                 tagName:'div',
                 className:'{_className}',
-                style:'overflow:auto;border:dashed blue 1px;text-align:center;background:#EBEADB;{_style}',
+                style:'overflow:auto;border:dashed blue 1px;text-align:center;background-color:#EBEADB;{_style}',
                 text:'{tagKey}'+xui.UI.$childTag
             },
             DataModel:{

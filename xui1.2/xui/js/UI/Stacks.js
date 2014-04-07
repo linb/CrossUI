@@ -27,7 +27,9 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 display:'block',
                 position:'absolute',
                 cursor:'pointer',
-                background: xui.UI.$bg('bar_vertical.gif', 'repeat-x left -380px', true),
+                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -380px',
                 width:'100%',
                 left:0
             },
