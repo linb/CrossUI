@@ -150,7 +150,7 @@ Class("xui.DataBinder","xui.absObj",{
                 vs={};
 
             _.merge(map,prop.data,function(v,t){
-                return !dataKeys || dataKeys===t || _.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false;
+                return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
             });
 
             if(adjustData)
@@ -165,7 +165,7 @@ Class("xui.DataBinder","xui.absObj",{
             _.arr.each(prf._n,function(profile){
                 p=profile.properties;
                 t=p.dataField;
-                if(!dataKeys || dataKeys===t || _.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false){
+                if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
                     // need reset?
                     // #45
                     v=(map && t in map)?map[t]:'';

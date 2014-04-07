@@ -75,7 +75,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-top':'-8px'
             },            
             'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE, BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat',true)
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat'
             },
             'BOX-h DECREASE':{
                 $order:1,
@@ -113,7 +114,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-top':'-3px'
             },
             'BOX-h RULER, BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-                background: xui.UI.$bg('bar_vertical.gif', 'repeat-x',true)
+                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
+                'background-repeat':'repeat-x'
             },
             'BOX-h RULER':{
                 $order:2,
@@ -205,7 +207,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-left':'-3px'
             },
             'BOX-v RULER, BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-                background: xui.UI.$bg('bar_horizontal.gif', 'repeat-y',true)
+                'background-image': xui.UI.$bg('bar_horizontal.gif', '',true),
+                'background-repeat':'repeat-y'
             },
             'BOX-v RULER':{
                 $order:10,

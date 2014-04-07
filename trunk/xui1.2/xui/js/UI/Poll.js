@@ -385,8 +385,9 @@ Class("xui.UI.Poll", "xui.UI.List",{
                 'text-align':'right'
             },
             'PROGRESS, PROGRESSI':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true),
-                width:'200px',
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat',
+               width:'200px',
                 height:'14px',
                 border:0,
                 'vertical-align':'middle',

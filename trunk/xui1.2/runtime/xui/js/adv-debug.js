@@ -1354,7 +1354,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             MAINC:{
                 border:'solid 1px #648CB4',
-                background:'#fff'
+                'background-color':'#fff'
             },
             'BARCMDL span':{
                 $order:0,
@@ -1457,7 +1457,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 height:'100%'
             },
             'ZOOMIN, ZOOMOUT, DATE, PRE, NEXT':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true)
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat'
             },
             ZOOMIN:{
                 $order:1,
@@ -1554,7 +1555,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             HANDLER:{
                 position:'relative',
                 height:'7px',
-                background:xui.UI.$bg('handler.gif', 'repeat #E8EEF7', true),
+                'background-image':xui.UI.$bg('handler.gif', '', true),
+                'background-repeat':'repeat',
+                'background-color':'#E8EEF7',
                 'border-top':'solid 1px #648CB4'
             },
             TSKBAR:{
@@ -2498,7 +2501,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 top:'2px',
                 display:'none',
                 'font-size':0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -244px', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -244px',
                 'z-index':'50'
             }
         },
@@ -3089,8 +3094,9 @@ Class("xui.UI.Poll", "xui.UI.List",{
                 'text-align':'right'
             },
             'PROGRESS, PROGRESSI':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true),
-                width:'200px',
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat',
+               width:'200px',
                 height:'14px',
                 border:0,
                 'vertical-align':'middle',
@@ -3447,7 +3453,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 padding:'2px 0 0 4px',
                 'text-align':'right',
                 position:'relative',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top #EEE'),
+                'background-image':xui.UI.$bg('border_left.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top',
+                'background-color':'#EEE',
                 zoom:xui.browser.ie?1:null
             },
             CMD:{
@@ -3459,11 +3468,15 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 zoom:xui.browser.ie?1:null,
                 position:'relative',
                 overflow:'auto',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top')
+                'background-image':xui.UI.$bg('border_left.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             BODYI:{
                 padding:'2px 8px 0 8px',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top'),
+                'background-image':xui.UI.$bg('border_left.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top',
                 position:'relative'
             },
             'BODY, BODYI':{
@@ -3483,7 +3496,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 'font-size':0,
                 'line-height':0,
                 width:'8px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat'
             },
             'HL, HR':{
                 height:'30px'
@@ -3526,7 +3540,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             HEAD:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                background: xui.UI.$bg('border_top.gif', '#fff repeat-x left top'),
+                'background-image':xui.UI.$bg('border_top.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-color':'#fff',
+                'background-position':'left top',
                 overflow:'hidden'
             },
             TITLE:{
@@ -3542,7 +3559,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 'line-height':0,
                 position:'relative',
                 height:'5px',
-                background: xui.UI.$bg('border_bottom.gif', 'repeat-x left bottom #EEE')
+                'background-image':xui.UI.$bg('border_bottom.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-color':'#EEE',
+                'background-position':'left bottom'
             },
             'CAP1, CAP2':{
                 padding:'3px',
@@ -3808,12 +3828,16 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                 position:'absolute'
             },
             IND1:{
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -225px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -225px',
                 left:'0px',
                 top:'11px'
             },
             IND2:{
-                background: xui.UI.$bg('icons.gif', 'no-repeat -15px -225px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-15px -225px',
                 left:'300px',
                 top:'1px'
             },

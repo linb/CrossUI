@@ -188,7 +188,9 @@ Class("xui.UI.Resizer","xui.UI",{
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -17px -244px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-17px -244px',
                 'font-size':0,
                 'line-height':0
             },
@@ -197,7 +199,9 @@ Class("xui.UI.Resizer","xui.UI",{
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -90px -272px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-90px -272px',
                 'font-size':0,
                 'line-height':0,
                 cursor:'pointer'

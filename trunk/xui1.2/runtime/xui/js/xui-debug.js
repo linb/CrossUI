@@ -1317,7 +1317,7 @@ new function(){
         while(--l>=0){
             s=arr[l].src;
             if(s.match(reg)){
-                ini.path = s.replace(reg,'');
+                ini.path = s.replace(reg,'').replace(/\(/g,"%28").replace(/\)/g,"%29");
                 break;
             }
         }
@@ -3483,7 +3483,7 @@ Class('xui.absObj',"xui.absBox",{
                 vs={};
 
             _.merge(map,prop.data,function(v,t){
-                return !dataKeys || dataKeys===t || _.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false;
+                return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
             });
 
             if(adjustData)
@@ -3498,7 +3498,7 @@ Class('xui.absObj',"xui.absBox",{
             _.arr.each(prf._n,function(profile){
                 p=profile.properties;
                 t=p.dataField;
-                if(!dataKeys || dataKeys===t || _.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false){
+                if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
                     // need reset?
                     // #45
                     v=(map && t in map)?map[t]:'';
@@ -14427,11 +14427,14 @@ Class("xui.UI",  "xui.absObj", {
                 margin:'0 2px'
             },
             '.xui-ui-busy':{
-                background: 'url('+xui.ini.img_busy+') no-repeat center center',
-                'background-position' : 'center'
+                'background-image': 'url('+xui.ini.img_busy+')',
+                'background-repeat':'no-repeat', 
+                'background-position': 'center center'
             },
             '.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-refresh, .xui-uicmd-toggle, .xui-uicmd-toggle2, .xui-uicmd-min, .xui-uicmd-max,.xui-uicmd-restore,.xui-uicmd-pin, .xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add, .xui-uicmd-remove':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat 0 0', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat', 
+                'background-position': 'left top',
                 width:'16px',
                 height:'16px',
                 'margin-right':'2px',
@@ -14696,7 +14699,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1,
-                background: xui.UI.$bg('bar_vertical.gif', 'no-repeat 0 0', true)
+                'background-image': xui.UI.$bg('bar_vertical.gif', '', true),
+                'background-repeat':'no-repeat', 
+                'background-position': 'left top'
             },
 //uibar-top
             /*set table height for ff2, set uibar height for performance*/
@@ -14758,13 +14763,18 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0,
                 'z-index':1,
                 overflow:'visible',
-                background: xui.UI.$bg('bar_horizontal.gif', 'repeat-y -595px top', true)
+                'background-image': xui.UI.$bg('bar_horizontal.gif', '', true),
+                'background-repeat':'repeat-y', 
+                'background-position': '-595px top'
             },
             '.xui-uicon-maini':{
                 'padding-right':'4px',
                 'font-size':0,
                 'line-height':0,
-                background: xui.UI.$bg('container_right.gif', '#AAD2FA repeat-y right top', true)
+                'background-image': xui.UI.$bg('container_right.gif', '', true),
+                'background-repeat':'repeat-y', 
+                'background-color':'#AAD2FA', 
+                'background-position': 'right top'
             },
 //uibar-bottom
             '.xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t':{
@@ -18250,7 +18260,7 @@ new function(){
             Templates:{
                 tagName:'div',
                 className:'{_className}',
-                style:'overflow:auto;border:dashed blue 1px;text-align:center;background:#EBEADB;{_style}',
+                style:'overflow:auto;border:dashed blue 1px;text-align:center;background-color:#EBEADB;{_style}',
                 text:'{tagKey}'+xui.UI.$childTag
             },
             DataModel:{
@@ -30051,56 +30061,72 @@ Class("xui.UI.Border","xui.UI",{
                 left:0,
                 top:'-1px',
                 height:'3px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left top')
+                'background-image':xui.UI.$bg('vertical.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'left top'
             },
             B:{
                 width:'100%',
                 left:0,
                 bottom:'-1px',
                 height:'3px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left bottom')
+                'background-image':xui.UI.$bg('vertical.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom'
             },
             L:{
                 height:'100%',
                 top:0,
                 left:'-1px',
                 width:'3px',
-                background: xui.UI.$bg('horizontal.gif', 'repeat-y left top')
+                'background-image':xui.UI.$bg('horizontal.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             R:{
                height:'100%',
                top:0,
                right:'-1px',
                width:'3px',
-               background: xui.UI.$bg('horizontal.gif', 'repeat-y right top')
+                'background-image':xui.UI.$bg('horizontal.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'right top'
             },
             LT:{
                 top:'-1px',
                 left:'-1px',
                 width:'3px',
                 height:'3px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left top')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             RT:{
                top:'-1px',
                right:'-1px',
                width:'3px',
                height:'3px',
-               background: xui.UI.$bg('corner.gif', 'no-repeat right top')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'right top'
             },
             RB:{
                 right:'-1px',
                 bottom:'-1px',
                 width:'3px',
                 height:'3px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat right bottom')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'right bottom'
             },
             LB:{
                 left:'-1px',
                 bottom:'-1px',
                 width:'3px',
                 height:'3px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left bottom')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom'
             }/*,
             'KEY-mouseover T, KEY-mouseover B':{
                 $order:1,
@@ -30492,7 +30518,9 @@ Class("xui.UI.Resizer","xui.UI",{
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -17px -244px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-17px -244px',
                 'font-size':0,
                 'line-height':0
             },
@@ -30501,7 +30529,9 @@ Class("xui.UI.Resizer","xui.UI",{
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -90px -272px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-90px -272px',
                 'font-size':0,
                 'line-height':0,
                 cursor:'pointer'
@@ -31453,7 +31483,10 @@ Class("xui.UI.Label", "xui.UI.Widget",{
                 left:0,
                 top:0,
                 height:'100%',
-                background: xui.UI.$bg('bar.gif', '#96E115 repeat-x left top'),
+                'background-image':xui.UI.$bg('bar.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'left top',
+                'background-color':'#96E115',
                 width:0
             }
         });
@@ -31610,7 +31643,9 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             },
             'DROP':{
                 $order:10,
-                background: xui.UI.$bg('drop.gif', 'no-repeat left bottom','Button'),
+                'background-image':xui.UI.$bg('drop.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom',
                 'padding-left':'16px'
             },
             'DROP-mouseover':{
@@ -31634,12 +31669,16 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             'KEY-b-t':{
                 top:'-1px',
                 height:'10px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left top','Button')
+                'background-image':xui.UI.$bg('vertical.gif', '','Button'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top'
             },
             'KEY-b-b':{
                 bottom:'-1px',
                 height:'10px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left bottom','Button')
+                'background-image':xui.UI.$bg('vertical.gif', '','Button'),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom'
             },
             'BORDER-mouseover KEY-b-t, BORDER-mouseover KEY-b-b':{
                 $order:1,
@@ -31652,12 +31691,16 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             'KEY-b-l':{
                 left:'-1px',
                 width:'4px',
-                background: xui.UI.$bg('horizontal.gif', 'repeat-y left top','Button')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Button'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             'KEY-b-r':{
                right:'-1px',
                width:'4px',
-               background: xui.UI.$bg('horizontal.gif', 'repeat-y right top','Button')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Button'),
+                'background-repeat':'repeat-y',
+                'background-position':'right top'
             },
             'BORDER-mouseover KEY-b-l, BORDER-mouseover KEY-b-r':{
                 $order:1,
@@ -31672,28 +31715,36 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 left:'-1px',
                 width:'4px',
                 height:'10px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left top','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             'KEY-b-rt':{
                top:'-1px',
                right:'-1px',
                width:'4px',
                height:'10px',
-               background: xui.UI.$bg('corner.gif', 'no-repeat right top','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'right top'
             },
             'KEY-b-rb':{
                 right:'-1px',
                 bottom:'-1px',
                 width:'4px',
                 height:'10px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat right bottom','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'right bottom'
             },
             'KEY-b-lb':{
                 left:'-1px',
                 bottom:'-1px',
                 width:'4px',
                 height:'10px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left bottom','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom'
             },
             'BORDER-mouseover KEY-b-lt, BORDER-mouseover KEY-b-rt, BORDER-mouseover KEY-b-rb, BORDER-mouseover KEY-b-lb':{
                 $order:1,
@@ -32065,7 +32116,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-top':'-8px'
             },            
             'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE, BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat',true)
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat'
             },
             'BOX-h DECREASE':{
                 $order:1,
@@ -32103,7 +32155,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-top':'-3px'
             },
             'BOX-h RULER, BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-                background: xui.UI.$bg('bar_vertical.gif', 'repeat-x',true)
+                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
+                'background-repeat':'repeat-x'
             },
             'BOX-h RULER':{
                 $order:2,
@@ -32195,7 +32248,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-left':'-3px'
             },
             'BOX-v RULER, BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-                background: xui.UI.$bg('bar_horizontal.gif', 'repeat-y',true)
+                'background-image': xui.UI.$bg('bar_horizontal.gif', '',true),
+                'background-repeat':'repeat-y'
             },
             'BOX-v RULER':{
                 $order:10,
@@ -32724,7 +32778,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 position:'absolute',
-                background:xui.UI.$bg('inputbg.gif', '#fff repeat-x',"Input"),
+                'background-image':xui.UI.$bg('inputbg.gif', '','Input'),
+                'background-repeat':'repeat-x',
+                'background-color':'#fff',
                 'border':'solid 1px #B5B8C8',
                 'z-index':10
             },
@@ -32770,7 +32826,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 top:'2px',
                 display:'none',
                 'font-size':0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -244px', true),
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -244px',
                 'z-index':'50'
             },
 //border<<<
@@ -32784,12 +32842,16 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'KEY-b-t':{
                 height:'2px',
                 top:'-1px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left top','Input')
+                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top'
             },
             'KEY-b-b':{
                 height:'2px',
                 bottom:'-1px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left bottom','Input')
+                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom'
             },
             'BOX-focus KEY-b-t, BOX-focus KEY-b-b, BOX-mouseover KEY-b-t, BOX-mouseover KEY-b-b':{
                 $order:1,
@@ -32798,12 +32860,16 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'KEY-b-l':{
                 width:'2px',
                 left:'-1px',
-                background: xui.UI.$bg('horizontal.gif', 'repeat-y left top','Input')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             'KEY-b-r':{
                width:'2px',
                right:'-1px',
-               background: xui.UI.$bg('horizontal.gif', 'repeat-y right top','Input')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
+                'background-repeat':'repeat-y',
+                'background-position':'right top'
             },
             'BOX-focus KEY-b-l, BOX-focus KEY-b-r, BOX-mouseover KEY-b-l, BOX-mouseover KEY-b-r':{
                 $order:1,
@@ -32814,28 +32880,36 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 height:'2px',
                left:'-1px',
                top:'-1px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left top','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             'KEY-b-rt':{
                width:'2px',
                height:'2px',
                right:'-1px',
                top:'-1px',
-               background: xui.UI.$bg('corner.gif', 'no-repeat right top','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'right top'
             },
             'KEY-b-rb':{
                 width:'2px',
                 height:'2px',
                 right:'-1px',
                 bottom:'-1px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat right bottom','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'right bottom'
             },
             'KEY-b-lb':{
                 width:'2px',
                 height:'2px',
                 left:'-1px',
                 bottom:'-1px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left bottom','Input')
+                'background-image':xui.UI.$bg('corner.gif', '','Input'),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom'
             },
             'BOX-focus KEY-b-lt, BOX-focus KEY-b-rt, BOX-focus KEY-b-rb, BOX-focus KEY-b-lb, BOX-mouseover KEY-b-lt, BOX-mouseover KEY-b-rt, BOX-mouseover KEY-b-rb, BOX-mouseover KEY-b-lb':{
                 $order:1,
@@ -34984,7 +35058,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'KEY-type-file BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
-                background:xui.UI.$bg('inputbgb.gif', '#fff left bottom repeat-x',"Input")
+                'background-image':xui.UI.$bg('inputbgb.gif', '',"Input"),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom',
+                'background-color':'#fff'
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -35004,7 +35081,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'margin-top':'2px'
             },
             'R1, R2, BTN, SBTN, STOP, TOP, R1T, R2T, R1B, R2B, SMID,MID':{
-                background: xui.UI.$bg('bg.gif')
+                'background-image': xui.UI.$bg('bg.gif')
             },
             'SBTN, BTN':{
                 $order:1,
@@ -36577,8 +36654,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 width:'15px',
                 height:'15px',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -300px -70px', true),
-                zoom:xui.browser.ie6?1:null
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-300px -70px',
+                 zoom:xui.browser.ie6?1:null
             },
             'TOGGLE-mouseover':{
                 'background-position': '-300px -90px'
@@ -37428,7 +37507,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 width:'16px',
                 height:'16px',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat right top', true),
+                'background-image':xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'right top',
                 _zoom:1
             },
             'TODAY-mouseover':{
@@ -37446,7 +37527,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 height:'15px',
                 'vertical-align': 'middle',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true),
+                'background-image':xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
                 _zoom:1
             },
             'PRE, TPRE':{
@@ -38285,7 +38367,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 height:'15px',
                 'vertical-align': 'middle',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
                 _zoom:1
             },
             PRE:{
@@ -38804,7 +38887,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-                background: xui.UI.$bg('item.gif', 'repeat-x')
+               'background-image':xui.UI.$bg('item.gif', ''),
+               'background-repeat':'repeat-x'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -38827,7 +38911,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
                width:'16px',
                height:'16px',
                'vertical-align':'middle',
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true)
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20px -70px'
             },
             'ITEM-checked MARK':{
                 $order:2,
@@ -40760,7 +40846,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 left:0,
                 width:'100%',
-                background: xui.UI.$bg('line.gif', 'repeat-x center bottom')
+                'background-image': xui.UI.$bg('line.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'center bottom'
             },
             LEFT:{
                 cursor:'pointer',
@@ -40771,7 +40859,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'16px',
                 width:'16px',
                 'z-index':'10',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -152px -244px', true)
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-152px -244px'
             },
             RIGHT:{
                 cursor:'pointer',
@@ -40782,7 +40872,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'16px',
                 width:'16px',
                 'z-index':'10',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -170px -244px', true)
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-170px -244px'
             },
             ITEMS:{
                 padding:'0 4px 2px 0',
@@ -40797,7 +40889,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 'padding-right':'6px',
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat right -540px', true)
+                'background-image': xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -540px'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -40813,7 +40907,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'padding-left':'6px',
                 //keep this same with ITEM
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat left -640px',true)
+                'background-image': xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -640px'
             },
             'ITEM-mouseover ITEMI':{
                 $order:1,
@@ -40829,7 +40925,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center',
-                background: xui.UI.$bg('button.gif', 'repeat-x left -590px',true)
+                'background-image': xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -590px'
             },
             'ITEM-mouseover ITEMC':{
                 $order:1,
@@ -41495,7 +41593,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 cursor:'pointer',
-                background: xui.UI.$bg('bar_vertical.gif', 'repeat-x left -380px', true),
+                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -380px',
                 width:'100%',
                 left:0
             },
@@ -41636,7 +41736,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 cursor:'pointer',
                 'padding-right':'4px',
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat right -270px',true)
+                'background-image':xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -270px'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -41651,7 +41753,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'padding-left':'4px',
                 //keep this same with ITEM
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat left -330px', true)
+                'background-image':xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -330px'
             },
             'ITEM-mouseover ITEMI':{
                 $order:1,
@@ -41667,7 +41771,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'vertical-align':'top',
                 height:'20px',
                 padding:'2px 0',
-                background: xui.UI.$bg('button.gif', 'repeat-x left -300px', true)
+                'background-image':xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -300px'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
                 $order:2,
@@ -42040,11 +42146,15 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 zoom:xui.browser.ie?1:null,
                 position:'relative',
                 overflow:'auto',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top', 'FoldingList')
+                'background-image':xui.UI.$bg('border_left.gif', '','FoldingList'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             BODYI:{
                 padding:'0 8px',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top', 'FoldingList')
+                'background-image':xui.UI.$bg('border_left.gif', '','FoldingList'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             PANEL:{
                 overflow:'auto',
@@ -42067,7 +42177,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'font-size':0,
                 'line-height':0,
                 width:'8px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat', 'FoldingList')
+                'background-image':xui.UI.$bg('corner.gif', '','FoldingList'),
+                'background-repeat':'no-repeat'
             },
             'HL, HR':{
                 height:'30px'
@@ -42110,7 +42221,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             HANDLE:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                background: xui.UI.$bg('border_top.gif', '#fff repeat-x left top', 'FoldingList'),
+                'background-image':xui.UI.$bg('border_top.gif', '','FoldingList'),
+                'background-repeat':'repeat-x',
+                'background-color':'#fff',
+                'background-position':'left top',
                 overflow:'hidden'
             },
             TITLE:{
@@ -42129,7 +42243,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'font-size':0,
                 'line-height':0,
                 height:'5px',
-                background: xui.UI.$bg('border_bottom.gif', 'repeat-x left bottom #EEE', 'FoldingList')
+                'background-image':xui.UI.$bg('border_bottom.gif', '','FoldingList'),
+                'background-repeat':'repeat-x',
+                'background-color':'#EEE',
+                'background-position':'left bottom'
             },
             'CAPTION, MESSAGE':{
                 padding:'3px',
@@ -42416,16 +42533,22 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 'white-space':'nowrap'
             },
             "ITEM-none":{
-                background: xui.UI.$bg('icons.gif', 'no-repeat -12px -130px', true),
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-12px -130px',
                 'border-left':'solid 1px #7C9CBC',
                 'border-right':'solid 1px #7C9CBC'
             },
             "ITEM-left":{
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -130px', true),
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -130px',
                 'border-right':'solid 1px #7C9CBC'
             },
             "ITEM-right":{
-                background: xui.UI.$bg('icons.gif', 'no-repeat right -130px', true),
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -130px',
                 'border-left':'solid 1px #7C9CBC'
             },
             // ignore xui.UI.List setting
@@ -42858,7 +42981,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 'border-bottom': 'none',
                 padding:'5px 4px',
                 height:'18px',
-                background: xui.UI.$bg('bar_vertical.gif','repeat-x left -380px', true)
+                'background-image': xui.UI.$bg('bar_vertical.gif','', true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -380px'
             },
             'BAR-GROUP-mouseover':{
                 $order:3,
@@ -42884,7 +43009,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                width:'16px',
                height:'16px',
                'vertical-align':'middle',
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true)
+               'background-image': xui.UI.$bg('icons.gif','', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20px -70px'
             },
             'BAR-checked MARK':{
                 $order:3,
@@ -43395,7 +43522,8 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 'background-color':'#FFF'
             },
             'BAR ITEMICON':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat 0 0', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
                 'background-position' : '-244px -236px'
             },
             'BAR-fold ITEMICON':{
@@ -43408,7 +43536,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             },
             'IMAGE-vertical, IMAGE-path-1, IMAGE-path-2, IMAGE-path-3, IMAGE-fold-1, IMAGE-fold-2, IMAGE-fold-3':{
                 $order:1,
-                background: xui.UI.$bg('icons.gif', 'no-repeat 0 0', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'0 0',
                 width:'16px',
                 height:'18px',
                 'vertical-align':'middle'
@@ -44032,7 +44162,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 top:0,
                 left:0,
                 overflow:'hidden',
-                background: xui.UI.$bg('bg.gif', 'repeat-y left top')
+               'background-image':xui.UI.$bg('bg.gif', ''),
+               'background-repeat':'repeat-y',
+               'background-position':'left top'
             },
             'ITEMS-inline ITEM':{
                 $order:5,
@@ -44057,7 +44189,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'line-height':'1px',
                 padding:'2px 0',
                 margin:'2px 2px 2px 26px',
-                background: xui.UI.$bg('split_horizontal.gif', 'repeat-x left top', true)
+               'background-image':xui.UI.$bg('split_horizontal.gif', '', true),
+               'background-repeat':'repeat-x',
+               'background-position':'left top'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -44080,7 +44214,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 width:'16px',
                 'z-index':'10',
                 top:0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat -48px -244px', true)
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-48px -244px'
             },
             BOTTOM:{
                 cursor:'pointer',
@@ -44092,7 +44228,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 width:'16px',
                 'z-index':'10',
                 bottom:0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat -66px -244px', true)
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-66px -244px'
             },
             'RADIOBOX, CHECKBOX, RADIOBOX-checked, CHECKBOX-checked':{
                 cursor:'pointer',
@@ -44101,20 +44239,28 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 height:'16px'
             },
             CHECKBOX:{
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true),
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20 -70px',
                margin:0
             },
             'CHECKBOX-checked':{
                $order:1,
-               background: xui.UI.$bg('icons.gif', 'no-repeat -0px -70px', true)
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'0 -70px'
             },
             RADIOBOX:{
-               background: xui.UI.$bg('icons.gif', 'no-repeat -60px -70px', true),
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-60px -70px',
                margin:0
             },
             'RADIOBOX-checked':{
                $order:1,
-               background: xui.UI.$bg('icons.gif', 'no-repeat -40px -70px', true)
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-40px -70px'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -44141,7 +44287,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 right:'2px',
                 width:'8px',
                 height:'16px',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -200px -70px', true)
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-200px -70px'
             }
         },
         Behaviors:{
@@ -44670,7 +44818,8 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                background: xui.UI.$bg('handler.gif', ' left top', true),
+                'background-image':xui.UI.$bg('handler.gif', '',true),
+                'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
@@ -44684,8 +44833,9 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'background-color':'#E4E4E4'
             },
             'ITEM-mouseover, ITEM-mouseover ITEMI, ITEM-mouseover ITEMC, ITEM-mousedown, ITEM-mousedown ITEMI, ITEM-mousedown ITEMC':{
-                background:xui.UI.$bg('button.gif', 'no-repeat',true)
-            },
+                'background-image':xui.UI.$bg('button.gif', '',true),
+                'background-repeat':'no-repeat'
+           },
             ITEM:{
                 height:'22px',
                 'white-space': 'nowrap',
@@ -45137,7 +45287,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                background: xui.UI.$bg('handler.gif', ' left top', true),
+                'background-image': xui.UI.$bg('handler.gif', '', true),
+                'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
@@ -45161,7 +45312,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 width:'6px',
                 height:'15px',
                 'vertical-align':'middle',
-                background: xui.UI.$bg('split_vertical.gif', 'repeat-y left top', true)
+                'background-image': xui.UI.$bg('split_vertical.gif', '', true),
+                'background-position':'left top',
+                'background-repeat':'repeat-y'
             },
             BTN:{
                 'padding-right':'3px'
@@ -45173,7 +45326,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 width:'14px',
                 height:'16px',
                 'vertical-align':'middle',
-                background: xui.UI.$bg('drop.gif', 'no-repeat left center', 'Button')
+                'background-image': xui.UI.$bg('drop.gif', '', 'Button'),
+                'background-position':'left center',
+                'background-repeat':'no-repeat'
             },
             'BTN-mouseover DROP':{
                 $order:2,
@@ -45641,7 +45796,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0
             },
             'CMD-TOP, CMD-BOTTOM, CMD-LEFT, CMD-RIGHT':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true)
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat'
             },
             'CMD-TOP':{
                 $order:1,
@@ -48320,7 +48476,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
 
             HEADER:{
-                background:  xui.UI.$bg('head.gif', '#CAE3FF repeat-x left top'),
+                'background-image':  xui.UI.$bg('head.gif'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top',
+                'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden'
             },
@@ -48338,8 +48497,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 display:'none',
                 width:'14px',
-                height:'18px',
-                background:  xui.UI.$bg('icons.gif', 'no-repeat -72px -270px', true)
+                height:'18px',                
+                'background-image':  xui.UI.$bg('icons.gif','',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-72px -270px'
             },
             COLLIST:{
                 position:'absolute',
@@ -48348,7 +48509,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 cursor:'pointer',
                 visibility:'hidden',
-                background:  xui.UI.$bg('collist.gif', '#FFF1A0 no-repeat center bottom'),
+                'background-image': xui.UI.$bg('collist.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'center bottom',
+                'background-color':'#FFF1A0',
+
                 border:'1px solid',
                 'border-color':  '#fff #ACA899 #ACA899 #fff'
             },
@@ -48367,7 +48532,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:'16px'
             },
             SORT:{
-                background: xui.UI.$bg('icons.gif', 'no-repeat -110px -220px', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-110px -220px',
+
                 position:'absolute',
                 right:'2px',
                 bottom:'2px'
@@ -48514,7 +48682,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               background:  xui.UI.$bg('head.gif', '#CAE3FF repeat-x left top'),
+               'background-image': xui.UI.$bg('head.gif', ''),
+               'background-repeat':'repeat-x',
+               'background-position':'left top',
+               'background-color':'#CAE3FF',
                height:'100%',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -48526,7 +48697,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'line-height':'14px'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
-                background:  xui.UI.$bg('head_mouseover.gif', '#FFF1A0 repeat-x left top')
+               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
+               'background-repeat':'repeat-x',
+               'background-position':'left top',
+               'background-color':'#FFF1A0'
             },
             ROW:{
                 position:'relative',
@@ -48622,7 +48796,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                width:'16px',
                height:'16px',
                'vertical-align':'middle',
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true)
+               'background-image': xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20px -70px'
             },
             'CELL-mouseover CHECKBOX':{
                 $order:1,
@@ -51835,7 +52011,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-top':'-8px'
             },            
             'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE, BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat',true)
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat'
             },
             'BOX-h DECREASE':{
                 $order:1,
@@ -51873,7 +52050,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-top':'-3px'
             },
             'BOX-h RULER, BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-                background: xui.UI.$bg('bar_vertical.gif', 'repeat-x',true)
+                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
+                'background-repeat':'repeat-x'
             },
             'BOX-h RULER':{
                 $order:2,
@@ -51965,7 +52143,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'margin-left':'-3px'
             },
             'BOX-v RULER, BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-                background: xui.UI.$bg('bar_horizontal.gif', 'repeat-y',true)
+                'background-image': xui.UI.$bg('bar_horizontal.gif', '',true),
+                'background-repeat':'repeat-y'
             },
             'BOX-v RULER':{
                 $order:10,

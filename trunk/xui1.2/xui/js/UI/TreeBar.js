@@ -310,7 +310,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 'border-bottom': 'none',
                 padding:'5px 4px',
                 height:'18px',
-                background: xui.UI.$bg('bar_vertical.gif','repeat-x left -380px', true)
+                'background-image': xui.UI.$bg('bar_vertical.gif','', true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -380px'
             },
             'BAR-GROUP-mouseover':{
                 $order:3,
@@ -336,7 +338,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                width:'16px',
                height:'16px',
                'vertical-align':'middle',
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true)
+               'background-image': xui.UI.$bg('icons.gif','', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20px -70px'
             },
             'BAR-checked MARK':{
                 $order:3,

@@ -434,7 +434,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 left:0,
                 width:'100%',
-                background: xui.UI.$bg('line.gif', 'repeat-x center bottom')
+                'background-image': xui.UI.$bg('line.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-position':'center bottom'
             },
             LEFT:{
                 cursor:'pointer',
@@ -445,7 +447,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'16px',
                 width:'16px',
                 'z-index':'10',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -152px -244px', true)
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-152px -244px'
             },
             RIGHT:{
                 cursor:'pointer',
@@ -456,7 +460,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'16px',
                 width:'16px',
                 'z-index':'10',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -170px -244px', true)
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-170px -244px'
             },
             ITEMS:{
                 padding:'0 4px 2px 0',
@@ -471,7 +477,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 'padding-right':'6px',
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat right -540px', true)
+                'background-image': xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -540px'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -487,7 +495,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'padding-left':'6px',
                 //keep this same with ITEM
                 'vertical-align':'top',
-                background: xui.UI.$bg('button.gif', 'no-repeat left -640px',true)
+                'background-image': xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -640px'
             },
             'ITEM-mouseover ITEMI':{
                 $order:1,
@@ -503,7 +513,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center',
-                background: xui.UI.$bg('button.gif', 'repeat-x left -590px',true)
+                'background-image': xui.UI.$bg('button.gif', '', true),
+                'background-repeat':'repeat-x',
+                'background-position':'left -590px'
             },
             'ITEM-mouseover ITEMC':{
                 $order:1,

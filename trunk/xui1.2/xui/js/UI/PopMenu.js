@@ -345,7 +345,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 top:0,
                 left:0,
                 overflow:'hidden',
-                background: xui.UI.$bg('bg.gif', 'repeat-y left top')
+               'background-image':xui.UI.$bg('bg.gif', ''),
+               'background-repeat':'repeat-y',
+               'background-position':'left top'
             },
             'ITEMS-inline ITEM':{
                 $order:5,
@@ -370,7 +372,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'line-height':'1px',
                 padding:'2px 0',
                 margin:'2px 2px 2px 26px',
-                background: xui.UI.$bg('split_horizontal.gif', 'repeat-x left top', true)
+               'background-image':xui.UI.$bg('split_horizontal.gif', '', true),
+               'background-repeat':'repeat-x',
+               'background-position':'left top'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -393,7 +397,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 width:'16px',
                 'z-index':'10',
                 top:0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat -48px -244px', true)
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-48px -244px'
             },
             BOTTOM:{
                 cursor:'pointer',
@@ -405,7 +411,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 width:'16px',
                 'z-index':'10',
                 bottom:0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat -66px -244px', true)
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-66px -244px'
             },
             'RADIOBOX, CHECKBOX, RADIOBOX-checked, CHECKBOX-checked':{
                 cursor:'pointer',
@@ -414,20 +422,28 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 height:'16px'
             },
             CHECKBOX:{
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true),
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20 -70px',
                margin:0
             },
             'CHECKBOX-checked':{
                $order:1,
-               background: xui.UI.$bg('icons.gif', 'no-repeat -0px -70px', true)
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'0 -70px'
             },
             RADIOBOX:{
-               background: xui.UI.$bg('icons.gif', 'no-repeat -60px -70px', true),
+               'background-image':xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-60px -70px',
                margin:0
             },
             'RADIOBOX-checked':{
                $order:1,
-               background: xui.UI.$bg('icons.gif', 'no-repeat -40px -70px', true)
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-40px -70px'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -454,7 +470,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 right:'2px',
                 width:'8px',
                 height:'16px',
-                background: xui.UI.$bg('icons.gif', 'no-repeat -200px -70px', true)
+                'background-image':xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-200px -70px'
             }
         },
         Behaviors:{

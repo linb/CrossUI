@@ -72,7 +72,9 @@ Class("xui.UI.TagEditor", ['xui.UI',"xui.absValue"], {
                 top:'2px',
                 display:'none',
                 'font-size':0,
-                background: xui.UI.$bg('icons.gif', 'no-repeat left -244px', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -244px',
                 'z-index':'50'
             }
         },

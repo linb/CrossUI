@@ -180,7 +180,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 padding:'2px 0 0 4px',
                 'text-align':'right',
                 position:'relative',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top #EEE'),
+                'background-image':xui.UI.$bg('border_left.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top',
+                'background-color':'#EEE',
                 zoom:xui.browser.ie?1:null
             },
             CMD:{
@@ -192,11 +195,15 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 zoom:xui.browser.ie?1:null,
                 position:'relative',
                 overflow:'auto',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top')
+                'background-image':xui.UI.$bg('border_left.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             BODYI:{
                 padding:'2px 8px 0 8px',
-                background: xui.UI.$bg('border_left.gif', 'repeat-y left top'),
+                'background-image':xui.UI.$bg('border_left.gif', ''),
+                'background-repeat':'repeat-y',
+                'background-position':'left top',
                 position:'relative'
             },
             'BODY, BODYI':{
@@ -216,7 +223,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 'font-size':0,
                 'line-height':0,
                 width:'8px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat')
+                'background-image':xui.UI.$bg('corner.gif', ''),
+                'background-repeat':'no-repeat'
             },
             'HL, HR':{
                 height:'30px'
@@ -259,7 +267,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             HEAD:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                background: xui.UI.$bg('border_top.gif', '#fff repeat-x left top'),
+                'background-image':xui.UI.$bg('border_top.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-color':'#fff',
+                'background-position':'left top',
                 overflow:'hidden'
             },
             TITLE:{
@@ -275,7 +286,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 'line-height':0,
                 position:'relative',
                 height:'5px',
-                background: xui.UI.$bg('border_bottom.gif', 'repeat-x left bottom #EEE')
+                'background-image':xui.UI.$bg('border_bottom.gif', ''),
+                'background-repeat':'repeat-x',
+                'background-color':'#EEE',
+                'background-position':'left bottom'
             },
             'CAP1, CAP2':{
                 padding:'3px',

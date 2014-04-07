@@ -110,7 +110,9 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             },
             'DROP':{
                 $order:10,
-                background: xui.UI.$bg('drop.gif', 'no-repeat left bottom','Button'),
+                'background-image':xui.UI.$bg('drop.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom',
                 'padding-left':'16px'
             },
             'DROP-mouseover':{
@@ -134,12 +136,16 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             'KEY-b-t':{
                 top:'-1px',
                 height:'10px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left top','Button')
+                'background-image':xui.UI.$bg('vertical.gif', '','Button'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top'
             },
             'KEY-b-b':{
                 bottom:'-1px',
                 height:'10px',
-                background: xui.UI.$bg('vertical.gif', 'repeat-x left bottom','Button')
+                'background-image':xui.UI.$bg('vertical.gif', '','Button'),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom'
             },
             'BORDER-mouseover KEY-b-t, BORDER-mouseover KEY-b-b':{
                 $order:1,
@@ -152,12 +158,16 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             'KEY-b-l':{
                 left:'-1px',
                 width:'4px',
-                background: xui.UI.$bg('horizontal.gif', 'repeat-y left top','Button')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Button'),
+                'background-repeat':'repeat-y',
+                'background-position':'left top'
             },
             'KEY-b-r':{
                right:'-1px',
                width:'4px',
-               background: xui.UI.$bg('horizontal.gif', 'repeat-y right top','Button')
+                'background-image':xui.UI.$bg('horizontal.gif', '','Button'),
+                'background-repeat':'repeat-y',
+                'background-position':'right top'
             },
             'BORDER-mouseover KEY-b-l, BORDER-mouseover KEY-b-r':{
                 $order:1,
@@ -172,28 +182,36 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 left:'-1px',
                 width:'4px',
                 height:'10px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left top','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             'KEY-b-rt':{
                top:'-1px',
                right:'-1px',
                width:'4px',
                height:'10px',
-               background: xui.UI.$bg('corner.gif', 'no-repeat right top','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'right top'
             },
             'KEY-b-rb':{
                 right:'-1px',
                 bottom:'-1px',
                 width:'4px',
                 height:'10px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat right bottom','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'right bottom'
             },
             'KEY-b-lb':{
                 left:'-1px',
                 bottom:'-1px',
                 width:'4px',
                 height:'10px',
-                background: xui.UI.$bg('corner.gif', 'no-repeat left bottom','Button')
+                'background-image':xui.UI.$bg('corner.gif', '','Button'),
+                'background-repeat':'no-repeat',
+                'background-position':'left bottom'
             },
             'BORDER-mouseover KEY-b-lt, BORDER-mouseover KEY-b-rt, BORDER-mouseover KEY-b-rb, BORDER-mouseover KEY-b-lb':{
                 $order:1,

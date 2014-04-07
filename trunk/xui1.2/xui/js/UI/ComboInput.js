@@ -650,7 +650,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'KEY-type-file BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
-                background:xui.UI.$bg('inputbgb.gif', '#fff left bottom repeat-x',"Input")
+                'background-image':xui.UI.$bg('inputbgb.gif', '',"Input"),
+                'background-repeat':'repeat-x',
+                'background-position':'left bottom',
+                'background-color':'#fff'
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -670,7 +673,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'margin-top':'2px'
             },
             'R1, R2, BTN, SBTN, STOP, TOP, R1T, R2T, R1B, R2B, SMID,MID':{
-                background: xui.UI.$bg('bg.gif')
+                'background-image': xui.UI.$bg('bg.gif')
             },
             'SBTN, BTN':{
                 $order:1,

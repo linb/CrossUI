@@ -950,7 +950,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             MAINC:{
                 border:'solid 1px #648CB4',
-                background:'#fff'
+                'background-color':'#fff'
             },
             'BARCMDL span':{
                 $order:0,
@@ -1053,7 +1053,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 height:'100%'
             },
             'ZOOMIN, ZOOMOUT, DATE, PRE, NEXT':{
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true)
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat'
             },
             ZOOMIN:{
                 $order:1,
@@ -1150,7 +1151,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             HANDLER:{
                 position:'relative',
                 height:'7px',
-                background:xui.UI.$bg('handler.gif', 'repeat #E8EEF7', true),
+                'background-image':xui.UI.$bg('handler.gif', '', true),
+                'background-repeat':'repeat',
+                'background-color':'#E8EEF7',
                 'border-top':'solid 1px #648CB4'
             },
             TSKBAR:{

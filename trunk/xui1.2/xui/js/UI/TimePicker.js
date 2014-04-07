@@ -259,7 +259,8 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 height:'15px',
                 'vertical-align': 'middle',
                 cursor:'default',
-                background: xui.UI.$bg('icons.gif', 'no-repeat', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
                 _zoom:1
             },
             PRE:{

@@ -1317,7 +1317,7 @@ new function(){
         while(--l>=0){
             s=arr[l].src;
             if(s.match(reg)){
-                ini.path = s.replace(reg,'');
+                ini.path = s.replace(reg,'').replace(/\(/g,"%28").replace(/\)/g,"%29");
                 break;
             }
         }

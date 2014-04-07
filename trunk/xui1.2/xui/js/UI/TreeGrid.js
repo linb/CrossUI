@@ -1419,7 +1419,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
 
             HEADER:{
-                background:  xui.UI.$bg('head.gif', '#CAE3FF repeat-x left top'),
+                'background-image':  xui.UI.$bg('head.gif'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top',
+                'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden'
             },
@@ -1437,8 +1440,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 display:'none',
                 width:'14px',
-                height:'18px',
-                background:  xui.UI.$bg('icons.gif', 'no-repeat -72px -270px', true)
+                height:'18px',                
+                'background-image':  xui.UI.$bg('icons.gif','',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-72px -270px'
             },
             COLLIST:{
                 position:'absolute',
@@ -1447,7 +1452,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 cursor:'pointer',
                 visibility:'hidden',
-                background:  xui.UI.$bg('collist.gif', '#FFF1A0 no-repeat center bottom'),
+                'background-image': xui.UI.$bg('collist.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'center bottom',
+                'background-color':'#FFF1A0',
+
                 border:'1px solid',
                 'border-color':  '#fff #ACA899 #ACA899 #fff'
             },
@@ -1466,7 +1475,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:'16px'
             },
             SORT:{
-                background: xui.UI.$bg('icons.gif', 'no-repeat -110px -220px', true),
+                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-repeat':'no-repeat',
+                'background-position':'-110px -220px',
+
                 position:'absolute',
                 right:'2px',
                 bottom:'2px'
@@ -1613,7 +1625,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               background:  xui.UI.$bg('head.gif', '#CAE3FF repeat-x left top'),
+               'background-image': xui.UI.$bg('head.gif', ''),
+               'background-repeat':'repeat-x',
+               'background-position':'left top',
+               'background-color':'#CAE3FF',
                height:'100%',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -1625,7 +1640,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'line-height':'14px'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
-                background:  xui.UI.$bg('head_mouseover.gif', '#FFF1A0 repeat-x left top')
+               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
+               'background-repeat':'repeat-x',
+               'background-position':'left top',
+               'background-color':'#FFF1A0'
             },
             ROW:{
                 position:'relative',
@@ -1721,7 +1739,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                width:'16px',
                height:'16px',
                'vertical-align':'middle',
-               background: xui.UI.$bg('icons.gif', 'no-repeat -20px -70px', true)
+               'background-image': xui.UI.$bg('icons.gif', '', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-20px -70px'
             },
             'CELL-mouseover CHECKBOX':{
                 $order:1,
