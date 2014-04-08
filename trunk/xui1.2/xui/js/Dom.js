@@ -490,6 +490,7 @@ Class('xui.Dom','xui.absBox',{
                 return self;
             }else{
                return (function(o){
+                  if(!o)return '';
                   var i,a=o.childNodes,l=a.length,content='',me=arguments.callee;
                   for(i=0;i<l;i++)
                     if(a[i].nodeType!= 8)
