@@ -424,7 +424,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             CHECKBOX:{
                'background-image':xui.UI.$bg('icons.gif', '', true),
                'background-repeat':'no-repeat',
-               'background-position':'-20 -70px',
+               'background-position':'-20px -70px',
                margin:0
             },
             'CHECKBOX-checked':{
