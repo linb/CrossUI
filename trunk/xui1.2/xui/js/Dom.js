@@ -1281,7 +1281,7 @@ Class('xui.Dom','xui.absBox',{
             });
             
             // Estimate time by steps
-            if(step||0>0)
+            if((step||0)>0)
                 time=step*16;
             else
                 time = time||300;
