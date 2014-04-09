@@ -176,7 +176,7 @@ Class('xui.Event',null,{
                 // Use "dragbegin instead of dragstart" to avoid native DnD
                 "dragbegin,drag,dragstop,dragleave,dragenter,dragover,drop,"+
                 // 3 touch event
-                "touchstart,touchmove,touchend,touchcancel")
+                "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
         _getEventName:function(name,pos){
             return (name=this._map1[name]) && ((pos===0||pos==1||pos==2) ? name[pos] : name);
@@ -490,7 +490,10 @@ Class('xui.Event',null,{
             }
         },
         stopPageTouchmove:function(){
-            document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+            document.addEventListener(
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                'touchmove', function(e){ e.preventDefault(); });
         }
     },
     Initialize:function(){
@@ -537,7 +540,10 @@ Class('xui.Event',null,{
         
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
-            document.addEventListener("touchstart", xui.Event._simulateMousedown, true);
+            document.addEventListener(
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                "touchstart", xui.Event._simulateMousedown, true);
             if(xui.browser.isAndroid||xui.browser.isBB){
                 document.addEventListener("touchend", xui.Event._simulateFocus, true);
             }

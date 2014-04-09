@@ -3122,7 +3122,10 @@ type:4
             if(window.removeEventListener){
                 window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
                 if(xui.browser.isTouch){
-                    document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
+                    document.removeEventListener(
+                        (xui.browser.ie&&window.PointerEvent)?"pointerdown":
+                        (xui.browser.ie&&window.MSPointerEvent)?"MSPointerDown":
+                        "touchstart", xui.Event._simulateMousedown, true);
                     if(xui.browser.isAndroid||xui.browser.isBB){
                         document.removeEventListener("touchend", xui.Event._simulateFocus, true);
                     }
