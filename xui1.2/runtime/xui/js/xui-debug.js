@@ -1239,7 +1239,7 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
 
-        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || u.msPointerEnabled,
+        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || w.PointerEvent || w.MSPointerEvent,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u),
         isBB:/blackberry/.test(u) || /BB[\d]+;.+\sMobile\s/.test(navigator.userAgent)
@@ -4387,7 +4387,7 @@ Class('xui.Event',null,{
                 // Use "dragbegin instead of dragstart" to avoid native DnD
                 "dragbegin,drag,dragstop,dragleave,dragenter,dragover,drop,"+
                 // 3 touch event
-                "touchstart,touchmove,touchend,touchcancel")
+                "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
         _getEventName:function(name,pos){
             return (name=this._map1[name]) && ((pos===0||pos==1||pos==2) ? name[pos] : name);
@@ -4701,7 +4701,10 @@ Class('xui.Event',null,{
             }
         },
         stopPageTouchmove:function(){
-            document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+            document.addEventListener(
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                'touchmove', function(e){ e.preventDefault(); });
         }
     },
     Initialize:function(){
@@ -4748,7 +4751,10 @@ Class('xui.Event',null,{
         
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
-            document.addEventListener("touchstart", xui.Event._simulateMousedown, true);
+            document.addEventListener(
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                "touchstart", xui.Event._simulateMousedown, true);
             if(xui.browser.isAndroid||xui.browser.isBB){
                 document.addEventListener("touchend", xui.Event._simulateFocus, true);
             }
@@ -9581,7 +9587,10 @@ type:4
             if(window.removeEventListener){
                 window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
                 if(xui.browser.isTouch){
-                    document.removeEventListener("touchstart", xui.Event._simulateMousedown, true);
+                    document.removeEventListener(
+                        (xui.browser.ie&&window.PointerEvent)?"pointerdown":
+                        (xui.browser.ie&&window.MSPointerEvent)?"MSPointerDown":
+                        "touchstart", xui.Event._simulateMousedown, true);
                     if(xui.browser.isAndroid||xui.browser.isBB){
                         document.removeEventListener("touchend", xui.Event._simulateFocus, true);
                     }
@@ -11319,7 +11328,9 @@ Class('xui.DragDrop',null,{
             var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
                 md1,mm2,mu2;
             if(xui.browser.isTouch){
-                md2="ontouchstart";mm2="ontouchmove";mu2="ontouchend";
+                md2=(xui.browser.ie&window.PointerEvent)?"onpointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerdown":"ontouchstart";
+                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
             
             if(d._proxy) d._unpack();
@@ -11367,7 +11378,9 @@ Class('xui.DragDrop',null,{
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup",
                 md1,mm2,mu2;
             if(xui.browser.isTouch){
-                md2="ontouchstart";mm2="ontouchmove";mu2="ontouchend";
+                md2=(xui.browser.ie&&window.PointerEvent)?"onpointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerdown":"ontouchstart";
+                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
 
             profile.x = _pos.left;
@@ -11928,11 +11941,11 @@ Class('xui.DragDrop',null,{
                     };
                     self.$addEvent('onMousedown',f, dd._eh, -1);
                     if(xui.browser.isTouch)
-                        self.$addEvent('onTouchstart',f, dd._eh, -1);
+                        self.$addEvent((xui.browser.ie&&window.PointerEvent)?"onPointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onMspointerdown":'onTouchstart',f, dd._eh, -1);
                 }else{
                     self.$removeEvent('onMousedown', dd._eh);
                     if(xui.browser.isTouch)
-                        self.$removeEvent('onTouchstart', dd._eh);
+                        self.$removeEvent((xui.browser.ie&&window.PointerEvent)?"onPointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onMspointerdown":'onTouchstart', dd._eh);
                 }
 
                 return self;

@@ -302,7 +302,9 @@ Class('xui.DragDrop',null,{
             var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
                 md1,mm2,mu2;
             if(xui.browser.isTouch){
-                md2="ontouchstart";mm2="ontouchmove";mu2="ontouchend";
+                md2=(xui.browser.ie&window.PointerEvent)?"onpointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerdown":"ontouchstart";
+                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
             
             if(d._proxy) d._unpack();
@@ -350,7 +352,9 @@ Class('xui.DragDrop',null,{
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup",
                 md1,mm2,mu2;
             if(xui.browser.isTouch){
-                md2="ontouchstart";mm2="ontouchmove";mu2="ontouchend";
+                md2=(xui.browser.ie&&window.PointerEvent)?"onpointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerdown":"ontouchstart";
+                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
 
             profile.x = _pos.left;
@@ -911,11 +915,11 @@ Class('xui.DragDrop',null,{
                     };
                     self.$addEvent('onMousedown',f, dd._eh, -1);
                     if(xui.browser.isTouch)
-                        self.$addEvent('onTouchstart',f, dd._eh, -1);
+                        self.$addEvent((xui.browser.ie&&window.PointerEvent)?"onPointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onMspointerdown":'onTouchstart',f, dd._eh, -1);
                 }else{
                     self.$removeEvent('onMousedown', dd._eh);
                     if(xui.browser.isTouch)
-                        self.$removeEvent('onTouchstart', dd._eh);
+                        self.$removeEvent((xui.browser.ie&&window.PointerEvent)?"onPointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onMspointerdown":'onTouchstart', dd._eh);
                 }
 
                 return self;
