@@ -734,10 +734,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 //subNs.css('display','none');
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
-                                else if(_.isArr(sub))
+                                else if(_.isArr(sub)){
                                     b.insertItems(sub, item.id);
-                                else if(sub['xui.Template']||sub['xui.UI'])
+                                    // for []
+                                    if(!item.sub)item.sub=sub;                                    
+                                }else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs.append(item.sub=sub.render(true));
+                                }
 
                                 //set checked items
                                 b.setUIValue(b.getUIValue(), true);

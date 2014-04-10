@@ -244,7 +244,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     });
                     item.innerIcons=html;
 
-
                     // for the last one
                     item.togglemark = cls+getType(item.sub, arr[ll]);
                 }

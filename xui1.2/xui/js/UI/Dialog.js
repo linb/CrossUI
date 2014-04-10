@@ -126,21 +126,21 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             });
         },
         activate:function(flag){
-            var self=this, profile=this.get(0);
+            var self=this, profile=this.get(0),ifocus;
             profile.box._active(profile,flag);
-            if(flag!==false){
-                try{profile.getSubNode('CAPTION').focus();}catch(e){}
-            }
-            this.getChildren().each(function(o){
+            this.getChildren(null,true).each(function(o){
                 if(_.get(o,['properties','defaultFocus'])){
                     try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
+                    ifocus=1;
                     return false;
                 }
             });
+            if(flag!==false && !ifocus){
+                try{profile.getSubNode('CAPTION').focus();}catch(e){}
+            }
             _.asyRun(function(){
                 if(self.onActivated)self.onActivated(profile);                        
             });
-
         },
         isPinned:function(){
             return !!_.get(this.get(0),['properties','pinned']);
