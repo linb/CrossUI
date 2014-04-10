@@ -1167,8 +1167,8 @@ Class("xui.UI",  "xui.absObj", {
             };
             _.arr.each(this.get(0).children,function(v){
                 if((subId&&typeof(subId)=="string")?v[1]===subId:1){
+                    a.push(v[0]);
                     if(all)f(v[0]);
-                    else a.push(v[0]);
                 }
             });
             return xui.UI.pack(a);
@@ -4134,7 +4134,6 @@ Class("xui.UI",  "xui.absObj", {
             if(profile.properties.disableTips)return;
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
-            //if(!xui.Tips)return;
         }
     }
 });
@@ -4524,8 +4523,13 @@ Class("xui.absList", "xui.absObj",{
                 map=profile.SubSerialIdMapItem,
                 item=map&&map[sid];
 
-            if(item && item.tips){
-                xui.Tips.show(pos, item);
+            if(item && ('tips' in item)){
+                if(item.tips)xui.Tips.show(pos, item);
+                else xui.Tips.hide();
+                return true;
+            }else if(item && 'caption' in item){
+                if(item.caption)xui.Tips.show(pos, {tips:item.caption});
+                else xui.Tips.hide();
                 return true;
             }else
                 return false;
@@ -5273,7 +5277,6 @@ new function(){
             DataModel:{
                 width:'100',
                 height:'30',
-                selectable:false,
                 nodeName:{
                     ini:"xui",
                     action:function(v){

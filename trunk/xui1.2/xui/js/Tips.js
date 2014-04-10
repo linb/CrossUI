@@ -28,8 +28,9 @@ Class("xui.Tips", null,{
                 p,n;
 
             //if ready to show in settimeout(resetRun)
-            if((p=_.resetRun.$cache) && p['$Tips3'])
+            if((p=_.resetRun.$cache) && (p['$Tips3']||p['$Tips'])){
                 tips._pos=event.getPos(e);
+            }
 
             //it's first show
             if(tips._from){
@@ -259,8 +260,6 @@ Class("xui.Tips", null,{
 
             if(!node || !_from || !pos || !(o=_from.box))return;
 
-            //keep older
-            self._pos=pos;
             //1.CF.showTips
             b=((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
             //2._showTips / onShowTips
@@ -268,9 +267,20 @@ Class("xui.Tips", null,{
             if(!b)b=(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
-            if(!b && ((t=_from) && t.tips)||(t && (t=t.properties) && (t.tips))){
+            if(!b && ((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
                 self.show(pos, t);
                 b=true;
+            }
+            
+            else if((t=_from) && (t=t.properties) && ('caption' in t)
+                // if tips is default value, try to show caption
+                // you can settips to null or undefined to stop it
+                && t.tips===''
+                ){
+                if(t.caption){
+                    self.show(pos, {tips:t.caption});
+                    b=true;
+                }
             }
 
             //no work hide it

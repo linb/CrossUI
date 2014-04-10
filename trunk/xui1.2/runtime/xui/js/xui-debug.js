@@ -11995,8 +11995,9 @@ Class("xui.Tips", null,{
                 p,n;
 
             //if ready to show in settimeout(resetRun)
-            if((p=_.resetRun.$cache) && p['$Tips3'])
+            if((p=_.resetRun.$cache) && (p['$Tips3']||p['$Tips'])){
                 tips._pos=event.getPos(e);
+            }
 
             //it's first show
             if(tips._from){
@@ -12226,8 +12227,6 @@ Class("xui.Tips", null,{
 
             if(!node || !_from || !pos || !(o=_from.box))return;
 
-            //keep older
-            self._pos=pos;
             //1.CF.showTips
             b=((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
             //2._showTips / onShowTips
@@ -12235,9 +12234,20 @@ Class("xui.Tips", null,{
             if(!b)b=(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
-            if(!b && ((t=_from) && t.tips)||(t && (t=t.properties) && (t.tips))){
+            if(!b && ((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
                 self.show(pos, t);
                 b=true;
+            }
+            
+            else if((t=_from) && (t=t.properties) && ('caption' in t)
+                // if tips is default value, try to show caption
+                // you can settips to null or undefined to stop it
+                && t.tips===''
+                ){
+                if(t.caption){
+                    self.show(pos, {tips:t.caption});
+                    b=true;
+                }
             }
 
             //no work hide it
@@ -13957,8 +13967,8 @@ Class("xui.UI",  "xui.absObj", {
             };
             _.arr.each(this.get(0).children,function(v){
                 if((subId&&typeof(subId)=="string")?v[1]===subId:1){
+                    a.push(v[0]);
                     if(all)f(v[0]);
-                    else a.push(v[0]);
                 }
             });
             return xui.UI.pack(a);
@@ -16924,7 +16934,6 @@ Class("xui.UI",  "xui.absObj", {
             if(profile.properties.disableTips)return;
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
-            //if(!xui.Tips)return;
         }
     }
 });
@@ -17314,8 +17323,13 @@ Class("xui.absList", "xui.absObj",{
                 map=profile.SubSerialIdMapItem,
                 item=map&&map[sid];
 
-            if(item && item.tips){
-                xui.Tips.show(pos, item);
+            if(item && ('tips' in item)){
+                if(item.tips)xui.Tips.show(pos, item);
+                else xui.Tips.hide();
+                return true;
+            }else if(item && 'caption' in item){
+                if(item.caption)xui.Tips.show(pos, {tips:item.caption});
+                else xui.Tips.hide();
                 return true;
             }else
                 return false;
@@ -18063,7 +18077,6 @@ new function(){
             DataModel:{
                 width:'100',
                 height:'30',
-                selectable:false,
                 nodeName:{
                     ini:"xui",
                     action:function(v){
@@ -43419,10 +43432,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 //subNs.css('display','none');
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
-                                else if(_.isArr(sub))
+                                else if(_.isArr(sub)){
                                     b.insertItems(sub, item.id);
-                                else if(sub['xui.Template']||sub['xui.UI'])
+                                    // for []
+                                    if(!item.sub)item.sub=sub;                                    
+                                }else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs.append(item.sub=sub.render(true));
+                                }
 
                                 //set checked items
                                 b.setUIValue(b.getUIValue(), true);
@@ -43730,7 +43746,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                             html+=buildIcon(cls, o=='last'?'-none':'-vertical');
                     });
                     item.innerIcons=html;
-
 
                     // for the last one
                     item.togglemark = cls+getType(item.sub, arr[ll]);
@@ -52656,21 +52671,21 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             });
         },
         activate:function(flag){
-            var self=this, profile=this.get(0);
+            var self=this, profile=this.get(0),ifocus;
             profile.box._active(profile,flag);
-            if(flag!==false){
-                try{profile.getSubNode('CAPTION').focus();}catch(e){}
-            }
-            this.getChildren().each(function(o){
+            this.getChildren(null,true).each(function(o){
                 if(_.get(o,['properties','defaultFocus'])){
                     try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
+                    ifocus=1;
                     return false;
                 }
             });
+            if(flag!==false && !ifocus){
+                try{profile.getSubNode('CAPTION').focus();}catch(e){}
+            }
             _.asyRun(function(){
                 if(self.onActivated)self.onActivated(profile);                        
             });
-
         },
         isPinned:function(){
             return !!_.get(this.get(0),['properties','pinned']);
