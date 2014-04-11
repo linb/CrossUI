@@ -1,5 +1,4 @@
 //singleton
-
 Class("xui.Tips", null,{
     Constructor:function(){return null},
     Initialize:function(){
@@ -24,18 +23,17 @@ Class("xui.Tips", null,{
         },'$Tips',-1)
         .afterMousemove(function(obj, e){
             if(dd.isWorking)return;
-            var event=xui.Event,
-                p,n;
+            var event=xui.Event,p,n;
 
-            //if ready to show in settimeout(resetRun)
-            if((p=_.resetRun.$cache) && (p['$Tips3']||p['$Tips'])){
+            if((p=_.resetRun.$cache) && p['$Tips']){
                 tips._pos=event.getPos(e);
             }
 
             //it's first show
             if(tips._from){
-                _.resetRun('$Tips3', null);
+                tips._pos=event.getPos(e);
                 tips._showF();
+                _.resetRun('$Tips3');
             //after show, before hide
             }else if(tips._showed && tips.MOVABLE){
                 p=event.getPos(e);
@@ -43,7 +41,6 @@ Class("xui.Tips", null,{
                 n.left = (parseInt(n.left,10)||0) + (p.left-tips._pos.left) +'px';
                 n.top = (parseInt(n.top,10)||0) + (p.top-tips._pos.top) +'px';
                 tips._pos=p;
-                n=null;
             }
         },'$Tips',-1)
         .afterMouseover(function(obj, e){
@@ -92,10 +89,11 @@ Class("xui.Tips", null,{
                     _.resetRun('$Tips', function(){
                         tips._from=_from;
                         tips._enode=id;
+                        // if mouse stop move
                         _.resetRun('$Tips3', function(){
                             if(tips._from)
                                 tips._showF();
-                        },100);
+                        });
                     }, tips.DELAYTIME);
             }else
                 tips._cancel();
@@ -107,9 +105,6 @@ Class("xui.Tips", null,{
             if(tips._markId){
                 var event=xui.Event,
                     id,
-                    tempid,
-                    evid,
-                    _from=tips._from,
                     clear,
                     index=0,
                     node = e.toElement||e.relatedTarget;
@@ -130,10 +125,6 @@ Class("xui.Tips", null,{
                 }
                 if(clear)
                     tips._cancel();
-                else
-                    tempid=(_from && _from.onShowTips)?id:id.replace(tips._reg,':');
-
-                node=null;
                 return event.$FALSE;
             }
         },'$Tips',-1);
@@ -245,7 +236,7 @@ Class("xui.Tips", null,{
         TIPSKEY:'tips',
         MAXWIDTH:300,
         MOVABLE:true,
-        DELAYTIME:200,
+        DELAYTIME:400,
         AUTOHIDETIME:5000,
 
         _showF:function(){
@@ -271,7 +262,7 @@ Class("xui.Tips", null,{
                 self.show(pos, t);
                 b=true;
             }
-            else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
+            else if((t=_from) && (t=t.properties) && ('caption' in t)
                 // if tips is default value, try to show caption
                 // you can settips to null or undefined to stop it
                 && t.tips===''
@@ -283,8 +274,9 @@ Class("xui.Tips", null,{
             }
 
             //no work hide it
-            if(!b)self.hide();
-            else {
+            if(!b){
+                self.hide();
+            }else {
                 if(!self.MOVABLE)
                     _.resetRun('$Tips2', self.hide,self.AUTOHIDETIME,null,self);
             }
@@ -336,11 +328,11 @@ Class("xui.Tips", null,{
         _cancel:function(){
             var self=this;
             if(self._markId){
-                if(self._showed)
+                if(self._showed){
                     self.hide();
-                else{
-                    _.resetRun('$Tips', null);
-                    _.resetRun('$Tips3', null);
+                }else{
+                    _.resetRun('$Tips');
+                    _.resetRun('$Tips3');
                     self._clear();
                 }
             }

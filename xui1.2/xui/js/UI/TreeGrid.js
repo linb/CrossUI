@@ -4748,8 +4748,8 @@ editorDropListHeight
             if(profile.properties.disabled)return;
 
             id=node.id;
-            pid=_.get(node,["parentNode","id"]);
-            ppid=_.get(node,["parentNode","parentNode","id"]);
+            pid=_.get(node,["parentNode","id"])||"";
+            ppid=_.get(node,["parentNode","parentNode","id"])||"";
             sid=profile.getSubId(id);
 
             if(id.indexOf(ks.FHCELL)==0||pid.indexOf(ks.FHCELL)==0||ppid.indexOf(ks.FHCELL)==0)
