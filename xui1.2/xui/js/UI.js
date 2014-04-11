@@ -3311,6 +3311,7 @@ Class("xui.UI",  "xui.absObj", {
             }
         },
         DataModel:{
+            autoTips:true,
             tag:'',
             tagVar:{
                 ini:{}
@@ -4527,7 +4528,7 @@ Class("xui.absList", "xui.absObj",{
                 if(item.tips)xui.Tips.show(pos, item);
                 else xui.Tips.hide();
                 return true;
-            }else if(item && 'caption' in item){
+            }else if(profile.properties.autoTips && item && 'caption' in item){
                 if(item.caption)xui.Tips.show(pos, {tips:item.caption});
                 else xui.Tips.hide();
                 return true;

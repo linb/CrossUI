@@ -12238,8 +12238,7 @@ Class("xui.Tips", null,{
                 self.show(pos, t);
                 b=true;
             }
-            
-            else if((t=_from) && (t=t.properties) && ('caption' in t)
+            else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
                 // if tips is default value, try to show caption
                 // you can settips to null or undefined to stop it
                 && t.tips===''
@@ -16111,6 +16110,7 @@ Class("xui.UI",  "xui.absObj", {
             }
         },
         DataModel:{
+            autoTips:true,
             tag:'',
             tagVar:{
                 ini:{}
@@ -17327,7 +17327,7 @@ Class("xui.absList", "xui.absObj",{
                 if(item.tips)xui.Tips.show(pos, item);
                 else xui.Tips.hide();
                 return true;
-            }else if(item && 'caption' in item){
+            }else if(profile.properties.autoTips && item && 'caption' in item){
                 if(item.caption)xui.Tips.show(pos, {tips:item.caption});
                 else xui.Tips.hide();
                 return true;
@@ -29632,11 +29632,16 @@ Class("xui.svg.connector","xui.svg.absComb",{
                 profile.boxing().onError(profile);
             },
             onLoad:function(profile, e, src){
-                var i=new Image(), path=i.src=xui.use(src).get(0).src, prop=profile.properties,
-                    size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
-                profile.boxing().afterLoad(profile, path, size[0], size[1]);
-                if(prop.dock!='none')
-                    profile.boxing().adjustDock();
+                var i=new Image(), path=i.src=xui.use(src).get(0).src;
+                i.onload=function(){
+                    if(!profile||profile.isDestroyed)return;
+                    var prop=profile.properties,
+                        size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
+                    profile.boxing().afterLoad(profile, path, size[0], size[1]);
+                    if(prop.dock!='none')
+                        profile.boxing().adjustDock();
+                   i.onload=null;
+                };
             },
             onClick:function(profile, e, src){
                 var p=profile.properties;
@@ -40337,7 +40342,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             dataField:null,
             dataBinder:null,
             readonly:null,
-
+            autoTips:false,
             caption:{
                 ini:' Page: ',
                 action:function(v){
@@ -41502,9 +41507,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
             if(!xui.Tips)return;
-
-            if(!node.id)return false;
-            return arguments.callee.upper.apply(this,arguments);
+            var id=node.id;
+            if(!id)return false;
+            if(id.indexOf(profile.keys.ITEM)===0)
+                return arguments.callee.upper.apply(this,arguments);
+            else
+                return false;
         },
         //for tabs only
         _onresize:function(profile,width,height,force,key){
@@ -44606,6 +44614,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             border:null,
             resizer:null,
 
+            autoTips:false,
             shadow:true,
             _maxHeight:260,
             _maxWidth:300,
@@ -44776,6 +44785,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         xui.SC('xui.UI.PopMenu');
     },
     Static:{
+        _nocap2tip:true,
         Templates:{
             tagName:'div',
             className:'{_className}',
@@ -45039,6 +45049,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         DataModel:{
             listKey:null,
 
+            autoTips:false,
             //can't change height
             height:{
                 ini:'auto',

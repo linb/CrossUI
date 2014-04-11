@@ -760,6 +760,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             border:null,
             resizer:null,
 
+            autoTips:false,
             shadow:true,
             _maxHeight:260,
             _maxWidth:300,
