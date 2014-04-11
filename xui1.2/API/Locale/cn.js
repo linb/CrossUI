@@ -16358,7 +16358,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
                 ]
             },
             getHeaderByCell:{
@@ -16366,7 +16366,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
                 ]
             },
             getHeaderbyCell:{
