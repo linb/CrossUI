@@ -1063,9 +1063,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
             if(!xui.Tips)return;
-
-            if(!node.id)return false;
-            return arguments.callee.upper.apply(this,arguments);
+            var id=node.id;
+            if(!id)return false;
+            if(id.indexOf(profile.keys.ITEM)===0)
+                return arguments.callee.upper.apply(this,arguments);
+            else
+                return false;
         },
         //for tabs only
         _onresize:function(profile,width,height,force,key){

@@ -104,6 +104,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         xui.SC('xui.UI.PopMenu');
     },
     Static:{
+        _nocap2tip:true,
         Templates:{
             tagName:'div',
             className:'{_className}',
@@ -367,6 +368,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         DataModel:{
             listKey:null,
 
+            autoTips:false,
             //can't change height
             height:{
                 ini:'auto',
