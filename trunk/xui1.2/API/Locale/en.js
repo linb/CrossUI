@@ -16413,7 +16413,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "rowId [Required] : String.",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one."
+                    "type [Optional] : String, 'data': get rows' data; 'map' get map data; 'min': get rows' min data; else, return the memory one."
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16429,7 +16429,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [Required] : Object.",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one."
+                    "type [Optional] : String, 'data': get rows' data; 'map' get map data; 'min': get rows' min data; else, return the memory one."
                 ]
             },
             getHeaderByCell:{
