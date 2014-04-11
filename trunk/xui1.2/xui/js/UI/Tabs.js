@@ -1063,9 +1063,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
             if(!xui.Tips)return;
-            var id=node.id;
-            if(!id)return false;
-            if(id.indexOf(profile.keys.ITEM)===0)
+            var id=node.id,pid,ppid,ks=profile.keys;
+            pid=_.get(node,["parentNode","id"])||"";
+            ppid=_.get(node,["parentNode","parentNode","id"])||"";
+            if(id.indexOf(ks.ITEM)===0||pid.indexOf(ks.ITEM)===0||ppid.indexOf(ks.ITEM)===0||
+                id.indexOf(ks.HANDLE)===0||pid.indexOf(ks.HANDLE)===0||ppid.indexOf(ks.HANDLE)===0||
+                id.indexOf(ks.CMDS)===0||pid.indexOf(ks.CMDS)===0||ppid.indexOf(ks.CMDS)===0)
                 return arguments.callee.upper.apply(this,arguments);
             else
                 return false;
