@@ -245,8 +245,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     : src.id );
             return prf[type=="row"?"rowMap":type=="col"?"colMap":"cellMap"][subId];
         },
-        getRowByDom:function(src){
-            return this._getObjByDom(src, "row");
+        getRowByDom:function(src, type){
+            return this.get(0).box._getRow(this.get(0), this._getObjByDom(src, "row"),type);
         },
         getHeaderByDom:function(src){
             return this._getObjByDom(src, "col");
@@ -259,7 +259,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getRows:function(type){
             var v=this.get(0).properties.rows,a,b;
             if(!_.isArr(v))return [];
-            if(type=='data'||type=='min'){
+            if(type=='data'||type=='min'||type=='map'){
                 a=_.clone(v,true);
 
                 if(a&&a.length&&a[a.length-1]&&a[a.length-1].id==this.constructor._temprowid)
@@ -267,14 +267,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 if(type=='min'){
                     _.arr.each(a,function(o,i){
-                        if(a[i].cells)
+                        if(a[i].cells){
                             _.each(b=a[i]=(a[i].cells||a[i]),function(v,j){
                                 b[j] = v.value;
                             });
-                        else{
-                            
-                        }
-                            
+                        }                    
                     });
                 }
                 return a;
@@ -283,34 +280,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getRowbyRowId:function(rowId, type){
             var profile=this.get(0),v=profile.rowMap2[rowId];
-            v=v?profile.rowMap[v]:null;
-            if(v){
-                if(type=='data')
-                    return _.clone(v,true);
-                else if(type=='min'){
-                    var a=_.clone(v,true),b;
-                    _.each(b=a=a.cells,function(v,j){
-                        b[j] = v.value;
-                    });
-                    return a;
-                }else
-                    return v;
-            }
+            return profile.box._getRow(profile, profile.rowMap[v], type);
         },
         getRowbyCell:function(cell, type){
-            var v=cell._row;
-            if(v){
-                if(type=='data')
-                    return _.clone(v,true);
-                else if(type=='min'){
-                    var a=_.clone(v,true),b;
-                    _.each(b=a=a.cells,function(v,j){
-                        b[j] = v.value;
-                    });
-                    return a;
-                }else
-                    return v;
-            }          
+            return profile.box._getRow(this.get(0), cell._row, type);
         },
 
         toggleRow:function(id, expand){
@@ -2333,7 +2306,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _.arr.each(allitems,function(o){
                         //for those non-prepared data
                         o=o.cells?o.cells:o;
-                        if(!o || o.constructor!=Array)return;
+                        if(!o || !_.isArr(o))return;
                         temp=o[fromIndex];
                         _.arr.removeFrom(o,fromIndex);
                         _.arr.insertAny(o,temp,toIndex);
@@ -3800,13 +3773,14 @@ editorDropListHeight
                 NONE='display:none';
 
             for(var i=0,l=arr.length;i<l;i++){
-                // give id (avoid conflicts)
-                if(!arr[i].id || a[arr[i].id]){
-                    while(a[t=ider.next()]);
-                    arr[i].id=t;
-                }
-
                 row = arr[i];
+                // give id (avoid conflicts)
+                if(!row.id || a[row.id]){
+                    while(a[t=ider.next()]);
+                    row.id=t;
+                }else{
+                    row.id+="";
+                }
 
                 // give _serialId
                 temp='r_'+profile.pickSubId('row');
@@ -4685,7 +4659,7 @@ editorDropListHeight
                 m=a[i].cells=_.copy(a[i].cells);
                 _.arr.each(m,function(o,i){
                     //It's a hash
-                    if(!!o && typeof o == 'object' && o.constructor == Object)
+                    if(!!o && _.isHash(o))
                         m[i]=_.copy(o);
                     // not a hash
                     else
@@ -4858,6 +4832,26 @@ editorDropListHeight
                 });
             }
             return overflowX;            
+        },
+        _getRow:function(profile,row,type){
+            if(row){
+                if(type=='data')
+                    return _.clone(row,true);
+                else if(type=='min'){
+                    var a=_.clone(row,true),b;
+                    _.each(b=a=a.cells,function(row,j){
+                        b[j] = row.value;
+                    });
+                    return a;
+                }else if(type=='map'){
+                    var hash={},header=profile.properties.header;
+                    _.each(b=a=a.cells,function(row,j){
+                        hash[header[j].id]=row;
+                    });
+                    return hash;
+                }else
+                    return row;
+            }          
         },
         _onresize:function(profile,width,height){
             profile.getSubNode('BORDER').cssSize({ width :width, height :height});
