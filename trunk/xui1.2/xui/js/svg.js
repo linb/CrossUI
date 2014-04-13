@@ -2448,6 +2448,14 @@ Class("xui.svg.connector","xui.svg.absComb",{
             vAlign:null,
             shadow:null,
 
+            bgLine:{
+                ini:true,
+                action:function(v){
+                    if(this._bg){
+                        if(v)this._bg.show();else this._bg.hide();
+                    }
+                }
+            },
             attr:{
                 ini:{
                     KEY:{path:""}//,
@@ -2505,6 +2513,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
             s.push(obj2);
 
             obj1 = paper.path(attr.path);
+            
+            if(!prf.properties.bgLine)obj1.hide();
+            
             obj1.node.id=prf.box.KEY+"-BG:"+prf.serialId+":";
             s.push(obj1);
             obj1.insertBefore(obj2);

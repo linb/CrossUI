@@ -8,17 +8,20 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
-            var ns=this,f=arguments.callee.upper,isSvg;
+            var ns=this,f=arguments.callee.upper,isSvg,rendersvg;
             target.each(function(prf){
                 isSvg=!!prf.box['xui.svg'];
-                if(isSvg){
-                    if(prf.renderId){
-                        // must reRender
-                        prf.boxing().getNodes().remove(false);
-                        delete prf.renderId;
-                    }
+                if(isSvg&&prf.renderId){
+                    prf.clearCache();
+                    prf.$beforeDestroy["svgClear"]();
+                    delete prf.renderId;
+                    delete prf.rendered;
+                    rendersvg=1;
                 }
                 f.call(ns, prf, null, pre, base, isSvg, ns.get(0)&&xui(ns.get(0)._canvas));
+                if(rendersvg){
+                    prf.box._initAttr2UI(prf);
+                }
             });
             return this;
         },
