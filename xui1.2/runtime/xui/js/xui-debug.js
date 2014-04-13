@@ -28977,6 +28977,14 @@ Class("xui.svg.connector","xui.svg.absComb",{
             vAlign:null,
             shadow:null,
 
+            bgLine:{
+                ini:true,
+                action:function(v){
+                    if(this._bg){
+                        if(v)this._bg.show();else this._bg.hide();
+                    }
+                }
+            },
             attr:{
                 ini:{
                     KEY:{path:""}//,
@@ -29034,6 +29042,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
             s.push(obj2);
 
             obj1 = paper.path(attr.path);
+            
+            if(!prf.properties.bgLine)obj1.hide();
+            
             obj1.node.id=prf.box.KEY+"-BG:"+prf.serialId+":";
             s.push(obj1);
             obj1.insertBefore(obj2);
@@ -29525,17 +29536,20 @@ Class("xui.svg.connector","xui.svg.absComb",{
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
-            var ns=this,f=arguments.callee.upper,isSvg;
+            var ns=this,f=arguments.callee.upper,isSvg,rendersvg;
             target.each(function(prf){
                 isSvg=!!prf.box['xui.svg'];
-                if(isSvg){
-                    if(prf.renderId){
-                        // must reRender
-                        prf.boxing().getNodes().remove(false);
-                        delete prf.renderId;
-                    }
+                if(isSvg&&prf.renderId){
+                    prf.clearCache();
+                    prf.$beforeDestroy["svgClear"]();
+                    delete prf.renderId;
+                    delete prf.rendered;
+                    rendersvg=1;
                 }
                 f.call(ns, prf, null, pre, base, isSvg, ns.get(0)&&xui(ns.get(0)._canvas));
+                if(rendersvg){
+                    prf.box._initAttr2UI(prf);
+                }
             });
             return this;
         },
