@@ -6,7 +6,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'{itemClass}  {disabled} {readonly}',
+                    className:'{itemClass} {_itemRow} {disabled} {readonly}',
                     style:'{itemStyle}',
                     tabindex: '{_tabindex}',
                     MARK:{
@@ -72,6 +72,13 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                 action:function(v){
                     this.getSubNode('MARK',true).replaceClass(v ? /(uicmd-radio)|(\s+uicmd-radio)/g : /(^uicmd-check)|(\s+uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
                 }
+            },
+            itemRow:{
+                ini:false,
+                action:function(v){
+                    var ns=this.getSubNode('ITEM',true);
+                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
+                }
             }
         },
         Behaviors:{
@@ -80,6 +87,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         },
         _prepareItem:function(profile, item){
             item._markcls = profile.properties.checkBox?'xui-uicmd-check':'xui-uicmd-radio';
+            item._itemRow = profile.properties.itemRow?'xui-item-row':'';
         }
     }
 });

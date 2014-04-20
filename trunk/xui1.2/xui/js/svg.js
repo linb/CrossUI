@@ -1,51 +1,55 @@
+if(typeof(Raphael)=="function"){
+
 Class("xui.svg", "xui.UI",{
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.","")]=xui.absBox.$type[key]=key;
         return true;
     },
     Initialize:function(){
-        Raphael._availableAttrs.href="";
-        Raphael._availableAttrs.title="";
-
-        Raphael.el.shadow = function () {
-            var ns=this;
-            if (ns.type == "text")return null;
-            ns._.dirty=true;
-            var sw=ns.attr("stroke-width"),
-                f=ns.attr("fill"),
-                o=ns.attr("opacity"),
-                fo=ns.attr("fill-opacity"),
-                tr=ns.attr("transform"),
-                c = 6,
-                r = ns.paper,
-                out = r.set(),
-                bbox = ns._getBBox(false),
-                rx=(bbox.width+sw-c-4)/bbox.width,
-                ry=(bbox.height+sw-c-4)/bbox.height,
-                path = ns.getPath();
-            // path = ns.matrix ? Raphael.mapPath(path, ns.matrix) : path;
-            if(f!=='none' && fo!==0)
-                path = Raphael.transformPath(path, "t"+(sw/2)+","+(sw/2)+"s"+rx+","+ry+","+(bbox.x+bbox.width+sw)+","+(bbox.y+bbox.height+sw));
-            else
-                path = Raphael.transformPath(path, "t"+c/2+","+c/2);
-
-            for (var i=1,s; i < c+1; i++) {
-                s=r.path(path).attr({
-                    stroke: "#666",
-                    fill: f=='none'?'none':'#555',
-                    "fill-opacity": fo,
-                    "stroke-linejoin": "round",
-                    "stroke-linecap": "round",
-                    "stroke-width": 2*i,
-                    opacity: (.2 * (1-i/c) + .05)*o
-                });
-                s._decoration=1;
-                out.push(s);
-            }
-            if(tr && tr.length)
-                out.transform(tr);
-            return out.insertBefore(ns);
-        };
+        if(typeof(Raphael)=="function"){
+            Raphael._availableAttrs.href="";
+            Raphael._availableAttrs.title="";
+    
+            Raphael.el.shadow = function () {
+                var ns=this;
+                if (ns.type == "text")return null;
+                ns._.dirty=true;
+                var sw=ns.attr("stroke-width"),
+                    f=ns.attr("fill"),
+                    o=ns.attr("opacity"),
+                    fo=ns.attr("fill-opacity"),
+                    tr=ns.attr("transform"),
+                    c = 6,
+                    r = ns.paper,
+                    out = r.set(),
+                    bbox = ns._getBBox(false),
+                    rx=(bbox.width+sw-c-4)/bbox.width,
+                    ry=(bbox.height+sw-c-4)/bbox.height,
+                    path = ns.getPath();
+                // path = ns.matrix ? Raphael.mapPath(path, ns.matrix) : path;
+                if(f!=='none' && fo!==0)
+                    path = Raphael.transformPath(path, "t"+(sw/2)+","+(sw/2)+"s"+rx+","+ry+","+(bbox.x+bbox.width+sw)+","+(bbox.y+bbox.height+sw));
+                else
+                    path = Raphael.transformPath(path, "t"+c/2+","+c/2);
+    
+                for (var i=1,s; i < c+1; i++) {
+                    s=r.path(path).attr({
+                        stroke: "#666",
+                        fill: f=='none'?'none':'#555',
+                        "fill-opacity": fo,
+                        "stroke-linejoin": "round",
+                        "stroke-linecap": "round",
+                        "stroke-width": 2*i,
+                        opacity: (.2 * (1-i/c) + .05)*o
+                    });
+                    s._decoration=1;
+                    out.push(s);
+                }
+                if(tr && tr.length)
+                    out.transform(tr);
+                return out.insertBefore(ns);
+            };
+        }
 
         var attr={
             "arrow-start":1,
@@ -2998,3 +3002,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
         }
     }
 });
+
+}else{
+    xui.alert("Browser doesn't suppor SVG or VML!");
+}

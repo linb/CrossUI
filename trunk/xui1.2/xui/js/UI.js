@@ -413,7 +413,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(!_.isEmpty(o.CB)) r.CB=_.copy(o.CB);
             if(!_.isEmpty(o.CC)) r.CC=_.copy(o.CC);
             if(!_.isEmpty(o.CF)) r.CF=_.copy(o.CF);
-            if(!_.isEmpty(o.CS)) r.CS=_.copy(o.CS);
+            if(!_.isEmpty(o.CS)) r.CS=_.clone(o.CS,function(o,i){return !((i+"").charAt(0)=="$"&&!o)});
             if(!_.isEmpty(o.CA)) r.CA=_.copy(o.CA);
             if(typeof o.theme == "string") r.theme=o.theme;
 
@@ -2181,6 +2181,10 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-ui-invalid, .xui-ui-invalid *':{
                 $order:1,
                 'background-color': '#FFEBCD'
+            },
+            '.xui-item-row':{
+                display:"block",
+                'white-space': 'nowrap'
             }
         });
     },
@@ -3438,7 +3442,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(style.visibility!='visible' && !xui.getNodeData(node,'_setVisibility'))
                     style.visibility=profile._$visibility;
                 node=style=null;
-                clearTimeout(profile._$rs_timer);
+                _.clearTimeout(profile._$rs_timer);
                 delete profile._$rs_timer;
                 delete profile._$rs_args;
                 delete profile._$visibility;

@@ -1032,6 +1032,56 @@ _.set(xui.Locale,["en","app"], {
             $snippet:[
                 "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event."
             ]
+        }, 
+        launch:{
+            $desc:"To create a xui.Com , and show it.",
+            $paras:[
+                "cls [Required] : String, the full class path name(e.g. 'xui.App').",
+                "onEnd [Optional]: Function, arguments : [the current xui.Com Object]. This function will be called after the process is end.",
+                "lang [Optional] : String, language name.(e.g. 'en').",
+                "theme [Optional] : String, theme name..(e.g. 'vista').",
+                "showUI [Optional] : Boolean, indicates whether or not it shows the Com UI. Default is true;"
+            ],
+            $memo:"Equals to xui.Com.load"
+        },
+        getCom :{
+            $desc:"Gets a Com Object from cache directly if it exists, or loads the Com code first, creates the Com and returns it.",
+            $rtn:"xui.Com",
+            $paras:[
+                "id [Required] : String, the Com id.",
+                "onEnd [Optional] : Function(threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "threadid [Optional] : String, the inner threadid",
+                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
+                "properties [Optional] : Object, key/value pairs, com's properties",
+                "events [Optional] : Object, key/value pairs, com's events."
+            ],
+            $memo:"Equals to xui.ComFactory.getCom"
+        },
+        newCom:{
+            $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
+            $paras:[
+                "cls [Required] : String, the Com Class path name.",
+                "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                "threadid [Optional] : String, the inner threadid",
+                "properties [Optional] : Object, key/value pairs, com's properties",
+                "events [Optional] : Object, key/value pairs, com's events.",
+            ],
+            $memo:"Equals to xui.ComFactory.newCom"
+        },
+        showCom:{
+            $desc:"Creates a com and show it.",
+            $paras:[
+                "cls [Required] : String, the Com Class path name.",
+                "onInit[Optional] : Function, the callback function, it will be executed once before the Com will be showed.",
+                "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                "threadid [Optional] : String, the inner threadid",
+                "properties [Optional] : Object, key/value pairs, com's properties",
+                "events [Optional] : Object, key/value pairs, com's events.",
+                "parent [Required] : xui.UI, xui.UI ojbect, Element or xui.Dom Object.",
+                "subId [Optional] : String, the sub id that determines the set of UIProfiles will be added to.",
+                "left [Optional] : Number, the css left value.",
+                "top [Optional] : Number, the css top value."
+            ]
         },
         message:{
             $desc:"Shows a message into browser window.",
@@ -4909,6 +4959,7 @@ _.set(xui.Locale,["en","app"], {
                 "cls [Required] : String, the full class path name(e.g. 'xui.App').",
                 "onEnd [Optional]: Function, arguments : [the current xui.Com Object]. This function will be called after the process is end.",
                 "lang [Optional] : String, language name.(e.g. 'en').",
+                "theme [Optional] : String, theme name..(e.g. 'vista').",
                 "showUI [Optional] : Boolean, indicates whether or not it shows the Com UI. Default is true;"
             ],
             $snippet:[
@@ -10825,6 +10876,18 @@ _.set(xui.Locale,["en","app"], {
             },
             setCheckBox:{
                 $desc:"Specifys whether the control shows checkbox style or not(radio style), and reflects the value to UI.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getItemRow:{
+                $desc:"Gets whether items shows as row or not.",
+                $rtn:"Boolean"
+            },
+            setItemRow:{
+                $desc:"Specifys whether items shows as row or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",

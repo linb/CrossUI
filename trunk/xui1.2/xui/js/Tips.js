@@ -51,17 +51,20 @@ Class("xui.Tips", null,{
                 _from,
                 tempid,evid,
                 index=0,
-                pass
-            ;
+                pass,
+                rtn=function(rt){
+                    if(tips._markId)tips._cancel()
+                    return rt;
+                };
             if(!node)
-                return rt;
+                return rtn(rt);
             try{
                 //for inner renderer
                 while((!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
                     node=node.parentNode;
                 if(!(id=(typeof node.id=="string"?node.id:null))){
                     node=null;
-                    return rt;
+                    return rtn(rt);
                 }
             }catch(e){}
 
@@ -69,9 +72,23 @@ Class("xui.Tips", null,{
             if((_from=event._getProfile(id)) && _from.box && _from.KEY=='xui.UIProfile'){
                 if(_from.properties.disableTips){
                     node=null;
-                    return false;
+                    return rtn(false);
                 }
 
+                var nt=_from.box.NOTIPS;
+                if(nt){
+                    for(var i=0,l=nt.length;i<l;i++){
+                        if(id.indexOf(_from.keys[nt[i]])===0)
+                            return rtn(false);
+                    }
+                }
+                nt=_from.behavior.PanelKeys;
+                if(nt){
+                    for(var i=0,l=nt.length;i<l;i++){
+                        if(id.indexOf(_from.keys[nt[i]])===0)
+                            return rtn(false);
+                    }
+                }
                 //if onShowTips exists, use custom tips id region, or use item region
                 tempid=_from.onShowTips?id:id.replace(tips._reg,':');
                 if(tips._markId && tempid==tips._markId)

@@ -1030,6 +1030,56 @@ _.set(xui.Locale,["cn","app"], {
                 "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event."
             ]
         },
+       launch:{
+            $desc:"加载一个 xui.Com 类, 并显示.",
+            $paras:[
+                "cls [必需参数] : String, 类名字.",
+                "onEnd [可选参数]: Function, arguments : [目前的Com对象]. 类加载完之后调用.",
+                "lang [可选参数] : String, 语言名称.(例如, 'en').",
+                "theme [可选参数] : String, 主题名称.(例如, 'vis').",
+                "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
+            ],
+            $memo:"与xui.Com.load相同"
+        },
+        getCom :{
+            $desc:"加载一个Com类.",
+            $rtn:"xui.Com",
+            $paras:[
+                "id [必需参数] : String, 应用模块对象id.",
+                "onEnd [可选参数] : Function(threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "threadid [可选参数] : String, 内部线程id",
+                "singleton [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
+                "properties [可选参数] : Object, 键值对,com的属性.",
+                "events [可选参数] : Object, 键值对,com的事件."
+            ],
+            $memo:"与xui.ComFactory.getCom相同"
+        },
+        newCom:{
+            $desc:"加载一个Com类.",
+            $paras:[
+                "cls [必需参数] : String, 应用模块类的路径名字.",
+                "onEnd [可选参数] : Function, 回调函数,加载应用模块类成功后被调用.",
+                "threadid [可选参数] : String, the inner threadid",
+                "properties [可选参数] : Object, 键值对,com的属性.",
+                "events [可选参数] : Object, 键值对,com的事件."
+            ],
+            $memo:"与xui.ComFactory.newCom相同"
+        },
+        showCom:{
+            $desc:"加载一个Com类，并显示",
+            $paras:[
+                "cls [必需参数] : String, 应用模块类的路径名字.",
+                "onInit[可选参数] : Function, 回调函数, 类生成后显示前调用.",
+                "onEnd [可选参数] : Function, 回调函数, 加载应用模块类成功后被调用.",
+                "threadid [可选参数] : String, 线程id.",
+                "properties [可选参数] : Object, 键值对, 设置该com的属性.",
+                "events [可选参数] : Object, 键值对, 设置该com的事件.",
+                "parent [可选参数] : xui.UIProfile/xui.UI/Element/xui.Dom. 显示到的父对象",
+                "subId [可选参数] : String, 父对象容器的id.",
+                "left [可选参数] : Number, 显示的左边坐标.",
+                "top [可选参数] : Number, 显示的上边坐标."
+            ]
+        },
         message:{
             $desc:"显示一个文本消息.",
             $paras:[
@@ -4920,10 +4970,11 @@ _.set(xui.Locale,["cn","app"], {
         'load':{
             $desc:"从远程文件加载一个 xui.Com 的代码,然后新建它的 xui.Com 的实例,最后返回这个实例.",
             $paras:[
-                "cls [必需参数] : String, the full class path name(e.g. 'xui.App').",
-                "onEnd [可选参数]: Function, arguments : [the current xui.Com Object]. This function will be called after the process is end.",
-                "lang [可选参数] : String, language name.(e.g. 'en').",
-                "showUI [可选参数] : Boolean, indicates whether or not it shows the Com UI. 默认为 true;"
+                "cls [必需参数] : String, 类名字.",
+                "onEnd [可选参数]: Function, arguments : [目前的Com对象]. 类加载完之后调用.",
+                "lang [可选参数] : String, 语言名称.(例如, 'en').",
+                "theme [可选参数] : String, 主题名称.(例如, 'vista').",
+                "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
             ],
             $snippet:[
                 "////Uses the beblow line to load a specified application, and append its UI to 'document.body' if its UI exits. \n"+
@@ -5328,9 +5379,9 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id.",
-                "onEnd [可选参数] : Function(threadid:String, com: xui.Com), the 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
-                "singleton [可选参数] : Boolean, 默认为 true. 当 singleton 为 false 的时候相当于 newCom.",
+                "singleton [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
             ],
@@ -5359,7 +5410,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个新的应用模块类, 或加载一个应用模块类, 生成并返回它.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function, the 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function, 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
@@ -10757,6 +10808,18 @@ _.set(xui.Locale,["cn","app"], {
             },
             setCheckBox:{
                 $desc:"设置是否显示成checkbox样式,并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getItemRow:{
+                $desc:"得到是否是显示成行样式.",
+                $rtn:"Boolean"
+            },
+            setItemRow:{
+                $desc:"设置是否是显示成行样式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",

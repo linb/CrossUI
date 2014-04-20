@@ -240,7 +240,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         },
                         doc,win,
                         checkF = function(){
-                            setTimeout(function(){
+                            _.setTimeout(function(){
                                 // removed from DOM already
                                 if(!frames[id])return;
                                 // not ready

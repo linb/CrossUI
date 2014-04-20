@@ -1446,7 +1446,7 @@ Class('xui.Thread',null,{
             _start:false,
             time:0,
             _left:0,
-            _asy:-1,
+            _asy:0.1,
             //sleep_flag:-1,
             index:0,
 
@@ -1477,7 +1477,7 @@ Class('xui.Thread',null,{
             if(!p||!p.status||!p.tasks)
                 return;
             // reset the asy flag
-            p._asy=-1;
+            p._asy=0.1;
 
             var t={}, value=p.tasks[p.index],r,i,type=typeof value;
 
@@ -1502,8 +1502,9 @@ Class('xui.Thread',null,{
             p.time=_();
 
             // the real task
-            if(typeof t.task=='function')
+            if(typeof t.task=='function'){
                 r = _.tryF(t.task, t.args || [p.id], t.scope||self, null);
+            }
 
             // maybe abort called in abover task
             if(!p.status)
@@ -1549,7 +1550,7 @@ Class('xui.Thread',null,{
             p._left= (time || time===0)?time:delay;
 
             // clear the mistake trigger task
-            if(p._asy!=-1)
+            if(p._asy!=0.1)
                 _.clearTimeout(p._asy);
             
             p._asy = _.asyRun(self._task, p._left, [], self);
@@ -1561,7 +1562,7 @@ Class('xui.Thread',null,{
             var n,p=this.profile;
             if(p.status=="pause")return;
             p.status="pause";
-            if(p._asy!==-1){
+            if(p._asy!==0.1){
                 _.clearTimeout(p._asy);
                 if(p.index>0)p.index--;
             }
