@@ -33718,10 +33718,10 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'vertical-align':'middle',
                 'margin-left':'2px',
                 'margin-right':'2px',
-                 cursor:'default',
                  'font-size':'12px'
             },
             LABEL:{
+                cursor:'default',
                 'padding-top':'3px'
             }
         },
