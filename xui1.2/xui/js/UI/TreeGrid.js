@@ -3244,7 +3244,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },null,null,true);
             if(clear){
                 if(profile.__tmpRowBlurTrigger){
-                    clearTimeout(profile.__tmpRowBlurTrigger);
+                    _.clearTimeout(profile.__tmpRowBlurTrigger);
                     delete profile.__tmpRowBlurTrigger;
                 }
             }

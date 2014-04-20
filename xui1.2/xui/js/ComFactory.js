@@ -1,4 +1,16 @@
 Class('xui.ComFactory',null,{
+    Initialize:function(){
+        var ns=this;
+        xui.newCom=function(cls, onEnd, threadid, properties, events){
+            return ns.newCom.apply(ns,arguments)
+        };
+        xui.showCom=function(cls, onInit, onEnd, threadid, properties, events, parent, subId, left, top){
+            return ns.newCom(cls, function(){
+                _.tryF(onInit, [], this);
+                this.show.apply(this, [onEnd,parent,subId,threadid,left,top]);
+            }, threadid, properties, events);
+        };
+    },
     Static:{
         _pro:{},
         _cache:{},

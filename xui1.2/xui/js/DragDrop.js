@@ -405,7 +405,7 @@ Class('xui.DragDrop',null,{
                 }
                 //avoid setcapture
                 if(xui.browser.ie)
-                    setTimeout(function(){if(fromN.releaseCapture)fromN.releaseCapture()});
+                    _.setTimeout(function(){if(fromN.releaseCapture)fromN.releaseCapture()});
 
                 //back up
                 doc[mm] = d.$onDrag;

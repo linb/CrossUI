@@ -222,7 +222,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return;
 
                 if(profile.__tryToHide){
-                    clearTimeout(profile.__tryToHide);
+                    _.clearTimeout(profile.__tryToHide);
                     delete profile.__tryToHide;
                 }
 
@@ -970,9 +970,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 },
                 onBlur:function(profile, e, src){
                     _.resetRun(profile.$xid+":asycheck");
-                    if(profile.$focusDelayFun)clearTimeout(profile.$focusDelayFun);
-                    if(profile.$focusDelayFun2)clearTimeout(profile.$focusDelayFun2);
-                    if(profile.$focusDelayFun2)clearTimeout(profile.$mouseupDelayFun);
+                    if(profile.$focusDelayFun)_.clearTimeout(profile.$focusDelayFun);
+                    if(profile.$focusDelayFun2)_.clearTimeout(profile.$focusDelayFun2);
+                    if(profile.$focusDelayFun2)_.clearTimeout(profile.$mouseupDelayFun);
                     
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return false;

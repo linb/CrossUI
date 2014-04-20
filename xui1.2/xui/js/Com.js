@@ -16,6 +16,12 @@ onDestroy
 */
 
 Class('xui.Com',null,{
+    Initialize:function(){
+        var ns=this;
+        xui.launch=function(cls, onEnd, lang, theme, showUI){
+            ns.load.apply(ns, arguments);
+        };
+    },
     Constructor:function(properties, events, host){
         var self=this;
         self._nodes=[];
@@ -352,7 +358,10 @@ Class('xui.Com',null,{
     },
     Static:{
         _ctrlId : new _.id(),
-        load:function(cls, onEnd, lang, showUI){
+        load:function(cls, onEnd, lang, theme, showUI){
+            // compitable
+            if(typeof theme=='function')thowUI=theme;
+
             var fun=function(){
                 //get app class
                 xui.SC(cls,function(path){
@@ -365,9 +374,17 @@ Class('xui.Com',null,{
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[o],o);
                         };
-                        //get locale info
-                        if(lang) xui.setLang(lang, f);
-                        else f();
+                        if(theme&&theme!="default"){
+                            xui.setTheme(theme,true,function(){
+                                //get locale info
+                                if(lang) xui.setLang(lang, f);
+                                else f();                                
+                            });
+                        }else{
+                            //get locale info
+                            if(lang) xui.setLang(lang, f);
+                            else f();
+                        }
                     }else
                         throw new Error(cls+' doesnt exists!');
                 },true);

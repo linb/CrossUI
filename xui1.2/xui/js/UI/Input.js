@@ -463,9 +463,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 },
                 onBlur:function(profile, e, src){
                     _.resetRun(profile.$xid+":asycheck");
-                    if(profile.$focusDelayFun)clearTimeout(profile.$focusDelayFun);
-                    if(profile.$focusDelayFun2)clearTimeout(profile.$focusDelayFun2);
-                    if(profile.$focusDelayFun2)clearTimeout(profile.$mouseupDelayFun);
+                    if(profile.$focusDelayFun)_.clearTimeout(profile.$focusDelayFun);
+                    if(profile.$focusDelayFun2)_.clearTimeout(profile.$focusDelayFun2);
+                    if(profile.$focusDelayFun2)_.clearTimeout(profile.$mouseupDelayFun);
 
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;                    
