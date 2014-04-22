@@ -1063,6 +1063,7 @@ _.set(xui.Locale,["en","app"], {
                 "cls [Required] : String, the Com Class path name.",
                 "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
+                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",
             ],
@@ -1072,9 +1073,10 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a com and show it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "onInit[Optional] : Function, the callback function, it will be executed once before the Com will be showed.",
+                "beforeShow[Optional] : Function, the callback function, it will be executed once before the Com will be showed. If returns false, the default show function will be ignored",
                 "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
+                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",
                 "parent [Required] : xui.UI, xui.UI ojbect, Element or xui.Dom Object.",
@@ -10881,18 +10883,6 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
-            },
-            getItemRow:{
-                $desc:"Gets whether items shows as row or not.",
-                $rtn:"Boolean"
-            },
-            setItemRow:{
-                $desc:"Specifys whether items shows as row or not.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
             }
         }
     });
@@ -11610,6 +11600,18 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none','inset','outset','groove'or 'ridge'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getItemRow:{
+                $desc:"Gets whether items shows as row or not.",
+                $rtn:"Boolean"
+            },
+            setItemRow:{
+                $desc:"Specifys whether items shows as row or not.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },

@@ -6,7 +6,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'{itemClass} {_itemRow} {disabled} {readonly}',
+                    className:'{_itemRow} {itemClass} {disabled} {readonly}',
                     style:'{itemStyle}',
                     tabindex: '{_tabindex}',
                     MARK:{
@@ -71,13 +71,6 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                 ini:false,
                 action:function(v){
                     this.getSubNode('MARK',true).replaceClass(v ? /(uicmd-radio)|(\s+uicmd-radio)/g : /(^uicmd-check)|(\s+uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
-                }
-            },
-            itemRow:{
-                ini:false,
-                action:function(v){
-                    var ns=this.getSubNode('ITEM',true);
-                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
             }
         },

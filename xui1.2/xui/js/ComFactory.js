@@ -1,14 +1,17 @@
 Class('xui.ComFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.newCom=function(cls, onEnd, threadid, properties, events){
-            return ns.newCom.apply(ns,arguments)
+        xui.newCom=function(cls, onEnd, threadid, singleton, properties, events){
+            return ns.getCom.apply(ns,arguments)
         };
-        xui.showCom=function(cls, onInit, onEnd, threadid, properties, events, parent, subId, left, top){
-            return ns.newCom(cls, function(){
-                _.tryF(onInit, [], this);
-                this.show.apply(this, [onEnd,parent,subId,threadid,left,top]);
-            }, threadid, properties, events);
+        xui.showCom=function(cls, beforeShow, onEnd, threadid, singleton, properties, events, parent, subId, left, top){
+            return ns.getCom(cls, function(threadid){
+                if(false!==_.tryF(beforeShow, [this,threadid], this)){
+                    this.show.apply(this, [onEnd,parent,subId,threadid,left,top]);
+                }else{
+                    _.tryF(onEnd, [this,threadid], this);
+                }
+            }, threadid, singleton, properties, events);
         };
     },
     Static:{
@@ -141,13 +144,14 @@ Class('xui.ComFactory',null,{
                                 task:task,
                                 args:[cls, config,threadid]
                             });
-                        }
+                        }else
+                            throw new Error(clsPath+" doesn't exist.");
                     };
                     xui.SC(clsPath, function(path){
                         if(path)
                             f(0,0,threadid);
                         else
-                            throw new Error(clsPath+' doesnt exists!');
+                            throw new Error(clsPath+" doesn't exist.");
                     }, true,threadid);
                 },null,threadid);
             }

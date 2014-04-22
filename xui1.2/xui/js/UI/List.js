@@ -117,7 +117,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'{itemClass} {disabled} {readonly}',
+                        className:'{_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{itemDisplay}',
                         tabindex:'{_tabindex}',
                         MARK:{
@@ -377,7 +377,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             noCtrlKey:true,
             width:120,
             height:150,
-            maxHeight:420
+            maxHeight:420,
+            itemRow:{
+                ini:false,
+                action:function(v){
+                    var ns=this.getSubNode('ITEM',true);
+                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
+                }
+            }
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
@@ -433,6 +440,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         },
         _prepareItem:function(profile, item){
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
+            item._itemRow = profile.properties.itemRow?'xui-item-row':'';
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;

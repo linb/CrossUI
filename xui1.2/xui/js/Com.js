@@ -178,7 +178,7 @@ Class('xui.Com',null,{
             self.threadid=threadid;
 
             if(false===self._fireEvent('beforeCreated'))return;
-            //if no threadid or threadid doesnt exist, reset threadid to self
+            //if no threadid or threadid doesn't exist, reset threadid to self
             funs.push(function(threadid){
                 if(threadid)
                     self.threadid=threadid;
@@ -358,6 +358,12 @@ Class('xui.Com',null,{
     },
     Static:{
         _ctrlId : new _.id(),
+        getClsFromDom:function(id){
+            var prf=xui.UIProfile.getFromDom(id);
+            if(prf&&(prf=prf.host)){
+                return prf.KEY;
+            }
+        },
         load:function(cls, onEnd, lang, theme, showUI){
             // compitable
             if(typeof theme=='function')thowUI=theme;
@@ -386,7 +392,7 @@ Class('xui.Com',null,{
                             else f();
                         }
                     }else
-                        throw new Error(cls+' doesnt exists!');
+                        throw new Error(cls+" doesn't exist!");
                 },true);
             };
             if(xui.isDomReady)

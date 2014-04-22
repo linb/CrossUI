@@ -3004,5 +3004,5 @@ Class("xui.svg.connector","xui.svg.absComb",{
 });
 
 }else{
-    xui.alert("Browser doesn't suppor SVG or VML!");
+    throw new Error("Browser doesn't suppor SVG or VML, all diagram functions were disabled!");
 }

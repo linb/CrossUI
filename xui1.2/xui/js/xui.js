@@ -156,7 +156,7 @@ _.merge=function(target, source, type){
     }
     return target;
 };
-(function() {
+new function(){
     var lastTime=0,vendors=['ms','moz','webkit','o'],w=window,i=0,l=vendors.length,tag;
     for(;i<l && !w.requestAnimationFrame && (tag=vendors[i++]);) {
         w.requestAnimationFrame = w[tag+'RequestAnimationFrame'];
@@ -172,7 +172,7 @@ _.merge=function(target, source, type){
         };
     if (!w.cancelAnimationFrame)
         w.cancelAnimationFrame = function(id){clearTimeout(id)};
-}());
+};
 _.merge(_,{
     setTimeout:function(callback,delay){
         return (delay||0)>16?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
