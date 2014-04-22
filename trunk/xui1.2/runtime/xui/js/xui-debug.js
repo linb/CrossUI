@@ -156,7 +156,7 @@ _.merge=function(target, source, type){
     }
     return target;
 };
-(function() {
+new function(){
     var lastTime=0,vendors=['ms','moz','webkit','o'],w=window,i=0,l=vendors.length,tag;
     for(;i<l && !w.requestAnimationFrame && (tag=vendors[i++]);) {
         w.requestAnimationFrame = w[tag+'RequestAnimationFrame'];
@@ -172,7 +172,7 @@ _.merge=function(target, source, type){
         };
     if (!w.cancelAnimationFrame)
         w.cancelAnimationFrame = function(id){clearTimeout(id)};
-}());
+};
 _.merge(_,{
     setTimeout:function(callback,delay){
         return (delay||0)>16?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
@@ -10120,7 +10120,7 @@ Class('xui.Com',null,{
             self.threadid=threadid;
 
             if(false===self._fireEvent('beforeCreated'))return;
-            //if no threadid or threadid doesnt exist, reset threadid to self
+            //if no threadid or threadid doesn't exist, reset threadid to self
             funs.push(function(threadid){
                 if(threadid)
                     self.threadid=threadid;
@@ -10300,6 +10300,12 @@ Class('xui.Com',null,{
     },
     Static:{
         _ctrlId : new _.id(),
+        getClsFromDom:function(id){
+            var prf=xui.UIProfile.getFromDom(id);
+            if(prf&&(prf=prf.host)){
+                return prf.KEY;
+            }
+        },
         load:function(cls, onEnd, lang, theme, showUI){
             // compitable
             if(typeof theme=='function')thowUI=theme;
@@ -10328,7 +10334,7 @@ Class('xui.Com',null,{
                             else f();
                         }
                     }else
-                        throw new Error(cls+' doesnt exists!');
+                        throw new Error(cls+" doesn't exist!");
                 },true);
             };
             if(xui.isDomReady)
@@ -12433,14 +12439,17 @@ Class("xui.Tips", null,{
 });Class('xui.ComFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.newCom=function(cls, onEnd, threadid, properties, events){
-            return ns.newCom.apply(ns,arguments)
+        xui.newCom=function(cls, onEnd, threadid, singleton, properties, events){
+            return ns.getCom.apply(ns,arguments)
         };
-        xui.showCom=function(cls, onInit, onEnd, threadid, properties, events, parent, subId, left, top){
-            return ns.newCom(cls, function(){
-                _.tryF(onInit, [], this);
-                this.show.apply(this, [onEnd,parent,subId,threadid,left,top]);
-            }, threadid, properties, events);
+        xui.showCom=function(cls, beforeShow, onEnd, threadid, singleton, properties, events, parent, subId, left, top){
+            return ns.getCom(cls, function(threadid){
+                if(false!==_.tryF(beforeShow, [this,threadid], this)){
+                    this.show.apply(this, [onEnd,parent,subId,threadid,left,top]);
+                }else{
+                    _.tryF(onEnd, [this,threadid], this);
+                }
+            }, threadid, singleton, properties, events);
         };
     },
     Static:{
@@ -12573,13 +12582,14 @@ Class("xui.Tips", null,{
                                 task:task,
                                 args:[cls, config,threadid]
                             });
-                        }
+                        }else
+                            throw new Error(clsPath+" doesn't exist.");
                     };
                     xui.SC(clsPath, function(path){
                         if(path)
                             f(0,0,threadid);
                         else
-                            throw new Error(clsPath+' doesnt exists!');
+                            throw new Error(clsPath+" doesn't exist.");
                     }, true,threadid);
                 },null,threadid);
             }
@@ -27664,7 +27674,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'{itemClass} {disabled} {readonly}',
+                        className:'{_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{itemDisplay}',
                         tabindex:'{_tabindex}',
                         MARK:{
@@ -27924,7 +27934,14 @@ Class("xui.UI.Group", "xui.UI.Div",{
             noCtrlKey:true,
             width:120,
             height:150,
-            maxHeight:420
+            maxHeight:420,
+            itemRow:{
+                ini:false,
+                action:function(v){
+                    var ns=this.getSubNode('ITEM',true);
+                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
+                }
+            }
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
@@ -27980,6 +27997,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         },
         _prepareItem:function(profile, item){
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
+            item._itemRow = profile.properties.itemRow?'xui-item-row':'';
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;
@@ -30773,7 +30791,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'{itemClass} {_itemRow} {disabled} {readonly}',
+                    className:'{_itemRow} {itemClass} {disabled} {readonly}',
                     style:'{itemStyle}',
                     tabindex: '{_tabindex}',
                     MARK:{
@@ -30838,13 +30856,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 ini:false,
                 action:function(v){
                     this.getSubNode('MARK',true).replaceClass(v ? /(uicmd-radio)|(\s+uicmd-radio)/g : /(^uicmd-check)|(\s+uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
-                }
-            },
-            itemRow:{
-                ini:false,
-                action:function(v){
-                    var ns=this.getSubNode('ITEM',true);
-                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
             }
         },

@@ -1060,6 +1060,7 @@ _.set(xui.Locale,["cn","app"], {
                 "cls [必需参数] : String, 应用模块类的路径名字.",
                 "onEnd [可选参数] : Function, 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
+                "singleton [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
             ],
@@ -1069,9 +1070,10 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个Com类，并显示",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onInit[可选参数] : Function, 回调函数, 类生成后显示前调用.",
+                "beforeShow[可选参数] : Function, 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
                 "onEnd [可选参数] : Function, 回调函数, 加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, 线程id.",
+                "singleton [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对, 设置该com的属性.",
                 "events [可选参数] : Object, 键值对, 设置该com的事件.",
                 "parent [可选参数] : xui.UIProfile/xui.UI/Element/xui.Dom. 显示到的父对象",
@@ -10813,18 +10815,6 @@ _.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
-            },
-            getItemRow:{
-                $desc:"得到是否是显示成行样式.",
-                $rtn:"Boolean"
-            },
-            setItemRow:{
-                $desc:"设置是否是显示成行样式.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
             }
         }
     });
@@ -11543,6 +11533,18 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
                     "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getItemRow:{
+                $desc:"得到是否是显示成行样式.",
+                $rtn:"Boolean"
+            },
+            setItemRow:{
+                $desc:"设置是否是显示成行样式.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             onItemSelected:{
