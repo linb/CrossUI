@@ -4029,7 +4029,7 @@ editorDropListHeight
         },
         _ensureValue:function(profile,value){
             if(profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox'){
-                var arr = (value?(''+value):'').split(profile.properties.valueSeparator);
+                var arr = _.isArr(value) ? vaue : (value ? (''+value) : '').split(profile.properties.valueSeparator);
                 // ignore hot row
                 _.arr.removeValue(arr,this._temprowid);
                 arr.sort();

@@ -130,7 +130,7 @@ Class('xui.Com',null,{
                 // no UI control in com
                 if(self.getUIComponents().isEmpty()){
                     _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    _.tryF(onEnd,[self, threadid],self.host);
+                    _.tryF(onEnd,[null, thread, self],self.host);
                 }else{
                     // if parent is an ui object without rendered, dont render the com
                     if(!(parent && parent['xui.UI'] && !parent.get(0).renderId))
@@ -144,7 +144,7 @@ Class('xui.Com',null,{
                             }
                         });
                     }
-                    _.tryF(onEnd,[self, threadid],self.host);
+                    _.tryF(onEnd,[null, threadid, self],self.host);
                 }
             };
             self.threadid=threadid;
@@ -169,7 +169,7 @@ Class('xui.Com',null,{
             var self=this;
 
             if(self.created){
-                _.tryF(onEnd,[self, threadid],self.host);
+                _.tryF(onEnd,[null, threadid, self],self.host);
                 return;
             }
 
@@ -246,7 +246,7 @@ Class('xui.Com',null,{
             });
             funs.push(function(threadid){
                 self.created=true;
-                _.tryF(onEnd,[self, threadid],self.host);
+                _.tryF(onEnd,[null, threadid, self],self.host);
             });
             if(threadid===false){
                 _.arr.each(funs,function(fun){
@@ -365,6 +365,11 @@ Class('xui.Com',null,{
             }
         },
         load:function(cls, onEnd, lang, theme, showUI){
+            if(!cls){
+                var e=new Error("No cls");
+                _.tryF(onEnd,[e,null]);
+                throw e;
+            }
             // compitable
             if(typeof theme=='function')thowUI=theme;
 
@@ -378,7 +383,7 @@ Class('xui.Com',null,{
                                 throw new Error("'"+cls+"' is not a constructor");
                             var o=new a();
                             if(showUI!==false)o.show(onEnd);
-                            else _.tryF(onEnd,[o],o);
+                            else _.tryF(onEnd,[null,o],o);
                         };
                         if(theme&&theme!="default"){
                             xui.setTheme(theme,true,function(){
@@ -391,9 +396,17 @@ Class('xui.Com',null,{
                             if(lang) xui.setLang(lang, f);
                             else f();
                         }
-                    }else
-                        throw new Error(cls+" doesn't exist!");
-                },true);
+                    }else{
+                        var e=new Error("No class name");
+                        _.tryF(onEnd,[e,null]);
+                        throw e;
+                    }
+                },true,null,{
+                    retry:0,
+                    onFail:function(e){
+                        _.tryF(onEnd,[e,null]);
+                    }
+                });
             };
             if(xui.isDomReady)
                 fun();

@@ -7,9 +7,6 @@ CONF={
                 tag_SubModule1:'submodule1'
             }
         },
-        module2:{
-            cls:'App.Module2'
-        },
         submodule1:{
             cls:'App.SubModule1'
         }

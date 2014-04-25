@@ -2111,14 +2111,16 @@ Class('xui.SAjax','xui.absIO',{
                 }
             };
 
-            if(xui.browser.gek)
-                n.onerror=_cb;
-
-
-            if(w.body)
-                w.body.appendChild(n);
-            else
-                w.getElementsByTagName("head")[0].appendChild(n);
+            if('onerror' in n)
+                n.onerror=function(e){
+                    //clear first
+                    self._clear();
+                    self._onError(new Error("Not Found - " + uri));
+                    self=null;
+                    return;
+                };
+        
+            (w.body||w.getElementsByTagName("head")[0]).appendChild(n);
 
             n=null;
 

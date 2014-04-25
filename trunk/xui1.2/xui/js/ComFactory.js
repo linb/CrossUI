@@ -1,17 +1,20 @@
 Class('xui.ComFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.newCom=function(cls, onEnd, threadid, singleton, properties, events){
+        xui.getCom=function(cls, onEnd, threadid, cached, properties, events){
             return ns.getCom.apply(ns,arguments)
         };
-        xui.showCom=function(cls, beforeShow, onEnd, threadid, singleton, properties, events, parent, subId, left, top){
-            return ns.getCom(cls, function(threadid){
-                if(false!==_.tryF(beforeShow, [this,threadid], this)){
-                    this.show.apply(this, [onEnd,parent,subId,threadid,left,top]);
+        xui.newCom=function(cls, onEnd, threadid, properties, events){
+            return ns.newCom.apply(ns,arguments)
+        };
+        xui.showCom=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+            return ns.getCom(cls, function(err, threadid, com){
+                if(!err && false!==_.tryF(beforeShow, [threadid, com], com)){
+                    this.show.apply(com, [onEnd,parent,subId,threadid,left,top]);
                 }else{
-                    _.tryF(onEnd, [this,threadid], this);
+                    _.tryF(onEnd, [err, threadid, com], com);
                 }
-            }, threadid, singleton, properties, events);
+            }, threadid, cached, properties, events);
         };
     },
     Static:{
@@ -50,23 +53,30 @@ Class('xui.ComFactory',null,{
         getComFromCache:function(id){
             return this._cache[id]||null;
         },
-        //singleton:false->don't get it from cache, and don't cache the result.
-        getCom:function(id, onEnd, threadid, singleton, properties, events){
-            singleton=singleton!==false;
+        //cached:false->don't get it from cache, and don't cache the result.
+        getCom:function(id, onEnd, threadid, cached, properties, events){
+            if(!id){
+                var e=new Error("No id");
+                _.tryF(onEnd,[e,threadid,null]);
+                if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                throw e;
+                return;
+            }
+            cached=cached!==false;
             var c=this._cache,
                 p=this._pro,
                 config,
                 clsPath;
 
-            if(singleton && c[id] && !c[id].destroyed){
-                _.tryF(onEnd, [threadid,c[id]], c[id]);
+            if(cached && c[id] && !c[id].destroyed){
+                _.tryF(onEnd, [null,threadid,c[id]], c[id]);
                 return c[id];
             }else{
                 // if no configure
                 if(!(config=p[id])){
                     config={
                         cls:id,
-                        singleton:singleton,
+                        cached:cached,
                         properties:properties,
                         events:events
                     };
@@ -85,10 +95,10 @@ Class('xui.ComFactory',null,{
                             _.merge(o.properties,config.properties,'all');
                         if(config.events)
                             _.merge(o.events,config.events,'all');
-                        if(config.singleton!==false)
+                        if(config.cached!==false)
                             xui.ComFactory.setCom(id, o);
 
-                        var args = [function(com){
+                        var args = [function(err,threadid,com){
                             var arr = com.getUIComponents().get(),
                                 fun=function(arr,subcfg,firstlayer){
                                     var self1 = arguments.callee;
@@ -130,7 +140,8 @@ Class('xui.ComFactory',null,{
                         if(onEnd)
                             xui.Thread(threadid).insert({
                                 task:onEnd,
-                                args:[threadid,o],
+                                // have to add [null] to block the extra threadid added by xui.Thread
+                                args:[null,threadid,o],
                                 scope:o
                             });
                         //latter
@@ -144,15 +155,28 @@ Class('xui.ComFactory',null,{
                                 task:task,
                                 args:[cls, config,threadid]
                             });
-                        }else
-                            throw new Error(clsPath+" doesn't exist.");
+                        }else{
+                            var e=new Error("Variable not found (maybe SyntaxError) - " + clsPath);
+                            _.tryF(onEnd,[e,threadid,null]);
+                            if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                            throw e;
+                        }
                     };
                     xui.SC(clsPath, function(path){
                         if(path)
                             f(0,0,threadid);
-                        else
-                            throw new Error(clsPath+" doesn't exist.");
-                    }, true,threadid);
+                        else{
+                            var e=new Error("No class name");
+                            _.tryF(onEnd,[e, threadid,null]);
+                            if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                            throw e;
+                        }
+                    }, true,threadid,{
+                        retry:0,
+                        onFail:function(e){
+                            _.tryF(onEnd,[e,threadid,null]);
+                        }
+                    });
                 },null,threadid);
             }
         },
