@@ -10,7 +10,7 @@ Class('App', 'xui.Com',{
         }, 
         iniExComs:function(com, threadid){
             //use getCom
-            xui.ComFactory.getCom('module2',function(threadid){
+            xui.ComFactory.getCom('module2',function(err,threadid){
                 var ns=this;
                 SPA.div2.append(ns.panelMain);
             },threadid);

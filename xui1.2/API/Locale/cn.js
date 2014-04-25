@@ -1034,7 +1034,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个 xui.Com 类, 并显示.",
             $paras:[
                 "cls [必需参数] : String, 类名字.",
-                "onEnd [可选参数]: Function, arguments : [目前的Com对象]. 类加载完之后调用.",
+                "onEnd [可选参数]: Function(err:Error/String, com: xui.Com). 类加载完之后调用.",
                 "lang [可选参数] : String, 语言名称.(例如, 'en').",
                 "theme [可选参数] : String, 主题名称.(例如, 'vis').",
                 "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
@@ -1046,9 +1046,9 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id.",
-                "onEnd [可选参数] : Function(threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
-                "singleton [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
+                "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
             ],
@@ -1058,9 +1058,8 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个Com类.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function, 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
-                "singleton [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
             ],
@@ -1070,10 +1069,10 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个Com类，并显示",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "beforeShow[可选参数] : Function, 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
-                "onEnd [可选参数] : Function, 回调函数, 加载应用模块类成功后被调用.",
+                "beforeShow[可选参数] : Function(threadid:String, com: xui.Com), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
+                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数, 加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, 线程id.",
-                "singleton [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
+                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. ",
                 "properties [可选参数] : Object, 键值对, 设置该com的属性.",
                 "events [可选参数] : Object, 键值对, 设置该com的事件.",
                 "parent [可选参数] : xui.UIProfile/xui.UI/Element/xui.Dom. 显示到的父对象",
@@ -1331,9 +1330,9 @@ _.set(xui.Locale,["cn","app"], {
             $paras:[
                 "id [必需参数]: String, thread id. 线程id. 不需要指定时可传入[null]..",
                 "group [必需参数]: Array, 一系列的xui.Thread对象(或线程id).",
-                "callback [可选参数]: Function, 参数: [threadid]. 回调函数.",
-                "onStart [可选参数]: Function, 参数: [threadid].  线程开始时调用.",
-                "onEnd [可选参数]:  Function, 参数: [threadid].  线程结束时调用."
+                "callback [可选参数]: Function(threadid:String). 回调函数.",
+                "onStart [可选参数]: Function(threadid:String).  线程开始时调用.",
+                "onEnd [可选参数]:  Function(threadid:String).  线程结束时调用."
             ],
             $snippet:[
                 "var a=[]; var t1=xui.Thread('t1',[function(){a.push(1)},function(){a.push(2)}]), t2=xui.Thread('t2',[function(){a.push('a')},function(){a.push('b')}]);"+
@@ -1370,8 +1369,8 @@ _.set(xui.Locale,["cn","app"], {
             $paras:[
                 "task [必需参数]: Function, 要重复执行的任务.",
                 "interval [可选参数]: Number, 重复执行的间隔毫秒数.",
-                "onStart [可选参数]: Function, 参数: [threadid].  重复执行之前调用.",
-                "onEnd [可选参数]:  Function, 参数: [threadid].  重复执行之后调用."
+                "onStart [可选参数]: Function(threadid:String).  重复执行之前调用.",
+                "onEnd [可选参数]:  Function(threadid:String).  重复执行之后调用."
             ],
             $snippet:[
                 "var l=1; xui.Thread.repeat(function(){alert('repeat time:' + (l++)); if(l>3)return false;}, 500)"
@@ -1394,9 +1393,9 @@ _.set(xui.Locale,["cn","app"], {
             $paras:[
                 "id [必需参数]: String, thread id. 线程id. 不需要指定时可传入[null]..",
                 "group [必需参数]: Array, 一系列的xui.Thread对象(或线程id).",
-                "callback [可选参数]: Function, 参数: [threadid]. 回调函数.",
-                "onStart [可选参数]: Function, 参数: [threadid].  线程开始时调用.",
-                "onEnd [可选参数]:  Function, 参数: [threadid].  线程结束时调用."
+                "callback [可选参数]: Function(threadid:String). 回调函数.",
+                "onStart [可选参数]: Function(threadid:String).  线程开始时调用.",
+                "onEnd [可选参数]:  Function(threadid:String).  线程结束时调用."
             ],
             $snippet:[
                 "var a=[]; var t1=xui.Thread('t1',[function(){a.push(1)},function(){a.push(2)}]), t2=xui.Thread('t2',[function(){a.push('a')},function(){a.push('b')}]);"+
@@ -1744,8 +1743,8 @@ _.set(xui.Locale,["cn","app"], {
         $paras:[
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
             "query [可选参数]:  Object/String, 要请求的数据.",
-            "onSuccess [可选参数]: Function, 函数参数:[response Object, response type, threadid].如请求成功返回,调用这个回调函数.",
-            "onFail [可选参数]: Function, 函数参数:[response Object, response type, threadid]. 如请求失败,调用这个回调函数.",
+            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
                 "<br>{"+
@@ -1763,7 +1762,7 @@ _.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function, 函数参数: [obj, type]. 用来自定义query string对象的函数."+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数."+
-                "<br>&nbsp;&nbsp;onFail: Function, 函数参数:[response Object, response type, threadid].  如请求失败,调用这个回调函数."+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数."+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数."+
                 "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数."+
@@ -1841,8 +1840,8 @@ _.set(xui.Locale,["cn","app"], {
         $paras:[
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
             "query [可选参数]:  Object/String, 要请求的数据.",
-            "onSuccess [可选参数]: Function, 函数参数:[response Object, response type, threadid].如请求成功返回,调用这个回调函数.",
-            "onFail [可选参数]: Function, 函数参数:[response Object, response type, threadid]. 如请求失败,调用这个回调函数.",
+            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
                 "<br>{"+
@@ -1855,10 +1854,10 @@ _.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;reqType: String, 'form'或'json'. 请求返回的数据类型,默认是'form'."+
                 "<br>&nbsp;&nbsp;rspType: String, 'text' 或 'script'. 请求返回的数据类型,默认是'text'."+
                 "<br><em>//functions</em>"+
-                "<br>&nbsp;&nbsp;cusomQS: Function, 函数参数: [obj, type]. 用来自定义query string对象的函数."+
+                "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数."+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数."+
-                "<br>&nbsp;&nbsp;onFail: Function, 函数参数:[response Object, response type, threadid].  如请求失败,调用这个回调函数."+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数."+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数."+
                 "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数."+
@@ -1937,8 +1936,8 @@ _.set(xui.Locale,["cn","app"], {
         $paras:[
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
             "query [可选参数]:  Object/String, 要请求的数据.",
-            "onSuccess [可选参数]: Function, 函数参数:[response Object, response type, threadid].如请求成功返回,调用这个回调函数.",
-            "onFail [可选参数]: Function, 函数参数:[response Object, response type, threadid]. 如请求失败,调用这个回调函数.",
+            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
                 "<br>{"+
@@ -1951,10 +1950,10 @@ _.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数."+
                 "<br>&nbsp;&nbsp;rspType: String, 'text' 或 'xml'. 请求返回的数据类型,默认是'text'."+
                 "<br><em>//functions</em>"+
-                "<br>&nbsp;&nbsp;cusomQS: Function, 函数参数: [obj, type]. 用来自定义query string对象的函数."+
+                "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数."+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数."+
-                "<br>&nbsp;&nbsp;onFail: Function, 函数参数:[response Object, response type, threadid].  如请求失败,调用这个回调函数."+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数."+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数."+
                 "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数."+
@@ -2422,8 +2421,8 @@ _.set(xui.Locale,["cn","app"], {
             $paras:[
                 "css [必需参数] : Object[CSS 键值对]. 不变的CSS样式",
                 "args [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
-                "onStart [可选参数]: Function, 参数: [threadid]. 线程第一个任务开始前的回调函数.",
-                "onEnd [可选参数]: Function, 参数: [threadid]. 整个shell线程结束后的回调函数.",
+                "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数.",
+                "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数.",
                 "time [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
                 "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated]建议不要使用.",
                 "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'.  默认为'linear'.",
@@ -2740,8 +2739,8 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"xui.Thread",
                 $paras:[
                     "args [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
-                    "onStart [可选参数]: Function, 参数: [threadid]. 线程第一个任务开始前的回调函数.",
-                    "onEnd [可选参数]: Function, 参数: [threadid]. 整个shell线程结束后的回调函数.",
+                    "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数.",
+                    "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数.",
                     "time [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
                     "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated] 建议不要使用.",
                     "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'. 默认为'linear'.",
@@ -4973,7 +4972,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"从远程文件加载一个 xui.Com 的代码,然后新建它的 xui.Com 的实例,最后返回这个实例.",
             $paras:[
                 "cls [必需参数] : String, 类名字.",
-                "onEnd [可选参数]: Function, arguments : [目前的Com对象]. 类加载完之后调用.",
+                "onEnd [可选参数]: Function(err:Error/String, com: xui.Com). 类加载完之后调用.",
                 "lang [可选参数] : String, 语言名称.(例如, 'en').",
                 "theme [可选参数] : String, 主题名称.(例如, 'vista').",
                 "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
@@ -5381,9 +5380,9 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id.",
-                "onEnd [可选参数] : Function(threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
-                "singleton [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 singleton 为 false 的时候相当于 newCom.",
+                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
             ],
@@ -5412,7 +5411,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个新的应用模块类, 或加载一个应用模块类, 生成并返回它.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function, 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."

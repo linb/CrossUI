@@ -1,26 +1,6 @@
 
 Class('App', 'xui.Com',{
     Instance:{
-        events:{"onReady":"_onready"}, 
-        _onready:function () {
-            SPA=this;
-            //set com factory profile
-            xui.ComFactory.setProfile(CONF.ComFactoryProfile);
-        }, 
-        _button9_onclick:function (profile, e, value) {
-            var host=this;
-            xui.ComFactory.getCom('module1',function(){
-                var ns=this;
-                host.div16.append(ns.getUIComponents(),false);
-            });
-        }, 
-        _button10_onclick:function (profile, e, value) {
-            var host=this;
-            xui.ComFactory.getCom('module2',function(){
-                var ns=this;
-                host.div17.append(ns.panelMain,false);
-            });
-        }, 
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools
             var host=this, children=[], append=function(child){children.push(child.get(0))};
@@ -90,11 +70,26 @@ Class('App', 'xui.Com',{
             return children;
             // ]]Code created by CrossUI RAD Tools
         }, 
-        _button36_onclick:function (profile, e, value) {
+        events:{"onReady":"_onready"}, 
+        _onready:function () {
+            //set com factory profile
+            xui.ComFactory.setProfile(CONF.ComFactoryProfile);
+        }, 
+        _button9_onclick:function (profile, e, value) {
             var host=this;
-            xui.ComFactory.newCom('App.Module3' ,function(){
-                this.show(xui([document.body]));
+            xui.ComFactory.getCom('module1',function(){
+                var ns=this;
+                host.div16.append(ns.getUIComponents(),false);
             });
+        }, 
+        _button10_onclick:function (profile, e, value) {
+            var host=this;
+            xui.newCom('App.Module2',function(){
+                host.div17.append(this.panelMain,false);
+            });
+        }, 
+        _button36_onclick:function (profile, e, value) {
+            xui.showCom('App.Module3');
         }
     }
 });

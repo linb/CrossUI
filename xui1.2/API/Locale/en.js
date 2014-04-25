@@ -30,7 +30,7 @@ _.set(xui.Locale,["en","app"], {
     var $eo={
         $rtn:"[self]",
         $paras:[
-            "fun [Optional]: Function, arguments is [xui.DomProfile Object, DOM event Object, the current element's xid].",
+            "fun [Optional]: Function, arguments: [xui.DomProfile Object, DOM event Object, the current element's xid].",
             "label [Optional]: String, the event label.",
             "flag  [Optional]: Boolean, for remove event only. to indicate if remove all related event."
         ]
@@ -1003,8 +1003,8 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "uri [Required]: String, The URL of the request target.",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}.",
-                "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request is done successfully.",
-                "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request fails.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request."
             ],
@@ -1037,7 +1037,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"To create a xui.Com , and show it.",
             $paras:[
                 "cls [Required] : String, the full class path name(e.g. 'xui.App').",
-                "onEnd [Optional]: Function, arguments : [the current xui.Com Object]. This function will be called after the process is end.",
+                "onEnd [Optional]: Function(err:Error/String, com: xui.Com). This function will be called after the process is end.",
                 "lang [Optional] : String, language name.(e.g. 'en').",
                 "theme [Optional] : String, theme name..(e.g. 'vista').",
                 "showUI [Optional] : Boolean, indicates whether or not it shows the Com UI. Default is true;"
@@ -1049,9 +1049,9 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [Required] : String, the Com id.",
-                "onEnd [Optional] : Function(threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
+                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events."
             ],
@@ -1061,9 +1061,8 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",
             ],
@@ -1073,10 +1072,10 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a com and show it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "beforeShow[Optional] : Function, the callback function, it will be executed once before the Com will be showed. If returns false, the default show function will be ignored",
-                "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                "beforeShow[Optional] : Function(threadid:String, com: xui.Com), the callback function, it will be executed once before the Com will be showed. If returns false, the default show function will be ignored",
+                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
+                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",
                 "parent [Required] : xui.UI, xui.UI ojbect, Element or xui.Dom Object.",
@@ -1306,16 +1305,16 @@ _.set(xui.Locale,["en","app"], {
         $paras:[
             "id [Required]: String, for identify a thead. If system finds an existing xui.Thread Object with this id, this function will return that Object ; If system does not find it, or this function doesn't specify id, system will create a new xui.Thread Object, assign an unique id to it, and return it. Uses null if you don't want to specify it.",
             "tasks [Required]: Array, functions/'function package' to execute. package format:<br> { <br>"+
-                    "task [Required],      //Function, arguments: args or [threadid]. task function.<br>"+
+                    "task [Required],      //Function( args:Object/String). task function.<br>"+
                     "args [Optional],      //Array, arguments for task function.<br>"+
                     "scope [Optional],    //Object, [this] pointer for [task] function.<br>"+
                     "delay [Optional],     //Number, delay time(ms) before the current function will be triggered. Default is 0.<br>"+
-                    "callback [Optional]   //Function, arguments: [threadid]. callback to call after this task function is called. if callback return false, the thread will abort. <br>"+
+                    "callback [Optional]   //Function(threadid:String). callback to call after this task function is called. if callback return false, the thread will abort. <br>"+
                 "}",
             "delay [Optional]: Number, default delay time(ms) before task function will be triggered. Default is 0.",
-            "callback [Optional]: Function, arguments: [threadid]. default callback to call after each function is called.",
-            "onStart [Optional]: Function, arguments: [threadid]. this function will be called before the thread triggered the first task.",
-            "onEnd [Optional]: Function, arguments: [threadid]. this function will be called after the thread finishes the last task.",
+            "callback [Optional]: Function(threadid:String). default callback to call after each function is called.",
+            "onStart [Optional]: Function(threadid:String). this function will be called before the thread triggered the first task.",
+            "onEnd [Optional]: Function(threadid:String). this function will be called after the thread finishes the last task.",
             "cycle [Optional]: To determine whether or not the current xui.Thread is in circular mode. Default is false."
         ],
         $snippet:[
@@ -1381,9 +1380,9 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "id [Required]: String, thread id. Uses [null] if you don't want to specify it.",
                 "group [Required]: Array, a set of xui.Thread Object(or threadid).",
-                "callback [Optional]: Function, arguments: [threadid]. Callback function for the shell thread.",
-                "onStart [Optional]: Function, arguments: [threadid].  onStart function for the shell thread.",
-                "onEnd [Optional]:  Function, arguments: [threadid].  onEnd function for the shell thread."
+                "callback [Optional]: Function(threadid:String). Callback function for the shell thread.",
+                "onStart [Optional]: Function(threadid:String).  onStart function for the shell thread.",
+                "onEnd [Optional]:  Function(threadid:String).  onEnd function for the shell thread."
             ],
             $snippet:[
                 "var a=[]; var t1=xui.Thread('t1',[function(){a.push(1)},function(){a.push(2)}]), t2=xui.Thread('t2',[function(){a.push('a')},function(){a.push('b')}]);"+
@@ -1732,8 +1731,8 @@ _.set(xui.Locale,["en","app"], {
         $paras:[
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
             "query [Optional]:  Object[Key/value pairs], request data.",
-            "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request is done successfully.",
-            "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request fails.",
+            "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
             "options [Optional]: Object, a set of key/value pairs that configure the request. All options are optional. <strong>Values in Parameters has high priority</strong>." +
                 "<br>{"+
@@ -1750,8 +1749,8 @@ _.set(xui.Locale,["en","app"], {
                 "<br><em>//functions</em>"+
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj, type]. A function to customize query string Object."+
                 "<br><em>//normal events</em>"+
-                "<br>&nbsp;&nbsp;onSuccess: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request is done successfully."+
-                "<br>&nbsp;&nbsp;onFail: Function, arguments:[response Object, response type, threadid]. Afunction to be executed whenever the request fails."+
+                "<br>&nbsp;&nbsp;onSuccess: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully."+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String). Afunction to be executed whenever the request fails."+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, arguments:[the current retry time], A function will be triggered when the request retries."+
                 "<br>&nbsp;&nbsp;onTimeout: Function, , A function will be triggered when the request the request is timeout."+
@@ -1829,8 +1828,8 @@ _.set(xui.Locale,["en","app"], {
         $paras:[
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
             "query [Optional]:  Object[Key/value pairs], request data.",
-            "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request is done successfully.",
-            "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request fails.",
+            "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
             "options [Optional]: Object, a set of key/value pairs that configure the request. All options are optional. <strong>Values in Parameters has high priority</strong>." +
                 "<br>{"+
@@ -1845,8 +1844,8 @@ _.set(xui.Locale,["en","app"], {
                 "<br><em>//functions</em>"+
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj, type]. A function to customize query string Object."+
                 "<br><em>//normal events</em>"+
-                "<br>&nbsp;&nbsp;onSuccess: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request is done successfully."+
-                "<br>&nbsp;&nbsp;onFail: Function, arguments:[response Object, response type, threadid]. Afunction to be executed whenever the request fails."+
+                "<br>&nbsp;&nbsp;onSuccess: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully."+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String). Afunction to be executed whenever the request fails."+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, arguments:[the current retry time], A function will be triggered when the request retries."+
                 "<br>&nbsp;&nbsp;onTimeout: Function, , A function will be triggered when the request the request is timeout."+
@@ -1925,8 +1924,8 @@ _.set(xui.Locale,["en","app"], {
         $paras:[
             "uri [Required]: String/Object. String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
             "query [Optional]:  Object[Key/value pairs], request data.",
-            "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request is done successfully.",
-            "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request fails.",
+            "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
             "options [Optional]: Object, a set of key/value pairs that configure the request. All options are optional. <strong>Values in Parameters has high priority</strong>." +
                 "<br>{"+
@@ -1941,8 +1940,8 @@ _.set(xui.Locale,["en","app"], {
                 "<br><em>//functions</em>"+
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj]. A function to customize query string Object."+
                 "<br><em>//normal events</em>"+
-                "<br>&nbsp;&nbsp;onSuccess: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever the request is done successfully."+
-                "<br>&nbsp;&nbsp;onFail: Function, arguments:[response Object, response type, threadid]. Afunction to be executed whenever the request fails."+
+                "<br>&nbsp;&nbsp;onSuccess: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully."+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String). Afunction to be executed whenever the request fails."+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, arguments:[the current retry time], A function will be triggered when the request retries."+
                 "<br>&nbsp;&nbsp;onTimeout: Function, , A function will be triggered when the request the request is timeout."+
@@ -2411,8 +2410,8 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "css [Required] : Object[CSS Key/value pairs].",
                 "args [Required] : Object[Key/value([from value, to value]) pairs] .",
-                "onStart [Optional]: Function, arguments: [threadid]. this function will be called before the shell thread triggered the first task.",
-                "onEnd [Optional]: Function, arguments: [threadid]. this function will be called after the shell thread finishes the last task.",
+                "onStart [Optional]: Function(threadid:String). this function will be called before the shell thread triggered the first task.",
+                "onEnd [Optional]: Function(threadid:String). this function will be called after the shell thread finishes the last task.",
                 "time [Optional]: Number(ms), the duration of this animation. Default is 300.",
                 "step [Optional]: Number, the step number of this animation. Default is 0. [Deprecated]",
                 "type [Optional]: String, the animate type. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' or 'bounceOut'. Default is 'expoIn'.",
@@ -2729,8 +2728,8 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"xui.Thread",
                 $paras:[
                     "args [Required] : Object[Key/value([from value, to value]) pairs] .",
-                    "onStart [Optional]: Function, arguments: [threadid]. this function will be called before the shell thread triggered the first task.",
-                    "onEnd [Optional]: Function, arguments: [threadid]. this function will be called after the shell thread finishes the last task.",
+                    "onStart [Optional]: Function(threadid:String). this function will be called before the shell thread triggered the first task.",
+                    "onEnd [Optional]: Function(threadid:String). this function will be called after the shell thread finishes the last task.",
                     "time [Optional]: Number(ms), the duration of this animation. Default is 200.",
                     "step [Optional]: Number, the step number of this animation. Default is 0. [Deprecated]",
                     "type [Optional]: String, the type. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' or 'bounceOut'. Default is 'expoIn'.",
@@ -4959,7 +4958,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Loads a xui.Com Object code from remote file first, creates it, and returns it.",
             $paras:[
                 "cls [Required] : String, the full class path name(e.g. 'xui.App').",
-                "onEnd [Optional]: Function, arguments : [the current xui.Com Object]. This function will be called after the process is end.",
+                "onEnd [Optional]: Function(err:Error/String, com: xui.Com). This function will be called after the process is end.",
                 "lang [Optional] : String, language name.(e.g. 'en').",
                 "theme [Optional] : String, theme name..(e.g. 'vista').",
                 "showUI [Optional] : Boolean, indicates whether or not it shows the Com UI. Default is true;"
@@ -5368,9 +5367,9 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [Required] : String, the Com id.",
-                "onEnd [Optional] : Function(threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "singleton [Optional] : Boolean, Default is true. If singleton is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
+                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events."
             ],
@@ -5399,7 +5398,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "onEnd [Optional] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",
@@ -5709,10 +5708,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To invoke the remoting call.",
                 $rtn:"[xui.absIO]",
                 $paras:[
-                    "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request is done successfully.",
-                    "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request fails.",
-                    "onStart [Optional]: Function, arguments: [threadid].  onStart function for the call.",
-                    "onEnd [Optional]:  Function, arguments: [threadid].  onEnd function for the call.",
+                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
+                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                     "options [Optional]: Object, a set of key/value pairs that configure the request."
@@ -5722,10 +5721,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To invoke the remoting call for data reading.",
                 $rtn:"[xui.absIO]",
                 $paras:[
-                    "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request is done successfully.",
-                    "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request fails.",
-                    "onStart [Optional]: Function, arguments: [threadid].  onStart function for the call.",
-                    "onEnd [Optional]:  Function, arguments: [threadid].  onEnd function for the call.",
+                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
+                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                     "options [Optional]: Object, a set of key/value pairs that configure the request.",
@@ -5736,10 +5735,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To invoke the remoting call for data writing.",
                 $rtn:"[xui.absIO]",
                 $paras:[
-                    "onSuccess [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request is done successfully.",
-                    "onFail [Optional]: Function, arguments:[response Object, response type, threadid]. A function to be executed whenever a request fails.",
-                    "onStart [Optional]: Function, arguments: [threadid].  onStart function for the call.",
-                    "onEnd [Optional]:  Function, arguments: [threadid].  onEnd function for the call.",
+                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
+                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                     "options [Optional]: Object, a set of key/value pairs that configure the request."
