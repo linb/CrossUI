@@ -49,6 +49,204 @@ Class("xui.svg", "xui.UI",{
                     out.transform(tr);
                 return out.insertBefore(ns);
             };
+            
+            var  r = function(){
+                var m=arguments, g = m.length, b=0, a;
+                for (;b<g;b++)if ((a = m[b]) || !(a !== !1 && a !== 0)) return a;
+            },
+            u = function(){
+                var m=arguments, g = m.length, b=0, a;
+                for (;b <g;b++)if((a = m[b]) || !(a !== !1 && a !== 0)) if (!isNaN(a = Number(a))) return a;
+            },
+            t = function(m){
+                return "matrix(" + [ m.get(0), m.get(1), m.get(2), m.get(3), m.get(4), m.get(5) ].join() + ")";
+            },
+            h = /^matrix\(|\)$/g, 
+            M = /\,/g, 
+            e = /\n|<br\s*?\/?>/gi, 
+            k = /[^\d\.]/gi, 
+            V = /[\(\)\s,\xb0#]/g, 
+            ga = /group/gi, 
+            w = /&/g, 
+            Q = /"/g, K = /'/g, 
+            G = /</g, aa = />/g, 
+            A = 0,
+            l = Math, D = parseFloat, q = l.max, j = l.abs, s = l.pow, fa = String, ea = /[, ]+/, U = [ {
+                reg: /xmlns\=\"http\:\/\/www.w3.org\/2000\/svg\"/gi,
+                str: ""
+            }, {
+                reg: /^.*<svg /,
+                str: '<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" '
+            }, {
+                reg: /\/svg>.*$/,
+                str: "/svg>"
+            }, {
+                reg: /\<desc\>[^\<]*\<\/desc\>/,
+                str: ""
+            }, {
+                reg: /zIndex="[^"]+"/g,
+                str: ""
+            }, {
+                reg: /url\((\\?[\'\"])[^#]+#/g,
+                str: "url($1#"
+            }, {
+                reg: / href=/g,
+                str: " xlink:href="
+            }, {
+                reg: /(id|class|width|height)=([^" >]+)/g,
+                str: '$1="$2"'
+            }, {
+                reg: /:(path|rect)/g,
+                str: "$1"
+            }, {
+                reg: /\<ima?ge? ([^\>]+?)[^\/]\>/gi,
+                str: "<image $1 />"
+            }, {
+                reg: /\<\/ima?ge?\>/g,
+                str: ""
+            }, {
+                reg: /style="([^"]+)"/g,
+                str: function(e) {
+                    return e.toLowerCase();
+                }
+            } ], 
+            W = {
+                blur: function() {},
+                transform: function() {},
+                src: function(e, d) {
+                    d.attrSTR += ' xlink:href="' + d.attrs.src + '"';
+                },
+                path: function(e, d) {
+                    var h = d.attrs.path, h = Raphael._pathToAbsolute(h || "");
+                    d.attrSTR += ' d="' + (h.toString && h.toString() || "").replace(M, " ") + '"';
+                },
+                gradient: function(e, d, h) {
+                    var b = e.attrs.gradient, f = "linear", a, g, c = .5, k = .5, r = g = "", u = "";
+                    a = b.replace(V, "_");
+                    if (!h[a]) {
+                        b = fa(b).replace(Raphael._radial_gradient, function(a, b, e) {
+                            f = "radial";
+                            b && e && (c = D(b), k = D(e), a = (k > .5) * 2 - 1, s(c - .5, 2) + s(k - .5, 2) > .25 && (k = l.sqrt(.25 - s(c - .5, 2)) * a + .5) && k != .5 && (k = k.toFixed(5) - 1e-5 * a));
+                            return "";
+                        });
+                        b = b.split(/\s*\-\s*/);
+                        if (f === "linear") {
+                            g = b.shift();
+                            g = -D(g);
+                            if (isNaN(g)) return null;
+                            var w = [ 0, 0, l.cos(Raphael.rad(g)), l.sin(Raphael.rad(g)) ];
+                            g = 1 / (q(j(w[2]), j(w[3])) || 1);
+                            w[2] *= g;
+                            w[3] *= g;
+                            w[2] < 0 && (w[0] = -w[2], w[2] = 0);
+                            w[3] < 0 && (w[1] = -w[3], w[3] = 0);
+                        }
+                        b = Raphael._parseDots(b);
+                        if (!b) return null;
+                        f === "radial" ? (g = '<radialGradient fx = "' + c + '" fy = "' + k + '" id = "' + a + '">', 
+                        r = "</radialGradient>") : (g = '<linearGradient x1 = "' + w[0] + '" y1 = "' + w[1] + '" x2 = "' + w[2] + '" y2 = "' + w[3] + '" gradientTransform ="matrix(' + e.matrix.invert() + ')" id = "' + a + '">', 
+                        r = "</linearGradient>");
+                        e = 0;
+                        for (w = b.length; e < w; e++) u += '<stop offset="' + (b[e].offset ? b[e].offset : e ? "100%" : "0%") + '" stop-color="' + (b[e].color || "#fff") + '" stop-opacity="' + (b[e].opacity === void 0 ? 1 : b[e].opacity) + '" />';
+                        h[a] = !0;
+                        h.str += g + u + r;
+                    }
+                    d.attrSTR += " fill=\"url('#" + a + "')\"";
+                },
+                fill: function(e, d) {
+                    var h = d.attrs, b = h.fill, f;
+                    if (!e.attrs.gradient) if (b = Raphael.color(b), f = b.opacity, e.type === "text") d.styleSTR += "fill:" + b + "; stroke-opacity:0; "; else if (d.attrSTR += ' fill="' + b + '"', 
+                    !h["fill-opacity"] && (f || f === 0)) d.attrSTR += ' fill-opacity="' + f + '"';
+                },
+                stroke: function(e, d) {
+                    var h = d.attrs, b, f;
+                    b = Raphael.color(h.stroke);
+                    f = b.opacity;
+                    if (e.type !== "text" && (d.attrSTR += ' stroke="' + b + '"', !h["stroke-opacity"] && (f || f === 0))) d.attrSTR += ' stroke-opacity="' + f + '"';
+                },
+                "clip-rect": function(e, d, i) {
+                    var b = fa(d.attrs["clip-rect"]), f = b.split(ea), b = b.replace(V, "_") + "__" + A++;
+                    f.length === 4 && (i[b] || (i[b] = !0, i.str += '<clipPath id="' + b + '"><rect x="' + f[0] + '" y="' + f[1] + '" width="' + f[2] + '" height="' + f[3] + '" transform="matrix(' + t(e.matrix.invert()).replace(h, "") + ')"/></clipPath>'), 
+                    d.attrSTR += ' clip-path="url(#' + b + ')"');
+                },
+                cursor: function(e, d) {
+                    var h = d.attrs.cursor;
+                    h && (d.styleSTR += "cursor:" + h + "; ");
+                },
+                font: function(e, d) {
+                    d.styleSTR += "font:" + d.attrs.font.replace(/\"/gi, " ") + "; ";
+                },
+                "font-size": function(e, d) {
+                    var h = r(d.attrs["font-size"], "10");
+                    h && h.replace && (h = h.replace(k, ""));
+                    d.styleSTR += "font-size:" + h + "px; ";
+                },
+                "font-weight": function(e, d) {
+                    d.styleSTR += "font-weight:" + d.attrs["font-weight"] + "; ";
+                },
+                "font-family": function(e, d) {
+                    d.styleSTR += "font-family:" + d.attrs["font-family"] + "; ";
+                },
+                "line-height": function() {},
+                "clip-path": function() {},
+                visibility: function() {},
+                "vertical-align": function() {},
+                "text-anchor": function(e, d) {
+                    var h = d.attrs["text-anchor"] || "middle";
+                    e.type === "text" && (d.attrSTR += ' text-anchor="' + h + '"');
+                },
+                title: function() {},
+                text: function(d, h) {
+                    var i = h.attrs, b = i.text, f = r(i["font-size"], i.font, "10"), a = r(i["line-height"]), g;
+                    f && f.replace && (f = f.replace(k, ""));
+                    f = u(f);
+                    a && a.replace && (a = a.replace(k, ""));
+                    a = u(a, f && f * 1.2);
+                    g = f ? f * .85 : a * .75;
+                    for (var f = i.x, c = r(i["vertical-align"], "middle").toLowerCase(), b = fa(b).split(e), i = b.length, l = 0, c = c === "top" ? g : c === "bottom" ? g - a * i : g - a * i * .5; l < i; l++) h.textSTR += "<tspan ", 
+                    g = (b[l] || "").replace(w, "&amp;").replace(Q, "&quot;").replace(K, "&#39;").replace(G, "&lt;").replace(aa, "&gt;"), 
+                    h.textSTR += l ? 'dy="' + a + '" x="' + f + '" ' : 'dy="' + c + '"', h.textSTR += ">" + g + "</tspan>";
+                }
+            }, 
+            X = function(e, i) {
+                var k = "", b = {
+                    attrSTR: "",
+                    styleSTR: "",
+                    textSTR: "",
+                    attrs: e.attr()
+                }, f = "", a = "", g = "", c, l, j = b.attrs;
+                if (e.node.style.display !== "none") {
+                    for (c in j) if (c !== "gradient" && (Raphael._availableAttrs[c] !== void 0 || W[c])) if (W[c]) W[c](e, b, i); else b.attrSTR += " " + c + '="' + j[c] + '"';
+                    e.attrs.gradient && W.gradient(e, b, i);
+                    e.type === "rect" && j.r && (b.attrSTR += ' rx="' + j.r + '" ry="' + j.r + '"');
+                    for (l in e.styles) b.styleSTR += l + ":" + e.styles[l] + "; ";
+                    e.type === "image" && (b.attrSTR += ' preserveAspectRatio="none"');
+                    e.bottom && (a = X(e.bottom, i));
+                    e.next && (g = X(e.next, i));
+                    f = e.type;
+                    f.match(ga) && (f = "g");
+                    k += "<" + f + ' transform="matrix(' + t(e.matrix).replace(h, "") + ')" style="' + b.styleSTR + '"' + b.attrSTR + ">" + b.textSTR + a + "</" + f + ">" + g;
+                } else e.next && (k += X(e.next, i));
+                return k;
+            };
+            Raphael.fn.toSVG = function(includeImage) {
+                var d = "", h = {str: ""}, b = 0, f = U.length, a = "";
+                if (Raphael.svg) {
+                    if (this.canvas && this.canvas.parentNode) 
+                        for (d = this.canvas.parentNode.innerHTML; b < f; b += 1) 
+                            h = U[b], d = d.replace(h.reg, h.str);
+                } else{
+                    d = '<svg style="overflow: hidden; position: relative;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + this.width + '" version="1.1" height="' + this.height + '">';
+                    if(this.bottom){
+                        a = X(this.bottom, h);
+                        d += "<defs>" + h.str + "</defs>" + a + "</svg>";
+                    }
+                }
+                if(!includeImage){
+                    d = d.replace(/\<image [^\>]*\>/gi, "");
+                }
+                return d;
+            };
         }
 
         var attr={
@@ -545,7 +743,7 @@ Class("xui.svg", "xui.UI",{
                                     moveFun(handler.dot3, x,y,ax,ay);
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'main');
                             handler.dot1 = createDDElem(r.circle(attr.x, attr.y).attr(dotAttr2).attr('cursor','nw-resize'),
                                 el, function (x, y, ax, ay){
                                     var x2=el.attr("x")+el.attr("width"),
@@ -576,7 +774,7 @@ Class("xui.svg", "xui.UI",{
                                     });
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'1');
                             handler.dot2= createDDElem(r.circle(attr.x+attr.width, attr.y+attr.height).attr(dotAttr2).attr('cursor','se-resize'),
                                 el, function (x, y, ax, ay){
                                     var pos = moveFun(this, x,y,ax,ay,attr.x,null,attr.y,null),
@@ -603,7 +801,7 @@ Class("xui.svg", "xui.UI",{
                                         cy:el.attr("y")
                                     });
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'2');
                             handler.dot3= createDDElem(r.circle(attr.x+attr.width-(attr.r||0), attr.y).attr(dotAttr3).attr('cursor','e-resize'),
                                 el, function (x, y, ax, ay){
                                     var attr=el.attr(),
@@ -615,7 +813,7 @@ Class("xui.svg", "xui.UI",{
                                     _.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'3');
                             return {
                                 el:el,
                                 handlers:[handler]
@@ -635,7 +833,7 @@ Class("xui.svg", "xui.UI",{
 
                                     pos.cx += el.attr("r");
                                     handler.dotr.attr(pos);
-                                });
+                                },'main');
                             handler.dotr = createDDElem(r.circle(attr.cx+attr.r, attr.cy).attr(dotAttr2).attr('cursor','e-resize'),
                                 el, function (x, y,ax,ay){
                                     var attr=el.attr(),
@@ -648,7 +846,7 @@ Class("xui.svg", "xui.UI",{
                                     _.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'r');
                             return {
                                 el:el,
                                 handlers:[handler]
@@ -668,7 +866,7 @@ Class("xui.svg", "xui.UI",{
 
                                     handler.dotrx.attr({cx:pos.cx+el.attr("rx"),cy:pos.cy});
                                     handler.dotry.attr({cy:pos.cy-el.attr("ry"),cx:pos.cx});
-                                });
+                                },'main');
                             handler.dotrx = createDDElem(r.circle(attr.cx+attr.rx, attr.cy).attr(dotAttr2).attr('cursor','w-resize'),
                                 el, function (x, y,ax,ay){
                                     var attr=el.attr(),
@@ -680,7 +878,7 @@ Class("xui.svg", "xui.UI",{
                                     if(el._shape)el._shape.attr(nshape);
                                     _.tryF(el.onShapeChanged,[nshape]);
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'x');
                             handler.dotry = createDDElem(r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
                                 el,function (x, y,ax,ay){
                                     var attr=el.attr(),
@@ -693,7 +891,7 @@ Class("xui.svg", "xui.UI",{
                                     _.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                });
+                                },'y');
 
                             return {
                                 el:el,
@@ -1099,7 +1297,7 @@ Class("xui.svg", "xui.UI",{
                                         }
                                         // adjust drag pos
                                         if(pos)return pos;
-                                    },index);
+                                    },'main',index);
                                 },
                                 addBezierAnchor2DD=function(r,el,x,y,index,conType,prf){
                                     return createDDElem(r.circle(x, y).attr(dotAttr3),
@@ -1125,7 +1323,7 @@ Class("xui.svg", "xui.UI",{
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
                                             _.tryF(el.onShapeChanged,[nshape]);
-                                        },index);
+                                        },'2',index);
                                 },
                                 addBezierAnchor1DD=function(r,el,x,y,index,conType,prf){
                                     return createDDElem(r.circle(x, y).attr(dotAttr3),
@@ -1150,7 +1348,7 @@ Class("xui.svg", "xui.UI",{
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
                                             _.tryF(el.onShapeChanged,[nshape]);
-                                        },index);
+                                        },'1',index);
                                 },
                                 type1=1,type2=1,type3=0,prevtype2=1,
                                 handlers=[];
@@ -1166,7 +1364,7 @@ Class("xui.svg", "xui.UI",{
                                 };
                                 prf._ddendFun=function(prf,index, dot){
                                     if(index===0 || index===prf._pathHandler.handlers.length-1)
-                                        prf.boxing()._addHandler();
+                                        prf.boxing()._addHandler(callback);
                                 };
                                 manualPathModify=function(index,paths,X,Y,dot,pos){
                                     if(index===0 || index===prf._pathHandler.handlers.length-1){
@@ -1322,7 +1520,7 @@ Class("xui.svg", "xui.UI",{
                         this.dx = (rtn&&rtn.dx)||dx;
                         this.dy = (rtn&&rtn.dy)||dy;
 
-                        if(callback)callback(this, event, this.dx, this.dy);
+                        if(callback)callback(this, event, 'drag', this._attached);
                     },
                     start = function(mx,my,event){
                         this.toFront();
@@ -1347,7 +1545,7 @@ Class("xui.svg", "xui.UI",{
                             if(prf._ddstartFun)_.tryF(prf._ddstartFun,[prf, this._handlerIndex,this]);
                         }
 
-                        if(callback)callback(this, 'start', event);
+                        if(callback)callback(this, event, 'mousedown', this._attached);
                     },
                     end=function(event){
                         absPos=null;
@@ -1388,19 +1586,29 @@ Class("xui.svg", "xui.UI",{
                             t.clear();
                             delete paper._anchorShadow;
                         }
-                        if(callback)callback(this, 'end', event);
+                        if(callback)callback(this, event, 'mouseup', this._attached);
                     },
-                    createDDElem=function(obj,el,update,index){
+                    createDDElem=function(obj,el,update,key,index){
                         obj._handlerIndex=index||0;
                         obj._attached=el;
                         if(update){
                             obj.drag(move,start,end);
                             obj.update=update;
-
-                            // stop select parent
-                            xui(obj.node).onClick(function(){
-                                return false;
+                            obj.dblclick(function(event){
+                                if(callback)callback(this, event, 'dblclick', el, key, index);
                             });
+                            obj.click(function(event){
+                                if(callback)callback(this, event, 'click', el, key, index);
+                                xui.Event.stopBubble(event);
+                                xui.Event.stopDefault(event);
+                            });
+                            obj.contextmenu(function(event){
+                                if(callback)callback(this, event, 'contextmenu', el, key, index);
+                            });
+                            // stop select parent
+                            //xui(obj.node).onContextMenu(function(){
+                            //    return false;
+                            //});
                         }
                         obj.toFront();
                         return obj;
@@ -1802,9 +2010,22 @@ Class("xui.svg", "xui.UI",{
                     }
                 }break;
                 case 'path':{
-                    var obbox=Raphael.pathBBox(attr.path||""),
-                        obbox2=_.copy(obbox);
-
+                    var obbox;
+                    if(el){
+                        el._.dirty=1;
+                        obbox=el._getBBox(true);
+                    }else{
+                        var div=xui.Dom.getEmptyDiv(),
+                            r=Raphael(div.get(0).id,1,1),
+                            t=r.path("");
+                       t.attr(attr);
+                       obbox=t._getBBox(true);
+                       t.remove();
+                       r.remove();
+                       div.empty();
+                    }
+                    var obbox2=_.copy(obbox);
+                    
                     //if(obbox.width===0 || obbox.height===0)
                     //    return;
 
@@ -1878,7 +2099,7 @@ Class("xui.svg", "xui.UI",{
                         var ww=('width' in h)?h.width:null,
                             hh=('height' in h)?h.height:null,
                             opath= h.path ||attr.path,
-                            npath=Raphael.transformPath(opath, "s"+((ww&&ww!=obbox2.width)?(ww/obbox2.width):"1")+","+((hh&&hh!=obbox2.height)?(hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
+                            npath=Raphael.transformPath(opath, "s"+((_.isSet(ww)&&ww!==obbox2.width)?(obbox2.width===0?(ww>=0?1.1:0.9):ww/obbox2.width):"1")+","+((_.isSet(hh)&&hh!==obbox2.height)?(obbox2.height===0?(hh>=0?1.1:0.9):hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
                         if(_.isStr(opath)){
                             if(/[mlhvcsqtaz]/.test(opath)){
                                 opath = Raphael._pathToAbsolute(opath);

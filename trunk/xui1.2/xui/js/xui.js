@@ -1239,7 +1239,7 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
 
-        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || w.PointerEvent || w.MSPointerEvent,
+        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || (w.DocumentTouch && d instanceof DocumentTouch) || w.PointerEvent || w.MSPointerEvent,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u),
         isBB:/blackberry/.test(u) || /BB[\d]+;.+\sMobile\s/.test(navigator.userAgent)
