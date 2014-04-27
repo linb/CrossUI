@@ -525,7 +525,7 @@
         S = " ",
         Str = String,
         split = "split",
-        events = "click dblclick mousedown mousemove mouseout mouseover mouseup touchstart touchmove touchend touchcancel"[split](S),
+        events = "click dblclick mousedown mousemove mouseout mouseover mouseup touchstart touchmove touchend touchcancel contextmenu"[split](S),
         touchMap = {
             mousedown: "touchstart",
             mousemove: "touchmove",
@@ -3583,6 +3583,8 @@
     \*/
     elproto.drag = function (onmove, onstart, onend, move_scope, start_scope, end_scope) {
         function start(e) {
+            if( ('which' in e)?(e.which==2||e.which==3):(e.button==4||e.button==2) )return;
+
             (e.originalEvent || e).preventDefault();
             var x = e.clientX,
                 y = e.clientY,
