@@ -5135,7 +5135,8 @@ _.set(xui.Locale,["cn","app"], {
                     "parent [必需参数] : xui.UI, xui.UI 或 xui.Dom对象.",
                     "subId [可选参数] : String, the sub id that Determines the set of UIProfiles will be added to.",
                     "left [可选参数] : Number, 显示的左边坐标.",
-                    "top [可选参数] : Number, 显示的上边坐标."
+                    "top [可选参数] : Number, 显示的上边坐标.",
+                    "threadid [可选参数] : String, 线程Id."
                 ]
             },
             iniExComs:{
@@ -18067,6 +18068,18 @@ _.set(xui.Locale,["cn","app"], {
             getPaper:{
                 $desc:"得到SVG的Paper对象(Raphael Paper).",
                 $rtn:'Object'
+            },
+            getScaleChildren:{
+                $desc:"得到是否是按比例改变子控件.",
+                $rtn:"Boolean"
+            },
+            setScaleChildren:{
+                $desc:"设置是否按比例改变子控件",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
             }
         }
     });
@@ -18395,7 +18408,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             getType:{
                 $desc:"得到链接器的类型.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setType:{
                 $desc:"设置链接器的类型（只有在控件渲染前有效）.",
@@ -18407,7 +18420,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getFromObj:{
                 $desc:"得到链接器的'链接自'对象名.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setFromObj:{
                 $desc:"设置连接器的'链接自'对象名.",
@@ -18419,7 +18432,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getFromPoint:{
                 $desc:"得到链接器的'链接自'位置.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setFromPoint:{
                 $desc:"设置连接器的'链接自'位置.",
@@ -18431,7 +18444,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getToObj:{
                 $desc:"得到链接器的'链接至'对象名.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setToObj:{
                 $desc:"设置连接器的'链接至'对象名.",
@@ -18443,7 +18456,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getToPoint:{
                 $desc:"得到链接器的'链接至'位置.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setToPoint:{
                 $desc:"设置连接器的'链接至'位置.",
