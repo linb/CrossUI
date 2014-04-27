@@ -5121,7 +5121,8 @@ _.set(xui.Locale,["en","app"], {
                     "parent [Required] : xui.UI, xui.UI ojbect, Element or xui.Dom Object.",
                     "subId [Optional] : String, the sub id that determines the set of UIProfiles will be added to.",
                     "left [Optional] : Number, the css left value.",
-                    "top [Optional] : Number, the css top value."
+                    "top [Optional] : Number, the css top value.",
+                    "threadid [Optional] : String, thread Id."
                 ]
             },
             iniExComs:{
@@ -9773,7 +9774,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getSelectOnFocus:{
-                $desc:"Gets the property value, which determines whether inner text will be selected when it's focused, or won't.",
+                $desc:"Gets the property value, which determines whether inner text will be selected when it's focused, or won't."
             },
             setSelectOnFocus:{
                 $desc:"Sets this property to determine whether inner text will be selected when it's focused, or won't.",
@@ -18150,7 +18151,20 @@ _.set(xui.Locale,["en","app"], {
             getPaper:{
                 $desc:"Gets SVG Paper object(Raphael Paper).",
                 $rtn:'Object'
+            },
+            getScaleChildren:{
+                $desc:"Gets whether the control scales children when resize.",
+                $rtn:"Boolean"
+            },
+            setScaleChildren:{
+                $desc:"Specifys whether the control scales children when resize.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
             }
+
         }
     });
     
@@ -18479,7 +18493,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             getType:{
                 $desc:"Gets the connector's type.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setType:{
                 $desc:"Sets the connector's type (only valid before the control was rendered).",
@@ -18491,7 +18505,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getFromObj:{
                 $desc:"Gets the connector's 'connect from' object alias",
-                $rtn:"String",
+                $rtn:"String"
             },
             setFromObj:{
                 $desc:"Sets the connector's 'connect from' object alias",
@@ -18503,7 +18517,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getFromPoint:{
                 $desc:"Gets the connector's 'connect from' point.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setFromPoint:{
                 $desc:"Sets the connector's 'connect from' point.",
@@ -18515,7 +18529,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getToObj:{
                 $desc:"Gets the connector's 'connect to' object alias",
-                $rtn:"String",
+                $rtn:"String"
             },
             setToObj:{
                 $desc:"Sets the connector's 'connect to' object alias",
@@ -18527,7 +18541,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getToPoint:{
                 $desc:"Gets the connector's 'connect to' point.",
-                $rtn:"String",
+                $rtn:"String"
             },
             setToPoint:{
                 $desc:"Sets the connector's 'connect to' point.",
