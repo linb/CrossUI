@@ -14009,6 +14009,15 @@ Class("xui.svg", "xui.UI",{
                     _.arr.each(prf._elset.items,function(el){
                         el.toFront();
                     });
+                var arr=_.get(prf,['parent','children']);
+                if(arr && arr.length){
+                    var index=_.arr.indexOf(arr,prf),o;
+                    if(index!=-1){
+                        o=arr[index];
+                        _.arr.removeFrom(arr,index);
+                        _.arr.insertAny(arr,o);
+                    }
+                }
             });
         },
         toBack:function(){
@@ -14018,6 +14027,15 @@ Class("xui.svg", "xui.UI",{
                         el.toBack();
                     },null,true);
                 if(prf._shadow)prf._shadow.toBack();
+                var arr=_.get(prf,['parent','children']);
+                if(arr && arr.length){
+                    var index=_.arr.indexOf(arr,prf),o;
+                    if(index!=-1){
+                        o=arr[index];
+                        _.arr.removeFrom(arr,index);
+                        _.arr.insertAny(arr,o,0);
+                    }
+                }
             });
         },
         getAllNodes:function(){
@@ -14322,7 +14340,7 @@ Class("xui.svg", "xui.UI",{
                                     });
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                },'1');
+                                },'w');
                             handler.dot2= createDDElem(r.circle(attr.x+attr.width, attr.y+attr.height).attr(dotAttr2).attr('cursor','se-resize'),
                                 el, function (x, y, ax, ay){
                                     var pos = moveFun(this, x,y,ax,ay,attr.x,null,attr.y,null),
@@ -14349,7 +14367,7 @@ Class("xui.svg", "xui.UI",{
                                         cy:el.attr("y")
                                     });
                                     return {dx:pos.dx,dy:pos.dy};
-                                },'2');
+                                },'h');
                             handler.dot3= createDDElem(r.circle(attr.x+attr.width-(attr.r||0), attr.y).attr(dotAttr3).attr('cursor','e-resize'),
                                 el, function (x, y, ax, ay){
                                     var attr=el.attr(),
@@ -14361,7 +14379,7 @@ Class("xui.svg", "xui.UI",{
                                     _.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                },'3');
+                                },'r');
                             return {
                                 el:el,
                                 handlers:[handler]
@@ -14426,7 +14444,7 @@ Class("xui.svg", "xui.UI",{
                                     if(el._shape)el._shape.attr(nshape);
                                     _.tryF(el.onShapeChanged,[nshape]);
                                     return {dx:pos.dx,dy:pos.dy};
-                                },'x');
+                                },'rx');
                             handler.dotry = createDDElem(r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
                                 el,function (x, y,ax,ay){
                                     var attr=el.attr(),
@@ -14439,7 +14457,7 @@ Class("xui.svg", "xui.UI",{
                                     _.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
-                                },'y');
+                                },'ry');
 
                             return {
                                 el:el,
@@ -14871,7 +14889,7 @@ Class("xui.svg", "xui.UI",{
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
                                             _.tryF(el.onShapeChanged,[nshape]);
-                                        },'2',index);
+                                        },'path2',index);
                                 },
                                 addBezierAnchor1DD=function(r,el,x,y,index,conType,prf){
                                     return createDDElem(r.circle(x, y).attr(dotAttr3),
@@ -14896,7 +14914,7 @@ Class("xui.svg", "xui.UI",{
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
                                             _.tryF(el.onShapeChanged,[nshape]);
-                                        },'1',index);
+                                        },'path1',index);
                                 },
                                 type1=1,type2=1,type3=0,prevtype2=1,
                                 handlers=[];
@@ -16194,6 +16212,15 @@ Class("xui.svg.connector","xui.svg.absComb",{
                     prf[1].toFront();
                     prf[0].toFront();
                 }
+                var arr=_.get(prf,['parent','children']);
+                if(arr && arr.length){
+                    var index=_.arr.indexOf(arr,prf),o;
+                    if(index!=-1){
+                        o=arr[index];
+                        _.arr.removeFrom(arr,index);
+                        _.arr.insertAny(arr,o);
+                    }
+                }
             });
         },
         toBack:function(){
@@ -16201,6 +16228,15 @@ Class("xui.svg.connector","xui.svg.absComb",{
                 if(prf=prf._elset){
                     prf[0].toBack();
                     prf[1].toBack();
+                }
+                var arr=_.get(prf,['parent','children']);
+                if(arr && arr.length){
+                    var index=_.arr.indexOf(arr,prf),o;
+                    if(index!=-1){
+                        o=arr[index];
+                        _.arr.removeFrom(arr,index);
+                        _.arr.insertAny(arr,o,0);
+                    }
                 }
             });
         }
