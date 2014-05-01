@@ -2758,6 +2758,9 @@ Class('xui.absBox',null, {
     },
     Instance:{
         __gc:function(){
+            this.each(function(profile){
+                _.tryF(profile.__gc);
+            });
             this._nodes=0;
         },
         _get:function(index){
@@ -2959,12 +2962,40 @@ Class('xui.Profile','xui.absProfile',{
         },
         __gc:function(){
             var ns=this;
+            if(ns.$beforeDestroy){
+                _.each(ns.$beforeDestroy,function(f){
+                    _.tryF(f,[],ns);
+                });
+                delete ns.$beforeDestroy;
+            }
+            _.tryF(ns.$ondestory,[],ns);
+            if(ns.onDestroy)ns.boxing().onDestroy();
+            if(ns.destroyTrigger)ns.destroyTrigger();
+            
+            // try to clear parent host
+            var o;
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+                delete ns.host[ns.alias];
+            }
+
             ns.unLinkAll();
             _.tryF(ns.clearCache,[],ns);
             var o=_.get(ns,['box','_namePool']);
             if(o)delete o[self.alias];
+
+            //set once
+            ns.destroyed=true;
+            //afterDestroy
+            if(ns.$afterDestroy){
+                _.each(ns.$afterDestroy,function(f){
+                    _.tryF(f,[],ns);
+                });
+                delete ns.$afterDestroy;
+            }
+            if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             _.breakO([ns.properties, ns.events, ns],2);
-            ns.destroyed=1;
+            //set again
+            ns.destroyed=true;
         },
         boxing:function(){
             //cache boxing
@@ -3282,7 +3313,7 @@ Class('xui.absObj',"xui.absBox",{
                 return h;
             }
         },
-        setProperties:function(key, value){
+        setProperties:function(key, value, force){
             if(typeof key=="string"){
                 var h={};
                 h[key]=value;
@@ -3291,8 +3322,13 @@ Class('xui.absObj',"xui.absBox",{
             return this.each(function(o){
                 _.each(key, function(v,k){
                     var funName="set"+_.str.initial(k),ins=o.boxing();
-                    if(typeof ins[funName]=='function')
-                        ins[funName].call(ins, v);
+                    if(typeof ins[funName]=='function'){
+                        ins[funName].call(ins, v, !!force);
+                    }
+                    // can set hidden prop here
+                    else{
+                        o.properties[k]=v;
+                    }
                 });
             });
         },

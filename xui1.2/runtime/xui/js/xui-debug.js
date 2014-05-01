@@ -2758,6 +2758,9 @@ Class('xui.absBox',null, {
     },
     Instance:{
         __gc:function(){
+            this.each(function(profile){
+                _.tryF(profile.__gc);
+            });
             this._nodes=0;
         },
         _get:function(index){
@@ -2959,12 +2962,40 @@ Class('xui.Profile','xui.absProfile',{
         },
         __gc:function(){
             var ns=this;
+            if(ns.$beforeDestroy){
+                _.each(ns.$beforeDestroy,function(f){
+                    _.tryF(f,[],ns);
+                });
+                delete ns.$beforeDestroy;
+            }
+            _.tryF(ns.$ondestory,[],ns);
+            if(ns.onDestroy)ns.boxing().onDestroy();
+            if(ns.destroyTrigger)ns.destroyTrigger();
+            
+            // try to clear parent host
+            var o;
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+                delete ns.host[ns.alias];
+            }
+
             ns.unLinkAll();
             _.tryF(ns.clearCache,[],ns);
             var o=_.get(ns,['box','_namePool']);
             if(o)delete o[self.alias];
+
+            //set once
+            ns.destroyed=true;
+            //afterDestroy
+            if(ns.$afterDestroy){
+                _.each(ns.$afterDestroy,function(f){
+                    _.tryF(f,[],ns);
+                });
+                delete ns.$afterDestroy;
+            }
+            if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             _.breakO([ns.properties, ns.events, ns],2);
-            ns.destroyed=1;
+            //set again
+            ns.destroyed=true;
         },
         boxing:function(){
             //cache boxing
@@ -3282,7 +3313,7 @@ Class('xui.absObj',"xui.absBox",{
                 return h;
             }
         },
-        setProperties:function(key, value){
+        setProperties:function(key, value, force){
             if(typeof key=="string"){
                 var h={};
                 h[key]=value;
@@ -3291,8 +3322,13 @@ Class('xui.absObj',"xui.absBox",{
             return this.each(function(o){
                 _.each(key, function(v,k){
                     var funName="set"+_.str.initial(k),ins=o.boxing();
-                    if(typeof ins[funName]=='function')
-                        ins[funName].call(ins, v);
+                    if(typeof ins[funName]=='function'){
+                        ins[funName].call(ins, v, !!force);
+                    }
+                    // can set hidden prop here
+                    else{
+                        o.properties[k]=v;
+                    }
                 });
             });
         },
@@ -13056,6 +13092,12 @@ Class('xui.UIProfile','xui.Profile', {
             if(ns.box)
                 delete ns.box._namePool[ns.alias];
 
+            // try to clear parent host
+            var o;
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+                delete ns.host[ns.alias];
+            }
+
             //clear anti link
             ns.unLinkAll();
 
@@ -13851,7 +13893,9 @@ Class("xui.UI",  "xui.absObj", {
 
                 box=o.box;
                 
-                var autoDestroy;
+                var autoDestroy,
+                    host=o.host,
+                    alias=o.alias;
                 if(o.host&&o.host['xui.Com']&&o.host.autoDestroy){
                     o.host.autoDestroy=false;
                 }
@@ -13929,6 +13973,8 @@ Class("xui.UI",  "xui.absObj", {
                     p.append(o,paras);
                 else
                     p.append(o);
+
+                if(host)o.setHost(host,alias);
 
                 //restore children
                 _.arr.each(children,function(v){
@@ -14140,7 +14186,7 @@ Class("xui.UI",  "xui.absObj", {
                 //set hash dir
                 }else if(!!key && typeof key=='object'){
                     if(o.renderId){
-                        for(var i in key)
+                        for(var i in bak)
                             fun(o, i, bak, true);
                         for(var i in key)
                             fun(o, i, key);
@@ -14251,7 +14297,7 @@ Class("xui.UI",  "xui.absObj", {
                 //set hash dir
                 }else if(!!key && typeof key=='object'){
                     if(o.renderId){
-                        for(var i in key)
+                        for(var i in bak)
                             fun(o, i, bak, true, nodes);
                         for(var i in key)
                             fun(o, i, key, false, nodes);
@@ -33489,7 +33535,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                     box=profile.box,
                     items=profile.properties.items,
                     rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
-                    nid,item,n1,n2,n3,n4,t;
+                    nid,item,n1,n2,n3,n4,n5,t;
                 if(_.isStr(options))options={caption:options};
 
                 if(rst.length){
@@ -33522,35 +33568,38 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         n2=profile.getSubNodeByItemId('CAPTION',nid||subId);
                         n3=profile.getSubNodeByItemId('ITEM',nid||subId);
                         n4=profile.getSubNodeByItemId('LABEL',nid||subId);
+                        n5=profile.getSubNodeByItemId('BTN',nid||subId);
 
-                        if('value' in options && options.value!=item.value)
+                        if('value' in options && options.value!==item.value)
                             profile.getSubNodeByItemId('BTN',nid||subId).tagClass('-checked', !!options.value);
                             
-                        if('caption' in options&& options.caption!=item.caption){
+                        if('caption' in options&& options.caption!==item.caption){
                             n2.html(options.caption);
                             if(options.caption && !item.caption)
                                 n2.css('display','');
                             if(!options.caption && item.caption)
                                 n2.css('display','none');
                         }
-                        if('label' in options&& options.label!=item.label){
+                        if('label' in options&& options.label!==item.label){
                             n4.html(options.label);
                             if(options.label && !item.label)
                                 n4.css('display','');
                             if(!options.label && item.label)
                                 n4.css('display','none');
                         }
-                        if('disabled' in options && options.disabled!=item.disabled){
+                        if('disabled' in options && options.disabled!==item.disabled){
                             if(options.disabled)
-                                n2.addClass('xui-ui-itemdisabled');
+                                n3.addClass('xui-ui-itemdisabled');
                             else
-                                n2.removeClass('xui-ui-itemdisabled');
+                                n3.removeClass('xui-ui-itemdisabled');
+  
+                            n5.onMouseout(true,{$force:true})
                         }
-                        if('image' in options&& options.image!=item.image)
+                        if('image' in options&& options.image!==item.image)
                             n1.css('background-image',options.image);
-                        if('imagePos' in options&& options.imagePos!=item.imagePos)
+                        if('imagePos' in options&& options.imagePos!==item.imagePos)
                             n1.css('background-position',options.imagePos);
-                        if('imageClass' in options&& options.imageClass!=item.imageClass){
+                        if('imageClass' in options&& options.imageClass!==item.imageClass){
                             if(item.imageClass)
                                 n1.removeClass(item.imageClass);
                             if(options.imageClass)
