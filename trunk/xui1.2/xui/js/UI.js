@@ -169,6 +169,12 @@ Class('xui.UIProfile','xui.Profile', {
             if(ns.box)
                 delete ns.box._namePool[ns.alias];
 
+            // try to clear parent host
+            var o;
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+                delete ns.host[ns.alias];
+            }
+
             //clear anti link
             ns.unLinkAll();
 
@@ -964,7 +970,9 @@ Class("xui.UI",  "xui.absObj", {
 
                 box=o.box;
                 
-                var autoDestroy;
+                var autoDestroy,
+                    host=o.host,
+                    alias=o.alias;
                 if(o.host&&o.host['xui.Com']&&o.host.autoDestroy){
                     o.host.autoDestroy=false;
                 }
@@ -1042,6 +1050,8 @@ Class("xui.UI",  "xui.absObj", {
                     p.append(o,paras);
                 else
                     p.append(o);
+
+                if(host)o.setHost(host,alias);
 
                 //restore children
                 _.arr.each(children,function(v){
@@ -1253,7 +1263,7 @@ Class("xui.UI",  "xui.absObj", {
                 //set hash dir
                 }else if(!!key && typeof key=='object'){
                     if(o.renderId){
-                        for(var i in key)
+                        for(var i in bak)
                             fun(o, i, bak, true);
                         for(var i in key)
                             fun(o, i, key);
@@ -1364,7 +1374,7 @@ Class("xui.UI",  "xui.absObj", {
                 //set hash dir
                 }else if(!!key && typeof key=='object'){
                     if(o.renderId){
-                        for(var i in key)
+                        for(var i in bak)
                             fun(o, i, bak, true, nodes);
                         for(var i in key)
                             fun(o, i, key, false, nodes);

@@ -9,7 +9,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                     box=profile.box,
                     items=profile.properties.items,
                     rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
-                    nid,item,n1,n2,n3,n4,t;
+                    nid,item,n1,n2,n3,n4,n5,t;
                 if(_.isStr(options))options={caption:options};
 
                 if(rst.length){
@@ -42,35 +42,38 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         n2=profile.getSubNodeByItemId('CAPTION',nid||subId);
                         n3=profile.getSubNodeByItemId('ITEM',nid||subId);
                         n4=profile.getSubNodeByItemId('LABEL',nid||subId);
+                        n5=profile.getSubNodeByItemId('BTN',nid||subId);
 
-                        if('value' in options && options.value!=item.value)
+                        if('value' in options && options.value!==item.value)
                             profile.getSubNodeByItemId('BTN',nid||subId).tagClass('-checked', !!options.value);
                             
-                        if('caption' in options&& options.caption!=item.caption){
+                        if('caption' in options&& options.caption!==item.caption){
                             n2.html(options.caption);
                             if(options.caption && !item.caption)
                                 n2.css('display','');
                             if(!options.caption && item.caption)
                                 n2.css('display','none');
                         }
-                        if('label' in options&& options.label!=item.label){
+                        if('label' in options&& options.label!==item.label){
                             n4.html(options.label);
                             if(options.label && !item.label)
                                 n4.css('display','');
                             if(!options.label && item.label)
                                 n4.css('display','none');
                         }
-                        if('disabled' in options && options.disabled!=item.disabled){
+                        if('disabled' in options && options.disabled!==item.disabled){
                             if(options.disabled)
-                                n2.addClass('xui-ui-itemdisabled');
+                                n3.addClass('xui-ui-itemdisabled');
                             else
-                                n2.removeClass('xui-ui-itemdisabled');
+                                n3.removeClass('xui-ui-itemdisabled');
+  
+                            n5.onMouseout(true,{$force:true})
                         }
-                        if('image' in options&& options.image!=item.image)
+                        if('image' in options&& options.image!==item.image)
                             n1.css('background-image',options.image);
-                        if('imagePos' in options&& options.imagePos!=item.imagePos)
+                        if('imagePos' in options&& options.imagePos!==item.imagePos)
                             n1.css('background-position',options.imagePos);
-                        if('imageClass' in options&& options.imageClass!=item.imageClass){
+                        if('imageClass' in options&& options.imageClass!==item.imageClass){
                             if(item.imageClass)
                                 n1.removeClass(item.imageClass);
                             if(options.imageClass)

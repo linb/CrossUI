@@ -463,11 +463,11 @@ Class("xui.svg", "xui.UI",{
                     });
                 var arr=_.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.indexOf(arr,prf),o;
+                    var index=_.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
-                        _.arr.removeFrom(arr,index);
-                        _.arr.insertAny(arr,o);
+                        arr.splice(index,1);
+                        arr.push(o);
                     }
                 }
             });
@@ -481,11 +481,11 @@ Class("xui.svg", "xui.UI",{
                 if(prf._shadow)prf._shadow.toBack();
                 var arr=_.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.indexOf(arr,prf),o;
+                    var index=_.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
-                        _.arr.removeFrom(arr,index);
-                        _.arr.insertAny(arr,o,0);
+                        arr.splice(index,1);
+                        arr.unshift(o);
                     }
                 }
             });
@@ -930,7 +930,7 @@ Class("xui.svg", "xui.UI",{
                                     else
                                         circle.attr(dotAttr1).attr('cursor','move');
 
-                                    return createDDElem(circle, el, function (x, y, ax, ay, beForced, mx, my,ix,iy,event) {
+                                    return createDDElem(circle, el, function (x, y, ax, ay, beForced, mx, my,ix,iy,event, callback) {
                                         var paper=el.paper,
                                             ox = this.attr('cx'),
                                             oy = this.attr('cy'),
@@ -1541,6 +1541,7 @@ Class("xui.svg", "xui.UI",{
                         if(callback)callback(this, event, 'drag', this._attached);
                     },
                     start = function(mx,my,event){
+                        if(callback)callback(this, event, 'beforedragstart', this._attached);
                         this.toFront();
 
                         this.dx = this.dy = 0;
@@ -1563,9 +1564,10 @@ Class("xui.svg", "xui.UI",{
                             if(prf._ddstartFun)_.tryF(prf._ddstartFun,[prf, this._handlerIndex,this]);
                         }
 
-                        if(callback)callback(this, event, 'mousedown', this._attached);
+                        if(callback)callback(this, event, 'dragstart', this._attached);
                     },
                     end=function(event){
+                        if(callback)callback(this, event, 'beforedragend', this._attached);
                         absPos=null;
 
                         magneticPos=magneticOffPos=null;
@@ -1604,7 +1606,7 @@ Class("xui.svg", "xui.UI",{
                             t.clear();
                             delete paper._anchorShadow;
                         }
-                        if(callback)callback(this, event, 'mouseup', this._attached);
+                        if(callback)callback(this, event, 'dragend', this._attached);
                     },
                     createDDElem=function(obj,el,update,key,index){
                         obj._handlerIndex=index||0;
@@ -2666,11 +2668,11 @@ Class("xui.svg.connector","xui.svg.absComb",{
                 }
                 var arr=_.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.indexOf(arr,prf),o;
+                    var index=_.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
-                        _.arr.removeFrom(arr,index);
-                        _.arr.insertAny(arr,o);
+                        arr.splice(index,1);
+                        arr.push(o);
                     }
                 }
             });
@@ -2683,11 +2685,11 @@ Class("xui.svg.connector","xui.svg.absComb",{
                 }
                 var arr=_.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.indexOf(arr,prf),o;
+                    var index=_.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
-                        _.arr.removeFrom(arr,index);
-                        _.arr.insertAny(arr,o,0);
+                        arr.splice(index,1);
+                        arr.unshift(o);
                     }
                 }
             });
