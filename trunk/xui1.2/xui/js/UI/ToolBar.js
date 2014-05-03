@@ -299,6 +299,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             }
         },
         Behaviors:{
+            NoTips:["GROUP","HANDLER"],
             HoverEffected:{BTN:['BTN']},
             ClickEffected:{BTN:['BTN']},
             BTN:{

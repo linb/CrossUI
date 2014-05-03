@@ -75,7 +75,7 @@ Class("xui.Tips", null,{
                     return rtn(false);
                 }
 
-                var nt=_from.box.NOTIPS;
+                var nt=_from.behavior.NoTips;
                 if(nt){
                     for(var i=0,l=nt.length;i<l;i++){
                         if(id.indexOf(_from.keys[nt[i]])===0)

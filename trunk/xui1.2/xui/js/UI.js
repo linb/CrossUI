@@ -23,12 +23,12 @@ Class('xui.UIProfile','xui.Profile', {
 
                 //e.g. use div.innerHTML = ui.toHtml();
                 if(!ele.$xid)
-                    xui.UI.$addEventsHanlder(ele, true);
+                    xui.UI.$addEventsHanlder(ns,ele, true);
 
                 // for svg widget
                 if(ns._elset){
                     for(var i=1,l=ns._elset.length;i<l;i++)
-                        xui.UI.$addEventsHanlder(ns._elset[i].node, true);
+                        xui.UI.$addEventsHanlder(ns,ns._elset[i].node, true);
                 }
 
                 // unselectable="on" will kill onBlur
@@ -369,7 +369,7 @@ Class('xui.UIProfile','xui.Profile', {
             var ns=this,
                 box=ns.box,
                 str=box._rpt(ns, xui.UI.$doTemplate(ns, _.get(xui.$cache.template,[box.KEY, ns._hash]), items, key)),
-                nodes = xui.UI.$toDom(str.replace(ns._cacheR2,''), addEventHandler);
+                nodes = xui.UI.$toDom(ns, str.replace(ns._cacheR2,''), addEventHandler);
             // set custom styles for the given nodes only
             if(ns.CS){
                 ns.boxing().setCustomStyle(ns.CS,undefined,nodes);
@@ -878,7 +878,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(o=arr[i].toHtml())
                         a[a.length]=o;
                 if(a.length)
-                    xui.UI.$toDom(a.join(''));
+                    xui.UI.$toDom(ns.get(0)/*first represents all*/,a.join(''));
             }
 
             //render UIProfiles
@@ -2228,7 +2228,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
         _objectProp:{tagVar:1,dockMargin:1},
-        $toDom:function(str, addEventHandler){
+        $toDom:function(profile, str, addEventHandler){
             if(addEventHandler===false)
                 return _.str.toDom(str);
 
@@ -2236,7 +2236,7 @@ Class("xui.UI",  "xui.absObj", {
             var matrix=xui.Dom.getEmptyDiv().get(0), r=[];
             matrix.innerHTML=str;
             //add event handlers
-            this.$addEventsHanlder(matrix);
+            this.$addEventsHanlder(profile, matrix);
             for(var i=0,t=matrix.childNodes,l=t.length;i<l;i++){
                 //ensure the root nodes
                 xui.$registerNode(t[i]);
@@ -2245,7 +2245,7 @@ Class("xui.UI",  "xui.absObj", {
             matrix=null;
             return xui(r,false);
         },
-        $addEventsHanlder:function(node, includeSelf){
+        $addEventsHanlder:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
                 eh=xui.Event._eventHandler,
                 children=_.toArr(node.getElementsByTagName('*')),
@@ -2261,6 +2261,7 @@ Class("xui.UI",  "xui.absObj", {
                             v=xui.$registerNode(node);
                             v=v.eHandlers||(v.eHandlers={});
                             for(j in t){
+                                if(profile.$inDesign && j!=="onsize"&& j!=="onmousedown"&& j!=="onmouseup")continue;
                                 //attach event handler to domPurgeData
                                 v[j]=t[j];
                                 //attach event handler to dom node

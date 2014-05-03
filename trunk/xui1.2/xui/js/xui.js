@@ -2981,7 +2981,7 @@ Class('xui.Profile','xui.absProfile',{
             ns.unLinkAll();
             _.tryF(ns.clearCache,[],ns);
             var o=_.get(ns,['box','_namePool']);
-            if(o)delete o[self.alias];
+            if(o)delete o[ns.alias];
 
             //set once
             ns.destroyed=true;
