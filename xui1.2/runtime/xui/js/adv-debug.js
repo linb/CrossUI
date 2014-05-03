@@ -15351,6 +15351,7 @@ Class("xui.svg", "xui.UI",{
             HoverEffected:{KEY:'KEY'},
             ClickEffected:{KEY:'KEY'},
             onClick:function(profile, e, src){
+                if(profile.$inDesign)return false;
                 var p=profile.properties;
                 if(p.disabled)return false;
                 //onClick event
@@ -16071,6 +16072,7 @@ Class("xui.svg.absComb", "xui.svg",{
         },
         Behaviors:{
             onClick:function(profile, e, src){
+                if(profile.$inDesign)return false;
                 var p=profile.properties;
                 if(p.disabled)return false;
                 //onClick event
@@ -16079,6 +16081,7 @@ Class("xui.svg.absComb", "xui.svg",{
             },
             TEXT:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return false;
                     var p=profile.properties,rtn;
                     if(p.disabled)return false;
                     //onClick event
