@@ -2245,9 +2245,17 @@ Class("xui.UI",  "xui.absObj", {
             matrix=null;
             return xui(r,false);
         },
+        $evtsindesign:{
+            "onload":1,
+            "onunload":1,
+            "onsize":1,
+            "onmousedown":1,
+            "onmouseup":1
+        },
         $addEventsHanlder:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
                 eh=xui.Event._eventHandler,
+                hash=this.$evtsindesign,
                 children=_.toArr(node.getElementsByTagName('*')),
                 i,l,j,k,id,t,v;
 
@@ -2261,7 +2269,7 @@ Class("xui.UI",  "xui.absObj", {
                             v=xui.$registerNode(node);
                             v=v.eHandlers||(v.eHandlers={});
                             for(j in t){
-                                if(profile.$inDesign && j!=="onsize"&& j!=="onmousedown"&& j!=="onmouseup")continue;
+                                if(profile.$inDesign && !hash[j])continue;
                                 //attach event handler to domPurgeData
                                 v[j]=t[j];
                                 //attach event handler to dom node
