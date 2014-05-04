@@ -10110,7 +10110,7 @@ Class('xui.Com',null,{
                 // no UI control in com
                 if(self.getUIComponents().isEmpty()){
                     _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    _.tryF(onEnd,[null, thread, self],self.host);
+                    _.tryF(onEnd,[null, threadid, self],self.host);
                 }else{
                     // if parent is an ui object without rendered, dont render the com
                     if(!(parent && parent['xui.UI'] && !parent.get(0).renderId))
