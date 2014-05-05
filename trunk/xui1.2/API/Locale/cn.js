@@ -1046,7 +1046,7 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id.",
-                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
                 "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
@@ -1058,7 +1058,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个Com类.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
@@ -1069,8 +1069,8 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个Com类，并显示",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "beforeShow[可选参数] : Function(threadid:String, com: xui.Com), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
-                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数, 加载应用模块类成功后被调用.",
+                "beforeShow[可选参数] : Function(com: xui.Com, threadid:String), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
+                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, 线程id.",
                 "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. ",
                 "properties [可选参数] : Object, 键值对, 设置该com的属性.",
@@ -5381,7 +5381,7 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id.",
-                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
                 "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newCom.",
                 "properties [可选参数] : Object, 键值对,com的属性.",
@@ -5412,7 +5412,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个新的应用模块类, 或加载一个应用模块类, 生成并返回它.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function(err:Error/String, threadid:String, com: xui.Com), 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
                 "properties [可选参数] : Object, 键值对,com的属性.",
                 "events [可选参数] : Object, 键值对,com的事件."
