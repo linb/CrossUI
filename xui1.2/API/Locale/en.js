@@ -1049,7 +1049,7 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [Required] : String, the Com id.",
-                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
@@ -1061,7 +1061,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",
@@ -1072,8 +1072,8 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a com and show it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "beforeShow[Optional] : Function(threadid:String, com: xui.Com), the callback function, it will be executed once before the Com will be showed. If returns false, the default show function will be ignored",
-                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "beforeShow[Optional] : Function(com: xui.Com, threadid:String), the callback function, it will be executed once before the Com will be showed. If returns false, the default show function will be ignored",
+                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
@@ -4834,7 +4834,7 @@ _.set(xui.Locale,["en","app"], {
                 "abox.merge((new xui.UI.Dialog()).setHost(com, 'dialog1'));"+
                 "com.setComponents(abox);"+
 
-                "com.show(function(com){"+
+                "com.show(function(err,com){"+
                 "   order.push('onEnd'); "+
                 "});",
 
@@ -4951,7 +4951,7 @@ _.set(xui.Locale,["en","app"], {
                 "});" +
                 "var com = new App2;" +
                 "com._info=[];"+
-                "com.show(function(com){com.dialog1.setHtml(com._info.join('<br />'));});"
+                "com.show(function(err,com){com.dialog1.setHtml(com._info.join('<br />'));});"
             ]
         },
         'load':{
@@ -4967,7 +4967,7 @@ _.set(xui.Locale,["en","app"], {
                 "////Uses the beblow line to load a specified application, and append its UI to 'document.body' if its UI exits. \n"+
                 "//xui.Com.load('RootClassName',function(){alert('ok')},'en')\n",
                 "xui.Com.load('App.Test1',function(){alert('ok')});",
-                "xui.Com.load('App.Test1',function(com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
+                "xui.Com.load('App.Test1',function(err,com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
         prototype:{
@@ -5368,7 +5368,7 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"xui.Com",
             $paras:[
                 "id [Required] : String, the Com id.",
-                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
                 "properties [Optional] : Object, key/value pairs, com's properties",
@@ -5399,7 +5399,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
             $paras:[
                 "cls [Required] : String, the Com Class path name.",
-                "onEnd [Optional] : Function(err:Error/String, threadid:String, com: xui.Com), the callback function, it will be executed once when the Com is created successfully.",
+                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "properties [Optional] : Object, key/value pairs, com's properties",
                 "events [Optional] : Object, key/value pairs, com's events.",

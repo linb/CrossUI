@@ -10110,7 +10110,7 @@ Class('xui.Com',null,{
                 // no UI control in com
                 if(self.getUIComponents().isEmpty()){
                     _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    _.tryF(onEnd,[null, threadid, self],self.host);
+                    _.tryF(onEnd,[null, self, threadid],self.host);
                 }else{
                     // if parent is an ui object without rendered, dont render the com
                     if(!(parent && parent['xui.UI'] && !parent.get(0).renderId))
@@ -10124,7 +10124,7 @@ Class('xui.Com',null,{
                             }
                         });
                     }
-                    _.tryF(onEnd,[null, threadid, self],self.host);
+                    _.tryF(onEnd,[null, self, threadid],self.host);
                 }
             };
             self.threadid=threadid;
@@ -10149,7 +10149,7 @@ Class('xui.Com',null,{
             var self=this;
 
             if(self.created){
-                _.tryF(onEnd,[null, threadid, self],self.host);
+                _.tryF(onEnd,[null, self, threadid],self.host);
                 return;
             }
 
@@ -10226,7 +10226,7 @@ Class('xui.Com',null,{
             });
             funs.push(function(threadid){
                 self.created=true;
-                _.tryF(onEnd,[null, threadid, self],self.host);
+                _.tryF(onEnd,[null, self, threadid],self.host);
             });
             if(threadid===false){
                 _.arr.each(funs,function(fun){
@@ -12497,11 +12497,11 @@ Class("xui.Tips", null,{
             return ns.newCom.apply(ns,arguments)
         };
         xui.showCom=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
-            return ns.getCom(cls, function(err, threadid, com){
-                if(!err && false!==_.tryF(beforeShow, [threadid, com], com)){
+            return ns.getCom(cls, function(err, com, threadid){
+                if(!err && false!==_.tryF(beforeShow, [com, threadid], com)){
                     this.show.apply(com, [onEnd,parent,subId,threadid,left,top]);
                 }else{
-                    _.tryF(onEnd, [err, threadid, com], com);
+                    _.tryF(onEnd, [err, com, threadid], com);
                 }
             }, threadid, cached, properties, events);
         };
@@ -12546,7 +12546,7 @@ Class("xui.Tips", null,{
         getCom:function(id, onEnd, threadid, cached, properties, events){
             if(!id){
                 var e=new Error("No id");
-                _.tryF(onEnd,[e,threadid,null]);
+                _.tryF(onEnd,[e,null,threadid]);
                 if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                 throw e;
                 return;
@@ -12558,7 +12558,7 @@ Class("xui.Tips", null,{
                 clsPath;
 
             if(cached && c[id] && !c[id].destroyed){
-                _.tryF(onEnd, [null,threadid,c[id]], c[id]);
+                _.tryF(onEnd, [null,c[id],threadid], c[id]);
                 return c[id];
             }else{
                 // if no configure
@@ -12587,7 +12587,7 @@ Class("xui.Tips", null,{
                         if(config.cached!==false)
                             xui.ComFactory.setCom(id, o);
 
-                        var args = [function(err,threadid,com){
+                        var args = [function(err,com,threadid){
                             var arr = com.getUIComponents().get(),
                                 fun=function(arr,subcfg,firstlayer){
                                     var self1 = arguments.callee;
@@ -12629,8 +12629,7 @@ Class("xui.Tips", null,{
                         if(onEnd)
                             xui.Thread(threadid).insert({
                                 task:onEnd,
-                                // have to add [null] to block the extra threadid added by xui.Thread
-                                args:[null,threadid,o],
+                                args:[null,o,threadid],
                                 scope:o
                             });
                         //latter
@@ -12646,7 +12645,7 @@ Class("xui.Tips", null,{
                             });
                         }else{
                             var e=new Error("Variable not found (maybe SyntaxError) - " + clsPath);
-                            _.tryF(onEnd,[e,threadid,null]);
+                            _.tryF(onEnd,[e,null,threadid]);
                             if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                             throw e;
                         }
@@ -12656,14 +12655,14 @@ Class("xui.Tips", null,{
                             f(0,0,threadid);
                         else{
                             var e=new Error("No class name");
-                            _.tryF(onEnd,[e, threadid,null]);
+                            _.tryF(onEnd,[e,null, threadid]);
                             if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                             throw e;
                         }
                     }, true,threadid,{
                         retry:0,
                         onFail:function(e){
-                            _.tryF(onEnd,[e,threadid,null]);
+                            _.tryF(onEnd,[e,null,threadid]);
                         }
                     });
                 },null,threadid);

@@ -56,8 +56,8 @@ Class('App', 'xui.Com',{
             case 'arr':
                 return [{id:'suba',caption:'sub item a'}, {id:'subb',caption:'sub item b'}];
             case 'com':
-                xui.ComFactory.newCom('App.ACom',function(err, threadid){
-                    this.create(function(com, threadid){
+                xui.ComFactory.newCom('App.ACom',function(err, com, threadid){
+                    this.create(function(err, com, threadid){
                         callback(com.getUIComponents());
                     },threadid)
                 });
