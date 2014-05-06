@@ -27,8 +27,8 @@ html, .xui-uibg-base{
    background-color:#4E5866;
 }
 .xui-tips-c {
-    border:solid 1px #3B2B2B;
-    background-color:#87B171;
+    border:solid 1px #292F37;
+    background-color:#5D6878;
 }
 
 /*
@@ -402,7 +402,7 @@ html, .xui-uibg-base{
 
 /*xui.UI.Tabs*/
 .xui-tabs-items{
-    padding:0 4px 4px 0;
+    padding:0 0 4px 0;
 }
 .xui-tabs-list{
     background-image: url(Tabs/line.gif);
@@ -412,6 +412,9 @@ html, .xui-uibg-base{
 }
 .xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
     background-image: url(Public/button.gif);
+}
+.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop, .xui-tabs-left-mouseover, .xui-tabs-right-mouseover, .xui-tabs-drop-mouseover{
+    background-image: url(Tabs/cmds.png);
 }
 
 /*xui.UI.ButtonViews*/

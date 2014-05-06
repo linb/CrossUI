@@ -160,8 +160,8 @@ Class("xui.Tips", null,{
                         self.n = node.first();
                         self._n = _ruler.first();
                         if(xui.Dom.css3Support("boxShadow")){
-                            node.css("boxShadow","4px 4px 4px #888");
-                            _ruler.css("boxShadow","4px 4px 4px #888");
+                            node.css("boxShadow","2px 2px 2px #5D6878");
+                            _ruler.css("boxShadow","2px 2px 2px #5D6878");
                         }else if(typeof node.addShadow == 'function'){
                             node.addShadow();
                             _ruler.addShadow();

@@ -152,7 +152,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             profile[cm]=profile[sms]=profile[hl]=null;
             return this;
         },
-        hide:function(triggerEvent){
+        hide:function(triggerEvent, e){
             var t,
                 profile=this.get(0),
                 root=profile.getRoot(),
@@ -161,7 +161,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cm='$childPopMenu';
 
             if(false!==triggerEvent)
-                if(false===profile.boxing().beforeHide(profile))
+                if(false===profile.boxing().beforeHide(profile, e))
                     return this;
 
             if(!root || root.css('display')=='none')return;
@@ -779,7 +779,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         }),
         EventHandlers:{
             onShowSubMenu:function(profile, item, src){},
-            beforeHide:function(profile){},
+            beforeHide:function(profile,e){},
             onHide:function(profile){},
             onMenuSelected:function(profile, item, src){}
         },
@@ -799,7 +799,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 });
                 if(!b){
                     while(b=profile.$parentPopMenu)profile=b;
-                    profile.boxing().hide();
+                    profile.boxing().hide(true,e);
                     if(profile.$popGrp)
                         profile.$popGrp.length=0;
                 }
