@@ -29629,68 +29629,35 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
             return this;
         },
-        _scrollToBottom:function(){
-            return this.each(function(profile){
-                var o = profile.getSubNode('ITEMS'),
-                border = profile.getSubNode('LIST'),
-                y = o.left(),
-                offset,
-                h = o.width(),
-                b=false,
-                bh = border.width();
-                if(bh<h+y){
-                    if(!profile.$scrollStep)profile.$scrollStep=1;
-
-                    if(profile.$scrollStep<5)
-                        profile.$scrollStep = profile.$scrollStep*1.01;
-
-                    y -= profile.$scrollStep;
-                    if(bh>h+y){
-                        y=bh-h;
-                        b=true;
-                    }
-                    o.left(y);
-                    if(b){
-                        profile.getSubNode('RIGHT').css('display','none');
-                        profile.$scrollTobottom=false;
-                        profile.$scrollStep=null;
-                    }else{
-                        profile.getSubNode('LEFT').css('display','block');
-                        if(profile.$scrollTobottom)
-                            _.asyRun(arguments.callee, 0, [profile], this);
-                    }
+        _scrollToBottom:function(node, asy){
+            var profile=this.get(0),
+                o = profile.getSubNode('ITEMS'),
+                w = profile.getSubNode('LIST').width();
+            if(node){
+                o.left(w-(node.offsetLeft+node.offsetWidth));
+                if(!node.nextSibling){
+                    profile.getSubNode('RIGHT').css('display','none');
+                }else{
+                    if(asy!==false && node.nextSibling)
+                        profile.$scrollTobottom=_.asyRun(arguments.callee, 600, [node.nextSibling], this);
                 }
-            });
+                profile.getSubNode('LEFT').css('display','block');
+            }
+
         },
-        _scrollToTop:function(){
-            return this.each(function(profile){
-                var o = profile.getSubNode('ITEMS'),
-                y = o.left(),
-                b=false;
-
-                if(y<0){
-                    if(!profile.$scrollStep)profile.$scrollStep=1;
-
-                    if(profile.$scrollStep<5)
-                        profile.$scrollStep = profile.$scrollStep*1.01;
-
-                    y += profile.$scrollStep;
-                    if(y>=-1){
-                        y=0;
-                        b=true;
-                    }
-                    o.left(y);
-                    if(b){
-                        profile.getSubNode('LEFT').css('display','none');
-                        profile.$scrollToTop=false;
-                        profile.$scrollStep=null;
-                    }else{
-                        profile.getSubNode('RIGHT').css('display','block');
-                        if(profile.$scrollToTop)
-                            _.asyRun(arguments.callee, 0, [profile], this);
-                    }
+        _scrollToTop:function(node, asy){
+            var profile=this.get(0),
+                o = profile.getSubNode('ITEMS');
+            if(node){
+                o.left(-node.offsetLeft);
+                if(!node.previousSibling){
+                    profile.getSubNode('LEFT').css('display','none');
+                }else{
+                    if(asy!==false && node.previousSibling)
+                        profile.$scrollToTop=_.asyRun(arguments.callee, 600, [node.previousSibling], this);
                 }
-            });
+                profile.getSubNode('RIGHT').css('display','block');
+            }
         }
     },
     Static:{
@@ -29709,9 +29676,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         text:"{items}",
                         style:'{HAlign}'
                     },
-                    LEFT:{},
-                    RIGHT:{},
-                    DROP:{}
+                    LEFT:{
+                        className:'xui-ui-unselectable'
+                    },
+                    RIGHT:{
+                        className:'xui-ui-unselectable'
+                    },
+                    DROP:{
+                        className:'xui-ui-unselectable'
+                    }
                 }
             },
             PNAELS:{
@@ -30209,28 +30182,61 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             LEFT:{
                 onMouseover:function(profile, e, src){
-                    profile.$scrollToTop=true;
-                    profile.boxing()._scrollToTop();
+                     xui(src).css('display','none');
+                     var d=xui(src).get(0).ownerDocument||document;
+                        pos=xui.Event.getPos(e),
+                        node=d.elementFromPoint(pos.left,pos.top),
+                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
+                     xui(src).css('display','block');
+                     if(pnode=pnode.get(0)){
+                        profile.boxing()._scrollToTop(pnode);
+                     }
+                     xui(src).css('display','block');
                 },
                 onMouseout:function(profile, e, src){
-                    profile.$scrollToTop=false;
-                    profile.$scrollStep=null;
+                    _.clearTimeout(profile.$scrollToTop);
                 },
                 onClick:function(profile, e, src){
-                    profile.$scrollStep*=2;
+                    xui(src).css('display','none');
+                    var d=xui(src).get(0).ownerDocument||document;
+                        pos=xui.Event.getPos(e),
+                        node=d.elementFromPoint(pos.left,pos.top),
+                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
+                     xui(src).css('display','block');
+                     if(pnode=pnode.get(0)){
+                        if(pnode.previousSibling)pnode=pnode.previousSibling;
+                        _.clearTimeout(profile.$scrollToTop);
+                        profile.boxing()._scrollToTop(pnode,false);
+                     }
                 }
             },
             RIGHT:{
                 onMouseover:function(profile, e, src){
-                    profile.$scrollTobottom=true;
-                    profile.boxing()._scrollToBottom();
+                    xui(src).css('display','none');
+                    var d=xui(src).get(0).ownerDocument||document;
+                        pos=xui.Event.getPos(e),
+                        node=d.elementFromPoint(pos.left,pos.top),
+                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
+                     xui(src).css('display','block');
+                     if((pnode=pnode.get(0)) && (pnode=pnode.nextSibling)){
+                        profile.boxing()._scrollToBottom(pnode);
+                     }
                 },
                 onMouseout:function(profile, e, src){
-                    profile.$scrollTobottom=false;
-                    profile.$scrollStep=null;
+                    _.clearTimeout(profile.$scrollTobottom);
                 },
                 onClick:function(profile, e, src){
-                    profile.$scrollStep*=2;
+                     xui(src).css('display','none');
+                     var d=xui(src).get(0).ownerDocument||document;
+                        pos=xui.Event.getPos(e),
+                        node=d.elementFromPoint(pos.left,pos.top),
+                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
+                     xui(src).css('display','block');
+                     if(pnode=pnode.get(0)){
+                        if(pnode.nextSibling)pnode=pnode.nextSibling;
+                         _.clearTimeout(profile.$scrollTobottom);
+                        profile.boxing()._scrollToBottom(pnode,false);
+                     }
                 }
             },
             DROP:{
