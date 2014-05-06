@@ -353,14 +353,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
-                ITEMS:{
+                LISTI:{
                     tagName : 'div',
-                    className:'xui-ui-unselectable',
-                    text:"{items}",
-                    style:'{HAlign}'
-                },
-                LEFT:{},
-                RIGHT:{}
+                    ITEMS:{
+                        tagName : 'div',
+                        className:'xui-ui-unselectable',
+                        text:"{items}",
+                        style:'{HAlign}'
+                    },
+                    LEFT:{},
+                    RIGHT:{},
+                    DROP:{}
+                }
             },
             PNAELS:{
                 $order:1,
@@ -444,28 +448,59 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 position:'absolute',
                 top:0,
                 left:0,
-                height:'16px',
+                height:'26px',
                 width:'16px',
                 'z-index':'10',
-                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-image': xui.UI.$bg('cmds.png', ''),
                 'background-repeat':'no-repeat',
-                'background-position':'-152px -244px'
+                'background-position':'left top'
+            },
+            "LEFT-mouseover":{
+                'background-image': xui.UI.$bg('cmds.png', ''),
+                'background-position':'-16px top'
             },
             RIGHT:{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
                 top:0,
-                right:0,
-                height:'16px',
+                right:"16px",
+                height:'26px',
                 width:'16px',
                 'z-index':'10',
-                'background-image': xui.UI.$bg('icons.gif', '', true),
+                'background-image': xui.UI.$bg('cmds.png', ''),
                 'background-repeat':'no-repeat',
-                'background-position':'-170px -244px'
+                'background-position':'-32px top'
+            },
+            "RIGHT-mouseover":{
+                'background-image': xui.UI.$bg('cmds.png', ''),
+                'background-position':'-48px top'
+            },
+            DROP:{
+                cursor:'pointer',
+                display:'none',
+                position:'absolute',
+                top:0,
+                right:0,
+                height:'26px',
+                width:'16px',
+                'z-index':'10',
+                'background-image': xui.UI.$bg('cmds.png', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'-64px top'
+            },
+            "DROP-mouseover":{
+                'background-image': xui.UI.$bg('cmds.png', ''),
+                'background-position':'-80px top'
+            },
+            LISTI:{
+                position:'relative',
+                left:0,
+                top:0,
+                overflow:"hidden"
             },
             ITEMS:{
-                padding:'0 4px 2px 0',
+                padding:'0 0 2px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -559,7 +594,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DroppableKeys:['PANEL','KEY', 'ITEM'],
             PanelKeys:['PANEL'],
             DraggableKeys:['ITEM'],
-            HoverEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
+            HoverEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP',LEFT:"LEFT",RIGHT:"RIGHT",DROP:"DROP"},
             ClickEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
             onSize:xui.UI.$onSize,
             OPT:{
@@ -849,6 +884,65 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 onClick:function(profile, e, src){
                     profile.$scrollStep*=2;
                 }
+            },
+            DROP:{
+                onMouseover:function(profile, e, src){
+                    var menu=profile._droppopmenu;
+                    if(menu)return;
+
+                    var ins=profile.boxing(),
+                        items=profile.properties.items,
+                        nitems=[],
+                        l=items.length,
+                        ll;
+                    if(items.length>10){
+                        ll=Math.ceil(l/10);
+                        for(var i=0;i<ll;i++)
+                            nitems.push({caption:(i*10+1) + " - " + Math.min(l,((i+1)*10+1)), sub:[]});
+                        _.arr.each(items,function(item,i){
+                            nitems[parseInt(i/10)].sub.push(_.clone(item,true));
+                        });
+                    }else{
+                        nitems=_.clone(items,true);
+                    }
+                    //POPMENU
+                    menu=profile._droppopmenu=new xui.UI.PopMenu({
+                        items:nitems,
+                        autoHide:true
+                    },{onMenuSelected:function(profile, item){
+                        ins.fireItemClickEvent(item.id);
+                    },
+                    beforeHide:function(p,e){
+                        if(e){
+                            var node=xui(src),
+                            p1=xui.Event.getPos(e),
+                            size=node.cssSize(),
+                            add=3,
+                            p2=node.offset();
+
+                            if(p1.left>p2.left && p1.top>p2.top-add && p1.left<p2.left+size.width && p1.top<p2.top+size.height){
+                                return false;
+                            }
+                        }
+                    },onHide:function(){
+                        profile._droppopmenu.destroy();
+                        delete profile._droppopmenu;
+                    }});
+                    menu.pop(src);
+                },
+                onMouseout:function(profile, e, src){
+                    var pop;
+                    if(pop=profile._droppopmenu){
+                        var node=pop.get(0).getRoot(),
+                        p1=xui.Event.getPos(e),
+                        size=node.cssSize(),
+                        add=3,
+                        p2=node.offset();
+
+                        if(p1.left>p2.left && p1.top>p2.top-add && p1.left<p2.left+size.width && p1.top<p2.top+size.height){}else
+                            pop.hide();
+                    }
+                }
             }
         },
         DataModel:{
@@ -1117,6 +1211,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 l=items.left(),
                 left =  profile.getSubNode('LEFT'),
                 right =  profile.getSubNode('RIGHT'),
+                drop =  profile.getSubNode('DROP')
                 wi=0,
                 sl=0,sw=0;
             items.children().each(function(item){
@@ -1156,7 +1251,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             left.css('display', profile._$scroll_r ? 'block' : 'none');
             right.css('display', profile._$scroll_l ? 'block' : 'none');
-
+            drop.css('display', (profile._$scroll_l||profile._$scroll_r) ? 'block' : 'none');
         }
     }
 });
