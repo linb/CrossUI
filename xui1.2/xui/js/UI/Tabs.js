@@ -320,23 +320,20 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
-                LISTI:{
+                ITEMS:{
                     tagName : 'div',
-                    ITEMS:{
-                        tagName : 'div',
-                        className:'xui-ui-unselectable',
-                        text:"{items}",
-                        style:'{HAlign}'
-                    },
-                    LEFT:{
-                        className:'xui-ui-unselectable'
-                    },
-                    RIGHT:{
-                        className:'xui-ui-unselectable'
-                    },
-                    DROP:{
-                        className:'xui-ui-unselectable'
-                    }
+                    className:'xui-ui-unselectable',
+                    text:"{items}",
+                    style:'{HAlign}'
+                },
+                LEFT:{
+                    className:'xui-ui-unselectable'
+                },
+                RIGHT:{
+                    className:'xui-ui-unselectable'
+                },
+                DROP:{
+                    className:'xui-ui-unselectable'
                 }
             },
             PNAELS:{
@@ -465,12 +462,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             "DROP-mouseover":{
                 'background-image': xui.UI.$bg('cmds.png', ''),
                 'background-position':'-80px top'
-            },
-            LISTI:{
-                position:'relative',
-                left:0,
-                top:0,
-                overflow:"hidden"
             },
             ITEMS:{
                 padding:'0 0 2px 0',
