@@ -3060,11 +3060,12 @@ Class("xui.UI",  "xui.absObj", {
                 t,v,o;
 
             for(var i in hash){
-                o=hash[i];
-                t=i.replace(r1,function(a,b,c){return  b + '.' + (ks[c]||c)}).toLowerCase();
-                o.$order=parseInt(o.$order,10)||0;
-                o.$=t;
-                h[h.length]=o;
+                if(o=hash[i]){
+                    t=i.replace(r1,function(a,b,c){return  b + '.' + (ks[c]||c)}).toLowerCase();
+                    o.$order=parseInt(o.$order,10)||0;
+                    o.$=t;
+                    h[h.length]=o;
+                }
             };
             h.sort(function(x,y){
                 x=x.$order;y=y.$order;

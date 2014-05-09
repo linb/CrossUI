@@ -820,7 +820,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     xui.use(src).left(-profile._$scroll_r + dd.offset.x);
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._adjustScroll(profile);
+                    if(profile.box._adjustScroll)profile.box._adjustScroll(profile);
                 }
             },
             LEFT:{
@@ -939,6 +939,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         if(p1.left>p2.left && p1.top>p2.top-add && p1.left<p2.left+size.width && p1.top<p2.top+size.height){}else
                             pop.hide();
                     }
+                },
+                onClick:function(p, e, src){
+                    xui(src).onMouseover(true);
                 }
             }
         },
