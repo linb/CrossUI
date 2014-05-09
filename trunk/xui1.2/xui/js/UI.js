@@ -5466,16 +5466,18 @@ new function(){
                 var prop=prf.properties, ins=prf.boxing();
                 if(prop.iframeAutoLoad){
                     ins.getContainer().css('overflow','hidden');
-                    if(typeof prop.iframeAutoLoad=='string')
-                        prop.iframeAutoLoad={url:prop.iframeAutoLoad};
-                    var hash=prop.iframeAutoLoad,
+                    var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:_.clone(prop.iframeAutoLoad,true),
                         id="biframe_"+_(),
                         e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-                    if(!hash.query)hash.query={};
-                    hash.query._rand=_();
-                    prop.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
-                    ifr.src=hash.url;
+
+                    _if.url=xui.adjustRes(_if.url,false,true);
+
+                    if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+
+                    if(!_if.query)_if.query={};
+                    _if.query._rand=_();                    
+                    ifr.src=_if.url;
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';
@@ -5485,16 +5487,15 @@ new function(){
                     ifr.width='100%';
                     ifr.height='100%';
                     ins.append(ifr);
-                    xui.Dom.submit(hash.url, hash.query, hash.method, id, hash.enctype);
+                    xui.Dom.submit(_if.url, _if.query, _if.method, id, _if.enctype);
                 }else if(prop.ajaxAutoLoad){
-                    if(typeof prop.ajaxAutoLoad=='string')
-                        prop.ajaxAutoLoad={url:prop.ajaxAutoLoad};
-                    var hash=prop.ajaxAutoLoad,options={rspType:"text"};
-                    if(!hash.query)hash.query={};
-                    hash.query._rand=_();
-                    _.merge(options, hash.options);
+                    var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:_.clone(prop.ajaxAutoLoad,true),
+                        options={rspType:"text"};
+                    if(!_ajax.query)_ajax.query={};
+                    _ajax.query._rand=_();
+                    _.merge(options, _ajax.options);
                     ins.busy();
-                    xui.Ajax(hash.url, hash.query, function(rsp){
+                    xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                         var n=xui.create("div");
                         n.html(rsp,false,true);
                         ins.append(n.children());

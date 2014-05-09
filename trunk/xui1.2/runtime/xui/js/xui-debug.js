@@ -979,7 +979,7 @@ _.merge(xui,{
     adjustRes:function(str, wrap, onlyBraces){
         wrap=wrap?xui.wrapRes:xui.getRes;
         return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n){
-            return c=='$' ? d : f=='$' ? wrap(g) : ((onlyBraces?0:i=='@')||m=="{") ? ((j=xui.SC.get(i=="@"?j:n)) || (_.isSet(j)?j:"")) : a;
+            return c=='$' ? d : (!onlyBraces&&f=='$') ? wrap(g) : ((onlyBraces?0:i=='@')||m=="{") ? ((j=xui.SC.get(i=="@"?j:n)) || (_.isSet(j)?j:"")) : a;
             }): str;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
@@ -18388,16 +18388,18 @@ new function(){
                 var prop=prf.properties, ins=prf.boxing();
                 if(prop.iframeAutoLoad){
                     ins.getContainer().css('overflow','hidden');
-                    if(typeof prop.iframeAutoLoad=='string')
-                        prop.iframeAutoLoad={url:prop.iframeAutoLoad};
-                    var hash=prop.iframeAutoLoad,
+                    var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:_.clone(prop.iframeAutoLoad,true),
                         id="biframe_"+_(),
                         e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-                    if(!hash.query)hash.query={};
-                    hash.query._rand=_();
-                    prop.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
-                    ifr.src=hash.url;
+
+                    _if.url=xui.adjustRes(_if.url,false,true);
+
+                    if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+
+                    if(!_if.query)_if.query={};
+                    _if.query._rand=_();                    
+                    ifr.src=_if.url;
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';
@@ -18407,16 +18409,15 @@ new function(){
                     ifr.width='100%';
                     ifr.height='100%';
                     ins.append(ifr);
-                    xui.Dom.submit(hash.url, hash.query, hash.method, id, hash.enctype);
+                    xui.Dom.submit(_if.url, _if.query, _if.method, id, _if.enctype);
                 }else if(prop.ajaxAutoLoad){
-                    if(typeof prop.ajaxAutoLoad=='string')
-                        prop.ajaxAutoLoad={url:prop.ajaxAutoLoad};
-                    var hash=prop.ajaxAutoLoad,options={rspType:"text"};
-                    if(!hash.query)hash.query={};
-                    hash.query._rand=_();
-                    _.merge(options, hash.options);
+                    var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:_.clone(prop.ajaxAutoLoad,true),
+                        options={rspType:"text"};
+                    if(!_ajax.query)_ajax.query={};
+                    _ajax.query._rand=_();
+                    _.merge(options, _ajax.options);
                     ins.busy();
-                    xui.Ajax(hash.url, hash.query, function(rsp){
+                    xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                         var n=xui.create("div");
                         n.html(rsp,false,true);
                         ins.append(n.children());
@@ -30461,17 +30462,17 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     item._$ini=true;
                 if(item.iframeAutoLoad){
                     box.getPanel(item.id).css('overflow','hidden');
-
-                    if(typeof item.iframeAutoLoad=='string')
-                        item.iframeAutoLoad={url:item.iframeAutoLoad};
-                    var hash=item.iframeAutoLoad,
+                    var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:_.clone(item.iframeAutoLoad,true),
                         id="diframe_"+_(),
                         e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-                    item.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
-                    if(!hash.query)hash.query={};
-                    hash.query._rand=_();
-                    ifr.src=hash.url;
+
+                    _if.url=xui.adjustRes(_if.url,false,true);
+
+                    if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+                    if(!_if.query)_if.query={};
+                    _if.query._rand=_();
+                    ifr.src=_if.url;
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';
@@ -30481,16 +30482,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     ifr.width='100%';
                     ifr.height='100%';
                     box.getPanel(item.id).html("").append(ifr);
-                    xui.Dom.submit(hash.url, hash.query, hash.method, id, hash.enctype);
+                    xui.Dom.submit(_if.url, _if.query, _if.method, id, _if.enctype);
                 }else if(item.ajaxAutoLoad){
-                    if(typeof item.ajaxAutoLoad=='string')
-                        item.ajaxAutoLoad={url:item.ajaxAutoLoad};
-                    var hash=item.ajaxAutoLoad,options={rspType:"text"};
-                    _.merge(options, hash.options);
-                    if(!hash.query)hash.query={};
-                    hash.query._rand=_();
+                    var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:_.clone(item.ajaxAutoLoad,true),
+                        options={rspType:"text"};
+                    _.merge(options, _ajax.options);
+                    if(!_ajax.query)_ajax.query={};
+                    _ajax.query._rand=_();
                     box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
-                    xui.Ajax(hash.url, hash.query, function(rsp){
+                    xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                         var n=xui.create("div");
                         n.html(rsp,false,true);
                         box.getPanel(item.id).html("").append(n.children());
