@@ -1,4 +1,14 @@
 Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
+    Initialize:function(){
+        var t=this.getTemplate(),keys=this.$Keys;
+        delete t.LIST;
+        delete keys.PNAELS;
+        this.setTemplate(t);
+        delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;delete keys.LIST;delete keys.PNAELS;
+        _.filter(this.getAppearance(),function(o,i){
+            return !!keys[i.split("-")[0]];
+        });
+    },    
     Instance:{
         _setCtrlValue:function(value,init){
             this.each(function(profile){

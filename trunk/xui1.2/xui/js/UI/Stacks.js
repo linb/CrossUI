@@ -1,12 +1,14 @@
 Class("xui.UI.Stacks", "xui.UI.Tabs",{
     Initialize:function(){
-        var t=this.getTemplate();
+        var t=this.getTemplate(),keys=this.$Keys;
         t.BOX={tagName:'div',LIST:t.LIST, PNAELS:t.PNAELS};
         delete t.LIST;
         delete t.PNAELS;
-        delete t.LEFT;
-        delete t.TOP;
         this.setTemplate(t);
+        delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
+        _.filter(this.getAppearance(),function(o,i){
+            return !!keys[i.split("-")[0]];
+        });
     },
     Static:{
         Appearances:{

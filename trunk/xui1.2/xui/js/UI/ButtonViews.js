@@ -1,10 +1,18 @@
 Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
-    Initialize:function(){
-        var t = this.getTemplate();
+    Initialize:function(){        
+        var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibg-bar xui-uiborder-outset';
-        delete t.LEFT;
-        delete t.TOP;
+        delete t.LIST.LEFT;
+        delete t.LIST.RIGHT;
+        delete t.LIST.DROP;
         this.setTemplate(t);
+        
+        delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
+        
+        _.filter(this.getAppearance(),function(o,i){
+            return !!keys[i.split("-")[0]];
+        });
+
     },
     Static:{
         Appearances:{

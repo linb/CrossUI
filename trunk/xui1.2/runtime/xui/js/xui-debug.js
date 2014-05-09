@@ -15982,11 +15982,12 @@ Class("xui.UI",  "xui.absObj", {
                 t,v,o;
 
             for(var i in hash){
-                o=hash[i];
-                t=i.replace(r1,function(a,b,c){return  b + '.' + (ks[c]||c)}).toLowerCase();
-                o.$order=parseInt(o.$order,10)||0;
-                o.$=t;
-                h[h.length]=o;
+                if(o=hash[i]){
+                    t=i.replace(r1,function(a,b,c){return  b + '.' + (ks[c]||c)}).toLowerCase();
+                    o.$order=parseInt(o.$order,10)||0;
+                    o.$=t;
+                    h[h.length]=o;
+                }
             };
             h.sort(function(x,y){
                 x=x.$order;y=y.$order;
@@ -30168,7 +30169,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     xui.use(src).left(-profile._$scroll_r + dd.offset.x);
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._adjustScroll(profile);
+                    if(profile.box._adjustScroll)profile.box._adjustScroll(profile);
                 }
             },
             LEFT:{
@@ -30287,6 +30288,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         if(p1.left>p2.left && p1.top>p2.top-add && p1.left<p2.left+size.width && p1.top<p2.top+size.height){}else
                             pop.hide();
                     }
+                },
+                onClick:function(p, e, src){
+                    xui(src).onMouseover(true);
                 }
             }
         },
@@ -30601,13 +30605,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
     }
 });Class("xui.UI.Stacks", "xui.UI.Tabs",{
     Initialize:function(){
-        var t=this.getTemplate();
+        var t=this.getTemplate(),keys=this.$Keys;
         t.BOX={tagName:'div',LIST:t.LIST, PNAELS:t.PNAELS};
         delete t.LIST;
         delete t.PNAELS;
-        delete t.LEFT;
-        delete t.TOP;
         this.setTemplate(t);
+        delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
+        _.filter(this.getAppearance(),function(o,i){
+            return !!keys[i.split("-")[0]];
+        });
     },
     Static:{
         Appearances:{
@@ -30732,12 +30738,20 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
     }
 });
 Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
-    Initialize:function(){
-        var t = this.getTemplate();
+    Initialize:function(){        
+        var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibg-bar xui-uiborder-outset';
-        delete t.LEFT;
-        delete t.TOP;
+        delete t.LIST.LEFT;
+        delete t.LIST.RIGHT;
+        delete t.LIST.DROP;
         this.setTemplate(t);
+        
+        delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
+        
+        _.filter(this.getAppearance(),function(o,i){
+            return !!keys[i.split("-")[0]];
+        });
+
     },
     Static:{
         Appearances:{
