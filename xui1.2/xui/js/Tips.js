@@ -144,6 +144,9 @@ Class("xui.Tips", null,{
                     tips._cancel();
                 return event.$FALSE;
             }
+        },'$Tips',-1)
+        .afterMouseup(function(obj, e){
+            tips._cancel();
         },'$Tips',-1);
 
         this._Types = {

@@ -198,7 +198,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         
         ////
         fireItemClickEvent:function(subId){
-            this.getSubNodeByItemId('ITEM', subId).onMousedown();
+            var node=this.getSubNodeByItemId('ITEM', subId),ev=xui.Event;
+            if(ev.__realtouch)ev.__simulatedMousedown=1;
+            node.onMousedown(true);
+            if(ev.__realtouch)ev.__simulatedMousedown=0;
             return this;
         },
         /* insert some views to pageView widgets

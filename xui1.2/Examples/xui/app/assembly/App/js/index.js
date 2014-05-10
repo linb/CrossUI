@@ -1,10 +1,9 @@
-
 Class('App', 'xui.Com',{
     Instance:{
         events:{"onCreated":"_beforecreated", "onReady":"_onready"}, 
         _beforecreated:function (com, threadid) {
             SPA=this;
-            xui.log('thread id: '+threadid,'index.js is loaded');
+            xui.echo('thread id: '+threadid,'index.js is loaded');
             
             xui.Thread(threadid).insert(1000);
         }, 
@@ -40,7 +39,7 @@ Class('App', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         }, 
         _onready:function (com, threadid) {
-            xui.log('thread id: '+threadid,'index.js is ready');
+            xui.echo('thread id: '+threadid,'index.js is ready');
             xui.Thread(threadid).insert(1000);
         }
     }

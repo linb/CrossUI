@@ -175,7 +175,7 @@ Class('xui.Event',null,{
                 //dragstart dragdrop dragout will not work in IE(using innerHTML)
                 // Use "dragbegin instead of dragstart" to avoid native DnD
                 "dragbegin,drag,dragstop,dragleave,dragenter,dragover,drop,"+
-                // 3 touch event
+                // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
         _getEventName:function(name,pos){
