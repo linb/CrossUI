@@ -45,12 +45,12 @@ Class('App.Module1', 'xui.Com',{
             alert("I'm in Module1");
         }, 
         _beforecreated:function (com, threadid) {
-            xui.log('thread id: '+threadid,'Module1.js is loaded');
+            xui.echo('thread id: '+threadid,'Module1.js is loaded');
             xui.Thread(threadid).insert(1000);
         }, 
         events:{"onCreated":"_beforecreated", "onReady":"_onready"}, 
         _onready:function (com, threadid) {
-            xui.log('thread id: '+threadid,'Module1.js is ready');
+            xui.echo('thread id: '+threadid,'Module1.js is ready');
             xui.Thread(threadid).insert(1000);
         }
     }

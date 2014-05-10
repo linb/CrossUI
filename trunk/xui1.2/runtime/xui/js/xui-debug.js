@@ -4428,7 +4428,7 @@ Class('xui.Event',null,{
                 //dragstart dragdrop dragout will not work in IE(using innerHTML)
                 // Use "dragbegin instead of dragstart" to avoid native DnD
                 "dragbegin,drag,dragstop,dragleave,dragenter,dragover,drop,"+
-                // 3 touch event
+                // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
         _getEventName:function(name,pos){
@@ -9591,7 +9591,7 @@ type:4
                 var s = location.href.split('#')[0],
                     t=xui.Event,
                     o = t.getSrc(e),b,i=0,
-                    b
+                    b,t
                 ;
                 do{
                     if(o.tagName == 'A'){
@@ -9601,7 +9601,9 @@ type:4
                     if(++i>8)break;
                 }while(o=o.parentNode)
                 if(b){
-                    if(o.href.indexOf('javascript:')==0)return false;
+                    if((o.href).toLowerCase().indexOf('javascript:')==0)return false;
+//                    else if(!o.target || (t=o.target.toLowerCase())=="_self" || t=="_top"  || t=="parent")o.target="_blank";
+
                     if(!t.getKey(e).shiftKey && t.getBtn(e)=='left' && (o.href.indexOf(s+'#')==0||o.href.indexOf('#')==0)){
                         xui.History.setFI(o.href.replace(s,''));
                         return false;
@@ -12189,6 +12191,9 @@ Class("xui.Tips", null,{
                     tips._cancel();
                 return event.$FALSE;
             }
+        },'$Tips',-1)
+        .afterMouseup(function(obj, e){
+            tips._cancel();
         },'$Tips',-1);
 
         this._Types = {
@@ -12917,7 +12922,7 @@ Class("xui.Tips", null,{
         };
 
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
-            xui.log=window.console.log;
+            xui.log=function(){window.console.log.apply(window.console,arguments);};
         }else{
             xui.log=xui.echo;
         }
@@ -29592,7 +29597,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         
         ////
         fireItemClickEvent:function(subId){
-            this.getSubNodeByItemId('ITEM', subId).onMousedown();
+            var node=this.getSubNodeByItemId('ITEM', subId),ev=xui.Event;
+            if(ev.__realtouch)ev.__simulatedMousedown=1;
+            node.onMousedown(true);
+            if(ev.__realtouch)ev.__simulatedMousedown=0;
             return this;
         },
         /* insert some views to pageView widgets
@@ -35249,31 +35257,42 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         autoRowHeight:function(rowId){
             return this.each(function(prf){
                 if(prf.renderId ){
+                    var ev=xui.Event;
+                    if(ev.__realtouch)ev.__simulatedMousedown=1;
                     if(rowId && prf.rowMap2[rowId])
                         prf.getSubNode('FHANDLER',prf.rowMap2[rowId]).onDblclick(true);
                     else
                         _.each(prf.rowMap,function(o,i){
                             prf.getSubNode('FHANDLER',i).onDblclick(true);
                         });
+                    if(ev.__realtouch)ev.__simulatedMousedown=0;
                 }
             });
         },
         autoColWidth:function(colId){
             return this.each(function(prf){
                 if(prf.renderId){
+                    var ev=xui.Event;
+                    if(ev.__realtouch)ev.__simulatedMousedown=1;
+
                     if(colId && prf.colMap2[colId])
                         prf.getSubNode('HHANDLER',prf.colMap2[colId]).onDblclick(true);
                     else
                         _.each(prf.colMap,function(o,i){
                             prf.getSubNode('HHANDLER',i).onDblclick(true);
                         });
+                    if(ev.__realtouch)ev.__simulatedMousedown=0;
                 }
             });
         },
         autoColHeight:function(){
             return this.each(function(prf){
-                if(prf.renderId)
+                if(prf.renderId){
+                    var ev=xui.Event;
+                    if(ev.__realtouch)ev.__simulatedMousedown=1;
                     prf.getSubNode('FHANDLER').onDblclick(true);
+                    if(ev.__realtouch)ev.__simulatedMousedown=0;
+                }
             });
         },
         addHotRow:function(focusColId){
@@ -35949,8 +35968,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _.each(colh._cells,function(o){
                         n.push(ns.getSubNode('CELL',o).get(0));
                     });
-                    xui(n).width(t);
-                    ns.constructor._adjustBody(ns.get(0));
+                    xui(n).width(colh._pxWidth=t);
+                    ns.getSubNode('SCROLL').onScroll();
+                    ns.constructor._adjustBody(ns.get(0));             
                 }
 
                 if(t=options.headerStyle||options.colStyle)

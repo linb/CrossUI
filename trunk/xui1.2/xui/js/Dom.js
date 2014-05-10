@@ -3084,7 +3084,7 @@ type:4
                 var s = location.href.split('#')[0],
                     t=xui.Event,
                     o = t.getSrc(e),b,i=0,
-                    b
+                    b,t
                 ;
                 do{
                     if(o.tagName == 'A'){
@@ -3094,7 +3094,9 @@ type:4
                     if(++i>8)break;
                 }while(o=o.parentNode)
                 if(b){
-                    if(o.href.indexOf('javascript:')==0)return false;
+                    if((o.href).toLowerCase().indexOf('javascript:')==0)return false;
+//                    else if(!o.target || (t=o.target.toLowerCase())=="_self" || t=="_top"  || t=="parent")o.target="_blank";
+
                     if(!t.getKey(e).shiftKey && t.getBtn(e)=='left' && (o.href.indexOf(s+'#')==0||o.href.indexOf('#')==0)){
                         xui.History.setFI(o.href.replace(s,''));
                         return false;

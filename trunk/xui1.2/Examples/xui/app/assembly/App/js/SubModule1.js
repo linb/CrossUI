@@ -36,7 +36,7 @@ Class('App.SubModule1', 'xui.Com',{
             alert("I'm in SubModule1");
         }, 
         _beforecreated:function (com, threadid) {
-            xui.log('thread id: '+threadid, 'SubModule1.js is loaded');
+            xui.echo('thread id: '+threadid, 'SubModule1.js is loaded');
             xui.Thread(threadid).insert(1000);
         }, 
         events:{"onCreated":"_beforecreated", "onReady":"_onready"}, 
@@ -47,7 +47,7 @@ Class('App.SubModule1', 'xui.Com',{
             },threadid);
         },
         _onready:function (com, threadid) {
-            xui.log('thread id: '+threadid, 'SubModule1.js is ready');
+            xui.echo('thread id: '+threadid, 'SubModule1.js is ready');
             xui.Thread(threadid).insert(1000);
         }
     }

@@ -186,31 +186,42 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         autoRowHeight:function(rowId){
             return this.each(function(prf){
                 if(prf.renderId ){
+                    var ev=xui.Event;
+                    if(ev.__realtouch)ev.__simulatedMousedown=1;
                     if(rowId && prf.rowMap2[rowId])
                         prf.getSubNode('FHANDLER',prf.rowMap2[rowId]).onDblclick(true);
                     else
                         _.each(prf.rowMap,function(o,i){
                             prf.getSubNode('FHANDLER',i).onDblclick(true);
                         });
+                    if(ev.__realtouch)ev.__simulatedMousedown=0;
                 }
             });
         },
         autoColWidth:function(colId){
             return this.each(function(prf){
                 if(prf.renderId){
+                    var ev=xui.Event;
+                    if(ev.__realtouch)ev.__simulatedMousedown=1;
+
                     if(colId && prf.colMap2[colId])
                         prf.getSubNode('HHANDLER',prf.colMap2[colId]).onDblclick(true);
                     else
                         _.each(prf.colMap,function(o,i){
                             prf.getSubNode('HHANDLER',i).onDblclick(true);
                         });
+                    if(ev.__realtouch)ev.__simulatedMousedown=0;
                 }
             });
         },
         autoColHeight:function(){
             return this.each(function(prf){
-                if(prf.renderId)
+                if(prf.renderId){
+                    var ev=xui.Event;
+                    if(ev.__realtouch)ev.__simulatedMousedown=1;
                     prf.getSubNode('FHANDLER').onDblclick(true);
+                    if(ev.__realtouch)ev.__simulatedMousedown=0;
+                }
             });
         },
         addHotRow:function(focusColId){
@@ -886,8 +897,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _.each(colh._cells,function(o){
                         n.push(ns.getSubNode('CELL',o).get(0));
                     });
-                    xui(n).width(t);
-                    ns.constructor._adjustBody(ns.get(0));
+                    xui(n).width(colh._pxWidth=t);
+                    ns.getSubNode('SCROLL').onScroll();
+                    ns.constructor._adjustBody(ns.get(0));             
                 }
 
                 if(t=options.headerStyle||options.colStyle)

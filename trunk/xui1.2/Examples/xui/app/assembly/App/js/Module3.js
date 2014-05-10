@@ -8,10 +8,10 @@ Class('App.Module3', 'xui.Com',{
             xui.absIO.groupCall({data:xui.Ajax('App/js/data.js','',function(txt){
                 ns.$cap=txt;
             })},null,function(threadid){
-                xui.log('thread id: '+threadid, 'to get Datasource in Module3.js');
+                xui.echo('thread id: '+threadid, 'to get Datasource in Module3.js');
                 xui.Thread(threadid).insert(1000);
             },function(threadid){
-                xui.log('thread id: '+threadid, 'Datasource is ready in Module3.js');
+                xui.echo('thread id: '+threadid, 'Datasource is ready in Module3.js');
                 xui.Thread(threadid).insert(1000);
             },threadid);
         },
@@ -59,14 +59,14 @@ Class('App.Module3', 'xui.Com',{
             alert("I'm in Module3");
         }, 
         _beforecreated:function (com, threadid) {
-            xui.log('thread id: '+threadid, 'Module3.js is loaded');
+            xui.echo('thread id: '+threadid, 'Module3.js is loaded');
             xui.Thread(threadid).insert(1000);
         }, 
         events:{"onCreated":"_beforecreated", "onReady":"_onready"}, 
         _onready:function (com, threadid) {
             com.dialog.setCaption(com.$cap);
             
-            xui.log('thread id: '+threadid, 'Module3.js is ready');
+            xui.echo('thread id: '+threadid, 'Module3.js is ready');
             xui.Thread(threadid).insert(1000);
         }
     }
