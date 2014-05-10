@@ -1378,7 +1378,7 @@ new function(){
 };
 // for loction url info
 new function(){
-    xui._uriReg=/^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/;
+    xui._uriReg=/^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/;
     xui._localReg=/^(?:about|app|app\-storage|.+\-extension|file|widget):$/;
     xui._curHref=(function(a){
         try{return location.href;}catch(e){
@@ -1858,7 +1858,7 @@ Class('xui.absIO',null,{
         timeout:60000,
         //form, xml, or json
         reqType:'form',
-        //json, text or xml
+        //json, xml, text, script
         rspType:'json',
 
         optimized:false,
@@ -1885,8 +1885,9 @@ Class('xui.absIO',null,{
             return [n,w,w.document];
         },
         isCrossDomain:function(uri){
-            var a=xui._uriReg.exec((uri||'').toLowerCase()),
-                b=xui._localParts;
+            var b=xui._localParts;
+            uri=uri.replace(/#.*$/,"").replace(/^\/\//,b[1]+"//");
+            var a=xui._uriReg.exec((uri||'').toLowerCase());
             return !!( a&&(
                     a[1]!==b[1]||
                     a[2]!==b[2]||
@@ -1955,11 +1956,10 @@ Class('xui.Ajax','xui.absIO',{
                         self._XML.open(method, uri, asy);
 
                     self._header("Accept", Accept ? Accept :
-                        (rspType=='xml' ? "text/xml; " : rspType=='json' ? "application/json; " : "default; ")
+                        (rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
                     );
                     self._header("Content-type", contentType ? contentType : (
-                        (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; ":"")
-                         + "charset=" + (self.charset||"UTF-8")
+                        (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
                     ));
                     self._header("X-Requested-With", "XMLHttpRequest");
                     if(optimized){
@@ -2021,9 +2021,12 @@ Class('xui.Ajax','xui.absIO',{
                 _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
                 // try to get js object, or the original
                 _response=rspType=="json"?((obj=_.unserialize(_txtresponse))===false?_txtresponse:obj):_txtresponse;
-                // crack for some local case
-                if(!status && xui._localReg.test(xui._localParts[1]) && !xui.absIO.isCrossDomain(uri))
+                
+                // crack for some local case ( OK but status is 0 in no-IE browser)
+                if(!status && xui._localReg.test(xui._localParts[1])){
                     status=ns._XML.responseText?200:404;
+                }
+
                 // for IE7
                 if(status==1223)status=204;
 
@@ -15121,6 +15124,23 @@ Class("xui.UI",  "xui.absObj", {
         });
     },
     $End:function(){
+        var hash={},keys=this.$Keys;
+        _.filter(this.getAppearance(),function(o,i){
+            var arr1=i.split(/\s*,\s*/),arr2;
+            for(var l=arr1.length-1;l>=0;l--){
+                arr2=arr1[l].match(/[A-Z][A-Z0-9]*/g);
+                if(arr2&&arr2.length){
+                    for(var j=0,m=arr2.length;j<m;j++){
+                        if(!keys[arr2[j]]){
+                            arr1.splice(l,1);
+                            break;
+                        }
+                    }
+                }
+            }
+            if(arr1.length)hash[arr1.join(", ")]=o;
+        });
+        this.setAppearance(hash);        
         xui.UI.$cache_css += this.buildCSSText(this.$Appearances);
     },
     Static:{
@@ -18342,8 +18362,20 @@ new function(){
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
-                iframeAutoLoad:"",
-                ajaxAutoLoad:"",
+                iframeAutoLoad:{
+                    ini:"",
+                    action:function(){
+                        this.getSubNode("PANEL").html("",false);
+                        this.box._applyAutoLoad(this);
+                    }
+                },
+                ajaxAutoLoad:{
+                    ini:"",
+                    action:function(){
+                        this.getSubNode("PANEL").html("",false);
+                        this.box._applyAutoLoad(this);
+                    }
+                },
                 width:'100',
                 height:'100',
                 selectable:true,
@@ -18395,7 +18427,8 @@ new function(){
 
                     _if.url=xui.adjustRes(_if.url,false,true);
 
-                    if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+                    ifr.id=ifr.name=id;
+                    if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();                    
@@ -18417,13 +18450,12 @@ new function(){
                     _ajax.query._rand=_();
                     _.merge(options, _ajax.options);
                     ins.busy();
+                    var node=ins.getSubNode('PANEL').html("",true,false);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        var n=xui.create("div");
-                        n.html(rsp,false,true);
-                        ins.append(n.children());
+                        node.html(rsp,false,true);
                         ins.free();
                     }, function(err){
-                        ins.append("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>");
                         ins.free();
                     }, null, options).start();
                 }
@@ -18503,7 +18535,7 @@ new function(){
                 var ns=this;
                 if(ns.box.KEY=="xui.UI.Pane")
                     if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                        ns.box._applyAutoLoad(this);
+                        ns.box._applyAutoLoad(ns);
             }
         }
     });
@@ -20045,8 +20077,20 @@ Class("xui.UI.Resizer","xui.UI",{
             //delete those properties
             disabled:null,
             tips:null,
-            iframeAutoLoad:"",
-            ajaxAutoLoad:"",
+            iframeAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.getSubNode("PANEL").html("",false);
+                    xui.UI.Div._applyAutoLoad(this);
+                }
+            },
+            ajaxAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.getSubNode("PANEL").html("",false);
+                    xui.UI.Div._applyAutoLoad(this);
+                }
+            },
             selectable:true,
             html:{
                 html:1,
@@ -21571,7 +21615,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
                 if(node){
-                    try{node.focus();node.select();}catch(e){}
+                    try{node.focus(); node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                     delete profile._justFocus;
                 }
             }
@@ -21966,7 +22010,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                try{node.select()}catch(e){}
+                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                             })
                         }
                         delete profile._justFocus;
@@ -21999,10 +22043,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                try{node.select()}catch(e){}
+                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                             });
                         }else{
-                            try{node.select()}catch(e){}
+                            try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret
                         if(profile._mousedownmark)profile._justFocus=1;
@@ -30469,7 +30513,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     _if.url=xui.adjustRes(_if.url,false,true);
 
-                    if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+                    ifr.id=ifr.name=id;
+                    if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
+
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();
                     ifr.src=_if.url;
@@ -30490,13 +30536,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=_();
                     box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
+                    var node=box.getPanel(item.id).html("",true,false);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        var n=xui.create("div");
-                        n.html(rsp,false,true);
-                        box.getPanel(item.id).html("").append(n.children());
+                        node.html(rsp,false,true);
                         box.free();
                     }, function(err){
-                        box.getPanel(item.id).html("").append("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>");
                         box.free();
                     }, null, options).start();
                 }
@@ -30611,9 +30656,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         delete t.PNAELS;
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
-        _.filter(this.getAppearance(),function(o,i){
-            return !!keys[i.split("-")[0]];
-        });
     },
     Static:{
         Appearances:{
@@ -30745,13 +30787,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         delete t.LIST.RIGHT;
         delete t.LIST.DROP;
         this.setTemplate(t);
-        
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
-        
-        _.filter(this.getAppearance(),function(o,i){
-            return !!keys[i.split("-")[0]];
-        });
-
     },
     Static:{
         Appearances:{
@@ -40421,8 +40457,20 @@ if(xui.browser.ie){
                 ini:'center',
                 listbox:['auto','center']
             },
-            iframeAutoLoad:"",
-            ajaxAutoLoad:"",
+            iframeAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.getSubNode("PANEL").html("",false);
+                    xui.UI.Div._applyAutoLoad(this);
+                }
+            },
+            ajaxAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.getSubNode("PANEL").html("",false);
+                    xui.UI.Div._applyAutoLoad(this);
+                }
+            },
             html:{
                 html:1,
                 action:function(v){

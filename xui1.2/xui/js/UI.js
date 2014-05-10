@@ -2199,6 +2199,23 @@ Class("xui.UI",  "xui.absObj", {
         });
     },
     $End:function(){
+        var hash={},keys=this.$Keys;
+        _.filter(this.getAppearance(),function(o,i){
+            var arr1=i.split(/\s*,\s*/),arr2;
+            for(var l=arr1.length-1;l>=0;l--){
+                arr2=arr1[l].match(/[A-Z][A-Z0-9]*/g);
+                if(arr2&&arr2.length){
+                    for(var j=0,m=arr2.length;j<m;j++){
+                        if(!keys[arr2[j]]){
+                            arr1.splice(l,1);
+                            break;
+                        }
+                    }
+                }
+            }
+            if(arr1.length)hash[arr1.join(", ")]=o;
+        });
+        this.setAppearance(hash);        
         xui.UI.$cache_css += this.buildCSSText(this.$Appearances);
     },
     Static:{
@@ -5420,8 +5437,20 @@ new function(){
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
-                iframeAutoLoad:"",
-                ajaxAutoLoad:"",
+                iframeAutoLoad:{
+                    ini:"",
+                    action:function(){
+                        this.getSubNode("PANEL").html("",false);
+                        this.box._applyAutoLoad(this);
+                    }
+                },
+                ajaxAutoLoad:{
+                    ini:"",
+                    action:function(){
+                        this.getSubNode("PANEL").html("",false);
+                        this.box._applyAutoLoad(this);
+                    }
+                },
                 width:'100',
                 height:'100',
                 selectable:true,
@@ -5473,7 +5502,8 @@ new function(){
 
                     _if.url=xui.adjustRes(_if.url,false,true);
 
-                    if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+                    ifr.id=ifr.name=id;
+                    if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();                    
@@ -5495,13 +5525,12 @@ new function(){
                     _ajax.query._rand=_();
                     _.merge(options, _ajax.options);
                     ins.busy();
+                    var node=ins.getSubNode('PANEL').html("",true,false);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        var n=xui.create("div");
-                        n.html(rsp,false,true);
-                        ins.append(n.children());
+                        node.html(rsp,false,true);
                         ins.free();
                     }, function(err){
-                        ins.append("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>");
                         ins.free();
                     }, null, options).start();
                 }
@@ -5581,7 +5610,7 @@ new function(){
                 var ns=this;
                 if(ns.box.KEY=="xui.UI.Pane")
                     if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                        ns.box._applyAutoLoad(this);
+                        ns.box._applyAutoLoad(ns);
             }
         }
     });

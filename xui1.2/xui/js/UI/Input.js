@@ -20,7 +20,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
                 if(node){
-                    try{node.focus();node.select();}catch(e){}
+                    try{node.focus(); node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                     delete profile._justFocus;
                 }
             }
@@ -415,7 +415,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                try{node.select()}catch(e){}
+                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                             })
                         }
                         delete profile._justFocus;
@@ -448,10 +448,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                try{node.select()}catch(e){}
+                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                             });
                         }else{
-                            try{node.select()}catch(e){}
+                            try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret
                         if(profile._mousedownmark)profile._justFocus=1;

@@ -1744,8 +1744,8 @@ _.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;<strong>method: 'GET' or 'POST', the request method. Default is 'GET'.</strong>"+
                 "<br>&nbsp;&nbsp;retry: Number, how many times it is tried when the request is timeout."+
                 "<br>&nbsp;&nbsp;timeout: Number, the timeout time(ms) for this request."+
-                "<br>&nbsp;&nbsp;reqType: String, 'form','json', or 'xml'. Request type, Default is 'form'."+
-                "<strong><br>&nbsp;&nbsp;rspType: String 'json', 'text' or 'xml', Response type, Default is 'json'.</strong>"+
+                "<br>&nbsp;&nbsp;reqType: String, 'form'(Ajax), 'json'(Ajax), or 'xml'(Ajax). Request type, Default is 'form'."+
+                "<strong><br>&nbsp;&nbsp;rspType: String 'json'(Ajax),'xml'(Ajax), 'text'(SAjax), 'script'(SAjax), Response type, Default is 'json'.</strong>"+
                 "<br><em>//functions</em>"+
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj, type]. A function to customize query string Object."+
                 "<br><em>//normal events</em>"+

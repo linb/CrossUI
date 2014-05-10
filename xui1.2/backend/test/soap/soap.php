@@ -2,7 +2,7 @@
 require_once('nusoap.php');
 $server = new soap_server();
 $server->soap_defencoding="UTF-8";
-$server->configureWSDL('www.linb.net', 'urn:www.linb.net');
+$server->configureWSDL('www.crossui.com', 'urn:www.crossui.com');
 
 
 $server->wsdl->addComplexType(

@@ -1119,7 +1119,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     _if.url=xui.adjustRes(_if.url,false,true);
 
-                    if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=ifr.id=ifr.name=id;
+                    ifr.id=ifr.name=id;
+                    if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
+
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();
                     ifr.src=_if.url;
@@ -1140,13 +1142,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=_();
                     box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
+                    var node=box.getPanel(item.id).html("",true,false);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        var n=xui.create("div");
-                        n.html(rsp,false,true);
-                        box.getPanel(item.id).html("").append(n.children());
+                        node.html(rsp,false,true);
                         box.free();
                     }, function(err){
-                        box.getPanel(item.id).html("").append("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>");
                         box.free();
                     }, null, options).start();
                 }

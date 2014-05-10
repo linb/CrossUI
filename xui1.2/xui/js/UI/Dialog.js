@@ -521,8 +521,20 @@ if(xui.browser.ie){
                 ini:'center',
                 listbox:['auto','center']
             },
-            iframeAutoLoad:"",
-            ajaxAutoLoad:"",
+            iframeAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.getSubNode("PANEL").html("",false);
+                    xui.UI.Div._applyAutoLoad(this);
+                }
+            },
+            ajaxAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.getSubNode("PANEL").html("",false);
+                    xui.UI.Div._applyAutoLoad(this);
+                }
+            },
             html:{
                 html:1,
                 action:function(v){

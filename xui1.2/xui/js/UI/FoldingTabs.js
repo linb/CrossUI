@@ -5,9 +5,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
         delete keys.PNAELS;
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;delete keys.LIST;delete keys.PNAELS;
-        _.filter(this.getAppearance(),function(o,i){
-            return !!keys[i.split("-")[0]];
-        });
     },    
     Instance:{
         _setCtrlValue:function(value,init){
