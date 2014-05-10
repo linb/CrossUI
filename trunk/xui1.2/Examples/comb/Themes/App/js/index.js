@@ -9,18 +9,8 @@ Class('App', 'xui.Com',{
             append((new xui.UI.Tabs())
             .setHost(host,"tabs2")
             .setItems([{"id":"1", "caption":"page 1", "image":"img/demo.gif", "popBtn":true, "closeBtn":true}, {"id":"2", "caption":"page 2", "image":"img/demo.gif", "popBtn":true, "closeBtn":true}, {"id":"3", "caption":"page 3", "closeBtn":true}, {"id":"5", "caption":"page 4", "closeBtn":true}, {"id":"6", "caption":"page 5", "closeBtn":true}])
-            .setValue("1")
+            .setValue("6")
             );
-            
-            host.tabs2.append((new xui.UI.TimeLine())
-            .setHost(host,"timeline1")
-            .setLeft(30)
-            .setTop(240)
-            .setWidth(370)
-            .setHeight(150)
-            .setCloseBtn(true)
-            .setOptBtn(true)
-            , "5");
             
             host.tabs2.append((new xui.UI.ComboInput())
             .setHost(host,"comboinput6")
@@ -31,43 +21,204 @@ Class('App', 'xui.Com',{
             .setValue("#00FF00")
             , "1");
             
-            host.tabs2.append((new xui.UI.Range())
-            .setHost(host,"range1")
-            .setLeft(440)
-            .setTop(10)
-            , "5");
+            host.tabs2.append((new xui.UI.SLabel())
+            .setHost(host,"slable1")
+            .setLeft(30)
+            .setTop(330)
+            .setCaption("simple label")
+            , "1");
             
-     
+            host.tabs2.append((new xui.UI.Label())
+            .setHost(host,"label10")
+            .setLeft(80)
+            .setTop(20)
+            .setWidth(70)
+            .setCaption("label")
+            .setImage("img/demo.gif")
+            , "1");
             
-            host.tabs2.append((new xui.UI.StatusButtons())
-            .setHost(host,"linklist1")
-            .setItems([{"id":"a", "caption":"link list a"}, {"id":"b", "caption":"link list v"}, {"id":"c", "caption":"link list c"}])
-            .setLeft(440)
+            host.tabs2.append((new xui.UI.Label())
+            .setHost(host,"label5")
+            .setLeft(130)
+            .setTop(330)
+            .setShadow(true)
+            .setCaption("adv label")
+            .setShadowText(true)
+            .setFontSize("14px")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.ComboInput())
+            .setHost(host,"comboinput5")
+            .setLeft(290)
             .setTop(70)
-            .setWidth(310)
-            .setHeight(30)
-            , "5");
+            .setValue("ComboInput")
+            , "1");
             
-            host.tabs2.append((new xui.UI.FoldingList())
-            .setHost(host,"foldinglist1")
-            .setItems([{"id":"a", "caption":"caption a", "title":"title a", "text":"detail 1"}, {"id":"b", "caption":"caption b", "title":"title b"}, {"id":"c", "caption":"caption c", "title":"title c", "text":"detail 2"}])
-            .setLeft(40)
-            .setTop(400)
-            .setWidth(356)
-            .setHeight(116)
-            .setCmds(["cmd 1", "cmd 2"])
-            , "5");
+            host.tabs2.append((new xui.UI.TextEditor())
+            .setHost(host,"texteditor4")
+            .setLeft(20)
+            .setTop(50)
+            .setWidth(110)
+            .setHeight(80)
+            .setValue("textEditor")
+            , "1");
             
-            host.tabs2.append((new xui.UI.Poll())
-            .setHost(host,"poll2")
-            .setItems([{"id":"1", "caption":"option 1", "percent":0.2}, {"id":"2", "caption":"option 2", "toggle":true, "percent":0.5, "text":"detail 1"}, {"id":"3", "caption":"option 3", "toggle":true, "percent":0.8, "text":"detail 2"}, {"id":"4", "caption":"option 4", "percent":0.4}, {"id":"5", "caption":"option 5", "percent":0.9}])
+            host.tabs2.append((new xui.UI.Button())
+            .setHost(host,"button7")
+            .setLeft(280)
+            .setTop(370)
+            .setWidth(270)
+            .setHeight(62)
+            .setShadow(true)
+            .setCaption("<p>adv button</p>")
+            .setImage("img/demo.gif")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Input())
+            .setHost(host,"input3")
+            .setLeft(290)
+            .setTop(40)
+            .setValue("input")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.ColorPicker())
+            .setHost(host,"color1")
+            .setLeft(500)
+            .setTop(90)
+            , "1");
+            
+            host.tabs2.append((new xui.UI.List())
+            .setHost(host,"list2")
+            .setItems([{"id":"1", "image":"img/demo.gif", "caption":"1"}, {"id":"2", "image":"img/demo.gif", "caption":"2"}, {"id":"3", "caption":"List"}])
+            .setLeft(150)
+            .setTop(50)
+            .setHeight(70)
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Button())
+            .setHost(host,"button15")
+            .setLeft(420)
+            .setTop(450)
+            .setWidth(130)
+            .setCaption("status button")
+            .setType("status")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Link())
+            .setHost(host,"link1")
+            .setLeft(190)
+            .setTop(20)
+            .setCaption("link")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.TimePicker())
+            .setHost(host,"time1")
+            .setLeft(30)
+            .setTop(140)
+            , "1");
+            
+            host.tabs2.append((new xui.UI.DatePicker())
+            .setHost(host,"date1")
+            .setLeft(280)
+            .setTop(175)
+            .setValue(new Date(2013,4,22,0,0,0,0))
+            , "1");
+            
+            host.tabs2.append((new xui.UI.SButton())
+            .setHost(host,"sbutton1")
+            .setLeft(30)
+            .setTop(360)
+            .setCaption("simple button (auto width)")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.SButton())
+            .setHost(host,"sbutton2")
+            .setLeft(30)
+            .setTop(390)
+            .setWidth(206)
+            .setCaption("simple button - left")
+            .setHAlign("left")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.SButton())
+            .setHost(host,"sbutton3")
+            .setLeft(30)
+            .setTop(420)
+            .setWidth(206)
+            .setCaption("simple button - center")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.SButton())
+            .setHost(host,"sbutton4")
+            .setLeft(30)
+            .setTop(450)
+            .setWidth(206)
+            .setCaption("simple button - right")
+            .setHAlign("right")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.SCheckBox())
+            .setHost(host,"scheckbox1")
+            .setLeft(575)
+            .setTop(390)
+            .setCaption("simple checkbox")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Button())
+            .setHost(host,"button14")
+            .setLeft(280)
+            .setTop(450)
+            .setCaption("drop button")
+            .setType("drop")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Slider())
+            .setHost(host,"slider2")
+            .setLeft(730)
+            .setTop(10)
+            .setWidth(50)
+            .setHeight(480)
+            .setSteps(100)
+            .setType("vertical")
+            .setValue("30:60")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Slider())
+            .setHost(host,"slider1")
             .setLeft(440)
-            .setTop(300)
-            .setWidth(310)
-            .setHeight(210)
-            .setSelMode("multi")
-            .setCmds(["cmd 1", "cmd 2"])
-            , "5");
+            .setTop(30)
+            .setWidth(280)
+            .setIsRange(false)
+            .setValue("20")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.ProgressBar())
+            .setHost(host,"progressbar1")
+            .setLeft(290)
+            .setTop(10)
+            .setWidth(440)
+            .setValue(80)
+            , "1");
+            
+            host.tabs2.append((new xui.UI.Div())
+            .setHost(host,"div11")
+            .setLeft(20)
+            .setTop(10)
+            .setWidth(40)
+            .setHeight(40)
+            .setHtml("div")
+            , "1");
+            
+            host.tabs2.append((new xui.UI.CheckBox())
+            .setHost(host,"checkbox1")
+            .setLeft(570)
+            .setTop(440)
+            .setWidth(150)
+            .setHeight(30)
+            .setShadow(true)
+            .setCaption("adv checkbox")
+            .setImage("img/demo.gif")
+            , "1");
             
             host.tabs2.append((new xui.UI.Panel())
             .setHost(host,"panel2")
@@ -359,214 +510,6 @@ Class('App', 'xui.Com',{
             .setValue("a")
             , "2");
             
-            host.tabs2.append((new xui.UI.SLabel())
-            .setHost(host,"slable1")
-            .setLeft(30)
-            .setTop(330)
-            .setCaption("simple label")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Label())
-            .setHost(host,"label10")
-            .setLeft(80)
-            .setTop(20)
-            .setWidth(70)
-            .setCaption("label")
-            .setImage("img/demo.gif")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Label())
-            .setHost(host,"label5")
-            .setLeft(130)
-            .setTop(330)
-            .setShadow(true)
-            .setCaption("adv label")
-            .setShadowText(true)
-            .setFontSize("14px")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.ComboInput())
-            .setHost(host,"comboinput5")
-            .setLeft(290)
-            .setTop(70)
-            .setValue("ComboInput")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.TextEditor())
-            .setHost(host,"texteditor4")
-            .setLeft(20)
-            .setTop(50)
-            .setWidth(110)
-            .setHeight(80)
-            .setValue("textEditor")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Button())
-            .setHost(host,"button7")
-            .setLeft(280)
-            .setTop(370)
-            .setWidth(270)
-            .setHeight(62)
-            .setShadow(true)
-            .setCaption("<p>adv button</p>")
-            .setImage("img/demo.gif")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Input())
-            .setHost(host,"input3")
-            .setLeft(290)
-            .setTop(40)
-            .setValue("input")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.ColorPicker())
-            .setHost(host,"color1")
-            .setLeft(500)
-            .setTop(90)
-            , "1");
-            
-            host.tabs2.append((new xui.UI.List())
-            .setHost(host,"list2")
-            .setItems([{"id":"1", "image":"img/demo.gif", "caption":"1"}, {"id":"2", "image":"img/demo.gif", "caption":"2"}, {"id":"3", "caption":"List"}])
-            .setLeft(150)
-            .setTop(50)
-            .setHeight(70)
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Button())
-            .setHost(host,"button15")
-            .setLeft(420)
-            .setTop(450)
-            .setWidth(130)
-            .setCaption("status button")
-            .setType("status")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Calendar())
-            .setHost(host,"calendar1")
-            .setDock("none")
-            .setLeft(30)
-            .setTop(10)
-            .setWidth(370)
-            .setHeight(220)
-            , "5");
-            
-            host.tabs2.append((new xui.UI.Link())
-            .setHost(host,"link1")
-            .setLeft(190)
-            .setTop(20)
-            .setCaption("link")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.TimePicker())
-            .setHost(host,"time1")
-            .setLeft(30)
-            .setTop(140)
-            , "1");
-            
-            host.tabs2.append((new xui.UI.DatePicker())
-            .setHost(host,"date1")
-            .setLeft(280)
-            .setTop(175)
-            .setValue(new Date(2013,4,22,0,0,0,0))
-            , "1");
-            
-            host.tabs2.append((new xui.UI.SButton())
-            .setHost(host,"sbutton1")
-            .setLeft(30)
-            .setTop(360)
-            .setCaption("simple button (auto width)")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.SButton())
-            .setHost(host,"sbutton2")
-            .setLeft(30)
-            .setTop(390)
-            .setWidth(206)
-            .setCaption("simple button - left")
-            .setHAlign("left")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.SButton())
-            .setHost(host,"sbutton3")
-            .setLeft(30)
-            .setTop(420)
-            .setWidth(206)
-            .setCaption("simple button - center")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.SButton())
-            .setHost(host,"sbutton4")
-            .setLeft(30)
-            .setTop(450)
-            .setWidth(206)
-            .setCaption("simple button - right")
-            .setHAlign("right")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.SCheckBox())
-            .setHost(host,"scheckbox1")
-            .setLeft(575)
-            .setTop(390)
-            .setCaption("simple checkbox")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Button())
-            .setHost(host,"button14")
-            .setLeft(280)
-            .setTop(450)
-            .setCaption("drop button")
-            .setType("drop")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Slider())
-            .setHost(host,"slider2")
-            .setLeft(730)
-            .setTop(10)
-            .setWidth(50)
-            .setHeight(480)
-            .setSteps(100)
-            .setType("vertical")
-            .setValue("30:60")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Slider())
-            .setHost(host,"slider1")
-            .setLeft(440)
-            .setTop(30)
-            .setWidth(280)
-            .setIsRange(false)
-            .setValue("20")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.ProgressBar())
-            .setHost(host,"progressbar1")
-            .setLeft(290)
-            .setTop(10)
-            .setWidth(440)
-            .setValue(80)
-            , "1");
-            
-            host.tabs2.append((new xui.UI.Div())
-            .setHost(host,"div11")
-            .setLeft(20)
-            .setTop(10)
-            .setWidth(40)
-            .setHeight(40)
-            .setHtml("div")
-            , "1");
-            
-            host.tabs2.append((new xui.UI.CheckBox())
-            .setHost(host,"checkbox1")
-            .setLeft(570)
-            .setTop(440)
-            .setWidth(150)
-            .setHeight(30)
-            .setShadow(true)
-            .setCaption("adv checkbox")
-            .setImage("img/demo.gif")
-            , "1");
-            
             host.tabs2.append((new xui.UI.RadioBox())
             .setHost(host,"radiobox1")
             .setItems([{"id":"1", "image":"img/demo.gif", "caption":"radio 1"}, {"id":"2", "image":"img/demo.gif", "caption":"radio 2"}, {"id":"3", "caption":"radio 3"}, {"id":"4", "caption":"radio 4"}, {"id":"5", "caption":"radio 5"}])
@@ -707,6 +650,63 @@ Class('App', 'xui.Com',{
             .setPosition("relative")
             );
             
+            host.tabs2.append((new xui.UI.TimeLine())
+            .setHost(host,"timeline1")
+            .setLeft(30)
+            .setTop(240)
+            .setWidth(370)
+            .setHeight(150)
+            .setCloseBtn(true)
+            .setOptBtn(true)
+            , "5");
+            
+            host.tabs2.append((new xui.UI.Range())
+            .setHost(host,"range1")
+            .setLeft(440)
+            .setTop(10)
+            , "5");
+            
+            host.tabs2.append((new xui.UI.StatusButtons())
+            .setHost(host,"linklist1")
+            .setItems([{"id":"a", "caption":"link list a"}, {"id":"b", "caption":"link list v"}, {"id":"c", "caption":"link list c"}])
+            .setLeft(440)
+            .setTop(70)
+            .setWidth(310)
+            .setHeight(30)
+            , "5");
+            
+            host.tabs2.append((new xui.UI.FoldingList())
+            .setHost(host,"foldinglist1")
+            .setItems([{"id":"a", "caption":"caption a", "title":"title a", "text":"detail 1"}, {"id":"b", "caption":"caption b", "title":"title b"}, {"id":"c", "caption":"caption c", "title":"title c", "text":"detail 2"}])
+            .setLeft(40)
+            .setTop(400)
+            .setWidth(356)
+            .setHeight(116)
+            .setCmds([{"id":"cmd_1", "caption":"cmd 1"}, {"id":"cmd_2", "caption":"cmd 2"}])
+            , "5");
+            
+            host.tabs2.append((new xui.UI.Poll())
+            .setHost(host,"poll2")
+            .setItems([{"id":"1", "caption":"option 1", "percent":0.2}, {"id":"2", "caption":"option 2", "toggle":true, "percent":0.5, "text":"detail 1"}, {"id":"3", "caption":"option 3", "toggle":true, "percent":0.8, "text":"detail 2"}, {"id":"4", "caption":"option 4", "percent":0.4}, {"id":"5", "caption":"option 5", "percent":0.9}])
+            .setLeft(440)
+            .setTop(240)
+            .setWidth(310)
+            .setHeight(210)
+            .setSelMode("multi")
+            .setCmds([{"id":"cmd_1", "caption":"cmd 1"}, {"id":"cmd_2", "caption":"cmd 2"}])
+            .setValue("")
+            , "5");
+            
+            host.tabs2.append((new xui.UI.Calendar())
+            .setHost(host,"calendar1")
+            .setDock("none")
+            .setLeft(30)
+            .setTop(10)
+            .setWidth(370)
+            .setHeight(220)
+            .setValue(new Date(2014,4,10,0,0,0,0))
+            , "5");
+            
             host.tabs2.append((new xui.UI.Pane())
             .setHost(host,"ctl_pane50")
             .setLeft(40)
@@ -721,26 +721,10 @@ Class('App', 'xui.Com',{
             );
             
             host.tabs2.append((new xui.UI.Pane())
-            .setHost(host,"ctl_pane51")
-            .setLeft(290)
-            .setTop(20)
-            .setWidth(230)
-            .setHeight(200)
-            , "6");
-            
-            host.tabs2.append((new xui.UI.Pane())
-            .setHost(host,"ctl_pane52")
-            .setLeft(560)
-            .setTop(20)
-            .setWidth(230)
-            .setHeight(200)
-            , "6");
-            
-            host.tabs2.append((new xui.UI.Pane())
             .setHost(host,"ctl_pane53")
-            .setLeft(280)
-            .setTop(260)
-            .setWidth(230)
+            .setLeft(380)
+            .setTop(240)
+            .setWidth(290)
             .setHeight(200)
             , "6");
             
@@ -749,30 +733,30 @@ Class('App', 'xui.Com',{
             .setItems([{"id":"a", "caption":"tab1", "title":"title1", "text":"text1"}, {"id":"b", "caption":"tab2", "title":"title2", "text":"text2"}, {"id":"c", "caption":"tab3", "title":"title3", "text":"text3"}, {"id":"d", "caption":"tab4", "title":"title4", "text":"text4"}, {"id":"e", "caption":"tab5", "title":"title5", "text":"text5"}])
             .setLeft(0)
             .setTop(10)
-            .setWidth(236)
+            .setWidth(276)
             .setCmds([{"id":"Refresh", "caption":"Refresh"}, {"id":"Remove", "caption":"Remove"}])
             );
             
             host.tabs2.append((new xui.UI.Pane())
             .setHost(host,"ctl_pane54")
-            .setLeft(550)
-            .setTop(260)
-            .setWidth(230)
-            .setHeight(200)
+            .setLeft(300)
+            .setTop(20)
+            .setWidth(360)
+            .setHeight(190)
             , "6");
             
             host.ctl_pane54.append((new xui.UI.Poll())
             .setHost(host,"ctl_poll41")
-            .setLeft(20)
-            .setTop(0)
-            .setCmds([])
+            .setItems([{"id":"1", "caption":"option 1", "percent":0.2}, {"id":"2", "caption":"option 2", "toggle":true, "percent":0.5, "text":"detail 1"}, {"id":"3", "caption":"option 3", "toggle":true, "percent":0.8, "text":"detail 2"}, {"id":"4", "caption":"option 4", "percent":0.4}, {"id":"5", "caption":"option 5", "percent":0.9}])
+            .setDock("fill")
+            .setCmds([{"id":"Refresh", "caption":"Refresh"}, {"id":"Remove", "caption":"Remove"}])
             );
             
             host.tabs2.append((new xui.UI.Pane())
             .setHost(host,"ctl_pane55")
             .setLeft(20)
             .setTop(260)
-            .setWidth(230)
+            .setWidth(330)
             .setHeight(200)
             , "6");
             

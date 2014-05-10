@@ -1378,7 +1378,7 @@ new function(){
 };
 // for loction url info
 new function(){
-    xui._uriReg=/^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/;
+    xui._uriReg=/^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/;
     xui._localReg=/^(?:about|app|app\-storage|.+\-extension|file|widget):$/;
     xui._curHref=(function(a){
         try{return location.href;}catch(e){
@@ -1858,7 +1858,7 @@ Class('xui.absIO',null,{
         timeout:60000,
         //form, xml, or json
         reqType:'form',
-        //json, text or xml
+        //json, xml, text, script
         rspType:'json',
 
         optimized:false,
@@ -1885,8 +1885,9 @@ Class('xui.absIO',null,{
             return [n,w,w.document];
         },
         isCrossDomain:function(uri){
-            var a=xui._uriReg.exec((uri||'').toLowerCase()),
-                b=xui._localParts;
+            var b=xui._localParts;
+            uri=uri.replace(/#.*$/,"").replace(/^\/\//,b[1]+"//");
+            var a=xui._uriReg.exec((uri||'').toLowerCase());
             return !!( a&&(
                     a[1]!==b[1]||
                     a[2]!==b[2]||
@@ -1955,11 +1956,10 @@ Class('xui.Ajax','xui.absIO',{
                         self._XML.open(method, uri, asy);
 
                     self._header("Accept", Accept ? Accept :
-                        (rspType=='xml' ? "text/xml; " : rspType=='json' ? "application/json; " : "default; ")
+                        (rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
                     );
                     self._header("Content-type", contentType ? contentType : (
-                        (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; ":"")
-                         + "charset=" + (self.charset||"UTF-8")
+                        (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
                     ));
                     self._header("X-Requested-With", "XMLHttpRequest");
                     if(optimized){
@@ -2021,9 +2021,12 @@ Class('xui.Ajax','xui.absIO',{
                 _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
                 // try to get js object, or the original
                 _response=rspType=="json"?((obj=_.unserialize(_txtresponse))===false?_txtresponse:obj):_txtresponse;
-                // crack for some local case
-                if(!status && xui._localReg.test(xui._localParts[1]) && !xui.absIO.isCrossDomain(uri))
+                
+                // crack for some local case ( OK but status is 0 in no-IE browser)
+                if(!status && xui._localReg.test(xui._localParts[1])){
                     status=ns._XML.responseText?200:404;
+                }
+
                 // for IE7
                 if(status==1223)status=204;
 

@@ -6,9 +6,6 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         delete t.PNAELS;
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
-        _.filter(this.getAppearance(),function(o,i){
-            return !!keys[i.split("-")[0]];
-        });
     },
     Static:{
         Appearances:{
