@@ -20,8 +20,11 @@ Class('xui.Event',null,{
         
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch && self.__realtouch){
-            if(('mousedown'==type || 'dblclick'==type) && !self.__simulatedMousedown)
-                return false;
+            if(('mousemove'==type) && !self.__simulatedMousemove)return false;
+            if(('mousedown'==type) && !self.__simulatedMousedown)return false;
+            if(('mouseup'==type) && !self.__simulatedMouseup)return false;
+            if(('click'==type) && !self.__simulatedClick)return false;
+            if(('dblclick'==type) && !self.__simulatedDblClick)return false;
         }
 
         //for correct mouse hover problems;
@@ -163,6 +166,11 @@ Class('xui.Event',null,{
         $eventhandler:function(){return xui.Event(arguments[0],this)},
         $eventhandler2:function(){return xui.Event(arguments[0],this,1)},
         $eventhandler3:function(){return xui.Event(arguments[0],xui.Event.getSrc(arguments[0]||window.event))},
+        $lastMouseupTime:0,
+        $lastDblClickTime:0,
+        $dblcInterval:500,
+        $dblcDelay:200,
+        $lastClickFunMark:0,
         //collection
         _events : ("mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,click,dblclick,contextmenu," +
                 "keydown,keypress,keyup,scroll,"+
@@ -178,6 +186,11 @@ Class('xui.Event',null,{
                 // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
+        simulateEvent : function(target, type, options) {
+            options = options || {};
+            if(target[0])target = target[0];
+            _.tryF(xui.Event.$eventsforSimulation[type],[target, type, options]);
+        },
         _getEventName:function(name,pos){
             return (name=this._map1[name]) && ((pos===0||pos==1||pos==2) ? name[pos] : name);
         },
@@ -450,44 +463,99 @@ Class('xui.Event',null,{
             // gek
             :-e.detail/3
         },
-        _simulateMousedown:function(event){
-            if(xui.Event.__simulatedMousedown)return;
-            var touches = event.changedTouches,
-                first = touches[0],
-                type = "mousedown";
-            var evn = document.createEvent("MouseEvent");
-            evn.initMouseEvent(type, true, true, window, 1,
-                              first.screenX, first.screenY,
-                              first.clientX, first.clientY, false,
-                              false, false, false, 0/*left*/, null);
-            // For touch-only platform: has real touch event
-            xui.Event.__realtouch=1;
-
-            xui.Event.__simulatedMousedown=1;
-            first.target.dispatchEvent(evn);
-            xui.Event.__simulatedMousedown=0;
+        _simulateMousemove:function(event){
+            var E=xui.Event;
+            if(!E.__simulatedMousemove){
+                //event.preventDefault();
+                var touches = event.changedTouches,
+                    first = touches[0];
+                E.__simulatedMousemove=1;
+                first.target.dispatchEvent(evn);
+                E.simulateEvent(first.target,"mousemove",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                E.__simulatedMousemove=0;
+            }
+            return true;
         },
-        _simulateFocus:function(event){
-            var touches = event.changedTouches,
+        _simulateMousedown:function(event){
+            var E=xui.Event,
+                touches = event.changedTouches,
                 first = touches[0];
-            if(first.target.tagName == "INPUT"){
-                switch(first.target.type){
-                case "button":
-                    event.preventDefault();
-                    var evn = document.createEvent("MouseEvent"),
-                        type = "click";
-                    evn.initMouseEvent(type, true, true, window, 1,
-                                   first.screenX, first.screenY,
-                                   first.clientX, first.clientY, false,
-                                   false, false, false, 0/*left*/, null);
-                    xui.Event.__simulatedClick=1;
-                    first.target.dispatchEvent(evn);
-                    xui.Event.__simulatedClick=0;
-                break;
-                default:
-                    first.target.focus();
+            // For touch-only platform: has real touch event
+            E.__realtouch=1;
+            E.__simulatedMousedownNode=first.target;
+
+            if(!E.__simulatedMousedown){
+                //event.preventDefault();
+                E.__simulatedMousedown=1;
+                E.simulateEvent(first.target,"mousedown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                E.__simulatedMousedown=0;
+            }
+            return true;
+        },
+        _simulateMouseup:function(event){
+            var E=xui.Event,
+                touches = event.changedTouches,
+                first = touches[0];
+
+            E.__simulatedMouseupNode=first.target;
+            if(!E.__simulatedMouseup){
+                //event.preventDefault();
+                // mouseup
+                E.__simulatedMouseup=1;
+                E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                E.__simulatedMouseup=0;
+            }
+
+            // click and dblclick
+            if(E.__simulatedMouseupNode==E.__simulatedMousedownNode){
+                var _now=event.timeStamp,
+                    interval=_now-E.$lastMouseupTime,
+                    interval2=_now-E.$lastDblClickTime;
+                    
+                // no clicks after doubleclick
+                if(interval2<E.$dblcDelay){
+                    return;
+                }    
+
+                // doubleclick
+                if(interval<=E.$dblcInterval){
+                    if(!E.__simulatedDblClick){
+                        _.clearTimeout(E.$lastClickFunMark);
+                        //event.preventDefault();
+
+                        E.__simulatedDblClick=1;
+                        xui(first.target).onDblclick(true);
+                        // invalid
+                        //E.simulateEvent(first.target,"dblclick",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                        E.__simulatedDblClick=0;
+
+                        E.$lastDblClickTime=_now;
+                    }
+                }else{
+                    if(!E.__simulatedClick){
+                        //event.preventDefault();
+// allow click + dblclick
+//                        E.$lastClickFunMark = _.setTimeout(function(){
+                        E.__simulatedClick=1;
+                        E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                        E.__simulatedClick=0;
+
+                        // for focus
+                        var target = first.target,
+                            tagName = target.tagName.toUpperCase();
+                        switch(tagName){
+                            case "INPUT":
+                            case "TEXTAREA":
+                                target.focus();
+                            break;
+                        }
+//                        }, E.$dblcInterval+E.dblcDelay);
+                    }
                 }
             }
+
+            E.$lastMouseupTime=_now;
+            return true;
         },
         stopPageTouchmove:function(){
             document.addEventListener(
@@ -497,24 +565,24 @@ Class('xui.Event',null,{
         }
     },
     Initialize:function(){
-        var ns=this;
-        var m1={
-                move:null,
-                size:null,
-    
-                drag:null,
-                dragstop:null,
-                dragover:null,
+        var ns=this,
+        m1={
+            move:null,
+            size:null,
 
-                mousewheel:null,
-    
-                dragbegin:'onmousedown',
-                dragenter:'onmouseover',
-                dragleave:'onmouseout',
-                drop:'onmouseup'
-            },
-            a1=['before','on','after'],
-            t1,t2,s;
+            drag:null,
+            dragstop:null,
+            dragover:null,
+
+            mousewheel:null,
+
+            dragbegin:'onmousedown',
+            dragenter:'onmouseover',
+            dragleave:'onmouseout',
+            drop:'onmouseup'
+        },
+        a1=['before','on','after'],
+        t1,t2,s;
         
         t1=ns._map1={};
         _.arr.each(ns._events,function(o){
@@ -538,15 +606,386 @@ Class('xui.Event',null,{
 
         document.onmousewheel=window.onmousewheel =ns.$eventhandler3;
         
+        var keyEvent=function(target, type , options){
+            switch(type) {
+                case "textevent":
+                    type = "keypress"
+                    break
+                case "keyup":
+                case "keydown":
+                case "keypress":
+                    break;
+            }
+           _.merge(options,{
+                bubbles :true,
+                cancelable:true,
+                view:window,
+                ctrlKey:false,
+                altKey:false,
+                shiftKey:false,
+                metaKey:false,
+                keyCode : 0,
+                charCode : 0
+            },'without');
+            var bubbles=options.bubbles,
+                cancelable=options.cancelable,
+                view=options.view,
+                ctrlKey=options.ctrlKey,
+                altKey=options.altKey,
+                shiftKey=options.shiftKey,
+                metaKey=options.metaKey,
+                keyCode=options.keyCode,
+                charCode=options.charCode;
+
+            var customEvent = null;
+            if (_.isFun(document.createEvent)) {    
+                try {
+                    customEvent = document.createEvent("KeyEvents");
+                    // TODO: special decipher in Firefox
+                    customEvent.initKeyEvent(type, bubbles, cancelable, view, ctrlKey,altKey, shiftKey, metaKey, keyCode, charCode);
+                } catch (ex) {
+                    try {
+                        customEvent = document.createEvent("Events");    
+                    } catch (uierror) {
+                        customEvent = document.createEvent("UIEvents");    
+                    } finally {
+                        customEvent.initEvent(type, bubbles, cancelable);
+                        customEvent.view = view;
+                        customEvent.altKey = altKey;
+                        customEvent.ctrlKey = ctrlKey;
+                        customEvent.shiftKey = shiftKey;
+                        customEvent.metaKey = metaKey;
+                        customEvent.keyCode = keyCode;
+                        customEvent.charCode = charCode;    
+                    }
+                }
+                target.dispatchEvent(customEvent);    
+                
+            } 
+            // for IE
+            else if (_.isObj(document.createEventObject)) {
+                customEvent = document.createEventObject();
+    
+                customEvent.bubbles = bubbles;
+                customEvent.cancelable = cancelable;
+                customEvent.view = view;
+                customEvent.ctrlKey = ctrlKey;
+                customEvent.altKey = altKey;
+                customEvent.shiftKey = shiftKey;
+                customEvent.metaKey = metaKey;
+        
+    
+                customEvent.keyCode = (charCode > 0) ? charCode : keyCode;
+        
+                target.fireEvent("on" + type, customEvent);
+            } else {
+                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+            }
+        },
+        mouseEvent=function(target, type , options){
+           options=options||{};
+           _.merge(options,{
+                bubbles :true,
+                cancelable:true,
+                view:window,
+                detail:1,
+                ctrlKey:false,
+                altKey:false,
+                shiftKey:false,
+                metaKey:false,
+                screenX:0,
+                screenY:0,
+                clientX:0,
+                clientY:0,
+                button:0,
+                relatedTarget: null
+            },'without');
+            var bubbles=options.bubbles,
+                cancelable=options.cancelable,
+                view=options.view,
+                detail=options.detail,
+                ctrlKey=options.ctrlKey,
+                altKey=options.altKey,
+                shiftKey=options.shiftKey,
+                metaKey=options.metaKey,
+                screenX=options.screenX,
+                screenY=options.screenY,
+                clientX=options.clientX,
+                clientY=options.clientY,
+                button=options.button,
+                relatedTarget=options.relatedTarget;
+        
+            var customEvent = null;    
+            if (_.isFun(document.createEvent)) {    
+                customEvent = document.createEvent("MouseEvents")
+                
+                if (customEvent.initMouseEvent){
+                    customEvent.initMouseEvent(type, bubbles, cancelable, view, detail,
+                                         screenX, screenY, clientX, clientY,
+                                         ctrlKey, altKey, shiftKey, metaKey,
+                                         button, relatedTarget)
+                }
+                // Safari 2.x doesn't support initMouseEvent
+                else {
+                    customEvent = document.createEvent("UIEvents")
+                    customEvent.initEvent(type, bubbles, cancelable)
+                    customEvent.view = view
+                    customEvent.detail = detail
+                    customEvent.screenX = screenX
+                    customEvent.screenY = screenY
+                    customEvent.clientX = clientX
+                    customEvent.clientY = clientY
+                    customEvent.ctrlKey = ctrlKey
+                    customEvent.altKey = altKey
+                    customEvent.metaKey = metaKey
+                    customEvent.shiftKey = shiftKey
+                    customEvent.button = button
+                    customEvent.relatedTarget = relatedTarget
+                }
+    
+                if (relatedTarget && !customEvent.relatedTarget) {
+                    if (type === "mouseout") {
+                        customEvent.toElement = relatedTarget
+                    } else if (type === "mouseover") {
+                        customEvent.fromElement = relatedTarget
+                    }
+                }
+                    target.dispatchEvent(customEvent);
+        
+            }
+            //IE
+            else if (_.isObj(document.createEventObject)) {
+                customEvent = document.createEventObject();
+        
+                customEvent.bubbles = bubbles;
+                customEvent.cancelable = cancelable;
+                customEvent.view = view;
+                customEvent.detail = detail;
+                customEvent.screenX = screenX;
+                customEvent.screenY = screenY;
+                customEvent.clientX = clientX;
+                customEvent.clientY = clientY;
+                customEvent.ctrlKey = ctrlKey;
+                customEvent.altKey = altKey;
+                customEvent.metaKey = metaKey;
+                customEvent.shiftKey = shiftKey;
+        
+                switch(button) {
+                    case 0:
+                        customEvent.button = 1;
+                        break;
+                    case 1:
+                        customEvent.button = 4;
+                        break;
+                    case 2:
+                        //leave as is
+                        break;
+                    default:
+                        customEvent.button = 0;
+                }
+        
+                customEvent.relatedTarget = relatedTarget;
+        
+                target.fireEvent("on" + type, customEvent);    
+            } else {
+                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+            }
+        },
+        UIEvent=function(target, type , options){    
+           _.merge(options,{
+                bubbles : true,
+                cancelable:(type === "submit"),
+                view:window,
+                detail:1
+            },'without');
+            var bubbles=options.bubbles,
+                cancelable=options.cancelable,
+                view=options.view,
+                detail=options.detail;
+    
+            var customEvent = null;
+            if (_.isFun(document.createEvent)) {    
+                customEvent = document.createEvent("UIEvents");
+                customEvent.initUIEvent(type, bubbles, cancelable, view, detail);
+                target.dispatchEvent(customEvent);    
+            }
+            //IE
+            else if (_.isObj(document.createEventObject)) { 
+                customEvent = document.createEventObject();
+                customEvent.bubbles = bubbles;
+                customEvent.cancelable = cancelable;
+                customEvent.view = view;
+                customEvent.detail = detail;
+    
+                target.fireEvent("on" + type, customEvent);    
+            } else {
+                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+            }
+        },
+        // for ios v2.0+
+        gestureEvent=function(target, type , options){
+           _.merge(options,{
+                bubbles :true,
+                cancelable:true,
+                detail:2,
+                view:window,
+                ctrlKey:false,
+                altKey:false,
+                shiftKey:false,
+                metaKey:false,
+                scale : 1.0,
+                rotation : 0.0
+            },'without');
+            var bubbles=options.bubbles,
+                cancelable=options.cancelable,
+                detail=options.detail,
+                view=options.view,
+                ctrlKey=options.ctrlKey,
+                altKey=options.altKey,
+                shiftKey=options.shiftKey,
+                metaKey=options.metaKey,
+                scale=options.scale,
+                rotation=options.rotation;
+        
+            var customEvent;
+            customEvent = document.createEvent("GestureEvent");
+            customEvent.initGestureEvent(type, bubbles, cancelable, view, detail,
+                screenX, screenY, clientX, clientY,
+                ctrlKey, altKey, shiftKey, metaKey,
+                target, scale, rotation);
+            target.dispatchEvent(customEvent);
+        },
+        touchEvent=function(target, type , options){
+            if (type === 'touchstart' || type === 'touchmove') {
+                if (!touches || !touches.length) {
+                    throw new Error('No touch object in touches.');
+                }
+            } else if (type === 'touchend') {
+                if (!changedTouches || !changedTouches.length) {
+                    throw new Error('No touch object in changedTouches.');
+                }
+            }
+           _.merge(options,{
+                bubbles :true,
+                cancelable:(type !== "touchcancel"),
+                detail:1,
+                view:window,
+                ctrlKey:false,
+                altKey:false,
+                shiftKey:false,
+                metaKey:false,
+                scale : 1.0,
+                rotation : 0.0
+            },'without');
+            var bubbles=options.bubbles,
+                cancelable=options.cancelable,
+                detail=options.detail,
+                view=options.view,
+                ctrlKey=options.ctrlKey,
+                altKey=options.altKey,
+                shiftKey=options.shiftKey,
+                metaKey=options.metaKey,
+                scale=options.scale,
+                rotation=options.rotation,
+                cancelable = type=="touchcancel"? false : options.cancelable;
+            
+            var customEvent;
+            if (_.isFun(document.createEvent)) {
+                if (xui.browser.isAndroid) {
+                    if (xui.browser.ver < 4.0) {
+                        customEvent = document.createEvent("MouseEvents");
+                        customEvent.initMouseEvent(type, bubbles, cancelable, view, detail, 
+                            screenX, screenY, clientX, clientY,
+                            ctrlKey, altKey, shiftKey, metaKey,
+                            0, target);
+                        customEvent.touches = touches;
+                        customEvent.targetTouches = targetTouches;
+                        customEvent.changedTouches = changedTouches;
+                    } else {
+                        customEvent = document.createEvent("TouchEvent");
+                        // Andoroid isn't compliant W3C initTouchEvent
+                        customEvent.initTouchEvent(touches, targetTouches, changedTouches,
+                            type, view,
+                            screenX, screenY, clientX, clientY,
+                            ctrlKey, altKey, shiftKey, metaKey);
+                    }
+                } else if (xui.browser.isIOS) {
+                    if (xui.browser.ver >= 2.0) {
+                        customEvent = document.createEvent("TouchEvent");
+                        customEvent.initTouchEvent(type, bubbles, cancelable, view, detail,
+                            screenX, screenY, clientX, clientY,
+                            ctrlKey, altKey, shiftKey, metaKey,
+                            touches, targetTouches, changedTouches,
+                            scale, rotation);
+                    } else {
+                        throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                    }
+                } else {
+                    throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                }
+                target.dispatchEvent(customEvent);
+            } else {
+                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+            }
+        };
+        ns.$eventsforSimulation={
+            click: mouseEvent,
+            dblclick: mouseEvent,
+            mouseover: mouseEvent,
+            mouseout: mouseEvent,
+            mouseenter: mouseEvent,
+            mouseleave: mouseEvent,
+            mousedown: mouseEvent,
+            mouseup: mouseEvent,
+            mousemove: mouseEvent,
+            pointerover:  mouseEvent,
+            pointerout:   mouseEvent,
+            pointerdown:  mouseEvent,
+            pointerup:    mouseEvent,
+            pointermove:  mouseEvent,
+            MSPointerOver:  mouseEvent,
+            MSPointerOut:   mouseEvent,
+            MSPointerDown:  mouseEvent,
+            MSPointerUp:    mouseEvent,
+            MSPointerMove:  mouseEvent,
+            
+            keydown: keyEvent,
+            keyup: keyEvent,
+            keypress: keyEvent,
+            
+            submit: UIEvent,
+            blur: UIEvent,
+            change: UIEvent,
+            focus: UIEvent,
+            resize: UIEvent,
+            scroll: UIEvent,
+            select: UIEvent,
+            
+            touchstart: touchEvent,
+            touchmove: touchEvent,
+            touchend: touchEvent,
+            touchcancel: touchEvent,
+            
+            gesturestart: gestureEvent,
+            gesturechange: gestureEvent,
+            gestureend: gestureEvent
+        };
+        
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
             document.addEventListener(
                 (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
                 (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
                 "touchstart", xui.Event._simulateMousedown, true);
-            if(xui.browser.isAndroid||xui.browser.isBB){
-                document.addEventListener("touchend", xui.Event._simulateFocus, true);
-            }
+            document.addEventListener(
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                "touchend", xui.Event._simulateMouseup, true);
+/*            document.addEventListener(
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                "touchmove", xui.Event._simulateMousemove, true);
+*/
         }
     }
 });
