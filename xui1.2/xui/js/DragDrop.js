@@ -557,39 +557,38 @@ Class('xui.DragDrop',null,{
                 // The later joined the higher the priority
                 if(xui.browser.isTouch && xui.Event.__realtouch){
                     if(d._c_droppable){
-                        var i=0,o,e,l=d._c_droppable.length,oactive=d._c_dropactive;
-                        for(;i<l;i++){
-                            o=d._c_droppable[i];
+                        for(var i=0,l=d._c_droppable.length;i<l;i++){
+                            var o=d._c_droppable[i],
+                                target=xui.use(o.id).get(0),
+                                oactive=d._c_dropactive,
+                                otarget=xui.use(oactive).get(0),
+                                ev=document.createEvent("MouseEvents");
+
                             if(p.x>=o.left&&p.y>=o.top&&p.x<=(o.left+o.width)&&p.y<=(o.top+o.height)){
                                 if(oactive==o.id){
-                                    console.log('in ' +o.id );
+                                    //console.log('in ' +o.id );
+                                    var first = e.changedTouches[0];
+                                    ev.initMouseEvent("mousemove", true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0/*left*/, null)
+                                    target.dispatchEvent(ev);
                                 }else{
-                                    e=document.createEvent("MouseEvent");
-                                    e.initMouseEvent("mouseover",true,true, window, 1,
-                                          p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                    xui.use(o.id).get(0).dispatchEvent(e);
+                                    ev.initMouseEvent("mouseover",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
+                                    target.dispatchEvent(ev);
                                     d._c_dropactive=o.id;
 
-                                    console.log('active ' +o.id);
+                                    //console.log('active ' +o.id);
                                     if(oactive){
-                                        e=document.createEvent("MouseEvent");
-                                        e.initMouseEvent("mouseout",true,true, window, 1,
-                                          p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                        xui.use(oactive).get(0).dispatchEvent(e);
-                                    
-                                        console.log('deactive ' + oactive);
+                                        ev.initMouseEvent("mouseout",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
+                                        otarget.dispatchEvent(ev);
+                                        //console.log('deactive ' + oactive);
                                     }
                                 }
                                 break;
                             }else{
                                 if(oactive==o.id){
-                                    e=document.createEvent("MouseEvent");
-                                    e.initMouseEvent("mouseout",true,true, window, 1,
-                                      p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                    xui.use(oactive).get(0).dispatchEvent(e);
+                                    ev.initMouseEvent("mouseout",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
+                                    otarget.dispatchEvent(ev);
                                     d._c_dropactive=null;
-                                    
-                                    console.log('deactive ' + oactive);
+                                    //console.log('deactive ' + oactive);
                                     break;
                                 }
                             }

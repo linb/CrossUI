@@ -1628,7 +1628,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
 
             // if offset out a bar width
             if(Math.abs(offset)/t._unitPixs >=1 || left){
-                var offsetCount = parseInt(offset/t.unitPixs,10),
+                var offsetCount = parseInt(offset/t._unitPixs,10),
                     bak_s = t._smallLabelStart,
                     bak_e = t._smallLabelEnd,
                     _c=-offsetCount*t._smallLabelCount,
