@@ -496,6 +496,8 @@ Class('xui.DragDrop',null,{
         $onDrag:function(e){
             var d=xui.DragDrop,p=d._profile;
 
+            if(d.$SimulateMousemoveInMobileDevice)return false;
+            
            //try{
                 e = e || window.event;
                 //set _stop or (in IE, show alert)
@@ -561,32 +563,31 @@ Class('xui.DragDrop',null,{
                             var o=d._c_droppable[i],
                                 target=xui.use(o.id).get(0),
                                 oactive=d._c_dropactive,
-                                otarget=xui.use(oactive).get(0),
-                                ev=document.createEvent("MouseEvents");
+                                otarget=xui.use(oactive).get(0);
 
                             if(p.x>=o.left&&p.y>=o.top&&p.x<=(o.left+o.width)&&p.y<=(o.top+o.height)){
                                 if(oactive==o.id){
                                     //console.log('in ' +o.id );
                                     var first = e.changedTouches[0];
-                                    ev.initMouseEvent("mousemove", true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0/*left*/, null)
-                                    target.dispatchEvent(ev);
+                                    d.$SimulateMousemoveInMobileDevice=1;
+                                    xui.Event.simulateEvent(target,"mousemove",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                                    delete d.$SimulateMousemoveInMobileDevice;
                                 }else{
-                                    ev.initMouseEvent("mouseover",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                    target.dispatchEvent(ev);
+                                    xui.Event.simulateEvent(target,"mouseover",{screenX:p.left, screenY:p.top, clientX:p.left, clientY:p.top});
                                     d._c_dropactive=o.id;
 
                                     //console.log('active ' +o.id);
-                                    if(oactive){
-                                        ev.initMouseEvent("mouseout",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                        otarget.dispatchEvent(ev);
+                                    if(oactive && otarget){
+                                        xui.Event.simulateEvent(otarget,"mouseout",{screenX:p.left, screenY:p.top, clientX:p.left, clientY:p.top});
                                         //console.log('deactive ' + oactive);
                                     }
                                 }
                                 break;
                             }else{
                                 if(oactive==o.id){
-                                    ev.initMouseEvent("mouseout",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                    otarget.dispatchEvent(ev);
+                                    if(otarget){
+                                        xui.Event.simulateEvent(otarget,"mouseout",{screenX:p.left, screenY:p.top, clientX:p.left, clientY:p.top});
+                                    }
                                     d._c_dropactive=null;
                                     //console.log('deactive ' + oactive);
                                     break;

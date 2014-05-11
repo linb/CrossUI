@@ -4257,12 +4257,14 @@ xui.Locale.en.editor={
 Class('xui.Event',null,{
     Constructor:function(event,node,fordrag,tid){
         var self = xui.Event,
+            w=window,
+            d=document,
             dd=0,id,t,
             dragdrop=xui.DragDrop,
             src, type,  pre, obj;
 
         //get event object , and src of event
-        if(!(event=event||window.event) || !(src=node)){
+        if(!(event=event||w.event) || !(src=node)){
             src=node=null;
             return false;
         }
@@ -4316,9 +4318,9 @@ Class('xui.Event',null,{
             else if(type=="resize"){
                 type='size';
                 //for IE, always fire window onresize event after any innerHTML action
-                if(xui.browser.ie && window===src){
-                    var w=xui.browser.contentBox && document.documentElement.clientWidth || document.body.clientWidth,
-                        h=xui.browser.contentBox && document.documentElement.clientHeight || document.body.clientHeight;
+                if(xui.browser.ie && w===src){
+                    var w=xui.browser.contentBox && d.dElement.clientWidth || d.body.clientWidth,
+                        h=xui.browser.contentBox && d.dElement.clientHeight || d.body.clientHeight;
                     if(obj._w==w&&obj._h==h){
                         src=null;
                         return;
@@ -4358,7 +4360,7 @@ Class('xui.Event',null,{
             f.tasks=funs;
             r = f(event, src.$xid);
             // add a patch for resize
-            if(window===src && type=="size"){
+            if(w===src && type=="size"){
                 _.asyRun(function(){
                     f(event, src.$xid);
                     f.tasks.length=0;
@@ -4717,6 +4719,7 @@ Class('xui.Event',null,{
             :-e.detail/3
         },
         _simulateMousemove:function(event){
+            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event;
             if(!E.__simulatedMousemove){
                 //event.preventDefault();
@@ -4730,6 +4733,7 @@ Class('xui.Event',null,{
             return true;
         },
         _simulateMousedown:function(event){
+            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event,
                 touches = event.changedTouches,
                 first = touches[0];
@@ -4746,6 +4750,7 @@ Class('xui.Event',null,{
             return true;
         },
         _simulateMouseup:function(event){
+            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event,
                 touches = event.changedTouches,
                 first = touches[0];
@@ -4789,6 +4794,7 @@ Class('xui.Event',null,{
                         //event.preventDefault();
 // allow click + dblclick
 //                        E.$lastClickFunMark = _.setTimeout(function(){
+
                         E.__simulatedClick=1;
                         E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
                         E.__simulatedClick=0;
@@ -4819,6 +4825,8 @@ Class('xui.Event',null,{
     },
     Initialize:function(){
         var ns=this,
+        w=window,
+        d=document,
         m1={
             move:null,
             size:null,
@@ -4852,12 +4860,12 @@ Class('xui.Event',null,{
         });
         
         //add the root resize handler
-        window.onresize=ns.$eventhandler;
+        w.onresize=ns.$eventhandler;
 
-        if (window.addEventListener)
-            window.addEventListener('DOMMouseScroll', ns.$eventhandler3, false);
+        if (w.addEventListener)
+            w.addEventListener('DOMMouseScroll', ns.$eventhandler3, false);
 
-        document.onmousewheel=window.onmousewheel =ns.$eventhandler3;
+        d.onmousewheel=w.onmousewheel =ns.$eventhandler3;
         
         var keyEvent=function(target, type , options){
             switch(type) {
@@ -4872,7 +4880,7 @@ Class('xui.Event',null,{
            _.merge(options,{
                 bubbles :true,
                 cancelable:true,
-                view:window,
+                view:w,
                 ctrlKey:false,
                 altKey:false,
                 shiftKey:false,
@@ -4891,16 +4899,16 @@ Class('xui.Event',null,{
                 charCode=options.charCode;
 
             var customEvent = null;
-            if (_.isFun(document.createEvent)) {    
+            if (d.createEvent){    
                 try {
-                    customEvent = document.createEvent("KeyEvents");
+                    customEvent = d.createEvent("KeyEvents");
                     // TODO: special decipher in Firefox
                     customEvent.initKeyEvent(type, bubbles, cancelable, view, ctrlKey,altKey, shiftKey, metaKey, keyCode, charCode);
                 } catch (ex) {
                     try {
-                        customEvent = document.createEvent("Events");    
+                        customEvent = d.createEvent("Events");    
                     } catch (uierror) {
-                        customEvent = document.createEvent("UIEvents");    
+                        customEvent = d.createEvent("UIEvents");    
                     } finally {
                         customEvent.initEvent(type, bubbles, cancelable);
                         customEvent.view = view;
@@ -4916,8 +4924,8 @@ Class('xui.Event',null,{
                 
             } 
             // for IE
-            else if (_.isObj(document.createEventObject)) {
-                customEvent = document.createEventObject();
+            else if(d.createEventObject) {
+                customEvent = d.createEventObject();
     
                 customEvent.bubbles = bubbles;
                 customEvent.cancelable = cancelable;
@@ -4940,7 +4948,7 @@ Class('xui.Event',null,{
            _.merge(options,{
                 bubbles :true,
                 cancelable:true,
-                view:window,
+                view:w,
                 detail:1,
                 ctrlKey:false,
                 altKey:false,
@@ -4969,46 +4977,45 @@ Class('xui.Event',null,{
                 relatedTarget=options.relatedTarget;
         
             var customEvent = null;    
-            if (_.isFun(document.createEvent)) {    
-                customEvent = document.createEvent("MouseEvents")
+            if (d.createEvent){    
+                customEvent = d.createEvent("MouseEvents");
                 
                 if (customEvent.initMouseEvent){
                     customEvent.initMouseEvent(type, bubbles, cancelable, view, detail,
                                          screenX, screenY, clientX, clientY,
                                          ctrlKey, altKey, shiftKey, metaKey,
-                                         button, relatedTarget)
+                                         button, relatedTarget);
                 }
                 // Safari 2.x doesn't support initMouseEvent
                 else {
-                    customEvent = document.createEvent("UIEvents")
-                    customEvent.initEvent(type, bubbles, cancelable)
-                    customEvent.view = view
-                    customEvent.detail = detail
-                    customEvent.screenX = screenX
-                    customEvent.screenY = screenY
-                    customEvent.clientX = clientX
-                    customEvent.clientY = clientY
-                    customEvent.ctrlKey = ctrlKey
-                    customEvent.altKey = altKey
-                    customEvent.metaKey = metaKey
-                    customEvent.shiftKey = shiftKey
-                    customEvent.button = button
-                    customEvent.relatedTarget = relatedTarget
+                    customEvent = d.createEvent("UIEvents");
+                    customEvent.initEvent(type, bubbles, cancelable);
+                    customEvent.view = view;
+                    customEvent.detail = detail;
+                    customEvent.screenX = screenX;
+                    customEvent.screenY = screenY;
+                    customEvent.clientX = clientX;
+                    customEvent.clientY = clientY;
+                    customEvent.ctrlKey = ctrlKey;
+                    customEvent.altKey = altKey;
+                    customEvent.metaKey = metaKey;
+                    customEvent.shiftKey = shiftKey;
+                    customEvent.button = button;
+                    customEvent.relatedTarget = relatedTarget;
                 }
     
                 if (relatedTarget && !customEvent.relatedTarget) {
                     if (type === "mouseout") {
-                        customEvent.toElement = relatedTarget
+                        customEvent.toElement = relatedTarget;
                     } else if (type === "mouseover") {
-                        customEvent.fromElement = relatedTarget
+                        customEvent.fromElement = relatedTarget;
                     }
                 }
-                    target.dispatchEvent(customEvent);
-        
+                target.dispatchEvent(customEvent);
             }
             //IE
-            else if (_.isObj(document.createEventObject)) {
-                customEvent = document.createEventObject();
+            else if(d.createEventObject){
+                customEvent = d.createEventObject();
         
                 customEvent.bubbles = bubbles;
                 customEvent.cancelable = cancelable;
@@ -5048,7 +5055,7 @@ Class('xui.Event',null,{
            _.merge(options,{
                 bubbles : true,
                 cancelable:(type === "submit"),
-                view:window,
+                view:w,
                 detail:1
             },'without');
             var bubbles=options.bubbles,
@@ -5057,14 +5064,14 @@ Class('xui.Event',null,{
                 detail=options.detail;
     
             var customEvent = null;
-            if (_.isFun(document.createEvent)) {    
-                customEvent = document.createEvent("UIEvents");
+            if (d.createEvent){    
+                customEvent = d.createEvent("UIEvents");
                 customEvent.initUIEvent(type, bubbles, cancelable, view, detail);
                 target.dispatchEvent(customEvent);    
             }
             //IE
-            else if (_.isObj(document.createEventObject)) { 
-                customEvent = document.createEventObject();
+            else if(d.createEventObject){ 
+                customEvent = d.createEventObject();
                 customEvent.bubbles = bubbles;
                 customEvent.cancelable = cancelable;
                 customEvent.view = view;
@@ -5081,7 +5088,7 @@ Class('xui.Event',null,{
                 bubbles :true,
                 cancelable:true,
                 detail:2,
-                view:window,
+                view:w,
                 ctrlKey:false,
                 altKey:false,
                 shiftKey:false,
@@ -5101,7 +5108,7 @@ Class('xui.Event',null,{
                 rotation=options.rotation;
         
             var customEvent;
-            customEvent = document.createEvent("GestureEvent");
+            customEvent = d.createEvent("GestureEvent");
             customEvent.initGestureEvent(type, bubbles, cancelable, view, detail,
                 screenX, screenY, clientX, clientY,
                 ctrlKey, altKey, shiftKey, metaKey,
@@ -5122,7 +5129,7 @@ Class('xui.Event',null,{
                 bubbles :true,
                 cancelable:(type !== "touchcancel"),
                 detail:1,
-                view:window,
+                view:w,
                 ctrlKey:false,
                 altKey:false,
                 shiftKey:false,
@@ -5143,10 +5150,10 @@ Class('xui.Event',null,{
                 cancelable = type=="touchcancel"? false : options.cancelable;
             
             var customEvent;
-            if (_.isFun(document.createEvent)) {
+            if (d.createEvent){
                 if (xui.browser.isAndroid) {
                     if (xui.browser.ver < 4.0) {
-                        customEvent = document.createEvent("MouseEvents");
+                        customEvent = d.createEvent("MouseEvents");
                         customEvent.initMouseEvent(type, bubbles, cancelable, view, detail, 
                             screenX, screenY, clientX, clientY,
                             ctrlKey, altKey, shiftKey, metaKey,
@@ -5155,7 +5162,7 @@ Class('xui.Event',null,{
                         customEvent.targetTouches = targetTouches;
                         customEvent.changedTouches = changedTouches;
                     } else {
-                        customEvent = document.createEvent("TouchEvent");
+                        customEvent = d.createEvent("TouchEvent");
                         // Andoroid isn't compliant W3C initTouchEvent
                         customEvent.initTouchEvent(touches, targetTouches, changedTouches,
                             type, view,
@@ -5164,7 +5171,7 @@ Class('xui.Event',null,{
                     }
                 } else if (xui.browser.isIOS) {
                     if (xui.browser.ver >= 2.0) {
-                        customEvent = document.createEvent("TouchEvent");
+                        customEvent = d.createEvent("TouchEvent");
                         customEvent.initTouchEvent(type, bubbles, cancelable, view, detail,
                             screenX, screenY, clientX, clientY,
                             ctrlKey, altKey, shiftKey, metaKey,
@@ -5226,19 +5233,35 @@ Class('xui.Event',null,{
         
         // if touable, use only simulatedMousedown
         if(xui.browser.isTouch){
-            document.addEventListener(
-                (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                "touchstart", xui.Event._simulateMousedown, true);
-            document.addEventListener(
-                (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                "touchend", xui.Event._simulateMouseup, true);
-/*            document.addEventListener(
-                (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
-                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                "touchmove", xui.Event._simulateMousemove, true);
-*/
+            if(d.addEventListener){
+                d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                    "touchstart", xui.Event._simulateMousedown, false/*need bubble*/);
+                d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", xui.Event._simulateMouseup, false/*need bubble*/);
+    /*            d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                    "touchmove", xui.Event._simulateMousemove, false);
+    */
+            }else if(d.attachEvent){
+                d.attachEvent(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                    "touchstart", xui.Event._simulateMousedown);
+                d.attachEvent(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", xui.Event._simulateMouseup);
+    /*            d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                    "touchmove", xui.Event._simulateMousemove);
+    */                
+            }
         }
     }
 });Class('xui.Date',null,{
@@ -12041,6 +12064,8 @@ Class('xui.DragDrop',null,{
         $onDrag:function(e){
             var d=xui.DragDrop,p=d._profile;
 
+            if(d.$SimulateMousemoveInMobileDevice)return false;
+            
            //try{
                 e = e || window.event;
                 //set _stop or (in IE, show alert)
@@ -12106,32 +12131,31 @@ Class('xui.DragDrop',null,{
                             var o=d._c_droppable[i],
                                 target=xui.use(o.id).get(0),
                                 oactive=d._c_dropactive,
-                                otarget=xui.use(oactive).get(0),
-                                ev=document.createEvent("MouseEvents");
+                                otarget=xui.use(oactive).get(0);
 
                             if(p.x>=o.left&&p.y>=o.top&&p.x<=(o.left+o.width)&&p.y<=(o.top+o.height)){
                                 if(oactive==o.id){
                                     //console.log('in ' +o.id );
                                     var first = e.changedTouches[0];
-                                    ev.initMouseEvent("mousemove", true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0/*left*/, null)
-                                    target.dispatchEvent(ev);
+                                    d.$SimulateMousemoveInMobileDevice=1;
+                                    xui.Event.simulateEvent(target,"mousemove",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                                    delete d.$SimulateMousemoveInMobileDevice;
                                 }else{
-                                    ev.initMouseEvent("mouseover",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                    target.dispatchEvent(ev);
+                                    xui.Event.simulateEvent(target,"mouseover",{screenX:p.left, screenY:p.top, clientX:p.left, clientY:p.top});
                                     d._c_dropactive=o.id;
 
                                     //console.log('active ' +o.id);
-                                    if(oactive){
-                                        ev.initMouseEvent("mouseout",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                        otarget.dispatchEvent(ev);
+                                    if(oactive && otarget){
+                                        xui.Event.simulateEvent(otarget,"mouseout",{screenX:p.left, screenY:p.top, clientX:p.left, clientY:p.top});
                                         //console.log('deactive ' + oactive);
                                     }
                                 }
                                 break;
                             }else{
                                 if(oactive==o.id){
-                                    ev.initMouseEvent("mouseout",true,true, window, 1, p.left, p.top,p.left, p.top, false,false,false,false, 0/*left*/, null);
-                                    otarget.dispatchEvent(ev);
+                                    if(otarget){
+                                        xui.Event.simulateEvent(otarget,"mouseout",{screenX:p.left, screenY:p.top, clientX:p.left, clientY:p.top});
+                                    }
                                     d._c_dropactive=null;
                                     //console.log('deactive ' + oactive);
                                     break;
