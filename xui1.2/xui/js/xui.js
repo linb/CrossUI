@@ -24,12 +24,12 @@ Class=window.Class=function(key, pkey, obj){
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
     for(i=0; t=pkey[i]; i++)
         if(!(_parent[i]=(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
-            throw new Error('errNoParent--'+ t);
+            throw 'errNoParent--'+ t;
     if(obj.Dependency){
         if(typeof obj.Dependency == "string")obj.Dependency=[obj.Dependency];
         for(i=0; t=obj.Dependency[i]; i++)
             if(!(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                throw new Error('errNoDependency--'+ t);
+                throw 'errNoDependency--'+ t;
     }
     parent0=_parent[0];
 
@@ -630,7 +630,7 @@ _.merge(_,{
             if(!a)return a;
             if(!_.isArr(a)){
                 if((a=a._nodes) || !_.isArr(a))
-                    throw new Error('errNotArray');
+                    throw 'errNotArray';
                 if(desc===undefined)
                     desc=1;
             }
@@ -919,7 +919,7 @@ _.merge(xui,{
                 var count=0,fun=function(a){
                     if(count>20){
                         if(false!==_.tryF(onFail))
-                            throw new Error('errLoadTheme:'+key);
+                            throw 'errLoadTheme:'+key;
                     }
                     count++;
                     var s;
@@ -1127,6 +1127,7 @@ _.merge(xui,{
             proMap=cache.profileMap,
             ch=cache.UIKeyMapEvents,
             pdata=cache.domPurgeData,
+            handler=xui.Event.$eventhandler,
             // ie<=10
             children=(xui.browser.ie && node.all )? node.all : node.getElementsByTagName('*'),
             l=children.length,
@@ -1136,10 +1137,17 @@ _.merge(xui,{
             if(!(v=children[i]))continue;
             if(t=v.$xid){
                 if(o=pdata[t]){
-                    if(w=o.eHandlers)
+                    if(w=o.eHandlers){
+                        if(xui.browser.isTouch && w['onxuitouchdown']){
+                            if(v.removeEventListener){
+                                v.removeEventListener("xuitouchdown", handler,false);
+                            }else if(v.detachEvent){
+                                v.detachEvent("xuitouchdown", handler);
+                            }
+                        }
                         for(j in w)
                             v[j]=null;
-
+                    }
                     for(j in o)
                         o[j]=null;
 
@@ -1395,18 +1403,26 @@ new function(){
         'submit':'form','reset':'form',  
         'error':'img','load':'img','abort':'img'  
       },c={};
-      xui.isEventSupported=function(name){
-        if(name in c)return c[name];
-        var el=document.createElement(TAGNAMES[name]||'div'),
-            en='on'+name,
-            support=(en in el);
-        if(!support) {  
-          el.setAttribute(en, 'return;');  
-          support=typeof el[en]=='function';  
-        }  
-        el=null;
-        return c[name]=support;  
-      };
+      xui.isEventSupported=function(name, node) {
+        var rn=(node?node.tagName.toLowerCase():"div")+":"+name;
+        if(rn in c)return c[rn];
+        node = node || document.createElement(TAGNAMES[name] || 'div');
+        name = 'on' + name;
+        // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
+        var isSupported = (name in node);
+        if (!isSupported) {
+          // if it has no `setAttribute` (i.e. doesn't implement Node interface), try generic node
+          if(!node.setAttribute)node = document.createElement('div');
+            if(node.setAttribute) {
+              node.setAttribute(name, '');
+              isSupported = typeof node[name] == 'function';
+              if (typeof node[name] != 'undefined')node[name] = undefined;
+              node.removeAttribute(name);
+            }
+        }
+        node = null;
+        return c[rn]=isSupported;
+      }
 };
 /*xui.Thread
 *  dependency: _ ; Class ; xui
@@ -1840,7 +1856,7 @@ Class('xui.absIO',null,{
         _onError:function(e){
             var self=this;
             if(false!==_.tryF(self.beforeFail,[e, self.threadid],self))
-                _.tryF(self.onFail,[e.name + ": " + e.message, self.rspType, self.threadid, e], self);
+                _.tryF(self.onFail,[e.name?( e.name + ": " + e.message):e, self.rspType, self.threadid, e], self);
             self._onEnd();
         },
         isAlive:function(){
@@ -2439,7 +2455,7 @@ Class('xui.SC',null,{
                             (self.$cache || ct)[self.$tag]=text;
                         else
                             //for sy xmlhttp ajax
-                            try{_.exec(text)}catch(e){throw new Error(e.name + ": " + e.message+ " " + self.$tag)}
+                            try{_.exec(text)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
                 _.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||{});

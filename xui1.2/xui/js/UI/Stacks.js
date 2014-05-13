@@ -2,6 +2,9 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
     Initialize:function(){
         var t=this.getTemplate(),keys=this.$Keys;
         t.BOX={tagName:'div',LIST:t.LIST, PNAELS:t.PNAELS};
+        delete t.LIST.LEFT;
+        delete t.LIST.RIGHT;
+        delete t.LIST.DROP;
         delete t.LIST;
         delete t.PNAELS;
         this.setTemplate(t);

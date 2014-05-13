@@ -1808,7 +1808,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             //colomn resizer
             HHANDLER:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                         id = profile.getSubId(src)
@@ -1949,7 +1949,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             //row resizer
             FHANDLER:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                     row = profile.rowMap[profile.getSubId(src)],
@@ -2196,7 +2196,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     return false;
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties;
                     if(p.disabled)return;

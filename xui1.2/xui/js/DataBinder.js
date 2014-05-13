@@ -587,7 +587,7 @@ Class("xui.DataBinder","xui.absObj",{
 
                     //if it exists, overwrite it dir
                     //if(_old && _new)
-                    //    throw new Error(value+' exists!');
+                    //    throw value+' exists!';
 
                     _p[o.properties.name=value]=o;
                     //modify name

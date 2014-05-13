@@ -439,7 +439,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     p._scroll_offset = p._scrollRate;
                     profile.box._rePosition(profile);
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(profile.pauseA||profile.pause)return;
                     var t=profile.properties,
@@ -516,7 +516,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             ITEMS:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var pro=profile.properties;
                     if(pro.disabled || pro.readonly)return;
@@ -736,7 +736,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             HEAD:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var ps=profile.properties, item=profile.getItemByDom(src);
                     if(ps.disabled  || item.disabled)return;
@@ -754,7 +754,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             LEFT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var ps=profile.properties, item=profile.getItemByDom(src);
                     if(ps.disabled || ps.readonly || item.readonly || item.disabled)return;
@@ -766,7 +766,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             RIGHT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var ps=profile.properties, item=profile.getItemByDom(src);
                     if(ps.disabled || ps.readonly || item.readonly || item.disabled)return;

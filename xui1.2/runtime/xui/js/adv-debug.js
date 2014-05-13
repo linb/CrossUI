@@ -1095,7 +1095,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             DroppableKeys:['KEY'],
             onSize:xui.UI.$onSize,
             MOVE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var pro=profile.properties;
                     if(pro.disabled)return;
@@ -1939,7 +1939,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     p._scroll_offset = p._scrollRate;
                     profile.box._rePosition(profile);
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(profile.pauseA||profile.pause)return;
                     var t=profile.properties,
@@ -2016,7 +2016,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             ITEMS:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var pro=profile.properties;
                     if(pro.disabled || pro.readonly)return;
@@ -2236,7 +2236,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             HEAD:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var ps=profile.properties, item=profile.getItemByDom(src);
                     if(ps.disabled  || item.disabled)return;
@@ -2254,7 +2254,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             LEFT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var ps=profile.properties, item=profile.getItemByDom(src);
                     if(ps.disabled || ps.readonly || item.readonly || item.disabled)return;
@@ -2266,7 +2266,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 }
             },
             RIGHT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var ps=profile.properties, item=profile.getItemByDom(src);
                     if(ps.disabled || ps.readonly || item.readonly || item.disabled)return;
@@ -4963,7 +4963,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     profile.box._keydown.apply(profile.box,[profile, e, src,0]);
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties,
@@ -5008,7 +5008,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     profile.box._keydown.apply(profile.box,[profile, e, src,1]);
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties,
@@ -13553,8 +13553,6 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
 
     return R;
 }));
-if(typeof(Raphael)=="function"){
-
 Class("xui.svg", "xui.UI",{
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.","")]=xui.absBox.$type[key]=key;
@@ -13849,6 +13847,9 @@ Class("xui.svg", "xui.UI",{
         delete this.prototype.toHtml;
     },
     Instance:{
+        initialize:function(){
+            if(typeof(Raphael)!="function")throw "Browser doesn't suppor SVG or VML, all diagram functions were disabled!";
+        },
         getAttr:function(key){
             var prf=this.get(0);
             if(prf){
@@ -16818,11 +16819,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
             return paths[0].path;
         }
     }
-});
-
-}else{
-    throw new Error("Browser doesn't suppor SVG or VML, all diagram functions were disabled!");
-}Class("xui.UI.SVGPaper", "xui.UI.Pane",{
+});Class("xui.UI.SVGPaper", "xui.UI.Pane",{
     Initialize:function(){
         this.addTemplateKeys(['SVG']);
     },

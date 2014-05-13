@@ -168,7 +168,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     profile.box._keydown.apply(profile.box,[profile, e, src,0]);
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties,
@@ -213,7 +213,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     profile.box._keydown.apply(profile.box,[profile, e, src,1]);
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties,

@@ -299,7 +299,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 onKeyup:function(profile){
                     xui.Thread.abort(profile.$xid+':auto');
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return;
@@ -354,7 +354,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 onKeyup:function(profile){
                     xui.Thread.abort(profile.$xid+':auto');
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return;

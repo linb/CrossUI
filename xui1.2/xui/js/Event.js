@@ -8,7 +8,7 @@ Class('xui.Event',null,{
             d=document,
             dd=0,id,t,
             dragdrop=xui.DragDrop,
-            src, type,  pre, obj;
+            src, pre, obj;
 
         //get event object , and src of event
         if(!(event=event||w.event) || !(src=node)){
@@ -18,15 +18,17 @@ Class('xui.Event',null,{
         node=null;
 
         //type
-        type = event.type;
-        
-        // if touable, use only simulatedMousedown
-        if(xui.browser.isTouch && self.__realtouch){
-            if(('mousemove'==type) && !self.__simulatedMousemove)return false;
-            if(('mousedown'==type) && !self.__simulatedMousedown)return false;
-            if(('mouseup'==type) && !self.__simulatedMouseup)return false;
-            if(('click'==type) && !self.__simulatedClick)return false;
-            if(('dblclick'==type) && !self.__simulatedDblClick)return false;
+        var type = event.type,
+            xuievent=event.$xuievent,
+            xuitype=event.$xuitype,
+            xuiall=event.$xuiall;
+
+        // simulate for DD
+        if(type=="xuitouchdown"){
+            type="mousedown";
+            xuievent=1;
+            xuiall=0;
+            xuitype="beforeMousedown";
         }
 
         //for correct mouse hover problems;
@@ -66,8 +68,8 @@ Class('xui.Event',null,{
                 type='size';
                 //for IE, always fire window onresize event after any innerHTML action
                 if(xui.browser.ie && w===src){
-                    var w=xui.browser.contentBox && d.dElement.clientWidth || d.body.clientWidth,
-                        h=xui.browser.contentBox && d.dElement.clientHeight || d.body.clientHeight;
+                    var w=xui.browser.contentBox && d.documentElement.clientWidth || d.body.clientWidth,
+                        h=xui.browser.contentBox && d.documentElement.clientHeight || d.body.clientHeight;
                     if(obj._w==w&&obj._h==h){
                         src=null;
                         return;
@@ -80,18 +82,18 @@ Class('xui.Event',null,{
             var j, f, name, r=true, funs=[];
             //order by: before, on, after
             for(j=0; j<=2; ++j){
-                //if in dd, get before Mouse.. only
+                // if in dd, effect beforeMouse(move/over/out) only
                 if(dd==1 && j!==0 && !event.$force)break;
-                //if not in dd, get on/after Mouse.. only
+                // if not in dd, effect (on/after)Mouse(move/over/out) only
                 if(dd==2 && j===0)continue;
-                //get event name from event type
+                // get event name from event type
                 name = self._type[type+j] || ( self._type[type+j] = self._getEventName(type, j));
                 /*
-                event.$e : called by fireEvent
-                event.$all : fire all events of the type: before/on/after
-                event.$name : fire one group of event of the type.
+                event.$xui : called by xui fireEvent
+                event.$xuiall : fire all events of the type: before/on/after
+                event.$xuitype : fire specific type only
                 */
-                if(!event.$e || event.$all || (name==event.$name))obj._getEV(funs, id, name, src.$xid);
+                if(!xuievent || xuiall || (name===xuitype))obj._getEV(funs, id, name, src.$xid);
             }
 
             /*call function by order
@@ -135,10 +137,10 @@ Class('xui.Event',null,{
                     self({
                         type: 'mouseout',
                         target: t,
-                        $e:true,
-                        $name:'beforeMouseout',
-                        preventDefault:function(){this.returnValue=false},
-                        stopPropagation:function(){this.cancelBubble=true}
+                        $xui:true,
+                        $xuitype:'beforeMouseout',
+                        preventDefault:function(e){xui.Event.stopDefault(e);},
+                        stopPropagation:function(e){xui.Event.stopBubble(e);}
                         },t);
                     dragdrop.setDropElement(src.$xid);
                 }
@@ -169,9 +171,7 @@ Class('xui.Event',null,{
         $eventhandler2:function(){return xui.Event(arguments[0],this,1)},
         $eventhandler3:function(){return xui.Event(arguments[0],xui.Event.getSrc(arguments[0]||window.event))},
         $lastMouseupTime:0,
-        $lastDblClickTime:0,
         $dblcInterval:500,
-        $dblcDelay:200,
         $lastClickFunMark:0,
         //collection
         _events : ("mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,click,dblclick,contextmenu," +
@@ -188,10 +188,10 @@ Class('xui.Event',null,{
                 // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
-        simulateEvent : function(target, type, options) {
+        simulateEvent : function(target, type, options, fromtype) {
             options = options || {};
             if(target[0])target = target[0];
-            _.tryF(xui.Event.$eventsforSimulation[type],[target, type, options]);
+            _.tryF(xui.Event.$eventsforSimulation[fromtype||type],[target, type, options]);
         },
         _getEventName:function(name,pos){
             return (name=this._map1[name]) && ((pos===0||pos==1||pos==2) ? name[pos] : name);
@@ -306,9 +306,9 @@ Class('xui.Event',null,{
             if('pageX' in event)
                 return {left:event.pageX, top:event.pageY};
             else{
-    			var d=document, doc = d.documentElement, body = d.body,
-    			_L = (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0),
-    			_T = (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+    			var d=document, doc = d.documentElement, body = d.body,t,
+    			_L = (_.isSet(t=doc && doc.scrollLeft)?t:_.isSet(t=body && body.scrollLeft)?t:0) - (_.isSet(t=doc.clientLeft)?t:0),
+    			_T = (_.isSet(t=doc && doc.scrollTop)?t:_.isSet(t=body && body.scrollTop)?t:0) - (_.isSet(t=doc.clientTop)?t:0);
                 return {left:event.clientX+_L, top:event.clientY+_T};
             }
         },
@@ -433,13 +433,13 @@ Class('xui.Event',null,{
         stopBubble:function(event){
             event=event||window.event;
             if(event.stopPropagation)event.stopPropagation();
-            event.cancelBubble = true;
+            if("cancelBubble" in event)event.cancelBubble = true;
             this.stopDefault(event);
         },
         stopDefault:function(event){
             event=event||window.event;
             if(event.preventDefault)event.preventDefault();
-            event.returnValue = false;
+            else if("returnValue" in event)event.returnValue = false;
         },
         //key:control:shift:alt
         keyboardHook:function(key, ctrl, shift, alt, fun, args, scope, host){
@@ -465,102 +465,50 @@ Class('xui.Event',null,{
             // gek
             :-e.detail/3
         },
-        _simulateMousemove:function(event){
-            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
-            var E=xui.Event;
-            if(!E.__simulatedMousemove){
-                //event.preventDefault();
-                var touches = event.changedTouches,
-                    first = touches[0];
-                E.__simulatedMousemove=1;
-                first.target.dispatchEvent(evn);
-                E.simulateEvent(first.target,"mousemove",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                E.__simulatedMousemove=0;
-            }
-            return true;
-        },
         _simulateMousedown:function(event){
-            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event,
-                touches = event.changedTouches,
+                touches = event.changedTouches, 
                 first = touches[0];
-            // For touch-only platform: has real touch event
-            E.__realtouch=1;
             E.__simulatedMousedownNode=first.target;
 
-            if(!E.__simulatedMousedown){
-                //event.preventDefault();
-                E.__simulatedMousedown=1;
+            if(!xui.isEventSupported("mousedown")){
                 E.simulateEvent(first.target,"mousedown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                E.__simulatedMousedown=0;
+            }else{
+                // use custom event to avoid affecting system or 3rd lib
+                // it will fire xui beforeMousedown event group only
+                E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
             }
+            
             return true;
         },
         _simulateMouseup:function(event){
-            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event,
-                touches = event.changedTouches,
-                first = touches[0];
+                _now=(new Date).getTime(),
+                interval=_now-E.$lastMouseupTime,
+                touches = event.changedTouches, first = touches[0];
 
             E.__simulatedMouseupNode=first.target;
-            if(!E.__simulatedMouseup){
-                //event.preventDefault();
-                // mouseup
-                E.__simulatedMouseup=1;
+            if(!xui.isEventSupported("mouseup")){
                 E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                E.__simulatedMouseup=0;
             }
 
             // click and dblclick
-            if(E.__simulatedMouseupNode==E.__simulatedMousedownNode){
-                var _now=event.timeStamp,
-                    interval=_now-E.$lastMouseupTime,
-                    interval2=_now-E.$lastDblClickTime;
-                    
-                // no clicks after doubleclick
-                if(interval2<E.$dblcDelay){
-                    return;
-                }    
-
-                // doubleclick
+            if(E.__simulatedMouseupNode===E.__simulatedMousedownNode){
+                if(!xui.isEventSupported("click")){
+                    E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                }
+                // doubleclick for touch event
                 if(interval<=E.$dblcInterval){
-                    if(!E.__simulatedDblClick){
-                        _.clearTimeout(E.$lastClickFunMark);
-                        //event.preventDefault();
-
-                        E.__simulatedDblClick=1;
-                        xui(first.target).onDblclick(true);
-                        // invalid
-                        //E.simulateEvent(first.target,"dblclick",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                        E.__simulatedDblClick=0;
-
-                        E.$lastDblClickTime=_now;
-                    }
-                }else{
-                    if(!E.__simulatedClick){
-                        //event.preventDefault();
-// allow click + dblclick
-//                        E.$lastClickFunMark = _.setTimeout(function(){
-
-                        E.__simulatedClick=1;
-                        E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                        E.__simulatedClick=0;
-
-                        // for focus
-                        var target = first.target,
-                            tagName = target.tagName.toUpperCase();
-                        switch(tagName){
-                            case "INPUT":
-                            case "TEXTAREA":
-                                target.focus();
-                            break;
-                        }
-//                        }, E.$dblcInterval+E.dblcDelay);
-                    }
+                    _.asyRun(function(){
+                        // disalbe next one
+                        E.$lastMouseupTime=0;
+                        E.simulateEvent(first.target,"dblclick",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                    });
                 }
             }
-
+            E.__simulatedMouseupNode=E.__simulatedMousedownNode=null;
             E.$lastMouseupTime=_now;
+
             return true;
         },
         stopPageTouchmove:function(){
@@ -612,6 +560,32 @@ Class('xui.Event',null,{
         if (w.addEventListener)
             w.addEventListener('DOMMouseScroll', ns.$eventhandler3, false);
 
+        // for simulation dblclick event in touchable device
+        if(xui.browser.isTouch){
+            if(d.addEventListener){
+                d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                    "touchstart", ns._simulateMousedown, false/*need bubble*/);
+                d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", ns._simulateMouseup, false/*need bubble*/);
+                d.addEventListener("xuitouchdown", ns.$eventhandler,false);
+            }else if(d.attachEvent){
+                d.attachEvent(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                    "touchstart", ns._simulateMousedown);
+                d.attachEvent(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", ns._simulateMouseup);
+                d.attachEvent("xuitouchdown", ns.$eventhandler);
+            }
+        }
+
+        // for simulation
         d.onmousewheel=w.onmousewheel =ns.$eventhandler3;
         
         var keyEvent=function(target, type , options){
@@ -687,7 +661,7 @@ Class('xui.Event',null,{
         
                 target.fireEvent("on" + type, customEvent);
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
         mouseEvent=function(target, type , options){
@@ -795,7 +769,7 @@ Class('xui.Event',null,{
         
                 target.fireEvent("on" + type, customEvent);    
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
         UIEvent=function(target, type , options){    
@@ -826,7 +800,7 @@ Class('xui.Event',null,{
     
                 target.fireEvent("on" + type, customEvent);    
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
         // for ios v2.0+
@@ -865,11 +839,11 @@ Class('xui.Event',null,{
         touchEvent=function(target, type , options){
             if (type === 'touchstart' || type === 'touchmove') {
                 if (!touches || !touches.length) {
-                    throw new Error('No touch object in touches.');
+                    throw 'No touch object in touches.';
                 }
             } else if (type === 'touchend') {
                 if (!changedTouches || !changedTouches.length) {
-                    throw new Error('No touch object in changedTouches.');
+                    throw 'No touch object in changedTouches.';
                 }
             }
            _.merge(options,{
@@ -925,14 +899,14 @@ Class('xui.Event',null,{
                             touches, targetTouches, changedTouches,
                             scale, rotation);
                     } else {
-                        throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                        throw type + ' cant be simulated in ' + navigator.userAgent;
                     }
                 } else {
-                    throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                    throw type + ' cant be simulated in ' + navigator.userAgent;
                 }
                 target.dispatchEvent(customEvent);
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         };
         ns.$eventsforSimulation={
@@ -977,38 +951,5 @@ Class('xui.Event',null,{
             gesturechange: gestureEvent,
             gestureend: gestureEvent
         };
-        
-        // if touable, use only simulatedMousedown
-        if(xui.browser.isTouch){
-            if(d.addEventListener){
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                    "touchstart", xui.Event._simulateMousedown, false/*need bubble*/);
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                    "touchend", xui.Event._simulateMouseup, false/*need bubble*/);
-    /*            d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                    "touchmove", xui.Event._simulateMousemove, false);
-    */
-            }else if(d.attachEvent){
-                d.attachEvent(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                    "touchstart", xui.Event._simulateMousedown);
-                d.attachEvent(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                    "touchend", xui.Event._simulateMouseup);
-    /*            d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                    "touchmove", xui.Event._simulateMousemove);
-    */                
-            }
-        }
     }
 });

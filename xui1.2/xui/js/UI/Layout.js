@@ -349,7 +349,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             HoverEffected:{MOVE:'MOVE',CMD:'CMD'},
             onSize:xui.UI.$onSize,
             MOVE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src);

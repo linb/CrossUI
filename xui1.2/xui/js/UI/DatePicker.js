@@ -537,7 +537,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             YEAR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,10);
                 },
                 onDrag:function(profile, e, src){
@@ -553,7 +553,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             MONTH:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,20);
                 },
                 onDrag:function(profile, e, src){
@@ -571,7 +571,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             DAY:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,10);
                 },
                 onDrag:function(profile, e, src){
@@ -594,7 +594,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             HOUR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,20);
                 },
                 onDrag:function(profile, e, src){
@@ -605,7 +605,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             MINUTE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,10);
                 },
                 onDrag:function(profile, e, src){

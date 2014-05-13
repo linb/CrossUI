@@ -374,7 +374,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             ClickEffected:{CLOSE:'CLOSE',PRE:'PRE',NEXT:'NEXT',PRE2:'PRE2',NEXT2:'NEXT2',SET:'SET'},
             KEY:{onClick:function(){return false}},
             HOUR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     xui(src).startDrag(e, {
                         dragType:'blank',
@@ -403,7 +403,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
              MINUTE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     xui(src).startDrag(e, {
                         dragType:'blank',
