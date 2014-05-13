@@ -88,7 +88,7 @@ Class('xui.ComFactory',null,{
                     me=this,
                     task=function(cls,config,threadid){
                         if(!_.isFun(cls))
-                            throw new Error("'"+clsPath+"' is not a constructor");
+                            throw "'"+clsPath+"' is not a constructor";
                         var o = new cls();
 
                         if(config.properties)

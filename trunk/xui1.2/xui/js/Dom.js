@@ -956,6 +956,15 @@ Class('xui.Dom','xui.absBox',{
                 if(type=event._eventHandler[name]){
                     o[type]=handler;
                     xui.setNodeData(o, ['eHandlers', type], handler);
+
+                    if(xui.browser.isTouch && type=='onmousedown'){
+                        xui.setNodeData(o, ['eHandlers', 'onxuitouchdown'], handler);
+                        if(o.addEventListener){
+                            o.addEventListener("xuitouchdown", handler,false);
+                        }else if(o.attachEvent){
+                            o.attachEvent("xuitouchdown", handler);
+                        }
+                    }
                 }
             });
         },
@@ -967,15 +976,29 @@ Class('xui.Dom','xui.absBox',{
         */
         $removeEventHandler:function(name){
             var event=xui.Event,
+                handler=event.$eventhandler
                 type;
             return this.each(function(o){
                 //remove from dom node
-                if(type=event._eventHandler[name])
+                if(type=event._eventHandler[name]){
                     o[type]=null;
+                    if(xui.browser.isTouch && type=='onmousedown'){
+                        if(o.removeEventListener){
+                            o.removeEventListener("xuitouchdown", handler,false);
+                        }else if(o.detachEvent){
+                            o.detachEvent("xuitouchdown", handler);
+                        }
+                    }
+                }
 
                 //remove from purge map
-                if(o=xui.getNodeData(o,'eHandlers'))
-                    delete o['on'+event._eventMap[name]];
+                if(o=xui.getNodeData(o,'eHandlers')){
+                    type='on'+event._eventMap[name];
+                    delete o[type];
+                    if(xui.browser.isTouch && type=='onmousedown'){
+                        delete o['onxuitouchdown'];
+                    }
+                }
             });
         },
         $addEvent:function(name, fun, label, index){
@@ -1106,8 +1129,8 @@ Class('xui.Dom','xui.absBox',{
                         type: type,
                         target: o,
                         button : 1,
-                        $e:true,
-                        $name:name,
+                        $xuievent:true,
+                        $xuitype:name,
                         preventDefault:f1,
                         stopPropagation:f2
                       },'all');
@@ -2746,7 +2769,7 @@ type:4
                     else if(fun===null)
                         return this.$removeEvent(o, label, flag);
                     var args = arguments[1] || {};
-                    args.$all = (arguments[0]===true);
+                    args.$xuiall = (arguments[0]===true);
                     return this.$fireEvent(o, args)
                 };
                 f.$event$=1;
@@ -3010,8 +3033,9 @@ type:4
         });
     },
     Initialize:function(){
-        _.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:window});
-        _.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:document});
+        var w=window,d=document;
+        _.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:w});
+        _.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:d});
 
         xui.win=xui(['!window'],false);
         xui.doc=xui(['!document'],false);
@@ -3104,8 +3128,8 @@ type:4
                 }
             },'hookA',0);
 
-        if(xui.browser.ie && xui.browser.ver<10 && document.body)
-            document.body.onselectstart=function(n,v){
+        if(xui.browser.ie && xui.browser.ver<10 && d.body)
+            d.body.onselectstart=function(n,v){
                 n=event.srcElement;
                 while(n&&n.tagName&&n.tagName!="BODY"&&n.tagName!="HTML"){
                     if(v=xui.getNodeData(n,"_onxuisel"))
@@ -3119,35 +3143,48 @@ type:4
             };
         //free memory
         xui.win.afterUnload(function(){
-            window.onresize=null;
+            w.onresize=null;
+            if(w.removeEventListener)
+                w.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
 
-            if(window.removeEventListener){
-                window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
-                if(xui.browser.isTouch){
-                    document.removeEventListener(
-                        (xui.browser.ie&&window.PointerEvent)?"pointerdown":
-                        (xui.browser.ie&&window.MSPointerEvent)?"MSPointerDown":
-                        "touchstart", xui.Event._simulateMousedown, true);
-                    if(xui.browser.isAndroid||xui.browser.isBB){
-                        document.removeEventListener("touchend", xui.Event._simulateFocus, true);
-                    }
+            d.onmousewheel=w.onmousewheel=null;
+
+            // for simulation mouse event in touable device
+            if(xui.browser.isTouch){
+                if(d.removeEventListener){
+                    d.removeEventListener(
+                        (xui.browser.ie&&w.PointerEvent)?"pointerdown":
+                        (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
+                        "touchstart", xui.Event._simulateMousedown, false);
+                    d.removeEventListener(
+                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                        "touchend", xui.Event._simulateMouseup, false);
+                }else if(d.detachEvent){
+                    d.detachEvent(
+                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                        "touchstart", xui.Event._simulateMousedown);
+                    d.detachEvent(
+                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                        "touchend", xui.Event._simulateMouseup);
                 }
             }
-            document.onmousewheel=window.onmousewheel=null;
 
-            if(xui.browser.ie && document.body)
-                document.body.onselectstart=null;
+            if(xui.browser.ie && d.body)
+                d.body.onselectstart=null;
 
-            if("onhashchange" in window)window.onhashchange=null;
+            if("onhashchange" in w)w.onhashchange=null;
             
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
-            xui([window, document]).$clearEvent();
+            xui([w, d]).$clearEvent();
             xui('body').empty();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
-            window.Class=window.Namespace=window.xui=window._=undefined;
+            w.Class=w.Namespace=w.xui=w._=undefined;
         },"window",-1);
 
     }

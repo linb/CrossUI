@@ -380,7 +380,7 @@ Class('xui.Com',null,{
                     if(path){
                         var a=this,f=function(){
                             if(!_.isFun(a))
-                                throw new Error("'"+cls+"' is not a constructor");
+                                throw "'"+cls+"' is not a constructor";
                             var o=new a();
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[null,o],o);

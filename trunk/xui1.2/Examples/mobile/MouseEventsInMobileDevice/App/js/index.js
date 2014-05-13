@@ -22,7 +22,7 @@ Class('App', 'xui.Com',{
             .setWidth(400)
             .setHeight(330)
             .setZIndex(1)
-            .setCaption("Mouse Events")
+            .setCaption("Support dblclic event for touch")
             .setRefreshBtn(true)
             .onRefresh("_log_onrefresh")
             );

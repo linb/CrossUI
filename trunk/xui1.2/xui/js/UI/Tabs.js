@@ -804,7 +804,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             },
             ITEMS:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     var ep=xui.Event.getPos(e);
                     if(!profile._$scroll_l && !profile._$scroll_r)return;
                     xui.use(src).startDrag(e, {
@@ -1214,7 +1214,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 l=items.left(),
                 left =  profile.getSubNode('LEFT'),
                 right =  profile.getSubNode('RIGHT'),
-                drop =  profile.getSubNode('DROP')
+                drop =  profile.getSubNode('DROP'),
                 wi=0,
                 sl=0,sw=0;
             items.children().each(function(item){

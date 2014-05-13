@@ -8,7 +8,8 @@ Class('xui.Debugger', null, {
         err:function(sMsg,sUrl,sLine){
             if(xui.browser.gek && sMsg=='Error loading script')
                 return true;
-            xui.Debugger.log( '*** An error raised ***', ' >> Location: '+ sUrl + ' ( line ' + sLine + ' )', ' >> Message: '+sMsg);
+            xui.Debugger.log('>>' + sMsg+' at File: '+ sUrl + ' ( line ' + sLine + ' ).');
+            return true;
         },
         trace:function(obj){
             var args=arguments,
@@ -49,7 +50,7 @@ Class('xui.Debugger', null, {
                 str=arr[i];
                 t2 = document.createElement("div");
                 t2.className='xui-dbg-con2';
-                t2.appendChild(document.createTextNode(" "+_.serialize(_.isArguments(str)?_.toArr(str):str)));
+                t2.appendChild(document.createTextNode(" "+_.stringify(_.isArguments(str)?_.toArr(str):str)));
                 t1.appendChild(t2);
             }
 
@@ -57,10 +58,7 @@ Class('xui.Debugger', null, {
                 var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm"><div class="xui-node xui-node-div xui-dbg-box"><div id='+self._id4+' class="xui-node xui-node-div xui-dbg-header">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds"><a class="xui-node xui-node-a" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();"> &Chi; </a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-dbg-content"></div><div class="xui-node xui-node-div xui-dbg-tail"><table class="xui-node xui-node-table"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input" id='+self._id3+' /></td></tr></table></div></div></div>');
                 xui('body').append(ns);
                 self.$con=xui(self._id2);
-                xui(self._id4).onMousedown(function(p,e,s){
-                    if(xui.Event.getSrc(e)!=xui.use(s).get(0))return;
-                    xui.use(s).parent(2).startDrag(e);
-                });
+                xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
 
                 if(ns.addShadow)ns.addShadow();
 
@@ -104,8 +102,6 @@ Class('xui.Debugger', null, {
         }
     },
     Initialize:function(){
-        //window.onerror=(xui.browser.gek && window.console)?null:this.err;
-
         xui.CSS.addStyleSheet(
             '.xui-dbg-frm{position:absolute;width:300px;z-index:2000;}'+
             '.xui-dbg-header{cursor:move;height:18px;padding-top:2px;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
@@ -219,5 +215,8 @@ Class('xui.Debugger', null, {
             xui.log=xui.echo;
         }
             
+        if(xui.browser.isTouch){
+            window.onerror=this.err;
+        }
     }
 });

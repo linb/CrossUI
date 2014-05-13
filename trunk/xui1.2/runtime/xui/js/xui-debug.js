@@ -24,12 +24,12 @@ Class=window.Class=function(key, pkey, obj){
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
     for(i=0; t=pkey[i]; i++)
         if(!(_parent[i]=(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
-            throw new Error('errNoParent--'+ t);
+            throw 'errNoParent--'+ t;
     if(obj.Dependency){
         if(typeof obj.Dependency == "string")obj.Dependency=[obj.Dependency];
         for(i=0; t=obj.Dependency[i]; i++)
             if(!(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                throw new Error('errNoDependency--'+ t);
+                throw 'errNoDependency--'+ t;
     }
     parent0=_parent[0];
 
@@ -630,7 +630,7 @@ _.merge(_,{
             if(!a)return a;
             if(!_.isArr(a)){
                 if((a=a._nodes) || !_.isArr(a))
-                    throw new Error('errNotArray');
+                    throw 'errNotArray';
                 if(desc===undefined)
                     desc=1;
             }
@@ -919,7 +919,7 @@ _.merge(xui,{
                 var count=0,fun=function(a){
                     if(count>20){
                         if(false!==_.tryF(onFail))
-                            throw new Error('errLoadTheme:'+key);
+                            throw 'errLoadTheme:'+key;
                     }
                     count++;
                     var s;
@@ -1127,6 +1127,7 @@ _.merge(xui,{
             proMap=cache.profileMap,
             ch=cache.UIKeyMapEvents,
             pdata=cache.domPurgeData,
+            handler=xui.Event.$eventhandler,
             // ie<=10
             children=(xui.browser.ie && node.all )? node.all : node.getElementsByTagName('*'),
             l=children.length,
@@ -1136,10 +1137,17 @@ _.merge(xui,{
             if(!(v=children[i]))continue;
             if(t=v.$xid){
                 if(o=pdata[t]){
-                    if(w=o.eHandlers)
+                    if(w=o.eHandlers){
+                        if(xui.browser.isTouch && w['onxuitouchdown']){
+                            if(v.removeEventListener){
+                                v.removeEventListener("xuitouchdown", handler,false);
+                            }else if(v.detachEvent){
+                                v.detachEvent("xuitouchdown", handler);
+                            }
+                        }
                         for(j in w)
                             v[j]=null;
-
+                    }
                     for(j in o)
                         o[j]=null;
 
@@ -1395,18 +1403,26 @@ new function(){
         'submit':'form','reset':'form',  
         'error':'img','load':'img','abort':'img'  
       },c={};
-      xui.isEventSupported=function(name){
-        if(name in c)return c[name];
-        var el=document.createElement(TAGNAMES[name]||'div'),
-            en='on'+name,
-            support=(en in el);
-        if(!support) {  
-          el.setAttribute(en, 'return;');  
-          support=typeof el[en]=='function';  
-        }  
-        el=null;
-        return c[name]=support;  
-      };
+      xui.isEventSupported=function(name, node) {
+        var rn=(node?node.tagName.toLowerCase():"div")+":"+name;
+        if(rn in c)return c[rn];
+        node = node || document.createElement(TAGNAMES[name] || 'div');
+        name = 'on' + name;
+        // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
+        var isSupported = (name in node);
+        if (!isSupported) {
+          // if it has no `setAttribute` (i.e. doesn't implement Node interface), try generic node
+          if(!node.setAttribute)node = document.createElement('div');
+            if(node.setAttribute) {
+              node.setAttribute(name, '');
+              isSupported = typeof node[name] == 'function';
+              if (typeof node[name] != 'undefined')node[name] = undefined;
+              node.removeAttribute(name);
+            }
+        }
+        node = null;
+        return c[rn]=isSupported;
+      }
 };
 /*xui.Thread
 *  dependency: _ ; Class ; xui
@@ -1840,7 +1856,7 @@ Class('xui.absIO',null,{
         _onError:function(e){
             var self=this;
             if(false!==_.tryF(self.beforeFail,[e, self.threadid],self))
-                _.tryF(self.onFail,[e.name + ": " + e.message, self.rspType, self.threadid, e], self);
+                _.tryF(self.onFail,[e.name?( e.name + ": " + e.message):e, self.rspType, self.threadid, e], self);
             self._onEnd();
         },
         isAlive:function(){
@@ -2439,7 +2455,7 @@ Class('xui.SC',null,{
                             (self.$cache || ct)[self.$tag]=text;
                         else
                             //for sy xmlhttp ajax
-                            try{_.exec(text)}catch(e){throw new Error(e.name + ": " + e.message+ " " + self.$tag)}
+                            try{_.exec(text)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
                 _.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||{});
@@ -3962,7 +3978,7 @@ Class('xui.absObj',"xui.absBox",{
 
                     //if it exists, overwrite it dir
                     //if(_old && _new)
-                    //    throw new Error(value+' exists!');
+                    //    throw value+' exists!';
 
                     _p[o.properties.name=value]=o;
                     //modify name
@@ -4261,7 +4277,7 @@ Class('xui.Event',null,{
             d=document,
             dd=0,id,t,
             dragdrop=xui.DragDrop,
-            src, type,  pre, obj;
+            src, pre, obj;
 
         //get event object , and src of event
         if(!(event=event||w.event) || !(src=node)){
@@ -4271,15 +4287,17 @@ Class('xui.Event',null,{
         node=null;
 
         //type
-        type = event.type;
-        
-        // if touable, use only simulatedMousedown
-        if(xui.browser.isTouch && self.__realtouch){
-            if(('mousemove'==type) && !self.__simulatedMousemove)return false;
-            if(('mousedown'==type) && !self.__simulatedMousedown)return false;
-            if(('mouseup'==type) && !self.__simulatedMouseup)return false;
-            if(('click'==type) && !self.__simulatedClick)return false;
-            if(('dblclick'==type) && !self.__simulatedDblClick)return false;
+        var type = event.type,
+            xuievent=event.$xuievent,
+            xuitype=event.$xuitype,
+            xuiall=event.$xuiall;
+
+        // simulate for DD
+        if(type=="xuitouchdown"){
+            type="mousedown";
+            xuievent=1;
+            xuiall=0;
+            xuitype="beforeMousedown";
         }
 
         //for correct mouse hover problems;
@@ -4319,8 +4337,8 @@ Class('xui.Event',null,{
                 type='size';
                 //for IE, always fire window onresize event after any innerHTML action
                 if(xui.browser.ie && w===src){
-                    var w=xui.browser.contentBox && d.dElement.clientWidth || d.body.clientWidth,
-                        h=xui.browser.contentBox && d.dElement.clientHeight || d.body.clientHeight;
+                    var w=xui.browser.contentBox && d.documentElement.clientWidth || d.body.clientWidth,
+                        h=xui.browser.contentBox && d.documentElement.clientHeight || d.body.clientHeight;
                     if(obj._w==w&&obj._h==h){
                         src=null;
                         return;
@@ -4333,18 +4351,18 @@ Class('xui.Event',null,{
             var j, f, name, r=true, funs=[];
             //order by: before, on, after
             for(j=0; j<=2; ++j){
-                //if in dd, get before Mouse.. only
+                // if in dd, effect beforeMouse(move/over/out) only
                 if(dd==1 && j!==0 && !event.$force)break;
-                //if not in dd, get on/after Mouse.. only
+                // if not in dd, effect (on/after)Mouse(move/over/out) only
                 if(dd==2 && j===0)continue;
-                //get event name from event type
+                // get event name from event type
                 name = self._type[type+j] || ( self._type[type+j] = self._getEventName(type, j));
                 /*
-                event.$e : called by fireEvent
-                event.$all : fire all events of the type: before/on/after
-                event.$name : fire one group of event of the type.
+                event.$xui : called by xui fireEvent
+                event.$xuiall : fire all events of the type: before/on/after
+                event.$xuitype : fire specific type only
                 */
-                if(!event.$e || event.$all || (name==event.$name))obj._getEV(funs, id, name, src.$xid);
+                if(!xuievent || xuiall || (name===xuitype))obj._getEV(funs, id, name, src.$xid);
             }
 
             /*call function by order
@@ -4388,10 +4406,10 @@ Class('xui.Event',null,{
                     self({
                         type: 'mouseout',
                         target: t,
-                        $e:true,
-                        $name:'beforeMouseout',
-                        preventDefault:function(){this.returnValue=false},
-                        stopPropagation:function(){this.cancelBubble=true}
+                        $xui:true,
+                        $xuitype:'beforeMouseout',
+                        preventDefault:function(e){xui.Event.stopDefault(e);},
+                        stopPropagation:function(e){xui.Event.stopBubble(e);}
                         },t);
                     dragdrop.setDropElement(src.$xid);
                 }
@@ -4422,9 +4440,7 @@ Class('xui.Event',null,{
         $eventhandler2:function(){return xui.Event(arguments[0],this,1)},
         $eventhandler3:function(){return xui.Event(arguments[0],xui.Event.getSrc(arguments[0]||window.event))},
         $lastMouseupTime:0,
-        $lastDblClickTime:0,
         $dblcInterval:500,
-        $dblcDelay:200,
         $lastClickFunMark:0,
         //collection
         _events : ("mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,click,dblclick,contextmenu," +
@@ -4441,10 +4457,10 @@ Class('xui.Event',null,{
                 // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
-        simulateEvent : function(target, type, options) {
+        simulateEvent : function(target, type, options, fromtype) {
             options = options || {};
             if(target[0])target = target[0];
-            _.tryF(xui.Event.$eventsforSimulation[type],[target, type, options]);
+            _.tryF(xui.Event.$eventsforSimulation[fromtype||type],[target, type, options]);
         },
         _getEventName:function(name,pos){
             return (name=this._map1[name]) && ((pos===0||pos==1||pos==2) ? name[pos] : name);
@@ -4559,9 +4575,9 @@ Class('xui.Event',null,{
             if('pageX' in event)
                 return {left:event.pageX, top:event.pageY};
             else{
-    			var d=document, doc = d.documentElement, body = d.body,
-    			_L = (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0),
-    			_T = (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+    			var d=document, doc = d.documentElement, body = d.body,t,
+    			_L = (_.isSet(t=doc && doc.scrollLeft)?t:_.isSet(t=body && body.scrollLeft)?t:0) - (_.isSet(t=doc.clientLeft)?t:0),
+    			_T = (_.isSet(t=doc && doc.scrollTop)?t:_.isSet(t=body && body.scrollTop)?t:0) - (_.isSet(t=doc.clientTop)?t:0);
                 return {left:event.clientX+_L, top:event.clientY+_T};
             }
         },
@@ -4686,13 +4702,13 @@ Class('xui.Event',null,{
         stopBubble:function(event){
             event=event||window.event;
             if(event.stopPropagation)event.stopPropagation();
-            event.cancelBubble = true;
+            if("cancelBubble" in event)event.cancelBubble = true;
             this.stopDefault(event);
         },
         stopDefault:function(event){
             event=event||window.event;
             if(event.preventDefault)event.preventDefault();
-            event.returnValue = false;
+            else if("returnValue" in event)event.returnValue = false;
         },
         //key:control:shift:alt
         keyboardHook:function(key, ctrl, shift, alt, fun, args, scope, host){
@@ -4718,102 +4734,50 @@ Class('xui.Event',null,{
             // gek
             :-e.detail/3
         },
-        _simulateMousemove:function(event){
-            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
-            var E=xui.Event;
-            if(!E.__simulatedMousemove){
-                //event.preventDefault();
-                var touches = event.changedTouches,
-                    first = touches[0];
-                E.__simulatedMousemove=1;
-                first.target.dispatchEvent(evn);
-                E.simulateEvent(first.target,"mousemove",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                E.__simulatedMousemove=0;
-            }
-            return true;
-        },
         _simulateMousedown:function(event){
-            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event,
-                touches = event.changedTouches,
+                touches = event.changedTouches, 
                 first = touches[0];
-            // For touch-only platform: has real touch event
-            E.__realtouch=1;
             E.__simulatedMousedownNode=first.target;
 
-            if(!E.__simulatedMousedown){
-                //event.preventDefault();
-                E.__simulatedMousedown=1;
+            if(!xui.isEventSupported("mousedown")){
                 E.simulateEvent(first.target,"mousedown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                E.__simulatedMousedown=0;
+            }else{
+                // use custom event to avoid affecting system or 3rd lib
+                // it will fire xui beforeMousedown event group only
+                E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
             }
+            
             return true;
         },
         _simulateMouseup:function(event){
-            if(_.get(xui.DragDrop,["_profile","isWorking"]))return true;
             var E=xui.Event,
-                touches = event.changedTouches,
-                first = touches[0];
+                _now=(new Date).getTime(),
+                interval=_now-E.$lastMouseupTime,
+                touches = event.changedTouches, first = touches[0];
 
             E.__simulatedMouseupNode=first.target;
-            if(!E.__simulatedMouseup){
-                //event.preventDefault();
-                // mouseup
-                E.__simulatedMouseup=1;
+            if(!xui.isEventSupported("mouseup")){
                 E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                E.__simulatedMouseup=0;
             }
 
             // click and dblclick
-            if(E.__simulatedMouseupNode==E.__simulatedMousedownNode){
-                var _now=event.timeStamp,
-                    interval=_now-E.$lastMouseupTime,
-                    interval2=_now-E.$lastDblClickTime;
-                    
-                // no clicks after doubleclick
-                if(interval2<E.$dblcDelay){
-                    return;
-                }    
-
-                // doubleclick
+            if(E.__simulatedMouseupNode===E.__simulatedMousedownNode){
+                if(!xui.isEventSupported("click")){
+                    E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                }
+                // doubleclick for touch event
                 if(interval<=E.$dblcInterval){
-                    if(!E.__simulatedDblClick){
-                        _.clearTimeout(E.$lastClickFunMark);
-                        //event.preventDefault();
-
-                        E.__simulatedDblClick=1;
-                        xui(first.target).onDblclick(true);
-                        // invalid
-                        //E.simulateEvent(first.target,"dblclick",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                        E.__simulatedDblClick=0;
-
-                        E.$lastDblClickTime=_now;
-                    }
-                }else{
-                    if(!E.__simulatedClick){
-                        //event.preventDefault();
-// allow click + dblclick
-//                        E.$lastClickFunMark = _.setTimeout(function(){
-
-                        E.__simulatedClick=1;
-                        E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
-                        E.__simulatedClick=0;
-
-                        // for focus
-                        var target = first.target,
-                            tagName = target.tagName.toUpperCase();
-                        switch(tagName){
-                            case "INPUT":
-                            case "TEXTAREA":
-                                target.focus();
-                            break;
-                        }
-//                        }, E.$dblcInterval+E.dblcDelay);
-                    }
+                    _.asyRun(function(){
+                        // disalbe next one
+                        E.$lastMouseupTime=0;
+                        E.simulateEvent(first.target,"dblclick",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
+                    });
                 }
             }
-
+            E.__simulatedMouseupNode=E.__simulatedMousedownNode=null;
             E.$lastMouseupTime=_now;
+
             return true;
         },
         stopPageTouchmove:function(){
@@ -4865,6 +4829,32 @@ Class('xui.Event',null,{
         if (w.addEventListener)
             w.addEventListener('DOMMouseScroll', ns.$eventhandler3, false);
 
+        // for simulation dblclick event in touchable device
+        if(xui.browser.isTouch){
+            if(d.addEventListener){
+                d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                    "touchstart", ns._simulateMousedown, false/*need bubble*/);
+                d.addEventListener(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", ns._simulateMouseup, false/*need bubble*/);
+                d.addEventListener("xuitouchdown", ns.$eventhandler,false);
+            }else if(d.attachEvent){
+                d.attachEvent(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                    "touchstart", ns._simulateMousedown);
+                d.attachEvent(
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", ns._simulateMouseup);
+                d.attachEvent("xuitouchdown", ns.$eventhandler);
+            }
+        }
+
+        // for simulation
         d.onmousewheel=w.onmousewheel =ns.$eventhandler3;
         
         var keyEvent=function(target, type , options){
@@ -4940,7 +4930,7 @@ Class('xui.Event',null,{
         
                 target.fireEvent("on" + type, customEvent);
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
         mouseEvent=function(target, type , options){
@@ -5048,7 +5038,7 @@ Class('xui.Event',null,{
         
                 target.fireEvent("on" + type, customEvent);    
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
         UIEvent=function(target, type , options){    
@@ -5079,7 +5069,7 @@ Class('xui.Event',null,{
     
                 target.fireEvent("on" + type, customEvent);    
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
         // for ios v2.0+
@@ -5118,11 +5108,11 @@ Class('xui.Event',null,{
         touchEvent=function(target, type , options){
             if (type === 'touchstart' || type === 'touchmove') {
                 if (!touches || !touches.length) {
-                    throw new Error('No touch object in touches.');
+                    throw 'No touch object in touches.';
                 }
             } else if (type === 'touchend') {
                 if (!changedTouches || !changedTouches.length) {
-                    throw new Error('No touch object in changedTouches.');
+                    throw 'No touch object in changedTouches.';
                 }
             }
            _.merge(options,{
@@ -5178,14 +5168,14 @@ Class('xui.Event',null,{
                             touches, targetTouches, changedTouches,
                             scale, rotation);
                     } else {
-                        throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                        throw type + ' cant be simulated in ' + navigator.userAgent;
                     }
                 } else {
-                    throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                    throw type + ' cant be simulated in ' + navigator.userAgent;
                 }
                 target.dispatchEvent(customEvent);
             } else {
-                throw new Error(type + ' cant be simulated in ' + navigator.userAgent);
+                throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         };
         ns.$eventsforSimulation={
@@ -5230,39 +5220,6 @@ Class('xui.Event',null,{
             gesturechange: gestureEvent,
             gestureend: gestureEvent
         };
-        
-        // if touable, use only simulatedMousedown
-        if(xui.browser.isTouch){
-            if(d.addEventListener){
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                    "touchstart", xui.Event._simulateMousedown, false/*need bubble*/);
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                    "touchend", xui.Event._simulateMouseup, false/*need bubble*/);
-    /*            d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                    "touchmove", xui.Event._simulateMousemove, false);
-    */
-            }else if(d.attachEvent){
-                d.attachEvent(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                    "touchstart", xui.Event._simulateMousedown);
-                d.attachEvent(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                    "touchend", xui.Event._simulateMouseup);
-    /*            d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                    "touchmove", xui.Event._simulateMousemove);
-    */                
-            }
-        }
     }
 });Class('xui.Date',null,{
     Initialize:function(){
@@ -7925,6 +7882,15 @@ Class('xui.Dom','xui.absBox',{
                 if(type=event._eventHandler[name]){
                     o[type]=handler;
                     xui.setNodeData(o, ['eHandlers', type], handler);
+
+                    if(xui.browser.isTouch && type=='onmousedown'){
+                        xui.setNodeData(o, ['eHandlers', 'onxuitouchdown'], handler);
+                        if(o.addEventListener){
+                            o.addEventListener("xuitouchdown", handler,false);
+                        }else if(o.attachEvent){
+                            o.attachEvent("xuitouchdown", handler);
+                        }
+                    }
                 }
             });
         },
@@ -7936,15 +7902,29 @@ Class('xui.Dom','xui.absBox',{
         */
         $removeEventHandler:function(name){
             var event=xui.Event,
+                handler=event.$eventhandler
                 type;
             return this.each(function(o){
                 //remove from dom node
-                if(type=event._eventHandler[name])
+                if(type=event._eventHandler[name]){
                     o[type]=null;
+                    if(xui.browser.isTouch && type=='onmousedown'){
+                        if(o.removeEventListener){
+                            o.removeEventListener("xuitouchdown", handler,false);
+                        }else if(o.detachEvent){
+                            o.detachEvent("xuitouchdown", handler);
+                        }
+                    }
+                }
 
                 //remove from purge map
-                if(o=xui.getNodeData(o,'eHandlers'))
-                    delete o['on'+event._eventMap[name]];
+                if(o=xui.getNodeData(o,'eHandlers')){
+                    type='on'+event._eventMap[name];
+                    delete o[type];
+                    if(xui.browser.isTouch && type=='onmousedown'){
+                        delete o['onxuitouchdown'];
+                    }
+                }
             });
         },
         $addEvent:function(name, fun, label, index){
@@ -8075,8 +8055,8 @@ Class('xui.Dom','xui.absBox',{
                         type: type,
                         target: o,
                         button : 1,
-                        $e:true,
-                        $name:name,
+                        $xuievent:true,
+                        $xuitype:name,
                         preventDefault:f1,
                         stopPropagation:f2
                       },'all');
@@ -9715,7 +9695,7 @@ type:4
                     else if(fun===null)
                         return this.$removeEvent(o, label, flag);
                     var args = arguments[1] || {};
-                    args.$all = (arguments[0]===true);
+                    args.$xuiall = (arguments[0]===true);
                     return this.$fireEvent(o, args)
                 };
                 f.$event$=1;
@@ -9979,8 +9959,9 @@ type:4
         });
     },
     Initialize:function(){
-        _.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:window});
-        _.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:document});
+        var w=window,d=document;
+        _.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:w});
+        _.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:d});
 
         xui.win=xui(['!window'],false);
         xui.doc=xui(['!document'],false);
@@ -10073,8 +10054,8 @@ type:4
                 }
             },'hookA',0);
 
-        if(xui.browser.ie && xui.browser.ver<10 && document.body)
-            document.body.onselectstart=function(n,v){
+        if(xui.browser.ie && xui.browser.ver<10 && d.body)
+            d.body.onselectstart=function(n,v){
                 n=event.srcElement;
                 while(n&&n.tagName&&n.tagName!="BODY"&&n.tagName!="HTML"){
                     if(v=xui.getNodeData(n,"_onxuisel"))
@@ -10088,35 +10069,48 @@ type:4
             };
         //free memory
         xui.win.afterUnload(function(){
-            window.onresize=null;
+            w.onresize=null;
+            if(w.removeEventListener)
+                w.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
 
-            if(window.removeEventListener){
-                window.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
-                if(xui.browser.isTouch){
-                    document.removeEventListener(
-                        (xui.browser.ie&&window.PointerEvent)?"pointerdown":
-                        (xui.browser.ie&&window.MSPointerEvent)?"MSPointerDown":
-                        "touchstart", xui.Event._simulateMousedown, true);
-                    if(xui.browser.isAndroid||xui.browser.isBB){
-                        document.removeEventListener("touchend", xui.Event._simulateFocus, true);
-                    }
+            d.onmousewheel=w.onmousewheel=null;
+
+            // for simulation mouse event in touable device
+            if(xui.browser.isTouch){
+                if(d.removeEventListener){
+                    d.removeEventListener(
+                        (xui.browser.ie&&w.PointerEvent)?"pointerdown":
+                        (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
+                        "touchstart", xui.Event._simulateMousedown, false);
+                    d.removeEventListener(
+                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                        "touchend", xui.Event._simulateMouseup, false);
+                }else if(d.detachEvent){
+                    d.detachEvent(
+                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
+                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
+                        "touchstart", xui.Event._simulateMousedown);
+                    d.detachEvent(
+                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                        "touchend", xui.Event._simulateMouseup);
                 }
             }
-            document.onmousewheel=window.onmousewheel=null;
 
-            if(xui.browser.ie && document.body)
-                document.body.onselectstart=null;
+            if(xui.browser.ie && d.body)
+                d.body.onselectstart=null;
 
-            if("onhashchange" in window)window.onhashchange=null;
+            if("onhashchange" in w)w.onhashchange=null;
             
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
-            xui([window, document]).$clearEvent();
+            xui([w, d]).$clearEvent();
             xui('body').empty();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
-            window.Class=window.Namespace=window.xui=window._=undefined;
+            w.Class=w.Namespace=w.xui=w._=undefined;
         },"window",-1);
 
     }
@@ -10827,7 +10821,7 @@ Class('xui.Com',null,{
                     if(path){
                         var a=this,f=function(){
                             if(!_.isFun(a))
-                                throw new Error("'"+cls+"' is not a constructor");
+                                throw "'"+cls+"' is not a constructor";
                             var o=new a();
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[null,o],o);
@@ -11861,6 +11855,7 @@ Class('xui.DragDrop',null,{
                 restrictedBottom:NULL,
                 dropElement:NULL
             };
+            d.__touchingfordd=0;
             return d;
         },
         abort:function(){
@@ -11868,9 +11863,8 @@ Class('xui.DragDrop',null,{
         },
         _end:function(){
             var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
-                md1,mm2,mu2;
+                mm2,mu2;
             if(xui.browser.isTouch){
-                md2=(xui.browser.ie&window.PointerEvent)?"onpointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerdown":"ontouchstart";
                 mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
                 mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
@@ -11897,6 +11891,7 @@ Class('xui.DragDrop',null,{
             //clear
             d._end()._reset();
             d._profile.isWorking=true;
+            d.__touchingfordd = e.type=="xuitouchdown";
 
             profile=_.isHash(profile)?profile:{};
             e = e || window.event;
@@ -11918,9 +11913,8 @@ Class('xui.DragDrop',null,{
             if(typeof profile.dragIcon == 'string') profile.dragType="icon";
 
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup",
-                md1,mm2,mu2;
+                mm2,mu2;
             if(xui.browser.isTouch){
-                md2=(xui.browser.ie&&window.PointerEvent)?"onpointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerdown":"ontouchstart";
                 mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
                 mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
@@ -11992,7 +11986,7 @@ Class('xui.DragDrop',null,{
                 // In ipad or other touch-only platform, you have to decide the droppable order by youself
                 // The later added to DOM the higher the priority
                 // Add droppable links
-                if(xui.browser.isTouch && xui.Event.__realtouch){
+                if(xui.browser.isTouch && d.__touchingfordd){
                     d._c_droppable=[];
                     var cdata=xui.$cache.droppable[p.dragKey],purge=[];
                     _.arr.each(cdata,function(i){
@@ -12125,7 +12119,7 @@ Class('xui.DragDrop',null,{
                 // For touch-only platform
                 // In ipad or other touch-only platform, you have to decide the droppable order by youself
                 // The later joined the higher the priority
-                if(xui.browser.isTouch && xui.Event.__realtouch){
+                if(xui.browser.isTouch && d.__touchingfordd){
                     if(d._c_droppable){
                         for(var i=0,l=d._c_droppable.length;i<l;i++){
                             var o=d._c_droppable[i],
@@ -12466,8 +12460,13 @@ Class('xui.DragDrop',null,{
                 xui.DragDrop.startDrag(e, this.get(0), profile, dragKey||'', dragData||null);
                 return this;
             },
-            draggable:function(flag, profile, dragKey, dragData){
-                var self=this, dd=xui.DragDrop;
+            draggable:function(flag, profile, dragKey, dragData, target){
+                var self=this,
+                    target=target?typeof(target)=="function"?_.tryF(getTarget,[],this):xui(target):null, 
+                    dd=xui.DragDrop;
+                if(!target || !target.get(0)){
+                    target=self;
+                }
                 self.addClass('xui-ui-unselectable');
                 if(flag===undefined)
                     flag=true;
@@ -12475,19 +12474,15 @@ Class('xui.DragDrop',null,{
                     profile=flag;
                     flag=true;
                 }
+                var f=function(p,e,src){
+                    if(xui.getId(xui.Event.getSrc(e))!=src)return true;
+                    target.startDrag(e, profile, dragKey, dragData);
+                };
+
                 if(!!flag){
-                    var f=function(p,e,src){
-                        if(xui.getId(xui.Event.getSrc(e))!=src)return true;
-                        xui.use(src).startDrag(e, profile, dragKey, dragData);
-                        return false;
-                    };
-                    self.$addEvent('onMousedown',f, dd._eh, -1);
-                    if(xui.browser.isTouch)
-                        self.$addEvent((xui.browser.ie&&window.PointerEvent)?"onPointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onMspointerdown":'onTouchstart',f, dd._eh, -1);
+                    self.$addEvent('beforeMousedown',f, dd._eh, -1);
                 }else{
-                    self.$removeEvent('onMousedown', dd._eh);
-                    if(xui.browser.isTouch)
-                        self.$removeEvent((xui.browser.ie&&window.PointerEvent)?"onPointerdown":(xui.browser.ie&&window.MSPointerEvent)?"onMspointerdown":'onTouchstart', dd._eh);
+                    self.$removeEvent('beforeMousedown', dd._eh);
                 }
 
                 return self;
@@ -13047,7 +13042,7 @@ Class("xui.Tips", null,{
                     me=this,
                     task=function(cls,config,threadid){
                         if(!_.isFun(cls))
-                            throw new Error("'"+clsPath+"' is not a constructor");
+                            throw "'"+clsPath+"' is not a constructor";
                         var o = new cls();
 
                         if(config.properties)
@@ -13178,7 +13173,8 @@ Class("xui.Tips", null,{
         err:function(sMsg,sUrl,sLine){
             if(xui.browser.gek && sMsg=='Error loading script')
                 return true;
-            xui.Debugger.log( '*** An error raised ***', ' >> Location: '+ sUrl + ' ( line ' + sLine + ' )', ' >> Message: '+sMsg);
+            xui.Debugger.log('>>' + sMsg+' at File: '+ sUrl + ' ( line ' + sLine + ' ).');
+            return true;
         },
         trace:function(obj){
             var args=arguments,
@@ -13219,7 +13215,7 @@ Class("xui.Tips", null,{
                 str=arr[i];
                 t2 = document.createElement("div");
                 t2.className='xui-dbg-con2';
-                t2.appendChild(document.createTextNode(" "+_.serialize(_.isArguments(str)?_.toArr(str):str)));
+                t2.appendChild(document.createTextNode(" "+_.stringify(_.isArguments(str)?_.toArr(str):str)));
                 t1.appendChild(t2);
             }
 
@@ -13227,10 +13223,7 @@ Class("xui.Tips", null,{
                 var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm"><div class="xui-node xui-node-div xui-dbg-box"><div id='+self._id4+' class="xui-node xui-node-div xui-dbg-header">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds"><a class="xui-node xui-node-a" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();"> &Chi; </a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-dbg-content"></div><div class="xui-node xui-node-div xui-dbg-tail"><table class="xui-node xui-node-table"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input" id='+self._id3+' /></td></tr></table></div></div></div>');
                 xui('body').append(ns);
                 self.$con=xui(self._id2);
-                xui(self._id4).onMousedown(function(p,e,s){
-                    if(xui.Event.getSrc(e)!=xui.use(s).get(0))return;
-                    xui.use(s).parent(2).startDrag(e);
-                });
+                xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
 
                 if(ns.addShadow)ns.addShadow();
 
@@ -13274,8 +13267,6 @@ Class("xui.Tips", null,{
         }
     },
     Initialize:function(){
-        //window.onerror=(xui.browser.gek && window.console)?null:this.err;
-
         xui.CSS.addStyleSheet(
             '.xui-dbg-frm{position:absolute;width:300px;z-index:2000;}'+
             '.xui-dbg-header{cursor:move;height:18px;padding-top:2px;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
@@ -13389,6 +13380,9 @@ Class("xui.Tips", null,{
             xui.log=xui.echo;
         }
             
+        if(xui.browser.isTouch){
+            window.onerror=this.err;
+        }
     }
 });//UIProfile Class
 Class('xui.UIProfile','xui.Profile', {
@@ -13443,13 +13437,13 @@ Class('xui.UIProfile','xui.Profile', {
             // In ipad or other touch-only platform, you have to decide the droppable order by youself
             // The later added to DOM the higher the priority
             // Add droppable links
-            if(xui.browser.isTouch/* && xui.Event.__realtouch*/){
+            if(xui.browser.isTouch){
                 if((t=ns.box.$Behaviors.DroppableKeys) && t.length){
                     _.arr.each(t,function(o){
                         ins.getSubNode(o,true).each(function(node){
                             var key=ns.box.getDropKeys(ns,node.$xid);
                             if(key){
-                                var c=xui.$cache.droppable,a=key.split(/[^\w-]+/)
+                                var c=xui.$cache.droppable,a=key.split(/[^\w-]+/);
                                 for(var i=0,l=a.length;i<l;i++){
                                     c[a[i]]=c[a[i]]||[];
                                     c[a[i]].push(node.$xid);
@@ -13676,15 +13670,12 @@ Class('xui.UIProfile','xui.Profile', {
                 return;
             }else cache=g[$k]=[];
 
-            var dom=xui.$cache.profileMap,
-                t,key
-                ;
+            var dom=xui.$cache.profileMap,t,key;
             //for event attached on dom node
             if( (t=dom[id]) && (t=t.events) && (t=t[name]) )
                 for(var i=0,l=t.length;i<l;i++)
                     if(typeof t[t[i]]=='function')
                         cache.push(funs[funs.length]=t[t[i]]);
-
 
             //for event attached on xui widgets
             //get event function path of cache
@@ -15665,6 +15656,7 @@ Class("xui.UI",  "xui.absObj", {
             var ch=xui.$cache.UIKeyMapEvents,
                 eh=xui.Event._eventHandler,
                 hash=this.$evtsindesign,
+                handler=xui.Event.$eventhandler,
                 children=_.toArr(node.getElementsByTagName('*')),
                 i,l,j,k,id,t,v;
 
@@ -15682,8 +15674,17 @@ Class("xui.UI",  "xui.absObj", {
                                 //attach event handler to domPurgeData
                                 v[j]=t[j];
                                 //attach event handler to dom node
-                                if(k=eh[j])
+                                if(k=eh[j]){
                                     v[k]=node[k]=t[j];
+                                    if(xui.browser.isTouch && k=='onmousedown'){
+                                        xui.setNodeData(node, ['eHandlers', 'onxuitouchdown'], handler);
+                                        if(node.addEventListener){
+                                            node.addEventListener("xuitouchdown", handler,false);
+                                        }else if(node.attachEvent){
+                                            node.attachEvent("xuitouchdown", handler);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -20024,7 +20025,7 @@ Class("xui.UI.Resizer","xui.UI",{
             }
         },
         Behaviors:{
-            onMousedown:function(profile, e, src){
+            beforeMousedown:function(profile, e, src){
                 profile.box._onMousedown(profile, e, src, {move:true});
             },
             onDragbegin:function(profile, e, src){
@@ -20049,7 +20050,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             LT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {left:true, top:true});
                     return false;
                 },
@@ -20064,7 +20065,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             RT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {right:true, top:true});
                     return false;
                 },
@@ -20079,7 +20080,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             LB:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {left:true, bottom:true});
                     return false;
                 },
@@ -20094,7 +20095,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             RB:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {right:true, bottom:true});
                     return false;
                 },
@@ -20109,7 +20110,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             L:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {left:true});
                     return false;
                 },
@@ -20124,7 +20125,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             T:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {top:true});
                     return false;
                 },
@@ -20139,7 +20140,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             R:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {right:true});
                     return false;
                 },
@@ -20154,7 +20155,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             B:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {bottom:true});
                     return false;
                 },
@@ -21781,7 +21782,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 onKeyup:function(profile){
                     xui.Thread.abort(profile.$xid+':auto');
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return;
@@ -21836,7 +21837,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 onKeyup:function(profile){
                     xui.Thread.abort(profile.$xid+':auto');
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return;
@@ -22082,7 +22083,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
                 if(node){
-                    try{node.focus(); node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                    try{
+                        node.focus(); 
+                        if(!xui.browser.isTouch){
+                            node.tagName.toLowerCase()=="input" && node.select();
+                        }
+                    }catch(e){}
                     delete profile._justFocus;
                 }
             }
@@ -22477,7 +22483,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                if(!xui.browser.isTouch){
+                                    try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                }
                             })
                         }
                         delete profile._justFocus;
@@ -22510,10 +22518,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                if(!xui.browser.isTouch){
+                                    try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                }
                             });
                         }else{
-                            try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                            if(!xui.browser.isTouch){
+                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                            }
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret
                         if(profile._mousedownmark)profile._justFocus=1;
@@ -26169,7 +26181,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             R:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -26180,7 +26192,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             G:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -26191,7 +26203,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             B:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -26202,7 +26214,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             HH:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src,true);
                 },
                 onDrag:function(p, e, src){
@@ -26213,7 +26225,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             S:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src,true);
                 },
                 onDrag:function(p, e, src){
@@ -26224,7 +26236,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             V:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src,true);
                 },
                 onDrag:function(p, e, src){
@@ -26235,7 +26247,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             H:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -26246,7 +26258,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             'E':{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -26257,7 +26269,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             X:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -26279,7 +26291,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             ADVWHEEL:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e,true);
@@ -26289,7 +26301,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             ADVMARK1:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e,true);
@@ -26311,7 +26323,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             ADVCLR:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e);
@@ -26322,7 +26334,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             ADVMARK2:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e);
@@ -27204,7 +27216,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             YEAR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,10);
                 },
                 onDrag:function(profile, e, src){
@@ -27220,7 +27232,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             MONTH:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,20);
                 },
                 onDrag:function(profile, e, src){
@@ -27238,7 +27250,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             DAY:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,10);
                 },
                 onDrag:function(profile, e, src){
@@ -27261,7 +27273,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             HOUR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,20);
                 },
                 onDrag:function(profile, e, src){
@@ -27272,7 +27284,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             MINUTE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     return profile.box._ondown(profile,e,src,10);
                 },
                 onDrag:function(profile, e, src){
@@ -27923,7 +27935,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             ClickEffected:{CLOSE:'CLOSE',PRE:'PRE',NEXT:'NEXT',PRE2:'PRE2',NEXT2:'NEXT2',SET:'SET'},
             KEY:{onClick:function(){return false}},
             HOUR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     xui(src).startDrag(e, {
                         dragType:'blank',
@@ -27952,7 +27964,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
              MINUTE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     xui(src).startDrag(e, {
                         dragType:'blank',
@@ -30665,7 +30677,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             },
             ITEMS:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     var ep=xui.Event.getPos(e);
                     if(!profile._$scroll_l && !profile._$scroll_r)return;
                     xui.use(src).startDrag(e, {
@@ -31075,7 +31087,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 l=items.left(),
                 left =  profile.getSubNode('LEFT'),
                 right =  profile.getSubNode('RIGHT'),
-                drop =  profile.getSubNode('DROP')
+                drop =  profile.getSubNode('DROP'),
                 wi=0,
                 sl=0,sw=0;
             items.children().each(function(item){
@@ -31122,6 +31134,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
     Initialize:function(){
         var t=this.getTemplate(),keys=this.$Keys;
         t.BOX={tagName:'div',LIST:t.LIST, PNAELS:t.PNAELS};
+        delete t.LIST.LEFT;
+        delete t.LIST.RIGHT;
+        delete t.LIST.DROP;
         delete t.LIST;
         delete t.PNAELS;
         this.setTemplate(t);
@@ -34961,7 +34976,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             HoverEffected:{MOVE:'MOVE',CMD:'CMD'},
             onSize:xui.UI.$onSize,
             MOVE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src);
@@ -37341,7 +37356,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             //colomn resizer
             HHANDLER:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                         id = profile.getSubId(src)
@@ -37482,7 +37497,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             //row resizer
             FHANDLER:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                     row = profile.rowMap[profile.getSubId(src)],
@@ -37729,7 +37744,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     return false;
                 },
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties;
                     if(p.disabled)return;
@@ -40842,7 +40857,7 @@ if(xui.browser.ie){
                 }
             },
             TBAR:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(profile.getKey(xui.Event.getSrc(e).parentNode.id)==profile.keys.BARCMDR)return;
 

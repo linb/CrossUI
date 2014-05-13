@@ -51,13 +51,13 @@ Class('xui.UIProfile','xui.Profile', {
             // In ipad or other touch-only platform, you have to decide the droppable order by youself
             // The later added to DOM the higher the priority
             // Add droppable links
-            if(xui.browser.isTouch/* && xui.Event.__realtouch*/){
+            if(xui.browser.isTouch){
                 if((t=ns.box.$Behaviors.DroppableKeys) && t.length){
                     _.arr.each(t,function(o){
                         ins.getSubNode(o,true).each(function(node){
                             var key=ns.box.getDropKeys(ns,node.$xid);
                             if(key){
-                                var c=xui.$cache.droppable,a=key.split(/[^\w-]+/)
+                                var c=xui.$cache.droppable,a=key.split(/[^\w-]+/);
                                 for(var i=0,l=a.length;i<l;i++){
                                     c[a[i]]=c[a[i]]||[];
                                     c[a[i]].push(node.$xid);
@@ -284,15 +284,12 @@ Class('xui.UIProfile','xui.Profile', {
                 return;
             }else cache=g[$k]=[];
 
-            var dom=xui.$cache.profileMap,
-                t,key
-                ;
+            var dom=xui.$cache.profileMap,t,key;
             //for event attached on dom node
             if( (t=dom[id]) && (t=t.events) && (t=t[name]) )
                 for(var i=0,l=t.length;i<l;i++)
                     if(typeof t[t[i]]=='function')
                         cache.push(funs[funs.length]=t[t[i]]);
-
 
             //for event attached on xui widgets
             //get event function path of cache
@@ -2273,6 +2270,7 @@ Class("xui.UI",  "xui.absObj", {
             var ch=xui.$cache.UIKeyMapEvents,
                 eh=xui.Event._eventHandler,
                 hash=this.$evtsindesign,
+                handler=xui.Event.$eventhandler,
                 children=_.toArr(node.getElementsByTagName('*')),
                 i,l,j,k,id,t,v;
 
@@ -2290,8 +2288,17 @@ Class("xui.UI",  "xui.absObj", {
                                 //attach event handler to domPurgeData
                                 v[j]=t[j];
                                 //attach event handler to dom node
-                                if(k=eh[j])
+                                if(k=eh[j]){
                                     v[k]=node[k]=t[j];
+                                    if(xui.browser.isTouch && k=='onmousedown'){
+                                        xui.setNodeData(node, ['eHandlers', 'onxuitouchdown'], handler);
+                                        if(node.addEventListener){
+                                            node.addEventListener("xuitouchdown", handler,false);
+                                        }else if(node.attachEvent){
+                                            node.attachEvent("xuitouchdown", handler);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

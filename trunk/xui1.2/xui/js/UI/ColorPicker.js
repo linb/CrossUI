@@ -533,7 +533,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             R:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -544,7 +544,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             G:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -555,7 +555,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             B:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -566,7 +566,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             HH:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src,true);
                 },
                 onDrag:function(p, e, src){
@@ -577,7 +577,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             S:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src,true);
                 },
                 onDrag:function(p, e, src){
@@ -588,7 +588,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             V:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src,true);
                 },
                 onDrag:function(p, e, src){
@@ -599,7 +599,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             H:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -610,7 +610,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             'E':{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -621,7 +621,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             X:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     p.box._dd1(p,e,src);
                 },
                 onDrag:function(p, e, src){
@@ -643,7 +643,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             ADVWHEEL:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e,true);
@@ -653,7 +653,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             ADVMARK1:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e,true);
@@ -675,7 +675,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             ADVCLR:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e);
@@ -686,7 +686,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             ADVMARK2:{
-                onMousedown:function(p, e, src){
+                beforeMousedown:function(p, e, src){
                     var cls=p.box;
                     cls._prepareAdv(p,e);
                     cls._updateClrByPos(p,e);

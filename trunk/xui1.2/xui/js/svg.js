@@ -1,5 +1,3 @@
-if(typeof(Raphael)=="function"){
-
 Class("xui.svg", "xui.UI",{
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.","")]=xui.absBox.$type[key]=key;
@@ -294,6 +292,9 @@ Class("xui.svg", "xui.UI",{
         delete this.prototype.toHtml;
     },
     Instance:{
+        initialize:function(){
+            if(typeof(Raphael)!="function")throw "Browser doesn't suppor SVG or VML, all diagram functions were disabled!";
+        },
         getAttr:function(key){
             var prf=this.get(0);
             if(prf){
@@ -3264,7 +3265,3 @@ Class("xui.svg.connector","xui.svg.absComb",{
         }
     }
 });
-
-}else{
-    throw new Error("Browser doesn't suppor SVG or VML, all diagram functions were disabled!");
-}

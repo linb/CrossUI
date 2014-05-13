@@ -265,7 +265,7 @@ Class("xui.UI.Resizer","xui.UI",{
             }
         },
         Behaviors:{
-            onMousedown:function(profile, e, src){
+            beforeMousedown:function(profile, e, src){
                 profile.box._onMousedown(profile, e, src, {move:true});
             },
             onDragbegin:function(profile, e, src){
@@ -290,7 +290,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             LT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {left:true, top:true});
                     return false;
                 },
@@ -305,7 +305,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             RT:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {right:true, top:true});
                     return false;
                 },
@@ -320,7 +320,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             LB:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {left:true, bottom:true});
                     return false;
                 },
@@ -335,7 +335,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             RB:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {right:true, bottom:true});
                     return false;
                 },
@@ -350,7 +350,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             L:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {left:true});
                     return false;
                 },
@@ -365,7 +365,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             T:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {top:true});
                     return false;
                 },
@@ -380,7 +380,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             R:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {right:true});
                     return false;
                 },
@@ -395,7 +395,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 }
             },
             B:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     profile.box._onMousedown(profile, e, src, {bottom:true});
                     return false;
                 },

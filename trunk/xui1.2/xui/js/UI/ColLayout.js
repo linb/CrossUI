@@ -213,7 +213,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             DroppableKeys:['KEY'],
             onSize:xui.UI.$onSize,
             MOVE:{
-                onMousedown:function(profile, e, src){
+                beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var pro=profile.properties;
                     if(pro.disabled)return;
