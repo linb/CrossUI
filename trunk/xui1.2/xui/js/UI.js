@@ -1199,12 +1199,18 @@ Class("xui.UI",  "xui.absObj", {
                 });
             });
         },
-        draggable:function(dragKey, dragData, key, options){
+        draggable:function(dragKey, dragData, key, options, target){
             return this.each(function(o){
                 o.getSubNode(o.keys[key] || 'KEY', true)
                 .beforeMousedown(dragKey?function(pro,e,src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(pro.properties.disabled)return;
+
+                    var target=target?typeof(target)=="function"?_.tryF(getTarget,[],o):xui(target):null;
+                    if(!target || !target.get(0)){
+                        target=xui(src);
+                    }
+
                     options=options||{};
                     options.dragKey=dragKey;
                     options.dragData=typeof dragData == 'function'?dragData():dragData;
@@ -1213,7 +1219,7 @@ Class("xui.UI",  "xui.absObj", {
                         dragType:'icon',
                         dragDefer:1
                     });
-                    xui.use(src).startDrag(e, options);
+                    target.startDrag(e, options);
                 }:null,'_d',-1)
                 .beforeDragbegin(dragKey?function(profile, e, src){
                     xui.use(src).onMouseout(true,{$force:true}).onMouseup(true);

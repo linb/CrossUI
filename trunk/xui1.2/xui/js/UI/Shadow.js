@@ -45,11 +45,11 @@ Class("xui.UI.Shadow","xui.UI",{
                         d = o.properties,
                         size;
                     if(xui.Dom.css3Support("boxShadow")){
-                        size=parseInt(d._shadowSize*2/3,10);
+                        size=parseInt(d._shadowSize*3/4,10);
                         node.css("boxShadow",size+"px "+size+"px "+size+"px #717C8C");
                         if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#717C8C");
                     }else{
-                        if(node.$getShadow())
+                        if(node.$getShadow())return;
                         o.$shadow=node.addShadow({shadowSize:d._shadowSize});
                     }
                 });

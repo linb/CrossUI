@@ -1337,10 +1337,9 @@ new function(){
         img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
     });
-    if(!ini.path)
-        ini.path=ini.appPath+'/xui';
-
-
+    if(!ini.path) ini.path=ini.appPath+'/xui/';
+    if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
+    
     //for dom ready
     var f = xui._domReadyFuns= function(){
         if(!xui.isDomReady){

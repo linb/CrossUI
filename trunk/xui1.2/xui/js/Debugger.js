@@ -60,7 +60,11 @@ Class('xui.Debugger', null, {
                 self.$con=xui(self._id2);
                 xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
 
-                if(ns.addShadow)ns.setShadow(true);
+                if(xui.Dom.css3Support("boxShadow")){
+                    ns.css("boxShadow","2px 2px 2px #717C8C");
+                }else if(ns.addShadow){
+                    ns.setShadow(true);
+                }
 
                 if(xui.browser.ie6){
                     ns.height(ns.offsetHeight());
@@ -145,7 +149,7 @@ Class('xui.Debugger', null, {
                if(div.addBorder)div.addBorder();
                allmsg.push(div);
                if(xui.Dom.css3Support("boxShadow")){
-                   div.setShadow(true);
+                    div.css("boxShadow","2px 2px 2px #717C8C");
                }
             }
             if(document.body.lastChild!=div.get(0))
