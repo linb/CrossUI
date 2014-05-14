@@ -859,7 +859,7 @@ Class('xui.Dom','xui.absBox',{
                     if(boundary.nodeType==1 && boundary!==document.body)
                         add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
                     else
-                        add(pos, Math.max(dd.scrollLeft, db.scrollLeft)-dd.clientLeft, Math.max(dd.scrollTop,  db.scrollTop)-dd.clientTop);
+                        add(pos, (_.isNumb(dd.scrollLeft)?dd.scrollLeft:db.scrollLeft)-dd.clientLeft, (_.isNumb(dd.scrollTop)?dd.scrollTop:db.scrollTop)-dd.clientTop);
                 }else{
                     pos = {left :0, top :0};
                     add(pos, node.offsetLeft, node.offsetTop );
@@ -886,7 +886,7 @@ Class('xui.Dom','xui.absBox',{
                     if((browser.gek && getStyle(keepNode,"position")!="absolute"))
                         add(pos, -db.offsetLeft, -db.offsetTop);
                     if(fixed)
-                        add(pos, Math.max(dd.scrollLeft, db.scrollLeft), Math.max(dd.scrollTop,  db.scrollTop));
+                        add(pos, _.isNumb(dd.scrollLeft)?dd.scrollLeft: db.scrollLeft, _.isNumb(dd.scrollTop)?dd.scrollTop:db.scrollTop);
                 }
                 r=pos;
             }
@@ -2976,15 +2976,15 @@ type:4
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){
-                            a[o]=b[0]=value;
+                            a[o]=b[o]=value;
                         }else
                             v[o]=value;
                     });
                 else{
                     var v=this.get(0);
                     if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || Math.max(a[o], b[o]);
-                        if("scrollLeft"==o)return window.pageXOffset || Math.max(a[o], b[o]);
+                        if("scrollTop"==o)return window.pageYOffset || (_.isNumb(a[o])?a[o]:b[o]);
+                        if("scrollLeft"==o)return window.pageXOffset || (_.isNumb(a[o])?a[o]:b[o]);
                     }
                     return v[o];
                 }

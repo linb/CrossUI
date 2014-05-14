@@ -73,7 +73,7 @@ Class('App', 'xui.Com',{
                     id4=str;
                 }else{
                     //show to class layer only
-                    if(SPA.$S_CLS[str] || obj.$xui$){
+                    if(SPA.$S_CLS[str] || (obj && obj.$xui$)){
                         id1=str;
                         //construcotr or global function
                         id2=id1+'.constructor';

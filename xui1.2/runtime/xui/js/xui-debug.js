@@ -1337,10 +1337,9 @@ new function(){
         img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
     });
-    if(!ini.path)
-        ini.path=ini.appPath+'/xui';
-
-
+    if(!ini.path) ini.path=ini.appPath+'/xui/';
+    if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
+    
     //for dom ready
     var f = xui._domReadyFuns= function(){
         if(!xui.isDomReady){
@@ -7793,7 +7792,7 @@ Class('xui.Dom','xui.absBox',{
                     if(boundary.nodeType==1 && boundary!==document.body)
                         add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
                     else
-                        add(pos, Math.max(dd.scrollLeft, db.scrollLeft)-dd.clientLeft, Math.max(dd.scrollTop,  db.scrollTop)-dd.clientTop);
+                        add(pos, (_.isNumb(dd.scrollLeft)?dd.scrollLeft:db.scrollLeft)-dd.clientLeft, (_.isNumb(dd.scrollTop)?dd.scrollTop:db.scrollTop)-dd.clientTop);
                 }else{
                     pos = {left :0, top :0};
                     add(pos, node.offsetLeft, node.offsetTop );
@@ -7820,7 +7819,7 @@ Class('xui.Dom','xui.absBox',{
                     if((browser.gek && getStyle(keepNode,"position")!="absolute"))
                         add(pos, -db.offsetLeft, -db.offsetTop);
                     if(fixed)
-                        add(pos, Math.max(dd.scrollLeft, db.scrollLeft), Math.max(dd.scrollTop,  db.scrollTop));
+                        add(pos, _.isNumb(dd.scrollLeft)?dd.scrollLeft: db.scrollLeft, _.isNumb(dd.scrollTop)?dd.scrollTop:db.scrollTop);
                 }
                 r=pos;
             }
@@ -9910,15 +9909,15 @@ type:4
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){
-                            a[o]=b[0]=value;
+                            a[o]=b[o]=value;
                         }else
                             v[o]=value;
                     });
                 else{
                     var v=this.get(0);
                     if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || Math.max(a[o], b[o]);
-                        if("scrollLeft"==o)return window.pageXOffset || Math.max(a[o], b[o]);
+                        if("scrollTop"==o)return window.pageYOffset || (_.isNumb(a[o])?a[o]:b[o]);
+                        if("scrollLeft"==o)return window.pageXOffset || (_.isNumb(a[o])?a[o]:b[o]);
                     }
                     return v[o];
                 }
@@ -13233,7 +13232,11 @@ Class("xui.Tips", null,{
                 self.$con=xui(self._id2);
                 xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
 
-                if(ns.addShadow)ns.setShadow(true);
+                if(xui.Dom.css3Support("boxShadow")){
+                    ns.css("boxShadow","2px 2px 2px #717C8C");
+                }else if(ns.addShadow){
+                    ns.setShadow(true);
+                }
 
                 if(xui.browser.ie6){
                     ns.height(ns.offsetHeight());
@@ -13318,7 +13321,7 @@ Class("xui.Tips", null,{
                if(div.addBorder)div.addBorder();
                allmsg.push(div);
                if(xui.Dom.css3Support("boxShadow")){
-                   div.setShadow(true);
+                    div.css("boxShadow","2px 2px 2px #717C8C");
                }
             }
             if(document.body.lastChild!=div.get(0))
@@ -14593,12 +14596,18 @@ Class("xui.UI",  "xui.absObj", {
                 });
             });
         },
-        draggable:function(dragKey, dragData, key, options){
+        draggable:function(dragKey, dragData, key, options, target){
             return this.each(function(o){
                 o.getSubNode(o.keys[key] || 'KEY', true)
                 .beforeMousedown(dragKey?function(pro,e,src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(pro.properties.disabled)return;
+
+                    var target=target?typeof(target)=="function"?_.tryF(getTarget,[],o):xui(target):null;
+                    if(!target || !target.get(0)){
+                        target=xui(src);
+                    }
+
                     options=options||{};
                     options.dragKey=dragKey;
                     options.dragData=typeof dragData == 'function'?dragData():dragData;
@@ -14607,7 +14616,7 @@ Class("xui.UI",  "xui.absObj", {
                         dragType:'icon',
                         dragDefer:1
                     });
-                    xui.use(src).startDrag(e, options);
+                    target.startDrag(e, options);
                 }:null,'_d',-1)
                 .beforeDragbegin(dragKey?function(profile, e, src){
                     xui.use(src).onMouseout(true,{$force:true}).onMouseup(true);
@@ -19662,11 +19671,11 @@ Class("xui.UI.Shadow","xui.UI",{
                         d = o.properties,
                         size;
                     if(xui.Dom.css3Support("boxShadow")){
-                        size=parseInt(d._shadowSize*2/3,10);
+                        size=parseInt(d._shadowSize*3/4,10);
                         node.css("boxShadow",size+"px "+size+"px "+size+"px #717C8C");
                         if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#717C8C");
                     }else{
-                        if(node.$getShadow())
+                        if(node.$getShadow())return;
                         o.$shadow=node.addShadow({shadowSize:d._shadowSize});
                     }
                 });

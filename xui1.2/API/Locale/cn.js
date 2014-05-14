@@ -806,6 +806,9 @@ _.set(xui.Locale,["cn","app"], {
         SERIALIZEMAXSIZE:{
             $desc:"序列化限制的最大对象数"
         },
+        basePath:{
+            $desc:"xui库所在的目录"
+        },
         use:{
             $desc:"用一个xid(每个xid都会对应一个dom元素)来实现对一个dom元素的快速引用.本操作不会有新的xui.Dom对象产生.",
             $rtn:"xui.Dom",
@@ -3028,7 +3031,8 @@ _.set(xui.Locale,["cn","app"], {
                     "flag [必需参数] : Boolean, [true]: 表示可拖动; [false]: 表示不可拖动. 默认为[true]",
                     "profile [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容.",
                     "key [可选参数] : String, 拖动数据的标识符.",
-                    "data [可选参数] : Object, 拖动数据."
+                    "data [可选参数] : Object, 拖动数据.",
+                    "target [可选参数] : xui.Dom, 拖动目标."
                 ],
                 $snippet:[
                     "var id='xui.temp.dd_a'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:80px;\">' + '<div id='+id+'a style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:10px;top:30px;\">1</div>' + '<div id='+id+'b style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:50px;top:30px;\">2</div>'+ '<div id='+id+'c style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:100px;top:30px;\">3</div>'+ '<div id='+id+'d style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:150px;top:30px;\">4</div>'+ '<div id='+id+'e style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:200px;top:30px;\">5</div>'+ '<div id='+id+'f style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:250px;top:30px;\">6</div>'+ '<div id='+id+'g style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:300px;top:30px;\">7</div>'+ '<div id='+id+'h style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:350px;top:30px;\">8</div>'+ '<div id='+id+'i style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:400px;top:30px;\">9</div>'+ ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));" +
@@ -7218,7 +7222,8 @@ _.set(xui.Locale,["cn","app"], {
                     "dragKey [可选参数] : String, 拖动时的标志键.",
                     "dragData [可选参数] : Object, 拖动时的数据.",
                     "key [可选参数] : String, 模板键,指示哪一个DOM节点回作为可拖拽的目标节点. 默认为 'KEY'.",
-                    "option [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容."
+                    "option [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容.",
+                    "target [可选参数] : xui.Dom, 拖动目标."
                 ],
                 $snippet:[
                     "var id='xui.temp.ui5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

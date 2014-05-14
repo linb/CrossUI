@@ -809,6 +809,9 @@ _.set(xui.Locale,["en","app"], {
         SERIALIZEMAXSIZE:{
             $desc:"The max size for serialize"
         },
+        basePath:{
+            $desc:"Dir where xui lib exists"
+        },
         use:{
             $desc:"Uses a xid (each xid represents a DOM Element) to quickly pack a DOM Element to a xui.Dom Object. No new xui.Dom was created here.",
             $rtn:"xui.Dom Object",
@@ -3017,7 +3020,8 @@ _.set(xui.Locale,["en","app"], {
                     "flag [Required] : Boolean, [true]: enables draggable functionality; [false]: disables draggable functionality. Default is [true]",
                     "profile [Optional] : key/value Object. Go <strong>xui.DragDrop.startDrag</strong> for the profile struct detail.",
                     "key [Optional] : String, the [key] for drag data.",
-                    "data [Optional] : Object, the dragged [data]."
+                    "data [Optional] : Object, the dragged [data].",
+                    "target [Optional] : xui.Dom, drag target."
                 ],
                 $snippet:[
                     "var id='xui.temp.dd_a'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:80px;\">' + '<div id='+id+'a style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:10px;top:30px;\">1</div>' + '<div id='+id+'b style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:50px;top:30px;\">2</div>'+ '<div id='+id+'c style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:100px;top:30px;\">3</div>'+ '<div id='+id+'d style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:150px;top:30px;\">4</div>'+ '<div id='+id+'e style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:200px;top:30px;\">5</div>'+ '<div id='+id+'f style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:250px;top:30px;\">6</div>'+ '<div id='+id+'g style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:300px;top:30px;\">7</div>'+ '<div id='+id+'h style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:350px;top:30px;\">8</div>'+ '<div id='+id+'i style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:400px;top:30px;\">9</div>'+ ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));" +
@@ -7195,7 +7199,8 @@ _.set(xui.Locale,["en","app"], {
                     "dragKey [Optional] : String, the dragKey for xui.DragDrop.",
                     "dragData [Optional] : Object, the dragData for xui.DragDrop.",
                     "key [Optional] : String, a template key in UIProfile that will determine which elements will be the target elements. Default is 'KEY'.",
-                    "options [Optional] : key/value Object. Go <strong>xui.DragDrop.startDrag</strong> for the profile struct detail."
+                    "options [Optional] : key/value Object. Go <strong>xui.DragDrop.startDrag</strong> for the profile struct detail.",
+                    "target [Optional] : xui.Dom, drag target."
                 ],
                 $snippet:[
                     "var id='xui.temp.ui5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
