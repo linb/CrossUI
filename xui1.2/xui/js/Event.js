@@ -469,6 +469,8 @@ Class('xui.Event',null,{
             var E=xui.Event,
                 touches = event.changedTouches, 
                 first = touches[0];
+            if(event.touches.length>1)return true;
+
             E.__simulatedMousedownNode=first.target;
 
             if(!xui.isEventSupported("mousedown")){
@@ -476,7 +478,11 @@ Class('xui.Event',null,{
             }else{
                 // use custom event to avoid affecting system or 3rd lib
                 // it will fire xui beforeMousedown event group only
-                E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
+                // Needs delay to allow the browser to determine if the user is performing another gesture (etc. double-tap zooming)
+                E._xuitouchdowntime=_.setTimeout(function(){
+                    E._xuitouchdowntime=0;
+                    E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
+                },100);
             }
             
             return true;
@@ -486,7 +492,9 @@ Class('xui.Event',null,{
                 _now=(new Date).getTime(),
                 interval=_now-E.$lastMouseupTime,
                 touches = event.changedTouches, first = touches[0];
-
+            if(E._xuitouchdowntime){
+                _.clearTimeout(E._xuitouchdowntime);
+            }
             E.__simulatedMouseupNode=first.target;
             if(!xui.isEventSupported("mouseup")){
                 E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});

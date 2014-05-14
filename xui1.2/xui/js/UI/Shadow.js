@@ -41,19 +41,30 @@ Class("xui.UI.Shadow","xui.UI",{
         _.each({
             _shadow:function(key){
                 return this.each(function(o){
-                    var target = o.getSubNode('BORDER');
-                    if(target.$getShadow())return;
-
-                    var d = o.properties;
-                    o.$shadow=target.addShadow({shadowSize:d._shadowSize});
+                    var node = o.getSubNode('BORDER'),
+                        d = o.properties,
+                        size;
+                    if(xui.Dom.css3Support("boxShadow")){
+                        size=parseInt(d._shadowSize*2/3,10);
+                        node.css("boxShadow",size+"px "+size+"px "+size+"px #717C8C");
+                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#717C8C");
+                    }else{
+                        if(node.$getShadow())
+                        o.$shadow=node.addShadow({shadowSize:d._shadowSize});
+                    }
                 });
             },
             _unShadow:function(){
                 return this.each(function(o){
-                    var target = o.getSubNode('BORDER');
-                    if(!target.$getShadow())return;
-                    target.removeShadow();
-                    delete o.$shadow
+                    var node = o.getSubNode('BORDER');
+                    if(xui.Dom.css3Support("boxShadow")){
+                        node.css("boxShadow","");
+                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","transparent");
+                    }else{
+                        if(!node.$getShadow())return;
+                        node.removeShadow();
+                        delete o.$shadow;
+                    }
                 });
             }
         },function(o,i){

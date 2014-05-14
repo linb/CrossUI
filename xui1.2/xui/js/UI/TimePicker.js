@@ -205,6 +205,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         });
     },
     Static:{
+        _shadowRB:"BBARTDR",
         _excls:'xuiex-timepicker',
         _excls2:'xuiex-timepicker2',
         _excls3:'xuiex-timepicker3',

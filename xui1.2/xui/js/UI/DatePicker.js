@@ -245,6 +245,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
         });
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'

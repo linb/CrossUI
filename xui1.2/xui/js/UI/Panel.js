@@ -39,6 +39,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         }
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Templates:{
             tagName : 'div',
             style:'{_style}',

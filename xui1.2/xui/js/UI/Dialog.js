@@ -300,6 +300,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         xui.prompt=ns.prompt;
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'
