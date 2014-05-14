@@ -1637,6 +1637,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         }
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Templates:{
             tagName:'div',
             style:'{_style}',

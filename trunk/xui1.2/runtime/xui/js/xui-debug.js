@@ -4738,6 +4738,8 @@ Class('xui.Event',null,{
             var E=xui.Event,
                 touches = event.changedTouches, 
                 first = touches[0];
+            if(event.touches.length>1)return true;
+
             E.__simulatedMousedownNode=first.target;
 
             if(!xui.isEventSupported("mousedown")){
@@ -4745,7 +4747,11 @@ Class('xui.Event',null,{
             }else{
                 // use custom event to avoid affecting system or 3rd lib
                 // it will fire xui beforeMousedown event group only
-                E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
+                // Needs delay to allow the browser to determine if the user is performing another gesture (etc. double-tap zooming)
+                E._xuitouchdowntime=_.setTimeout(function(){
+                    E._xuitouchdowntime=0;
+                    E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
+                },100);
             }
             
             return true;
@@ -4755,7 +4761,9 @@ Class('xui.Event',null,{
                 _now=(new Date).getTime(),
                 interval=_now-E.$lastMouseupTime,
                 touches = event.changedTouches, first = touches[0];
-
+            if(E._xuitouchdowntime){
+                _.clearTimeout(E._xuitouchdowntime);
+            }
             E.__simulatedMouseupNode=first.target;
             if(!xui.isEventSupported("mouseup")){
                 E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
@@ -12345,8 +12353,8 @@ Class('xui.DragDrop',null,{
                     target = d._setProxy(null,pos);
                     break;
                 case 'icon':
-                    pos.left=_.isNumb(p.targetLeft)?p.targetLeft:(mousePos.left - xui.win.scrollLeft() + 16);
-                    pos.top=_.isNumb(p.targetTop)?p.targetTop:(mousePos.top - xui.win.scrollTop() + 16);
+                    pos.left=_.isNumb(p.targetLeft)?p.targetLeft:(mousePos.left /*- xui.win.scrollLeft()*/ + 16);
+                    pos.top=_.isNumb(p.targetTop)?p.targetTop:(mousePos.top /*- xui.win.scrollTop()*/ + 16);
                     t='<table border="0" class="xui-node xui-node-table"><tr><td valign="top"><span class="xui-node xui-node-span" style="background:url('+p.dragIcon+') no-repeat left top;width:'+(_.isNumb(p.targetWidth)?p.targetWidth:16)+'px;height:'+(_.isNumb(p.targetHeight)?p.targetHeight:16)+'px;" ></span></td><td id="xui:dd:shadow" '+(p.shadowFrom?'style="border:solid 1px #e5e5e5;background:#fff;font-size:12px;line-height:14px;"':'')+'>'+(p.shadowFrom?
 
                     xui(p.shadowFrom).clone(true)
@@ -12667,8 +12675,8 @@ Class("xui.Tips", null,{
                         self.n = node.first();
                         self._n = _ruler.first();
                         if(xui.Dom.css3Support("boxShadow")){
-                            node.css("boxShadow","2px 2px 2px #5D6878");
-                            _ruler.css("boxShadow","2px 2px 2px #5D6878");
+                            node.css("boxShadow","2px 2px 2px #717C8C");
+                            _ruler.css("boxShadow","2px 2px 2px #717C8C");
                         }else if(typeof node.addShadow == 'function'){
                             node.addShadow();
                             _ruler.addShadow();
@@ -13225,7 +13233,7 @@ Class("xui.Tips", null,{
                 self.$con=xui(self._id2);
                 xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
 
-                if(ns.addShadow)ns.addShadow();
+                if(ns.addShadow)ns.setShadow(true);
 
                 if(xui.browser.ie6){
                     ns.height(ns.offsetHeight());
@@ -13310,7 +13318,7 @@ Class("xui.Tips", null,{
                if(div.addBorder)div.addBorder();
                allmsg.push(div);
                if(xui.Dom.css3Support("boxShadow")){
-                   div.css("boxShadow","4px 4px 4px #888");
+                   div.setShadow(true);
                }
             }
             if(document.body.lastChild!=div.get(0))
@@ -19650,19 +19658,30 @@ Class("xui.UI.Shadow","xui.UI",{
         _.each({
             _shadow:function(key){
                 return this.each(function(o){
-                    var target = o.getSubNode('BORDER');
-                    if(target.$getShadow())return;
-
-                    var d = o.properties;
-                    o.$shadow=target.addShadow({shadowSize:d._shadowSize});
+                    var node = o.getSubNode('BORDER'),
+                        d = o.properties,
+                        size;
+                    if(xui.Dom.css3Support("boxShadow")){
+                        size=parseInt(d._shadowSize*2/3,10);
+                        node.css("boxShadow",size+"px "+size+"px "+size+"px #717C8C");
+                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#717C8C");
+                    }else{
+                        if(node.$getShadow())
+                        o.$shadow=node.addShadow({shadowSize:d._shadowSize});
+                    }
                 });
             },
             _unShadow:function(){
                 return this.each(function(o){
-                    var target = o.getSubNode('BORDER');
-                    if(!target.$getShadow())return;
-                    target.removeShadow();
-                    delete o.$shadow
+                    var node = o.getSubNode('BORDER');
+                    if(xui.Dom.css3Support("boxShadow")){
+                        node.css("boxShadow","");
+                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","transparent");
+                    }else{
+                        if(!node.$getShadow())return;
+                        node.removeShadow();
+                        delete o.$shadow;
+                    }
                 });
             }
         },function(o,i){
@@ -25911,6 +25930,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         _radius:84,
         _square:100,
         _bigRadius:97,
+        _shadowRB:"BBARTDR",
         DataModel:{
             height:{
                 ini:'auto',
@@ -26924,6 +26944,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         });
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'
@@ -27766,6 +27787,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         });
     },
     Static:{
+        _shadowRB:"BBARTDR",
         _excls:'xuiex-timepicker',
         _excls2:'xuiex-timepicker2',
         _excls3:'xuiex-timepicker3',
@@ -29017,6 +29039,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         }
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Templates:{
             tagName : 'div',
             style:'{_style}',
@@ -40733,6 +40756,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         xui.prompt=ns.prompt;
     },
     Static:{
+        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'

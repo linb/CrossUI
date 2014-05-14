@@ -783,8 +783,8 @@ Class('xui.DragDrop',null,{
                     target = d._setProxy(null,pos);
                     break;
                 case 'icon':
-                    pos.left=_.isNumb(p.targetLeft)?p.targetLeft:(mousePos.left - xui.win.scrollLeft() + 16);
-                    pos.top=_.isNumb(p.targetTop)?p.targetTop:(mousePos.top - xui.win.scrollTop() + 16);
+                    pos.left=_.isNumb(p.targetLeft)?p.targetLeft:(mousePos.left /*- xui.win.scrollLeft()*/ + 16);
+                    pos.top=_.isNumb(p.targetTop)?p.targetTop:(mousePos.top /*- xui.win.scrollTop()*/ + 16);
                     t='<table border="0" class="xui-node xui-node-table"><tr><td valign="top"><span class="xui-node xui-node-span" style="background:url('+p.dragIcon+') no-repeat left top;width:'+(_.isNumb(p.targetWidth)?p.targetWidth:16)+'px;height:'+(_.isNumb(p.targetHeight)?p.targetHeight:16)+'px;" ></span></td><td id="xui:dd:shadow" '+(p.shadowFrom?'style="border:solid 1px #e5e5e5;background:#fff;font-size:12px;line-height:14px;"':'')+'>'+(p.shadowFrom?
 
                     xui(p.shadowFrom).clone(true)

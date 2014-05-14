@@ -263,6 +263,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
         _radius:84,
         _square:100,
         _bigRadius:97,
+        _shadowRB:"BBARTDR",
         DataModel:{
             height:{
                 ini:'auto',
