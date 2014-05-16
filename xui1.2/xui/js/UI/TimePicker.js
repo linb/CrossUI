@@ -37,7 +37,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         t='<span id="'+this.KEY+'-HI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
         for(i=0;i<24;i++)
-            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',(i%6===0)?cls2:'');
+            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%6===0)?cls2:'')+" xui-custom {comcls}");
         h=a.join('');
         a.length=0;
 
@@ -47,7 +47,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         t='<span id="'+this.KEY+'-MI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
         for(i=0;i<60;i++)
-            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',(i%5===0)?cls2:'');
+            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%5===0)?cls2:'') +" xui-custom {comcls}");
         m=a.join('');
         a.length=0;
         

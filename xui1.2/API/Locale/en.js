@@ -9187,6 +9187,18 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            getFrameTemplate:{
+                $desc:"Gets the control's inner iframe html template.",
+                $rtn:"String"
+            },
+            setFrameTemplate:{
+                $desc:"Sets the control's inner iframe html template.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getCmdList :{
                 $desc:"Gets the control's command list.",
                 $rtn:"String",

@@ -127,6 +127,15 @@ Class('xui.Com',null,{
         },
         show:function(onEnd,parent,subId,threadid,left,top){
             var self=this,f=function(){
+                var style=self.customStyle;
+                if(style && !_.isEmpty(style)){
+                    var arr=[];
+                    _.each(style,function(v,k){
+                        arr.push(k+" : "+v+";");
+                    });
+                    var txt=".xui-com-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
+                    xui.CSS.addStyleSheet(txt,"xui:css:com-"+self.$xid,1);
+                }
                 // no UI control in com
                 if(self.getUIComponents().isEmpty()){
                     _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);

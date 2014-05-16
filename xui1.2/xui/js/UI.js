@@ -2439,6 +2439,8 @@ Class("xui.UI",  "xui.absObj", {
                 return;
             }
             var self =arguments.callee,
+                host = profile.host,
+                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
                 behavior = profile.behavior?key?profile.behavior[key]:profile.behavior:null,
                 prop=profile.properties,
                 map1 = self.map1 ||(self.map1={tagName:1,text:1}),
@@ -2479,7 +2481,7 @@ Class("xui.UI",  "xui.absObj", {
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"")
                     ;
             }
             delete template.className;
@@ -2535,7 +2537,7 @@ Class("xui.UI",  "xui.absObj", {
             arr[arr.length]='>';
 
             if(!map2[tagName] && text)
-                arr[arr.length]=text;
+                arr[arr.length]=text.replace(/\{comcls\}/g, comCls||"");
 
             // add sub node
             for(var i=0,l=a.length;i<l;){

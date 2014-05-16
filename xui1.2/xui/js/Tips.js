@@ -158,8 +158,8 @@ Class("xui.Tips", null,{
 
                     var self=this,node,_ruler,s,w,h;
                     if(!(node=self.node) || !node.get(0)){
-                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips"><div class="xui-node xui-wrapper xui-node-div xui-tips-i"></div></div>');
-                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips"><div class="xui-node xui-node-div xui-tips-i"></div></div>');
+                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
+                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
                         if(xui.Dom.css3Support("boxShadow")){
@@ -187,7 +187,7 @@ Class("xui.Tips", null,{
                         });
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div xui-tips-c">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
@@ -233,7 +233,7 @@ Class("xui.Tips", null,{
                 this.threadid='$tips:1$';
                 this.show=function(item, pos){
                     if(!this.node){
-                        this.node = xui.create('<div class="xui-node xui-node-div" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;font-size:12px;padding:3px;overflow:hidden;"></div>');
+                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;font-size:12px;padding:3px;overflow:hidden;"></div>');
                         xui('body').append(this.node);
                     }
                     pos.left+=12;

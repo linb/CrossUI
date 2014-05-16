@@ -1352,6 +1352,12 @@ new function(){
     		}
     	}
         try{
+            if(xui.ini.customStyle&&!_.isEmpty(xui.ini.customStyle)){
+                var arr=[],style=xui.ini.customStyle,txt;
+                _.each(style,function(v,k){arr.push(k+" : "+v+";")});
+                txt=".xui-custom{\r\n"+arr.join("\r\n")+"\r\n}";
+                xui.CSS.addStyleSheet(txt,"xui:css:custom",1);
+            };
             for(var i=0,l=xui._m.length;i<l;i++)
                 _.tryF(xui._m[i])
             xui._m.length=0;

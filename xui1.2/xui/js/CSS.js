@@ -1,6 +1,3 @@
-/* css
-*  dependency: base _ ; Class ; xui ;
-*/
 Class("xui.CSS", null,{
     Static:{
         _r:xui.browser.ie?'rules':'cssRules',
@@ -22,7 +19,7 @@ Class("xui.CSS", null,{
                      .replace(ns._reg5,'')
                      .replace(ns._reg6,',').toLowerCase();
         },
-        _createCss:function(id, last){
+        _createCss:function(id, txt,last){
             var ns=this,
                 head=this._getHead(),
                 fid=ns._firstid,
@@ -32,6 +29,12 @@ Class("xui.CSS", null,{
             fc=document.createElement('style');
             fc.type="text/css";
             fc.id=id;
+            if(txt){
+                if(xui.browser.ie && fc.styleSheet && "cssText" in fc.styleSheet)
+                    fc.styleSheet.cssText = txt||'';
+                else
+                    try{fc.appendChild(document.createTextNode(txt||''))}catch(p){fc.styleSheet.cssText = txt||''}
+            }
             if(!last){
                 c= document.getElementById(fid) || head.firstChild;
                 while((c=c.nextSibling) && !/^(script|link|style)$/i.test(''+c.tagName));
@@ -47,8 +50,8 @@ Class("xui.CSS", null,{
                 head.appendChild(fc);
             return fc;
         },
-        _getCss:function(id, last){
-            return document.getElementById(id) || this._createCss(id, last);
+        _getCss:function(id, css, last){
+            return document.getElementById(id) || this._createCss(id, css, last);
         },
         _getBase:function(){
             return this._getCss(this._baseid);
@@ -57,7 +60,7 @@ Class("xui.CSS", null,{
             return this._getCss(this._firstid);
         },
         _getLast:function(){
-            return this._getCss(this._lastid, true);
+            return this._getCss(this._lastid, null, true);
         },
         _getHead:function(){
             return this._head || (this._head=document.getElementsByTagName("head")[0]||document.documentElement);
@@ -87,7 +90,14 @@ Class("xui.CSS", null,{
                     e.styleSheet.cssText = txt||'';
                 else
                     try{e.appendChild(document.createTextNode(txt||''))}catch(p){e.styleSheet.cssText = txt||''}
-                head.insertBefore(e, backOf  ?ns._getLast():ns._getBase());
+                if(backOf===-1){
+                    if(head.firstChild) head.insertBefore(e, head.firstChild); 
+                    else head.appendChild(e);
+                }else if(backOf===1){
+                    head.appendChild(e);
+                }else{
+                    head.insertBefore(e, backOf?ns._getLast():ns._getBase());
+                }
                 e.disabled=true;
                 e.disabled=false;
                 return e;
@@ -284,6 +294,7 @@ Class("xui.CSS", null,{
                 "sub{vertical-align:text-bottom;}"+
                 "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
                 "input,textarea,select{*font-size:100%;}"+
+                (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
                  (b.gek

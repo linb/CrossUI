@@ -1352,6 +1352,12 @@ new function(){
     		}
     	}
         try{
+            if(xui.ini.customStyle&&!_.isEmpty(xui.ini.customStyle)){
+                var arr=[],style=xui.ini.customStyle,txt;
+                _.each(style,function(v,k){arr.push(k+" : "+v+";")});
+                txt=".xui-custom{\r\n"+arr.join("\r\n")+"\r\n}";
+                xui.CSS.addStyleSheet(txt,"xui:css:custom",1);
+            };
             for(var i=0,l=xui._m.length;i<l;i++)
                 _.tryF(xui._m[i])
             xui._m.length=0;
@@ -4734,6 +4740,7 @@ Class('xui.Event',null,{
             :-e.detail/3
         },
         _simulateMousedown:function(event){
+            if(!event.touches)return true;
             var E=xui.Event,
                 touches = event.changedTouches, 
                 first = touches[0];
@@ -4756,6 +4763,7 @@ Class('xui.Event',null,{
             return true;
         },
         _simulateMouseup:function(event){
+            if(!event.touches)return true;
             var E=xui.Event,
                 _now=(new Date).getTime(),
                 interval=_now-E.$lastMouseupTime,
@@ -5114,11 +5122,11 @@ Class('xui.Event',null,{
         },
         touchEvent=function(target, type , options){
             if (type === 'touchstart' || type === 'touchmove') {
-                if (!touches || !touches.length) {
+                if (!options.touches || !options.touches.length) {
                     throw 'No touch object in touches.';
                 }
             } else if (type === 'touchend') {
-                if (!changedTouches || !changedTouches.length) {
+                if (!options.changedTouches || !options.changedTouches.length) {
                     throw 'No touch object in changedTouches.';
                 }
             }
@@ -5131,6 +5139,10 @@ Class('xui.Event',null,{
                 altKey:false,
                 shiftKey:false,
                 metaKey:false,
+                screenX:0,
+                screenY:0,
+                clientX:0,
+                clientY:0,
                 scale : 1.0,
                 rotation : 0.0
             },'without');
@@ -5138,14 +5150,20 @@ Class('xui.Event',null,{
                 cancelable=options.cancelable,
                 detail=options.detail,
                 view=options.view,
+                scale=options.scale,
+                rotation=options.rotation,
+                touches=options.touches,
+                targetTouches=options.targetTouches,
+                changedTouches=options.changedTouches,
                 ctrlKey=options.ctrlKey,
                 altKey=options.altKey,
                 shiftKey=options.shiftKey,
                 metaKey=options.metaKey,
-                scale=options.scale,
-                rotation=options.rotation,
+                screenX=options.screenX,
+                screenY=options.screenY,
+                clientX=options.clientX,
+                clientY=options.clientY,
                 cancelable = type=="touchcancel"? false : options.cancelable;
-            
             var customEvent;
             if (d.createEvent){
                 if (xui.browser.isAndroid) {
@@ -6575,10 +6593,7 @@ Class('xui.Event',null,{
             });
         }
     }
-});/* css
-*  dependency: base _ ; Class ; xui ;
-*/
-Class("xui.CSS", null,{
+});Class("xui.CSS", null,{
     Static:{
         _r:xui.browser.ie?'rules':'cssRules',
         _baseid:'xui:css:base',
@@ -6599,7 +6614,7 @@ Class("xui.CSS", null,{
                      .replace(ns._reg5,'')
                      .replace(ns._reg6,',').toLowerCase();
         },
-        _createCss:function(id, last){
+        _createCss:function(id, txt,last){
             var ns=this,
                 head=this._getHead(),
                 fid=ns._firstid,
@@ -6609,6 +6624,12 @@ Class("xui.CSS", null,{
             fc=document.createElement('style');
             fc.type="text/css";
             fc.id=id;
+            if(txt){
+                if(xui.browser.ie && fc.styleSheet && "cssText" in fc.styleSheet)
+                    fc.styleSheet.cssText = txt||'';
+                else
+                    try{fc.appendChild(document.createTextNode(txt||''))}catch(p){fc.styleSheet.cssText = txt||''}
+            }
             if(!last){
                 c= document.getElementById(fid) || head.firstChild;
                 while((c=c.nextSibling) && !/^(script|link|style)$/i.test(''+c.tagName));
@@ -6624,8 +6645,8 @@ Class("xui.CSS", null,{
                 head.appendChild(fc);
             return fc;
         },
-        _getCss:function(id, last){
-            return document.getElementById(id) || this._createCss(id, last);
+        _getCss:function(id, css, last){
+            return document.getElementById(id) || this._createCss(id, css, last);
         },
         _getBase:function(){
             return this._getCss(this._baseid);
@@ -6634,7 +6655,7 @@ Class("xui.CSS", null,{
             return this._getCss(this._firstid);
         },
         _getLast:function(){
-            return this._getCss(this._lastid, true);
+            return this._getCss(this._lastid, null, true);
         },
         _getHead:function(){
             return this._head || (this._head=document.getElementsByTagName("head")[0]||document.documentElement);
@@ -6664,7 +6685,14 @@ Class("xui.CSS", null,{
                     e.styleSheet.cssText = txt||'';
                 else
                     try{e.appendChild(document.createTextNode(txt||''))}catch(p){e.styleSheet.cssText = txt||''}
-                head.insertBefore(e, backOf  ?ns._getLast():ns._getBase());
+                if(backOf===-1){
+                    if(head.firstChild) head.insertBefore(e, head.firstChild); 
+                    else head.appendChild(e);
+                }else if(backOf===1){
+                    head.appendChild(e);
+                }else{
+                    head.insertBefore(e, backOf?ns._getLast():ns._getBase());
+                }
                 e.disabled=true;
                 e.disabled=false;
                 return e;
@@ -6861,6 +6889,7 @@ Class("xui.CSS", null,{
                 "sub{vertical-align:text-bottom;}"+
                 "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
                 "input,textarea,select{*font-size:100%;}"+
+                (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
                  (b.gek
@@ -10575,6 +10604,15 @@ Class('xui.Com',null,{
         },
         show:function(onEnd,parent,subId,threadid,left,top){
             var self=this,f=function(){
+                var style=self.customStyle;
+                if(style && !_.isEmpty(style)){
+                    var arr=[];
+                    _.each(style,function(v,k){
+                        arr.push(k+" : "+v+";");
+                    });
+                    var txt=".xui-com-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
+                    xui.CSS.addStyleSheet(txt,"xui:css:com-"+self.$xid,1);
+                }
                 // no UI control in com
                 if(self.getUIComponents().isEmpty()){
                     _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
@@ -12669,8 +12707,8 @@ Class("xui.Tips", null,{
 
                     var self=this,node,_ruler,s,w,h;
                     if(!(node=self.node) || !node.get(0)){
-                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips"><div class="xui-node xui-wrapper xui-node-div xui-tips-i"></div></div>');
-                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips"><div class="xui-node xui-node-div xui-tips-i"></div></div>');
+                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
+                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
                         if(xui.Dom.css3Support("boxShadow")){
@@ -12698,7 +12736,7 @@ Class("xui.Tips", null,{
                         });
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div xui-tips-c">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
@@ -12744,7 +12782,7 @@ Class("xui.Tips", null,{
                 this.threadid='$tips:1$';
                 this.show=function(item, pos){
                     if(!this.node){
-                        this.node = xui.create('<div class="xui-node xui-node-div" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;font-size:12px;padding:3px;overflow:hidden;"></div>');
+                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;font-size:12px;padding:3px;overflow:hidden;"></div>');
                         xui('body').append(this.node);
                     }
                     pos.left+=12;
@@ -13227,7 +13265,7 @@ Class("xui.Tips", null,{
             }
 
             if(!xui.Dom.byId(self._id2)){
-                var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm"><div class="xui-node xui-node-div xui-dbg-box"><div id='+self._id4+' class="xui-node xui-node-div xui-dbg-header">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds"><a class="xui-node xui-node-a" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();"> &Chi; </a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-dbg-content"></div><div class="xui-node xui-node-div xui-dbg-tail"><table class="xui-node xui-node-table"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input" id='+self._id3+' /></td></tr></table></div></div></div>');
+                var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm xui-custom"><div class="xui-node xui-node-div xui-dbg-box xui-custom"><div id='+self._id4+' class="xui-node xui-node-div xui-dbg-header xui-custom">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds xui-custom"><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();"> &Chi; </a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-dbg-content xui-custom"></div><div class="xui-node xui-node-div xui-dbg-tail xui-custom"><table class="xui-node xui-node-table xui-custom"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input xui-custom" id='+self._id3+' /></td></tr></table></div></div></div>');
                 xui('body').append(ns);
                 self.$con=xui(self._id2);
                 xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
@@ -13251,7 +13289,7 @@ Class("xui.Tips", null,{
                         switch(s.value){
                             case '?':
                             case 'help':
-                                self.$con.append(xui.create("<div class='xui-node xui-node-div xui-dbg-con3'><p class='xui-node xui-node-p'><strong  class='xui-node xui-node-strong'>vailable commands:</strong></p><ul  class='xui-node xui-node-ul'><li  class='xui-node xui-node-li'> -- <strong  class='xui-node xui-node-strong'>[clr]</strong> or <strong>[clear]</strong> : clears the message</li><li  class='xui-node xui-node-li'> -- <strong  class='xui-node xui-node-strong'>[?]</strong> or <strong  class='xui-node xui-node-strong'>[help]</strong> : shows this message</li><li  class='xui-node xui-node-li'> -- <strong class='xui-node xui-node-strong'>any other</strong>: shows its string representation</li></ul></div>"));
+                                self.$con.append(xui.create("<div class='xui-node xui-node-div xui-dbg-con3 xui-custom'><p class='xui-node xui-node-p xui-custom'><strong  class='xui-node xui-node-strong xui-custom'>vailable commands:</strong></p><ul  class='xui-node xui-node-ul xui-custom'><li  class='xui-node xui-node-li xui-custom'> -- <strong  class='xui-node xui-node-strong xui-custom'>[clr]</strong> or <strong>[clear]</strong> : clears the message</li><li  class='xui-node xui-node-li xui-custom'> -- <strong  class='xui-node xui-node-strong xui-custom'>[?]</strong> or <strong  class='xui-node xui-node-strong xui-custom'>[help]</strong> : shows this message</li><li  class='xui-node xui-node-li xui-custom'> -- <strong class='xui-node xui-node-strong xui-custom'>any other</strong>: shows its string representation</li></ul></div>"));
                                 break;
                             case 'clr':
                             case 'clear':
@@ -13262,7 +13300,7 @@ Class("xui.Tips", null,{
                                     temp=s.value;
                                     if(/^\s*\x7b/.test(temp))temp='('+temp+')';
                                     self.log(eval(temp));
-                                }catch(e){self.$con.append(xui.create("<div  class='xui-node xui-node-div xui-dbg-con4'>"+String(e)+"</div>"));return;}
+                                }catch(e){self.$con.append(xui.create("<div  class='xui-node xui-node-div xui-dbg-con4 xui-custom'>"+String(e)+"</div>"));return;}
                         }
                         bak=s.value;
                         s.value='';
@@ -13313,9 +13351,9 @@ Class("xui.Tips", null,{
 
            if(!div){
                div =
-               '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset" style="font-size:0;line-height:0;border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
-                   '<div class="xui-node xui-node-div" style="font-size:14px;overflow:hidden;font-weight:bold;padding:2px;"></div>'+
-                   '<div class="xui-node xui-node-div" style="font-size:12px;padding:5px;overflow:hidden;"></div>'+
+               '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset xui-custom" style="font-size:0;line-height:0;border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:14px;overflow:hidden;font-weight:bold;padding:2px;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:12px;padding:5px;overflow:hidden;"></div>'+
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();
@@ -15836,6 +15874,8 @@ Class("xui.UI",  "xui.absObj", {
                 return;
             }
             var self =arguments.callee,
+                host = profile.host,
+                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
                 behavior = profile.behavior?key?profile.behavior[key]:profile.behavior:null,
                 prop=profile.properties,
                 map1 = self.map1 ||(self.map1={tagName:1,text:1}),
@@ -15876,7 +15916,7 @@ Class("xui.UI",  "xui.absObj", {
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"")
                     ;
             }
             delete template.className;
@@ -15932,7 +15972,7 @@ Class("xui.UI",  "xui.absObj", {
             arr[arr.length]='>';
 
             if(!map2[tagName] && text)
-                arr[arr.length]=text;
+                arr[arr.length]=text.replace(/\{comcls\}/g, comCls||"");
 
             // add sub node
             for(var i=0,l=a.length;i<l;){
@@ -23132,6 +23172,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             value:'',
             width:400,
             height:300,
+            frameTemplate:{
+                ini:'<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>',
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             cmdList:{
                 ini:'font1;font2;align;list;font4;font3;insert;clear;html',
                 action:function(v){
@@ -23269,6 +23315,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(!self.$inDesign){
                 var div=self.getSubNode('EDITOR').get(0),
                     domId=self.$domId,
+                    htmlTpl=self.properties.frameTemplate,
                     id=div.id;
                 // rendered already
                 if(!self.$once){
@@ -23341,7 +23388,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                     doc=self.$doc=win.document;
                                     
                                     doc.open();
-                                    doc.write('<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>');
+                                    doc.write(htmlTpl);
                                     doc.close();
                                     
                                     //if(xui.browser.isTouch && (xui.browser.isAndroid||||xui.browser.isBB)){
@@ -26735,16 +26782,16 @@ Class("xui.UI.Group", "xui.UI.Div",{
             key=self.KEY;
             
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
-        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+'"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+'"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+'" style="'+tag+'H_CS'+tag+'"></th>',
+        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
-            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+'"  style="'+tag+'H_CS'+tag+'">@</th>',
-            tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+'"  style="'+tag+'TBODY_CS'+tag+'" >',
+            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
+            tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'" >',
             tbody2 = '</tbody>',
             tr1='<tr>',
             tr2='</tr>',
-            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+'"  style="'+tag+'W_CS'+tag+'">@</th>',
-            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+'"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
+            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
+            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
                 '</td>',
             body,i,j,k,l,a=[],b=[];
         for(i=0;i<7;i++)
@@ -27095,19 +27142,24 @@ Class("xui.UI.Group", "xui.UI.Div",{
             BODY:{
                 overflow: 'visible'
             },
-            'BODY td,BODY th':{
+            'TD .exday':{
+                color:'#C1C1C1'
+            },
+            TD:{
                 $order:1,
+                'text-align':'center',
+                'background-color': '#EFF8FF',
                 border:0,
                 'border-right':'solid 1px #648CB4',
                 'border-bottom':'solid 1px #648CB4',
                 'font-size': '12px'
             },
-            'TD .exday':{
-                color:'#C1C1C1'
-            },
-            TD:{
-                'text-align':'center',
-                'background-color': '#EFF8FF'
+            TH:{
+                $order:1,
+                border:0,
+                'border-right':'solid 1px #648CB4',
+                'border-bottom':'solid 1px #648CB4',
+                'font-size': '12px'
             },
             'TD-free':{
                 $order:1,
@@ -27487,7 +27539,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             profile.box._getLabelNodes(profile).each(function(node,i){
                 n=date.add(v,'d',i);
                 daymap[i]=n;
-                t=date.get(n,'m')==m?'#':'<p class="xui-node xui-node-p exday">#</p>';
+                t=date.get(n,'m')==m?'#':'<p class="xui-node xui-node-p exday xui-custom {comcls}">#</p>';
                 n=date.get(n,'d');
                 node.innerHTML = t.replace('#',n);
             });
@@ -27628,7 +27680,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         t='<span id="'+this.KEY+'-HI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
         for(i=0;i<24;i++)
-            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',(i%6===0)?cls2:'');
+            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%6===0)?cls2:'')+" xui-custom {comcls}");
         h=a.join('');
         a.length=0;
 
@@ -27638,7 +27690,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         t='<span id="'+this.KEY+'-MI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
         for(i=0;i<60;i++)
-            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',(i%5===0)?cls2:'');
+            a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%5===0)?cls2:'') +" xui-custom {comcls}");
         m=a.join('');
         a.length=0;
         
