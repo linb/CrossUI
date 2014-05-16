@@ -154,6 +154,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'items.sub':{
                     ITEM:{
                         style:'{itemDisplay}',
+                        className:" {disabled}",
                     //for firefox2 image in -moz-inline-box cant change height bug
                         IBWRAP:{
                             tagName:'div',
@@ -161,7 +162,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                 style:'{splitDisplay}'
                             },
                             LABEL:{
-                                className:" {disabled}",
                                 style:'{labelDisplay}',
                                 text:'{label}'
                             },
@@ -185,7 +185,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                                 CAPTION:{
                                                     $order:2,
                                                     text : '{caption}',
-                                                    className:" {disabled}",
                                                     style:'{captionDisplay}'
                                                 },
                                                 DROP:{

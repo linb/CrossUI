@@ -34348,6 +34348,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'items.sub':{
                     ITEM:{
                         style:'{itemDisplay}',
+                        className:" {disabled}",
                     //for firefox2 image in -moz-inline-box cant change height bug
                         IBWRAP:{
                             tagName:'div',
@@ -34355,7 +34356,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                 style:'{splitDisplay}'
                             },
                             LABEL:{
-                                className:" {disabled}",
                                 style:'{labelDisplay}',
                                 text:'{label}'
                             },
@@ -34379,7 +34379,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                                 CAPTION:{
                                                     $order:2,
                                                     text : '{caption}',
-                                                    className:" {disabled}",
                                                     style:'{captionDisplay}'
                                                 },
                                                 DROP:{
@@ -35874,7 +35873,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return profile.box._getRow(profile, profile.rowMap[v], type);
         },
         getRowbyCell:function(cell, type){
-            return profile.box._getRow(this.get(0), cell._row, type);
+            return this.constructor._getRow(this.get(0), cell._row, type);
         },
 
         toggleRow:function(id, expand){

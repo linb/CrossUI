@@ -294,7 +294,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return profile.box._getRow(profile, profile.rowMap[v], type);
         },
         getRowbyCell:function(cell, type){
-            return profile.box._getRow(this.get(0), cell._row, type);
+            return this.constructor._getRow(this.get(0), cell._row, type);
         },
 
         toggleRow:function(id, expand){
