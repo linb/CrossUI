@@ -5231,23 +5231,23 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
             key=self.KEY;
 
         self.addTemplateKeys(['H', 'W','COL','DH','DAYBOX','DC','TBODY', 'THEADER', 'TD','DF1','DF2','DF3','DF4']);
-        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+'"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+'"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+'"  style="'+tag+'H_CS'+tag+'"></th>',
+        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
-            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+'"  style="'+tag+'H_CS'+tag+'">@</th>',
-            tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+'"  style="'+tag+'TBODY_CS'+tag+'">',
+            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
+            tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'">',
             tbody2 = '</tbody>',
             tr1='<tr>',
             tr2='</tr>',
-            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+'" style="'+tag+'W_CS'+tag+'">@</th>',
-            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+'"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+'  >'+
-                '<div id="'+key+'-DAYBOX:'+id+':@" class="xui-node xui-node-div '+cls+'-daybox '+tag+'DAY_CC'+tag+'"  style="'+tag+'DAY_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
-                    '<div id="'+key+'-DH:'+id+':@" class="xui-node xui-node-div '+cls+'-dh '+tag+'DH_CC'+tag+'"  style="'+tag+'DH_CS'+tag+'"></div>'+
-                    '<div id="'+key+'-DF1:'+id+':@" class="xui-node xui-node-div '+cls+'-df1 '+tag+'DF1_CC'+tag+'" style="'+tag+'DF1_CS'+tag+'"></div>'+
-                    '<div id="'+key+'-DF2:'+id+':@" class="xui-node xui-node-div '+cls+'-df2 '+tag+'DF2_CC'+tag+'" style="'+tag+'DF2_CS'+tag+'"></div>'+
-                    '<div id="'+key+'-DF3:'+id+':@" class="xui-node xui-node-div '+cls+'-df3 '+tag+'DF3_CC'+tag+'" style="'+tag+'DF3_CS'+tag+'"></div>'+
-                    '<div id="'+key+'-DF4:'+id+':@" class="xui-node xui-node-div '+cls+'-df4 '+tag+'DF4_CC'+tag+'"  style="'+tag+'DF4_CS'+tag+'"></div>'+
-                    '<div id="'+key+'-DC:'+id+':@" class="xui-node xui-node-div '+cls+'-dc '+tag+'DC_CC'+tag+'"  style="'+tag+'DC_CS'+tag+'"></div>'+
+            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}" style="'+tag+'W_CS'+tag+'">@</th>',
+            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+'  >'+
+                '<div id="'+key+'-DAYBOX:'+id+':@" class="xui-node xui-node-div '+cls+'-daybox '+tag+'DAY_CC'+tag+' xui-custom {comcls}"  style="'+tag+'DAY_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
+                    '<div id="'+key+'-DH:'+id+':@" class="xui-node xui-node-div '+cls+'-dh '+tag+'DH_CC'+tag+' xui-custom {comcls}"  style="'+tag+'DH_CS'+tag+'"></div>'+
+                    '<div id="'+key+'-DF1:'+id+':@" class="xui-node xui-node-div '+cls+'-df1 '+tag+'DF1_CC'+tag+' xui-custom {comcls}" style="'+tag+'DF1_CS'+tag+'"></div>'+
+                    '<div id="'+key+'-DF2:'+id+':@" class="xui-node xui-node-div '+cls+'-df2 '+tag+'DF2_CC'+tag+' xui-custom {comcls}" style="'+tag+'DF2_CS'+tag+'"></div>'+
+                    '<div id="'+key+'-DF3:'+id+':@" class="xui-node xui-node-div '+cls+'-df3 '+tag+'DF3_CC'+tag+' xui-custom {comcls}" style="'+tag+'DF3_CS'+tag+'"></div>'+
+                    '<div id="'+key+'-DF4:'+id+':@" class="xui-node xui-node-div '+cls+'-df4 '+tag+'DF4_CC'+tag+' xui-custom {comcls}"  style="'+tag+'DF4_CS'+tag+'"></div>'+
+                    '<div id="'+key+'-DC:'+id+':@" class="xui-node xui-node-div '+cls+'-dc '+tag+'DC_CC'+tag+' xui-custom {comcls}"  style="'+tag+'DC_CS'+tag+'"></div>'+
                 '</div>'+
                 '</td>',
             body,i,j,k,l,a=[],b=[];

@@ -466,6 +466,7 @@ Class('xui.Event',null,{
             :-e.detail/3
         },
         _simulateMousedown:function(event){
+            if(!event.touches)return true;
             var E=xui.Event,
                 touches = event.changedTouches, 
                 first = touches[0];
@@ -488,6 +489,7 @@ Class('xui.Event',null,{
             return true;
         },
         _simulateMouseup:function(event){
+            if(!event.touches)return true;
             var E=xui.Event,
                 _now=(new Date).getTime(),
                 interval=_now-E.$lastMouseupTime,
@@ -846,11 +848,11 @@ Class('xui.Event',null,{
         },
         touchEvent=function(target, type , options){
             if (type === 'touchstart' || type === 'touchmove') {
-                if (!touches || !touches.length) {
+                if (!options.touches || !options.touches.length) {
                     throw 'No touch object in touches.';
                 }
             } else if (type === 'touchend') {
-                if (!changedTouches || !changedTouches.length) {
+                if (!options.changedTouches || !options.changedTouches.length) {
                     throw 'No touch object in changedTouches.';
                 }
             }
@@ -863,6 +865,10 @@ Class('xui.Event',null,{
                 altKey:false,
                 shiftKey:false,
                 metaKey:false,
+                screenX:0,
+                screenY:0,
+                clientX:0,
+                clientY:0,
                 scale : 1.0,
                 rotation : 0.0
             },'without');
@@ -870,14 +876,20 @@ Class('xui.Event',null,{
                 cancelable=options.cancelable,
                 detail=options.detail,
                 view=options.view,
+                scale=options.scale,
+                rotation=options.rotation,
+                touches=options.touches,
+                targetTouches=options.targetTouches,
+                changedTouches=options.changedTouches,
                 ctrlKey=options.ctrlKey,
                 altKey=options.altKey,
                 shiftKey=options.shiftKey,
                 metaKey=options.metaKey,
-                scale=options.scale,
-                rotation=options.rotation,
+                screenX=options.screenX,
+                screenY=options.screenY,
+                clientX=options.clientX,
+                clientY=options.clientY,
                 cancelable = type=="touchcancel"? false : options.cancelable;
-            
             var customEvent;
             if (d.createEvent){
                 if (xui.browser.isAndroid) {

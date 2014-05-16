@@ -9131,6 +9131,18 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            getFrameTemplate:{
+                $desc:"得到内部iFrame的html模板.",
+                $rtn:"String"
+            },
+            setFrameTemplate:{
+                $desc:"设置内部iFrame的html模板.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
             getCmdList :{
                 $desc:"得到控件中命令按钮的出现和排列方式.",
                 $rtn:"String",

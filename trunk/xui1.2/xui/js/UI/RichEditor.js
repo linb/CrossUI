@@ -43,6 +43,12 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             value:'',
             width:400,
             height:300,
+            frameTemplate:{
+                ini:'<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>',
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             cmdList:{
                 ini:'font1;font2;align;list;font4;font3;insert;clear;html',
                 action:function(v){
@@ -180,6 +186,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             if(!self.$inDesign){
                 var div=self.getSubNode('EDITOR').get(0),
                     domId=self.$domId,
+                    htmlTpl=self.properties.frameTemplate,
                     id=div.id;
                 // rendered already
                 if(!self.$once){
@@ -252,7 +259,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                     doc=self.$doc=win.document;
                                     
                                     doc.open();
-                                    doc.write('<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>');
+                                    doc.write(htmlTpl);
                                     doc.close();
                                     
                                     //if(xui.browser.isTouch && (xui.browser.isAndroid||||xui.browser.isBB)){

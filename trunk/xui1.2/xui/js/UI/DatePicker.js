@@ -27,16 +27,16 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             key=self.KEY;
             
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
-        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+'"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+'"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+'" style="'+tag+'H_CS'+tag+'"></th>',
+        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
-            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+'"  style="'+tag+'H_CS'+tag+'">@</th>',
-            tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+'"  style="'+tag+'TBODY_CS'+tag+'" >',
+            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
+            tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'" >',
             tbody2 = '</tbody>',
             tr1='<tr>',
             tr2='</tr>',
-            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+'"  style="'+tag+'W_CS'+tag+'">@</th>',
-            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+'"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
+            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
+            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
                 '</td>',
             body,i,j,k,l,a=[],b=[];
         for(i=0;i<7;i++)
@@ -387,19 +387,24 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             BODY:{
                 overflow: 'visible'
             },
-            'BODY td,BODY th':{
+            'TD .exday':{
+                color:'#C1C1C1'
+            },
+            TD:{
                 $order:1,
+                'text-align':'center',
+                'background-color': '#EFF8FF',
                 border:0,
                 'border-right':'solid 1px #648CB4',
                 'border-bottom':'solid 1px #648CB4',
                 'font-size': '12px'
             },
-            'TD .exday':{
-                color:'#C1C1C1'
-            },
-            TD:{
-                'text-align':'center',
-                'background-color': '#EFF8FF'
+            TH:{
+                $order:1,
+                border:0,
+                'border-right':'solid 1px #648CB4',
+                'border-bottom':'solid 1px #648CB4',
+                'font-size': '12px'
             },
             'TD-free':{
                 $order:1,
@@ -779,7 +784,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             profile.box._getLabelNodes(profile).each(function(node,i){
                 n=date.add(v,'d',i);
                 daymap[i]=n;
-                t=date.get(n,'m')==m?'#':'<p class="xui-node xui-node-p exday">#</p>';
+                t=date.get(n,'m')==m?'#':'<p class="xui-node xui-node-p exday xui-custom {comcls}">#</p>';
                 n=date.get(n,'d');
                 node.innerHTML = t.replace('#',n);
             });
