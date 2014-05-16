@@ -688,15 +688,16 @@ Class("xui.UI",  "xui.absObj", {
             return this.get(0) && this.get(0).theme;
         },
         destroy:function(){
-            this.each(function(o){
+            var ns=this;
+            this.each(function(o,i){
                 if(o.destroyed)return;
+                if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
                 if(o.$beforeDestroy){
                     _.each(o.$beforeDestroy,function(f){
                         _.tryF(f,[],o);
                     });
                     delete o.$beforeDestroy;
                 }
-                if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
                 if(o.$afterDestroy){
                     _.each(o.$afterDestroy,function(f){
                         _.tryF(f,[],o);
@@ -707,8 +708,9 @@ Class("xui.UI",  "xui.absObj", {
                     o.getRoot().remove();
                 }
                 else o.__gc();
-            });
-            this._nodes.length=0;
+                    
+                _.arr.removeFrom( ns._nodes, i);
+            },null,true);
         },
         isDestroyed:function(){
             return !!(this.get(0)?this.get(0).destroyed:1);
