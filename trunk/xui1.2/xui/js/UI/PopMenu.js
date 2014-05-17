@@ -639,7 +639,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             },100);
                         }
                     }
-                    return false;
                 },
                 onFocus:function(profile, e, src){
                     var box = profile.getSubNode('BOX'),

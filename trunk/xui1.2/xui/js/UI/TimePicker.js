@@ -533,8 +533,6 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     if(properties.disabled||properties.readonly)return;
                     if(false===instance.beforeClose(profile, src)) return;
                     instance.destroy();
-                    //for design mode in firefox
-                    return false;
                 }
             }
         },

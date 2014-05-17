@@ -241,9 +241,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     if(false===instance.beforeClose(profile)) return;
 
                     instance.destroy();
-
-                    //for design mode in firefox
-                    return false;
                 }
             },
             POP:{
@@ -288,9 +285,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     (options.parent||xui('body')).append(dialog);
 
                     profile.boxing().removeChildren().destroy();
-
-                    //for design mode in firefox
-                    return false;
                 }
             }
         },

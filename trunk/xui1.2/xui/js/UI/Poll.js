@@ -298,9 +298,6 @@ Class("xui.UI.Poll", "xui.UI.List",{
                 }
 
                 item._show=!item._show;
-
-                //prevent href default action
-                //return false;
             }
         };
 

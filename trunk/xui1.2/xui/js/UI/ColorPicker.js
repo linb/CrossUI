@@ -639,8 +639,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     if(properties.disabled||properties.readonly)return;
                     if(false===instance.beforeClose(profile)) return;
                     instance.destroy();
-                    //for design mode in firefox
-                    return false;
                 }
             },
             ADVWHEEL:{
