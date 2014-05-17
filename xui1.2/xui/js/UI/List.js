@@ -215,10 +215,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         item = profile.getItemByDom(src),
                         itemId =profile.getSubId(src),
                         box = profile.boxing(),
-                        ks=xui.Event.getKey(e),
-                        rt,rt2;
+                        ks=xui.Event.getKey(e);
                         
-                    if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return;
+                    if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
                         
                     if(properties.disabled|| item.disabled)return false;
 
@@ -229,14 +228,13 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
                     switch(properties.selMode){
                     case 'none':
-                        rt=box.onItemSelected(profile, item, e, src, 0);
+                        box.onItemSelected(profile, item, e, src, 0);
                         break;
                     case 'multibycheckbox':
                         if(properties.readonly|| item.readonly)return false;
                         if(profile.keys.MARK){
                             if(profile.getKey(xui.Event.getSrc(e).id||"")!=profile.keys.MARK){
-                                rt=box.onItemSelected(profile, item, e, src, 0);
-                                rt=false;
+                                box.onItemSelected(profile, item, e, src, 0);
                                 break;
                             }
                         }
@@ -248,7 +246,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
                         if(arr.length&&(ks.ctrlKey||ks.shiftKey||properties.noCtrlKey||properties.$checkbox)){
                             //for select
-                            rt2=false;
                             if(ks.shiftKey){
                                 var items=properties.items,
                                     i1=_.arr.subIndexOf(items,'id',profile.$firstV.id),
@@ -269,34 +266,25 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             value = arr.join(properties.valueSeparator);
 
                             //update string value only for setCtrlValue
-                            if(box.getUIValue() == value)
-                                rt=false;
-                            else{
+                            if(box.getUIValue() !== value){
                                 box.setUIValue(value);
                                 if(box.get(0) && box.getUIValue() == value)
-                                    rt=box.onItemSelected(profile, item, e, src, checktype)||rt2;
+                                    box.onItemSelected(profile, item, e, src, checktype);
                             }
                             break;
                         }
                     case 'single':
                         if(properties.readonly|| item.readonly)return false;
-                        if(box.getUIValue() == item.id)
-                            rt=false;
-                        else{
+                        if(box.getUIValue() !== item.id){
                             profile.$firstV=item;
                             box.setUIValue(item.id);
                             if(box.get(0) && box.getUIValue() == item.id)
-                                rt=box.onItemSelected(profile, item, e, src, 1);
+                                box.onItemSelected(profile, item, e, src, 1);
                         }
 
                         break;
                     }
-                    var node=xui.use(src).get(0),href=node&&node.href;
-                    node=null;
-                    
                     if(profile.afterClick)box.afterClick(profile,item,e,src);
-                    
-                    return (!href || href.indexOf('javascript:')==0)?false:rt;
                 },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys[0], shift=keys[2],

@@ -20,19 +20,21 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){
                         profile.getSubNode('BAR',itemId).tagClass('-checked');
-                    //scroll
-                        var o = profile.getSubNode('ITEM',itemId);
-                        if(o){
-                            var items = profile.getSubNode('BOX'),
-                                offset = o.offset(null, items),
-                                top = offset?offset.top:0,
-                                height = o.offsetHeight(),
-                                sh=items.scrollHeight(),
-                                st=items.scrollTop(),
-                                hh=items.height();
-                            if(sh > hh)
-                                if(top<st || (top+height)>(st+hh))
-                                    items.scrollTop(top);
+                        //scroll
+                        if(!profile._innerSet){
+                            var o = profile.getSubNode('ITEM',itemId);
+                            if(o){
+                                var items = profile.getSubNode('BOX'),
+                                    offset = o.offset(null, items),
+                                    top = offset?offset.top:0,
+                                    height = o.offsetHeight(),
+                                    sh=items.scrollHeight(),
+                                    st=items.scrollTop(),
+                                    hh=items.height();
+                                if(sh > hh)
+                                    if(top<st || (top+height)>(st+hh))
+                                        items.scrollTop(top);
+                            }
                         }
                     }
                 }else if(selmode=='multi'||selmode=='multibycheckbox'){
@@ -470,18 +472,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 sk = profile.getKey(xui.Event.getSrc(e).id||""),
                 ignoreClick = sk==profile.keys.TOGGLE||sk==profile.keys.MARK;
 
-            if(!ignoreClick && profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return;
+            if(!ignoreClick && profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
                 
             if(properties.disabled|| item.disabled)return false;
 
             if(!ignoreClick && profile.onClick)
                 box.onClick(profile,item,e,src);
 
-            
             //group not fire event
             if(item.sub && (item.hasOwnProperty('group')?item.group:properties.group)){
                 profile.getSubNode('TOGGLE', itemId).onClick();
-                return false;
+                return;
             }
     
             profile.getSubNode(profile.box._focusNodeKey, itemId).focus();
@@ -505,7 +506,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     checktype=1;
                 if(arr.length&&(ks.ctrlKey||ks.shiftKey||properties.noCtrlKey)){
                     if(ks.shiftKey){
-                        if(profile.$firstV._pid!=item._pid)return false;
+                        if(profile.$firstV._pid!=item._pid)return;
                         var items=properties.items;
                         if(item._pid){
                             var pitem=profile.getItemByItemId(item._pid);
@@ -529,7 +530,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
     
                     //update string value only for _setCtrlValue
                     if(box.getUIValue() != value){
+                        profile._innerSet=1;
                         box.setUIValue(value);
+                        delete profile._innerSet;
                         if(box.get(0) && box.getUIValue() == value)
                             box.onItemSelected(profile, item, e, src, checktype);
                     }
@@ -538,7 +541,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             case 'single':
                 if(box.getUIValue() != item.id){
                     profile.$firstV=item;
+                    profile._innerSet=1;
                     box.setUIValue(item.id);
+                    delete profile._innerSet;
                     if(box.get(0) && box.getUIValue() == item.id)
                         box.onItemSelected(profile, item, e, src, 1);
                 }
@@ -743,7 +748,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 }
 
                                 //set checked items
+                                profile._innerSet=1;
                                 b.setUIValue(b.getUIValue(), true);
+                                delete profile._innerSet;
                             }
 
                             if(p.singleOpen)

@@ -287,6 +287,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 onClick:function(profile,e,src){
                     if(profile.onConfig)
                         profile.boxing().onConfig(profile,e,src);
+                    return false;
                 }
             },
             LT:{

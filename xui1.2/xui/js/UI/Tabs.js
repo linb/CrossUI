@@ -740,8 +740,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     var t=profile.getRootNode().style;
                     xui.UI.$tryResize(profile, t.width, t.height,true);
                     t=null;
-                    //for design mode in firefox
-                    return false;
                 }
             },
             POP:{
@@ -754,7 +752,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null},
                         id=item.id;
 
-                    if(properties.disabled || item.disabled)return;
+                    if(properties.disabled || item.disabled)return false;
                     if(properties.readonly || item.readonly)return false;
 
                     if(profile.beforePagePop && false==profile.boxing().beforePagePop(profile,item,options))
@@ -798,9 +796,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     (options.parent||xui('body')).append(dialog);
 
                     profile.boxing().removeChildren(id).removeItems(id);
-
-                    //for design mode in firefox
-                    return false;
                 }
             },
             ITEMS:{

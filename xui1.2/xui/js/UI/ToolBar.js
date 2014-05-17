@@ -303,13 +303,13 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             ClickEffected:{BTN:['BTN']},
             BTN:{
                 onClick:function(profile, e, src){
-                    if(profile.properties.disabled)return;
+                    if(profile.properties.disabled)return false;
                     var id2=xui.use(src).parent(3).id(),
                         item2 = profile.getItemByDom(id2);
-                    if(item2.disabled)return;
+                    if(item2.disabled)return false;
 
                     var item = profile.getItemByDom(src);
-                    if(item.disabled)return;
+                    if(item.disabled)return false;
 
                     xui.use(src).focus();
                     if(item.type=="statusButton")

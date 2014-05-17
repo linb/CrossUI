@@ -482,8 +482,6 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     if(p.disabled||p.readonly)return;
                     if(false===instance.beforeClose(profile, src)) return;
                     instance.destroy();
-                    //for design mode in firefox
-                    return false;
                 }
             },
             PRE:{

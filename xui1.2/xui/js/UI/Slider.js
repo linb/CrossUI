@@ -259,7 +259,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             IND:{
                 onClick:function(profile, e, src){
                     var p=profile.properties;
-                    if(p.disabled || p.readonly)return;
+                    if(p.disabled || p.readonly)return false;
                     var p1=xui.use(src).offset(),
                         p2=xui.Event.getPos(e),
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue),
@@ -395,7 +395,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             RULERRIGHT:{
                 onClick:function(profile, e, src){
                     var p=profile.properties;
-                    if(p.disabled || p.readonly)return;
+                    if(p.disabled || p.readonly)return false;
                     var b=profile.boxing(),
                         c=profile.box,
                         arr=c._v2a(profile,p.$UIvalue);

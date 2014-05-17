@@ -889,7 +889,7 @@ if(xui.browser.ie){
                 if(!profile.$inModal){
                     cover = profile.$modalDiv;
                     if(!cover || !cover.get(0) || !cover.get(0).parentNode){
-                        cover = profile.$modalDiv = xui.create("<div style='left:0;top:0;position:absolute;overflow:hidden;display:block;z-index:0;cursor:wait;background-image:url("+xui.ini.img_bg+")'></div>");
+                        cover = profile.$modalDiv = xui.create("<div class='xui-cover xui-custom' style='left:0;top:0;position:absolute;overflow:hidden;display:block;z-index:0;'></div>");
                         cover.setSelectable(false);
                     }
                     p.append(cover);

@@ -1787,7 +1787,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator));
                         profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
-                    return false;
                 }
             },
             //key navigator
@@ -2092,7 +2091,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     
                     if(profile.beforeColSorted && false===profile.boxing().beforeColSorted(profile, col))
-                        return;
+                        return false;
                         
                     var order = (col ? col._order : profile._order) || false,
                     type = (col ? col.type : null) || 'input',
@@ -2193,8 +2192,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     
                     if(profile.afterColSorted)
                         profile.boxing().afterColSorted(profile, col);
-
-                    return false;
                 },
                 beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
@@ -2507,7 +2504,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         cell = profile.cellMap[profile.getSubId(src)],
                         id;
                     if(cell){
-                        if(profile.properties.disabled)return;
+                        if(profile.properties.disabled)return false;
                         var type=getPro(profile, cell, 'type'),
                             disabled=getPro(profile, cell, 'disabled'),
                             readonly=getPro(profile, cell, 'readonly'),

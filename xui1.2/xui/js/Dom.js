@@ -2670,7 +2670,7 @@ type:4
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
-                xui('body').prepend(o1=xui.create('<div id="'+ id +'" style="position:absolute;display:none;left:0;top:0;background-image:url('+xui.ini.img_bg+')"><div id="'+id2+'" style="position:absolute;font-size:12px"></div></div>'));
+                xui('body').prepend(o1=xui.create('<div id="'+ id +'" class="xui-cover xui-custom" style="position:absolute;display:none;left:0;top:0;"><div id="'+id2+'" class="xui-coverlabel xui-custom" style="position:absolute;"></div></div>'));
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
@@ -3103,13 +3103,8 @@ type:4
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)
             xui.doc.onClick(function(p,e,src){
-                if(!xui.History)return;
-
-                var s = location.href.split('#')[0],
-                    t=xui.Event,
-                    o = t.getSrc(e),b,i=0,
-                    b,t
-                ;
+                var o=xui.Event.getSrc(e),
+                    i=0,b,href;
                 do{
                     if(o.tagName == 'A'){
                         b=true;
@@ -3118,13 +3113,16 @@ type:4
                     if(++i>8)break;
                 }while(o=o.parentNode)
                 if(b){
-                    if((o.href).toLowerCase().indexOf('javascript:')==0)return false;
-//                    else if(!o.target || (t=o.target.toLowerCase())=="_self" || t=="_top"  || t=="parent")o.target="_blank";
-
-                    if(!t.getKey(e).shiftKey && t.getBtn(e)=='left' && (o.href.indexOf(s+'#')==0||o.href.indexOf('#')==0)){
-                        xui.History.setFI(o.href.replace(s,''));
-                        return false;
+                    href=_.str.trim(o.href||"").toLowerCase();
+                    if(xui.History){
+                        var s = location.href.split('#')[0];
+                        if(!xui.Event.getKey(e).shiftKey && xui.Event.getBtn(e)=='left' && (href.indexOf(s+'#')==0||href.indexOf('#')==0)){
+                            xui.History.setFI(o.href.replace(s,''));
+                        }
                     }
+                    //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading(SAajx)
+                    //**** You have to return false here
+                    if(xui.browser.ie && (href.indexOf('javascript:')==0 || href.indexOf('#')!==-1))return false;
                 }
             },'hookA',0);
 

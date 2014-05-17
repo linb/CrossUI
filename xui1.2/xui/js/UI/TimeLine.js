@@ -381,17 +381,14 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     if(profile.properties.disabled||profile.properties.readonly)return;
                     var instance = profile.boxing();
 
-                    if(false===instance.beforeClose(profile, src)) return;
+                    if(false===instance.beforeClose(profile, src)) return false;
 
                     instance.destroy();
-
-                    //for design mode in firefox
-                    return false;
                 }
             },
             OPT:{
                 onClick:function(profile, e, src){
-                    if(profile.properties.disabled||profile.properties.readonly)return;
+                    if(profile.properties.disabled||profile.properties.readonly)return false;
                     profile.boxing().onShowOptions(profile, e, src);
                 }
             },

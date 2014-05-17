@@ -20,6 +20,8 @@ html, .xui-uibg-base{
 .xui-ui-disabled, .xui-ui-disabled *{}
 .xui-ui-invalid, .xui-ui-invalid *{}
 .xui-ui-ctr{}
+.xui-cover{}
+.xui-coverlabel{}
 */
 .xui-ui-dirty{
     background-image: url('Public/icons.gif')

@@ -767,13 +767,12 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             ITEMS:{onMousedown:null,onDrag:null,onDragstop:null},
             HANDLE:{
                 onClick:function(profile, e, src){
-                    if(xui.Event.getBtn(e)!='left')return false;
+                    if(xui.Event.getBtn(e)!='left')return;
 
                     var prop = profile.properties,
                         item = profile.getItemByDom(src),
                         itemId =profile.getSubId(src),
-                        box = profile.boxing(),
-                        rt,rt2;
+                        box = profile.boxing();
 
                     if(prop.disabled|| item.disabled)return false;
                     if(prop.readonly|| item.readonly)return false;
@@ -788,7 +787,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
 
                         if(arr.length){
                             //for select
-                            rt2=false;
                             if(_.arr.indexOf(arr,item.id)!=-1){
                                 _.arr.removeValue(arr,item.id);
                                 checktype=-1
@@ -799,27 +797,22 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                             value = arr.join(prop.valueSeparator);
 
                             //update string value only for setCtrlValue
-                            if(box.getUIValue() == value)
-                                rt=false;
-                            else{
+                            if(box.getUIValue() !== value){
                                 box.setUIValue(value);
                                 if(box.get(0) && box.getUIValue() == value)
-                                    rt=box.onItemSelected(profile, item, e, src, checktype)||rt2;
+                                    box.onItemSelected(profile, item, e, src, checktype);
                             }
                             break;
                         }
                     case 'single':
 
-                        if(box.getUIValue() == item.id)
-                            rt=false;
-                        else{
+                        if(box.getUIValue() !== item.id){
                             box.setUIValue(item.id);
                             if(box.get(0) && box.getUIValue() == item.id)
-                                rt=box.onItemSelected(profile, item, e, src, 1);
+                                box.onItemSelected(profile, item, e, src, 1);
                         }
                         break;
                     }
-                    return rt;
                 },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey;
@@ -1881,17 +1874,14 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     if(profile.properties.disabled||profile.properties.readonly)return;
                     var instance = profile.boxing();
 
-                    if(false===instance.beforeClose(profile, src)) return;
+                    if(false===instance.beforeClose(profile, src)) return false;
 
                     instance.destroy();
-
-                    //for design mode in firefox
-                    return false;
                 }
             },
             OPT:{
                 onClick:function(profile, e, src){
-                    if(profile.properties.disabled||profile.properties.readonly)return;
+                    if(profile.properties.disabled||profile.properties.readonly)return false;
                     profile.boxing().onShowOptions(profile, e, src);
                 }
             },
@@ -4104,9 +4094,6 @@ Class("xui.UI.Poll", "xui.UI.List",{
                 }
 
                 item._show=!item._show;
-
-                //prevent href default action
-                //return false;
             }
         };
 
