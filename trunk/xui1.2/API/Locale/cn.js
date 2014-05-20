@@ -45,15 +45,6 @@ _.set(xui.Locale,["cn","app"], {
     $memo string
     */
     _.set(xui.Locale,["cn","doc"], {
-        Namespace:{
-            $desc:"申明一个名字空间.",
-            $rtn:"Object",
-            $paras:[
-                "key [必需参数]: String, 名字空间字符串."
-            ],
-            $snippet:["Namespace('Test.NS'); alert(typeof Test.NS)"],
-            $memo:"名字空间的命名规则：[A-Z][0-9a-zA-Z]+"
-        },
         Class:{
             $desc:"类的操作方法集合.<br />当做函数用是申明一个类.",
             $rtn:"Object",
@@ -897,13 +888,6 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"xui([document])的快捷访问.",
             $rtn:"xui.Dom"
         },
-        isEventSupported:{
-            $desc:"检测是否支持某事件.",
-            $rtn:"Boolean",
-            $paras:[
-                "name [必需参数]: String, 事件名."
-            ]
-        },
         create:{
             $desc:"生成一个DOM element 或 xui.UI 对象.",
             $rtn:"xui.Dom/xui.UI",
@@ -956,7 +940,7 @@ _.set(xui.Locale,["cn","app"], {
                 "id [必需参数]: String, 资源id."
             ],
             $snippet:[
-                "alert(xui.getRes('doc.Namespace.$desc')); alert(xui.Locale[xui.getLang()].doc.Namespace.$desc); ",
+                "alert(xui.getRes('doc.Class.$desc')); alert(xui.Locale[xui.getLang()].doc.Class.$desc); ",
                 "alert(xui.getRes('color.LIST.E1FFFF')); alert(xui.Locale[xui.getLang()].color.LIST.E1FFFF); ",
                 "//如果不存在,返回最后一个关键字 \n alert(xui.getRes('doesnt.exist'))"
 
@@ -1290,7 +1274,7 @@ _.set(xui.Locale,["cn","app"], {
                 "id [必需参数]: String, 资源 id."
             ],
             $snippet:[
-                "alert(xui.wrapRes('doc.Namespace.$desc')); alert(xui.Locale[xui.getLang()].doc.Namespace.$desc); ",
+                "alert(xui.wrapRes('doc.Class.$desc')); alert(xui.Locale[xui.getLang()].doc.Class.$desc); ",
                 "alert(xui.wrapRes('color.LIST.E1FFFF')); alert(xui.Locale[xui.getLang()].color.LIST.E1FFFF); ",
                 "//如果不存在,返回最后一个关键字\n alert(xui.wrapRes('doesnt.exist'))"
 
@@ -2122,6 +2106,13 @@ _.set(xui.Locale,["cn","app"], {
     _.set(xui.Locale,["cn","doc","xui","Event"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Event 类（静态类）",
+        isSupported:{
+            $desc:"检测是否支持某事件.",
+            $rtn:"Boolean",
+            $paras:[
+                "name [必需参数]: String, 事件名."
+            ]
+        },
         getWheelDelta:{
             $desc:"获取鼠标滚轮的移动值.",
             $rtn:"Integer",
@@ -4510,7 +4501,7 @@ _.set(xui.Locale,["cn","app"], {
                     "itemId [必需参数] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemByItemId('Namespace') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemByItemId('Class') ))"
                 ],
                 $memo:"该函数只对[xui.absList]及其派生类有效. "
             },
@@ -4521,7 +4512,7 @@ _.set(xui.Locale,["cn","app"], {
                     "itemId [必需参数] :String, 项id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getSubIdByItemId('Namespace') )"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getSubIdByItemId('Class') )"
                 ],
                 $memo:"该函数只对[xui.absList]及其派生类有效"
             },
@@ -6136,7 +6127,7 @@ _.set(xui.Locale,["cn","app"], {
                     "itemId [必需参数] :String, 项id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(_.serialize( pro.getItemByItemId('Namespace') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(_.serialize( pro.getItemByItemId('Class') ))"
                 ]
             },
             getItemByDom:{
@@ -6156,7 +6147,7 @@ _.set(xui.Locale,["cn","app"], {
                     "itemId [必需参数] :String, 项id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubIdByItemId('Namespace') )"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubIdByItemId('Class') )"
                 ]
             },
             getSubNodeByItemId:{
@@ -6167,7 +6158,7 @@ _.set(xui.Locale,["cn","app"], {
                     "itemId [必需参数] :String, 项id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Namespace') )"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
             }
         }

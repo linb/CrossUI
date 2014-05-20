@@ -44,15 +44,6 @@ _.set(xui.Locale,["en","app"], {
     $memo string
     */
     _.set(xui.Locale,["en","doc"], {
-        Namespace:{
-            $desc:"Declares a namespace.",
-            $rtn:"Object",
-            $paras:[
-                "key [Required]: String, namespace string."
-            ],
-            $snippet:["Namespace('Test.NS'); alert(typeof Test.NS)"],
-            $memo:" Namespace naming rules: [A-Z][0-9a-zA-Z]+"
-        },
         Class:{
             $desc:"Class Namespace. <br />Can be used as a function to declare a class too.",
             $rtn:"Object",
@@ -900,13 +891,6 @@ _.set(xui.Locale,["en","app"], {
             $desc:"The shortcut of xui([document]).",
             $rtn:"xui.Dom"
         },
-        isEventSupported:{
-            $desc:"To detect whether a given event is supported or not.",
-            $rtn:"Boolean",
-            $paras:[
-                "name [Required]: String, the event name."
-            ]
-        },
         create:{
             $desc:"To create DOM element or xui.UI Object.",
             $rtn:"xui.Dom/xui.UI",
@@ -959,7 +943,7 @@ _.set(xui.Locale,["en","app"], {
                 "id [Required]: String, resource id."
             ],
             $snippet:[
-                "alert(xui.getRes('doc.Namespace.$desc')); alert(xui.Locale[xui.getLang()].doc.Namespace.$desc); ",
+                "alert(xui.getRes('doc.Class.$desc')); alert(xui.Locale[xui.getLang()].doc.Class.$desc); ",
                 "alert(xui.getRes('color.LIST.E1FFFF')); alert(xui.Locale[xui.getLang()].color.LIST.E1FFFF); ",
                 "// if does't exist, return the last word \n alert(xui.getRes('doesnt.exist'))"
 
@@ -1292,7 +1276,7 @@ _.set(xui.Locale,["en","app"], {
                 "id [Required]: String, resource id."
             ],
             $snippet:[
-                "alert(xui.wrapRes('doc.Namespace.$desc')); alert(xui.Locale[xui.getLang()].doc.Namespace.$desc); ",
+                "alert(xui.wrapRes('doc.Class.$desc')); alert(xui.Locale[xui.getLang()].doc.Class.$desc); ",
                 "alert(xui.wrapRes('color.LIST.E1FFFF')); alert(xui.Locale[xui.getLang()].color.LIST.E1FFFF); ",
                 "// if does't exist, return the last word \n alert(xui.wrapRes('doesnt.exist'))"
 
@@ -2111,6 +2095,13 @@ _.set(xui.Locale,["en","app"], {
     _.set(xui.Locale,["en","doc","xui","Event"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Event Class",
+        isSupported:{
+            $desc:"To detect whether a given event is supported or not.",
+            $rtn:"Boolean",
+            $paras:[
+                "name [Required]: String, the event name."
+            ]
+        },
         getWheelDelta:{
             $desc:"Gets mouse's wheel delta value.",
             $rtn:"Integer",
@@ -4505,7 +4496,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemByItemId('Namespace') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemByItemId('Class') ))"
                 ],
                 $memo:"For those [xui.absList] profiles in only"
             },
@@ -4516,7 +4507,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getSubIdByItemId('Namespace') )"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getSubIdByItemId('Class') )"
                 ],
                 $memo:"For those [xui.absList] profiles only"
             },
@@ -6114,7 +6105,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(_.serialize( pro.getItemByItemId('Namespace') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(_.serialize( pro.getItemByItemId('Class') ))"
                 ]
             },
             getItemByDom:{
@@ -6134,7 +6125,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubIdByItemId('Namespace') )"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubIdByItemId('Class') )"
                 ]
             },
             getSubNodeByItemId:{
@@ -6145,7 +6136,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Namespace') )"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
             }
         }
