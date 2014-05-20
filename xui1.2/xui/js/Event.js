@@ -465,6 +465,32 @@ Class('xui.Event',null,{
             // gek
             :-e.detail/3
         },
+        $TAGNAMES:{
+          'select':'input','change':'input',  
+          'submit':'form','reset':'form',  
+          'error':'img','load':'img','abort':'img'  
+        },
+        _supportCache:{},
+        isSupported:function(name, node) {
+            var ns=this,c=ns._supportCache,rn=(node?node.tagName.toLowerCase():"div")+":"+name;
+            if(rn in c)return c[rn];
+            node = node || document.createElement(ns.$TAGNAMES[name] || 'div');
+            name = 'on' + name;
+            // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
+            var isSupported = (name in node);
+            if (!isSupported) {
+              // if it has no `setAttribute` (i.e. doesn't implement Node interface), try generic node
+              if(!node.setAttribute)node = document.createElement('div');
+                if(node.setAttribute) {
+                  node.setAttribute(name, '');
+                  isSupported = typeof node[name] == 'function';
+                  if (typeof node[name] != 'undefined')node[name] = undefined;
+                  node.removeAttribute(name);
+                }
+            }
+            node = null;
+            return c[rn]=isSupported;
+        },
         _simulateMousedown:function(event){
             if(!event.touches)return true;
             var E=xui.Event,
@@ -474,7 +500,7 @@ Class('xui.Event',null,{
 
             E.__simulatedMousedownNode=first.target;
 
-            if(!xui.isEventSupported("mousedown")){
+            if(!E.isSupported("mousedown")){
                 E.simulateEvent(first.target,"mousedown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
             }else{
                 // use custom event to avoid affecting system or 3rd lib
@@ -498,13 +524,13 @@ Class('xui.Event',null,{
                 _.clearTimeout(E._xuitouchdowntime);
             }
             E.__simulatedMouseupNode=first.target;
-            if(!xui.isEventSupported("mouseup")){
+            if(!E.isSupported("mouseup")){
                 E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
             }
 
             // click and dblclick
             if(E.__simulatedMouseupNode===E.__simulatedMousedownNode){
-                if(!xui.isEventSupported("click")){
+                if(!E.isSupported("click")){
                     E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
                 }
                 // doubleclick for touch event

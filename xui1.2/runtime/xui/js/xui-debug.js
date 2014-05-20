@@ -4,17 +4,11 @@ Copyright(c) 2014- CrossUI.com
 Open Source under LGPL 3 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html)
 */
 //speed up references
-var undefined,
-
+undefined;
 //global: time stamp
-_=window._=function(){return +new Date()},
-//global: name space
-Namespace=window.Namespace=function(key){
-    var a=key.split('.'),w=window;
-    return _.get(w, a) || _.set(w, a, {});
-},
+_=function(){return +new Date()};
 //global: class
-Class=window.Class=function(key, pkey, obj){
+Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t;
     obj=obj||{};
     //exists?
@@ -122,9 +116,9 @@ Class=window.Class=function(key, pkey, obj){
 
     //return Class
     return _this;
-},
+};
 //global: xui
-linb=window.linb=xui=window.xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
+linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
 
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
@@ -1402,33 +1396,6 @@ new function(){
     xui._localParts=xui._uriReg.exec(xui._curHref.toLowerCase())||[];
 };
 
-new function(){
-      var TAGNAMES={
-        'select':'input','change':'input',  
-        'submit':'form','reset':'form',  
-        'error':'img','load':'img','abort':'img'  
-      },c={};
-      xui.isEventSupported=function(name, node) {
-        var rn=(node?node.tagName.toLowerCase():"div")+":"+name;
-        if(rn in c)return c[rn];
-        node = node || document.createElement(TAGNAMES[name] || 'div');
-        name = 'on' + name;
-        // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
-        var isSupported = (name in node);
-        if (!isSupported) {
-          // if it has no `setAttribute` (i.e. doesn't implement Node interface), try generic node
-          if(!node.setAttribute)node = document.createElement('div');
-            if(node.setAttribute) {
-              node.setAttribute(name, '');
-              isSupported = typeof node[name] == 'function';
-              if (typeof node[name] != 'undefined')node[name] = undefined;
-              node.removeAttribute(name);
-            }
-        }
-        node = null;
-        return c[rn]=isSupported;
-      }
-};
 /*xui.Thread
 *  dependency: _ ; Class ; xui
 parameters:
@@ -4739,6 +4706,32 @@ Class('xui.Event',null,{
             // gek
             :-e.detail/3
         },
+        $TAGNAMES:{
+          'select':'input','change':'input',  
+          'submit':'form','reset':'form',  
+          'error':'img','load':'img','abort':'img'  
+        },
+        _supportCache:{},
+        isSupported:function(name, node) {
+            var ns=this,c=ns._supportCache,rn=(node?node.tagName.toLowerCase():"div")+":"+name;
+            if(rn in c)return c[rn];
+            node = node || document.createElement(ns.$TAGNAMES[name] || 'div');
+            name = 'on' + name;
+            // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
+            var isSupported = (name in node);
+            if (!isSupported) {
+              // if it has no `setAttribute` (i.e. doesn't implement Node interface), try generic node
+              if(!node.setAttribute)node = document.createElement('div');
+                if(node.setAttribute) {
+                  node.setAttribute(name, '');
+                  isSupported = typeof node[name] == 'function';
+                  if (typeof node[name] != 'undefined')node[name] = undefined;
+                  node.removeAttribute(name);
+                }
+            }
+            node = null;
+            return c[rn]=isSupported;
+        },
         _simulateMousedown:function(event){
             if(!event.touches)return true;
             var E=xui.Event,
@@ -4748,7 +4741,7 @@ Class('xui.Event',null,{
 
             E.__simulatedMousedownNode=first.target;
 
-            if(!xui.isEventSupported("mousedown")){
+            if(!E.isSupported("mousedown")){
                 E.simulateEvent(first.target,"mousedown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
             }else{
                 // use custom event to avoid affecting system or 3rd lib
@@ -4772,13 +4765,13 @@ Class('xui.Event',null,{
                 _.clearTimeout(E._xuitouchdowntime);
             }
             E.__simulatedMouseupNode=first.target;
-            if(!xui.isEventSupported("mouseup")){
+            if(!E.isSupported("mouseup")){
                 E.simulateEvent(first.target,"mouseup",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
             }
 
             // click and dblclick
             if(E.__simulatedMouseupNode===E.__simulatedMousedownNode){
-                if(!xui.isEventSupported("click")){
+                if(!E.isSupported("click")){
                     E.simulateEvent(first.target,"click",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
                 }
                 // doubleclick for touch event
@@ -10145,7 +10138,7 @@ type:4
             xui('body').empty();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
-            w.Class=w.Namespace=w.xui=w._=undefined;
+            w.Class=w.xui=w.linb=w._=undefined;
         },"window",-1);
 
     }
@@ -18976,12 +18969,12 @@ new function(){
                     _ajax.query._rand=_();
                     _.merge(options, _ajax.options);
                     ins.busy();
-                    var node=ins.getSubNode('PANEL').html("",true,false);
+                    var node=ins.getContainer(); 
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        node.html(rsp,false,true);
+                        node.html(rsp,true,true);
                         ins.free();
                     }, function(err){
-                        node.html("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>",true,false);
                         ins.free();
                     }, null, options).start();
                 }
@@ -31075,12 +31068,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=_();
                     box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
-                    var node=box.getPanel(item.id).html("",true,false);
+                    var node=box.getPanel(item.id);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        node.html(rsp,false,true);
+                        node.html(rsp,true,true);
                         box.free();
                     }, function(err){
-                        node.html("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>",true,false);
                         box.free();
                     }, null, options).start();
                 }

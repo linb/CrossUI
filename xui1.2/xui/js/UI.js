@@ -5542,12 +5542,12 @@ new function(){
                     _ajax.query._rand=_();
                     _.merge(options, _ajax.options);
                     ins.busy();
-                    var node=ins.getSubNode('PANEL').html("",true,false);
+                    var node=ins.getContainer(); 
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        node.html(rsp,false,true);
+                        node.html(rsp,true,true);
                         ins.free();
                     }, function(err){
-                        node.html("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>",true,false);
                         ins.free();
                     }, null, options).start();
                 }

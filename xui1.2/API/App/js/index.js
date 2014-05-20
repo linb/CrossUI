@@ -326,7 +326,6 @@ Class('App', 'xui.Com',{
         }, 
         _objtree_aftercreated:function (profile) {
             var items=[
-                {id:'Namespace', href:'#!Namespace', caption:'Namespace', image:'img/img.gif', imagePos:'left -48px'},
                 {id:'Class', href:'#!Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'},
                 {id:'_', href:'#!_', caption:'_', image:'img/img.gif', imagePos:'left -48px', sub:[]},
                 {id:'xui', href:'#!xui', caption:'xui',image:'img/img.gif', imagePos:'left top', sub:[]}
@@ -854,7 +853,7 @@ Class('App', 'xui.Com',{
                                 hash[tag+'.prototype.'+i]=1;
                 }
             };
-        _.arr.each(['_','_.fun','_.str','_.arr','Class','Namespace','xui'],function(o,i){
+        _.arr.each(['_','_.fun','_.str','_.arr','Class','xui'],function(o,i){
             hash[o]=1;
             getAPI(xui.SC.get(o),o);
         });
@@ -879,6 +878,6 @@ Class('App', 'xui.Com',{
     
         return SPA.$api_pool=hash;
     }, 
-    $S_CLS:{'Namespace':1,'Class':1,'_':1,'_.fun':1,'_.arr':1,'_.str':1,'xui':1}, $CLS_FUN:{'Namespace':1,'Class':1,'_':1,'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
+    $S_CLS:{'Class':1,'_':1,'_.fun':1,'_.arr':1,'_.str':1,'xui':1}, $CLS_FUN:{'Class':1,'_':1,'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }
 });

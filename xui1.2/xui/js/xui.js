@@ -4,17 +4,11 @@ Copyright(c) 2014- CrossUI.com
 Open Source under LGPL 3 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html)
 */
 //speed up references
-var undefined,
-
+undefined;
 //global: time stamp
-_=window._=function(){return +new Date()},
-//global: name space
-Namespace=window.Namespace=function(key){
-    var a=key.split('.'),w=window;
-    return _.get(w, a) || _.set(w, a, {});
-},
+_=function(){return +new Date()};
 //global: class
-Class=window.Class=function(key, pkey, obj){
+Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t;
     obj=obj||{};
     //exists?
@@ -122,9 +116,9 @@ Class=window.Class=function(key, pkey, obj){
 
     //return Class
     return _this;
-},
+};
 //global: xui
-linb=window.linb=xui=window.xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
+linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
 
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
@@ -1402,33 +1396,6 @@ new function(){
     xui._localParts=xui._uriReg.exec(xui._curHref.toLowerCase())||[];
 };
 
-new function(){
-      var TAGNAMES={
-        'select':'input','change':'input',  
-        'submit':'form','reset':'form',  
-        'error':'img','load':'img','abort':'img'  
-      },c={};
-      xui.isEventSupported=function(name, node) {
-        var rn=(node?node.tagName.toLowerCase():"div")+":"+name;
-        if(rn in c)return c[rn];
-        node = node || document.createElement(TAGNAMES[name] || 'div');
-        name = 'on' + name;
-        // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
-        var isSupported = (name in node);
-        if (!isSupported) {
-          // if it has no `setAttribute` (i.e. doesn't implement Node interface), try generic node
-          if(!node.setAttribute)node = document.createElement('div');
-            if(node.setAttribute) {
-              node.setAttribute(name, '');
-              isSupported = typeof node[name] == 'function';
-              if (typeof node[name] != 'undefined')node[name] = undefined;
-              node.removeAttribute(name);
-            }
-        }
-        node = null;
-        return c[rn]=isSupported;
-      }
-};
 /*xui.Thread
 *  dependency: _ ; Class ; xui
 parameters:

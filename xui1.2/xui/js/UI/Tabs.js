@@ -1140,12 +1140,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=_();
                     box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
-                    var node=box.getPanel(item.id).html("",true,false);
+                    var node=box.getPanel(item.id);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        node.html(rsp,false,true);
+                        node.html(rsp,true,true);
                         box.free();
                     }, function(err){
-                        node.html("<div>"+err+"</div>");
+                        node.html("<div>"+err+"</div>",true,false);
                         box.free();
                     }, null, options).start();
                 }
