@@ -3182,7 +3182,7 @@ type:4
             xui('body').empty();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
-            w.Class=w.xui=w.linb=w._=undefined;
+            w.Namespace=w.Class=w.xui=w.linb=w._=undefined;
         },"window",-1);
 
     }
