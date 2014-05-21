@@ -1474,7 +1474,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             // set item's width
             _.arr.each(arr,function(o,i){
                 var flag=xui.browser.ie6 && parseFloat(o.style.width)>a[i];
-                if(!flag)o.style.width = a[i] + 'px';
+                if(!flag)o.style.width = parseInt(a[i],10) + 'px';
             });
             profile._warr=a;
             if(profile.onColResize)ins.onColResize(profile, a);
