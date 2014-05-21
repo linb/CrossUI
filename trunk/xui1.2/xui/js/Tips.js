@@ -70,7 +70,7 @@ Class("xui.Tips", null,{
 
             //check id
             if((_from=event._getProfile(id)) && _from.box && _from.KEY=='xui.UIProfile'){
-                if(_from.properties.disableTips){
+                if(_from.properties.disableTips || _from.behavior.disableTips){
                     node=null;
                     return rtn(false);
                 }

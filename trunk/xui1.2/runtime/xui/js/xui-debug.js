@@ -755,6 +755,7 @@ _.merge(Class, {
 
 //function dependency: xui.Dom xui.Thread
 _.merge(xui,{
+    version:1.2,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -12611,7 +12612,7 @@ Class("xui.Tips", null,{
 
             //check id
             if((_from=event._getProfile(id)) && _from.box && _from.KEY=='xui.UIProfile'){
-                if(_from.properties.disableTips){
+                if(_from.properties.disableTips || _from.behavior.disableTips){
                     node=null;
                     return rtn(false);
                 }
@@ -13748,20 +13749,6 @@ Class('xui.UIProfile','xui.Profile', {
                 id, i, o, m, a, b, data;
             if(self.destroyed)return "";
 
-            if(prop && (m=xui.UI.__resetDftProp)){
-                for(i in m){
-                    if(prop.hasOwnProperty(i) && m.hasOwnProperty(i)){
-                        prop[i]=m[i]
-                    }
-                }
-            };
-            if(prop && (m=self.box.__resetDftProp)){
-                for(i in m){
-                    if(prop.hasOwnProperty(i) && m.hasOwnProperty(i)){
-                        prop[i]=m[i]
-                    }
-                }
-            };
             // create first
             if(c['xui.svg']){
                 c._RenderSVG(self);
@@ -14168,6 +14155,9 @@ Class("xui.UI",  "xui.absObj", {
                 t='default',
                 options,
                 np=c._namePool,
+                df1=xui.UI.__resetDftProp,
+                df2=c.__resetDftProp,
+                ds=c.$DataStruct,
                 alias,temp;
             if(properties && properties['xui.Profile']){
                 profile=properties;
@@ -14184,9 +14174,13 @@ Class("xui.UI",  "xui.absObj", {
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
             }
             np[alias]=1;
-            for(var i in (temp=c.$DataStruct))
-                if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?_.clone(temp[i],true):temp[i];
+
+            for(var i in ds){
+                if(!(i in profile.properties)){
+                    temp = (i in df2) ? df2[i] : (i in df1) ? df1[i] : ds[i];
+                    profile.properties[i]=typeof temp=='object'?_.clone(temp,true):temp;
+                }
+            }
 
             profile.keys = c.$Keys;
 
