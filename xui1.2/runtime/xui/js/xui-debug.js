@@ -7,6 +7,10 @@ Open Source under LGPL 3 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html)
 undefined;
 //global: time stamp
 _=function(){return +new Date()};
+Namespace=function(key){
+    var a=key.split('.'),w=window;
+    return _.get(w, a) || _.set(w, a, {});
+};
 //global: class
 Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t;
@@ -10139,7 +10143,7 @@ type:4
             xui('body').empty();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
-            w.Class=w.xui=w.linb=w._=undefined;
+            w.Namespace=w.Class=w.xui=w.linb=w._=undefined;
         },"window",-1);
 
     }

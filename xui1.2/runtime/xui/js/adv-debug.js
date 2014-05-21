@@ -1010,7 +1010,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                             $order:1,
                             tagName:'div',
                             className:'xui-ui-unselectable',
-                            style:'{_display}'
+                            style:'{_displaymove}'
                         },
                         PANEL:{
                             $order:2,
@@ -1202,9 +1202,9 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 }
             },
             items:[
-                {id:'1',width:'33.4%'},
-                {id:'2',width:'33.4%'},
-                {id:'3',width:'33.2%',_display:'display:none'}
+                {id:'1',width:'33.3%'},
+                {id:'2',width:'33.3%'},
+                {id:'3',width:'33.3%'}
             ]
         },
         EventHandlers:{
@@ -1399,10 +1399,11 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             delete profile.$$height;
             delete profile.$$ondrag;
         },
-
         _prepareData:function(profile){
             profile.properties.dropKeys = profile.box.KEY+":"+profile.$xid;
-            return arguments.callee.upper.call(this, profile);
+            var data = arguments.callee.upper.call(this, profile);
+            data.items[data.items.length-1]._displaymove="display:none";
+            return data;
         },
         _onresize:function(profile,width,height){
             if(!width)return;
