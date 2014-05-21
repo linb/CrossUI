@@ -749,7 +749,7 @@ Class("xui.UI",  "xui.absObj", {
 
             for(var i in ds){
                 if(!(i in profile.properties)){
-                    temp = (i in df2) ? df2[i] : (i in df1) ? df1[i] : ds[i];
+                    temp = df2&&(i in df2) ? df2[i] : df1&&(i in df1) ? df1[i] : ds[i];
                     profile.properties[i]=typeof temp=='object'?_.clone(temp,true):temp;
                 }
             }
