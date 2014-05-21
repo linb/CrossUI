@@ -187,7 +187,7 @@ Class("xui.CSS", null,{
                                 if(o.insertRule)
                                     o.insertRule(_t+"{" + t + "}", o[ns._r].length);
                                 else if(o.addRule )
-                                    o.addRule(_t, t);
+                                    o.addRule(_t, t||"{}");
                                 if(o.deleteRule)
                                     o.deleteRule(i);
                                 else
@@ -273,7 +273,7 @@ Class("xui.CSS", null,{
             if(changed.insertRule)
                 changed.insertRule(ns._build(selector,value), changed[ns._r].length);
             else if(changed.addRule )
-                changed.addRule(selector, ns._build(selector,value,true));
+                changed.addRule(selector, ns._build(selector,value,true)||"{}");
             target.disabled=true;
             target.disabled=false;
             return ns;
