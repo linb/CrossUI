@@ -29,7 +29,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 dragKey: prop.disabled?null:profile.box.KEY+":"+profile.$xid,                
                 closeBtn:!prop.disabled 
             });
-            _.set(args,['CC','TBAR'],{});
+            _.set(args,['CC','TBAR'],"");
             args.CC['TBAR']+=" xui-ui-unselectable";
 
             var panel=new xui.UI.Panel(args.properties, args.events, args.host, args.theme, args.CS, args.CC, args.CB, args.CF);
@@ -212,6 +212,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             HoverEffected:{MOVE:'MOVE'},
             DroppableKeys:['KEY'],
             onSize:xui.UI.$onSize,
+            disableTips:true,
             MOVE:{
                 beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;

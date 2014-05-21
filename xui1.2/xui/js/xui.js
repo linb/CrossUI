@@ -755,6 +755,7 @@ _.merge(Class, {
 
 //function dependency: xui.Dom xui.Thread
 _.merge(xui,{
+    version:1.2,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
