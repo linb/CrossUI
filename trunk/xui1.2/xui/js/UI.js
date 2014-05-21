@@ -3800,15 +3800,15 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'middle':
                                     //use height() is ok
                                     if(isSVG)
-                                        ins.setTop((obj.height - bbox.height)/2);
+                                        ins.setTop(Math.max(0,(obj.height - bbox.height)/2));
                                     else
-                                        node.top((obj.height - node.height())/2);
+                                        node.top(Math.max(0,(obj.height - node.height())/2));
                                     break;
                                 case 'center':
                                     if(isSVG)
-                                        ins.setLeft((obj.width - bbox.width)/2);
+                                        ins.setLeft(Math.max(0,(obj.width - bbox.width)/2));
                                     else
-                                        node.left((obj.width - node.width())/2);
+                                        node.left(Math.max(0,(obj.width - node.width())/2));
                                     break;
                                 case 'top':
                                     if(!flag){
