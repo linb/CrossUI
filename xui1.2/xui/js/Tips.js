@@ -282,7 +282,7 @@ Class("xui.Tips", null,{
                 self.show(pos, t);
                 b=true;
             }
-            else if((t=_from) && (t=t.properties) && ('caption' in t)
+            else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
                 // if tips is default value, try to show caption
                 // you can settips to null or undefined to stop it
                 && t.tips===''
