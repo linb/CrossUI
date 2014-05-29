@@ -45,6 +45,15 @@ _.set(xui.Locale,["cn","app"], {
     $memo string
     */
     _.set(xui.Locale,["cn","doc"], {
+        Namespace:{
+            $desc:"申明一个名字空间.",
+            $rtn:"Object",
+            $paras:[
+                "key [必需参数]: String, 名字空间字符串."
+            ],
+            $snippet:["Namespace('Test.NS'); alert(typeof Test.NS)"],
+            $memo:"名字空间的命名规则：[A-Z][0-9a-zA-Z]+"
+        },
         Class:{
             $desc:"类的操作方法集合.<br />当做函数用是申明一个类.",
             $rtn:"Object",
