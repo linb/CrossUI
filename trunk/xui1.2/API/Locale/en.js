@@ -44,6 +44,15 @@ _.set(xui.Locale,["en","app"], {
     $memo string
     */
     _.set(xui.Locale,["en","doc"], {
+        Namespace:{
+            $desc:"Declares a namespace.",
+            $rtn:"Object",
+            $paras:[
+                "key [Required]: String, namespace string."
+            ],
+            $snippet:["Namespace('Test.NS'); alert(typeof Test.NS)"],
+            $memo:" Namespace naming rules: [A-Z][0-9a-zA-Z]+"
+        },
         Class:{
             $desc:"Class Namespace. <br />Can be used as a function to declare a class too.",
             $rtn:"Object",
