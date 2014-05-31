@@ -89,7 +89,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         append:function(target,subId, pre, base){
             var p=this.get(0).properties;
             if(subId=subId||p.$UIvalue||p.value)
-                arguments.callee.upper.call(this, target, subId, pre, base);
+                arguments.callee.upper.call(this, target, subId+'', pre, base);
             return this;
         },
         getCurPanel:function(){
@@ -105,7 +105,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         // get pane in page views
         getPanel:function(subId){
             var profile = this.get(0);
-            return profile.getSubNodeByItemId('PANEL', subId);
+            return profile.getSubNodeByItemId('PANEL', subId+'');
         },
         ////
         addPanel:function(paras, children, item){
@@ -174,7 +174,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return this.each(function(profile){
                 if(profile.renderId){
                     _.arr.each(profile.properties.items,function(o){
-                        if(subId===true || subId===o.id)
+                        if(subId===true || (subId+'')===o.id)
                             delete o._$ini;
                     });
                     if(removeChildren)
@@ -184,8 +184,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         iniPanelView:function(subId){
             return this.each(function(profile){
-                if(_.isStr(subId)){
-                    if(subId=profile.getItemByItemId(subId)){
+                if(subId){
+                    if(subId=profile.getItemByItemId(subId+'')){
                         profile.box._forIniPanelView(profile, subId);
                     }
                 }else{
@@ -198,7 +198,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         
         ////
         fireItemClickEvent:function(subId){
-            var node=this.getSubNodeByItemId('ITEM', subId),ev=xui.Event;
+            var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
             if(ev.__realtouch)ev.__simulatedMousedown=1;
             node.onMousedown(true);
             if(ev.__realtouch)ev.__simulatedMousedown=0;
@@ -232,7 +232,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var self=this,
                 obj,serialId;
             if(!_.isArr(arr))arr=[arr];
-
+            _.arr.each(arr,function(o,i){arr[i]=''+o});
             self.each(function(profile){
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     _.arr.each(arr,function(o){
@@ -272,7 +272,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         markItemCaption:function(subId, mark, force){
             var profile = this.get(0);
-            subId=profile.getItemByItemId(subId);
+            subId=profile.getItemByItemId(subId+'');
 
             if((subId._dirty !=mark) || force){
                 var id = subId.id,

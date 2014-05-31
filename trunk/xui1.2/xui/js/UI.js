@@ -2375,7 +2375,7 @@ Class("xui.UI",  "xui.absObj", {
                 x01=xui.UI.$x01,
                 x01r=' \x01 ',
                 str='',
-                isA = properties.constructor == Array,
+                isA = _.isArr(properties),
                 temp = template[tag||''],
                 r = !result,
                 result= result || [];
@@ -2825,13 +2825,13 @@ Class("xui.UI",  "xui.absObj", {
                                                 if(!/[\n\r]/.test(txt.substr(0,reg[0]))) b=true;
                                                 break;
                                             case 'left':
-                                                if((ctrl&&!shift) || (reg[0]===0 && (reg[1]!==txt.length || reg[1]===0))) b=true;
+                                                if(!shift && (ctrl || (reg[0]===0 && (reg[1]!==txt.length || reg[1]===0)))) b=true;
                                                 break;
                                             case 'down':
                                                 if(!/[\n\r]/.test(txt.substr(reg[1],txt.length))) b=true;
                                                 break;
                                             case 'right':
-                                                if((ctrl&&!shift) || (reg[1]===txt.length && (reg[0]!==0 || reg[1]===0))) b=true;
+                                                if(!shift && (ctrl || (reg[1]===txt.length && (reg[0]!==0 || reg[1]===0)))) b=true;
                                                 break;
                                             case 'enter':
                                                 if(k=='input' || alt)b=true;
@@ -4263,6 +4263,7 @@ Class("xui.absList", "xui.absObj",{
         },
         removeItems:function(arr, key){
             if(!(arr instanceof Array))arr=[arr];
+            _.arr.each(arr,function(o,i){arr[i]=''+o});
             var obj,v,
                 b=this._afterRemoveItems;
                 remove=function(profile, arr, target, data, ns, force){
@@ -4343,6 +4344,7 @@ Class("xui.absList", "xui.absObj",{
             });
         },
         updateItem:function(subId,options){
+            subId+='';
             var self=this,
                 profile=self.get(0),
                 box=profile.box,
@@ -4427,6 +4429,7 @@ Class("xui.absList", "xui.absObj",{
                 return v;
         },
         fireItemClickEvent:function(subId){
+            subId+="";
             this.getSubNodeByItemId(this.constructor._focusNodeKey, subId).onClick();
             return this;
         }

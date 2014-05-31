@@ -532,6 +532,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //get array
             ids = _.isArr(ids)?ids:[ids];
+            _.arr.each(ids,function(o,i){ids[i]=''+o});
             _.arr.each(ids,function(id){
                 //get item id
                 if(id=profile.rowMap2[id]){
@@ -696,6 +697,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //get array
             ids = _.isArr(ids)?ids:[ids];
+            _.arr.each(ids,function(o,i){ids[i]=''+o});
             _.arr.each(ids,function(id){
                 var index=_.arr.indexOf(p.header, id);
                 if(index==-1)index=_.arr.subIndexOf(p.header, "id", id);

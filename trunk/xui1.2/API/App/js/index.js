@@ -360,7 +360,7 @@ Class('App', 'xui.Com',{
                 }
             }
 
-            o=items[3];
+            o=items[2];
             sub=o.sub;
             id='xui';
             o.sub=getClass(xui, self, id);

@@ -976,8 +976,7 @@ Class('xui.Date',null,{
         _validUnit:function(datepart){
             return this.$UNIT[datepart]?datepart:'d';
         },
-        _isDate:function(target)  {return !!target && target.constructor == Date},
-        _date:function(value,df){return this._isDate(value) ? value : ((value || value===0)&&isFinite(value)) ? new Date(parseInt(value,10)) : this._isDate(df) ? df : new Date},
+        _date:function(value,df){return _.isDate(value) ? value : ((value || value===0)&&isFinite(value)) ? new Date(parseInt(value,10)) : _.isDate(df) ? df : new Date},
         _isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
         _numb:function(value,df){return this._isNumb(value)?value:this._isNumb(df)?df:0},
         //time Zone like: -8
