@@ -378,14 +378,15 @@ _.merge(_,{
     clone:function(hash,filter,deep){
         var layer=arguments[3]||0;
         if(hash && typeof hash=='object'){
-            var c=hash.constructor,a=c==Array;
-            if(a||c==Object){
-                var me=arguments.callee,h=a?[]:{},v,i=0,l;
+            if(_.isObj(hash)){                var me=arguments.callee,
+                    isArr=_.isArr(hash),
+                    h=isArr?[]:{},
+                    i=0,v,l;
                 if(!deep){
                     if(deep<=0)return hash;
                     else deep=100;
                 }
-                if(a){
+                if(isArr){
                     l=hash.length;
                     for(;i<l;i++){
                         if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
@@ -501,21 +502,25 @@ _.merge(_,{
 		return 1;
     },
     // type detection
+    _to:Object.prototype.toString,
+    _ht:/^\s*function\s+Object\(\s*\)/,
     isDefined:function(target)  {return target!==undefined},
     isNull:function(target)  {return target===null},
     isSet:function(target)   {return target!==undefined && target!==null && target!==NaN},
+    // including : object array function
     isObj:function(target)   {return !!target  && (typeof target == 'object' || typeof target == 'function')},
+    isHash:function(target)  {return !!target && _._to.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString())},
     isBool:function(target)  {return typeof target == 'boolean'},
     isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
-    isFinite:function(target)  {return (target||target===0) && isFinite(target)},
-    isDate:function(target)  {return Object.prototype.toString.call(target)==='[object Date]' && isFinite(+target)},
-    isFun:function(target)   {return Object.prototype.toString.call(target)==='[object Function]'},
-    isArr:function(target)   {return Object.prototype.toString.call(target)==='[object Array]'},
-    _ht:/^\s*function\s+Object\(\s*\)/,
-    isHash:function(target)  {return !!target && Object.prototype.toString.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString())},
-    isReg:function(target)   {return Object.prototype.toString.call(target)==='[object RegExp]'},
-    isStr:function(target)   {return typeof target == "string"},
-    isArguments:function(target)   {return !!(target && target.callee && target.callee.arguments===target)},
+    isFinite:function(target)  {return (target||target===0) && isFinite(target) && !isNaN(parseFloat(target))},
+    isDate:function(target)  {return _._to.call(target)==='[object Date]' && isFinite(+target)},
+    isFun:function(target)   {return _._to.call(target)==='[object Function]'},
+    isArr:function(target)   {return _._to.call(target)==='[object Array]'},
+    isReg:function(target)   {return _._to.call(target)==='[object RegExp]'},
+    isStr:function(target)   {return _._to.call(target)==='[object String]'},
+    isArguments:function(target)   {return _._to.call(target)==='[object Arguments]'},
+    isElem:function(target) {!!(target && target.nodeType === 1)},
+    isNaN:function(target) {_.isNumb(target) && target != +target;},
     //for handling String
     str:{
         startWith:function(str,sStr){
@@ -2813,12 +2818,12 @@ Class('xui.absBox',null, {
             o._nodes =  !arr
                             ? []
                             : ensureValue===false
-                            ? arr.constructor==Array
+                            ? _.isArr(arr)
                                 ? arr
                                 : [arr]
                             : typeof this._ensureValues=='function'
                                 ? this._ensureValues(arr)
-                                : arr.constructor==Array
+                                : _.isArr(arr)
                                     ? arr
                                     : [arr];
             return o;
@@ -6222,8 +6227,7 @@ Class('xui.Event',null,{
         _validUnit:function(datepart){
             return this.$UNIT[datepart]?datepart:'d';
         },
-        _isDate:function(target)  {return !!target && target.constructor == Date},
-        _date:function(value,df){return this._isDate(value) ? value : ((value || value===0)&&isFinite(value)) ? new Date(parseInt(value,10)) : this._isDate(df) ? df : new Date},
+        _date:function(value,df){return _.isDate(value) ? value : ((value || value===0)&&isFinite(value)) ? new Date(parseInt(value,10)) : _.isDate(df) ? df : new Date},
         _isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
         _numb:function(value,df){return this._isNumb(value)?value:this._isNumb(df)?df:0},
         //time Zone like: -8
@@ -7179,7 +7183,7 @@ Class('xui.Dom','xui.absBox',{
                         arr[arr.length]=o;
                 return arr;
             });
-            return this.$sum(property?typeof property=='function'?f5:expr?expr.constructor == RegExp?f1:f2:f3:f4, [tagName, property, expr]);
+            return this.$sum(property?typeof property=='function'?f5:expr?_.isReg(expr)?f1:f2:f3:f4, [tagName, property, expr]);
         },
 
         /*
@@ -8625,7 +8629,7 @@ type:4
                     ? ['!window']
                     : obj===document
                     ? ['!document']
-                    : obj.constructor == Array
+                    : _.isArr(obj)
                     ? obj
                     : obj['xui.Dom']
                     ? obj._nodes
@@ -10413,7 +10417,7 @@ type:4
         _doTemplate:function(properties, tag, result){
             if(!properties)return '';
 
-            var self=this, me=arguments.callee,s,t,n,isA = properties.constructor == Array,
+            var self=this, me=arguments.callee,s,t,n,isA = _.isArr(properties),
             template = self.$template,
             temp = template[tag||'root'],
             r = !result;
@@ -15807,7 +15811,7 @@ Class("xui.UI",  "xui.absObj", {
                 x01=xui.UI.$x01,
                 x01r=' \x01 ',
                 str='',
-                isA = properties.constructor == Array,
+                isA = _.isArr(properties),
                 temp = template[tag||''],
                 r = !result,
                 result= result || [];
@@ -16257,13 +16261,13 @@ Class("xui.UI",  "xui.absObj", {
                                                 if(!/[\n\r]/.test(txt.substr(0,reg[0]))) b=true;
                                                 break;
                                             case 'left':
-                                                if((ctrl&&!shift) || (reg[0]===0 && (reg[1]!==txt.length || reg[1]===0))) b=true;
+                                                if(!shift && (ctrl || (reg[0]===0 && (reg[1]!==txt.length || reg[1]===0)))) b=true;
                                                 break;
                                             case 'down':
                                                 if(!/[\n\r]/.test(txt.substr(reg[1],txt.length))) b=true;
                                                 break;
                                             case 'right':
-                                                if((ctrl&&!shift) || (reg[1]===txt.length && (reg[0]!==0 || reg[1]===0))) b=true;
+                                                if(!shift && (ctrl || (reg[1]===txt.length && (reg[0]!==0 || reg[1]===0)))) b=true;
                                                 break;
                                             case 'enter':
                                                 if(k=='input' || alt)b=true;
@@ -17695,6 +17699,7 @@ Class("xui.absList", "xui.absObj",{
         },
         removeItems:function(arr, key){
             if(!(arr instanceof Array))arr=[arr];
+            _.arr.each(arr,function(o,i){arr[i]=''+o});
             var obj,v,
                 b=this._afterRemoveItems;
                 remove=function(profile, arr, target, data, ns, force){
@@ -17775,6 +17780,7 @@ Class("xui.absList", "xui.absObj",{
             });
         },
         updateItem:function(subId,options){
+            subId+='';
             var self=this,
                 profile=self.get(0),
                 box=profile.box,
@@ -17859,6 +17865,7 @@ Class("xui.absList", "xui.absObj",{
                 return v;
         },
         fireItemClickEvent:function(subId){
+            subId+="";
             this.getSubNodeByItemId(this.constructor._focusNodeKey, subId).onClick();
             return this;
         }
@@ -30015,7 +30022,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         append:function(target,subId, pre, base){
             var p=this.get(0).properties;
             if(subId=subId||p.$UIvalue||p.value)
-                arguments.callee.upper.call(this, target, subId, pre, base);
+                arguments.callee.upper.call(this, target, subId+'', pre, base);
             return this;
         },
         getCurPanel:function(){
@@ -30031,7 +30038,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         // get pane in page views
         getPanel:function(subId){
             var profile = this.get(0);
-            return profile.getSubNodeByItemId('PANEL', subId);
+            return profile.getSubNodeByItemId('PANEL', subId+'');
         },
         ////
         addPanel:function(paras, children, item){
@@ -30100,7 +30107,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return this.each(function(profile){
                 if(profile.renderId){
                     _.arr.each(profile.properties.items,function(o){
-                        if(subId===true || subId===o.id)
+                        if(subId===true || (subId+'')===o.id)
                             delete o._$ini;
                     });
                     if(removeChildren)
@@ -30110,8 +30117,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         iniPanelView:function(subId){
             return this.each(function(profile){
-                if(_.isStr(subId)){
-                    if(subId=profile.getItemByItemId(subId)){
+                if(subId){
+                    if(subId=profile.getItemByItemId(subId+'')){
                         profile.box._forIniPanelView(profile, subId);
                     }
                 }else{
@@ -30124,7 +30131,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         
         ////
         fireItemClickEvent:function(subId){
-            var node=this.getSubNodeByItemId('ITEM', subId),ev=xui.Event;
+            var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
             if(ev.__realtouch)ev.__simulatedMousedown=1;
             node.onMousedown(true);
             if(ev.__realtouch)ev.__simulatedMousedown=0;
@@ -30158,7 +30165,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var self=this,
                 obj,serialId;
             if(!_.isArr(arr))arr=[arr];
-
+            _.arr.each(arr,function(o,i){arr[i]=''+o});
             self.each(function(profile){
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     _.arr.each(arr,function(o){
@@ -30198,7 +30205,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         markItemCaption:function(subId, mark, force){
             var profile = this.get(0);
-            subId=profile.getItemByItemId(subId);
+            subId=profile.getItemByItemId(subId+'');
 
             if((subId._dirty !=mark) || force){
                 var id = subId.id,
@@ -35384,7 +35391,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         },
         _prepareData:function(profile){
             var prop=profile.properties;
-            if(!prop.items || prop.items.constructor != Array)
+            if(!prop.items || !_.isArr(prop.items))
                 prop.items = _.clone([
                     {id:'before', pos:'before', locked:false, size:60, min: 50, max:200},
                     {id:'after',pos:'after', locked:false, size:60, min: 50, max:200}
@@ -36133,6 +36140,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //get array
             ids = _.isArr(ids)?ids:[ids];
+            _.arr.each(ids,function(o,i){ids[i]=''+o});
             _.arr.each(ids,function(id){
                 //get item id
                 if(id=profile.rowMap2[id]){
@@ -36297,6 +36305,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //get array
             ids = _.isArr(ids)?ids:[ids];
+            _.arr.each(ids,function(o,i){ids[i]=''+o});
             _.arr.each(ids,function(id){
                 var index=_.arr.indexOf(p.header, id);
                 if(index==-1)index=_.arr.subIndexOf(p.header, "id", id);

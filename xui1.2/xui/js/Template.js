@@ -264,7 +264,7 @@ Class('xui.Template','xui.absProfile',{
         _doTemplate:function(properties, tag, result){
             if(!properties)return '';
 
-            var self=this, me=arguments.callee,s,t,n,isA = properties.constructor == Array,
+            var self=this, me=arguments.callee,s,t,n,isA = _.isArr(properties),
             template = self.$template,
             temp = template[tag||'root'],
             r = !result;

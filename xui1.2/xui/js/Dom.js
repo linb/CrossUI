@@ -218,7 +218,7 @@ Class('xui.Dom','xui.absBox',{
                         arr[arr.length]=o;
                 return arr;
             });
-            return this.$sum(property?typeof property=='function'?f5:expr?expr.constructor == RegExp?f1:f2:f3:f4, [tagName, property, expr]);
+            return this.$sum(property?typeof property=='function'?f5:expr?_.isReg(expr)?f1:f2:f3:f4, [tagName, property, expr]);
         },
 
         /*
@@ -1664,7 +1664,7 @@ type:4
                     ? ['!window']
                     : obj===document
                     ? ['!document']
-                    : obj.constructor == Array
+                    : _.isArr(obj)
                     ? obj
                     : obj['xui.Dom']
                     ? obj._nodes

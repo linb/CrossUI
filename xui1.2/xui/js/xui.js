@@ -378,14 +378,15 @@ _.merge(_,{
     clone:function(hash,filter,deep){
         var layer=arguments[3]||0;
         if(hash && typeof hash=='object'){
-            var c=hash.constructor,a=c==Array;
-            if(a||c==Object){
-                var me=arguments.callee,h=a?[]:{},v,i=0,l;
+            if(_.isObj(hash)){                var me=arguments.callee,
+                    isArr=_.isArr(hash),
+                    h=isArr?[]:{},
+                    i=0,v,l;
                 if(!deep){
                     if(deep<=0)return hash;
                     else deep=100;
                 }
-                if(a){
+                if(isArr){
                     l=hash.length;
                     for(;i<l;i++){
                         if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
@@ -501,21 +502,25 @@ _.merge(_,{
 		return 1;
     },
     // type detection
+    _to:Object.prototype.toString,
+    _ht:/^\s*function\s+Object\(\s*\)/,
     isDefined:function(target)  {return target!==undefined},
     isNull:function(target)  {return target===null},
     isSet:function(target)   {return target!==undefined && target!==null && target!==NaN},
+    // including : object array function
     isObj:function(target)   {return !!target  && (typeof target == 'object' || typeof target == 'function')},
+    isHash:function(target)  {return !!target && _._to.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString())},
     isBool:function(target)  {return typeof target == 'boolean'},
     isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
-    isFinite:function(target)  {return (target||target===0) && isFinite(target)},
-    isDate:function(target)  {return Object.prototype.toString.call(target)==='[object Date]' && isFinite(+target)},
-    isFun:function(target)   {return Object.prototype.toString.call(target)==='[object Function]'},
-    isArr:function(target)   {return Object.prototype.toString.call(target)==='[object Array]'},
-    _ht:/^\s*function\s+Object\(\s*\)/,
-    isHash:function(target)  {return !!target && Object.prototype.toString.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString())},
-    isReg:function(target)   {return Object.prototype.toString.call(target)==='[object RegExp]'},
-    isStr:function(target)   {return typeof target == "string"},
-    isArguments:function(target)   {return !!(target && target.callee && target.callee.arguments===target)},
+    isFinite:function(target)  {return (target||target===0) && isFinite(target) && !isNaN(parseFloat(target))},
+    isDate:function(target)  {return _._to.call(target)==='[object Date]' && isFinite(+target)},
+    isFun:function(target)   {return _._to.call(target)==='[object Function]'},
+    isArr:function(target)   {return _._to.call(target)==='[object Array]'},
+    isReg:function(target)   {return _._to.call(target)==='[object RegExp]'},
+    isStr:function(target)   {return _._to.call(target)==='[object String]'},
+    isArguments:function(target)   {return _._to.call(target)==='[object Arguments]'},
+    isElem:function(target) {!!(target && target.nodeType === 1)},
+    isNaN:function(target) {_.isNumb(target) && target != +target;},
     //for handling String
     str:{
         startWith:function(str,sStr){
@@ -2813,12 +2818,12 @@ Class('xui.absBox',null, {
             o._nodes =  !arr
                             ? []
                             : ensureValue===false
-                            ? arr.constructor==Array
+                            ? _.isArr(arr)
                                 ? arr
                                 : [arr]
                             : typeof this._ensureValues=='function'
                                 ? this._ensureValues(arr)
-                                : arr.constructor==Array
+                                : _.isArr(arr)
                                     ? arr
                                     : [arr];
             return o;

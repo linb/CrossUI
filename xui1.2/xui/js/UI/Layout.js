@@ -704,7 +704,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         },
         _prepareData:function(profile){
             var prop=profile.properties;
-            if(!prop.items || prop.items.constructor != Array)
+            if(!prop.items || !_.isArr(prop.items))
                 prop.items = _.clone([
                     {id:'before', pos:'before', locked:false, size:60, min: 50, max:200},
                     {id:'after',pos:'after', locked:false, size:60, min: 50, max:200}
