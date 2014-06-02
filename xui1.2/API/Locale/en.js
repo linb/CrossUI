@@ -486,6 +486,20 @@ _.set(xui.Locale,["en","app"], {
                     "alert(_.isSet('s')+':'+_.isSet(new RegExp())+':'+_.isSet(function(){})+':'+_.isSet(1)+':'+_.isSet(NaN)+':'+_.isSet({})+':'+_.isSet(new Date)+':'+_.isSet(null)+':'+_.isSet(undefined)+':'+_.isSet(true)+':'+_.isSet([]));"
                 ]
             },
+            isElem:{
+                $desc:"To determine whether or not the target is DOM element.",
+                $rtn:"Boolean",
+                $paras:[
+                    "target [Required]: any"
+                ]
+            },
+            "isNaN":{
+                $desc:"To determine whether or not the target is NaN.",
+                $rtn:"Boolean",
+                $paras:[
+                    "target [Required]: any"
+                ]
+            },
             isStr :{
                 $desc:"To determine whether or not the target is String.",
                 $rtn:"Boolean",
@@ -9067,6 +9081,14 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
                     "}"
                 ]
+            },
+            onClick:{
+                $desc:"Fired when button is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element."
+                ]
             }
         }
     });
@@ -9167,8 +9189,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event.",
-                    "src : Element.",
-                    "value : Boolean."
+                    "src : Element."
                 ],
                 $snippet:[
                     "var id='xui.temp.Sbtn17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

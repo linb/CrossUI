@@ -314,7 +314,7 @@ Class("xui.CSS", null,{
 // cross browser reset 
             css=".xui-node{margin:0;padding:0;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;vertical-align:middle;}"+
-            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
+            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;font-size:12px;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+

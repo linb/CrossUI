@@ -2144,7 +2144,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                return (x>y?1:x==y?0:-1)*(order?1:-1);
                             };
                         }else{
-                                sortf=function(x,y){
+                            sortf=function(x,y){
                                return sortby.apply(profile,[x,y,a1,order,index,a4]);
                             };
                         }

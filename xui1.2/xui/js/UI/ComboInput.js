@@ -68,9 +68,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if('listbox'==pro.type){
                     var list = (pro.listKey)?xui.UI.getCachedData(pro.listKey):pro.items;
                     if( list && (t=_.arr.subIndexOf(list,'id',value))!=-1){
-                      v=list[t].caption;
-                      if(v.length>0)
-                        v=v.charAt(0)=='$'?xui.getRes(v.slice(1)):v;
+                      v=list[t].caption+"";
+                      if(v && v.length>0)v=xui.adjustRes(v);
                     }else
                         v=null;
                 }else
