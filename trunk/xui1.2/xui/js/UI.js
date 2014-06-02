@@ -408,10 +408,11 @@ Class('xui.UIProfile','xui.Profile', {
 
             //children
             if(o.children && o.children.length){
-                o.children.sort(function(x,y){
-                    x=parseInt(x[0].properties.tabindex,10);y=parseInt(y[0].properties.tabindex,10);
-                    return x>y?1:x==y?0:-1;
-                });
+                if(o.box.KEY!="xui.UI.SVGPaper"){
+                    _.arr.stableSort(o.children,function(){
+                        return this[0].properties.tabindex||0;
+                    });
+                }
                 t=r.children=[];
                 _.arr.each(o.children,function(v){
                     m=[v[0].serialize(false, keepHost)];
@@ -2505,9 +2506,8 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             // sort sub node
-            a.sort(function(x,y){
-                x=x.$order;y=y.$order;
-                return x>y?1:x==y?0:-1;
+            _.arr.stableSort(a,function(){
+                return this.$order||0;
             });
 
             //first
@@ -3094,9 +3094,8 @@ Class("xui.UI",  "xui.absObj", {
                     h[h.length]=o;
                 }
             };
-            h.sort(function(x,y){
-                x=x.$order;y=y.$order;
-                return x>y?1:x==y?0:-1;
+            _.arr.stableSort(h,function(){
+                return this.$order||0;
             });
 
             for(var i=0,l=h.length;i<l;){
@@ -3568,9 +3567,8 @@ Class("xui.UI",  "xui.absObj", {
                 auto = 'auto',
                 value = prop.dock || 'none',
                 pid=xui.Event.getId(p.get(0)),
-                order=function(x,y){
-                    x=parseInt(x.properties.dockOrder,10)||0;y=parseInt(y.properties.dockOrder,10)||0;
-                    return x>y?1:x==y?0:-1;
+                order=function(){
+                    return parseInt(this.properties.dockOrder,10)||0;
                 },
                 region,
                 inMatrix='$inMatrix',
@@ -3939,14 +3937,14 @@ Class("xui.UI",  "xui.absObj", {
                     if(value=='fill' || value=='cover'){
                         profile.link(f.height, '$dock1');
                         profile.link(f.width, '$dock2');
-                        f.height.sort(order);
-                        f.width.sort(order);
+                        _.arr.stableSort(f.height,order);
+                        _.arr.stableSort(f.width,order);
                     }else if(value=='origin'){
                         profile.link(f.center, '$dock1');
                         profile.link(f.middle, '$dock2');
                     }else{
                         profile.link(f[value], '$dock');
-                        f[value].sort(order);
+                        _.arr.stableSort(f[value],order);
                     }
                     profile.link(f.dockall, '$dockall');
 
@@ -4698,21 +4696,23 @@ Class("xui.absValue", "xui.absObj",{
             this.each(function(profile){
                 var prop=profile.properties, r,
                     ovalue = prop.$UIvalue,
-                    box = profile.boxing();
+                    box = profile.boxing(),
+                    changed = ovalue !== value;
 
-                if(ovalue !== value || force){
-                    if(
-                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
-                      )
-                        return;
-
-                    //can get return value
-                    if(r!==undefined && typeof r!=='boolean')value=r;
-                    //before _setCtrlValue
-                    if(typeof (r=profile.box._ensureValue)=='function')
-                        value = r.call(profile.box, profile, value);
-                    
+                if(changed || force){
+                    if(changed){
+                        if(
+                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
+                          )
+                            return;
+    
+                        //can get return value
+                        if(r!==undefined && typeof r!=='boolean')value=r;
+                        //before _setCtrlValue
+                        if(typeof (r=profile.box._ensureValue)=='function')
+                            value = r.call(profile.box, profile, value);
+                    }
                     if(typeof(r=profile.$onUIValueSet)=='function'){
                         r=r.call(profile,value);
                         if(_.isSet(r))value=r;
@@ -4720,16 +4720,21 @@ Class("xui.absValue", "xui.absObj",{
 
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
-                    //value copy
-                    prop.$UIvalue = value;
+
+                    if(changed){
+                        //value copy
+                        prop.$UIvalue = value;
+                    }
 
                     if(profile.renderId)box._setDirtyMark();
-                    
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
-                    if(profile.onChange)box.onChange(profile, ovalue, value);
 
-                    if(!prop.dirtyMark)
-                        box.setValue(value);
+                    if(changed){
+                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
+                        if(profile.onChange)box.onChange(profile, ovalue, value);
+    
+                        if(!prop.dirtyMark)
+                            box.setValue(value);
+                    }
                 }
             });
             return this;
@@ -5059,6 +5064,17 @@ new function(){
                         this.getRoot().css('textAlign',v);
                     }
                 }
+            },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, src){}
             }
         }
     });
@@ -5201,7 +5217,7 @@ new function(){
                 }
             },
             EventHandlers:{
-                onClick:function(profile, e, src, value){}
+                onClick:function(profile, e, src){}
             },
             _prepareData:function(profile){
                 var data=arguments.callee.upper.call(this, profile);

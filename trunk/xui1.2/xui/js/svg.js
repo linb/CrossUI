@@ -3249,7 +3249,8 @@ Class("xui.svg.connector","xui.svg.absComb",{
             });
 
             // Sort paths by path length
-            paths.sort(function(x,y){
+			// < 22, stable sort
+            _.arr.stableSort(paths,function(){
                 return x.inter>y.inter?1:
                        x.inter<y.inter?-1:
                        x.len>y.len?1:

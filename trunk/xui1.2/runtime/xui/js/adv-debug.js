@@ -3295,8 +3295,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             var self=this, o, h,
                 t=profile.properties;
             t._lines.length = 1;
-            t.items.sort(function(x,y){
-                return x.from>y.from?1:x.from==y.from?0:-1;
+            _.arr.stableSort(t.items,function(){
+                return this.from;
             });
             //re caculate from current line
             _.arr.each(t.items,function(v){
@@ -16794,7 +16794,8 @@ Class("xui.svg.connector","xui.svg.absComb",{
             });
 
             // Sort paths by path length
-            paths.sort(function(x,y){
+			// < 22, stable sort
+            _.arr.stableSort(paths,function(){
                 return x.inter>y.inter?1:
                        x.inter<y.inter?-1:
                        x.len>y.len?1:
@@ -16872,9 +16873,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
 //            profile._canvas.style.zIndex=300;
 
             // contents
-            var arr=profile.children,a=[];
-            _.arr.each(arr,function(o){
-                if(!o[0].renderId)a.push(o[0]);
+            var a=[];
+            _.arr.each(profile.children,function(o){
+                if(o[0].box["xui.svg"])a.push(o[0]);
             });
             if(a.length){
                 if(Raphael.svg)

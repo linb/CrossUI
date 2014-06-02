@@ -562,6 +562,24 @@ _.merge(_,{
     },
     //for handling Array
     arr:{
+        stableSort:function(arr, getKey){
+            if(!arr||arr.length<2)return;
+
+            var ll=arr.length,
+                len=(ll+"").length,
+                i=0,
+                f=function(){
+                    var s=(++i)+'',l=s.length;
+                    return getKey.call(this) + ((len>l)?(new Array(len-l+1).join("0")):"") + s;
+                },o=arr[0].toString;
+
+            for(var j=0;j<ll;j++)arr[j].toString = f;
+            try{
+                arr.sort();
+            }finally{
+                for(var j=0;j<ll;j++)arr[j].toString = o;
+            }
+        },
         subIndexOf:function(arr,key,value){
             if(value===undefined)return -1;
             for(var i=0, l=arr.length; i<l; i++)
@@ -6911,7 +6929,7 @@ Class('xui.Event',null,{
 // cross browser reset 
             css=".xui-node{margin:0;padding:0;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;vertical-align:middle;}"+
-            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
+            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;font-size:12px;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
@@ -9378,9 +9396,8 @@ type:4
             
             if(stops){
                 if(stops.length>1){
-                    stops.sort(function(x,y){
-                       x=parseFloat(x.pos); y=parseFloat(y.pos);
-                       return x>y?1:x==y?0:-1;
+                    _.arr.stableSort(stops,function(){
+                        return this.pos;
                     });
                 }else{
                     return;
@@ -13844,10 +13861,11 @@ Class('xui.UIProfile','xui.Profile', {
 
             //children
             if(o.children && o.children.length){
-                o.children.sort(function(x,y){
-                    x=parseInt(x[0].properties.tabindex,10);y=parseInt(y[0].properties.tabindex,10);
-                    return x>y?1:x==y?0:-1;
-                });
+                if(o.box.KEY!="xui.UI.SVGPaper"){
+                    _.arr.stableSort(o.children,function(){
+                        return this[0].properties.tabindex||0;
+                    });
+                }
                 t=r.children=[];
                 _.arr.each(o.children,function(v){
                     m=[v[0].serialize(false, keepHost)];
@@ -15941,9 +15959,8 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             // sort sub node
-            a.sort(function(x,y){
-                x=x.$order;y=y.$order;
-                return x>y?1:x==y?0:-1;
+            _.arr.stableSort(a,function(){
+                return this.$order||0;
             });
 
             //first
@@ -16530,9 +16547,8 @@ Class("xui.UI",  "xui.absObj", {
                     h[h.length]=o;
                 }
             };
-            h.sort(function(x,y){
-                x=x.$order;y=y.$order;
-                return x>y?1:x==y?0:-1;
+            _.arr.stableSort(h,function(){
+                return this.$order||0;
             });
 
             for(var i=0,l=h.length;i<l;){
@@ -17004,9 +17020,8 @@ Class("xui.UI",  "xui.absObj", {
                 auto = 'auto',
                 value = prop.dock || 'none',
                 pid=xui.Event.getId(p.get(0)),
-                order=function(x,y){
-                    x=parseInt(x.properties.dockOrder,10)||0;y=parseInt(y.properties.dockOrder,10)||0;
-                    return x>y?1:x==y?0:-1;
+                order=function(){
+                    return parseInt(this.properties.dockOrder,10)||0;
                 },
                 region,
                 inMatrix='$inMatrix',
@@ -17375,14 +17390,14 @@ Class("xui.UI",  "xui.absObj", {
                     if(value=='fill' || value=='cover'){
                         profile.link(f.height, '$dock1');
                         profile.link(f.width, '$dock2');
-                        f.height.sort(order);
-                        f.width.sort(order);
+                        _.arr.stableSort(f.height,order);
+                        _.arr.stableSort(f.width,order);
                     }else if(value=='origin'){
                         profile.link(f.center, '$dock1');
                         profile.link(f.middle, '$dock2');
                     }else{
                         profile.link(f[value], '$dock');
-                        f[value].sort(order);
+                        _.arr.stableSort(f[value],order);
                     }
                     profile.link(f.dockall, '$dockall');
 
@@ -18134,21 +18149,23 @@ Class("xui.absValue", "xui.absObj",{
             this.each(function(profile){
                 var prop=profile.properties, r,
                     ovalue = prop.$UIvalue,
-                    box = profile.boxing();
+                    box = profile.boxing(),
+                    changed = ovalue !== value;
 
-                if(ovalue !== value || force){
-                    if(
-                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
-                      )
-                        return;
-
-                    //can get return value
-                    if(r!==undefined && typeof r!=='boolean')value=r;
-                    //before _setCtrlValue
-                    if(typeof (r=profile.box._ensureValue)=='function')
-                        value = r.call(profile.box, profile, value);
-                    
+                if(changed || force){
+                    if(changed){
+                        if(
+                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
+                          )
+                            return;
+    
+                        //can get return value
+                        if(r!==undefined && typeof r!=='boolean')value=r;
+                        //before _setCtrlValue
+                        if(typeof (r=profile.box._ensureValue)=='function')
+                            value = r.call(profile.box, profile, value);
+                    }
                     if(typeof(r=profile.$onUIValueSet)=='function'){
                         r=r.call(profile,value);
                         if(_.isSet(r))value=r;
@@ -18156,16 +18173,21 @@ Class("xui.absValue", "xui.absObj",{
 
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
-                    //value copy
-                    prop.$UIvalue = value;
+
+                    if(changed){
+                        //value copy
+                        prop.$UIvalue = value;
+                    }
 
                     if(profile.renderId)box._setDirtyMark();
-                    
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
-                    if(profile.onChange)box.onChange(profile, ovalue, value);
 
-                    if(!prop.dirtyMark)
-                        box.setValue(value);
+                    if(changed){
+                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
+                        if(profile.onChange)box.onChange(profile, ovalue, value);
+    
+                        if(!prop.dirtyMark)
+                            box.setValue(value);
+                    }
                 }
             });
             return this;
@@ -18495,6 +18517,17 @@ new function(){
                         this.getRoot().css('textAlign',v);
                     }
                 }
+            },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, src){}
             }
         }
     });
@@ -18637,7 +18670,7 @@ new function(){
                 }
             },
             EventHandlers:{
-                onClick:function(profile, e, src, value){}
+                onClick:function(profile, e, src){}
             },
             _prepareData:function(profile){
                 var data=arguments.callee.upper.call(this, profile);
@@ -24004,9 +24037,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if('listbox'==pro.type){
                     var list = (pro.listKey)?xui.UI.getCachedData(pro.listKey):pro.items;
                     if( list && (t=_.arr.subIndexOf(list,'id',value))!=-1){
-                      v=list[t].caption;
-                      if(v.length>0)
-                        v=v.charAt(0)=='$'?xui.getRes(v.slice(1)):v;
+                      v=list[t].caption+"";
+                      if(v && v.length>0)v=xui.adjustRes(v);
                     }else
                         v=null;
                 }else
@@ -37752,7 +37784,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                return (x>y?1:x==y?0:-1)*(order?1:-1);
                             };
                         }else{
-                                sortf=function(x,y){
+                            sortf=function(x,y){
                                return sortby.apply(profile,[x,y,a1,order,index,a4]);
                             };
                         }

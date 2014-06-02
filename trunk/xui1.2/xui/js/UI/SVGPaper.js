@@ -61,9 +61,9 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
 //            profile._canvas.style.zIndex=300;
 
             // contents
-            var arr=profile.children,a=[];
-            _.arr.each(arr,function(o){
-                if(!o[0].renderId)a.push(o[0]);
+            var a=[];
+            _.arr.each(profile.children,function(o){
+                if(o[0].box["xui.svg"])a.push(o[0]);
             });
             if(a.length){
                 if(Raphael.svg)

@@ -2413,9 +2413,8 @@ type:4
             
             if(stops){
                 if(stops.length>1){
-                    stops.sort(function(x,y){
-                       x=parseFloat(x.pos); y=parseFloat(y.pos);
-                       return x>y?1:x==y?0:-1;
+                    _.arr.stableSort(stops,function(){
+                        return this.pos;
                     });
                 }else{
                     return;

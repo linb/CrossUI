@@ -483,6 +483,20 @@ _.set(xui.Locale,["cn","app"], {
                     "alert(_.isSet('s')+':'+_.isSet(new RegExp())+':'+_.isSet(function(){})+':'+_.isSet(1)+':'+_.isSet(NaN)+':'+_.isSet({})+':'+_.isSet(new Date)+':'+_.isSet(null)+':'+_.isSet(undefined)+':'+_.isSet(true)+':'+_.isSet([]));"
                 ]
             },
+            isElem:{
+                $desc:"判断目标是否是一个DOM元素.",
+                $rtn:"Boolean",
+                $paras:[
+                    "target [必需参数]: any"
+                ]
+            },
+            "isNaN":{
+                $desc:"判断目标是否是一个NaN值.",
+                $rtn:"Boolean",
+                $paras:[
+                    "target [必需参数]: any"
+                ]
+            },
             isStr :{
                 $desc:"判断目标是否是一个字符串.",
                 $rtn:"Boolean",
@@ -9011,6 +9025,14 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.SLabel({border:true,width:'100'}));"+
                     "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
                     "}"
+                ]
+            },
+            onClick:{
+                $desc:"当单击按钮时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
