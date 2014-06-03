@@ -570,7 +570,7 @@ _.merge(_,{
                 i=0,
                 f=function(){
                     var s=(++i)+'',l=s.length;
-                    return getKey.call(this) + ((len>l)?(new Array(len-l+1).join("0")):"") + s;
+                    return (getKey.call(this)||"") + ((len>l)?(new Array(len-l+1).join("0")):"") + s;
                 },o=arr[0].toString;
 
             for(var j=0;j<ll;j++)arr[j].toString = f;
@@ -579,6 +579,7 @@ _.merge(_,{
             }finally{
                 for(var j=0;j<ll;j++)arr[j].toString = o;
             }
+            return arr;
         },
         subIndexOf:function(arr,key,value){
             if(value===undefined)return -1;
