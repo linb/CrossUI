@@ -445,7 +445,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         var t = this.getTemplate();
         _.merge(t.FRAME.BORDER,{
             SBTN:{
-                $order:10,
+                $order:50,
                 className:'xui-ui-unselectable',
                 style:"{_saveDisplay}",
                 STOP:{},
@@ -1450,7 +1450,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelPos=t.labelPos || 'left',
                 px='px',
                 commandbtn=f(t.commandBtn!='none'?'SBTN':null),
-            functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password')?null:'BTN'),
+                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password')?null:'BTN'),
                 ww=width,
                 hh=height,
                 bw1=0,
@@ -1501,14 +1501,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 });
 
             iL += (iW||0) + $hborder*2;
-            if(commandbtn){
-                if(iH2!==null)
-                    commandbtn.style.height=Math.max(0,iH2-2) + px;
-                if(iW!==null)
-                    commandbtn.style.left=iL + px;
-                commandbtn.style.top=iT + px;
-            }
-            iL += bw1;
             if(functionbtn){
                 if(iH2!==null)
                     functionbtn.style.height=Math.max(0,iH2-2) + px;
@@ -1522,6 +1514,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         f('R2').style.height=(iH2/2-2)+px;
                     }
                 }
+                iL += bw1;
+            }
+            if(commandbtn){
+                if(iH2!==null)
+                    commandbtn.style.height=Math.max(0,iH2-2) + px;
+                if(iW!==null)
+                    commandbtn.style.left=iL + px;
+                commandbtn.style.top=iT + px;
             }
 
             /*for ie6 bug*/
