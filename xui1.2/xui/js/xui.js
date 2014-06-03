@@ -570,7 +570,7 @@ _.merge(_,{
                 i=0,
                 f=function(){
                     var s=(++i)+'',l=s.length;
-                    return (getKey.call(this)||"") + ((len>l)?(new Array(len-l+1).join("0")):"") + s;
+                    return (_.isSet(t=getKey.call(this))?t:'') + ((len>l)?(new Array(len-l+1).join("0")):"") + s;
                 },o=arr[0].toString;
 
             for(var j=0;j<ll;j++)arr[j].toString = f;

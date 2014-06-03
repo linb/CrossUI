@@ -41,6 +41,9 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
             height:300,
             scaleChildren:{
                 ini:false
+            },
+            overflow:{
+                ini:undefined
             }
         },
         Behaviors:{
