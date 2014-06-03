@@ -16853,6 +16853,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
             height:300,
             scaleChildren:{
                 ini:false
+            },
+            overflow:{
+                ini:undefined
             }
         },
         Behaviors:{
