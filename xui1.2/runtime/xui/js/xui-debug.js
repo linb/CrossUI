@@ -394,7 +394,9 @@ _.merge(_,{
                     }
                 }else{
                     for(i in hash){
-                        if(filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
+                        if(filter===true?i.charAt(0)=='_':
+                            filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
+                            typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
                             continue;
                         h[i]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
                     }
@@ -417,7 +419,9 @@ _.merge(_,{
         }else{
             var i, bak={};
             for(i in obj)
-                if(filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(obj,obj[i],i):0)
+                if(filter===true?i.charAt(0)=='_':
+                    filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
+                    typeof filter=='function'?false===filter.call(obj,obj[i],i):0)
                     bak[i]=1;
 
             for(i in bak)
@@ -566,18 +570,23 @@ _.merge(_,{
             if(!arr||arr.length<2)return;
 
             var ll=arr.length,
+                zero=[],
                 len=(ll+"").length,
-                i=0,
-                f=function(){
-                    var s=(++i)+'',l=s.length;
-                    return (_.isSet(t=getKey.call(this))?t:'') + ((len>l)?(new Array(len-l+1).join("0")):"") + s;
-                },o=arr[0].toString;
-
-            for(var j=0;j<ll;j++)arr[j].toString = f;
+                p=Object.prototype,
+                o,s,c,t;
+            for(var i=0;i<len;i++)zero[i]=new Array(len-i).join("0");
+            for(var j=0;j<ll;j++){
+                s=j+'';
+                c=arr[j];
+                if(typeof c=="object")c._xui_$s$=(_.isSet(t=getKey.call(c))?t:'') + zero[s.length-1] + s;
+            }
             try{
+                o=p.toString;
+                p.toString=function(){return this._xui_$s$}
                 arr.sort();
             }finally{
-                for(var j=0;j<ll;j++)arr[j].toString = o;
+                p.toString=o;
+                try{for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$}catch(e){}
             }
             return arr;
         },
@@ -30117,7 +30126,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var profile=this.get(0),
                 pp=profile.properties,
                 item = profile.getItemByDom(domId),
-                paras = _.clone(item);
+                paras = _.clone(item,false);
             if(!paras.dragKey)paras.dragKey=pp.dragKey;
             if(!paras.dropKeys)paras.dropKeys=pp.dropKeys;
             return paras;
@@ -30861,10 +30870,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         for(var i=0;i<ll;i++)
                             nitems.push({caption:(i*10+1) + " - " + Math.min(l,((i+1)*10+1)), sub:[]});
                         _.arr.each(items,function(item,i){
-                            nitems[parseInt(i/10)].sub.push(_.clone(item,true));
+                            nitems[parseInt(i/10)].sub.push(_.clone(item,false,1));
                         });
                     }else{
-                        nitems=_.clone(items,true);
+                        nitems=_.clone(items,false,2);
                     }
                     //POPMENU
                     menu=profile._droppopmenu=new xui.UI.PopMenu({
