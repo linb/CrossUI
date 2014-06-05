@@ -151,7 +151,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var profile=this.get(0),
                 pp=profile.properties,
                 item = profile.getItemByDom(domId),
-                paras = _.clone(item);
+                paras = _.clone(item,false);
             if(!paras.dragKey)paras.dragKey=pp.dragKey;
             if(!paras.dropKeys)paras.dropKeys=pp.dropKeys;
             return paras;
@@ -895,10 +895,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         for(var i=0;i<ll;i++)
                             nitems.push({caption:(i*10+1) + " - " + Math.min(l,((i+1)*10+1)), sub:[]});
                         _.arr.each(items,function(item,i){
-                            nitems[parseInt(i/10)].sub.push(_.clone(item,true));
+                            nitems[parseInt(i/10)].sub.push(_.clone(item,false,1));
                         });
                     }else{
-                        nitems=_.clone(items,true);
+                        nitems=_.clone(items,false,2);
                     }
                     //POPMENU
                     menu=profile._droppopmenu=new xui.UI.PopMenu({
