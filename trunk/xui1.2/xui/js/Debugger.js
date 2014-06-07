@@ -63,7 +63,7 @@ Class('xui.Debugger', null, {
                 if(xui.Dom.css3Support("boxShadow")){
                     ns.css("boxShadow","2px 2px 2px #717C8C");
                 }else if(ns.addShadow){
-                    ns.setShadow(true);
+                    ns.addShadow();
                 }
 
                 if(xui.browser.ie6){

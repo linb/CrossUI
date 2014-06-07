@@ -16397,6 +16397,18 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            setGrpCols :{
+                $desc:"设置表头组数组对象, 并刷新界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getGrpCols :{
+                $desc:"得到表头组对象.",
+                $rtn:"[Array]"
+            },
             getHeaderByColId:{
                 $desc:"获取某个列的表头值.",
                 $rtn:"Ojbect",

@@ -16466,6 +16466,18 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            setGrpCols :{
+                $desc:"Set the column group array, and refresh UI.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getGrpCols :{
+                $desc:"Gets the column group array.",
+                $rtn:"[Array]"
+            },
             getHeaderByColId:{
                 $desc:"Gets a specified column's header value.",
                 $rtn:"Ojbect",
