@@ -5491,7 +5491,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.isTouch?'auto':undefined,
-                    listbox:['','visible','hidden','scroll','auto','inherited'],
+                    listbox:['','visible','hidden','scroll','auto','inherit'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
