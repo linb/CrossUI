@@ -31980,7 +31980,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     //open parent node
                     if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
                         if(!pid || profile.getItemByItemId(pid)._inited)
-                            profile.boxing()._toggleNodes(data, true);
+                            profile.boxing()._toggleNodes(data, true, true, true);
                 }
                 
                 if(b && profile.renderId)
@@ -31992,12 +31992,22 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             });
         },
-        _toggleNodes:function(items, expand, recursive){
-            var self=this;
-            if(_.isArr(items))
-                _.arr.each(items,function(o){
-                    self.toggleNode(o.id, expand, recursive)
-                });
+        _toggleNodes:function(items, expand, recursive, init){
+            var self=this,prf=self.get(0),pro=prf.properties,
+                f=function(items){
+                    if(_.isArr(items)){
+                        _.arr.each(items,function(o){
+                            
+                            if(init && (_.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
+                            
+                            self.toggleNode(o.id, expand, false);
+                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length){
+                                f(o.sub);
+                            }
+                        });
+                    }
+                };
+            f(items);
             return self;
         },
         /*
@@ -32326,9 +32336,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             position:'absolute'
         },
         RenderTrigger:function(){
-            var self=this, pro=self.properties;
-            if(!pro.iniFold)
-                self.boxing()._toggleNodes(pro.items, true);
+            this.boxing()._toggleNodes(this.properties.items, true, true, true);
         },
         _onclickbar:function(profile, e, src){
             var properties = profile.properties,
@@ -36362,7 +36370,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         k++;
                     });
                 };
-            applaycell(rows);
+            if(rows&&_.isArr(rows)){
+                applaycell(rows);
+            }
         },
         removeCols:function(ids){
             var affectUI=arguments[1],
@@ -36607,32 +36617,57 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
 
         updateHeader:function(colId,options){
-            var ns=this, colh=ns.getHeaderByColId(colId);
+            var ns=this, colh=ns.getHeaderByColId(colId), isGroup;
+            if(!colh){
+                var prf=ns.get(0),
+                    grpCols=prf.properties.grpCols,
+                    index=_.arr.subIndexOf(grpCols,"id",colId);
+                colh=grpCols[index];
+                isGroup=true;
+            }
             if(colh){
                 var hid=colh._serialId, t, tt;
 
                 if(typeof options!='object') options={caption:options+''};
                 else _.filter(options,true);
                 delete options.id;
-
-                if(t=options.width){
-                    var n=[];
-                    n.push(ns.getSubNode('HCELL',hid).get(0));
-                    _.each(colh._cells,function(o){
-                        n.push(ns.getSubNode('CELL',o).get(0));
-                    });
-                    xui(n).width(colh._pxWidth=t);
-                    
-                    ns.getSubNode('SCROLL').onScroll();
-                    ns.constructor._adjustColsH(ns.get(0));
-                    ns.constructor._adjustBody(ns.get(0));
+                
+                if(!isGroup){
+                    if(t=options.width){
+                        var n=[];
+                        n.push(ns.getSubNode('HCELL',hid).get(0));
+                        _.each(colh._cells,function(o){
+                            n.push(ns.getSubNode('CELL',o).get(0));
+                        });
+                        xui(n).width(colh._pxWidth=t);
+                        
+                        ns.getSubNode('SCROLL').onScroll();
+                        ns.constructor._adjustColsH(ns.get(0));
+                        ns.constructor._adjustBody(ns.get(0));
+                    }
+    
+                    //  Forward-compatible with 'visibility'
+                    if(options.hasOwnProperty('visibility') && !options.hasOwnProperty('hidden'))
+                        options.hidden=!options.visibility;
+    
+                    if('hidden' in options){
+                        var  b = !!options.hidden;
+                        if(b){
+                            if(colh.hidden!==true){
+                                ns.showColumn(colId, false);
+                            }
+                        }else{
+                            if(colh.hidden===true){
+                                ns.showColumn(colId, true);
+                            }
+                        }
+                    }
                 }
 
                 if(t=options.headerStyle||options.colStyle)
                     (tt=ns.getSubNode('HCELLA',hid)).attr('style',tt.attr('style')+";"+t);
                 if(t=options.headerClass)
                     ns.getSubNode('HCELLA',hid).addClass(t);
-
                 if(options.hasOwnProperty('caption'))
                     ns.getSubNode('HCELLCAPTION',hid).get(0).innerHTML=options.caption;
                 if('colResizer' in options){
@@ -36640,26 +36675,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     ns.getSubNode('HHANDLER',hid).css('display',(options.colResizer=t)?"block":'none');
                 }
 
-                //  Forward-compatible with 'visibility'
-                if(options.hasOwnProperty('visibility') && !options.hasOwnProperty('hidden'))
-                    options.hidden=!options.visibility;
-
-                if('hidden' in options){
-                    var  b = !!options.hidden;
-                    if(b){
-                        if(colh.hidden!==true){
-                            ns.showColumn(colId, false);
-                        }
-                    }else{
-                        if(colh.hidden===true){
-                            ns.showColumn(colId, true);
-                        }
-                    }
-                }
-
                 _.merge(colh, options, 'all');
             }
-            return ns;
         },
         showColumn:function(colId, flag){
             var profile=this.get(0),
@@ -38906,12 +38923,17 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 _.breakO([ns.colMap, ns.rowMap, ns.cellMap], 3);
                 pro.header.length=0;
                 pro.rows.length=0;
+                pro.grpCols.length=0;
             };
             ns.$cache_editor={};
             if(!pro.iniFold)
                 ins._toggleRows(pro.rows,true);
             // trigger render
             _.arr.each(pro.header,function(o){
+                if(_.isFun(o.colRenderer||pro.colOptions.colRenderer))
+                    (o.colRenderer||pro.colOptions.colRenderer).call(null,ns,o);
+            });
+            _.arr.each(pro.grpCols,function(o){
                 if(_.isFun(o.colRenderer||pro.colOptions.colRenderer))
                     (o.colRenderer||pro.colOptions.colRenderer).call(null,ns,o);
             });
@@ -39227,10 +39249,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             o.properties.header = _.clone(pp.header, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
+            o.properties.grpCols = _.clone(pp.grpCols, function(o,i,d){
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+            });
             o.properties.rows = _.clone(pp.rows, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
             if(o.properties.header.length===0)delete o.properties.header;
+            if(o.properties.grpCols.length===0)delete o.properties.grpCols;
             if(o.properties.rows.length===0)delete o.properties.rows;
             return o;
         },
@@ -39264,6 +39290,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             if(pro.header && !_.isArr(pro.header))
                 pro.header = [];
+            if(pro.grpCols && !_.isArr(pro.grpCols))
+                pro.grpCols = [];
             if(pro.rows && !_.isArr(pro.rows))
                 pro.rows = [];
 
@@ -40476,7 +40504,7 @@ editorDropListHeight
                     header=profile.getSubNode('HCELLS'),
                     cols=profile.properties.header,
                     scroll=profile.getSubNode('SCROLL'),
-                    t,l,last,keys=profile.keys,ww;
+                    t,l,last,keys=profile.keys,ww,bw;
                 if(body.get(0).clientHeight){
                     if(header.get(0).clientHeight){
                         if(t=header.get(0).childNodes){
@@ -40492,7 +40520,7 @@ editorDropListHeight
                         ww=last?(last.offsetWidth+last.offsetLeft+100):0;
                         //set HI node
                         header.parent().width(ww);
-                        body.width(ww);
+                        body.width(bw=ww);
                     }else{
                         if(t=body.get(0).childNodes){
                             l=t.length;
@@ -40522,7 +40550,7 @@ editorDropListHeight
                 }
 
                 if(last){
-                    body.width(last.offsetWidth+last.offsetLeft);
+                    body.width(bw=last.offsetWidth+last.offsetLeft);
                 }else{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
@@ -40531,12 +40559,17 @@ editorDropListHeight
                         if(o.hidden!==true)
                             w += ('_pxWidth' in o) ? o._pxWidth : (o.width + 2);
                     });
-                    body.width(w);
+                    body.width(bw=w);
                 }
                 t=last=null;  
                 
                 // must use 'auto' for Android
                 scroll.css('overflow','auto');
+
+                if(bw>scroll.width()+2){
+                    overflowX="auto";
+                }
+
                 scroll.css('overflowX', overflowX);
 
                 scroll.onScroll();
@@ -40638,16 +40671,24 @@ editorDropListHeight
         },
         _adjustColsH:function(profile){
             var prop=profile.properties,
+                header=prop.header,
                 arr=prop.grpCols;
             if(prop.showHeader && arr && _.isArr(arr)&& arr.length){
-                var hcells=profile.getSubNode('HCELLS').children();
-                for(var j=0,m=arr.length,grp,_l,_w,n;j<m;j++){
+                var _left,_l,_w,flag=false;                
+                for(var j=0,m=arr.length,grp,n;j<m;j++){
+                    _l=_w=0;
+                    flag=false;
+                    _left=prop.rowHandler?(prop.rowHandlerWidth+2):0;
                     grp=arr[j];
-                    _w=_l=0;
-                    for(var k=grp.from,o;k<=grp.to;k++){
-                        if(o=hcells.get(k+1)){
-                            if(!_l)_l=o.offsetLeft;
-                            _w+=o.offsetWidth;
+                    for(var k=0,o;k<=grp.to;k++){
+                        o=header[k];
+                        if(k===grp.from){
+                            flag=true;
+                            _l=_left;
+                        }
+                        _left+= o._pxWidth + 2;
+                        if(flag && !o.hidden){
+                            _w += o._pxWidth + 2;
                         }
                     }
                     n=profile.getSubNode("HCELL",grp._serialId);
@@ -40769,6 +40810,7 @@ editorDropListHeight
             var prop=profile.properties,
                 cols=profile.colMap,
                 t2=profile.getSubNode('SCROLL'),
+                t3=profile.getSubNode('BODY'),
                 width=t2.width(),
                 borderW=0,
                 borderC=0;

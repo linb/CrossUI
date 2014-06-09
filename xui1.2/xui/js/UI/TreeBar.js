@@ -112,7 +112,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     //open parent node
                     if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
                         if(!pid || profile.getItemByItemId(pid)._inited)
-                            profile.boxing()._toggleNodes(data, true);
+                            profile.boxing()._toggleNodes(data, true, true, true);
                 }
                 
                 if(b && profile.renderId)
@@ -124,12 +124,22 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             });
         },
-        _toggleNodes:function(items, expand, recursive){
-            var self=this;
-            if(_.isArr(items))
-                _.arr.each(items,function(o){
-                    self.toggleNode(o.id, expand, recursive)
-                });
+        _toggleNodes:function(items, expand, recursive, init){
+            var self=this,prf=self.get(0),pro=prf.properties,
+                f=function(items){
+                    if(_.isArr(items)){
+                        _.arr.each(items,function(o){
+                            
+                            if(init && (_.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
+                            
+                            self.toggleNode(o.id, expand, false);
+                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length){
+                                f(o.sub);
+                            }
+                        });
+                    }
+                };
+            f(items);
             return self;
         },
         /*
@@ -458,9 +468,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             position:'absolute'
         },
         RenderTrigger:function(){
-            var self=this, pro=self.properties;
-            if(!pro.iniFold)
-                self.boxing()._toggleNodes(pro.items, true);
+            this.boxing()._toggleNodes(this.properties.items, true, true, true);
         },
         _onclickbar:function(profile, e, src){
             var properties = profile.properties,
