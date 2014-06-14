@@ -177,7 +177,7 @@ Class('xui.Event',null,{
         _events : ("mouseover,mouseout,mousedown,mouseup,mousemove,mousewheel,click,dblclick,contextmenu," +
                 "keydown,keypress,keyup,scroll,"+
                 "blur,focus,"+
-                "load,unload,abort,"+
+                "load,unload,beforeunload,abort,"+
                 "change,select,submit,reset,error,"+
                 //customized handlers:
                 //dont use resize in IE

@@ -183,7 +183,7 @@ Class("xui.DataBinder","xui.absObj",{
                     b.resetValue(v);
                     profile.__returnArray=_.isArr(v);
                     // set caption
-                    if(!_.isSet(p.caption) && b.setCaption)
+                    if(_.isSet(c) && _.isFun(b.setCaption))
                         _.tryF(b.setCaption,[c,true],b);
                 }
             });

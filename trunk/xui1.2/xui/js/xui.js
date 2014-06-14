@@ -13,7 +13,7 @@ Namespace=function(key){
 };
 //global: class
 Class=function(key, pkey, obj){
-    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t;
+    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all;
     obj=obj||{};
     //exists?
     if(t=_.get(w, key.split('.')))return t;
@@ -117,6 +117,9 @@ Class=function(key, pkey, obj){
     _.tryF(_this.$End, [], _this);
 
     _.breakO([obj.Static, obj.Instance, obj],2);
+
+    _c[key]=_c.length;
+    _c.push(key);
 
     //return Class
     return _this;
@@ -445,7 +448,11 @@ _.merge(_,{
                 arr[arr.length]=flag?i:value[i];
         //other like arguments
         else{
-            if(typeof value=='string')
+            if(_.isHash(value)){
+                for(var i in value){
+                    arr.push({key:i,value:value[i]});
+                }
+            }else if(typeof value=='string')
                 arr=value.split(flag||',');
             else
                 for(var i=0,l=value.length; i<l; ++i)
@@ -578,15 +585,15 @@ _.merge(_,{
             for(var j=0;j<ll;j++){
                 s=j+'';
                 c=arr[j];
-                if(typeof c=="object")c._xui_$s$=(_.isSet(t=getKey.call(c))?t:'') + zero[s.length-1] + s;
+                if(typeof c=="object")c._xui_$s$=(_.isSet(t=getKey.call(c,j))?t:'') + zero[s.length-1] + s;
             }
             try{
                 o=p.toString;
-                p.toString=function(){return this._xui_$s$}
+                p.toString=function(){return this.hasOwnProperty('_xui_$s$')?(this._xui_$s$):(o.call(this));};
                 arr.sort();
             }finally{
                 p.toString=o;
-                try{for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$}catch(e){}
+                for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$;
             }
             return arr;
         },
@@ -704,7 +711,7 @@ _.merge(Class, {
     _reg:{$key:1,$parent:1,$children:1,KEY:1,Static:1,Instance:1,Constructor:1,Initialize:1},
     // give nodeType to avoid breakO
     _reg2:{'nodeType':1,'constructor':1,'prototype':1,'toString':1,'valueOf':1,'hasOwnProperty':1,'isPrototypeOf':1,'propertyIsEnumerable':1,'toLocaleString':1},
-
+    _all:[],
     /*envelop a function by some keys
     */
     _fun:function(fun, name, original, upper, type){
@@ -747,6 +754,12 @@ _.merge(Class, {
         }
     },
     __gc:function(key){
+        var _c=Class._all;
+        if(!key){
+            for(var i=_c.length-1;i>0;i--)
+                Class.__gc(_c[i]);
+            return;
+        }
         if(typeof key=='object')key=key.KEY||"";
         var t = _.get(window, key.split('.')),s,i,j;
         if(t){
@@ -786,6 +799,9 @@ _.merge(Class, {
             //remove it out of window
             _.set(window, key.split('.'));
         }
+
+        _c.splice(_c[key],1);
+        delete _c[key];
     },
     destroy:function(key){Class.__gc(key)}
 });

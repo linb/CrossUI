@@ -410,7 +410,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(o.children && o.children.length){
                 if(o.box.KEY!="xui.UI.SVGPaper"){
                     _.arr.stableSort(o.children,function(){
-                        return this[0].properties.tabindex||0;
+                        return (10000000+(this[0].properties.tabindex||0))+'';
                     });
                 }
                 t=r.children=[];
@@ -2507,7 +2507,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             // sort sub node
             _.arr.stableSort(a,function(){
-                return this.$order||0;
+                return (10000000+(this.$order||0))+'';
             });
 
             //first
@@ -3095,7 +3095,7 @@ Class("xui.UI",  "xui.absObj", {
                 }
             };
             _.arr.stableSort(h,function(){
-                return this.$order||0;
+                return (10000000+(this.$order||0))+'';
             });
 
             for(var i=0,l=h.length;i<l;){
@@ -3568,7 +3568,7 @@ Class("xui.UI",  "xui.absObj", {
                 value = prop.dock || 'none',
                 pid=xui.Event.getId(p.get(0)),
                 order=function(){
-                    return parseInt(this.properties.dockOrder,10)||0;
+                    return (10000000+(parseInt(this.properties.dockOrder,10)||0))+'';
                 },
                 region,
                 inMatrix='$inMatrix',
