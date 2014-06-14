@@ -476,18 +476,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     b=profile.rowMap,
                     tar, t, k;
     
-                pid = row_m[pid];
+                pid = row_m&&row_m[pid];
     
-                base = row_m[base];
+                base = row_m&&row_m[base];
                 if(base){
                     t=profile.rowMap[base];
                     if(t)pid=t._pid;
                 }
                 arr=c._adjustRows(arr);
                 if(!pid)
-                    tar = (pro.rows || (pro.rows=[]));
+                    tar = _.isArr(pro.rows)?pro.rows:(pro.rows=[]);
                 else{
-                    k=b[pid];
+                    k=b&&b[pid];
                     tar = _.isArr(k.sub)?k.sub:(k.sub=[]);
                 }
     
@@ -959,62 +959,64 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
 
         updateHeader:function(colId,options){
-            var ns=this, colh=ns.getHeaderByColId(colId), isGroup;
+            var ns=this, 
+                prf=ns.get(0),
+                colh=ns.getHeaderByColId(colId), isGroup;
             if(!colh){
-                var prf=ns.get(0),
-                    grpCols=prf.properties.grpCols,
+                var grpCols=prf.properties.grpCols,
                     index=_.arr.subIndexOf(grpCols,"id",colId);
                 colh=grpCols[index];
                 isGroup=true;
             }
             if(colh){
-                var hid=colh._serialId, t, tt;
-
                 if(typeof options!='object') options={caption:options+''};
                 else _.filter(options,true);
                 delete options.id;
-                
-                if(!isGroup){
-                    if(t=options.width){
-                        var n=[];
-                        n.push(ns.getSubNode('HCELL',hid).get(0));
-                        _.each(colh._cells,function(o){
-                            n.push(ns.getSubNode('CELL',o).get(0));
-                        });
-                        xui(n).width(colh._pxWidth=t);
-                        
-                        ns.getSubNode('SCROLL').onScroll();
-                        ns.constructor._adjustColsH(ns.get(0));
-                        ns.constructor._adjustBody(ns.get(0));
-                    }
-    
-                    //  Forward-compatible with 'visibility'
-                    if(options.hasOwnProperty('visibility') && !options.hasOwnProperty('hidden'))
-                        options.hidden=!options.visibility;
-    
-                    if('hidden' in options){
-                        var  b = !!options.hidden;
-                        if(b){
-                            if(colh.hidden!==true){
-                                ns.showColumn(colId, false);
-                            }
-                        }else{
-                            if(colh.hidden===true){
-                                ns.showColumn(colId, true);
+
+                if(prf.renderId){
+                    var hid=colh._serialId, t, tt;
+                    if(!isGroup){
+                        if(t=options.width){
+                            var n=[];
+                            n.push(ns.getSubNode('HCELL',hid).get(0));
+                            _.each(colh._cells,function(o){
+                                n.push(ns.getSubNode('CELL',o).get(0));
+                            });
+                            xui(n).width(colh._pxWidth=t);
+                            
+                            ns.getSubNode('SCROLL').onScroll();
+                            ns.constructor._adjustColsH(ns.get(0));
+                            ns.constructor._adjustBody(ns.get(0));
+                        }
+        
+                        //  Forward-compatible with 'visibility'
+                        if(options.hasOwnProperty('visibility') && !options.hasOwnProperty('hidden'))
+                            options.hidden=!options.visibility;
+        
+                        if('hidden' in options){
+                            var  b = !!options.hidden;
+                            if(b){
+                                if(colh.hidden!==true){
+                                    ns.showColumn(colId, false);
+                                }
+                            }else{
+                                if(colh.hidden===true){
+                                    ns.showColumn(colId, true);
+                                }
                             }
                         }
                     }
-                }
-
-                if(t=options.headerStyle||options.colStyle)
-                    (tt=ns.getSubNode('HCELLA',hid)).attr('style',tt.attr('style')+";"+t);
-                if(t=options.headerClass)
-                    ns.getSubNode('HCELLA',hid).addClass(t);
-                if(options.hasOwnProperty('caption'))
-                    ns.getSubNode('HCELLCAPTION',hid).get(0).innerHTML=options.caption;
-                if('colResizer' in options){
-                    t=!!options.colResizer;
-                    ns.getSubNode('HHANDLER',hid).css('display',(options.colResizer=t)?"block":'none');
+    
+                    if(t=options.headerStyle||options.colStyle)
+                        (tt=ns.getSubNode('HCELLA',hid)).attr('style',tt.attr('style')+";"+t);
+                    if(t=options.headerClass)
+                        ns.getSubNode('HCELLA',hid).addClass(t);
+                    if(options.hasOwnProperty('caption'))
+                        ns.getSubNode('HCELLCAPTION',hid).get(0).innerHTML=options.caption;
+                    if('colResizer' in options){
+                        t=!!options.colResizer;
+                        ns.getSubNode('HHANDLER',hid).css('display',(options.colResizer=t)?"block":'none');
+                    }
                 }
 
                 _.merge(colh, options, 'all');
@@ -1989,7 +1991,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var o=xui(src).parent(2),
                         col=profile.colMap[profile.getSubId(src)];
                     if(col){
-                        if(col._isgroup){
+                        if(col&&col._isgroup){
                             col=profile.properties.header[col.to];
                             o=profile.getSubNode("HCELL",col._serialId);
                         }
@@ -2038,7 +2040,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         id = profile.getSubId(src)
                         col = profile.colMap[id];
 
-                    if(col._isgroup){
+                    if(col&&col._isgroup){
                         col=profile.properties.header[col.to];
                         o=profile.getSubNode("HCELL",col._serialId);
                     }
@@ -2235,7 +2237,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(!(col.hasOwnProperty('colSortable')?col.colSortable:p.colSortable))return;
                     }
 
-                    if(col._isgroup){
+                    if(col&&col._isgroup){
                         col=profile.properties.header[col.from];
                     }                    
                     if(profile.beforeColSorted && false===profile.boxing().beforeColSorted(profile, col))
@@ -4550,7 +4552,7 @@ editorDropListHeight
                                 if(_.isSet(max))
                                     editor.setMax(max);
                                 if(_.isSet(maxlength))
-                                    editor.setMax(maxlength);
+                                    editor.setMaxlength(maxlength);
                             }
                             if(_.isSet(precision))
                                 editor.setPrecision(precision);
@@ -4726,6 +4728,8 @@ editorDropListHeight
                             
                             //don't use disply:none, firfox has many bugs about Caret or renderer
                             editor.setVisibility('hidden');
+
+                            if(_.isFun(editor.collapse))editor.collapse();
                         }
                         if(editorEvents){
                             var h={};
@@ -4814,6 +4818,8 @@ editorDropListHeight
                     }
                     editor.setVisibility("visible");
         
+                    if(_.isFun(editor.expand))editor.expand();
+
                     if(profile.onBeginEdit)
                         profile.boxing().onBeginEdit(profile, cell, editor);
                     //activate editor
@@ -4933,6 +4939,7 @@ editorDropListHeight
             var prop=profile.properties,
                 header=prop.header,
                 len=header.length,
+                slen=(len+'').length,
                 SubID=xui.UI.$tag_subId,
                 a=_.copy(arr,function(o){
                     o.from=parseInt(o.from,10)||0;
@@ -4943,8 +4950,11 @@ editorDropListHeight
             _.arr.each(a,function(o,i){
                 a[i]=_.isHash?_.copy(o):{};
             });
-
-            _.arr.stableSort(a,function(){return _.str.repeat('0',len-this.from) + (this.from+'') + ":" +  _.str.repeat('0',this.to-this.from) ;});
+            _.arr.stableSort(a,function(){
+                // desc by from
+                return _.str.repeat('0',slen-(this.from+'').length) + (this.from+'') + ":" +  
+                // aesc by to
+                        _.str.repeat('0',slen-((len-this.to)+'').length) + ((len-this.to)+'') ;});
 
             for(var j=0,m=a.length,grp;j<m;j++){
                 grp=a[j];
@@ -5058,7 +5068,7 @@ editorDropListHeight
                     col=profile.getSubId(o.id);
                     if(col=map[col]){
                         // group
-                        if(col._isgroup){
+                        if(col&&col._isgroup){
                             xui(o).top(th*(col._layer-1));
                             rh=th;
                         }else{

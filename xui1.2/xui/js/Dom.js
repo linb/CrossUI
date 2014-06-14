@@ -1099,14 +1099,14 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         $clearEvent:function(){
-            return this.each(function(o){
-                if(!(o=xui.Event.getId(o)))return;
-                if(!(o=xui.$cache.profileMap[o]))return;
-                _.breakO(o.events,2);
-                delete o.events;
+            return this.each(function(o,i){
+                if(!(i=xui.Event.getId(o)))return;
+                if(!(i=xui.$cache.profileMap[i]))return;
+                _.breakO(i.events,2);
+                delete i.events;
 
                 _.arr.each(xui.Event._events,function(s){
-                   o["on"+s]=null;
+                   if(o["on"+s])o["on"+s]=null;
                 });
             });
         },
@@ -2414,7 +2414,7 @@ type:4
             if(stops){
                 if(stops.length>1){
                     _.arr.stableSort(stops,function(){
-                        return this.pos;
+                        return (10000+this.pos)+"";
                     });
                 }else{
                     return;
@@ -3174,11 +3174,12 @@ type:4
 
             if("onhashchange" in w)w.onhashchange=null;
             
+            xui('body').empty();
+            xui([w, d]).$clearEvent();
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
-            xui([w, d]).$clearEvent();
-            xui('body').empty();
+            Class.__gc();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
             w.Namespace=w.Class=w.xui=w.linb=w._=undefined;
