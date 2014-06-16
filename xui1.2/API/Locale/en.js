@@ -16844,6 +16844,13 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            onBodyLayout:{
+                $desc:"Fired when the grid boy completing layout.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "trigger : String, trigger type."
+                ]
+            },
             beforeRowActive:{
                 $desc:"Fired before the row is activated. If returns false, the activation will be ignored.",
                 $paras:[

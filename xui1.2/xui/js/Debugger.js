@@ -99,6 +99,7 @@ Class('xui.Debugger', null, {
                         s.value=bak||'';
                         bak=a;
                     }
+                    k=s=temp=bak=null;
                 });
             }
             self.$con.append(t1).scrollTop(self.$con.scrollHeight());

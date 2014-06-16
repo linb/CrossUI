@@ -1,6 +1,8 @@
 Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
-        if(arguments.callee.upper)arguments.callee.upper.call(this);
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
         xui.$cache.profileMap[this.domId=domId]=this;
     },
     Instance:{
@@ -1483,9 +1485,8 @@ type:4
                 doc=document,
                 sid='$blur_triggers$',
                 fun=xui.Dom._blurTrigger||(xui.Dom._blurTrigger=function(p,e){
-                    var me=arguments.callee,
-                        p=xui.Event.getPos(e),
-                        arr=me.arr,
+                    var p=xui.Event.getPos(e),
+                        arr=arguments.callee.arr,
                         srcN=xui.Event.getSrc(e),
                         a=_.copy(arr),
                         b, pos, w, h, v;
@@ -1515,7 +1516,6 @@ type:4
                                 srcN = srcN.parentNode;
                             }
                         };
-
                         if(!v.checkChild || isChild()){
                             v.target.each(function(o){
                                 if(o.parentNode && (w=o.offsetWidth) && (h=o.offsetHeight)){
@@ -1526,6 +1526,8 @@ type:4
                                 }
                             });
                         }
+
+                        isChild=null;
 
                         // anti trigger
                         if(!b && !_.isFun(v.trigger))
@@ -1540,6 +1542,7 @@ type:4
                             return false;
                         }
                     },null,true);
+                    srcN=null;
                     a.length=0;
                 }),
                 arr=fun.arr||(fun.arr=[]),
@@ -1576,6 +1579,7 @@ type:4
                 arr.push(id);
                 
                 if(!doc.onmousedown)doc.onmousedown=xui.Event.$eventhandler;
+                doc=fun=null;
             }
             return this;
         },

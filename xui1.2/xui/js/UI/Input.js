@@ -750,13 +750,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 src.attachEvent("onpropertychange",f);
                 src.attachEvent("ondrop",f);
                 ns.$ondestory=function(){
-                    var ns=this,
-                        src=ns.getSubNode('INPUT').get(0);
+                    var src=this.getSubNode('INPUT').get(0);
                     if(src){
                         src.detachEvent("onpropertychange",f);
                         src.detachEvent("ondrop",f);
-                        src=null;
                     }
+                    src=f=null;
                 }
             }else{
                 src.addEventListener("input",f,false);
@@ -766,15 +765,14 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     src.addEventListener("dragdrop",f,false);
 
                 ns.$ondestory=function(){
-                    var ns=this,
-                        src=ns.getSubNode('INPUT').get(0);
+                    var src=this.getSubNode('INPUT').get(0);
                     if(src){
                         src.removeEventListener("input",f,false);
                         src.removeEventListener("drop",f,false);
                         if(xui.browser.gek)
                             src.removeEventListener("dragdrop",f,false);
-                        src=null;
                     }
+                    src=f=null;
                 }
             }
             src=null;

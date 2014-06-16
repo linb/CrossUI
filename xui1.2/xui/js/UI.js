@@ -140,7 +140,7 @@ Class('xui.UIProfile','xui.Profile', {
                 _.each(ns.$beforeDestroy,function(f){
                     _.tryF(f,[],ns);
                 });
-                delete ns.$beforeDestroy;
+                _.breakO(ns.$beforeDestroy,2);
             }
             _.tryF(ns.$ondestory,[],ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
@@ -200,7 +200,7 @@ Class('xui.UIProfile','xui.Profile', {
                 _.each(ns.$afterDestroy,function(f){
                     _.tryF(f,[],ns);
                 });
-                delete ns.$afterDestroy;
+                _.breakO(ns.$afterDestroy,2);
             }
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             _.breakO([ns.properties,ns.events, ns.CF, ns.CB, ns.CC, ns.CA, ns.CS, ns],2);
@@ -683,13 +683,13 @@ Class("xui.UI",  "xui.absObj", {
                     _.each(o.$beforeDestroy,function(f){
                         _.tryF(f,[],o);
                     });
-                    delete o.$beforeDestroy;
+                    _.breakO(o.$beforeDestroy,2);
                 }
                 if(o.$afterDestroy){
                     _.each(o.$afterDestroy,function(f){
                         _.tryF(f,[],o);
                     });
-                    delete o.$afterDestroy;
+                    _.breakO(o.$afterDestroy,2);
                 }
                 if(o.renderId){
                     o.getRoot().remove();
@@ -2307,7 +2307,7 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             children.length=0;
-            node=null;
+            node=t=null;
         },
         setDftProp:function(prop){
             this.__resetDftProp=prop;
@@ -3761,7 +3761,7 @@ Class("xui.UI",  "xui.absObj", {
                                 if(win)
                                     xui.$cache._resizeTime = _();
                             }
-                            me=node=style=null;
+                            me=rePos=node=style=null;
                         };
                         f.pid=pid;
                         _.arr.each(xui.UI.$dock_args,function(key){
@@ -3991,6 +3991,7 @@ Class("xui.UI",  "xui.absObj", {
                         
                         if( p && p.get(0) && (p=xui.UIProfile.getFromDom(p.id())) )
                             _.tryF(p.clearCache,[],p);
+                        profile=fun=p=null;
                     }
                 }else{
                     if(profile.$beforeDestroy)

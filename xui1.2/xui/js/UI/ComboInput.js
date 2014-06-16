@@ -12,11 +12,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return v;
         },
         getValue:function(){
-            var v = arguments.callee.upper.apply(this,arguments);
+            var upper=arguments.callee.upper,
+                v = upper.apply(this,_.toArr(arguments));
+            upper=null;
             return this._adjustV(v);
         },
         getUIValue:function(){
-            var v = arguments.callee.upper.apply(this,arguments);
+            var upper=arguments.callee.upper,
+                v = upper.apply(this,_.toArr(arguments));
+            upper=null;
             return this._adjustV(v);
         },
         _getCtrlValue:function(){
@@ -195,7 +199,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(p.properties.type=='upload'||p.properties.type=='file')
                     p.getSubNode('FILE').attr('value','');
             });
-            return arguments.callee.upper.apply(this,arguments);
+            var upper=arguments.callee.upper,
+                rtn=upper.apply(this,_.toArr(arguments));
+            upper=null;
+            return rtn;
         },
         _drop:function(e,src){
             return this.each(function(profile){

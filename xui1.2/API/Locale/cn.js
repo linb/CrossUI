@@ -16776,6 +16776,13 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            onBodyLayout:{
+                $desc:"在表格主体界面布局完成后触发.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "trigger : String, 触发事件类型."
+                ]
+            },
             beforeRowActive:{
                 $desc:"在行激活前被调用. 返回false将阻止行被激活.",
                 $paras:[

@@ -25,7 +25,10 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 if(p.properties.type=='drop')
                     p.boxing().setCaption("",true);
             });
-            return arguments.callee.upper.apply(this,arguments);
+            var upper=arguments.callee.upper,
+                rtn=upper.apply(this,_.toArr(arguments));
+            upper=null;
+            return rtn;
         },
         setUIValue:function(value, force){
             this.each(function(profile){
@@ -33,7 +36,10 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 if(p.$UIvalue!==value && p.type=='drop')
                     profile.boxing().setCaption("",true);
             });
-            return arguments.callee.upper.apply(this,arguments);
+            var upper=arguments.callee.upper,
+                rtn=upper.apply(this,_.toArr(arguments));
+            upper=null;
+            return rtn;
         }
     },
     Initialize:function(){

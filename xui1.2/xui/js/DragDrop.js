@@ -725,8 +725,8 @@ Class('xui.DragDrop',null,{
                 var t,k,o=xui(id2),t=xui(id1);
                 //&nbsp; for IE6
                 if(xui.browser.ie6)
-                    o.html('&nbsp;',false);
-                else o.empty(false);
+                    o.html('&nbsp;');
+                else o.empty();
                 o.attr('style','font-size:0;line-height:0;');
 
                 xui('body').prepend(
