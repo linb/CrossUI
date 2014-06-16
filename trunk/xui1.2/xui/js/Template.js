@@ -1,6 +1,8 @@
 Class('xui.Template','xui.absProfile',{
     Constructor:function(template,properties,events,domId){
-        arguments.callee.upper.apply(this,arguments);
+        var upper=arguments.callee.upper, args=_.toArr(arguments);
+        upper.apply(this,args);
+        upper=null;
         
         var self=this;
         self.$domId = self.KEY + ':' + (self.serialId=self._pickSerialId()) + ':';

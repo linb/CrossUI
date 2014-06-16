@@ -1472,7 +1472,9 @@ cycle: is the thread circular
 */
 Class('xui.Thread',null,{
     Constructor:function(id, tasks, delay, callback, onStart, onEnd, cycle){
-        if(arguments.callee.upper)arguments.callee.upper.call(this);
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
         //for api call directly
         var self=this,me=arguments.callee,t=xui.$cache.thread;
         // xui.Thread() => self.constructor!==me
@@ -1778,7 +1780,9 @@ iajax   +       +       +                   *                   *           *
 */
 Class('xui.absIO',null,{
     Constructor:function(uri, query, onSuccess, onFail, threadid, options){
-        if(arguments.callee.upper)arguments.callee.upper.call(this);
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
         //get properties
         if(typeof uri=='object')
             options=uri;
@@ -2112,7 +2116,7 @@ Class('xui.SAjax','xui.absIO',{
                 c.$response(rsp,id);
             };
 
-            var w=c._n=document,
+            var w=document,
                 _cb=function(){
                     if(!ok){
                         ok=true;
@@ -2184,7 +2188,7 @@ Class('xui.SAjax','xui.absIO',{
             if(n){
                 self.node=n.onload=n.onreadystatechange=n.onerror=null;
 
-                var div=c._n.createElement('div');
+                var div=document.createElement('div');
                 //in ie + add script with url(remove script immediately) + add the same script(remove script immediately) => crash
                 //so, always clear it later
                 div.appendChild(n.parentNode&&n.parentNode.removeChild(n)||n);
@@ -2439,7 +2443,9 @@ Class('xui.IAjax','xui.absIO',{
 */
 Class('xui.SC',null,{
     Constructor:function(path, callback, isAsy, threadid, options){
-        if(arguments.callee.upper)arguments.callee.upper.call(this);
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
         var p = xui.$cache.SC,r;
         if(r=p[path]||(p[path]=_.get(window,path.split('.'))))
             _.tryF(callback,[path,null,threadid],r);
@@ -2744,9 +2750,11 @@ new function(){
     //unserialize string to object
     _.unserialize = function(str, dateformat){
         try{
-            str=eval('({_:'+str+'})');
+            str='({_:'+str+'})';
+            str=eval(str);
             if(dateformat||(xui&&xui.$dateFormat))E(str);
-            return str._;
+            str=str._;
+            return str;
         }catch(e){
             return false;
         }
@@ -2794,7 +2802,9 @@ _.id.prototype = {
 //xui.absBox
 Class('xui.absBox',null, {
     Constructor:function(){
-        if(arguments.callee.upper)arguments.callee.upper.call(this);
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
         this._nodes=[];
     },
     Before:function(key){
@@ -2892,7 +2902,9 @@ Class('xui.absBox',null, {
 
 Class('xui.absProfile',null,{
     Constructor:function(){
-        if(arguments.callee.upper)arguments.callee.upper.call(this);
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
         if(!this.$xid)this.$xid=xui.absProfile.$xid.next();
     },
     Instance:{
@@ -2955,7 +2967,9 @@ Class('xui.absProfile',null,{
 
 Class('xui.Profile','xui.absProfile',{
     Constructor:function(host,key,alias,box,properties,events,options){
-        arguments.callee.upper.apply(this,arguments);
+        var upper=arguments.callee.upper,args=_.toArr(arguments);
+        upper.apply(this,args);
+        upper=null;
         var self=this;
         _.merge(self,options);
 
@@ -3090,10 +3104,12 @@ Class('xui.Profile','xui.absProfile',{
 Class('xui.absObj',"xui.absBox",{
     //properties, events, host
     Constructor:function(){
-        arguments.callee.upper.apply(this,arguments);
+        var upper=arguments.callee.upper,args=_.toArr(arguments);
+        upper.apply(this,args);
+        upper=null;
         //for pack function
-        if(arguments[0]!==false && typeof this._ini=='function')
-            return this._ini.apply(this,arguments);
+        if(args[0]!==false && typeof this._ini=='function')
+            return this._ini.apply(this,args);
     },
     Before:function(key, parent_key, o){
         xui.absBox.$type[key]=key;
@@ -3254,6 +3270,7 @@ Class('xui.absObj',"xui.absBox",{
                                     v.clearCache();
                                 if(v.box._addEventHanlder)v.box._addEventHanlder(v,i,fun);
                                 v[i] =fun;
+                                fun=null;
                             });
                         else if(l==1 && null===fun)
                             return this.each(function(v){

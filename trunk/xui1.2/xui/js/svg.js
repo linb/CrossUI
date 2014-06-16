@@ -2562,7 +2562,9 @@ Class("xui.svg.absComb", "xui.svg",{
             }
         },
         _syncAttr:function(prf,options,shapeChanged){
-            arguments.callee.upper.apply(this,arguments);
+            var upper=arguments.callee.upper, args=_.toArr(arguments);
+            upper.apply(this,args);
+            upper=null;
             if(shapeChanged){
                 prf.boxing()._adjustText();
             }
@@ -2801,8 +2803,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
             return s;
         },
         _syncAttr:function(prf,options,shapeChanged){
-            arguments.callee.upper.apply(this,arguments);
-
+            var upper=arguments.callee.upper,args=_.toArr(arguments);
+            upper.apply(this,args);
+            upper=null;
             prf._pathCached={};
 
             if(!prf._bg)return;

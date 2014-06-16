@@ -129,7 +129,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //clear rows cache
             delete profile.$allrowscache;
             
-            profile.box._adjustBody(profile);
+            profile.box._adjustBody(profile,'addrow');
         },
         _refreshHeader:function(header){
             var profile=this.get(0),
@@ -168,7 +168,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(rows&&rows.length)
                 this.setRows(rows);
             
-            box._adjustBody(profile);
+            box._adjustBody(profile,'addcol');
 
             //render
             var co=profile.properties.colOptions;
@@ -627,7 +627,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 delete profile.$allrowscache;
                 
                 profile.box._asy(profile);
-                profile.box._adjustBody(profile);
+                profile.box._adjustBody(profile,'delrow');
             }
             if(affectUI!==false && profile.renderId&&profile.__hastmpRow){
                 profile.box.__ensurehotrow(profile,null);
@@ -680,7 +680,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 prop.grpCols=box._adjustGrpColsData(profile,arr);
                 box._adjustColsH(profile);
                 box._adjustColsV(profile,prop.headerHeight);
-                box._adjustBody(profile);
+                box._adjustBody(profile,'addcol');
             }else{
                 // insert header dir 
                 _.arr.insertAny(prop.header, col, pos);
@@ -826,7 +826,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 prop.grpCols=box._adjustGrpColsData(profile,arr);
                 box._adjustColsH(profile);
                 box._adjustColsV(profile,prop.headerHeight);
-                box._adjustBody(profile);
+                box._adjustBody(profile,'delcol');
             }
             return self;
         },
@@ -874,7 +874,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 box.__ensurehotrow(profile,null);
             }
 
-            box._adjustBody(profile);
+            box._adjustBody(profile,'delrow');
 
             return this;
         },
@@ -986,7 +986,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             
                             ns.getSubNode('SCROLL').onScroll();
                             ns.constructor._adjustColsH(ns.get(0));
-                            ns.constructor._adjustBody(ns.get(0));
+                            ns.constructor._adjustBody(ns.get(0),'setcol');
                         }
         
                         //  Forward-compatible with 'visibility'
@@ -1045,7 +1045,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
 
                 profile.box._adjustColsH(profile);
-                profile.box._adjustBody(profile);
+                profile.box._adjustBody(profile,'setcol');
             return true;
         },
         sortColumn:function(colId, desc, sortby){
@@ -2028,7 +2028,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     profile.getSubNode('SCROLL').onScroll();
                     profile.box._adjustColsH(profile);
-                    profile.box._adjustBody(profile);
+                    profile.box._adjustBody(profile,'setcol');
                     profile._limited=0;
                 },
                 onClick:function(){
@@ -2087,7 +2087,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().afterColResized(profile,col.id,w);
                     
                     profile.box._adjustColsH(profile);
-                    profile.box._adjustBody(profile);
+                    profile.box._adjustBody(profile,'setcol');
                     return false;
                 }
             },
@@ -2165,7 +2165,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.afterRowResized)
                         profile.boxing().afterRowResized(profile, row?row.id:null, h);
 
-                    profile.box._adjustBody(profile);
+                    profile.box._adjustBody(profile,'setrow');
 
                     profile._limited=0;
                 },
@@ -2195,6 +2195,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(profile.afterRowResized)
                         profile.boxing().afterRowResized(profile, row?row.id:null, h);
+                    
+                    profile.box._adjustBody(profile,'setrow');
                     
                     return false;
                 },
@@ -3092,7 +3094,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.getSubNode('FCELL',true).css('display',value?'':'none');
                     
                     this.box._adjustColsH(this);
-                    this.box._adjustBody(this);
+                    this.box._adjustBody(this,'rowhandler');
                 }
             },
             rowResizer:{
@@ -3207,6 +3209,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             noCtrlKey:true
         },
         EventHandlers:{
+            onBodyLayout:function(profile, trigger){},
             beforeCellKeydown:function(profile,cell,keys){},
             afterCellFocused:function(profile, cell, row){},
 
@@ -3286,7 +3289,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     (o.rowRenderer||pro.rowOptions.rowRenderer).call(null,ns,o);
             });
             ns.box._asy(ns);
-            ns.box._adjustBody(ns);
+            ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
         },
         __ensurehotrow:function(profile,focusColId){
@@ -3507,7 +3510,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
 
                     profile.box._adjustColsH(profile);
-                    profile.box._adjustBody(profile);
+                    profile.box._adjustBody(profile,'rowhandler');
                 }
             }
         },
@@ -4238,7 +4241,7 @@ editorDropListHeight
             }
             //clear rows cache
             delete profile.$allrowscache;
-            profile.box._adjustBody(profile);
+            profile.box._adjustBody(profile,'showrow');
         },
         _getCellId:function(profile, rowId, colId){
             return _.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
@@ -4497,6 +4500,7 @@ editorDropListHeight
                 // if beforeIniEditor doesnt return an editor
                 if(!editor || !editor['xui.UI']){
                     var type=getPro('type')||'input',
+                        editorAutoPop= getPro('editorAutoPop'),
                         editorCacheKey = getPro('editorCacheKey'),
                         editorProperties = getPro('editorProperties'),
                         editorEvents = getPro('editorEvents'),
@@ -4818,7 +4822,12 @@ editorDropListHeight
                     }
                     editor.setVisibility("visible");
         
-                    if(_.isFun(editor.expand))editor.expand();
+                    if( _.isFun(editor.expand) &&
+                        (editorAutoPop!==false) && 
+                        (editorAutoPop || type=='listbox'||type=='date'||type=='datepicker'||type=='datetime'||type=='time'||type=='timepicker'||type=='color'||type=='colorpicker')
+                     ){
+                         editor.expand();
+                     }
 
                     if(profile.onBeginEdit)
                         profile.boxing().onBeginEdit(profile, cell, editor);
@@ -4840,7 +4849,7 @@ editorDropListHeight
                 profile.box._sethotrowoutterblur(profile);
             }
         },
-        _adjustBody:function(profile, callback){
+        _adjustBody:function(profile, trigger, callback){
             profile.getSubNode('SCROLL').css('overflow','hidden');
             if(!profile.renderId || profile.destroyed)return;
             _.resetRun(profile.$xid+'4',function(){
@@ -4922,7 +4931,10 @@ editorDropListHeight
 
                 scroll.onScroll();
 
-                if(callback)callback();              
+                if(profile.onBodyLayout)
+                    profile.boxing().onBodyLayout(profile, trigger);
+                    
+                if(callback)callback();
             });
         },
         _adjustHeader:function(arr){
@@ -5285,7 +5297,7 @@ editorDropListHeight
             if(height)rh=t1.offsetHeight();
             t2.cssSize({width:width, height: height?(height-rh):null});
 
-            this._adjustBody(profile);            
+            this._adjustBody(profile,'resize');            
         }
    }
 });

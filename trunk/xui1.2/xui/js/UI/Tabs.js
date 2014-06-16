@@ -1161,9 +1161,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             ppid=_.get(node,["parentNode","parentNode","id"])||"";
             if(id.indexOf(ks.ITEM)===0||pid.indexOf(ks.ITEM)===0||ppid.indexOf(ks.ITEM)===0||
                 id.indexOf(ks.HANDLE)===0||pid.indexOf(ks.HANDLE)===0||ppid.indexOf(ks.HANDLE)===0||
-                id.indexOf(ks.CMDS)===0||pid.indexOf(ks.CMDS)===0||ppid.indexOf(ks.CMDS)===0)
-                return arguments.callee.upper.apply(this,arguments);
-            else
+                id.indexOf(ks.CMDS)===0||pid.indexOf(ks.CMDS)===0||ppid.indexOf(ks.CMDS)===0){
+                var upper=arguments.callee.upper,
+                    rtn=upper.apply(this,_.toArr(arguments));
+                upper=null;
+                return rtn;
+            }else
                 return false;
         },
         //for tabs only
