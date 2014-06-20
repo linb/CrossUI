@@ -12,7 +12,7 @@ Class('xui.Debugger', null, {
             return true;
         },
         trace:function(obj){
-            var args=arguments,
+            var args=_.toArr(arguments),
                 fun=args[1]||arguments.callee.caller,
                 arr=args[2]||[];
             if(fun){
@@ -34,9 +34,10 @@ Class('xui.Debugger', null, {
                 a.push(' >> Function Trace: ' + arr.join(' <= '));
                 xui.Debugger.log.apply(xui.Debugger,a);
             }
+            fun=null;
         },
         log:function(){
-            var t1,t2,time,self=this,arr=arguments,str;
+            var t1,t2,time,self=this,arr=_.toArr(arguments),str;
             if(!arr.length)return;
 
             t1 = document.createElement("div");
@@ -126,7 +127,7 @@ Class('xui.Debugger', null, {
         //shorcut
         xui.echo = function(){
             if(!xui.debugMode)return false;
-            xui.Debugger.log.apply(xui.Debugger,arguments);
+            xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
         };
         xui.message = function(body, head, width, time){
            width = width || 200;
@@ -212,10 +213,11 @@ Class('xui.Debugger', null, {
                      div.__hide=1;
                 },300,0).start();
             }, time||5000);
+            me=null;
         };
 
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
-            xui.log=function(){window.console.log.apply(window.console,arguments);};
+            xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
         }else{
             xui.log=xui.echo;
         }
