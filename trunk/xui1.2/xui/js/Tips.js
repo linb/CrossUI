@@ -278,18 +278,20 @@ Class("xui.Tips", null,{
             if(!b)b=(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
-            if(!b && ((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
-                self.show(pos, t);
-                b=true;
-            }
-            else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
-                // if tips is default value, try to show caption
-                // you can settips to null or undefined to stop it
-                && t.tips===''
-                ){
-                if(t.caption){
-                    self.show(pos, {tips:t.caption});
+            if(!b){
+                if(((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
+                    self.show(pos, t);
                     b=true;
+                }
+                else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
+                    // if tips is default value, try to show caption
+                    // you can settips to null or undefined to stop it
+                    && t.tips===''
+                    ){
+                    if(t.caption){
+                        self.show(pos, {tips:t.caption});
+                        b=true;
+                    }
                 }
             }
 

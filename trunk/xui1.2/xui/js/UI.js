@@ -409,8 +409,9 @@ Class('xui.UIProfile','xui.Profile', {
             //children
             if(o.children && o.children.length){
                 if(o.box.KEY!="xui.UI.SVGPaper"){
-                    _.arr.stableSort(o.children,function(){
-                        return (10000000+(this[0].properties.tabindex||0))+'';
+                    _.arr.stableSort(o.children,function(x,y){
+                        x=(x[0].properties.tabindex||0);y=(y[0].properties.tabindex||0);
+                        return x>y?1:x==y?0:-1;
                     });
                 }
                 t=r.children=[];
@@ -2506,8 +2507,9 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             // sort sub node
-            _.arr.stableSort(a,function(){
-                return (10000000+(this.$order||0))+'';
+            _.arr.stableSort(a,function(x,y){
+                x=x.$order||0;y=y.$order||0;
+                return x>y?1:x==y?0:-1;
             });
 
             //first
@@ -3094,8 +3096,9 @@ Class("xui.UI",  "xui.absObj", {
                     h[h.length]=o;
                 }
             };
-            _.arr.stableSort(h,function(){
-                return (10000000+(this.$order||0))+'';
+            _.arr.stableSort(h,function(x,y){
+                x=x.$order||0;y=y.$order||0;
+                return x>y?1:x==y?0:-1;
             });
 
             for(var i=0,l=h.length;i<l;){
@@ -3567,8 +3570,9 @@ Class("xui.UI",  "xui.absObj", {
                 auto = 'auto',
                 value = prop.dock || 'none',
                 pid=xui.Event.getId(p.get(0)),
-                order=function(){
-                    return (10000000+(parseInt(this.properties.dockOrder,10)||0))+'';
+                order=function(x,y){
+                    x=parseInt(x.properties.dockOrder,10)||0;y=parseInt(y.properties.dockOrder,10)||0;
+                    return x>y?1:x==y?0:-1;
                 },
                 region,
                 inMatrix='$inMatrix',

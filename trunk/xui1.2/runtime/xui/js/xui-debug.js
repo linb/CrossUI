@@ -573,8 +573,8 @@ _.merge(_,{
     },
     //for handling Array
     arr:{
-        stableSort:function(arr, getKey){
-            if(!arr||arr.length<2)return;
+        fastSortObject:function(arr, getKey){
+            if(!arr||arr.length<2)return arr;
 
             var ll=arr.length,
                 zero=[],
@@ -594,6 +594,22 @@ _.merge(_,{
             }finally{
                 p.toString=o;
                 for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$;
+            }
+            return arr;
+        },
+        stableSort:function(arr,sortby){
+            if(arr && arr.length > 1){
+                for(var i=0,l=arr.length,a=[],b=[];i<l;i++)b[i]=arr[a[i]=i];
+                if(_.isFun(sortby))
+                    a.sort(function(x,y){
+                        return sortby.call(arr,arr[x],arr[y]) || (x>y?1:-1);
+                    });
+                else
+                    a.sort(function(x,y){
+                        return arr[x]>arr[y]?1:arr[x]<arr[y]?-1:x>y?1:-1;
+                    });
+                for(i=0;i<l;i++)arr[i]=b[a[i]];  
+                a.length=b.length=0;
             }
             return arr;
         },
@@ -9443,8 +9459,8 @@ type:4
             
             if(stops){
                 if(stops.length>1){
-                    _.arr.stableSort(stops,function(){
-                        return (10000+this.pos)+"";
+                    _.arr.stableSort(stops,function(x,y){
+                        return x.pos>y.pos?1:x.pos==y.pos?0:-1;
                     });
                 }else{
                     return;
@@ -12895,18 +12911,20 @@ Class("xui.Tips", null,{
             if(!b)b=(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
-            if(!b && ((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
-                self.show(pos, t);
-                b=true;
-            }
-            else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
-                // if tips is default value, try to show caption
-                // you can settips to null or undefined to stop it
-                && t.tips===''
-                ){
-                if(t.caption){
-                    self.show(pos, {tips:t.caption});
+            if(!b){
+                if(((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
+                    self.show(pos, t);
                     b=true;
+                }
+                else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
+                    // if tips is default value, try to show caption
+                    // you can settips to null or undefined to stop it
+                    && t.tips===''
+                    ){
+                    if(t.caption){
+                        self.show(pos, {tips:t.caption});
+                        b=true;
+                    }
                 }
             }
 
@@ -13290,7 +13308,7 @@ Class("xui.Tips", null,{
             return true;
         },
         trace:function(obj){
-            var args=arguments,
+            var args=_.toArr(arguments),
                 fun=args[1]||arguments.callee.caller,
                 arr=args[2]||[];
             if(fun){
@@ -13312,9 +13330,10 @@ Class("xui.Tips", null,{
                 a.push(' >> Function Trace: ' + arr.join(' <= '));
                 xui.Debugger.log.apply(xui.Debugger,a);
             }
+            fun=null;
         },
         log:function(){
-            var t1,t2,time,self=this,arr=arguments,str;
+            var t1,t2,time,self=this,arr=_.toArr(arguments),str;
             if(!arr.length)return;
 
             t1 = document.createElement("div");
@@ -13404,7 +13423,7 @@ Class("xui.Tips", null,{
         //shorcut
         xui.echo = function(){
             if(!xui.debugMode)return false;
-            xui.Debugger.log.apply(xui.Debugger,arguments);
+            xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
         };
         xui.message = function(body, head, width, time){
            width = width || 200;
@@ -13490,10 +13509,11 @@ Class("xui.Tips", null,{
                      div.__hide=1;
                 },300,0).start();
             }, time||5000);
+            me=null;
         };
 
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
-            xui.log=function(){window.console.log.apply(window.console,arguments);};
+            xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
         }else{
             xui.log=xui.echo;
         }
@@ -13913,8 +13933,9 @@ Class('xui.UIProfile','xui.Profile', {
             //children
             if(o.children && o.children.length){
                 if(o.box.KEY!="xui.UI.SVGPaper"){
-                    _.arr.stableSort(o.children,function(){
-                        return (10000000+(this[0].properties.tabindex||0))+'';
+                    _.arr.stableSort(o.children,function(x,y){
+                        x=(x[0].properties.tabindex||0);y=(y[0].properties.tabindex||0);
+                        return x>y?1:x==y?0:-1;
                     });
                 }
                 t=r.children=[];
@@ -16010,8 +16031,9 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             // sort sub node
-            _.arr.stableSort(a,function(){
-                return (10000000+(this.$order||0))+'';
+            _.arr.stableSort(a,function(x,y){
+                x=x.$order||0;y=y.$order||0;
+                return x>y?1:x==y?0:-1;
             });
 
             //first
@@ -16598,8 +16620,9 @@ Class("xui.UI",  "xui.absObj", {
                     h[h.length]=o;
                 }
             };
-            _.arr.stableSort(h,function(){
-                return (10000000+(this.$order||0))+'';
+            _.arr.stableSort(h,function(x,y){
+                x=x.$order||0;y=y.$order||0;
+                return x>y?1:x==y?0:-1;
             });
 
             for(var i=0,l=h.length;i<l;){
@@ -17071,8 +17094,9 @@ Class("xui.UI",  "xui.absObj", {
                 auto = 'auto',
                 value = prop.dock || 'none',
                 pid=xui.Event.getId(p.get(0)),
-                order=function(){
-                    return (10000000+(parseInt(this.properties.dockOrder,10)||0))+'';
+                order=function(x,y){
+                    x=parseInt(x.properties.dockOrder,10)||0;y=parseInt(y.properties.dockOrder,10)||0;
+                    return x>y?1:x==y?0:-1;
                 },
                 region,
                 inMatrix='$inMatrix',
@@ -38004,8 +38028,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     ff=function(n){return n||''};
                             }
                             sortf=function(x,y){
-                               x=ff(a1[x]); y=ff(a1[y]);
-                               return (x>y?1:x==y?0:-1)*(order?1:-1);
+                               var xx=ff(a1[x]), yy=ff(a1[y]);
+                               return (xx>yy?(order?1:-1):xx===yy?(x>y?-1:1):(order?-1:1));
                             };
                         }else{
                             sortf=function(x,y){
@@ -40676,12 +40700,10 @@ editorDropListHeight
             _.arr.each(a,function(o,i){
                 a[i]=_.isHash?_.copy(o):{};
             });
-            _.arr.stableSort(a,function(){
-                // desc by from
-                return _.str.repeat('0',slen-(this.from+'').length) + (this.from+'') + ":" +  
-                // aesc by to
-                        _.str.repeat('0',slen-((len-this.to)+'').length) + ((len-this.to)+'') ;});
-
+            _.arr.stableSort(a,function(x,y){
+                // desc by from, aesc by to
+                x.from>y.from?1:x.from==y.from?(x.to>y.to?-1:x.to==y.to?0:1):-1;
+            });
             for(var j=0,m=a.length,grp;j<m;j++){
                 grp=a[j];
                 grp[SubID]=grp[SubID]||('g_'+profile.pickSubId('grpCol'));

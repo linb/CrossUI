@@ -2290,8 +2290,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     ff=function(n){return n||''};
                             }
                             sortf=function(x,y){
-                               x=ff(a1[x]); y=ff(a1[y]);
-                               return (x>y?1:x==y?0:-1)*(order?1:-1);
+                               var xx=ff(a1[x]), yy=ff(a1[y]);
+                               return (xx>yy?(order?1:-1):xx===yy?(x>y?-1:1):(order?-1:1));
                             };
                         }else{
                             sortf=function(x,y){
@@ -4962,12 +4962,10 @@ editorDropListHeight
             _.arr.each(a,function(o,i){
                 a[i]=_.isHash?_.copy(o):{};
             });
-            _.arr.stableSort(a,function(){
-                // desc by from
-                return _.str.repeat('0',slen-(this.from+'').length) + (this.from+'') + ":" +  
-                // aesc by to
-                        _.str.repeat('0',slen-((len-this.to)+'').length) + ((len-this.to)+'') ;});
-
+            _.arr.stableSort(a,function(x,y){
+                // desc by from, aesc by to
+                x.from>y.from?1:x.from==y.from?(x.to>y.to?-1:x.to==y.to?0:1):-1;
+            });
             for(var j=0,m=a.length,grp;j<m;j++){
                 grp=a[j];
                 grp[SubID]=grp[SubID]||('g_'+profile.pickSubId('grpCol'));

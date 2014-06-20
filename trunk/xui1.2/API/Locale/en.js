@@ -74,12 +74,20 @@ _.set(xui.Locale,["en","app"], {
 
             arr:{
                 $desc:"A functions collection for Array.",
-                stableSort:{
-                    $desc:"The fast stable sort function.",
+                fastSortObject:{
+                    $desc:"The fast stable sort function for object array.",
                     $rtn:'Array',
                     $paras: [
                         "arr [Required]: Array, target array.",
-                        "getKey [Required]: Function. to get the sort key."
+                        "byKey [Required]: Function. function to get sort key."
+                    ]
+                },
+                stableSort:{
+                    $desc:"The stable sort function.",
+                    $rtn:'Array',
+                    $paras: [
+                        "arr [Required]: Array, target array.",
+                        "sortby [Required]: Function(x,y). sort function."
                     ]
                 },
                 each:{

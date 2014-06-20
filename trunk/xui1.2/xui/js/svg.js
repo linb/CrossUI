@@ -3253,8 +3253,12 @@ Class("xui.svg.connector","xui.svg.absComb",{
 
             // Sort paths by path length
 			// < 22, stable sort
-            _.arr.stableSort(paths,function(){
-                return (10+x.inter)+':'+(100+x.len)+':'+(100+x.len2);
+            _.arr.stableSort(paths,function(x,y){
+                return x.inter>y.inter?1:
+                       x.inter<y.inter?-1:
+                       x.len>y.len?1:
+                       x.len<y.len?-1:
+                       x.len2>y.len2?1:x.len2==y.len2?0:-1;
             });
             // set the shortest path
 

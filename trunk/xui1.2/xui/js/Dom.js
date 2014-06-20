@@ -2417,8 +2417,8 @@ type:4
             
             if(stops){
                 if(stops.length>1){
-                    _.arr.stableSort(stops,function(){
-                        return (10000+this.pos)+"";
+                    _.arr.stableSort(stops,function(x,y){
+                        return x.pos>y.pos?1:x.pos==y.pos?0:-1;
                     });
                 }else{
                     return;

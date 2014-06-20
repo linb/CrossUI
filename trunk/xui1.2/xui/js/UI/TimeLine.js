@@ -1800,8 +1800,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             var self=this, o, h,
                 t=profile.properties;
             t._lines.length = 1;
-            _.arr.stableSort(t.items,function(){
-                return this.from;
+            _.arr.stableSort(t.items,function(x,y){
+                    x=x.from;y=y.from;
+                    return x>y?1:x==y?0:-1;
             });
             //re caculate from current line
             _.arr.each(t.items,function(v){

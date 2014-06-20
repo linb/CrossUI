@@ -573,8 +573,8 @@ _.merge(_,{
     },
     //for handling Array
     arr:{
-        stableSort:function(arr, getKey){
-            if(!arr||arr.length<2)return;
+        fastSortObject:function(arr, getKey){
+            if(!arr||arr.length<2)return arr;
 
             var ll=arr.length,
                 zero=[],
@@ -594,6 +594,22 @@ _.merge(_,{
             }finally{
                 p.toString=o;
                 for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$;
+            }
+            return arr;
+        },
+        stableSort:function(arr,sortby){
+            if(arr && arr.length > 1){
+                for(var i=0,l=arr.length,a=[],b=[];i<l;i++)b[i]=arr[a[i]=i];
+                if(_.isFun(sortby))
+                    a.sort(function(x,y){
+                        return sortby.call(arr,arr[x],arr[y]) || (x>y?1:-1);
+                    });
+                else
+                    a.sort(function(x,y){
+                        return arr[x]>arr[y]?1:arr[x]<arr[y]?-1:x>y?1:-1;
+                    });
+                for(i=0;i<l;i++)arr[i]=b[a[i]];  
+                a.length=b.length=0;
             }
             return arr;
         },

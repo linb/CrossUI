@@ -75,12 +75,20 @@ _.set(xui.Locale,["cn","app"], {
 
             arr:{
                 $desc:"数组的功能函数集合.",
-                stableSort:{
-                    $desc:"快速稳定排序函数.",
+                fastSortObject:{
+                    $desc:"对象数组的快速稳定排序函数.",
                     $rtn:'Array',
                     $paras: [
                         "arr [必需参数]: Array, 目标数组.",
-                        "getKey [必需参数]: Function. 取得排序值的函数，要求返回排序的字符串."
+                        "byKey [必需参数]: Function. 得到排序键值的函数."
+                    ]
+                },
+                stableSort:{
+                    $desc:"稳定排序函数.",
+                    $rtn:'Array',
+                    $paras: [
+                        "arr [必需参数]: Array, 目标数组.",
+                        "sortby [必需参数]: Function(x,y). 排序函数."
                     ]
                 },
                 each:{
