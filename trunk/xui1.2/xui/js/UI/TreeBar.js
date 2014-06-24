@@ -626,10 +626,29 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             return false;
         },
         _onDropTest:function(profile, e, src, key, data, item){
-            var fid=data&&data.domId, tid=xui.use(src).id();
+            var fid=data&&data.domId;
             if(fid){
+                var tid=xui.use(src).id();
                 if(fid==tid)return false;
+
                 if(_.get(xui.use(src).get(0),['parentNode','previousSibling','firstChild','id'])==fid)return false;
+
+                var oitem=profile.getItemByDom(fid);
+
+                // stop self
+                if(item && oitem._pid==item.id)return false;
+
+                var p=xui.use(src).get(0),
+                    rn=profile.getRootNode();
+                // stop children
+                while((p=p.parentNode)){
+                    if(profile.getSubId(p.id) == profile.getSubId(fid)){
+                        return false;
+                    }
+                    if(p.id==_.get(rn,["parentNode","id"])){
+                        break;
+                    }
+                }
             }
         },
         _onDrop:function(profile, e, src, key, data, item){

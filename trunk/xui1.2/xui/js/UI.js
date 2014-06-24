@@ -4411,6 +4411,7 @@ Class("xui.absList", "xui.absObj",{
                         var uiv=profile.properties.$UIvalue||"", arr=(''+uiv).split(profile.properties.valueSeparator);
                         if(arr.length && _.arr.indexOf(arr, subId)!=-1){
                             if(nid)_.arr.removeValue(arr,subId);
+                            arr.push(item.id);
                             self.setUIValue(arr.join(profile.properties.valueSeparator), true);
                         }
                     }
