@@ -380,7 +380,7 @@ _.merge(_,{
     */
     clone:function(hash,filter,deep){
         var layer=arguments[3]||0;
-        if(hash && typeof hash=='object'){
+        if(hash && (_.isHash(hash)||_.isArr(hash))){
             if(_.isObj(hash)){                var me=arguments.callee,
                     isArr=_.isArr(hash),
                     h=isArr?[]:{},
@@ -393,7 +393,7 @@ _.merge(_,{
                     l=hash.length;
                     for(;i<l;i++){
                         if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
-                        h[h.length]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
+                        h[h.length]=((v=hash[i]) && deep && (_.isHash(v)||_.isArr(v)))?me(v,filter,deep-1,layer+1):v;
                     }
                 }else{
                     for(i in hash){
@@ -401,7 +401,7 @@ _.merge(_,{
                             filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
                             typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
                             continue;
-                        h[i]=((v=hash[i]) && deep && typeof v=='object')?me(v,filter,deep-1,layer+1):v;
+                        h[i]=((v=hash[i]) && deep && (_.isHash(v)||_.isArr(v)))?me(v,filter,deep-1,layer+1):v;
                     }
                 }
                 return h;
@@ -1849,7 +1849,7 @@ Class('xui.absIO',null,{
 
         // remove all undifiend item
         if(typeof self.query=='object' && self.reqType!="xml")
-            self.query=_.clone(self.query, function(o){return o!==undefined});
+            self.query=_.copy(self.query, function(o){return o!==undefined});
 
         if(!self._useForm && typeof self.query!='string' && self.reqType!="xml")
             self.query = con._buildQS(self.query, self.reqType=="json",self.method=='POST');
