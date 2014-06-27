@@ -274,7 +274,11 @@ _.merge(_,{
                 callback(fragment);
         })();
     },
-    isEmpty:function(hash){for(var i in hash)return false; return true},
+    isEmpty:function(hash){
+        if(hash==null)return true;
+        for(var i in hash)if(_._has.call(hash, i))return false;
+        return true;
+    },
 
     /*
     this will always run newer function
@@ -514,13 +518,14 @@ _.merge(_,{
     },
     // type detection
     _to:Object.prototype.toString,
+    _has: Object.prototype.hasOwnProperty,
     _ht:/^\s*function\s+Object\(\s*\)/,
     isDefined:function(target)  {return target!==undefined},
     isNull:function(target)  {return target===null},
     isSet:function(target)   {return target!==undefined && target!==null && target!==NaN},
     // including : object array function
     isObj:function(target)   {return !!target  && (typeof target == 'object' || typeof target == 'function')},
-    isHash:function(target)  {return !!target && _._to.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString())},
+    isHash:function(target)  {return !!target && _._to.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString()) && !_._has.call(target,"callee")},
     isBool:function(target)  {return typeof target == 'boolean'},
     isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
     isFinite:function(target)  {return (target||target===0) && isFinite(target) && !isNaN(parseFloat(target))},
@@ -529,7 +534,7 @@ _.merge(_,{
     isArr:function(target)   {return _._to.call(target)==='[object Array]'},
     isReg:function(target)   {return _._to.call(target)==='[object RegExp]'},
     isStr:function(target)   {return _._to.call(target)==='[object String]'},
-    isArguments:function(target)   {return _._to.call(target)==='[object Arguments]'},
+    isArguments:function(target)   {return _._to.call(target)==='[object Arguments]' || _._has.call(target,"callee")},
     isElem:function(target) {!!(target && target.nodeType === 1)},
     isNaN:function(target) {_.isNumb(target) && target != +target;},
     //for handling String
