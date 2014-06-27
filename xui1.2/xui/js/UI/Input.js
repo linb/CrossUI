@@ -45,6 +45,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         _getCtrlValue:function(){
             var node=this.getSubNode('INPUT'),
                 v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
+            if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
             if(this.get(0).$Mask && this.get(0).$Mask==v){
                 v="";
             }
