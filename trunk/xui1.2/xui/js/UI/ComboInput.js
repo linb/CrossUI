@@ -8,6 +8,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 v=_.isNumb(parseFloat(v))?_.toFixedNumber(v,p.precision):null;
             }else if(profile.properties.type=='datepicker'||profile.properties.type=='date'||profile.properties.type=='datetime'){
                 v=_.isDate(v)?v:_.isFinite(v)?new Date(parseInt(v,10)):null;                
+            }else if(typeof v=="string" && v.indexOf("\r")!=-1){
+                v=v.replace(/(\r\n|\r)/g, "\n");
             }
             return v;
         },

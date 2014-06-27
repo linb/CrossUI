@@ -22292,6 +22292,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         _getCtrlValue:function(){
             var node=this.getSubNode('INPUT'),
                 v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
+            if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
             if(this.get(0).$Mask && this.get(0).$Mask==v){
                 v="";
             }
@@ -24058,6 +24059,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 v=_.isNumb(parseFloat(v))?_.toFixedNumber(v,p.precision):null;
             }else if(profile.properties.type=='datepicker'||profile.properties.type=='date'||profile.properties.type=='datetime'){
                 v=_.isDate(v)?v:_.isFinite(v)?new Date(parseInt(v,10)):null;                
+            }else if(typeof v=="string" && v.indexOf("\r")!=-1){
+                v=v.replace(/(\r\n|\r)/g, "\n");
             }
             return v;
         },
@@ -36531,7 +36534,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(index==-1)return;
 
                 // clear UI and links
-                if(id=profile.colMap2[id]){
+                if(profile.colMap2 && (id=profile.colMap2[id])){
                     count++;
                     //get row
                     var col;

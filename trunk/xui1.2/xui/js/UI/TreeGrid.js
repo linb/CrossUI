@@ -773,7 +773,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(index==-1)return;
 
                 // clear UI and links
-                if(id=profile.colMap2[id]){
+                if(profile.colMap2 && (id=profile.colMap2[id])){
                     count++;
                     //get row
                     var col;
