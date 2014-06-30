@@ -634,7 +634,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             FILE:{
                 opacity:0,
-                '*filter':'alpha(opacity=0)',
+                'filter':(xui.browser.ie&&xui.browser.ver<9)?'alpha(opacity=0)':null,
                 'z-index':'3',
                 border:0,
                 height:'100%',

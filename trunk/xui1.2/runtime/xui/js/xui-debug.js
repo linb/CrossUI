@@ -18245,7 +18245,7 @@ Class("xui.absValue", "xui.absObj",{
                         //can get return value
                         if(r!==undefined && typeof r!=='boolean')value=r;
                         //before _setCtrlValue
-                        if(typeof (r=profile.box._ensureValue)=='function')
+                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
                             value = r.call(profile.box, profile, value);
                     }
                     if(typeof(r=profile.$onUIValueSet)=='function'){
@@ -24690,7 +24690,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             FILE:{
                 opacity:0,
-                '*filter':'alpha(opacity=0)',
+                'filter':(xui.browser.ie&&xui.browser.ver<9)?'alpha(opacity=0)':null,
                 'z-index':'3',
                 border:0,
                 height:'100%',
