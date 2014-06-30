@@ -4716,7 +4716,7 @@ Class("xui.absValue", "xui.absObj",{
                         //can get return value
                         if(r!==undefined && typeof r!=='boolean')value=r;
                         //before _setCtrlValue
-                        if(typeof (r=profile.box._ensureValue)=='function')
+                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
                             value = r.call(profile.box, profile, value);
                     }
                     if(typeof(r=profile.$onUIValueSet)=='function'){
