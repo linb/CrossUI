@@ -42039,7 +42039,11 @@ if(xui.browser.ie){
                 p.onSize(null, "dialog:"+profile.serialId);
 
                 profile.getRoot().css('zIndex',0);
-                profile.getSubNode('BORDER').append(profile.$modalDiv.css('display','none'));
+                
+                profile.$modalDiv.css('display','none');
+                var node=profile.getSubNode('BORDER');
+                if(!node.isEmpty())
+                    node.append(profile.$modalDiv);
 
                 profile.$inModal=false;
                 /*
