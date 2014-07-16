@@ -3405,7 +3405,7 @@ Class('xui.absObj',"xui.absBox",{
             return this.each(function(o){
                 _.each(key, function(v,k){
                     var funName="set"+_.str.initial(k),ins=o.boxing();
-                    if(typeof ins[funName]=='function'){
+                    if(ins && typeof ins[funName]=='function'){
                         ins[funName].call(ins, v, !!force);
                     }
                     // can set hidden prop here
@@ -3485,10 +3485,10 @@ Class('xui.absObj',"xui.absBox",{
             //set anti-links
             profile.link(c._cache,'self').link(xui._pool,'xui');
 
-            if(!profile.name)profile.boxing().setName(alias);
-
             self._nodes.push(profile);
             profile._cacheInstance=self;
+
+            if(!profile.name)self.setName(alias);
 
             return self;
         },
