@@ -30,10 +30,10 @@ Class("xui.DataBinder","xui.absObj",{
             //set anti-links
             profile.link(c._cache,'self').link(xui._pool,'xui');
 
-            if(!profile.name)profile.boxing().setName(alias);
-
             self._nodes.push(profile);
             profile._cacheInstance=self;
+
+            if(!profile.name)self.setName(alias);
 
             return self;
         },
