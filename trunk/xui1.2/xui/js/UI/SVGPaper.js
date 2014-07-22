@@ -69,22 +69,25 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                 if(o[0].box["xui.svg"])a.push(o[0]);
             });
             if(a.length){
-                if(Raphael.svg)
-                    profile.boxing().append(xui.svg.pack(a));
-                else{
+                profile.boxing().append(xui.svg.pack(a));
+                // for IE
+                if(!Raphael.svg){
                     _.setTimeout(function(){
-                        if(profile && !profile.destroyed)
+                        if(profile && !profile.destroyed){
+                        	  // readd again in IE
                             profile.boxing().append(xui.svg.pack(a));
-                    })
+                        }
+                    });
                 }
             }
-            
-            if(profile.$inDesign){
-                if(profile._paper){
-                    profile._frame=profile._paper.rect(0,0,w,h,8)
+            if(profile.$inDesign && profile._paper){
+            	  _.setTimeout(function(){
+            	  	  if(profile && !profile.destroyed){
+                        profile._frame=profile._paper.rect(0,0,w,h,8)
                             .attr({"stroke-dasharray": ". ", stroke: "#666"});
-                    profile._frame._decoration=1;
-                }
+                        profile._frame._decoration=1;
+                    }
+                });
             }
         },
         _onresize:function(profile,width,height){
@@ -128,11 +131,12 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                                 ){
                                 var attr=elem.attr(),hash;
                                 switch(elem.type){
+                                    // circle is xuiElem, so dont use cirle in this case
                                     case 'circle':
                                         hash={
                                             cx:attr.cx*wr,
                                             cy:attr.cy*hr,
-                                            r:attr.r*Math.max(wr,hr)
+                                            r:attr.r*(wr+hr)/2
                                         };
                                     break;
                                     case 'ellipse':
@@ -160,7 +164,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                                     break;
                                     case 'path':
                                         hash={
-                                            path:Raphael.transformPath(attr.path.join(""),"s"+wr+","+hr+",0,0")
+                                            path:Raphael.transformPath(_.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
                                         };
                                     break;
                                 }
