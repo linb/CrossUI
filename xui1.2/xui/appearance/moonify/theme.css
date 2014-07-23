@@ -637,17 +637,17 @@ html, .xui-uibg-base{
 }
 
 .xui-treegrid-cell-mouseover{
-    background: #38404C;
+    background-color: #38404C;
 }
 .xui-treegrid-cells-mouseover{
-    background: #38404C;
+    background-color: #38404C;
 }
 .xui-treegrid-cells-active, .xui-treegrid-cells-active .xui-treegrid-cella, .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background: #596474;
+    background-color: #596474;
 }
 .xui-treegrid-cells-mousedown, .xui-treegrid-cells-mousedown .xui-treegrid-cella, .xui-treegrid-cell-mousedown, .xui-treegrid-cell-mousedown .xui-treegrid-cella,
 .xui-treegrid-cells-checked, .xui-treegrid-cells-checked .xui-treegrid-cella, .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background: #3C7FB1;
+    background-color: #3C7FB1;
     color:#fff;
 }
 .xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
@@ -661,7 +661,7 @@ html, .xui-uibg-base{
     background: #5D6878 url(TreeGrid/head_mouseover.gif) repeat-x left bottom;
 }
 .xui-treegrid-cells-hot{
-    background: #5DA778;
+    background-color: #5DA778;
 }
 .xui-treegrid-alt {
     background-color: #194040;

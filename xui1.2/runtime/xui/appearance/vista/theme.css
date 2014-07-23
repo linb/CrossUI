@@ -546,16 +546,16 @@ html, .xui-uibg-base{
 }
 
 .xui-treegrid-cell-mouseover{
-    background: #D9E8FB;
+    background-color: #D9E8FB;
 }
 .xui-treegrid-cells-mouseover{
-    background: #D9E8FB;
+    background-color: #D9E8FB;
 }
 .xui-treegrid-cells-active, .xui-treegrid-cells-active .xui-treegrid-cella, .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background: #B0EAFA;
+    background-color: #B0EAFA;
 }
 .xui-treegrid-cells-checked, .xui-treegrid-cells-checked .xui-treegrid-cella, .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background: #3C7FB1;
+    background-color: #3C7FB1;
     color:#fff;
 }
 .xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
