@@ -19203,7 +19203,7 @@ new function(){
                 profile.boxing().onError(profile);
             },
             onLoad:function(profile, e, src){
-                var i=new Image(), path=i.src=xui.use(src).get(0).src;
+                var i=new Image(), path=xui.use(src).get(0).src;
                 i.onload=function(){
                     if(!profile||profile.isDestroyed)return;
                     var prop=profile.properties,
@@ -19213,6 +19213,8 @@ new function(){
                         profile.boxing().adjustDock();
                    i.onload=null;
                 };
+                // must after onload for IE<8 fix
+                i.src=path;
             },
             onClick:function(profile, e, src){
                 var p=profile.properties;
