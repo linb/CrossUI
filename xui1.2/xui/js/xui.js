@@ -1985,7 +1985,9 @@ Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
         _header:function(n,v){
-            if(this._XML)this._XML.setRequestHeader(n,v);
+            if(!xui.browser.isChrome){
+                if(this._XML)this._XML.setRequestHeader(n,v);
+            }
         },
         start:function() {
             var self=this;
