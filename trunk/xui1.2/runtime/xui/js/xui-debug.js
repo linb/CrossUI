@@ -1985,7 +1985,9 @@ Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
         _header:function(n,v){
-            if(this._XML)this._XML.setRequestHeader(n,v);
+            if(!xui.browser.isChrome){
+                if(this._XML)this._XML.setRequestHeader(n,v);
+            }
         },
         start:function() {
             var self=this;
@@ -41956,7 +41958,7 @@ if(xui.browser.ie){
                 if(!profile.$inModal){
                     cover = profile.$modalDiv;
                     if(!cover || !cover.get(0) || !cover.get(0).parentNode){
-                        cover = profile.$modalDiv = xui.create("<div class='xui-cover xui-custom' style='left:0;top:0;position:absolute;overflow:hidden;display:block;z-index:0;'></div>");
+                        cover = profile.$modalDiv = xui.create("<div class='xui-cover xui-custom xui-cover-modal' style='left:0;top:0;position:absolute;overflow:hidden;display:block;z-index:0;'></div>");
                         cover.setSelectable(false);
                     }
                     p.append(cover);
