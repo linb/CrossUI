@@ -296,8 +296,8 @@ _.merge(_,{
         else delete cache[k];
     },
     //Dependency: xui.Dom xui.Thread
-    observableRun:function(tasks,onEnd,threadid){
-        xui.Thread.observableRun(tasks,onEnd,threadid);
+    observableRun:function(tasks,onEnd,threadid,busyMsg){
+        xui.Thread.observableRun(tasks,onEnd,threadid,busyMsg);
     },
 
     /*break object memory link
@@ -1724,7 +1724,7 @@ Class('xui.Thread',null,{
             return !!xui.$cache.thread[id];
         },
         //Dependency: xui.Dom
-        observableRun:function(tasks,onEnd,threadid){
+        observableRun:function(tasks,onEnd,threadid,busyMsg){
             var thread=xui.Thread, dom=xui.Dom;
             if(!_.isArr(tasks))tasks=[tasks];
             //if thread exists, just inset task to the next positiong
@@ -1738,12 +1738,12 @@ Class('xui.Thread',null,{
                     0,null,
                     //set busy status to UI
                     function(threadid){
-                        if(dom)dom.busy(threadid)
+                        if(dom)dom.busy(threadid,busyMsg);
                     },
                     //set free status to UI
                     function(threadid){
                         _.tryF(onEnd,arguments,this);
-                        if(dom)dom.free(threadid)
+                        if(dom)dom.free(threadid,busyMsg);
                     }
                 ).start();
             }
