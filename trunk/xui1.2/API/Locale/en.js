@@ -2413,7 +2413,8 @@ _.set(xui.Locale,["en","app"], {
         busy:{
             $desc:"Shows busy-UI(A special top zindex div covers the whole window). ",
             $paras:[
-                "label [Optional] : String, the busy label. Calls [xui.Dom.free(the latest label)] to release the busy UI."
+                "label [Optional] : String, the busy instance label. Calls [xui.Dom.free(label)] to release the busy UI.",
+                "busyMsg [Optional] : String, the busy message will be showed. "
             ],
             $snippet:[
                 "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy()},function(){xui.Dom.free()}).start()",

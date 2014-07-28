@@ -1743,7 +1743,7 @@ Class('xui.Thread',null,{
                     //set free status to UI
                     function(threadid){
                         _.tryF(onEnd,arguments,this);
-                        if(dom)dom.free(threadid,busyMsg);
+                        if(dom)dom.free(threadid);
                     }
                 ).start();
             }
@@ -9792,8 +9792,8 @@ type:4
                 window.open(action,target);
             }
         },
-        busy:function(label){
-            xui.Dom.setCover(true,label);
+        busy:function(label,busyMsg){
+            xui.Dom.setCover(busyMsg||true,label);
         },
         free:function(label){
            xui.Dom.setCover(false,label);

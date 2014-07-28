@@ -1743,7 +1743,7 @@ Class('xui.Thread',null,{
                     //set free status to UI
                     function(threadid){
                         _.tryF(onEnd,arguments,this);
-                        if(dom)dom.free(threadid,busyMsg);
+                        if(dom)dom.free(threadid);
                     }
                 ).start();
             }

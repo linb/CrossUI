@@ -2424,7 +2424,8 @@ _.set(xui.Locale,["cn","app"], {
         busy:{
             $desc:"显示系统忙. 在DOM的正上方增加一层DIV,使用用户不能点击,并将鼠标指针变为漏斗形状. ",
             $paras:[
-                "label [可选参数] : String, 指示忙的文字,如“正在处理中”. 使用[xui.Dom.free(the latest label)]释放忙状态."
+                "label [可选参数] : String, 本 busy 的 id. 使用[xui.Dom.free(label)]释放忙状态.",
+                "busyMsg [可选参数] : String, 指示忙的文字,如“正在处理中”. ",
             ],
             $snippet:[
                 "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy()},function(){xui.Dom.free()}).start()",
@@ -2507,7 +2508,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"显示或隐藏一个覆盖整个页面的DIV.",
             $paras:[
                 "visible [必需参数] : Boolean or String, true=>表示显示DIV; false=>h表示隐藏DIV; 'string'=>表示显示DIV和文字.",
-                "label [可选参数] : String, 忙标签. "
+                "label [可选参数] : String, 忙标签id. "
             ],
             $snippet:[
                 "xui.Dom.setCover(true); _.asyRun(function(){xui.Dom.setCover(false)},2000);",
