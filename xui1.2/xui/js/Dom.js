@@ -2743,8 +2743,8 @@ type:4
                 window.open(action,target);
             }
         },
-        busy:function(label){
-            xui.Dom.setCover(true,label);
+        busy:function(label,busyMsg){
+            xui.Dom.setCover(busyMsg||true,label);
         },
         free:function(label){
            xui.Dom.setCover(false,label);
