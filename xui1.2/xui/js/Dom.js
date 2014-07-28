@@ -2698,8 +2698,12 @@ type:4
                 }
                 //show content
                 if(content){
-                    o2.css({left :t.scrollLeft()+t.width()/2+'px', top: t.scrollTop()+t.height()/2+'px'});
-                    o2.html(content +'',false);
+                    if(typeof(content)=='function'){
+                        content(o1,o2);
+                    }else{
+                        o2.html(content +'',false);
+                        o2.css({left :t.scrollLeft()+t.width()/2-o2.width()/2+'px', top: t.scrollTop()+t.height()/2-o2.height()/2+'px'});
+                    }
                 }
             }
         },
