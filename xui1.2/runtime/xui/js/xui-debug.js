@@ -9718,7 +9718,7 @@ type:4
             var me=arguments.callee,
                 id="xui.temp:cover:",
                 id2="xui.temp:message:",
-                content = typeof visible=='string'?visible:'',
+                content = (typeof(visible)=='string'||typeof(visible)=='function')?visible:'',
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
@@ -9726,14 +9726,16 @@ type:4
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
-            o2=xui(id2);
-
+            if(xui.Dom.byId(id2)){
+                o2=xui(id2);
+            }
+             
             //clear
             if(!visible){
                 if(typeof me._label =='string' && me._label!==label)
                     return;
                 if(me._showed){
-                    o2.empty(false);
+                    if(o2)o2.empty(false);
                     o1.css({zIndex:0,cursor:'',display:'none'});
                     me._showed=false;
                 }
@@ -9749,7 +9751,7 @@ type:4
                 if(content){
                     if(typeof(content)=='function'){
                         content(o1,o2);
-                    }else{
+                    }else if(o2){
                         o2.html(content +'',false);
                         o2.css({left :t.scrollLeft()+t.width()/2-o2.width()/2+'px', top: t.scrollTop()+t.height()/2-o2.height()/2+'px'});
                     }
