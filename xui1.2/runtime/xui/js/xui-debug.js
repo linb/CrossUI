@@ -1984,8 +1984,12 @@ Class('xui.absIO',null,{
 Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
+        _unsafeHeader:"Accept-Charset,Accept-Encoding,Access-Control-Request-Headers,Access-Control-Request-Method,Connection,Content-Length,Cookie,Cookie2,Date,DNT,Expect,Host,Keep-Alive,Origin,Referer,TE,Trailer,Transfer-Encoding,Upgrade,User-Agent,Via".toLowerCase().split(","),
+        _isunsafe:function(k){
+            return xui.browser.isWebKit && (_.str.startWith("Proxy-",k)||_.str.startWith("Sec-",k)||_.arr.indexOf(this._unsafeHeader,k.toLowerCase())!==-1);
+        },
         _header:function(n,v){
-            if(!xui.browser.isChrome){
+            if(!this._isunsafe(n)){
                 if(this._XML)this._XML.setRequestHeader(n,v);
             }
         },
