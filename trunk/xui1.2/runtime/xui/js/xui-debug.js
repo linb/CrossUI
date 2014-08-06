@@ -12842,7 +12842,7 @@ Class("xui.Tips", null,{
                         self._n.get(0).innerHTML=s;
 
                         //get width
-                        w=_ruler.get(0).offsetWidth;
+                        w=_ruler.get(0).offsetWidth + 2;
                         if(!html)
                             w=Math.min(tips.MAXWIDTH, w);
 
