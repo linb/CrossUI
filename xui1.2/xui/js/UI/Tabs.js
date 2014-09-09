@@ -68,13 +68,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             lastV=key;
                     });
 
-                    if(lastV)
+                    if(!prop.noHandler && lastV)
                         _.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
                 }else{
                     fold(uiv, arr1);
                     expand(value, arr2);
                     
-                    if(arr2.length)
+                    if(!prop.noHandler && arr2.length)
                         _.tryF(profile.box._adjustScroll,[profile,value],profile.box);
                 }
 
@@ -323,6 +323,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
+                style:'{_liststyle}',
                 ITEMS:{
                     tagName : 'div',
                     className:'xui-ui-unselectable',
@@ -1002,6 +1003,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             selMode:{
                 ini:'single',
                 listbox:['single', 'multi']
+            },
+            noHandler:{
+                ini:false,
+                action:function(value){
+                    this.getSubNode('LIST').css('display',value?'none':'');
+                    var t=this.getRootNode().style;
+                    xui.UI.$tryResize(this, t.width, t.height, true, this.$UIValue);
+                }
             }
         },
         EventHandlers:{
@@ -1027,6 +1036,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             data.panels = data.items;
             if(data.HAlign)
                 data.HAlign = 'text-align:'+data.HAlign+';';
+            data._liststyle = data.noHandler?'display:none':'';
             return data;
         },
         _prepareItem:function(profile, item){
@@ -1179,7 +1189,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var o = profile.boxing().getPanel(key),
                 l=profile.getSubNode('LIST'),
                 listH;
-            ;
+
             if(!o || o.isEmpty())return;
 
             var hc=null,wc=null;
@@ -1187,18 +1197,22 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(height && item._h!=height){
                 item._h=height;
                 if(height && height!='auto'){
-                    listH = l.get(0).offsetHeight ||
-                        //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                        l.offsetHeight();
-
-                    height = height-listH;
+                    if(!t.noHandler){
+                        listH = l.get(0).offsetHeight ||
+                            //for opear 9.0 get height bug, get offsetheight in firefox is slow
+                            l.offsetHeight();
+    
+                        height = height-listH;
+                    }
                     if(height>0)hc=height;
                 }else hc=height;
             }
 
             if(width && item._w!=width){
                 l.width(item._w=width);
-                this._adjustScroll(profile);
+                if(!t.noHandler){
+                    this._adjustScroll(profile);
+                }
                 wc=width;
             }
             if(hc||wc)o.height(hc).onSize();

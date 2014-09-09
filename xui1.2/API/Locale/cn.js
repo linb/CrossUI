@@ -5019,6 +5019,15 @@ _.set(xui.Locale,["cn","app"], {
                 "xui.Com.load('App.Test1',function(com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
+        getClsFromDom:{
+            $desc:"从一个指定的DOM元素的id上获取 xui.Com 实例.",
+            $paras:[
+                "id [必需参数] : String, DOM元素或id."
+            ]
+        },
+        getAllInstance:{
+            $desc:"得到所有实例.",
+        },
         prototype:{
             KEY:{$desc:"本类名"},
             autoDestroy:{
@@ -5869,19 +5878,19 @@ _.set(xui.Locale,["cn","app"], {
             $snippet:["alert(xui.Tips.DELAYTIME)"]
         },
         MAXWIDTH:{
-            $desc:"Number, tooltips的最大宽度.",
+            $desc:"Number, 提示的最大宽度.",
             $snippet:["alert(xui.Tips.MAXWIDTH)"]
         },
         MOVABLE:{
-            $desc:"Boolean, 指示tip是否跟随鼠标移动.",
+            $desc:"Boolean, 指示是否跟随鼠标移动.",
             $snippet:["alert(xui.Tips.MOVABLE)"]
         },
         TIPSKEY:{
-            $desc:"String, tooltips的键. 默认为'tips'.",
+            $desc:"String, 提示的文字键. 默认为'tips'.",
             $snippet:["alert(xui.Tips.TIPSKEY)"]
         },
         getTips:{
-            $desc:"获取tips显示的字符串.",
+            $desc:"获取提示字符串.",
             $rtn:"String",
             $snippet:[
                 "xui.Tips.show({left:100,top:100}, 'a string');"+
@@ -5891,13 +5900,13 @@ _.set(xui.Locale,["cn","app"], {
             ]
         },
         setTips:{
-            $desc:"设置tips显示的字符串.",
+            $desc:"设置提示字符串.",
             $paras:[
                 "s [必需参数] : String"
             ]
         },
         setPos:{
-            $desc:"设置tips显示的位置.",
+            $desc:"设置提示显示的位置.",
             $paras:[
                 "left [可选参数] : Number, 以px表示的横坐标。",
                 "top [可选参数] : Number, 以px表示的纵坐标。"
@@ -6066,7 +6075,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置项, 并刷新界面.",
+                $desc:"设置项.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项数组.",
@@ -7055,6 +7064,18 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            getAutoTips:{
+              $desc:"得到当前控件是否会自动显示文字提示",
+              $rtn:"Boolean"
+            },
+            setAutoTips:{
+              $desc:"设置当前控件是否会自动显示文字提示",
+              $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
             getClassName:{
               $desc:"得到css类.",
               $rtn:"String"
@@ -7419,7 +7440,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDisplay:{
-                $desc:"设置控件的显示(display)属性, 并刷新界面.",
+                $desc:"设置控件的显示(display)属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 显示(display)属性的CSS值.",
@@ -7443,7 +7464,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setVisibility:{
-                $desc:"设置控件的可见性, 并刷新界面.",
+                $desc:"设置控件的可见性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
@@ -7467,7 +7488,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setZIndex:{
-                $desc:"设置控件的z-index,该属性决定了控件之间的覆盖关系, 并刷新界面.",
+                $desc:"设置控件的z-index,该属性决定了控件之间的覆盖关系.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
@@ -7503,7 +7524,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPosition:{
-                $desc:"设置控件的位置属性,和CSS中的position对应, 并刷新界面.",
+                $desc:"设置控件的位置属性,和CSS中的position对应.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
@@ -7527,7 +7548,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTabindex:{
-                $desc:"设置tab键值, 并刷新界面.",
+                $desc:"设置tab键值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -7589,7 +7610,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTips:{
-                $desc:"获取控件的tip文字(当鼠标停留时会显示该文字).",
+                $desc:"获取控件的提示文字(当鼠标停留时会显示该文字).",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ui44'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7599,7 +7620,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTips:{
-                $desc:"设置控件的tip文字(当鼠标停留时会显示该文字).",
+                $desc:"设置控件的提示文字(当鼠标停留时会显示该文字).",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -7659,7 +7680,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDisabled:{
-                $desc:"设置控件是否变灰(不可用), 并刷新界面.",
+                $desc:"设置控件是否变灰(不可用).",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -7695,7 +7716,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDock:{
-                $desc:"设置控件的停靠属性（相对于父控件的停靠位置）, 并刷新界面.",
+                $desc:"设置控件的停靠属性（相对于父控件的停靠位置）.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'.",
@@ -7720,7 +7741,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockFloat:{
-                $desc:"设置否是停靠漂浮, 并刷新界面.",
+                $desc:"设置否是停靠漂浮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -7752,7 +7773,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockMargin:{
-                $desc:"设置停靠的外补丁, 并刷新界面.",
+                $desc:"设置停靠的外补丁.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : {left:Number,right:Number,top:Number,bottom:Number}.",
@@ -7784,7 +7805,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockOrder:{
-                $desc:"设置停靠的优先顺序, 并刷新界面.",
+                $desc:"设置停靠的优先顺序.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -7810,7 +7831,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockIgnore:{
-                $desc:"设置是否停靠忽略, 并刷新界面.",
+                $desc:"设置是否停靠忽略.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -7846,7 +7867,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockMinH:{
-                $desc:"设置停靠的最小高度, 并刷新界面.",
+                $desc:"设置停靠的最小高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -7861,7 +7882,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockMinW:{
-                $desc:"设置停靠的最小宽度, 并刷新界面.",
+                $desc:"设置停靠的最小宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -8309,7 +8330,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBorder:{
-                $desc:"设置控件是否显示边缘线, 并刷新界面",
+                $desc:"设置控件是否显示边缘线",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -8333,7 +8354,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setShadow:{
-                $desc:"设置控件是否显示阴影, 并刷新界面",
+                $desc:"设置控件是否显示阴影",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -8357,7 +8378,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setResizer:{
-                $desc:"设置控件是否可以调整大小, 并刷新界面",
+                $desc:"设置控件是否可以调整大小",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -8766,7 +8787,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFontSize :{
-                $desc:"设置标签字体大小, 并刷新界面.",
+                $desc:"设置标签字体大小.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 字体大小.",
@@ -8790,7 +8811,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFontWeight :{
-                $desc:"设置标签字体粗细, 并刷新界面.",
+                $desc:"设置标签字体粗细.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
@@ -8814,7 +8835,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置标签水平对齐方式, 并刷新界面.",
+                $desc:"设置标签水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
@@ -8838,7 +8859,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setVAlign :{
-                $desc:"设置标签垂直对齐方式, 并刷新界面.",
+                $desc:"设置标签垂直对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top', 'middle' or 'bottom'.",
@@ -8862,7 +8883,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setShadowText :{
-                $desc:"设置阴影文字, 并刷新界面.",
+                $desc:"设置阴影文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -8886,7 +8907,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置图标url路径, 并刷新界面.",
+                $desc:"设置图标url路径.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标url路径.",
@@ -8910,7 +8931,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的css position属性, 并刷新界面.",
+                $desc:"设置图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
@@ -8971,7 +8992,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFillBG:{
-                $desc:"设置进度条背景填充颜色, 并刷新界面.",
+                $desc:"设置进度条背景填充颜色.",
                 $rtn:"[self]",
                  $paras:[
                     "value [必需参数] : nonnegative Number.",
@@ -9007,7 +9028,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置文字, 并刷新界面.",
+                $desc:"设置文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -9031,7 +9052,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式, 并刷新界面.",
+                $desc:"设置水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
@@ -9085,7 +9106,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置按钮标题文字, 并刷新界面.",
+                $desc:"设置按钮标题文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -9103,7 +9124,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setImage :{
-                $desc:"设置图标url路径, 并刷新界面.",
+                $desc:"设置图标url路径.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标url路径.",
@@ -9115,7 +9136,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"设置图标的css position属性, 并刷新界面.",
+                $desc:"设置图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
@@ -9133,7 +9154,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式, 并刷新界面.",
+                $desc:"设置水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
@@ -9238,7 +9259,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置按题文字, 并刷新界面.",
+                $desc:"设置按题文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -9256,7 +9277,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setImage :{
-                $desc:"设置图标url路径, 并刷新界面.",
+                $desc:"设置图标url路径.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标url路径.",
@@ -9268,7 +9289,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"设置图标的css position属性, 并刷新界面.",
+                $desc:"设置图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
@@ -9337,7 +9358,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置按钮标题文字, 并刷新界面.",
+                $desc:"设置按钮标题文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -9385,7 +9406,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式, 并刷新界面.",
+                $desc:"设置水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
@@ -9409,7 +9430,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setVAlign :{
-                $desc:"设置垂直对齐方式, 并刷新界面.",
+                $desc:"设置垂直对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top', 'middle' or 'bottom'.",
@@ -9433,7 +9454,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置图标的url, 并刷新界面.",
+                $desc:"设置图标的url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String,  image path.",
@@ -9457,7 +9478,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的css position属性, 并刷新界面.",
+                $desc:"设置图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
@@ -9567,7 +9588,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDynCheck:{
-                $desc:"设置当用户输入时,编辑框是否实时校验输入的有效性, 并刷新界面. 设置为false时,编辑框只在用户离开编辑框时检查有效性.",
+                $desc:"设置当用户输入时,编辑框是否实时校验输入的有效性. 设置为false时,编辑框只在用户离开编辑框时检查有效性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -9585,7 +9606,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHAlign :{
-                $desc:"设置标签水平对齐方式, 并刷新界面.",
+                $desc:"设置标签水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
@@ -9603,7 +9624,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMultiLines:{
-                $desc:"设置是否允许输入多行文本, 并刷新界面.",
+                $desc:"设置是否允许输入多行文本.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -9627,7 +9648,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMask:{
-                $desc:"设置有效的格式模式,用来避免错误的输入, 并刷新界面. <ul>下面的字符可以用于格式模式:"+
+                $desc:"设置有效的格式模式,用来避免错误的输入. <ul>下面的字符可以用于格式模式:"+
                     "<li>'~' : [+-]</li>"+
             		"<li>'1' : [0-9]</li>"+
             		"<li>'a' : [A-Za-z]</li>"+
@@ -9659,7 +9680,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setReadonly:{
-                $desc:"设置编辑框是否为只读, 并刷新界面.",
+                $desc:"设置编辑框是否为只读.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -9797,7 +9818,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置输入框的类型, 并刷新界面.",
+                $desc:"设置输入框的类型.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'input' or 'password'. 默认为 'input'.",
@@ -9827,7 +9848,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小, 并刷新界面.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -9839,7 +9860,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置, 并刷新界面.",
+                $desc:"设置标签的位置.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : left, right, top, bottom 之一.",
@@ -9851,7 +9872,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小, 并刷新界面.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -9863,7 +9884,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字, 并刷新界面.",
+                $desc:"设置标签的文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -9875,7 +9896,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 , 并刷新界面.",
+                $desc:"设置按标签的水平对齐方式 .",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
@@ -9993,7 +10014,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setReadonly:{
-                $desc:"设置编辑器是只读还是可编辑的, 并刷新界面.",
+                $desc:"设置编辑器是只读还是可编辑的.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -10065,7 +10086,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置编组框的标题文字, 并刷新界面.",
+                $desc:"设置编组框的标题文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -10089,7 +10110,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置编组框图标的url, 并刷新界面.",
+                $desc:"设置编组框图标的url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, image url.",
@@ -10113,7 +10134,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置编组框图标的css position属性, 并刷新界面.",
+                $desc:"设置编组框图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的位置(CSS值).",
@@ -10137,7 +10158,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggle :{
-                $desc:"设置编组框是打开还是收缩的, 并刷新界面.",
+                $desc:"设置编组框是打开还是收缩的.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -10161,7 +10182,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggleBtn :{
-                $desc:"设置编组框是否带有收缩/打开按钮, 并刷新界面.",
+                $desc:"设置编组框是否带有收缩/打开按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -10296,7 +10317,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置下拉框类型, 并刷新界面.",
+                $desc:"设置下拉框类型.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'none'代表是普通的输入框,'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,'helpinput'代表帮助框,'cmdbox'代表命令框,'popbox'代表弹出框,'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,'currency'代表货币,'number'代表数字,'spin'代表是spin输入框. 默认为 'combobox'.",                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
@@ -10320,7 +10341,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置下拉框的项目, 并刷新界面.",
+                $desc:"设置下拉框的项目.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项目数组.",
@@ -10630,7 +10651,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBtnImage :{
-                $desc:"设置按钮图标的url, 并刷新界面.",
+                $desc:"设置按钮图标的url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 对应的 CSS 值.",
@@ -10654,7 +10675,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBtnImagePos :{
-                $desc:"设置按钮图标的css position属性, 并刷新界面.",
+                $desc:"设置按钮图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 对应的 CSS 值.",
@@ -10752,7 +10773,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             setBarLocation:{
-                $desc:"设置按钮条的位置, 并刷新界面.",
+                $desc:"设置按钮条的位置.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'top','bottom','left' or 'right'. 默认为 'top'.",
@@ -10778,7 +10799,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarHAlign:{
-                $desc:"设置按钮条的水平对齐方式 , 并刷新界面.",
+                $desc:"设置按钮条的水平对齐方式 .",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
@@ -10802,7 +10823,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarVAlign:{
-                $desc:"设置按钮条的垂直对齐方式, 并刷新界面.",
+                $desc:"设置按钮条的垂直对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'top' or 'bottom'. 默认为 'top'.",
@@ -10826,7 +10847,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarSize:{
-                $desc:"设置按钮条的大小, 并刷新界面.",
+                $desc:"设置按钮条的大小.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -10865,7 +10886,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setCheckBox:{
-                $desc:"设置是否显示成checkbox样式,并刷新界面.",
+                $desc:"设置是否显示成checkbox样式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -10965,7 +10986,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAdvance:{
-                $desc:"设置是否显示颜色框又半部分以便选择更多颜色, 并刷新界面.",
+                $desc:"设置是否显示颜色框又半部分以便选择更多颜色.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11005,7 +11026,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarDisplay:{
-                $desc:"设置是否带有显示条, 并刷新界面.",
+                $desc:"设置是否带有显示条.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11047,7 +11068,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setTimeInput:{
-                $desc:"设置日期选择框是否带有时间输入功能, 并刷新界面.",
+                $desc:"设置日期选择框是否带有时间输入功能.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -11059,7 +11080,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setFirstDayOfWeek:{
-                $desc:"设置日期选择框的周开始日, 并刷新界面.0-6表示周日到周六",
+                $desc:"设置日期选择框的周开始日.0-6表示周日到周六",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 0-6表示周日到周六",
@@ -11083,7 +11104,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setHideWeekLabels:{
-                $desc:"设置日期选择框是否带有带有周信息, 并刷新界面.",
+                $desc:"设置日期选择框是否带有带有周信息.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -11113,7 +11134,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置日期选择框是否带有关闭按钮, 并刷新界面.",
+                $desc:"设置日期选择框是否带有关闭按钮.",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.dp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11171,7 +11192,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置时间选择器是否带有关闭按钮., 并刷新界面.",
+                $desc:"设置时间选择器是否带有关闭按钮..",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.tp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11214,7 +11235,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置Slider的显示类型, 并刷新界面.",
+                $desc:"设置Slider的显示类型.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
@@ -11345,7 +11366,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaptionTpl :{
-                $desc:"设置标题栏文本模板, 并刷新界面.",
+                $desc:"设置标题栏文本模板.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -11369,7 +11390,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMax:{
-                $desc:"设置最大值, 并刷新界面.",
+                $desc:"设置最大值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11393,7 +11414,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMin:{
-                $desc:"设置最小值, 并刷新界面.",
+                $desc:"设置最小值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11417,7 +11438,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSingleValue:{
-                $desc:"设置否是使用单值., 并刷新界面.",
+                $desc:"设置否是使用单值..",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -11441,7 +11462,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSteps:{
-                $desc:"设置步长, 并刷新界面.",
+                $desc:"设置步长.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : nonnegative Number.",
@@ -11465,7 +11486,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setUnit:{
-                $desc:"设置单位, 并刷新界面.",
+                $desc:"设置单位.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -11530,7 +11551,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxHeight:{
-                $desc:"设置最大高度, 并刷新界面.",
+                $desc:"设置最大高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11554,7 +11575,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelMode:{
-                $desc:"设置选择模式, 并刷新界面.",
+                $desc:"设置选择模式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none' 为不选, 'multi'为多选, 'multibycheckbox'表示可多选并且只能点击checkbox来选中 or 'single'为单选.",
@@ -11683,7 +11704,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"设置超链接队列的外补丁, 并刷新界面.",
+                $desc:"设置超链接队列的外补丁.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11725,7 +11746,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setItemWidth:{
-                $desc:"设置状态按钮的宽度, 并刷新界面.",
+                $desc:"设置状态按钮的宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11782,7 +11803,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImgHeight:{
-                $desc:"设置画廊项的高度, 并刷新界面.",
+                $desc:"设置画廊项的高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11806,7 +11827,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImgWidth:{
-                $desc:"设置画廊项的图片宽度, 并刷新界面.",
+                $desc:"设置画廊项的图片宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11830,7 +11851,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemWidth:{
-                $desc:"设置画廊项的宽度, 并刷新界面.",
+                $desc:"设置画廊项的宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11854,7 +11875,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemHeight:{
-                $desc:"设置画廊项的宽度, 并刷新界面.",
+                $desc:"设置画廊项的宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11878,7 +11899,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"设置画廊项的外补丁, 并刷新界面.",
+                $desc:"设置画廊项的外补丁.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11902,7 +11923,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemPadding:{
-                $desc:"设置画廊项的内补丁, 并刷新界面.",
+                $desc:"设置画廊项的内补丁.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11951,7 +11972,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemWidth:{
-                $desc:"设置图标项宽度, 并刷新界面.",
+                $desc:"设置图标项宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11975,7 +11996,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemHeight:{
-                $desc:"设置图标项高度, 并刷新界面.",
+                $desc:"设置图标项高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -11999,7 +12020,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"设置图标项外补丁, 并刷新界面.",
+                $desc:"设置图标项外补丁.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -12023,7 +12044,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemPadding:{
-                $desc:"设置图标项内补丁, 并刷新界面.",
+                $desc:"设置图标项内补丁.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -12083,7 +12104,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn :{
-                $desc:"设置面板是否带有关闭按钮, 并刷新界面.",
+                $desc:"设置面板是否带有关闭按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12107,7 +12128,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPopBtn :{
-                $desc:"设置面板是否带有弹出按钮, 并刷新界面.",
+                $desc:"设置面板是否带有弹出按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12131,7 +12152,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setOptBtn :{
-                $desc:"设置面板是否带有选项按钮, 并刷新界面.",
+                $desc:"设置面板是否带有选项按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12149,7 +12170,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setInfoBtn :{
-                $desc:"设置面板是否带有帮助按钮, 并刷新界面.",
+                $desc:"设置面板是否带有帮助按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12161,7 +12182,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setRefreshBtn :{
-                $desc:"设置面板是否带有刷新按钮, 并刷新界面.",
+                $desc:"设置面板是否带有刷新按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12179,7 +12200,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggleBtn :{
-                $desc:"设置面板是否带有打开/收缩按钮, 并刷新界面.",
+                $desc:"设置面板是否带有打开/收缩按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12203,7 +12224,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置标题文字, 并刷新界面.",
+                $desc:"设置标题文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -12227,7 +12248,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置图标的url, 并刷新界面.",
+                $desc:"设置图标的url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标的url.",
@@ -12251,7 +12272,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的css position属性, 并刷新界面.",
+                $desc:"设置图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
@@ -12275,7 +12296,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggle :{
-                $desc:"设置面板处于打开或收缩状态, 并刷新界面.",
+                $desc:"设置面板处于打开或收缩状态.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -12611,7 +12632,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置布局类型, 并刷新界面.",
+                $desc:"设置布局类型.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
@@ -12661,7 +12682,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置布局项, 并刷新界面.",
+                $desc:"设置布局项.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 布局项."
@@ -12828,7 +12849,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置一系列的标签项, 并刷新界面.",
+                $desc:"设置一系列的标签项.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 标签项数组."
@@ -12889,7 +12910,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式, 并刷新界面.",
+                $desc:"设置水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
@@ -12919,7 +12940,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setItemWidth:{
-                $desc:"设置按钮的宽度, 并刷新界面.",
+                $desc:"设置按钮的宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -12949,7 +12970,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setNoPanel :{
-                $desc:"设置当前页面控件是否有面板, 并刷新界面.",
+                $desc:"设置当前页面控件是否有面板.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -12960,6 +12981,18 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "alert(o.getNoPanel());_.asyRun(function(){o.setNoPanel(true)},1000);"+
                     "}"
+                ]
+            },
+            getNoHandler :{
+                $desc:"判断标签是否带有控制板",
+                $rtn:"Boolean"
+            },
+            setNoHandler :{
+                $desc:"设置当前页面控件是否有控制版.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getDropKeysPanel :{
@@ -12973,7 +13006,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDropKeysPanel :{
-                $desc:"设置面板的drop键值, 并刷新界面.",
+                $desc:"设置面板的drop键值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -13430,7 +13463,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式, 并刷新界面.",
+                $desc:"设置水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'left'代表左对齐, 'center'代表居中对齐, 'right'代表右对齐.",
@@ -13454,7 +13487,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHandler :{
-                $desc:"设置工具栏是否带有手柄, 并刷新界面.",
+                $desc:"设置工具栏是否带有手柄.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean",
@@ -13570,7 +13603,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAutoHide:{
-                $desc:"设置菜单显示一段时间后是否自动隐藏 , 并刷新界面.",
+                $desc:"设置菜单显示一段时间后是否自动隐藏 .",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -13598,7 +13631,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHideAfterClick:{
-                $desc:"设置菜单在被单击后是否自动隐藏, 并刷新界面.",
+                $desc:"设置菜单在被单击后是否自动隐藏.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -13719,7 +13752,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAutoShowTime:{
-                $desc:"设置鼠标在悬浮多少秒后菜单项自动显示, 并刷新界面.",
+                $desc:"设置鼠标在悬浮多少秒后菜单项自动显示.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -13762,7 +13795,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHandler:{
-                $desc:"设置菜单条前是否有一个手柄,以供鼠标拖动, 并刷新界面.",
+                $desc:"设置菜单条前是否有一个手柄,以供鼠标拖动.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -13996,7 +14029,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption:{
-                $desc:"设置对话框标题文字, 并刷新界面.",
+                $desc:"设置对话框标题文字.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -14024,7 +14057,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置对话框右上角是否带有关闭按钮, 并刷新界面.",
+                $desc:"设置对话框右上角是否带有关闭按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14043,7 +14076,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMinBtn:{
-                $desc:"设置对话框右上角是否带有最小化按钮, 并刷新界面.",
+                $desc:"设置对话框右上角是否带有最小化按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14061,7 +14094,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxBtn:{
-                $desc:"设置对话框右上角是否带有最大化按钮, 并刷新界面.",
+                $desc:"设置对话框右上角是否带有最大化按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14079,7 +14112,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPinBtn:{
-                $desc:"设置对话框右上角是否带有钉针按钮, 并刷新界面.",
+                $desc:"设置对话框右上角是否带有钉针按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14097,7 +14130,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setLandBtn:{
-                $desc:"设置对话框右上角是否带有降落按钮, 并刷新界面.",
+                $desc:"设置对话框右上角是否带有降落按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14115,7 +14148,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setOptBtn:{
-                $desc:"设置对话框右上角是否带有选项按钮, 并刷新界面.",
+                $desc:"设置对话框右上角是否带有选项按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14130,7 +14163,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setInfoBtn :{
-                $desc:"设置对话框是否带有帮助按钮, 并刷新界面.",
+                $desc:"设置对话框是否带有帮助按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -14142,7 +14175,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setRefreshBtn :{
-                $desc:"设置对话框是否带有刷新按钮, 并刷新界面.",
+                $desc:"设置对话框是否带有刷新按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -14157,7 +14190,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMovable:{
-                $desc:"设置对话框是否可以拖动, 并刷新界面.",
+                $desc:"设置对话框是否可以拖动.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -14175,7 +14208,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置对话框左上角的图标url, 并刷新界面.",
+                $desc:"设置对话框左上角的图标url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String,  image path.",
@@ -14193,7 +14226,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置对话框左上角图标的css position属性, 并刷新界面.",
+                $desc:"设置对话框左上角图标的css position属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
@@ -14211,7 +14244,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHtml:{
-                $desc:"设置对话框的内部内容HTML, 并刷新界面.",
+                $desc:"设置对话框的内部内容HTML.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -14241,7 +14274,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setStatus:{
-                $desc:"设置对话框的大小状态, 并刷新界面.",
+                $desc:"设置对话框的大小状态.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 可以是'normal'(通常), 'min'(最小话) or 'max'(最大化).",
@@ -14261,7 +14294,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMinHeight:{
-                $desc:"设置对话框的最小高度限制, 并刷新界面.",
+                $desc:"设置对话框的最小高度限制.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -14283,7 +14316,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMinWidth:{
-                $desc:"设置对话框的最小宽度限制, 并刷新界面.",
+                $desc:"设置对话框的最小宽度限制.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -14306,7 +14339,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFromRegion:{
-                $desc:"设置对话框的弹出源, 并刷新界面.",
+                $desc:"设置对话框的弹出源.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.{left:Number,top:Number,width:Number,height:Number}",
@@ -14485,7 +14518,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxHeight:{
-                $desc:"设置图片的最大高度, 并刷新界面.",
+                $desc:"设置图片的最大高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 图片高度（像素）",
@@ -14509,7 +14542,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxWidth:{
-                $desc:"设置图像的最大宽度（像素）, 并刷新界面.",
+                $desc:"设置图像的最大宽度（像素）.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -14533,7 +14566,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAlt:{
-                $desc:"设置图像的 Alt 值, 并刷新界面.",
+                $desc:"设置图像的 Alt 值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -14558,7 +14591,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSrc:{
-                $desc:"设置图像的src值, 并刷新界面.",
+                $desc:"设置图像的src值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -14678,7 +14711,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCmds:{
-                $desc:"设置指令数组, 并刷新界面.",
+                $desc:"设置指令数组.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array.",
@@ -14706,7 +14739,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setActiveLast :{
-                $desc:"设置是否激活最后一个文件夹项, 并刷新界面.",
+                $desc:"设置是否激活最后一个文件夹项.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15253,7 +15286,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setGroup :{
-                $desc:"设置树是否分组, 并刷新界面.",
+                $desc:"设置树是否分组.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15280,7 +15313,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDynDestory :{
-                $desc:"设置是否在节点折叠时动态销毁DOM（以便收回内存）, 并刷新界面.",
+                $desc:"设置是否在节点折叠时动态销毁DOM（以便收回内存）.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15307,7 +15340,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）, 并刷新界面.",
+                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15334,7 +15367,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelMode :{
-                $desc:"设置选择模式, 并刷新界面.",
+                $desc:"设置选择模式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选. 默认为'single'",
@@ -15374,7 +15407,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSingleOpen :{
-                $desc:"设置是否每一次只能有一个父节点能够被打开, 并刷新界面. 设置为true时,当一个父节点被打开,其他的打开的父节点将自动合拢.",
+                $desc:"设置是否每一次只能有一个父节点能够被打开. 设置为true时,当一个父节点被打开,其他的打开的父节点将自动合拢.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15579,7 +15612,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setActiveMode :{
-                $desc:"设置表格的选取模式, 并刷新界面.",
+                $desc:"设置表格的选取模式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 可以是'cell', 'row' 或 'none'. 默认为'row'.",
@@ -15805,7 +15838,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColHidable :{
-                $desc:"设置是否可手工隐藏列, 并刷新界面.",
+                $desc:"设置是否可手工隐藏列.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15833,7 +15866,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColMovable :{
-                $desc:"设置是否可手工移动列的相对位置, 并刷新界面.",
+                $desc:"设置是否可手工移动列的相对位置.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15861,7 +15894,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColResizer :{
-                $desc:"设置端用户是否可手工拖动列的宽度, 并刷新界面.",
+                $desc:"设置端用户是否可手工拖动列的宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15889,7 +15922,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColSortable :{
-                $desc:"设置是否可手工对列进行排序, 并刷新界面.",
+                $desc:"设置是否可手工对列进行排序.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15917,7 +15950,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setEditable :{
-                $desc:"表格为只读或可写, 并刷新界面.",
+                $desc:"表格为只读或可写.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -15945,7 +15978,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHeaderHeight :{
-                $desc:"设置表头高度, 并刷新界面.",
+                $desc:"设置表头高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -16029,7 +16062,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowHeight :{
-                $desc:"设置行高度, 并刷新界面.",
+                $desc:"设置行高度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
@@ -16057,7 +16090,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）, 并刷新界面.",
+                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16085,7 +16118,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowResizer :{
-                $desc:"设置是否可以拖动改变行高, 并刷新界面.",
+                $desc:"设置是否可以拖动改变行高.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16113,7 +16146,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowHandler :{
-                $desc:"设置行前是否带有用以拖动的行头, 并刷新界面.",
+                $desc:"设置行前是否带有用以拖动的行头.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16141,7 +16174,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelMode :{
-                $desc:"设置表格的选择模式 并刷新界面.",
+                $desc:"设置表格的选择模式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none', 'single' or 'multi'. 默认为 'single'.",
@@ -16327,7 +16360,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowDraggable :{
-                $desc:"设置是否可以拖动行以改变行排序或父子关系, 并刷新界面.",
+                $desc:"设置是否可以拖动行以改变行排序或父子关系.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16358,7 +16391,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRows :{
-                $desc:"设置表格的所有行, 并刷新界面.",
+                $desc:"设置表格的所有行.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
@@ -16391,7 +16424,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHeader :{
-                $desc:"设置表头对象, 并刷新界面.",
+                $desc:"设置表头对象.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
@@ -16407,7 +16440,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setGrpCols :{
-                $desc:"设置表头组数组对象, 并刷新界面.",
+                $desc:"设置表头组数组对象.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array.",
@@ -16434,7 +16467,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateHeader:{
-                $desc:"更新某个列的表头值, 并刷新界面.",
+                $desc:"更新某个列的表头值.",
                 $rtn:"[self]",
                 $paras:[
                     "colId [必需参数] : String, 列的id.",
@@ -16558,7 +16591,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowNumbered :{
-                $desc:"设置是否在行前显示行号, 并刷新界面.",
+                $desc:"设置是否在行前显示行号.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -16586,7 +16619,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setShowHeader :{
-                $desc:"设置是否显示表头, 并刷新界面.",
+                $desc:"设置是否显示表头.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -17341,7 +17374,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置是否显示关闭按钮, 并刷新界面.",
+                $desc:"设置是否显示关闭按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -17411,7 +17444,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTaskHeight:{
-                $desc:"设置任务的显示高度, 并刷新界面.",
+                $desc:"设置任务的显示高度.",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.tl4-6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17433,7 +17466,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setOptBtn:{
-                $desc:"设置日程表是否带有选项按钮, 并刷新界面.",
+                $desc:"设置日程表是否带有选项按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -17459,7 +17492,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDateBtn:{
-                $desc:"设置日程表是否带有日期选在按钮, 并刷新界面.",
+                $desc:"设置日程表是否带有日期选在按钮.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -17486,7 +17519,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDftTaskName:{
-                $desc:"设置默认的任务名称, 并刷新界面.",
+                $desc:"设置默认的任务名称.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -17952,7 +17985,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setSrc:{
-                $desc:"设置Flash的src值, 并刷新界面.",
+                $desc:"设置Flash的src值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -18263,7 +18296,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setShadow:{
-                $desc:"设置控件是否显示阴影, 并刷新界面",
+                $desc:"设置控件是否显示阴影",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -18386,7 +18419,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHAlign :{
-                $desc:"设置标签水平对齐方式, 并刷新界面.",
+                $desc:"设置标签水平对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left','25%','center','75%','right','outterleft','outterright'.",
@@ -18398,7 +18431,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setVAlign :{
-                $desc:"设置标签垂直对齐方式, 并刷新界面.",
+                $desc:"设置标签垂直对齐方式.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'.",

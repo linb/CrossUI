@@ -5005,6 +5005,15 @@ _.set(xui.Locale,["en","app"], {
                 "xui.Com.load('App.Test1',function(err,com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
+        getClsFromDom:{
+            $desc:"Gets xui.Com instance from a DOM node or id.",
+            $paras:[
+                "id [Required] : String, DOM node or id."
+            ]
+        },
+        getAllInstance:{
+            $desc:"Get all instance.",
+        },
         prototype:{
             KEY:{$desc:"Class Name"},
             autoDestroy:{
@@ -5694,7 +5703,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the proxy type for this remoting call.",
                 $rtn:"[self].",
                 $paras:[
-                    "value [Required] : String. auto/Ajax/SAjax/IAjax÷Æ“ª,ƒ¨»œŒ™auto.",
+                    "value [Required] : String. auto/Ajax/SAjax/IAjax÷Æ“ª,ƒ¨…èŒ™auto.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -7033,6 +7042,18 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            getAutoTips:{
+              $desc:"To determine whether the control show tips automatically or not",
+              $rtn:"Boolean"
+            },
+            setAutoTips:{
+              $desc:"Specify whether the control show tips automatically or not",
+              $rtn:"[self]",
+              $paras:[
+                  "value [Required] : Boolean.",
+                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+              ]
+            },
             getClassName:{
               $desc:"Gets class name",
               $rtn:"String"
@@ -7252,7 +7273,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setLeft:{
-                $desc:"Sets the left(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the left(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number",
@@ -7276,7 +7297,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRight:{
-                $desc:"Sets the right(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the right(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -7300,7 +7321,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setTop:{
-                $desc:"Sets the top(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the top(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -7324,7 +7345,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBottom:{
-                $desc:"Sets the bottom(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the bottom(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -7348,7 +7369,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setWidth:{
-                $desc:"Sets the width(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the width(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
@@ -7372,7 +7393,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHeight:{
-                $desc:"Sets the height(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the height(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : nonnegative Number.",
@@ -7396,7 +7417,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDisplay:{
-                $desc:"Sets the display(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the display(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
@@ -7420,7 +7441,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setVisibility:{
-                $desc:"Sets the visibility(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the visibility(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
@@ -7444,7 +7465,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setZIndex:{
-                $desc:"Sets the z-index(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the z-index(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
@@ -7480,7 +7501,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setPosition:{
-                $desc:"Sets the position(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the position(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
@@ -7504,7 +7525,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setTabindex:{
-                $desc:"Sets the tabIndex(corresponding to the tabIndex property of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the tabIndex(corresponding to the tabIndex property of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -7636,7 +7657,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDisabled:{
-                $desc:"Specifys whether this UI control is disabled or not, and reflects the value to UI.",
+                $desc:"Specifys whether this UI control is disabled or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -7672,7 +7693,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDock:{
-                $desc:"Sets the dock property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the dock property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'.",
@@ -7697,7 +7718,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDockFloat:{
-                $desc:"Sets the dockFloat property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the dockFloat property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -7729,7 +7750,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDockMargin:{
-                $desc:"Sets dock margin on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets dock margin on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : {left:Number,right:Number,top:Number,bottom:Number}.",
@@ -7761,7 +7782,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDockOrder:{
-                $desc:"Sets dock order on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets dock order on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -7787,7 +7808,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDockIgnore:{
-                $desc:"Sets the dockIgnore property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the dockIgnore property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -7823,7 +7844,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDockMinH:{
-                $desc:"Sets dock minimal height on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets dock minimal height on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -7838,7 +7859,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDockMinW:{
-                $desc:"Sets dock minimal width on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets dock minimal width on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -8797,7 +8818,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets the caption property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the caption property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -8821,7 +8842,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setFontSize :{
-                $desc:"Sets the FontSize property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the FontSize property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
@@ -8845,7 +8866,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setFontWeight :{
-                $desc:"Sets the FontWeight property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the FontWeight property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
@@ -8869,7 +8890,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -8893,7 +8914,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setVAlign :{
-                $desc:"Sets the VAlign property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the VAlign property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'top', 'middle' or 'bottom'.",
@@ -8917,7 +8938,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setShadowText :{
-                $desc:"Sets the ShadowText property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ShadowText property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -8941,7 +8962,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImage :{
-                $desc:"Sets the image property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the image property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -8965,7 +8986,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"Sets the image positon property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the image positon property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -9026,7 +9047,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setFillBG:{
-                $desc:"Sets the fill backgournd to the properties Object of each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the fill backgournd to the properties Object of each UIProfile.",
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
@@ -9062,7 +9083,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text to this button, and reflects the value to UI.",
+                $desc:"Sets caption text to this button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -9086,7 +9107,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -9139,7 +9160,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text to this button, and reflects the value to UI.",
+                $desc:"Sets caption text to this button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -9157,7 +9178,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setImage :{
-                $desc:"Sets image url, and reflects the value to UI.",
+                $desc:"Sets image url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -9169,7 +9190,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"Sets image image postion, and reflects the value to UI.",
+                $desc:"Sets image image postion.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -9187,7 +9208,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -9293,7 +9314,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text to this checkbox, and reflects the value to UI.",
+                $desc:"Sets caption text to this checkbox.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -9307,27 +9328,27 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getImage :{
-                $desc:"ªÒ»°Õº±Íurl¬∑æ∂",
+                $desc:"¬ªÚà¢ç¬º¬±È¥≤l¬∑¬æ¬∂",
                 $rtn:"String"
             },
             setImage :{
-                $desc:"…Ë÷√Õº±Íurl¬∑æ∂, ≤¢À¢–¬ΩÁ√Ê.",
+                $desc:" ®◊ÉÕº¬±È¥≤l¬∑¬æ¬∂, ¬≤¬¢À¢—Ç¬ΩËÑ¶.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [±ÿ–Ë≤Œ ˝] :String, Õº±Íurl¬∑æ∂.",
-                    "force [ø…—°≤Œ ˝] : Boolean, «ø÷∆…Ë÷√∏√ Ù–‘÷µ,º¥ π Ù–‘“—æ≠…Ë÷√Œ™∏√÷µ ƒ¨»œŒ™ [false]."
+                    "value [¬±ŸêË≥éÀΩ] :String, Õº¬±È¥≤l¬∑¬æ¬∂.",
+                    "force [¬ø ë¬°¬≤œäÔøΩoolean, «ø◊Ü ®◊É¬∏ƒäÔøΩ¬µ,¬º¬¥ πÀ¥—î”ë¬æ¬≠ ®◊ÉŒ™¬∏ƒñ¬µ ƒ¨…èŒ™ [false]."
                 ]
             },
             getImagePos :{
-                $desc:"ªÒ»°Õº±Íµƒcss position Ù–‘",
+                $desc:"¬ªÚà¢ç¬º¬±Í∂Ñcss positionÀ¥—î",
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"…Ë÷√Õº±Íµƒcss position Ù–‘, ≤¢À¢–¬ΩÁ√Ê.",
+                $desc:" ®◊ÉÕº¬±Í∂Ñcss positionÀ¥—î, ¬≤¬¢À¢—Ç¬ΩËÑ¶.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [±ÿ–Ë≤Œ ˝] : String, Õº±Íµƒœ‘ æŒª÷√.",
-                    "force [ø…—°≤Œ ˝] : Boolean, «ø÷∆…Ë÷√∏√ Ù–‘÷µ,º¥ π Ù–‘“—æ≠…Ë÷√Œ™∏√÷µ ƒ¨»œŒ™ [false]."
+                    "value [¬±ŸêË≥éÀΩ] : String, Õº¬±Í∂Ñ–î æŒª◊É.",
+                    "force [¬ø ë¬°¬≤œäÔøΩoolean, «ø◊Ü ®◊É¬∏ƒäÔøΩ¬µ,¬º¬¥ πÀ¥—î”ë¬æ¬≠ ®◊ÉŒ™¬∏ƒñ¬µ ƒ¨…èŒ™ [false]."
                 ]
             },
             onChecked:{
@@ -9390,7 +9411,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text to this button, and reflects the value to UI.",
+                $desc:"Sets caption text to this button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -9438,7 +9459,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -9462,7 +9483,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setVAlign :{
-                $desc:"Sets vertical alignment, and reflects the value to UI.",
+                $desc:"Sets vertical alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'top', 'middle' or 'bottom'.",
@@ -9486,7 +9507,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImage :{
-                $desc:"Sets image url, and reflects the value to UI.",
+                $desc:"Sets image url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -9510,7 +9531,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"Sets image image postion, and reflects the value to UI.",
+                $desc:"Sets image image postion.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -9621,7 +9642,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDynCheck:{
-                $desc:"Sets the 'dynamic check' property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the 'dynamic check' property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -9639,7 +9660,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment(text-align), and reflects the value to UI.",
+                $desc:"Sets horizontal alignment(text-align).",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -9657,7 +9678,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMultiLines:{
-                $desc:"Specifys whether input box holds single line or multi line, and reflects the value to UI.",
+                $desc:"Specifys whether input box holds single line or multi line.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -9681,7 +9702,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMask:{
-                $desc:"Sets the mask property value, and reflects the value to UI. Mark is kind of input pattern/format and can restrict abusive input.<ul>Char represents:"+
+                $desc:"Sets the mask property value. Mark is kind of input pattern/format and can restrict abusive input.<ul>Char represents:"+
                     "<li>'~' : [+-]</li>"+
                 "<li>'1' : [0-9]</li>"+
                 "<li>'a' : [A-Za-z]</li>"+
@@ -9713,7 +9734,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setReadonly:{
-                $desc:"Sets the readonly property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the readonly property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -9850,7 +9871,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setType:{
-                $desc:"Sets the type property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the type property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'input' or 'password'. Default is 'input'.",
@@ -9880,7 +9901,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"Sets the label's size, and reflects the value to UI.",
+                $desc:"Sets the label's size.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -9892,7 +9913,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"Sets the label's positoin, and reflects the value to UI.",
+                $desc:"Sets the label's positoin.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : left, right, top, bottom ÷Æ“ª.",
@@ -9904,7 +9925,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"Sets the the gap between label and input, and reflects the value to UI.",
+                $desc:"Sets the the gap between label and input.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -9916,7 +9937,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"Sets the label's caption, and reflects the value to UI.",
+                $desc:"Sets the label's caption.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -9928,10 +9949,10 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"Sets the label's horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets the label's horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String, 'left', 'center' or 'right'. ƒ¨»œŒ™ 'left'.",
+                    "value [Required] : String, 'left', 'center' or 'right'. ƒ¨…èŒ™ 'left'.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -10059,7 +10080,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setReadonly:{
-                $desc:"Sets editor read-only or editable, and reflects the value to UI.",
+                $desc:"Sets editor read-only or editable.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -10131,7 +10152,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text to this group, and reflects the value to UI.",
+                $desc:"Sets caption text to this group.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -10155,7 +10176,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImage :{
-                $desc:"Sets image url, and reflects the value to UI.",
+                $desc:"Sets image url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -10179,7 +10200,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"Sets image position, and reflects the value to UI.",
+                $desc:"Sets image position.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -10203,7 +10224,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setToggle :{
-                $desc:"Specifys whether group collapses or not, and reflects the value to UI.",
+                $desc:"Specifys whether group collapses or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -10227,7 +10248,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setToggleBtn :{
-                $desc:"Specifys whether toggle button shows or not, and reflects the value to UI.",
+                $desc:"Specifys whether toggle button shows or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -10362,7 +10383,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setType:{
-                $desc:"Sets the type property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the type property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'none','combobox','listbox','file','getter','currency','number','helpinput','cmdbox','popbox','time','date', 'datetime','color' or 'spin'. Default is 'combobox'.",
@@ -10697,7 +10718,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBtnImage :{
-                $desc:"Sets the command button's image url, and reflects the value to UI.",
+                $desc:"Sets the command button's image url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -10721,7 +10742,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBtnImagePos :{
-                $desc:"Sets command button's image position, and reflects the value to UI.",
+                $desc:"Sets command button's image position.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -10819,7 +10840,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             setBarLocation:{
-                $desc:"Sets the commands bar position, and reflects the value to UI.",
+                $desc:"Sets the commands bar position.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'top','bottom','left' or 'right'. Default is 'top'.",
@@ -10845,7 +10866,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBarHAlign:{
-                $desc:"Sets the commands bar horizontal alignment , and reflects the value to UI.",
+                $desc:"Sets the commands bar horizontal alignment .",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'. Default is 'left'.",
@@ -10869,7 +10890,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBarVAlign:{
-                $desc:"Sets the commands bar vertical alignment, and reflects the value to UI.",
+                $desc:"Sets the commands bar vertical alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'top' or 'bottom'. Default is 'top'.",
@@ -10893,7 +10914,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBarSize:{
-                $desc:"Sets the commands bar size, and reflects the value to UI.",
+                $desc:"Sets the commands bar size.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -10932,7 +10953,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean"
             },
             setCheckBox:{
-                $desc:"Specifys whether the control shows checkbox style or not(radio style), and reflects the value to UI.",
+                $desc:"Specifys whether the control shows checkbox style or not(radio style).",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -11126,7 +11147,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Number"
             },
             setFirstDayOfWeek:{
-                $desc:"Sets the first day of week, and reflects the value to UI.",
+                $desc:"Sets the first day of week.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number. 0-6 represents Sunday to Saturday.",
@@ -11281,7 +11302,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setType:{
-                $desc:"Sets Slider type, and reflects the value to UI.",
+                $desc:"Sets Slider type.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'vertical' or 'horizontal'.",
@@ -11412,7 +11433,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaptionTpl :{
-                $desc:"Sets the caption text template, and reflects the value to UI.",
+                $desc:"Sets the caption text template.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -11436,7 +11457,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMax:{
-                $desc:"Sets the maximal value, and reflects the value to UI.",
+                $desc:"Sets the maximal value.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11460,7 +11481,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMin:{
-                $desc:"Sets the mimimal value, and reflects the value to UI.",
+                $desc:"Sets the mimimal value.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11484,7 +11505,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSingleValue:{
-                $desc:"Sets the Singleproperty value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Singleproperty value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -11508,7 +11529,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSteps:{
-                $desc:"Sets the step value, and reflects the value to UI.",
+                $desc:"Sets the step value.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : nonnegative Number.",
@@ -11532,7 +11553,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setUnit:{
-                $desc:"Sets the Unit property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Unit property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -11597,7 +11618,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMaxHeight:{
-                $desc:"Sets minimal height, and reflects the value to UI.",
+                $desc:"Sets minimal height.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11621,7 +11642,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSelMode:{
-                $desc:"Sets selection mode, and reflects the value to UI.",
+                $desc:"Sets selection mode.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none', 'multi', 'multibycheckbox', or 'single'.",
@@ -11750,7 +11771,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"Sets the ItemMargin property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ItemMargin property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11768,7 +11789,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setItemLinker:{
-                $desc:"Sets item's linker type, and reflects the value to UI.",
+                $desc:"Sets item's linker type.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'none','left','right'",
@@ -11780,7 +11801,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setItemAlign:{
-                $desc:"Sets item's text align, and reflects the value to UI.",
+                $desc:"Sets item's text align.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'left', 'center' or 'right'.",
@@ -11792,7 +11813,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Number"
             },
             setItemWidth:{
-                $desc:"Sets item width, and reflects the value to UI.",
+                $desc:"Sets item width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11849,7 +11870,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImgHeight:{
-                $desc:"Sets item image heiht, and reflects the value to UI.",
+                $desc:"Sets item image heiht.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11873,7 +11894,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImgWidth:{
-                $desc:"Sets item image width, and reflects the value to UI.",
+                $desc:"Sets item image width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11897,7 +11918,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemWidth:{
-                $desc:"Sets item width, and reflects the value to UI.",
+                $desc:"Sets item width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11921,7 +11942,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemHeight:{
-                $desc:"Sets item height, and reflects the value to UI.",
+                $desc:"Sets item height.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11945,7 +11966,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"Sets item margin, and reflects the value to UI.",
+                $desc:"Sets item margin.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -11969,7 +11990,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemPadding:{
-                $desc:"Sets item padding, and reflects the value to UI.",
+                $desc:"Sets item padding.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -12018,7 +12039,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemWidth:{
-                $desc:"Sets the ItemWidth property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ItemWidth property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -12042,7 +12063,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemHeight:{
-                $desc:"Sets the ItemHeight property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ItemHeight property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -12066,7 +12087,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"Sets the ItemMargin property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ItemMargin property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -12090,7 +12111,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setItemPadding:{
-                $desc:"Sets the ItemPadding property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ItemPadding property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -12150,7 +12171,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCloseBtn :{
-                $desc:"Specifys whether close button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether close button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12174,7 +12195,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setPopBtn :{
-                $desc:"Specifys whether pop button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether pop button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12198,7 +12219,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setOptBtn :{
-                $desc:"Specifys whether option button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether option button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12216,7 +12237,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean"
             },
             setInfoBtn :{
-                $desc:"Specifys whether help button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether help button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12228,7 +12249,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean"
             },
             setRefreshBtn :{
-                $desc:"Specifys whether refresh button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether refresh button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12246,7 +12267,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setToggleBtn :{
-                $desc:"Specifys whether toggle button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether toggle button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12270,7 +12291,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text, and reflects the value to UI.",
+                $desc:"Sets caption text.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -12294,7 +12315,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImage :{
-                $desc:"Sets the image url, and reflects the value to UI.",
+                $desc:"Sets the image url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -12318,7 +12339,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"Sets image position, and reflects the value to UI.",
+                $desc:"Sets image position.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -12342,7 +12363,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setToggle :{
-                $desc:"Sets the toggle property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the toggle property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -12678,7 +12699,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setType:{
-                $desc:"Sets layout type, and reflects the value to UI.",
+                $desc:"Sets layout type.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'vertical' or 'horizontal'.",
@@ -12957,7 +12978,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -12975,7 +12996,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setItemAlign:{
-                $desc:"Sets item's text align, and reflects the value to UI.",
+                $desc:"Sets item's text align.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'left', 'center' or 'right'.",
@@ -12987,7 +13008,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Number"
             },
             setItemWidth:{
-                $desc:"Sets item width, and reflects the value to UI.",
+                $desc:"Sets item width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -13017,7 +13038,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setNoPanel :{
-                $desc:"Sets the NoPanel property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the NoPanel property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -13028,6 +13049,18 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "alert(o.getNoPanel());_.asyRun(function(){o.setNoPanel(true)},1000);"+
                     "}"
+                ]
+            },
+            getNoHandler :{
+                $desc:"Gets the NoHandler property value on the first UIProfile",
+                $rtn:"Boolean"
+            },
+            setNoHandler :{
+                $desc:"Sets the NoHandler property value on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getDropKeysPanel :{
@@ -13041,7 +13074,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDropKeysPanel :{
-                $desc:"Sets the DropKeysPanel property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the DropKeysPanel property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -13437,7 +13470,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setWidth:{
-                $desc:"Sets the width(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the width(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
@@ -13445,7 +13478,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHeight:{
-                $desc:"Sets the height(corresponding to the CSS value of the root DOM element) property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the height(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
@@ -13497,7 +13530,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"Sets horizontal alignment, and reflects the value to UI.",
+                $desc:"Sets horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
@@ -13521,7 +13554,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHandler :{
-                $desc:"Specifys whether this tool bar has a handler, and reflects the value to UI.",
+                $desc:"Specifys whether this tool bar has a handler.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -13637,7 +13670,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setAutoHide:{
-                $desc:"Specifys whether this popup menu hides automatically , and reflects the value to UI.",
+                $desc:"Specifys whether this popup menu hides automatically .",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -13665,7 +13698,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHideAfterClick:{
-                $desc:"Specifys whether this popup menu hides automatically after being clicked, and reflects the value to UI.",
+                $desc:"Specifys whether this popup menu hides automatically after being clicked.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -13786,7 +13819,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setAutoShowTime:{
-                $desc:"Specifys after how many seconds menu shows up automatically, and reflects the value to UI.",
+                $desc:"Specifys after how many seconds menu shows up automatically.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -13829,7 +13862,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHandler:{
-                $desc:"Specifys whether menu bar has a hanlder, and reflects the value to UI.",
+                $desc:"Specifys whether menu bar has a hanlder.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14063,7 +14096,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption:{
-                $desc:"Sets the Caption property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Caption property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -14081,7 +14114,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"Specifys whether this control has a close button, and reflects the value to UI.",
+                $desc:"Specifys whether this control has a close button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14109,7 +14142,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMinBtn:{
-                $desc:"Specifys whether this control has a min button, and reflects the value to UI.",
+                $desc:"Specifys whether this control has a min button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14127,7 +14160,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMaxBtn:{
-                $desc:"Specifys whether this control has a max button, and reflects the value to UI.",
+                $desc:"Specifys whether this control has a max button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14145,7 +14178,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setPinBtn:{
-                $desc:"Specifys whether this control has a pin button, and reflects the value to UI.",
+                $desc:"Specifys whether this control has a pin button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14163,7 +14196,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setLandBtn:{
-                $desc:"Specifys whether this control has a landing button, and reflects the value to UI.",
+                $desc:"Specifys whether this control has a landing button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14181,7 +14214,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setOptBtn:{
-                $desc:"Specifys whether this control has an option button, and reflects the value to UI.",
+                $desc:"Specifys whether this control has an option button.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14196,7 +14229,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean"
             },
             setInfoBtn :{
-                $desc:"Specifys whether help button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether help button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -14208,7 +14241,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean"
             },
             setRefreshBtn :{
-                $desc:"Specifys whether refresh button shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether refresh button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -14223,7 +14256,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMovable:{
-                $desc:"Specifys whether end user can move this dialog by drag and drop, and reflects the value to UI.",
+                $desc:"Specifys whether end user can move this dialog by drag and drop.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14241,7 +14274,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImage :{
-                $desc:"Sets image url, and reflects the value to UI.",
+                $desc:"Sets image url.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
@@ -14259,7 +14292,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"Sets image position, and reflects the value to UI.",
+                $desc:"Sets image position.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
@@ -14277,7 +14310,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHtml:{
-                $desc:"Sets dialog inside html, and reflects the value to UI.",
+                $desc:"Sets dialog inside html.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -14307,7 +14340,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setStatus:{
-                $desc:"Sets dialog status, and reflects the value to UI.",
+                $desc:"Sets dialog status.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'normal', 'min' or 'max'.",
@@ -14327,7 +14360,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMinHeight:{
-                $desc:"Sets dialog minimal height, and reflects the value to UI.",
+                $desc:"Sets dialog minimal height.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -14349,7 +14382,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMinWidth:{
-                $desc:"Sets dialog minimal width, and reflects the value to UI.",
+                $desc:"Sets dialog minimal width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -14372,7 +14405,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setFromRegion:{
-                $desc:"Sets a region where dialog pops up from, and reflects the value to UI.",
+                $desc:"Sets a region where dialog pops up from.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.{left:Number,top:Number,width:Number,height:Number}",
@@ -14488,7 +14521,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object"
             },
             setAttributes:{
-                $desc:"Sets attributes on the Dom node, and reflects the value to UI.",
+                $desc:"Sets attributes on the Dom node.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : key/value pairs.",
@@ -14552,7 +14585,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMaxHeight:{
-                $desc:"Sets image max height, and reflects the value to UI.",
+                $desc:"Sets image max height.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -14576,7 +14609,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setMaxWidth:{
-                $desc:"Sets image max width, and reflects the value to UI.",
+                $desc:"Sets image max width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -14625,7 +14658,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSrc:{
-                $desc:"Sets image src, and reflects the value to UI.",
+                $desc:"Sets image src.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -14745,7 +14778,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCmds:{
-                $desc:"Sets the cmds property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the cmds property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array.",
@@ -14773,7 +14806,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setActiveLast :{
-                $desc:"Sets the ActiveLast property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the ActiveLast property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -14894,7 +14927,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setCmds:{
-                $desc:"Sets the cmds property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the cmds property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array.",
@@ -14949,7 +14982,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRemoveText:{
-                $desc:"Sets the remove text property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the remove text property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -14976,7 +15009,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setEditorType:{
-                $desc:"Sets the editorType property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the editorType property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'none','combobox','listbox','file','getter','currency','number','helpinput','cmdbox','popbox','time','date' or 'color'. Default is 'none'.",
@@ -15005,7 +15038,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setEditable:{
-                $desc:"Sets the Editable property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Editable property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15033,7 +15066,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setNewOption:{
-                $desc:"Sets the NewOption property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the NewOption property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -15061,7 +15094,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setToggle:{
-                $desc:"Sets the Toggle property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Toggle property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15089,7 +15122,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setTitle:{
-                $desc:"Sets the Title property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Title property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -15117,7 +15150,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setNoTitle:{
-                $desc:"Sets the NoTitle property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the NoTitle property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15294,7 +15327,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setAnimCollapse :{
-                $desc:"Specifys whether to show animate when a tree node collapses, and reflects the value to UI.",
+                $desc:"Specifys whether to show animate when a tree node collapses.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15320,7 +15353,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setGroup :{
-                $desc:"Sets the Group property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Group property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15347,7 +15380,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setDynDestory :{
-                $desc:"Sets the DynDestory property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the DynDestory property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15374,7 +15407,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"Specifys whether parent node collapses initially, and reflects the value to UI.",
+                $desc:"Specifys whether parent node collapses initially.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15401,7 +15434,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSelMode :{
-                $desc:"Sets selection mode, and reflects the value to UI.",
+                $desc:"Sets selection mode.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none', 'single' or 'multi'. Default is 'single'",
@@ -15441,7 +15474,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSingleOpen :{
-                $desc:"Specify whether only one node is allowed to expand at one time, and reflects the value to UI.",
+                $desc:"Specify whether only one node is allowed to expand at one time.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15648,7 +15681,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setActiveMode :{
-                $desc:"Sets grid active mode, and reflects the value to UI.",
+                $desc:"Sets grid active mode.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'cell', 'row' or 'none'.Default is 'row'.",
@@ -15760,7 +15793,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setAltRowsBg :{
-                $desc:"Specifys whether to show rows in stripe., and reflects the value to UI.",
+                $desc:"Specifys whether to show rows in stripe..",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15800,7 +15833,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setAnimCollapse :{
-                $desc:"Sets the Animate property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the Animate property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15874,7 +15907,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setColHidable :{
-                $desc:"Specifys whether columns are hidable, and reflects the value to UI.",
+                $desc:"Specifys whether columns are hidable.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15902,7 +15935,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setColMovable :{
-                $desc:"Specifys whether columns are movable, and reflects the value to UI.",
+                $desc:"Specifys whether columns are movable.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15930,7 +15963,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setColResizer :{
-                $desc:"Specifys whether columns are resizable, and reflects the value to UI.",
+                $desc:"Specifys whether columns are resizable.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15958,7 +15991,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setColSortable :{
-                $desc:"Specify whether columns are sortable, and reflects the value to UI.",
+                $desc:"Specify whether columns are sortable.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -15986,7 +16019,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setEditable :{
-                $desc:"Sets grid to editable or read-only., and reflects the value to UI.",
+                $desc:"Sets grid to editable or read-only..",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -16014,7 +16047,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHeaderHeight :{
-                $desc:"Set grid header height, and reflects the value to UI.",
+                $desc:"Set grid header height.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -16042,7 +16075,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRowHandlerWidth :{
-                $desc:"Set row handler width, and reflects the value to UI.",
+                $desc:"Set row handler width.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -16070,7 +16103,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setGridHandlerCaption :{
-                $desc:"Set grid handler caption, and reflects the value to UI.",
+                $desc:"Set grid handler caption.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -16098,7 +16131,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRowHeight :{
-                $desc:"Sets grid row height, and reflects the value to UI.",
+                $desc:"Sets grid row height.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
@@ -16126,7 +16159,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"Sets the IniFold property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the IniFold property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -16154,7 +16187,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRowResizer :{
-                $desc:"Specify whether row can be resized by end user, and reflects the value to UI.",
+                $desc:"Specify whether row can be resized by end user.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -16182,7 +16215,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRowHandler :{
-                $desc:"Specify whether row has handle in the front., and reflects the value to UI.",
+                $desc:"Specify whether row has handle in the front..",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -16210,7 +16243,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setSelMode :{
-                $desc:"Sets grid selection mode, and reflects the value to UI.",
+                $desc:"Sets grid selection mode.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none', 'single' or 'multi'. Default is 'single'.",
@@ -16277,8 +16310,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Updates a specifed row.",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [Required] : String, ––id.",
-                    "options [Required] : key/value Object, –Ë“™∏¸–¬µƒº¸÷µ∂‘."
+                    "rowId [Required] : String, —êid.",
+                    "options [Required] : key/value Object, —®“™¬∏ÔøΩÔøΩ"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid130-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16396,7 +16429,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRowDraggable :{
-                $desc:"Specifys whether rows are draggable by end user, and reflects the value to UI.",
+                $desc:"Specifys whether rows are draggable by end user.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -16427,7 +16460,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRows :{
-                $desc:"Set rows of this grid, and reflects the value to UI.",
+                $desc:"Set rows of this grid.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
@@ -16460,7 +16493,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setHeader :{
-                $desc:"Set grid header with a header Object, and reflects the value to UI.",
+                $desc:"Set grid header with a header Object.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
@@ -16627,7 +16660,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setRowNumbered :{
-                $desc:"Sets the RowNumbered property value on the each UIProfile, and reflects the value to UI.",
+                $desc:"Sets the RowNumbered property value on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -16655,7 +16688,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setShowHeader :{
-                $desc:"Specifys whether grid header shows up or not, and reflects the value to UI.",
+                $desc:"Specifys whether grid header shows up or not.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
@@ -18262,7 +18295,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getTop:{
-                $desc:"Returns the distance between the top side of an element and the left side of its parent paper°£",
+                $desc:"Returns the distance between the top side of an element and the left side of its parent paper¬°¬£",
                 $rtn:"Number"
             },
             setTop:{
@@ -18295,11 +18328,11 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             toFront:{
-                $desc:"Moves the element so it is the closest to the viewer°Øs eyes, on top of other elements.",
+                $desc:"Moves the element so it is the closest to the viewer¬°¬Øs eyes, on top of other elements.",
                 $rtn:"[self]"
             },
             toBack:{
-                $desc:"Moves the element so it is the furthest from the viewer°Øs eyes, behind other elements.",
+                $desc:"Moves the element so it is the furthest from the viewer¬°¬Øs eyes, behind other elements.",
                 $rtn:"[self]"
             },
             getAttr:{

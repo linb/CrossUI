@@ -205,6 +205,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             _.breakO([ns.properties,ns.events, ns.CF, ns.CB, ns.CC, ns.CA, ns.CS, ns],2);
             //set again
+            ns.destroy=function(){};
             ns.destroyed=true;
         },
         unlinkParent:function(){
