@@ -151,7 +151,6 @@ Class("xui.Tips", null,{
 
         this._Types = {
             'default' : new function(){
-                this._r=/(\$)([\w\.]+)/g;
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
@@ -182,9 +181,7 @@ Class("xui.Tips", null,{
                     if(s+=""){
                         var html=/^\s*\</.test(s);
                         //get string
-                        s=s.replace(self._r, function(a,b,c){
-                            return xui.getRes(c);
-                        });
+                        s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
                             s='<div class="xui-node xui-node-div xui-tips-c xui-custom">'+s+'</div>';

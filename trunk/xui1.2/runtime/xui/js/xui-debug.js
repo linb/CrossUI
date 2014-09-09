@@ -1017,11 +1017,13 @@ _.merge(xui,{
     $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,
-    _langReg:/((\$)([^\w]))|((\$)([\w][\w\.]*[\w]+))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
-    getRes:function(path){
+     // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)  
+     // variable pattern: @a.b.c@  @a@  {!}  {a.b.c}
+    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
+    getRes:function(path,withparams){
         var arr,conf,tmp,params=arguments;
         if(typeof path=='string'){
-            if(path.indexOf('-')!=-1){
+            if(withparams!==false && path.indexOf('-')!=-1){
                 tmp=path.split('-');
                 path=tmp[0];
                 params=tmp;
@@ -1037,7 +1039,7 @@ _.merge(xui,{
                ? conf.apply(null,params) :
                conf ? conf : arr[arr.length-1]
     },
-    wrapRes:function(id){
+    wrapRes:function(id,withparams){
         var i=id, s,r;
         if(i.charAt(0)=='$')arguments[0]=i.substr(1,i.length-1);
         s=id;
@@ -1047,8 +1049,16 @@ _.merge(xui,{
     },
     adjustRes:function(str, wrap, onlyBraces){
         wrap=wrap?xui.wrapRes:xui.getRes;
-        return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n){
-            return c=='$' ? d : (!onlyBraces&&f=='$') ? wrap(g) : ((onlyBraces?0:i=='@')||m=="{") ? ((j=xui.SC.get(i=="@"?j:n)) || (_.isSet(j)?j:"")) : a;
+        return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
+                    // protect $@{
+            return c=='$' ? d : 
+                    // locale with params : $a.b.c-1-3 
+                    f=='$' ? wrap(g) :
+                    // locale withtout params :$(a.b.c-d)  $a
+                    i=='$' ? wrap(j,false) : l=='$' ? wrap(m,false) :
+                    // variable: @a@ @a.b.c@ {a.b.c}
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:"")) 
+                     : a;
             }): str;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
@@ -10596,9 +10606,12 @@ onDestroy
 Class('xui.Com',null,{
     Initialize:function(){
         var ns=this;
-        xui.launch=function(cls, onEnd, lang, theme, showUI){
+        xui.launch = function(cls, onEnd, lang, theme, showUI){
             ns.load.apply(ns, arguments);
         };
+    },
+    After:function(){
+    	  this._pool={};
     },
     Constructor:function(properties, events, host){
         var self=this;
@@ -10606,7 +10619,9 @@ Class('xui.Com',null,{
         self.host=host||self;
 
         self.$xid=self.constructor._ctrlId.next();
-
+        
+        self.constructor._pool[self.$xid]=xui.Com._pool[self.$xid]=self;
+        
         self.properties = properties || (self.properties?_.clone(self.properties):{});
         //copy those from class setting
         self.events = _.copy(self.events) || {};
@@ -10938,7 +10953,12 @@ Class('xui.Com',null,{
             if(ns && ns.length)
                 self._nodes.length=0;
             self._ctrlpool=null;
+
+            delete self.constructor._pool[self.$xid]
+            delete xui.Com._pool[self.$xid];
+
             _.breakO(self);
+            self.destroy=function(){};
             //set again
             self.destroyed=true;
         }
@@ -10950,6 +10970,9 @@ Class('xui.Com',null,{
             if(prf&&(prf=prf.host)){
                 return prf.KEY;
             }
+        },
+        getAllInstance:function(){
+        	return this._pool;
         },
         load:function(cls, onEnd, lang, theme, showUI){
             if(!cls){
@@ -12801,7 +12824,6 @@ Class("xui.Tips", null,{
 
         this._Types = {
             'default' : new function(){
-                this._r=/(\$)([\w\.]+)/g;
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
@@ -12832,9 +12854,7 @@ Class("xui.Tips", null,{
                     if(s+=""){
                         var html=/^\s*\</.test(s);
                         //get string
-                        s=s.replace(self._r, function(a,b,c){
-                            return xui.getRes(c);
-                        });
+                        s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
                             s='<div class="xui-node xui-node-div xui-tips-c xui-custom">'+s+'</div>';
@@ -13746,6 +13766,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             _.breakO([ns.properties,ns.events, ns.CF, ns.CB, ns.CC, ns.CA, ns.CS, ns],2);
             //set again
+            ns.destroy=function(){};
             ns.destroyed=true;
         },
         unlinkParent:function(){
@@ -30143,13 +30164,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             lastV=key;
                     });
 
-                    if(lastV)
+                    if(!prop.noHandler && lastV)
                         _.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
                 }else{
                     fold(uiv, arr1);
                     expand(value, arr2);
                     
-                    if(arr2.length)
+                    if(!prop.noHandler && arr2.length)
                         _.tryF(profile.box._adjustScroll,[profile,value],profile.box);
                 }
 
@@ -30398,6 +30419,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
+                style:'{_liststyle}',
                 ITEMS:{
                     tagName : 'div',
                     className:'xui-ui-unselectable',
@@ -31077,6 +31099,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             selMode:{
                 ini:'single',
                 listbox:['single', 'multi']
+            },
+            noHandler:{
+                ini:false,
+                action:function(value){
+                    this.getSubNode('LIST').css('display',value?'none':'');
+                    var t=this.getRootNode().style;
+                    xui.UI.$tryResize(this, t.width, t.height, true, this.$UIValue);
+                }
             }
         },
         EventHandlers:{
@@ -31102,6 +31132,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             data.panels = data.items;
             if(data.HAlign)
                 data.HAlign = 'text-align:'+data.HAlign+';';
+            data._liststyle = data.noHandler?'display:none':'';
             return data;
         },
         _prepareItem:function(profile, item){
@@ -31254,7 +31285,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var o = profile.boxing().getPanel(key),
                 l=profile.getSubNode('LIST'),
                 listH;
-            ;
+
             if(!o || o.isEmpty())return;
 
             var hc=null,wc=null;
@@ -31262,18 +31293,22 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(height && item._h!=height){
                 item._h=height;
                 if(height && height!='auto'){
-                    listH = l.get(0).offsetHeight ||
-                        //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                        l.offsetHeight();
-
-                    height = height-listH;
+                    if(!t.noHandler){
+                        listH = l.get(0).offsetHeight ||
+                            //for opear 9.0 get height bug, get offsetheight in firefox is slow
+                            l.offsetHeight();
+    
+                        height = height-listH;
+                    }
                     if(height>0)hc=height;
                 }else hc=height;
             }
 
             if(width && item._w!=width){
                 l.width(item._w=width);
-                this._adjustScroll(profile);
+                if(!t.noHandler){
+                    this._adjustScroll(profile);
+                }
                 wc=width;
             }
             if(hc||wc)o.height(hc).onSize();
@@ -31410,6 +31445,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         DataModel:{
             $border:1,
             noPanel:null,
+            noHandler:null,
             selMode:null
         },
         _onresize:function(profile,width,height,force,key){
@@ -31456,7 +31492,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 width-=bw;
                 wc=width;
                 bx.width(width);
-            }
+            }    
 
             o.cssRegion({width:wc?wc:null,height:hc?hc:null,top:top,left:0},true);
             if(wc)profile.getSubNode('LIST').width(wc);
@@ -31665,38 +31701,42 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 wc=null,hc=null,itmsH;
-
-            if(t.barLocation=='top'||t.barLocation=='bottom'){
-                if(width){
-                    hs.width(width-2);
-                    hl.width(width-2);
-                    // for nopanel:
-                    if(noPanel)
-                        hs.height(height-2);
-                 
-                    left = 0;
-                    wc=width;
-                }
-
-                hs.height(itmsH = hl.offsetHeight());
-                if(height-itmsH>0)hc=height-itmsH-2;
-                top = t.barLocation=='top'?2- -itmsH:0;
-            }else{
-                if(height){
-                    // for nopanel:
-                    if(noPanel){
+            if(!t.noHandler){
+                if(t.barLocation=='top'||t.barLocation=='bottom'){
+                    if(width){
                         hs.width(width-2);
                         hl.width(width-2);
+                        // for nopanel:
+                        if(noPanel)
+                            hs.height(height-2);
+                     
+                        left = 0;
+                        wc=width;
                     }
-                    hs.height(height-2);
-
-                    top=0;
-                    hc=height;
+    
+                    hs.height(itmsH = hl.offsetHeight());
+                    if(height-itmsH>0)hc=height-itmsH-2;
+                    top = t.barLocation=='top'?2- -itmsH:0;
+                }else{
+                    if(height){
+                        // for nopanel:
+                        if(noPanel){
+                            hs.width(width-2);
+                            hl.width(width-2);
+                        }
+                        hs.height(height-2);
+    
+                        top=0;
+                        hc=height;
+                    }
+                    if(width){
+                        left = t.barLocation=='left'?2- -t.barSize:0;
+                        wc=width-t.barSize-2;
+                    }
                 }
-                if(width){
-                    left = t.barLocation=='left'?2- -t.barSize:0;
-                    wc=width-t.barSize-2;
-                }
+            }else{
+                wc=width;
+                hc=height;
             }
 
             if(!noPanel)
@@ -33072,7 +33112,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item.itemDisplay=item.hidden?'display:none;':'';
-            item.mark2Display = (p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
+            item.mark2Display = p.selMode=='multibycheckbox'?'':'display:none;';
             item._tabindex = p.tabindex;
         },
         _reorderItems:function(profile, pid){

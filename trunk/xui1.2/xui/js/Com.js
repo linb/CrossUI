@@ -18,9 +18,12 @@ onDestroy
 Class('xui.Com',null,{
     Initialize:function(){
         var ns=this;
-        xui.launch=function(cls, onEnd, lang, theme, showUI){
+        xui.launch = function(cls, onEnd, lang, theme, showUI){
             ns.load.apply(ns, arguments);
         };
+    },
+    After:function(){
+    	  this._pool={};
     },
     Constructor:function(properties, events, host){
         var self=this;
@@ -28,7 +31,9 @@ Class('xui.Com',null,{
         self.host=host||self;
 
         self.$xid=self.constructor._ctrlId.next();
-
+        
+        self.constructor._pool[self.$xid]=xui.Com._pool[self.$xid]=self;
+        
         self.properties = properties || (self.properties?_.clone(self.properties):{});
         //copy those from class setting
         self.events = _.copy(self.events) || {};
@@ -360,7 +365,12 @@ Class('xui.Com',null,{
             if(ns && ns.length)
                 self._nodes.length=0;
             self._ctrlpool=null;
+
+            delete self.constructor._pool[self.$xid]
+            delete xui.Com._pool[self.$xid];
+
             _.breakO(self);
+            self.destroy=function(){};
             //set again
             self.destroyed=true;
         }
@@ -372,6 +382,9 @@ Class('xui.Com',null,{
             if(prf&&(prf=prf.host)){
                 return prf.KEY;
             }
+        },
+        getAllInstance:function(){
+        	return this._pool;
         },
         load:function(cls, onEnd, lang, theme, showUI){
             if(!cls){

@@ -78,6 +78,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         DataModel:{
             $border:1,
             noPanel:null,
+            noHandler:null,
             selMode:null
         },
         _onresize:function(profile,width,height,force,key){
@@ -124,7 +125,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 width-=bw;
                 wc=width;
                 bx.width(width);
-            }
+            }    
 
             o.cssRegion({width:wc?wc:null,height:hc?hc:null,top:top,left:0},true);
             if(wc)profile.getSubNode('LIST').width(wc);

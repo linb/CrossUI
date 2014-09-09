@@ -199,38 +199,42 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 wc=null,hc=null,itmsH;
-
-            if(t.barLocation=='top'||t.barLocation=='bottom'){
-                if(width){
-                    hs.width(width-2);
-                    hl.width(width-2);
-                    // for nopanel:
-                    if(noPanel)
-                        hs.height(height-2);
-                 
-                    left = 0;
-                    wc=width;
-                }
-
-                hs.height(itmsH = hl.offsetHeight());
-                if(height-itmsH>0)hc=height-itmsH-2;
-                top = t.barLocation=='top'?2- -itmsH:0;
-            }else{
-                if(height){
-                    // for nopanel:
-                    if(noPanel){
+            if(!t.noHandler){
+                if(t.barLocation=='top'||t.barLocation=='bottom'){
+                    if(width){
                         hs.width(width-2);
                         hl.width(width-2);
+                        // for nopanel:
+                        if(noPanel)
+                            hs.height(height-2);
+                     
+                        left = 0;
+                        wc=width;
                     }
-                    hs.height(height-2);
-
-                    top=0;
-                    hc=height;
+    
+                    hs.height(itmsH = hl.offsetHeight());
+                    if(height-itmsH>0)hc=height-itmsH-2;
+                    top = t.barLocation=='top'?2- -itmsH:0;
+                }else{
+                    if(height){
+                        // for nopanel:
+                        if(noPanel){
+                            hs.width(width-2);
+                            hl.width(width-2);
+                        }
+                        hs.height(height-2);
+    
+                        top=0;
+                        hc=height;
+                    }
+                    if(width){
+                        left = t.barLocation=='left'?2- -t.barSize:0;
+                        wc=width-t.barSize-2;
+                    }
                 }
-                if(width){
-                    left = t.barLocation=='left'?2- -t.barSize:0;
-                    wc=width-t.barSize-2;
-                }
+            }else{
+                wc=width;
+                hc=height;
             }
 
             if(!noPanel)

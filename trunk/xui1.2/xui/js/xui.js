@@ -1017,11 +1017,13 @@ _.merge(xui,{
     $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,
-    _langReg:/((\$)([^\w]))|((\$)([\w][\w\.]*[\w]+))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
-    getRes:function(path){
+     // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)  
+     // variable pattern: @a.b.c@  @a@  {!}  {a.b.c}
+    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
+    getRes:function(path,withparams){
         var arr,conf,tmp,params=arguments;
         if(typeof path=='string'){
-            if(path.indexOf('-')!=-1){
+            if(withparams!==false && path.indexOf('-')!=-1){
                 tmp=path.split('-');
                 path=tmp[0];
                 params=tmp;
@@ -1037,7 +1039,7 @@ _.merge(xui,{
                ? conf.apply(null,params) :
                conf ? conf : arr[arr.length-1]
     },
-    wrapRes:function(id){
+    wrapRes:function(id,withparams){
         var i=id, s,r;
         if(i.charAt(0)=='$')arguments[0]=i.substr(1,i.length-1);
         s=id;
@@ -1047,8 +1049,16 @@ _.merge(xui,{
     },
     adjustRes:function(str, wrap, onlyBraces){
         wrap=wrap?xui.wrapRes:xui.getRes;
-        return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n){
-            return c=='$' ? d : (!onlyBraces&&f=='$') ? wrap(g) : ((onlyBraces?0:i=='@')||m=="{") ? ((j=xui.SC.get(i=="@"?j:n)) || (_.isSet(j)?j:"")) : a;
+        return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
+                    // protect $@{
+            return c=='$' ? d : 
+                    // locale with params : $a.b.c-1-3 
+                    f=='$' ? wrap(g) :
+                    // locale withtout params :$(a.b.c-d)  $a
+                    i=='$' ? wrap(j,false) : l=='$' ? wrap(m,false) :
+                    // variable: @a@ @a.b.c@ {a.b.c}
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:"")) 
+                     : a;
             }): str;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
