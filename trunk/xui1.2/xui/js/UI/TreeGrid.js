@@ -1414,7 +1414,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     },
                                     FCELLINN:{
                                         $order:3,
-                                        ROWNUM:{},
+                                        ROWNUM:{
+                                            style:'{_rowNumbDisplay}'
+                                        },
                                         FCELLCAPTION:{
                                             $order:1,
                                             text:'{caption}'
@@ -2999,6 +3001,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         i=0,
                         map=ns.rowMap,
                         row,ol=0,l=0,a1=[],a2=[],tag='',temp,t;
+                    
+                    nodes.css('display',value?'':'none');
                     if(value)
                         nodes.each(function(o){
 // for perfomance: remove this
@@ -4078,6 +4082,8 @@ editorDropListHeight
                 row._rowMarkDisplay=(pro.selMode=="multi"||pro.selMode=="multibycheckbox")?"":NONE;
 
                 row._treeMode=pro.treeMode?'':NONE;
+
+                row._rowNumbDisplay=pro.rowNumbered?'':NONE;
 
                 t={id: row.id};
 

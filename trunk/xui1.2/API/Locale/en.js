@@ -6193,6 +6193,18 @@ _.set(xui.Locale,["en","app"], {
 
     _.set(xui.Locale,["en","doc","xui","absValue"], {
         prototype:{
+            getReadonly:{
+                $desc:"Gets the readonly property",
+                $rtn:"Boolean"
+            },
+            setReadonly:{
+                $desc:"Sets the readonly property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getShowDirtyMark:{
                 $desc:"Gets the showDirtyMark property value on the first UIProfile",
                 $rtn:"Boolean",
@@ -9655,6 +9667,18 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getPlaceholder:{
+                $desc:"Gets placeholder string for HTML 5 .",
+                $rtn:"String"
+            },
+            setPlaceholder:{
+                $desc:"Sets placeholder string for HTML 5 .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getHAlign :{
                 $desc:"Gets horizontal alignment(text-align).",
                 $rtn:"String"
@@ -10319,6 +10343,18 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            getInputReadonly:{
+                $desc:"Gets the inner Input's readonly property.",
+                $rtn:"Boolean"
+            },
+            setInputReadonly:{
+                $desc:"Sets the inner Input's readonly property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean, readonly or not.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getCaption:{
                 $desc:"Gets the temporary caption text.",
                 $rtn:"String"
@@ -14088,6 +14124,30 @@ _.set(xui.Locale,["en","app"], {
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.hide();},1000); _.asyRun(function(){dlg.show();},2000);"
                 ]
             },
+            getIframeAutoLoad:{
+                $desc:"Gets auto load(with iframe) iframe src property",
+                $rtn:"String"
+            },
+            setIframeAutoLoad:{
+                $desc:"Sets auto load(with iframe) iframe src property. Set it before control was rendered.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getAjaxAutoLoad:{
+                $desc:"Gets auto load(with Ajax, same domain only) html file path property",
+                $rtn:"String"
+            },
+            setAjaxAutoLoad:{
+                $desc:"Sets auto load(with Ajax, same domain only) html file path property. Set it before control was rendered.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getCaption:{
                 $desc:"Gets the Caption property value on the first UIProfile",
                 $rtn:"String",
@@ -14187,6 +14247,18 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());_.asyRun(function(){dlg.setPinBtn(false);},1000);"
                 ]
+            },
+            getModal:{
+                 $desc:"To determine whether this dialog is modal or modaless",
+                 $rtn:"Boolean"
+            },
+            setModal:{
+                $desc:"Specifys whether this dialog is modal or modaless.",
+                $rtn:"[self]",
+                $paras:[
+                     "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+              ]
             },
             getLandBtn:{
                 $desc:"To determine whether this control has a landing button",
@@ -18598,6 +18670,18 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a xui.svg.connector Object."
         },
         prototype:{
+            getBgLine:{
+                $desc:"To determine whether the background line hide or not.",
+                $rtn:"Boolean"
+            },
+            setBgLine:{
+                $desc:"Specify whether the background line hide or not.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getType:{
                 $desc:"Gets the connector's type.",
                 $rtn:"String"

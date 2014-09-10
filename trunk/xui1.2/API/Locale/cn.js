@@ -6215,6 +6215,18 @@ _.set(xui.Locale,["cn","app"], {
 
     _.set(xui.Locale,["cn","doc","xui","absValue"], {
         prototype:{
+            getReadonly:{
+                $desc:"判断控件是否为只读",
+                $rtn:"Boolean"
+            },
+            setReadonly:{
+                $desc:"设置控件是否为只读.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
             getShowDirtyMark:{
                 $desc:"获得控件是否显示脏标识的属性",
                 $rtn:"Boolean",
@@ -9601,6 +9613,17 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getPlaceholder:{
+                $desc:"获得HTML 5  空白提示字符串.",
+                $rtn:"String"
+            },
+            setPlaceholder:{
+                $desc:"设置HTML 5  空白提示字符串.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."                ]
+            },
             getHAlign :{
                 $desc:"获取标签水平对齐方式",
                 $rtn:"String"
@@ -10253,6 +10276,18 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            getInputReadonly:{
+                $desc:"获取内部文本的只读属性.",
+                $rtn:"Boolean"
+            },
+            setInputReadonly:{
+                $desc:"设置内部文本的只读属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean, 是否只读.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
             getCaption:{
                 $desc:"获取显示的文本内容.",
                 $rtn:"String"
@@ -14021,6 +14056,30 @@ _.set(xui.Locale,["cn","app"], {
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.hide();},1000); _.asyRun(function(){dlg.show();},2000);"
                 ]
             },
+            getIframeAutoLoad:{
+                $desc:"获取用iframe自动加载html（可以是异域）的地址属性",
+                $rtn:"String"
+            },
+            setIframeAutoLoad:{
+                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getAjaxAutoLoad:{
+                $desc:"获取用Ajax自动加载html文件（同域下）的路径属性",
+                $rtn:"String"
+            },
+            setAjaxAutoLoad:{
+                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getCaption:{
                 $desc:"获取对话框标题文字",
                 $rtn:"String",
@@ -14120,6 +14179,18 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());_.asyRun(function(){dlg.setPinBtn(false);},1000);"
+                ]
+            },
+            getModal:{
+                 $desc:"判断是否是模式对话框",
+                 $rtn:"Boolean"
+            },    
+            setModal:{
+                $desc:"设置是否为模式对话框.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
                 ]
             },
             getLandBtn:{
@@ -18514,6 +18585,18 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.svg.connector对象."
         },
         prototype:{
+            getBgLine:{
+                $desc:"得到是否隐藏背景线.",
+                $rtn:"Boolean"
+            },
+            setBgLine:{
+                $desc:"设置是否隐藏背景线.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
             getType:{
                 $desc:"得到链接器的类型.",
                 $rtn:"String"
@@ -18595,3 +18678,535 @@ _.set(xui.Locale,["cn","app"], {
     });    
 })();
 
+(function(){
+_.set(xui.Locale,["cn","doc","propname"], {
+        'xui_absObj' : {
+        
+        },
+       'xui_absComposed' : {
+            'dragKey':'拖拽标识',
+            'dropKeys':'丢下标识'
+        },
+        'xui_absList' : {
+            'listKey':'列表键',
+            'items':'项目列表',
+            'valueSeparator':'值分隔符'
+        },
+        'xui_absValue' : {
+            'dataBinder':'绑定器名称',
+            'dataField':'字段名',
+            'readonly':'只读',
+            'value':'控件值',
+            'dirtyMark':'脏功能',
+            'showDirtyMark':'显示脏'
+        },
+        'xui_DataBinder' : {
+            'data':'内部数据',
+            'dataSourceType':'数据源类型',
+            'queryURL':'远程地址',
+            'queryUserName':'远程用户',
+            'queryPassword':'远程密码',
+            'queryModel':'模板名称',
+            'queryMethod':'请求方式',
+            'queryAsync':'异步方式',
+            'requestType':'请求数据类型',
+            'responseType':'接收数据类型',
+            'queryArgs':'请求参数',
+            'queryOptions':'自定义参数',
+            'proxyType':'代理种类',
+            'name':'绑定器唯一名'
+        },
+        'xui_UI' : {
+            'autoTips':'自动显示提示',
+            'tag':'附加值',
+            'tagVar':'附加对象',
+            'className':'根节点CSS类',
+            'disableClickEffect':'去掉点击效果',
+            'disableHoverEffect':'去掉悬停效果',
+            'disableTips':'去掉提示效果',
+            'disabled':'控件不可用',
+            'defaultFocus':'自动获得焦点',
+            'dock':'停靠属性',
+            'dockIgnore':'停靠忽略',
+            'dockOrder':'停靠顺序',
+            'dockMargin':'停靠外补丁',
+            'dockFloat':'停靠漂浮',
+            'dockMinW':'停靠最小宽度',
+            'dockMinH':'停靠最小高度',
+            'tips':'提示文字',
+            'left':'左边沿坐标',
+            'top':'上边沿坐标',
+            'width':'控件宽度',
+            'height':'控件高度',
+            'right':'右边沿坐标',
+            'bottom':'下边沿坐标',
+            'renderer':'渲染函数',
+            'zIndex':'控件层属性',
+            'tabindex':'焦点顺序',
+            'position':'布局属性',
+            'visibility':'可见属性',
+            'display':'显示属性',
+            'selectable':'可选属性'
+        },
+        'xui_UI_Widget' : {
+            'border':'边缘线',
+            'shadow':'阴影',
+            'resizer':'可调大小',
+            'resizerProp':'大小调整器属性_'
+        },
+        'xui_UI_Block' : {
+            'iframeAutoLoad':'IFrame自动加载',
+            'ajaxAutoLoad':'Ajax自动加载',
+            'html':'内部HTML文本',
+            'overflow':'容器溢出属性',
+            'borderType':'边框类型',
+            'background':'容器背景'
+        },
+        'xui_UI_Label' : {
+            'caption':'标题文字',
+            'image':'图标路径',
+            'imagePos':'图标位置属性',
+            'shadowText':'阴影文字',
+            'hAlign':'水平对齐方式',
+            'vAlign':'垂直对齐方式',
+            'fontSize':'字体大小',
+            'fontWeight':'字体粗细'
+        },
+        'xui_UI_ProgressBar' : {
+            'captionTpl':'标题模板',
+            'fillBG':'进度条颜色'
+        },
+        'xui_UI_Button' : {
+            'caption':'标题文字',
+            'image':'图标路径',
+            'imagePos':'图标位置属性_',
+            'hAlign':'水平对齐方式',
+            'vAlign':'垂直对齐方式',
+            'type':'按钮类型'
+        },
+        'xui_UI_CheckBox' : {
+        
+        },
+        'xui_UI_Input' : {
+            'tipsErr':'无效提示文本',
+            'tipsOK':'有效提示文本',
+            'dynCheck':'动态校验',
+            'selectOnFocus':'自动选择文本',
+            'labelSize':'标签大小',
+            'placeholder':'空白提示',
+            'labelPos':'标签位置',
+            'labelGap':'标签距离',
+            'labelCaption':'标签文字',
+            'labelHAlign':'标签水平对齐',
+            'valueFormat':'有效输入模式',
+            'mask':'有效格式模式',
+            'hAlign':'水平对齐',
+            'type':'组合框类型',
+            'maxlength':'最大长度',
+            'multiLines':'多行输入',
+            'tipsBinder':'提示绑定到'
+        },
+        'xui_UI_ComboInput' : {
+            'cachePopWnd':'缓存弹出窗口',
+            'dateEditorTpl':' 日期编辑模板',
+            'precision':'数字精度',
+            'groupingSeparator':'千位分隔符',
+            'decimalSeparator':'小数分隔符',
+            'forceFillZero':'用0填充精度',
+            'popCtrlProp':'弹出窗口属性',
+            'popCtrlEvents':'弹出窗口事件',
+            'numberTpl':'数字显示模板',
+            'currencyTpl':'货币显示模板',
+            'listKey':'列表键',
+            'dropListWidth':'弹出窗口宽',
+            'dropListHeight':'弹出窗口高',
+            'items':'下拉框项目',
+            'btnImage':'按钮图标路径',
+            'btnImagePos':'按钮图标位置',
+            'increment':'增量值',
+            'min':'最小值',
+            'max':'最大值',
+            'commandBtn':'命令按钮',
+            'inputReadonly':'文本只读属性',
+            'caption':'文本显示内容'
+        },
+        'xui_UI_PopMenu' : {
+            'hideAfterClick':'点击后隐藏',
+            'autoHide':'自动隐藏'
+        },
+        'xui_UI_Dialog' : {
+            'initPos':'窗口起始位置',
+            'iframeAutoLoad':'IFrame自动加载',
+            'ajaxAutoLoad':'Ajax自动加载',
+            'html':'内部HTML文本',
+            'overflow':'容器溢出属性',
+            'caption':'对话框标题',
+            'image':'图标路径',
+            'imagePos':'图标位置属性',
+            'movable':'对话框可拖动',
+            'minBtn':'最小化按钮',
+            'maxBtn':'最大化按钮',
+            'infoBtn':'帮助按钮',
+            'optBtn':'选项按钮',
+            'closeBtn':'关闭按钮',
+            'refreshBtn':'刷新按钮',
+            'pinBtn':'钉针按钮',
+            'landBtn':'降落按钮',
+            'minWidth':'最小宽度限制',
+            'minHeight':'最小高度限制',
+            'fromRegion':'对话框弹出源',
+            'modal':'模式对话框',
+            'status':'对话框状态'
+        },
+        'xui_UI_TextEditor' : {
+        
+        },
+        'xui_UI_Link' : {
+            'caption':'超链接文本',
+            'href':'超链接锚点',
+            'target':'目标窗口'
+        },
+        'xui_UI_SLabel' : {
+            'caption':'标签文字',
+            'hAlign':'水平对齐方式'
+        },
+        'xui_UI_SButton' : {
+            'image':'图标路径',
+            'imagePos':'图标位置属性',
+            'caption':'按钮标题文字',
+            'hAlign':'水平对齐方式'
+        },
+        'xui_UI_SCheckBox' : {
+            'image':'图标路径',
+            'imagePos':'图标位置属性',
+            'caption':'按钮标题文字'
+        },
+        'xui_UI_Element' : {
+            'nodeName':'元素节点名',
+            'html':'内部HTML文本',
+            'attributes':'元素属性'
+        },
+        'xui_UI_Span' : {
+            'html':'内部HTML文本',
+            'overflow':'容器溢出属性'
+        },
+        'xui_UI_Div' : {
+            'iframeAutoLoad':'IFrame自动加载',
+            'ajaxAutoLoad':'Ajax自动加载',
+            'html':'内部HTML文本',
+            'overflow':'容器溢出属性'
+        },
+        'xui_UI_Tag' : {
+            'tagKey':' 关键字'
+        },
+        'xui_UI_Pane' : {
+        
+        },
+        'xui_UI_SVGPaper' : {
+            'scaleChildren':'自动缩放子控件'
+        },
+        'xui_UI_Group' : {
+            'caption':'标题',
+            'toggleBtn':'展开收缩按钮',
+            'toggle':'控件展开',
+            'image':'图标路径',
+            'imagePos':'图标位置属性'
+        },
+        'xui_UI_Panel' : {
+            'caption':'标题文字',
+            'image':'图标路径',
+            'imagePos':'图标位置属性',
+            'toggleBtn':'展开收缩按钮',
+            'toggle':'控件展开',
+            'infoBtn':'帮助按钮',
+            'optBtn':'选项按钮',
+            'closeBtn':'关闭按钮',
+            'refreshBtn':'刷新按钮',
+            'popBtn':'弹出按钮',
+            'borderType':'边框类型'
+        },
+        'xui_UI_Image' : {
+            'maxWidth':'图像最大宽度',
+            'maxHeight':'图片最大高度',
+            'src':'图像文件路径',
+            'alt':'替代文字',
+            'cursor':'鼠标状态'
+        },
+        'xui_UI_Flash' : {
+            'cover':'覆盖层',
+            'src':'Flash文件路径',
+            'parameters':'Flash参数集',
+            'flashvars':'Flash变量集'
+        },
+        'xui_UI_Slider' : {
+            'steps':'步长_',
+            'type':'类型_',
+            'isRange':'双滑块',
+            'showIncreaseHandle':'显示增加按钮',
+            'showDecreaseHandle':'显示减小按钮'
+        },
+        'xui_UI_RichEditor' : {
+            'frameTemplate':'编辑器HTML模板',
+            'cmdList':'命令按钮列表'
+        },
+        'xui_UI_ColorPicker' : {
+            'barDisplay':'标题栏',
+            'closeBtn':'关闭按钮',
+            'advance':'高级模式'
+        },
+        'xui_UI_DatePicker' : {
+            'timeInput':'时间输入功能',
+            'closeBtn':'关闭按钮',
+            'firstDayOfWeek':'周开始日',
+            'offDays':'休假信息',
+            'hideWeekLabels':'隐藏周信息',
+            'dateInputFormat':'日期输入格式'
+        },
+        'xui_UI_Calendar' : {
+        
+        },
+        'xui_UI_TimePicker' : {
+            'closeBtn':'关闭按钮'
+        },
+        'xui_UI_List' : {
+            'selMode':'点选模式',
+            'borderType':'边框类型',
+            'noCtrlKey':'Ctrl辅助多选',
+            'maxHeight':'最大高度',
+            'itemRow':'成行样式'
+        },
+        'xui_UI_Gallery' : {
+            'itemMargin':'画廊项外补丁',
+            'itemPadding':'画廊项内补丁',
+            'itemWidth':'画廊项宽度',
+            'itemHeight':'画廊项高度',
+            'imgWidth':'图片宽度',
+            'imgHeight':'图片高度'
+        },
+        'xui_UI_IconList' : {
+            'itemMargin':'图标项外补丁',
+            'itemPadding':'图标项内补丁',
+            'itemWidth':'图标项宽度',
+            'itemHeight':'图标项高度'
+        },
+        'xui_UI_RadioBox' : {
+            'checkBox':'多选框样式'
+        },
+        'xui_UI_StatusButtons' : {
+            'itemMargin':'按钮外补丁',
+            'itemWidth':'按钮宽度',
+            'itemAlign':'按钮对齐方式',
+            'itemLinker':'链接模式'
+        },
+        'xui_UI_Poll' : {
+            'title':'标题内容',
+            'cmds':'指令组',
+            'noTitle':'无标题',
+            'toggle':'展开状态',
+            'removeText':'移除右侧文本',
+            'editable':'可编辑',
+            'newOption':'可新项加入',
+            'editorType':'编辑器种类'
+        },
+        'xui_UI_FoldingList' : {
+            'cmds':'指令组',
+            'activeLast':'自动展开末项'
+        },
+        'xui_UI_PageBar' : {
+            'caption':'标题文字',
+            'uriTpl':'链接模板',
+            'textTpl':'标签模板',
+            'prevMark':'前一页标示',
+            'nextMark':'后一页标示'
+        },
+        'xui_UI_Tabs' : {
+            'lazyAppend':'延迟加载',
+            'noPanel':'无容器面板',
+            'overflow':'容器溢出属性',
+            'itemWidth':'固定按钮宽度',
+            'itemAlign':'按钮对齐方式',
+            'HAlign':'水平对齐方式',
+            'dropKeysPanel':'可丢下位置',
+            'selMode':'点选模式',
+            'noHandler':'无控制面版'
+        },
+        'xui_UI_Stacks' : {
+        
+        },
+        'xui_UI_ButtonViews' : {
+            'barLocation':'按钮条位置',
+            'barHAlign':'水平对齐方式',
+            'barVAlign':'垂直对齐方式',
+            'barSize':'按钮条大小'
+        },
+        'xui_UI_FoldingTabs' : {
+        
+        },
+        'xui_UI_TreeBar' : {
+            'iniFold':'默认收缩子行',
+            'animCollapse':'动画暂开收缩',
+            'group':'分组模式',
+            'selMode':'点选模式',
+            'noCtrlKey':'无Ctrl辅助多选',
+            'singleOpen':'单节点打开',
+            'dynDestory':'动态销毁子行'
+        },
+        'xui_UI_TreeView' : {
+        
+        },
+        'xui_UI_MenuBar' : {
+            'parentID':'父对象标示',
+            'autoShowTime':'自动弹出时间',
+            'handler':'是否有手柄'
+        },
+        'xui_UI_ToolBar' : {
+            'handler':'是否有手柄',
+            'hAlign':'水平对齐方式'
+        },
+        'xui_UI_Layout' : {
+            'type':'布局类型',
+            'overflow':'容器溢出属性'
+        },
+        'xui_UI_TreeGrid' : {
+            'directInput':'直接编辑状态',
+            'currencyTpl':'货币显示模板',
+            'numberTpl':'数字显示模板',
+            'valueSeparator':'值分隔符',
+            'selMode':'表格点选模式',
+            'altRowsBg':'背景色区分行',
+            'rowNumbered':'显示行号',
+            'editable':'可编辑',
+            'iniFold':'默认收缩子行',
+            'animCollapse':'动画暂开收缩',
+            'gridHandlerCaption':'表格手柄标题',
+            'showHeader':'是否显示表头',
+            'headerHeight':'表头高度',
+            'rowHeight':'行高度',
+            'rowHandler':'行头手柄',
+            'rowHandlerWidth':'行头手柄宽',
+            'rowResizer':'可拖动改变行高',
+            'colHidable':'隐藏列',
+            'colResizer':'拖动改变列高',
+            'colSortable':'可排序列',
+            'colMovable':'可移动列',
+            'header':'表头对象',
+            'grpCols':'表头分组对象',
+            'rows':'表格行对象',
+            'activeMode':'表格活动模式',
+            'rowOptions':'行自定义参数',
+            'colOptions':'列自定义参数',
+            'treeMode':'树状模式',
+            'hotRowMode':'热行模式',
+            'hotRowNumber':'热行行号',
+            'noCtrlKey':'无Ctrl辅助多选'
+        },
+        'xui_UI_ColLayout' : {
+            'minWidth':'最小宽度限制'
+        },
+        'xui_UI_TimeLine' : {
+            'increment':'移动步长',
+            'zoomable':'缩放视图',
+            'dftTaskName':'默认任务名',
+            'taskHeight':'任务显示高度',
+            'timeSpanKey':'时间段键值',
+            'unitPixs':'最小单元像素',
+            'showBar':'显示标题栏',
+            'showTips':'显示信息栏',
+            'showBigLabel':'大时间标签',
+            'multiTasks':'允许多任务',
+            'taskMinSize':'最小允许任务',
+            'minDate':'最小允许日期',
+            'maxDate':'最大允许日期',
+            'dateBtn':'日期选择按钮',
+            'closeBtn':'关闭按钮',
+            'optBtn':'选项按钮',
+            'dateStart':'开始日期',
+            'leftSpanCount':'左间距像素',
+            'rightSpanCount':'左间距像素',
+            'smallLabelCount':'小标签像素',
+            'smallLabelUnit':'小标签单元',
+            'smallLabelFormat':'小标签文字',
+            'bigLabelCount':'大标签像素',
+            'bigLabelUnit':'大标签单元',
+            'bigLabelFormat':'大标签格式',
+            'timeFormat':'时间格式'
+        },
+        'xui_UI_TagEditor' : {
+            'borderType':'边框类型',
+            'valueSeparator':'值分隔符',
+            'padding':'内边框距离',
+            'valueFormat':'有效输入模式',
+            'required':'必须输入',
+            'tagCount':'标签数量',
+            'tagMaxlength':'最大字符数',
+            'tagInputWidth':'输入框宽度',
+            'tagInputHeight':'输入框高度',
+            'tagSpacing':'输入框间距'
+        },
+        'xui_UI_Range' : {
+            'min':'最小值',
+            'max':'最大值',
+            'unit':'单位',
+            'steps':'步长',
+            'captionTpl':'文本模板',
+            'singleValue':'单滑块'
+        },
+        'xui_svg' : {
+            'svgTag':'SVG附加值',
+            'attr':'节点属性',
+            'shadow':'控件阴影'
+        },
+        'xui_svg_absComb' : {
+            'hAlign':'水平对齐方式',
+            'vAlign':'垂直对齐方式'
+        },
+        'xui_svg_circle' : {
+        
+        },
+        'xui_svg_ellipse' : {
+        
+        },
+        'xui_svg_rect' : {
+        
+        },
+        'xui_svg_image' : {
+        
+        },
+        'xui_svg_text' : {
+        
+        },
+        'xui_svg_path' : {
+        
+        },
+        'xui_svg_rectComb' : {
+        
+        },
+        'xui_svg_circleComb' : {
+        
+        },
+        'xui_svg_ellipseComb' : {
+        
+        },
+        'xui_svg_pathComb' : {
+        
+        },
+        'xui_svg_imageComb' : {
+        
+        },
+        'xui_svg_connector' : {
+            'bgLine':'隐藏背景线',
+            'type':'链接器类型',
+            'fromObj':'连接自对象',
+            'fromPoint':'连接自位置',
+            'toObj':'连接到对象',
+            'toPoint':'连接到位置'
+        },
+        'xui_UI_FusionChartsXT' : {
+            'chartType':'图表类型',
+            'JSONData':'JSON数据',
+            'XMLUrl':'xml数据源',
+            'XMLData':'xml数据',
+            'JSONUrl':'JSON数据源'
+        }
+});
+})();

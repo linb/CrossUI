@@ -549,7 +549,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 ini:'00:00',
                 format:'time'
             },
-            closeBt:{
+            closeBtn:{
                 ini:true,
                 action:function(v){
                     this.getSubNode('CLOSE').css('display',v?'':'none');
