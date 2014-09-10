@@ -601,13 +601,13 @@ Class("xui.DataBinder","xui.absObj",{
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            },
+            }/*,
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
                     this.read(null,null,null,null,true);
                 }
-            }
+            }*/
         },
         EventHandlers:{
             beforeUpdateDataToUI:function(profile, dataToUI){},

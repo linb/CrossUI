@@ -34,7 +34,7 @@ xui.main(function(){
                 var tt,hash;
                 ghash[tag]={
                     completion:{
-                        '@version':'CrossUI-2.1.2.1b',
+                        '@version':'CrossUI-1.2',
                         '@extends':((function(tag){var a=[],t=xui.SC(tag).$parent; if(t && t.length){_.arr.each(t,function(o){a.push(o.KEY)}); return a.join(',')}else return 'Object'})(tag)),
                         '@parent':(tt=tag.split('.')).length>1?tt.slice(0,tt.length-1).join('.'):'window',
                         '@prefix':tag,

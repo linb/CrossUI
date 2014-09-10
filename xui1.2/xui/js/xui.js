@@ -353,7 +353,7 @@ _.merge(_,{
             value=parseFloat((value+"").replace(/\s*(e\+|[^0-9])/g, function(a,b,c){return b=='e+'||b=='E+'||(c==0&&b=='-')?b:b==decimalSeparator?'.':''}))||0;
         if(_.isSet(precision) && precision>=0)
              value=_.toFixedNumber(value,precision);
-        return value;            
+        return value;
     },
     formatNumeric:function(value, precision, groupingSeparator, decimalSeparator, forceFillZero){
         if(_.isSet(precision))precision=parseInt(precision,10);
@@ -514,7 +514,7 @@ _.merge(_,{
         };
         document.body.appendChild(img);
         img.src = src;
-		return 1;
+    return 1;
     },
     // type detection
     _to:Object.prototype.toString,
@@ -613,7 +613,7 @@ _.merge(_,{
                     a.sort(function(x,y){
                         return arr[x]>arr[y]?1:arr[x]<arr[y]?-1:x>y?1:-1;
                     });
-                for(i=0;i<l;i++)arr[i]=b[a[i]];  
+                for(i=0;i<l;i++)arr[i]=b[a[i]];
                 a.length=b.length=0;
             }
             return arr;
@@ -847,9 +847,9 @@ _.merge(xui,{
         hookKey:{},
         hookKeyUp:{},
         snipScript:{},
-        
+
         subscribes:{},
-        
+
         //ghost divs
         ghostDiv:[],
 
@@ -921,10 +921,11 @@ _.merge(xui,{
     getAppLangKey:function(key){return xui.$appLangKey},
     getLang:function(){return xui.$localeKey},
     setLang:function(key,callback){
-        var g=xui.getRes,t,v,i,j,f,m,z,a=[];
+        var g=xui.getRes,t,v,i,j,f,m,z,a=[],l;
         xui.$localeKey=key;
         v = xui.browser.ie ? document.all.tags('span') : document.getElementsByTagName('span');
         for(i=0;t=v[i];i++)if(t.id==xui.$localeDomId)a[a.length]=t;
+        l=a.length;
         f=function(){
             (function(){
                 j=a.splice(0,100);
@@ -933,7 +934,7 @@ _.merge(xui,{
                         t.innerHTML=v;
                 if(a.length)
                     _.setTimeout(arguments.callee,0);
-                _.tryF(callback);
+                _.tryF(callback,[a.length,l]);
             }())
         },
         z = 'xui.Locale.' + key,
@@ -1017,29 +1018,52 @@ _.merge(xui,{
     $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,
-     // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)  
+     // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)
      // variable pattern: @a.b.c@  @a@  {!}  {a.b.c}
     _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
-    getRes:function(path,withparams){
-        var arr,conf,tmp,params=arguments;
+    _escapeMap:{
+        "$":"\x01",
+        ".":"\x02",
+        "-":"\x03",
+        ")":"\x04",
+        "@":"\x05"
+    },
+    _unescapeMap:{
+        "\x01":"$",
+        "\x02":".",
+        "\x03":"-",
+        "\x04":")",
+        "\x05":"@"
+    },
+    //test1: xui.getRes("start.a.b.c $0 $1 ($- $. $$) end-1-2")  => "c 1 2 (- . $) end"
+    //tset2: xui.getRes( ["a","b","c $0 $1 ($- $. $$) end"],1,2) => "c 1 2 (- . $) end"
+    getRes:function(path){
+        var arr,conf,tmp,params=arguments,rtn;
         if(typeof path=='string'){
-            if(withparams!==false && path.indexOf('-')!=-1){
+            path=path.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;});
+            if(path.charAt(0)=='$')path=path.slice(1);
+            if(path.indexOf('-')!=-1){
                 tmp=path.split('-');
                 path=tmp[0];
                 params=tmp;
             }
             arr=path.split(".");
+            arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03])/g,function(a){return xui._unescapeMap[a];});
         }else{
             arr=path;
         }
         conf=_.get(xui.Locale[xui.$localeKey], arr);
-        return (tmp=typeof conf)=='string'
-               ? ( params.length>1 ? conf.replace(xui._langParamReg,function(z,id,k){k=params[1+ +id];return (k===null||k===undefined)?z:k}) : conf)
-               : tmp=='function'
-               ? conf.apply(null,params) :
-               conf ? conf : arr[arr.length-1]
+        if((tmp=typeof conf)=='function'){
+           return conf.apply(null,params) ;
+        }else if(tmp=='object'){
+            return conf;
+        }else{
+            conf = tmp=='string' ? conf.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;}) : arr[arr.length-1];
+            rtn = params.length>1 ? conf.replace(xui._langParamReg,function(z,id,k){k=params[1+ +id];return (k===null||k===undefined)?z:k}) : conf;
+            return rtn.replace(/([\x01\x02\x03])/g,function(a){return xui._unescapeMap[a];});
+        }
     },
-    wrapRes:function(id,withparams){
+    wrapRes:function(id){
         var i=id, s,r;
         if(i.charAt(0)=='$')arguments[0]=i.substr(1,i.length-1);
         s=id;
@@ -1047,19 +1071,24 @@ _.merge(xui,{
         if(s==r)r=i;
         return '<span id="'+xui.$localeDomId+'" class="'+s+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
+    //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
     adjustRes:function(str, wrap, onlyBraces){
         wrap=wrap?xui.wrapRes:xui.getRes;
-        return xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
+        str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
+        str=xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
                     // protect $@{
-            return c=='$' ? d : 
-                    // locale with params : $a.b.c-1-3 
+            return c=='$' ? d :
+                    // $a.b.c-1-3
                     f=='$' ? wrap(g) :
-                    // locale withtout params :$(a.b.c-d)  $a
-                    i=='$' ? wrap(j,false) : l=='$' ? wrap(m,false) :
+                    // $(a.b.c-d) 
+                    i=='$' ? wrap(j) : 
+                    // $a
+                    l=='$' ? wrap(m) :
                     // variable: @a@ @a.b.c@ {a.b.c}
-                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:"")) 
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:""))
                      : a;
             }): str;
+            return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return (
@@ -1362,7 +1391,7 @@ new function(){
     }else if(b.opr){
         b[v('opr','opera/')]=true;
         b.cssTag1="-o-";
-        b.cssTag2="O";    
+        b.cssTag2="O";
     }else if(b.kde){
         b[v('kde','webkit/')]=true;
         if(b.isSafari){
@@ -1378,7 +1407,7 @@ new function(){
             b.cssTag2="Webkit";
         }else{
             b.cssTag1="-khtml-";
-            b.cssTag2="Khtml";    
+            b.cssTag2="Khtml";
         }
     }
     // BB 6/7 is AppleWebKit
@@ -1418,18 +1447,18 @@ new function(){
     });
     if(!ini.path) ini.path=ini.appPath+'/xui/';
     if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
-    
+
     //for dom ready
     var f = xui._domReadyFuns= function(){
         if(!xui.isDomReady){
             if(d.addEventListener ) {
-    			d.removeEventListener("DOMContentLoaded", f, false );
-    			w.removeEventListener("load", f, false );
-    		} else {
-    			d.detachEvent("onreadystatechange", f);
-    			w.detachEvent("onload", f);
-    		}
-    	}
+          d.removeEventListener("DOMContentLoaded", f, false );
+          w.removeEventListener("load", f, false );
+        } else {
+          d.detachEvent("onreadystatechange", f);
+          w.detachEvent("onload", f);
+        }
+      }
         try{
             if(xui.ini.customStyle&&!_.isEmpty(xui.ini.customStyle)){
                 var arr=[],style=xui.ini.customStyle,txt;
@@ -1452,7 +1481,7 @@ new function(){
     }
     //IE<=10
     else{
-		d.attachEvent("onreadystatechange", f);
+    d.attachEvent("onreadystatechange", f);
         w.attachEvent("onload", f);
 
         (function(){
@@ -1464,7 +1493,7 @@ new function(){
             }catch(e){_.setTimeout(arguments.callee,9)}
         })();
     }
-    
+
     // to ensure
     (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?_.setTimeout(arguments.callee,9):f()})();
 };
@@ -1569,7 +1598,7 @@ Class('xui.Thread',null,{
             if(typeof t.task=='function'){
                 t.args=t.args||[];
                 //last arg is threadid
-                t.args.push(p.id);                
+                t.args.push(p.id);
             }
 
             // to next pointer
@@ -1627,9 +1656,9 @@ Class('xui.Thread',null,{
             // clear the mistake trigger task
             if(p._asy!=0.1)
                 _.clearTimeout(p._asy);
-            
+
             p._asy = _.asyRun(self._task, p._left, [], self);
-            
+
             p.time=_();
             return self;
         },
@@ -1968,7 +1997,7 @@ Class('xui.absIO',null,{
             return !!( a&&(
                     a[1]!==b[1]||
                     a[2]!==b[2]||
-                    (a[3]||(a[1]==="http:"?80:443))!==(b[3]||(b[1]==="http:"?80:443)) 
+                    (a[3]||(a[1]==="http:"?80:443))!==(b[3]||(b[1]==="http:"?80:443))
                 )
             );
         },
@@ -2104,7 +2133,7 @@ Class('xui.Ajax','xui.absIO',{
                 _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
                 // try to get js object, or the original
                 _response=rspType=="json"?((obj=_.unserialize(_txtresponse))===false?_txtresponse:obj):_txtresponse;
-                
+
                 // crack for some local case ( OK but status is 0 in no-IE browser)
                 if(!status && xui._localReg.test(xui._localParts[1])){
                     status=ns._XML.responseText?200:404;
@@ -2205,7 +2234,7 @@ Class('xui.SAjax','xui.absIO',{
                     self=null;
                     return;
                 };
-        
+
             (w.body||w.getElementsByTagName("head")[0]).appendChild(n);
 
             n=null;
@@ -2316,7 +2345,7 @@ Class('xui.IAjax','xui.absIO',{
                 if(flag){
                     w.location.replace(c._getDummy()+'#'+xui.ini.dummy_tag);
                 }
-                
+
                 // get data
                 (function(){
                     // second round: try to get data
@@ -2325,7 +2354,7 @@ Class('xui.IAjax','xui.absIO',{
                     if(flag){
                         return _.asyRun(arguments.callee);
                     }
-                    
+
                     var data;
                     if(("xui_IAajax_"+self.id)==w.name){
                         //clear first
@@ -2335,7 +2364,7 @@ Class('xui.IAjax','xui.absIO',{
                     }else{
                         data=w.name;
                     }
-    
+
                     if(data && (o=_.unserialize(data)) && (t=c._pool[self.id]) ){
                         for(var i=0,l=t.length;i<l;i++){
                             t[i]._response=o;
@@ -2448,7 +2477,7 @@ Class('xui.IAjax','xui.absIO',{
                     if(o.src && !f(o.src))
                         return ns.dummy=o.src.split('#')[0];
                 }
-                
+
                 if(b.gek){
                     arr=d.getElementsByTagName("link");
                     for(var i=0,j=arr.length; i<j; i++){
@@ -3067,7 +3096,7 @@ Class('xui.Profile','xui.absProfile',{
             _.tryF(ns.$ondestory,[],ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
-            
+
             // try to clear parent host
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){

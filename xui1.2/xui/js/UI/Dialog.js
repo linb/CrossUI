@@ -31,7 +31,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         if(p.iframeAutoLoad||p.ajaxAutoLoad)
                             xui.UI.Div._applyAutoLoad(profile);
 
-                        if(modal && !profile.$inModal)
+                        if((modal || p.modal) && !profile.$inModal)
                             box._modal(profile);
                         ins.activate();
 
@@ -665,6 +665,15 @@ if(xui.browser.ie){
                 hidden:true,
                 ini:null
             },
+            modal:{
+                ini:false,
+                action:function(v){
+                    if(this.box){
+                        if(v)this.box._modal(this);
+                        else this.box._unModal(this);
+                    }
+                }
+            },
             status:{
                 ini:'normal',
                 listbox:['normal','min','max'],
@@ -686,7 +695,8 @@ if(xui.browser.ie){
             onActivated:function(profile){}
         },
         RenderTrigger:function(){
-            this.destroyTrigger = function(){
+            var ns=this;
+            ns.destroyTrigger = function(){
                 var s=this;
                 if(s.$inModal)s.box._unModal(s);
             };
@@ -699,6 +709,14 @@ if(xui.browser.ie){
                 b._max(self);
             else
                 xui.UI.$tryResize(self, t.width, t.height);
+            // ensure modal
+            if(t.modal){
+                var p=self.$modalDiv&&self.$modalDiv.parent();
+                if(p&&p.get(0)&&p.get(0)!==self.getRootNode()){
+                    b._unModal(self);
+                }
+                b._modal(self);
+            }
         },
         _prepareData:function(profile){
             var data = arguments.callee.upper.call(this, profile),
