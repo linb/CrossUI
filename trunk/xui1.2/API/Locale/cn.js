@@ -1204,9 +1204,9 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"订阅系统消息.",
             $rtn:"Integer",
             $paras:[
-                "topic [必需参数]: String, 订阅的主题.", 
-                "subscriber [必需参数]: String, 订阅者的唯一标识id.", 
-                "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者.", 
+                "topic [必需参数]: String, 订阅的主题.",
+                "subscriber [必需参数]: String, 订阅者的唯一标识id.",
+                "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者.",
                 "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]."
             ],
             $snippet:[
@@ -1223,7 +1223,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"退订系统消息.",
             $rtn:"undefined",
             $paras:[
-                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有系统中的订阅.", 
+                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有系统中的订阅.",
                 "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅."
             ]
         },
@@ -1231,8 +1231,8 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"发布系统消息.",
             $rtn:"undefined",
             $paras:[
-                "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息.", 
-                "args [可选参数]: Array, 发布消息的参数.", 
+                "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息.",
+                "args [可选参数]: Array, 发布消息的参数.",
                 "subscribers [可选参数]: String/Array, 订阅者的唯一标识id. 表示只发给该订阅者(们).",
                 "scope [可选参数]: Object, 发布消息所调用函数的scope."
             ]
@@ -1241,7 +1241,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"得到系统的消息订阅情况.",
             $rtn:"Object",
             $paras:[
-                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有系统中的订阅.", 
+                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有系统中的订阅.",
                 "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅."
             ]
         },
@@ -1625,9 +1625,9 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"订阅消息.",
                 $rtn:"Integer",
                 $paras:[
-                    "topic [必需参数]: String, 订阅的主题.", 
-                    "subscriber [必需参数]: String, 订阅者的唯一标识id.", 
-                    "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者.", 
+                    "topic [必需参数]: String, 订阅的主题.",
+                    "subscriber [必需参数]: String, 订阅者的唯一标识id.",
+                    "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者.",
                     "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]."
                 ],
                 $snippet:[
@@ -1645,7 +1645,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"退订消息.",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有的订阅.", 
+                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有的订阅.",
                     "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅."
                 ]
             },
@@ -1653,8 +1653,8 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"发布消息.",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息.", 
-                    "args [可选参数]: Array, 发布消息的参数.", 
+                    "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息.",
+                    "args [可选参数]: Array, 发布消息的参数.",
                     "scope [可选参数]: Object, 发布消息所调用函数的scope."
                 ]
             },
@@ -1662,7 +1662,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"得到消息订阅情况.",
                 $rtn:"Object",
                 $paras:[
-                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有的订阅.", 
+                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有的订阅.",
                     "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅."
                 ]
             }
@@ -5030,9 +5030,11 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            dataBindLoadType:{
+                $desc:"数据绑定功能类型.  none, sync, async之一.  默认sync"
+            },
             autoDestroy:{
-                $desc:"本Com是否随着第一个内UI控件的销毁而销毁.",
-                $rtn:"Boolean"
+                $desc:"本Com是否随着第一个内UI控件的销毁而销毁."
             },
             isDestroyed:{
                 $desc:"判断当前对象是否已被销毁."
@@ -5772,7 +5774,7 @@ _.set(xui.Locale,["cn","app"], {
                     "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal.",
                     "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
                     "options [可选参数]: Object, 一组配置数据."
-                ] 
+                ]
             },
             'read':{
                 $desc:"读取数据的远程数据调用.",
@@ -5786,7 +5788,7 @@ _.set(xui.Locale,["cn","app"], {
                     "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
                     "options [可选参数]: Object, 一组配置数据.",
                     "adjustData [可选参数] : Function, 对读取到的数据做调整的函数(在设置到内部data之前)"
-                ] 
+                ]
             },
             'write':{
                 $desc:"写入数据的远程数据调用.",
@@ -5799,7 +5801,7 @@ _.set(xui.Locale,["cn","app"], {
                     "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为norma.",
                     "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
                     "options [可选参数]: Object, 一组配置数据."
-                ] 
+                ]
             },
 
             beforeUpdateDataToUI:{
@@ -6873,7 +6875,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClickEffect:{
-                $desc:"当用户单击控件的某一部分,控件响应该事件,要改变外观（例如反白等）时被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
+                $desc:"在用户单击控件的某一部分,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "item : Object, 数据项对象.",
@@ -6889,7 +6891,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeHoverEffect:{
-                $desc:"当鼠标悬停在控件的某一部分上,控件响应该事件,要改变外观（例如反白等）时被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
+                $desc:"在鼠标悬停在控件的某一部分上,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "item : Object, 数据项对象.",
@@ -6909,6 +6911,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
+                    "k : Object, {key:按键字符, type:事件种类, ctrlKey: ctrl键状态, shiftKey: shift 键状态, altKey:alt 键状态}",
                     "shift: Boolean, 指示用户是否按下了Shift键.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7297,6 +7300,54 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getTag:{
+                $desc:"获取控件的tag值",
+                $rtn:"String",
+                $snippet:[
+                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            setTag:{
+                $desc:"设置控件的tag值.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            getTagVar:{
+                $desc:"获取控件的tag变量",
+                $rtn:"Object",
+                $snippet:[
+                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
+            setTagVar:{
+                $desc:"设置控件的tag变量.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
             getLeft:{
                 $desc:"获取控件的左边坐标.（相对于父控件的距离,单位px）",
                 $rtn:"Number",
@@ -7570,54 +7621,6 @@ _.set(xui.Locale,["cn","app"], {
                     "var id='xui.temp.ui30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setTabindex('10'); alert(btn.getTabindex())},1000)"+
-                    "}"
-                ]
-            },
-            getTag:{
-                $desc:"获取控件的tag值",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            setTag:{
-                $desc:"设置控件的tag值.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            getTagVar:{
-                $desc:"获取控件的tag变量",
-                $rtn:"Object",
-                $snippet:[
-                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
-                    "}"
-                ]
-            },
-            setTagVar:{
-                $desc:"设置控件的tag变量.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
                     "}"
                 ]
             },
@@ -11827,6 +11830,30 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getLoadingImg:{
+                $desc:"得到加载图片地址.",
+                $rtn:"String"
+            },
+            setLoadingImg:{
+                $desc:"设置加载图片地址.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
+            getAutoItemSize:{
+                $desc:"得到子项的尺寸是否随图片的大小自动变化.",
+                $rtn:"Boolean"
+            },
+            setAutoItemSize:{
+                $desc:"设置子项的尺寸是否随图片的大小自动变化.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
             getImgHeight:{
                 $desc:"获取画廊项的高度",
                 $rtn:"Number",
@@ -11994,6 +12021,30 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){alert(o.getStatus('c'));});"+
                     "_.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
+                ]
+            },
+           getLoadingImg:{
+                $desc:"得到加载图片地址.",
+                $rtn:"String"
+            },
+            setLoadingImg:{
+                $desc:"设置加载图片地址.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
+            getAutoItemSize:{
+                $desc:"得到子项的尺寸是否随图片的大小自动变化.",
+                $rtn:"Boolean"
+            },
+            setAutoItemSize:{
+                $desc:"设置子项的尺寸是否随图片的大小自动变化.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
                 ]
             },
             getItemWidth:{
@@ -12418,7 +12469,9 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"在面板被弹出前调用. 返回false可阻止面板被弹出.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF"
+                    "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             },
             beforeClose:{
@@ -13167,7 +13220,9 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "item: Object, 当前标签项.",
-                    "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF"
+                    "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             },
             beforePageClose:{
@@ -13266,7 +13321,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.UI.FoldingTabs对象."
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","UI","TagEditor"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.TagEditor 类",
@@ -13403,7 +13458,7 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","UI","Calendar"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Calendar 类",
@@ -13846,7 +13901,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onGetPopMenu:{
-                $desc:"在下拉菜单pop调用.",
+                $desc:"在下拉菜单弹出前调用.",
                 $paras:[
                     "profile : 菜单条的xui.UIProfile",
                     "item : Object, ",
@@ -14184,7 +14239,7 @@ _.set(xui.Locale,["cn","app"], {
             getModal:{
                  $desc:"判断是否是模式对话框",
                  $rtn:"Boolean"
-            },    
+            },
             setModal:{
                 $desc:"设置是否为模式对话框.",
                 $rtn:"[self]",
@@ -14483,6 +14538,13 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"在对话框被激活时(获得焦点)调用.",
                 $paras:[
                     "profile : xui.UIProfile."
+                ]
+            },
+            beforePin:{
+                $desc:"在顶针按钮点击之前触发.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "value: Boolean, 顶针状态."
                 ]
             }
         }
@@ -15345,6 +15407,18 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getOptBtn:{
+                $desc:"判断是否带有选项按钮",
+                $rtn:"Boolean"
+            },
+            setOptBtn:{
+                $desc:"设置是否带有选项按钮.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
             getGroup :{
                 $desc:"判断树是否分组",
                 $rtn:"Boolean",
@@ -15586,6 +15660,15 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, 项对象.",
                     "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onShowOptions :{
+                $desc:"当鼠标单击选项按钮的时候触发.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
             },
@@ -16825,7 +16908,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "colId [必需参数] : String, 列id.",
                     "desc [可选参数] : Boolean, True为递降排序,false为递增排序. 不指定或null为当前排序的逆序.",
-                    "sortby [可选参数] : Function, 排序函数. function(x,y,values,asc,colIndex,colCells){return 0|1|-1}" 
+                    "sortby [可选参数] : Function, 排序函数. function(x,y,values,asc,colIndex,colCells){return 0|1|-1}"
                 ]
             },
             removeAllRows:{
@@ -18079,8 +18162,8 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"刷新Flash."
             }
         }
-    });    
-    
+    });
+
     _.set(xui.Locale,["cn","doc","xui","UI","FusionChartsXT"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.FusionChartsXT 类",
@@ -18157,7 +18240,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "url: String, 地址字符串."
                 ]
-            },            
+            },
             getXMLData:{
                 $desc:"得到xml数据.",
                 $rtn:"String"
@@ -18262,7 +18345,7 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    
+
     //svg
     _.set(xui.Locale,["cn","doc","xui","svg"], {
         KEY:{$desc:"本类名"},
@@ -18396,7 +18479,7 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","svg","circle"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.circle 类",
@@ -18406,7 +18489,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","svg","ellipse"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.ellipse 类",
@@ -18547,7 +18630,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
         }
     });
- 
+
     _.set(xui.Locale,["cn","doc","xui","svg","ellipseComb"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.ellipseComb 类",
@@ -18557,7 +18640,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","svg","pathComb"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.pathComb 类",
@@ -18675,13 +18758,12 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             }
         }
-    });    
+    });
 })();
 
 (function(){
 _.set(xui.Locale,["cn","doc","propname"], {
         'xui_absObj' : {
-        
         },
        'xui_absComposed' : {
             'dragKey':'拖拽标识',
@@ -18693,70 +18775,70 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'valueSeparator':'值分隔符'
         },
         'xui_absValue' : {
-            'dataBinder':'绑定器名称',
-            'dataField':'字段名',
-            'readonly':'只读',
+            'dataBinder':'控件值绑定器',
+            'dataField':'控件值绑定键',
+            'readonly':'控件只读',
             'value':'控件值',
-            'dirtyMark':'脏功能',
-            'showDirtyMark':'显示脏'
+            'dirtyMark':'控件脏功能',
+            'showDirtyMark':'显示脏标识'
         },
         'xui_DataBinder' : {
             'data':'内部数据',
             'dataSourceType':'数据源类型',
-            'queryURL':'远程地址',
-            'queryUserName':'远程用户',
-            'queryPassword':'远程密码',
-            'queryModel':'模板名称',
-            'queryMethod':'请求方式',
-            'queryAsync':'异步方式',
-            'requestType':'请求数据类型',
+            'queryURL':'远程服务地址',
+            'queryUserName':'服务登陆账号',
+            'queryPassword':'服务登陆密码',
+            'queryModel':'服务模板名称',
+            'queryMethod':'请求服务方式',
+            'queryAsync':'异步请求方式',
+            'requestType':'数据请求类型',
             'responseType':'接收数据类型',
-            'queryArgs':'请求参数',
+            'queryArgs':'数据请求参数',
             'queryOptions':'自定义参数',
             'proxyType':'代理种类',
             'name':'绑定器唯一名'
         },
         'xui_UI' : {
-            'autoTips':'自动显示提示',
-            'tag':'附加值',
-            'tagVar':'附加对象',
+            'autoTips':'自动工具提示',
             'className':'根节点CSS类',
-            'disableClickEffect':'去掉点击效果',
-            'disableHoverEffect':'去掉悬停效果',
-            'disableTips':'去掉提示效果',
-            'disabled':'控件不可用',
+            'disableClickEffect':'禁用点击效果',
+            'disableHoverEffect':'禁用悬停效果',
+            'disableTips':'禁用工具提示',
+            'disabled':'禁用控件',
             'defaultFocus':'自动获得焦点',
-            'dock':'停靠属性',
+            'dock':'停靠类型',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
             'dockMargin':'停靠外补丁',
             'dockFloat':'停靠漂浮',
             'dockMinW':'停靠最小宽度',
             'dockMinH':'停靠最小高度',
-            'tips':'提示文字',
+            'tips':'工具提示文本',
             'left':'左边沿坐标',
             'top':'上边沿坐标',
             'width':'控件宽度',
             'height':'控件高度',
             'right':'右边沿坐标',
             'bottom':'下边沿坐标',
-            'renderer':'渲染函数',
-            'zIndex':'控件层属性',
-            'tabindex':'焦点顺序',
-            'position':'布局属性',
-            'visibility':'可见属性',
-            'display':'显示属性',
-            'selectable':'可选属性'
+            'renderer':'内部渲染函数',
+            'zIndex':'层堆叠顺序',
+            'tabindex':'TAB 键顺序值',
+            'position':'控件定位类型',
+            'visibility':'控件可见属性',
+            'display':'渲染盒类型',
+            'selectable':'文字可选择',
+            'tag':'附加值',
+            'tagVar':'附加对象'
         },
         'xui_UI_Widget' : {
-            'border':'边缘线',
-            'shadow':'阴影',
-            'resizer':'可调大小',
-            'resizerProp':'大小调整器属性_'
+            'border':'附加边框',
+            'shadow':'附加阴影',
+            'resizer':'大小调整器',
+            'resizerProp':'大小调整器属性'
         },
         'xui_UI_Block' : {
-            'iframeAutoLoad':'IFrame自动加载',
-            'ajaxAutoLoad':'Ajax自动加载',
+            'iframeAutoLoad':'IFrame自动加载地址',
+            'ajaxAutoLoad':'Ajax自动加载地址',
             'html':'内部HTML文本',
             'overflow':'容器溢出属性',
             'borderType':'边框类型',
@@ -18785,7 +18867,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'type':'按钮类型'
         },
         'xui_UI_CheckBox' : {
-        
+
         },
         'xui_UI_Input' : {
             'tipsErr':'无效提示文本',
@@ -18793,20 +18875,21 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dynCheck':'动态校验',
             'selectOnFocus':'自动选择文本',
             'labelSize':'标签大小',
-            'placeholder':'空白提示',
+            'placeholder':'空白提示文字',
             'labelPos':'标签位置',
-            'labelGap':'标签距离',
             'labelCaption':'标签文字',
+            'labelGap':'标签距离',
             'labelHAlign':'标签水平对齐',
-            'valueFormat':'有效输入模式',
-            'mask':'有效格式模式',
+            'valueFormat':'值输入格式',
+            'mask':'值输入伪码',
             'hAlign':'水平对齐',
             'type':'组合框类型',
             'maxlength':'最大长度',
             'multiLines':'多行输入',
-            'tipsBinder':'提示绑定到'
+            'tipsBinder':'工具提示绑定'
         },
         'xui_UI_ComboInput' : {
+            'value':'控件值',
             'cachePopWnd':'缓存弹出窗口',
             'dateEditorTpl':' 日期编辑模板',
             'precision':'数字精度',
@@ -18827,8 +18910,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'min':'最小值',
             'max':'最大值',
             'commandBtn':'命令按钮',
-            'inputReadonly':'文本只读属性',
-            'caption':'文本显示内容'
+            'inputReadonly':'输入框只读',
+            'caption':'文本显示'
         },
         'xui_UI_PopMenu' : {
             'hideAfterClick':'点击后隐藏',
@@ -18846,12 +18929,12 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'movable':'对话框可拖动',
             'minBtn':'最小化按钮',
             'maxBtn':'最大化按钮',
-            'infoBtn':'帮助按钮',
-            'optBtn':'选项按钮',
-            'closeBtn':'关闭按钮',
-            'refreshBtn':'刷新按钮',
-            'pinBtn':'钉针按钮',
-            'landBtn':'降落按钮',
+            'infoBtn':'显示帮助按钮',
+            'optBtn':'显示选项按钮',
+            'closeBtn':'显示关闭按钮',
+            'refreshBtn':'显示刷新按钮',
+            'pinBtn':'显示钉针按钮',
+            'landBtn':'显示降落按钮',
             'minWidth':'最小宽度限制',
             'minHeight':'最小高度限制',
             'fromRegion':'对话框弹出源',
@@ -18859,7 +18942,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'status':'对话框状态'
         },
         'xui_UI_TextEditor' : {
-        
+
         },
         'xui_UI_Link' : {
             'caption':'超链接文本',
@@ -18897,10 +18980,10 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'overflow':'容器溢出属性'
         },
         'xui_UI_Tag' : {
-            'tagKey':' 关键字'
+            'tagKey':' TAG关键字'
         },
         'xui_UI_Pane' : {
-        
+
         },
         'xui_UI_SVGPaper' : {
             'scaleChildren':'自动缩放子控件'
@@ -18918,11 +19001,11 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'imagePos':'图标位置属性',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
-            'infoBtn':'帮助按钮',
-            'optBtn':'选项按钮',
-            'closeBtn':'关闭按钮',
-            'refreshBtn':'刷新按钮',
-            'popBtn':'弹出按钮',
+            'infoBtn':'显示帮助按钮',
+            'optBtn':'显示选项按钮',
+            'closeBtn':'显示关闭按钮',
+            'refreshBtn':'显示刷新按钮',
+            'popBtn':'显示弹出按钮',
             'borderType':'边框类型'
         },
         'xui_UI_Image' : {
@@ -18963,7 +19046,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dateInputFormat':'日期输入格式'
         },
         'xui_UI_Calendar' : {
-        
+
         },
         'xui_UI_TimePicker' : {
             'closeBtn':'关闭按钮'
@@ -18973,21 +19056,25 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'borderType':'边框类型',
             'noCtrlKey':'Ctrl辅助多选',
             'maxHeight':'最大高度',
-            'itemRow':'成行样式'
+            'itemRow':'单项独占行'
         },
         'xui_UI_Gallery' : {
             'itemMargin':'画廊项外补丁',
             'itemPadding':'画廊项内补丁',
             'itemWidth':'画廊项宽度',
             'itemHeight':'画廊项高度',
-            'imgWidth':'图片宽度',
-            'imgHeight':'图片高度'
+            'imgWidth':'画廊图片宽度',
+            'imgHeight':'画廊图片高度',
+            'autoItemSize':'画廊项自动尺寸',
+            'loadingImg':'加载中图片'
         },
         'xui_UI_IconList' : {
             'itemMargin':'图标项外补丁',
             'itemPadding':'图标项内补丁',
             'itemWidth':'图标项宽度',
-            'itemHeight':'图标项高度'
+            'itemHeight':'图标项高度',
+            'autoItemSize':'画廊项自动尺寸',
+            'loadingImg':'加载中图片'
         },
         'xui_UI_RadioBox' : {
             'checkBox':'多选框样式'
@@ -18996,7 +19083,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'itemMargin':'按钮外补丁',
             'itemWidth':'按钮宽度',
             'itemAlign':'按钮对齐方式',
-            'itemLinker':'链接模式'
+            'itemLinker':'链接样式'
         },
         'xui_UI_Poll' : {
             'title':'标题内容',
@@ -19031,16 +19118,16 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'noHandler':'无控制面版'
         },
         'xui_UI_Stacks' : {
-        
+
         },
         'xui_UI_ButtonViews' : {
             'barLocation':'按钮条位置',
-            'barHAlign':'水平对齐方式',
-            'barVAlign':'垂直对齐方式',
+            'barHAlign':'按钮水平对齐',
+            'barVAlign':'按钮垂直对齐',
             'barSize':'按钮条大小'
         },
         'xui_UI_FoldingTabs' : {
-        
+
         },
         'xui_UI_TreeBar' : {
             'iniFold':'默认收缩子行',
@@ -19049,10 +19136,11 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'selMode':'点选模式',
             'noCtrlKey':'无Ctrl辅助多选',
             'singleOpen':'单节点打开',
-            'dynDestory':'动态销毁子行'
+            'dynDestory':'动态销毁子行',
+            'optBtn':'显示选项按钮'
         },
         'xui_UI_TreeView' : {
-        
+
         },
         'xui_UI_MenuBar' : {
             'parentID':'父对象标示',
@@ -19092,7 +19180,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'header':'表头对象',
             'grpCols':'表头分组对象',
             'rows':'表格行对象',
-            'activeMode':'表格活动模式',
+            'activeMode':'焦点活动模式',
             'rowOptions':'行自定义参数',
             'colOptions':'列自定义参数',
             'treeMode':'树状模式',
@@ -19118,8 +19206,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'minDate':'最小允许日期',
             'maxDate':'最大允许日期',
             'dateBtn':'日期选择按钮',
-            'closeBtn':'关闭按钮',
-            'optBtn':'选项按钮',
+            'closeBtn':'显示关闭按钮',
+            'optBtn':'显示选项按钮',
             'dateStart':'开始日期',
             'leftSpanCount':'左间距像素',
             'rightSpanCount':'左间距像素',
@@ -19161,37 +19249,37 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'vAlign':'垂直对齐方式'
         },
         'xui_svg_circle' : {
-        
+
         },
         'xui_svg_ellipse' : {
-        
+
         },
         'xui_svg_rect' : {
-        
+
         },
         'xui_svg_image' : {
-        
+
         },
         'xui_svg_text' : {
-        
+
         },
         'xui_svg_path' : {
-        
+
         },
         'xui_svg_rectComb' : {
-        
+
         },
         'xui_svg_circleComb' : {
-        
+
         },
         'xui_svg_ellipseComb' : {
-        
+
         },
         'xui_svg_pathComb' : {
-        
+
         },
         'xui_svg_imageComb' : {
-        
+
         },
         'xui_svg_connector' : {
             'bgLine':'隐藏背景线',
@@ -19209,4 +19297,366 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'JSONUrl':'JSON数据源'
         }
 });
+_.set(xui.Locale,["cn","doc","eventname"],{
+        'xui_Com':{
+            beforeCreated:"部件生成前",
+            onLoadBaseClass:"加载基础类",
+            onLoadRequiredClass:"加载必须类",
+            onIniResource:"初始化资源",
+            beforeIniComponents:"初始化控件前",
+            afterIniComponents:"初始化控件后",
+            onReady:"初始化完毕",
+            onRender:"部件渲染完毕", 
+            onDestroy:"部件销毁"
+        },
+        'xui_absObj' : {
+        },
+       'xui_absComposed' : {
+            onHotKeydown:"热键下按",
+            onHotKeypress:"热键按下",
+            onHotKeyup:"热键抬起",
+            beforeNextFocus:"焦点离开前",
+            beforeClickEffect:"显示点击效果",
+            beforeHoverEffect:"显示悬停效果",
+            onGetDragData:"得到拖拽数据",
+            onStartDrag:"开始拖拽",
+            onDragEnter:"拖拽鼠标进入",
+            onDragLeave:"拖拽鼠标离开",
+            onDropTest:"进行丢下测试",
+            onDropMarkShow:"显示丢下标识",
+            onDropMarkClear:"清除丢下标识",
+            beforeDrop:"丢下之前",
+            onDrop:"丢下",
+            afterDrop:"丢下之后",
+            onDragStop:"拖拽停止"
+        },
+        'xui_absList' : {
+        },
+        'xui_absValue' : {
+            beforeDirtyMark:"显示脏标识",
+            beforeUIValueSet:"界面值设置前",
+            beforeValueSet:"控件值设置前",
+            onChange:"界面值变化",
+            afterUIValueSet:"界面值设置后",
+            afterValueSet:"控件值设置后"
+        },
+        'xui_DataBinder' : {
+            beforeUpdateDataToUI:"将数据更新到绑定控件",
+            afterUpdateDataFromUI:"从绑定控件获得数据",
+            beforeInvoke:"远程调用之前",
+            afterInvoke:"远程调用之后",
+            beforeRead:"远程读之前",
+            afterRead:"远程读之后",
+            beforeWrite:"远程写之前",
+            afterWrite:"远程写之后"
+         },
+        'xui_UI' : {
+            beforeAppend:"界面加载前",
+            afterAppend:"界面加载后",
+            beforeRender:"控件渲染前",
+            onRender:"控件界面渲染",
+            beforeRemove:"界面移除前",
+            afterRemove:"界面移除后",
+            beforeDestroy:"控件销毁前",
+            onDestroy:"控件销毁",
+            afterDestroy:"控件销毁后",
+            beforePropertyChanged:"属性改变前",
+            afterPropertyChanged:"属性改变后",
+            onContextmenu:"上下文菜单触发",
+            onDock:"控件停靠",
+            onLayout:"界面布局",
+            onMove:"位置移动",
+            onResize:"尺寸改变",
+            onShowTips:"显示工具提示"
+        },
+        'xui_UI_Button' : {
+            onClick:"点击按钮",
+            onChecked:"改变选中状态",
+            onClickDrop:"点击下拉按钮"
+        },
+        'xui_UI_ColLayout':{
+            onColResize:"栏宽改变",
+            onRelayout:"界面布局"
+        },
+        'xui_UI_Input' : {
+            beforeFormatCheck:"格式检查前",
+            beforeFormatMark:"显示格式标识前",
+            beforeKeypress:"键盘按下前",
+            onBlur:"失去焦点",
+            onCancel:"输入取消",
+            onFocus:"得到焦点",
+            onLabelActive:"激活标签",
+            onLabelClick:"点击标签",
+            onLabelDblClick:"双击标签"
+        },
+        'xui_UI_ComboInput' : {
+            beforeComboPop:"构造弹出窗口前",
+            beforePopShow:"显示弹出窗口前",
+            afterPopShow:"显示弹出窗口后",
+            onClick:"点击",
+            onCommand:"点击命令按钮",
+            onFileDlgOpen:"打开文件选择框"
+        },
+        'xui_UI_PopMenu' : {
+            beforeHide:"隐藏菜单前",
+            onHide:"隐藏菜单",
+            onMenuSelected:"选择菜单项",
+            onShowSubMenu:"显示子菜单"
+        },
+        'xui_UI_Dialog' : {
+            beforeClose:"窗口关闭前",
+            onActivated:"被激活",
+            beforePin:"订针状态改变前",
+            onLand:"点击降落按钮",
+            onRefresh:"点击刷新按钮",
+            onShow:"窗口显示",
+            onShowInfo:"点击信息按钮",
+            onShowOptions:"点击选项按钮"
+        },
+        'xui_UI_TextEditor' : {
+            onChange:"界面值变化"
+        },
+        'xui_UI_Link' : {
+            onClick:"鼠标点击"
+        },
+        'xui_UI_SLabel' : {
+            onClick:"鼠标点击"
+        },
+        'xui_UI_SButton' : {
+            onClick:"鼠标点击"
+        },
+        'xui_UI_SCheckBox' : {
+            onChecked:"改变选中状态"
+        },
+        'xui_UI_Element' : {
+        },
+        'xui_UI_Span' : {
+        },
+        'xui_UI_Div' : {
+        },
+        'xui_UI_Tag' : {
+        },
+        'xui_UI_Pane' : {
+        },
+        'xui_UI_SVGPaper' : {
+        },
+        'xui_UI_Group' : {
+            beforeExpand:"展开之前",
+            afterExpand:"展开之后",
+            beforeFold:"折叠之前",
+            afterFold:"折叠之后",
+            onIniPanelView:"初始化容器"
+        },
+        'xui_UI_Panel' : {
+            beforeExpand:"子项展开之前",
+            afterExpand:"子项展开之后",
+            beforeFold:"子项折叠之前",
+            afterFold:"子项折叠之后",
+            onIniPanelView:"初始化容器" ,
+            beforePop:"窗口弹出前",
+            beforeClose:"窗口关闭前",
+            onClickBar:"点击标题栏",
+            onRefresh:"点击刷新按钮",
+            onShowInfo:"点击信息按钮",
+            onShowOptions:"点击选项按钮"
+        },
+        'xui_UI_Image' : {
+            beforeLoad:"图片加载前",
+            afterLoad:"图片加载后",
+            onClick:"鼠标点击",
+            onDblclick:"鼠标双击",
+            onError:"图片加载失败"
+        },
+        'xui_UI_Flash' : {
+        },
+        'xui_UI_Slider' : {
+        },
+        'xui_UI_RichEditor' : {
+        },
+        'xui_UI_ColorPicker' : {
+            beforeClose:"窗口关闭前"
+        },
+        'xui_UI_DatePicker' : {
+            beforeClose:"窗口关闭前"
+        },
+        'xui_UI_Calendar' : {
+            onDblclick:"鼠标双击"
+        },
+        'xui_UI_TimePicker' : {
+            beforeClose:"窗口关闭前"
+        },
+        'xui_UI_List' : {
+              beforeClick:"鼠标点击前",
+              afterClick:"鼠标点击后",
+              onClick:"鼠标点击",
+              onDblclick:"鼠标双击",
+              onItemSelected :"选中条目"
+        },
+        'xui_UI_Gallery' : {
+        },
+        'xui_UI_IconList' : {
+        },
+        'xui_UI_RadioBox' : {
+        },
+        'xui_UI_StatusButtons' : {
+        },
+        'xui_UI_Poll' : {
+            beforeOptionAdded:"添加选项前",
+            beforeOptionChanged:"更改选项前",
+            beforeOptionRemoved:"移除选项前",
+            beforeTitleChanged:"更改标签前",
+            onClickButton:"点击按钮",
+            onCustomEdit:"自定义编辑",
+            onGetContent:"尝试获取内容"
+        },
+        'xui_UI_FoldingList' : {
+            onClickButton:"点击按钮",
+            onGetContent:"尝试获取子项",
+            onShowOptions:"点击选项按钮"
+        },
+        'xui_UI_PageBar' : {
+            onClick:"鼠标点击"
+        },
+        'xui_UI_Tabs' : {
+            beforePagePop:"弹出页面前",
+            beforePageClose:"关闭页面前",
+            afterPageClose:"关闭页面后",
+            onCaptionActive:"激活页面标签",
+            onIniPanelView:"初始化页面容器" ,
+            onItemSelected :"选中页面",
+            onShowOptions:"点击选项按钮"
+        },
+        'xui_UI_Stacks' : {
+        },
+        'xui_UI_ButtonViews' : {
+        },
+        'xui_UI_FoldingTabs' : {
+        },
+        'xui_UI_TreeBar' : {
+            beforeClick:"鼠标点击前",
+            beforeExpand:"子项展开前",
+            beforeFold:"子项折叠前",
+            onClick:"鼠标点击",
+            onDblclick:"鼠标双击",
+            onGetContent:"尝试获取子项",
+            onItemSelected:"选中条目",
+            onShowOptions:"点击选项按钮",
+            afterClick:"鼠标点击后",
+            afterExpand:"子项展开后",
+            afterFold:"子项折叠后"
+        },
+        'xui_UI_TreeView' : {
+        },
+        'xui_UI_MenuBar' : {
+            beforePopMenu:"菜单弹出前",
+            onGetPopMenu:"得到弹出菜单",
+            onMenuBtnClick:"点击菜单项",
+            onMenuSelected:"选中菜单项",
+            onShowSubMenu:"显示子菜单"
+        },
+        'xui_UI_ToolBar' : {
+            onClick:"鼠标点击按钮",
+        },
+        'xui_UI_Layout' : {
+        },
+        'xui_UI_TreeGrid' : {
+            beforeCellActive:"单元格激活前",
+            beforeCellKeydown:"单元格键盘按下前",
+            beforeCellUpdated:"单元格改变前",
+            afterCellActive:"单元格激活后",
+            afterCellFocused:"单元格焦点后",
+            afterCellUpdated:"单元格改变后",
+            onClickCell:"鼠标点击单元格",
+            onDblclickCell:"鼠标双击单元格",
+            
+            beforeColDrag:"拖拽列前",
+            beforeColMoved:"列移动前",
+            beforeColResized:"改变宽列后",
+            beforeColShowHide:"列隐显前",
+            beforeColSorted:"列排序前",
+            afterColMoved:"列移动后",
+            afterColResized:"改变宽列后",
+            afterColShowHide:"列隐显后",
+            afterColSorted:"列排序后",
+            onClickHeader:"鼠标点击表头",
+            
+            beforeHotRowAdded:"热行加入前",
+            beforeInitHotRow:"热行初始化前",
+            onInitHotRow:"热行初始化",
+            afterHotRowAdded:"热行加入前",
+            beforeRowActive:"行激活前",
+            afterRowActive:"行激活后",
+            beforeRowResized:"行高改变前",
+            afterRowResized:"行高改变后",
+            onRowDirtied:"行内容改变",
+            onRowHover:"行鼠标悬停",
+            onRowSelected:"行选择",
+            onClickRow:"鼠标点击行",
+            onDblclickRow:"鼠标双击行",
+            onClickRowHandler:"点击行手柄",
+
+            onClickGridHandler:"点击表格手柄",
+            onBodyLayout:"布局表格体",
+            onGetContent:"尝试得到子行",
+            
+            beforeIniEditor:"初始化编辑器前",
+            onBeginEdit:"编辑单元格",
+            onEndEdit:"结束编辑",
+            onCommand:"点击命令按钮",
+            beforeComboPop:"构造弹出窗口前",
+            beforePopShow:"显示弹出窗口前",
+            afterPopShow:"显示弹出窗口后"
+        },
+        'xui_UI_TimeLine' : {
+            beforeClose:"窗口关闭前",
+            beforeDragTask:"拖拽任务前",
+            beforeNewTask:"新建任务前",
+            beforeTaskUpdated:"跟新任务前",
+            onClickTask:"鼠标点击任务",
+            onDblclickTask:"鼠标双击任务",
+            onGetContent:"尝试得到任务",
+            onShowOptions:"点击选项按钮",
+            onStartDateChanged:"日期改变"
+        },
+        'xui_UI_TagEditor' : {
+        },
+        'xui_UI_Range' : {
+        },
+        'xui_svg' : {
+            onClick:"鼠标点击"
+        },
+        'xui_svg_absComb' : {
+            onClick:"鼠标点击形状",
+            onTextClick:"鼠标点击文本"
+        },
+        'xui_svg_circle' : {
+        },
+        'xui_svg_ellipse' : {
+        },
+        'xui_svg_rect' : {
+        },
+        'xui_svg_image' : {
+        },
+        'xui_svg_text' : {
+        },
+        'xui_svg_path' : {
+        },
+        'xui_svg_rectComb' : {
+        },
+        'xui_svg_circleComb' : {
+        },
+        'xui_svg_ellipseComb' : {
+        },
+        'xui_svg_pathComb' : {
+        },
+        'xui_svg_imageComb' : {
+        },
+        'xui_svg_connector' : {
+        },
+        'xui_UI_FusionChartsXT' : {
+            onDataClick:"点击数据块",
+            onFusionChartsEvent:"FC事件触发"
+        }
+});
+
 })();

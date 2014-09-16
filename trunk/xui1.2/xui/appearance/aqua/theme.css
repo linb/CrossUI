@@ -406,7 +406,9 @@ html, .xui-uibg-base{
 .xui-treebar-mark{
     background-image: url(Public/icons.gif);
 }
-
+.xui-treebar-opt{
+    background-image: url(Public/icons.gif);
+}
 /*xui.UI.TreeView*/
 .xui-treeview-image-vertical, 
 .xui-treeview-image-path-1, 
@@ -420,7 +422,9 @@ html, .xui-uibg-base{
 .xui-treeview-mark{
     background-image: url(Public/icons.gif);
 }
-
+.xui-treeview-opt{
+    background-image: url(Public/icons.gif);
+}
 
 /*xui.UI.Tabs*/
 .xui-tabs-items{

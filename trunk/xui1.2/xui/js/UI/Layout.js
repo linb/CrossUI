@@ -29,7 +29,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         else
                             pos=items[index].pos;
                     }
-    
+
                     arr2=box._adjustItems2(arr, pos);
                 }else{
                     arr2=arr;
@@ -46,7 +46,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     data = box._prepareItems(profile, arr2, base);
                     r=profile._buildItems('items', data);
                     profile.getRoot().prepend(r);
-                    
+
                     var t=profile.getRootNode().style;
                     xui.UI.$tryResize(profile, t.width, t.height, true);
                     t=null;
@@ -57,11 +57,11 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             });
         },
         _afterRemoveItems:function(profile){
-            if(profile.renderId){                    
+            if(profile.renderId){
                 var t=profile.getRootNode().style;
                 xui.UI.$tryResize(profile, t.width, t.height, true);
                 t=null;
-            }            
+            }
         },
         updateItem:function(subId,options){
             var self=this,
@@ -475,7 +475,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(t.type=='vertical'){
                         // restore resize mode
                         if(item.folded){
-                            if(item.size <= m.height() - main.min + _handlerSize){
+                           // if(item.size <= m.height() - main.min + _handlerSize){
                                 //restore h
                                 o.height(item.size);
                                 panel.show();
@@ -490,8 +490,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 //hidden 'move'
                                 if(!item.locked)move.css('cursor','n-resize');
                                 profile.getSubNode('MOVE').tagClass('-checked',false);
-                            }else
-                                xui.message('no enough space!');
+                           // }else
+                           //    xui.message('no enough space!');
                         // to min and fix mode
                         }else{
                             o.height(_handlerSize);
@@ -510,7 +510,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         xui.UI.$tryResize(profile,null,r.height(),true);
                     }else{
                         if(item.folded){
-                            if(item.size <= m.width()-main.min + _handlerSize){
+                           // if(item.size <= m.width()-main.min + _handlerSize){
                                 o.width(item.size);
                                 panel.show();
                                 item.folded=false;
@@ -521,8 +521,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                                 if(!item.locked)move.css('cursor','w-resize');
                                 profile.getSubNode('MOVE').tagClass('-checked',false);
-                            }else
-                                xui.message('no enough space!');
+                            //}else
+                            //    xui.message('no enough space!');
                         }else{
                             o.width(_handlerSize);
                             panel.hide();
@@ -717,47 +717,47 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var data = arguments.callee.upper.apply(this, arguments);
             _.arr.each(items,function(o){
                 delete o.caption;
-            });            
+            });
             return data;
         },
-        _prepareItem:function(profile, item){
+        _prepareItem:function(profile, data,item){
             var prop=profile.properties;
-            if(item.id=='main'){
-                item.cls1=profile.getClass('ITEM', '-main');
-                item.cls2  = profile.getClass('MOVE', '-main');
-                item.cls3  = profile.getClass('CMD', '-main' );
+            if(data.id=='main'){
+                data.cls1=profile.getClass('ITEM', '-main');
+                data.cls2  = profile.getClass('MOVE', '-main');
+                data.cls3  = profile.getClass('CMD', '-main' );
                 return;
             }
 
             if(prop.type=='vertical')
-                item.size = 'height:'+item.size+'px';
+                data.size = 'height:'+data.size+'px';
             else
-                item.size = 'width:'+item.size+'px';
+                data.size = 'width:'+data.size+'px';
 
             var pos;
             if(prop.type=='vertical'){
-                if(item.pos=='before')
+                if(data.pos=='before')
                     pos='top';
                 else
                     pos='bottom';
             }else{
-                if(item.pos=='before')
+                if(data.pos=='before')
                     pos='left';
                 else
                     pos='right';
             }
 
-            item.cls1  = profile.getClass('ITEM', '-' + pos );
-            item.cls2  = profile.getClass('MOVE', '-' + pos );
-            item.cls3  = profile.getClass('CMD', '-' + pos );
-            item.display = item.hidden?'display:none':'';
-            item.moveDisplay = item.locked?'display:none':'';
-            item.cmdDisplay = item.cmd?'':'display:none';
+            data.cls1  = profile.getClass('ITEM', '-' + pos );
+            data.cls2  = profile.getClass('MOVE', '-' + pos );
+            data.cls3  = profile.getClass('CMD', '-' + pos );
+            data.display = data.hidden?'display:none':'';
+            data.moveDisplay = data.locked?'display:none':'';
+            data.cmdDisplay = data.cmd?'':'display:none';
 
-            if(_.isStr(item.overflow))
-                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
+            if(_.isStr(data.overflow))
+                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
             else if(_.isStr(prop.overflow))
-                item._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
+                data._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
         },
         RenderTrigger:function(){
             var t, profile=this;
@@ -771,142 +771,131 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             });
         },
         _onresize:function(profile,width,height){
-            var _t,t=profile.properties, m,n, itemId, temp1,temp2,temp, key=profile.keys.ITEM, panel=profile.keys.PANEL,
-            move=profile.getSubNode('MOVE',true),
-            _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
+            var t=profile.properties,
+                key=profile.keys.ITEM,
+                panel=profile.keys.PANEL,
+                move=profile.getSubNode('MOVE',true),
+                main=profile.getItemByItemId('main'),
+                mainmin=main.min||10,
+                _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
 
-            var obj={}, obj2={};
+            var obj={}, obj2={},obj3={};
             _.arr.each(t.items,function(o){
                 itemId = profile.getSubIdByItemId(o.id);
                 obj[itemId] = {};
                 obj2[itemId] = {};
+                obj3[itemId] = o;
             });
+
+            var fun=function(prop,w,width,left,right,offset,forceoffset){
+                var _t,m,m1,itemId, temp1=0,temp2=0,temp=0,blocknumb=0,offsetbak=offset;
+                _.arr.each(prop.items,function(o){
+                    if(o.id=='main')return;
+                    if(o.pos=='before'){
+                        itemId = profile.getSubIdByItemId(o.id);
+                        if(o.hidden){
+                            m=0;
+                            obj2[itemId][width]=o.size;
+                        }else if(o.folded){
+                            m=obj2[itemId][width]=_handlerSize;
+                        }else{
+                            blocknumb++;
+                            m=m1=o.size;
+                            if(m>offset+o.min){
+                                m-=offset;
+                            }else{
+                                offset=m-o.min;
+                                m=o.min;
+                            }
+                            m-=forceoffset;
+                            m=Math.max(m,(o.locked?0:_handlerSize));
+                        }
+                        obj2[itemId][left]=temp1;
+                        temp1 +=m;
+                        obj[itemId][left]=0;
+                        obj[itemId][width] = m - (o.locked?0:_handlerSize);
+                        obj2[itemId][right]=obj[itemId][right]='auto';
+                        obj2[itemId][width] = m;
+                        if(!o.locked)mainmin+=_handlerSize;
+                    }
+                });
+                _.arr.each(prop.items,function(o){
+                    if(o.id=='main')return;
+                    if(o.pos=='after'){
+                        itemId = profile.getSubIdByItemId(o.id);
+                        if(o.hidden){
+                            m=0;
+                            obj2[itemId][width]=o.size;
+                        }else if(o.folded){
+                            m=obj2[itemId][width]=_handlerSize;
+                        }else{
+                            blocknumb++;
+                            m=m1=o.size;
+                            if(m>offset+o.min){
+                                m-=offset;
+                            }else{
+                                offset=m-o.min;
+                                m=o.min;
+                            }
+                            m-=forceoffset;
+                            m=Math.max(m,(o.locked?0:_handlerSize));
+                        }
+                        obj2[itemId][right]=temp2;
+                        temp2 +=m;
+                        obj[itemId][right]=0;
+                        obj[itemId][width] = m-(o.locked?0:_handlerSize);
+                        obj2[itemId][left]=obj[itemId][left]='auto';
+                        obj2[itemId][width] = m;
+                        if(!o.locked)mainmin+=_handlerSize;
+                    }
+                },null,true);
+                temp = temp1+temp2;
+
+                //set main
+                if(w-temp>=mainmin || forceoffset){
+                    _t=profile.getSubIdByItemId('main');
+                    obj2[_t][width]=obj[_t][width]=w-temp;
+                    obj2[_t][left]=temp1;
+                }else{
+                    var args=_.toArr(arguments);
+                    // second time only
+                    if(!offsetbak){
+                        args[args.length-2]=(mainmin-(w-temp))/blocknumb;
+                    }
+                    // third time only
+                    else{
+                        args[args.length-2]=offsetbak;
+                        args[args.length-1]=(mainmin-(w-temp))/blocknumb;
+                    }
+                    //second time
+                    fun.apply(null,args);
+                }
+            };
+
             if(t.type!='vertical'){
                 if(!_.isNull(width)){
                     //get left
-                    temp=temp1=temp2=0;
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId = profile.getSubIdByItemId(o.id);
-                        if(o.pos=='before'){
-                            n=profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].width=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].width=_handlerSize;
-                            }else
-                                m= n.width();
-
-                            obj2[itemId].left=temp1;
-                            temp1 +=m;
-                            obj2[itemId].right='auto';
-                            obj[itemId].right='auto';
-                            obj[itemId].left=0;
-                            obj[itemId].width = m - (o.locked?0:_handlerSize);
-                        }
+                    fun(t,width,'width','left','right',0,0);
+                    _.each(obj2,function(o,i){
+                        if(o.width)obj3[i].size=o.width;
                     });
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId = profile.getSubIdByItemId(o.id);
-                        if(o.pos=='after'){
-                            n =profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].width=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].width=_handlerSize;
-                            }else
-                                m= n.width();
-
-                            obj2[itemId].right=temp2;
-                            temp2 +=m;
-                            obj2[itemId].left='auto';
-                            obj[itemId].right=0;
-                            obj[itemId].left='auto';
-                            obj[itemId].width = m-(o.locked?0:_handlerSize);
-                        }
-                    },null,true);
-                    temp = temp1+temp2;
-
-                    //set main
-                    //specify widht/height first,
-                    if(width-temp>=0){
-                        _t=profile.getSubIdByItemId('main');
-                        obj[_t].width=width-temp;
-                        obj2[_t].width=width-temp;
-                        obj2[_t].left=temp1;
-                    }
-                }
+                 }
                 if(!_.isNull(height)){
                     _.each(obj,function(o,id){
-                        o.height=height;
-                        obj2[id].height=height;
+                        obj2[id].height=o.height=height;
                     });
                 }
             }else{
                 if(!_.isNull(height)){
-                    //get top
-                    temp=temp1=temp2=0;
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId=profile.getSubIdByItemId(o.id);
-                        if(o.pos=='before'){
-                            n=profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].height=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].height=_handlerSize;
-                            }else
-                                m= n.height();
-                            obj2[itemId].top=temp1;
-                            temp1 += m;
-                            obj2[itemId].bottom='auto';
-                            obj[itemId].top=0;
-                            obj[itemId].bottom='auto';
-                            obj[itemId].height=m-(o.locked?0:_handlerSize);
-                        }
+                    //get left
+                    fun(t,height,'height','top','bottom',0,0);
+                    _.each(obj2,function(o,i){
+                        if(o.height)obj3[i].size=o.height;
                     });
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId=profile.getSubIdByItemId(o.id);
-                        if(o.pos=='after'){
-                            n=profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].height=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].height=_handlerSize;
-                            }else
-                                m= n.height();
-
-                            obj2[itemId].bottom=temp2;
-                            temp2 += m;
-                            obj2[itemId].top='auto';
-                            obj[itemId].bottom=0;
-                            obj[itemId].top='auto';
-                            obj[itemId].height=m-(o.locked?0:_handlerSize);
-                        }
-                    },null,true);
-
-                    temp =temp1+temp2;
-                    //set main
-                    if(height-temp>=0){
-                        _t=profile.getSubIdByItemId('main');
-                        obj[_t].height=height-temp;
-                        obj2[_t].height=height-temp;
-                        obj2[_t].top=temp1;
-                    }
                 }
                 if(!_.isNull(width)){
-                    _.each(obj,function(o, id){
-                        o.width=width;
-                        obj2[id].width=width;
+                    _.each(obj,function(o,id){
+                        obj2[id].width=o.width=width;
                     });
                 }
             }

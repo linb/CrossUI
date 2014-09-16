@@ -901,10 +901,12 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             taskMinSize:60,
             minDate:{
-                ini:null
+                ini:null,
+                type:'date'
             },
             maxDate:{
-                ini:null
+                ini:null,
+                type:'date'
             },
             dateBtn:{
                 ini:true,

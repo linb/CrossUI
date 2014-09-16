@@ -248,9 +248,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     var properties=profile.properties;
                     if(properties.disabled)return;
                     var pos = profile.getRoot().offset(), size=profile.getRoot().cssSize(),
-                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null};
+                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null,init:null};
 
-                    if(profile.beforePop && false==profile.boxing().beforePop(profile,options))
+                    if(profile.beforePop && false==profile.boxing().beforePop(profile,options,e,src))
                         return false;
                         
                     var pro = _.copy(xui.UI.Dialog.$DataStruct),
@@ -269,22 +269,21 @@ Class("xui.UI.Panel", "xui.UI.Div",{
 
                     if(options.events)
                         _.merge(events, options.events, 'all');
-                    if(!events.onRender){
+
+                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
+                    
+                    if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
+                    }else{
+                        dialog.show(options.parent||xui('body'));    
                         var arr=[];
                         _.arr.each(profile.children,function(o){
                             arr.push(o[0]);
                         });
-                        if(arr.length)
-                            events.onRender=function(){
-                                dialog.append(xui.UI.pack(arr,false));
-                            };
-                    }                    
-
-                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
-                    
-                    (options.parent||xui('body')).append(dialog);
-
-                    profile.boxing().removeChildren().destroy();
+                        if(arr.length){
+                            dialog.append(xui.UI.pack(arr,false));
+                        }
+                        profile.boxing().removeChildren().destroy();
+                    }
                 }
             }
         },
@@ -383,7 +382,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         EventHandlers:{
             onRefresh:function(profile){},
-            beforePop:function(profile, options){},
+            beforePop:function(profile, options,e,src){},
             beforeClose:function(profile){},
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},

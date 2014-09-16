@@ -2399,10 +2399,12 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             taskMinSize:60,
             minDate:{
-                ini:null
+                ini:null,
+                type:'date'
             },
             maxDate:{
-                ini:null
+                ini:null,
+                type:'date'
             },
             dateBtn:{
                 ini:true,
@@ -18333,6 +18335,7 @@ e*Ga(i),i=c+e*Z(i),B=ka.rad(45),A=t+f*Ga(B),E=h+f*Z(B),O=w+f*Ga(B),f=i+f*Z(B);re
             onSize:xui.UI.$onSize
         },
         DataModel:{
+            tabindex:null,
             defaultFocus:null,
             disableClickEffect:null,
             disableHoverEffect:null,

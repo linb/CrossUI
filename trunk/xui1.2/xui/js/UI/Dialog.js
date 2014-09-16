@@ -451,6 +451,9 @@ if(xui.browser.ie){
             PIN:{
                 onClick:function(profile, e, src){
                     var key=profile.keys.PIN, t=profile.properties;
+                    if( profile.beforePin && false === profile.boxing().beforePin(profile, t.pinned))
+                        return;
+
                     //set pinned status
                     t.pinned = !t.pinned;
                     //set appea
@@ -692,7 +695,8 @@ if(xui.browser.ie){
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
             onLand:function(profile, e, src){},
-            onActivated:function(profile){}
+            onActivated:function(profile){},
+            beforePin:function(profile, value){}
         },
         RenderTrigger:function(){
             var ns=this;
@@ -888,7 +892,7 @@ if(xui.browser.ie){
                 var o=xui(profile.domId),
                     //in ie, .children can't get the same thread added node(modal div,  here)
                     t1=o.topZindex(),
-                    t2=o.css('zIndex');
+                    t2=parseInt(o.css('zIndex'),0);
                 o.css('zIndex',t1>t2?t1:t2);
 
                 profile.getSubNode('TBAR').tagClass('-focus');

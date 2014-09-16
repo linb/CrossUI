@@ -383,6 +383,12 @@ html, .xui-uibg-base{
 .xui-treebar-checked{
     background-image: url(Public/icons.gif);
 }
+.xui-treebar-mark{
+    background-image: url(Public/icons.gif);
+}
+.xui-treebar-opt{
+    background-image: url(Public/icons.gif);
+}
 
 /*xui.UI.TreeView*/
 .xui-treeview-box{
@@ -401,7 +407,9 @@ html, .xui-uibg-base{
 {
     background-color: #38404C;
 }
-
+.xui-treeview-opt{
+    background-image: url(Public/icons.gif);
+}
 /*xui.UI.Tabs*/
 .xui-tabs-items{
     padding:0 0 4px 0;

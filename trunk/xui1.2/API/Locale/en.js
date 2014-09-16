@@ -6887,6 +6887,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event.",
+                    "k : Object, {key:keycode string, type: event type, ctrlKey:ctrl status, shiftKey:shift status, altKey:alt status}",
                     "shift: Boolean, Shift keyboard is pressed or not.",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -7284,6 +7285,54 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getTag:{
+                $desc:"Gets the tag value on the first UIProfile",
+                $rtn:"String",
+                $snippet:[
+                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            setTag:{
+                $desc:"Sets the tag value on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            getTagVar:{
+                $desc:"Gets the tagVar property value on the first UIProfile",
+                $rtn:"Object",
+                $snippet:[
+                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
+            setTagVar:{
+                $desc:"Sets the tagVar property value on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
             setLeft:{
                 $desc:"Sets the left(corresponding to the CSS value of the root DOM element) property value on the each UIProfile.",
                 $rtn:"[self]",
@@ -7547,54 +7596,6 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.ui30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setTabindex('10'); alert(btn.getTabindex())},1000)"+
-                    "}"
-                ]
-            },
-            getTag:{
-                $desc:"Gets the tag value on the first UIProfile",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            setTag:{
-                $desc:"Sets the tag value on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            getTagVar:{
-                $desc:"Gets the tagVar property value on the first UIProfile",
-                $rtn:"Object",
-                $snippet:[
-                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
-                    "}"
-                ]
-            },
-            setTagVar:{
-                $desc:"Sets the tagVar property value on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
                     "}"
                 ]
             },
@@ -11752,6 +11753,15 @@ _.set(xui.Locale,["en","app"], {
                     "src : String, the event source DOM element's xid."
                 ]
             },
+            onShowOptions :{
+                $desc:"Fired when user click the option button.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
             onClick:{
                 $desc:"Fired when a list item was clicked.",
                 $paras:[
@@ -11893,6 +11903,30 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){alert(o.getStatus('c'));});"+
                     "_.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
+                ]
+            },
+            getLoadingImg:{
+                $desc:"Gets the loading image source.",
+                $rtn:"String"
+            },
+            setLoadingImg:{
+                $desc:"Sets the loading image source.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getAutoItemSize:{
+                $desc:"To determine whether the size of item change with the size of the picture  automatically",
+                $rtn:"Boolean"
+            },
+            setAutoItemSize:{
+                $desc:"Specify whether the size of item change with the size of the picture  automatically.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getImgHeight:{
@@ -12062,6 +12096,30 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){alert(o.getStatus('c'));});"+
                     "_.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
+                ]
+            },
+            getLoadingImg:{
+                $desc:"Gets the loading image source.",
+                $rtn:"String"
+            },
+            setLoadingImg:{
+                $desc:"Sets the loading image source.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getAutoItemSize:{
+                $desc:"To determine whether the size of item change with the size of the picture  automatically",
+                $rtn:"Boolean"
+            },
+            setAutoItemSize:{
+                $desc:"Specify whether the size of item change with the size of the picture  automatically.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getItemWidth:{
@@ -12486,7 +12544,9 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired before user click pop button. If returns false, pop function will be ignored.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "options : Object. the following keys: parent, host, properties, events, host, theme, CS, CC, CB, CF"
+                    "options : Object. the following keys: parent, host, properties, events, host, theme, CS, CC, CB, CF",
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
                 ]
             },
             beforeClose:{
@@ -13236,7 +13296,9 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "item: Object, the current item.",
-                    "options : Object. the following keys: parent, host, properties, events, host, theme, CS, CC, CB, CF"
+                    "options : Object. the following keys: parent, host, properties, events, host, theme, CS, CC, CB, CF",
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
                 ]
             },
             beforePageClose:{
@@ -14551,8 +14613,14 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "profile : xui.UIProfile."
                 ]
+            },
+            beforePin:{
+                $desc:"Fired before user click the pin button.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "value: Boolean, pin status."
+                ]
             }
-
         }
     });
 
@@ -15411,6 +15479,18 @@ _.set(xui.Locale,["en","app"], {
                     "o.setAnimCollapse(true); alert(o.getAnimCollapse());"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            getOptBtn:{
+                $desc:"To determine whether this control has an option button",
+                $rtn:"Boolean"
+            },
+            setOptBtn:{
+                $desc:"Specifys whether this control has an option button.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getGroup :{

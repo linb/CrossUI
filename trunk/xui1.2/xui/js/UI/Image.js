@@ -26,7 +26,8 @@ Class("xui.UI.Image", "xui.UI",{
                     if(!profile||profile.isDestroyed)return;
                     var prop=profile.properties,
                         size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
-                    profile.boxing().afterLoad(profile, path, size[0], size[1]);
+                    if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
+                    profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
                     if(prop.dock!='none')
                         profile.boxing().adjustDock();
                    i.onload=null;

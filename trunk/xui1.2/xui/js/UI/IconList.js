@@ -79,16 +79,35 @@ Class("xui.UI.IconList", "xui.UI.List",{
         Behaviors:{
             IMAGE:{
                 onLoad:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='loaded';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else{
+                        item._status='loaded';
+                    }
                 },
                 onError:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='error';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else {
+                        item._status='error';
+                    }
                 }
             }
         },
         DataModel:({
+            autoItemSize:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            loadingImg:xui.ini.img_busy,
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -128,8 +147,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 item[i] = item[i] || p[i];
             });
             item._tabindex = p.tabindex;
-            //Avoid Empty Image src
-            if(!item.image)item.image=xui.ini.img_bg;
+
+            if(p.autoItemSize){
+                item.itemWidth=item.itemHeight='';
+            }
+
+            item.image=p.loadingImg;
         }
     }
 });

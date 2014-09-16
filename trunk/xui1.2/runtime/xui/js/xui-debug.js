@@ -930,7 +930,7 @@ _.merge(xui,{
             (function(){
                 j=a.splice(0,100);
                 for(i=0;t=j[i];i++)
-                    if(typeof(v=g(t.className))=='string')
+                    if(t.className && typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
                     _.setTimeout(arguments.callee,0);
@@ -1038,6 +1038,7 @@ _.merge(xui,{
     //test1: xui.getRes("start.a.b.c $0 $1 ($- $. $$) end-1-2")  => "c 1 2 (- . $) end"
     //tset2: xui.getRes( ["a","b","c $0 $1 ($- $. $$) end"],1,2) => "c 1 2 (- . $) end"
     getRes:function(path){
+        if(!_.isStr(path))return path;
         var arr,conf,tmp,params=arguments,rtn;
         if(typeof path=='string'){
             path=path.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;});
@@ -1048,7 +1049,7 @@ _.merge(xui,{
                 params=tmp;
             }
             arr=path.split(".");
-            arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03])/g,function(a){return xui._unescapeMap[a];});
+            arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
         }else{
             arr=path;
         }
@@ -1064,15 +1065,17 @@ _.merge(xui,{
         }
     },
     wrapRes:function(id){
+        if(!_.isStr(id))return id;
         var i=id, s,r;
         if(i.charAt(0)=='$')arguments[0]=i.substr(1,i.length-1);
         s=id;
         r= xui.getRes.apply(null,arguments);
         if(s==r)r=i;
-        return '<span id="'+xui.$localeDomId+'" class="'+s+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
+        return '<span id="'+xui.$localeDomId+'" class="'+s.replace(/([\x01\x02\x03\x04])/g,function(a){return '$'+xui._unescapeMap[a];})+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
     adjustRes:function(str, wrap, onlyBraces){
+        if(!_.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
         str=xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
@@ -3225,6 +3228,12 @@ Class('xui.absObj',"xui.absBox",{
     Static:{
         $abstract:true,
         $specialChars:{_:1,$:1},
+        DataModel:{
+            tag:'',
+            tagVar:{
+                ini:{}
+            }
+        },
         getAll:function(){
           return this.pack(this._cache);
         },
@@ -10663,6 +10672,8 @@ Class('xui.Com',null,{
     Instance:{
         autoDestroy:true,
         dataBindLoadType:"sync", // "async", "none"
+        background:"",
+
         _toDomElems:function(){
             var ns=this;
             if(!ns.created)
@@ -14886,7 +14897,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(!tnodes.isEmpty()){
                         if(_.isHash(CAObj[key])){
                             _.each(CAObj[key],function(o,i){
-                                tnodes.attr(i, clear?'':xui.adjustRes(o,0,1));
+                                tnodes.attr(i, clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o);
                             });
                         }          
                     }
@@ -14936,13 +14947,13 @@ Class("xui.UI",  "xui.absObj", {
                                 if((b=o.split(':')).length>=2){
                                     i=b.shift();o=b.join(':');
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                    tnodes.css(i, clear?'':xui.adjustRes(o,0,1));
+                                    tnodes.css(i, (clear?'':xui.adjustRes(o,0,1))||"");
                                 }
                             });
                          else if(_.isHash(CSObj[key]))
                             _.each(CSObj[key],function(o,i){
                                 i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                tnodes.css(i, clear?'':xui.adjustRes(o,0,1));
+                                tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
                             });                            
                     }
                 }));
@@ -17697,7 +17708,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             if(prop.position)a[a.length] = 'position:'+prop.position;
             if(prop.visibility)a[a.length]= 'visibility:'+prop.visibility;
-            if(prop.zIndex)a[a.length]= 'z-index:'+prop.zIndex;
+            if('zIndex' in prop)a[a.length]= 'z-index:'+prop.zIndex;
             if(prop.display)a[a.length]= 'display:'+ (prop.display=='inline-block'? xui.browser.gek?'-moz-inline-block;display:-moz-inline-box;display:inline-block;':'inline-block' :prop.display)
 
             data._style = a.join(';');
@@ -19268,7 +19279,8 @@ new function(){
                     if(!profile||profile.isDestroyed)return;
                     var prop=profile.properties,
                         size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
-                    profile.boxing().afterLoad(profile, path, size[0], size[1]);
+                    if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
+                    profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
                     if(prop.dock!='none')
                         profile.boxing().adjustDock();
                    i.onload=null;
@@ -22968,7 +22980,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             },
             maxlength:{
-            	ini:'',
+            	ini:-1,
             	action: function(value){
                   this.getSubNode('INPUT').attr('maxlength',value);
                 }
@@ -26068,7 +26080,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                                                 className:'xui-ui-btnc',
                                                 TRANSA:{
                                                     tabindex: '{tabindex}',
-                                                    text:xui.wrapRes('inline.transparent')
+                                                    text:"{_transparent}"
                                                 }
                                             }
                                         }
@@ -26129,7 +26141,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                                     className:'xui-ui-btnc',
                                     SETA:{
                                         tabindex: '{tabindex}',
-                                        text:xui.wrapRes('inline.set')
+                                        text:"{_set}"
                                     }
                                 }
                             }
@@ -26358,7 +26370,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 right:'0'
             },
             TRANSA:{
-                width:'72px'
+                width:'72px',
+                'text-align':'center'
             },
             SET:{
                 position:'absolute',
@@ -26637,6 +26650,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
             data.closeDisplay = data.closeBtn?'':nodisplay;
             data._width = data.advance?'410':'210';
             data.advDispay = data.advance?'':'display:none;';
+            
+            data._transparent = xui.wrapRes('inline.transparent');
+            data._set = xui.wrapRes('inline.set');
             return data;
         },
         EventHandlers:{
@@ -27148,7 +27164,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                                     className:'xui-ui-btnc',
                                     SETA:{
                                         tabindex: '{tabindex}',
-                                        text:xui.wrapRes('inline.set')
+                                        text:"{_set}"
                                     }
                                 }
                             }
@@ -27635,6 +27651,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 data._todaytitle=xui.getRes("inline.today");
                 data._timectrl=none;
             }
+            data._set = xui.wrapRes('inline.set');
 
             return data;
         },
@@ -27994,7 +28011,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                                     className:'xui-ui-btnc',
                                     SETA:{
                                         tabindex: '{tabindex}',
-                                        text:xui.wrapRes('inline.set')
+                                        text:"{_set}"
                                     }
                                 }
                             }
@@ -28402,6 +28419,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             var data=arguments.callee.upper.call(this, profile);
             var nodisplay='display:none';
             data.closeDisplay = data.closeBtn?'':nodisplay;
+            data._set = xui.wrapRes('inline.set');
             return data;
         },
 //        RenderTrigger:function(){
@@ -28916,7 +28934,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     className:'{itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
                     ITEMFRAME:{
-                        style:'width:{itemWidth}px;height:{itemHeight}px;',
+                        style:'{_itemSize};',
                         CAPTION:{
                             tagName : 'div',
                             style:'{capDisplay}',
@@ -29028,16 +29046,35 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         Behaviors:{
             IMAGE:{
                 onLoad:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='loaded';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else{
+                        item._status='loaded';
+                    }
                 },
                 onError:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='error';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else {
+                        item._status='error';
+                    }
                 }
             }
         },
         DataModel:({
+            autoItemSize:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            loadingImg:xui.ini.img_busy,
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -29093,8 +29130,14 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(item.caption===null)capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
-            //Avoid Empty Image src
-            if(!item.image)item.image=xui.ini.img_bg;
+
+            if(p.autoItemSize){
+                item.imgHeight=item.imgWidth='';
+                item._itemSize='';
+            }else{
+                item._itemSize='width:'+item.itemWidth+'px;height:'+item.itemHeight+'px;';
+            }
+            item.image=p.loadingImg;
         }
     }
 });
@@ -29179,16 +29222,35 @@ Class("xui.UI.IconList", "xui.UI.List",{
         Behaviors:{
             IMAGE:{
                 onLoad:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='loaded';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else{
+                        item._status='loaded';
+                    }
                 },
                 onError:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='error';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else {
+                        item._status='error';
+                    }
                 }
             }
         },
         DataModel:({
+            autoItemSize:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            loadingImg:xui.ini.img_busy,
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -29228,8 +29290,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 item[i] = item[i] || p[i];
             });
             item._tabindex = p.tabindex;
-            //Avoid Empty Image src
-            if(!item.image)item.image=xui.ini.img_bg;
+
+            if(p.autoItemSize){
+                item.itemWidth=item.itemHeight='';
+            }
+
+            item.image=p.loadingImg;
         }
     }
 });
@@ -29483,9 +29549,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     var properties=profile.properties;
                     if(properties.disabled)return;
                     var pos = profile.getRoot().offset(), size=profile.getRoot().cssSize(),
-                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null};
+                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null,init:null};
 
-                    if(profile.beforePop && false==profile.boxing().beforePop(profile,options))
+                    if(profile.beforePop && false==profile.boxing().beforePop(profile,options,e,src))
                         return false;
                         
                     var pro = _.copy(xui.UI.Dialog.$DataStruct),
@@ -29504,22 +29570,21 @@ Class("xui.UI.Panel", "xui.UI.Div",{
 
                     if(options.events)
                         _.merge(events, options.events, 'all');
-                    if(!events.onRender){
+
+                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
+                    
+                    if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
+                    }else{
+                        dialog.show(options.parent||xui('body'));    
                         var arr=[];
                         _.arr.each(profile.children,function(o){
                             arr.push(o[0]);
                         });
-                        if(arr.length)
-                            events.onRender=function(){
-                                dialog.append(xui.UI.pack(arr,false));
-                            };
-                    }                    
-
-                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
-                    
-                    (options.parent||xui('body')).append(dialog);
-
-                    profile.boxing().removeChildren().destroy();
+                        if(arr.length){
+                            dialog.append(xui.UI.pack(arr,false));
+                        }
+                        profile.boxing().removeChildren().destroy();
+                    }
                 }
             }
         },
@@ -29618,7 +29683,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         EventHandlers:{
             onRefresh:function(profile){},
-            beforePop:function(profile, options){},
+            beforePop:function(profile, options,e,src){},
             beforeClose:function(profile){},
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},
@@ -30875,13 +30940,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
                         item = profile.getItemByDom(src),
-                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null},
+                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null,init:null},
                         id=item.id;
-
                     if(properties.disabled || item.disabled)return false;
                     if(properties.readonly || item.readonly)return false;
 
-                    if(profile.beforePagePop && false==profile.boxing().beforePagePop(profile,item,options))
+                    if(profile.beforePagePop && false==profile.boxing().beforePagePop(profile,item,options,e,src))
                         return false;
 
                     var panel = profile.boxing().getPanel(id),
@@ -30906,22 +30970,23 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     
                     if(options.events)
                         _.merge(events, options.events, 'all');
-                    if(!events.onRender){
+
+                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
+
+                    if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
+                    }else{
+                        dialog.show(options.parent||xui('body'));    
                         var arr=[];
                         _.arr.each(profile.children,function(o){
                             if(o[1]==id){
                                 arr.push(o[0]);
                             }
                         });
-                        if(arr.length)
-                            events.onRender=function(){
-                                dialog.append(xui.UI.pack(arr,false));
-                            };
+                        if(arr.length){
+                            dialog.append(xui.UI.pack(arr,false));
+                        }
+                        profile.boxing().removeChildren(id).removeItems(id);
                     }
-                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
-                    (options.parent||xui('body')).append(dialog);
-
-                    profile.boxing().removeChildren(id).removeItems(id);
                 }
             },
             ITEMS:{
@@ -31140,7 +31205,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         EventHandlers:{
             onIniPanelView:function(profile, item){},
-            beforePagePop:function(profile, item, options){},
+            beforePagePop:function(profile, item, options, e, src){},
             beforePageClose:function(profile, item, src){},
             afterPageClose:function(profile, item){},
             onShowOptions:function(profile,item,e,src){},
@@ -32298,6 +32363,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             EXTRA:{
                                 text : '{ext}',
                                 $order:5
+                            },
+                            OPT:{
+                                $order:6
                             }
                         },
                         SUB:{
@@ -32401,11 +32469,33 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 padding:'2px'
+            },
+            OPT:{
+                $order:1,
+                position:'absolute',
+                left:'auto',
+                top:'auto',
+                right:'2px',
+                top:'2px',
+                width:'16px',
+                height:'16px',
+                display:'none',
+                'background-image': xui.UI.$bg('icons.gif','', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-130px -224px'
+            },
+            'OPT-mouseover':{
+                $order:2,
+                'background-position':'-130px -244px'
+            },
+            'OPT-mousedown':{
+                $order:3,
+                'background-position':'-130px -264px'
             }
         },
         Behaviors:{
-            HoverEffected:{TOGGLE:'TOGGLE', BAR:'BAR'},
-            ClickEffected:{TOGGLE:'TOGGLE', BAR:'BAR'},
+            HoverEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT'},
+            ClickEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT'},
             DraggableKeys:["BAR"],
             NoDraggableKeys:['TOGGLE'],
             DroppableKeys:["BAR","TOGGLE","BOX"],
@@ -32442,6 +32532,27 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu)
                         return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
+                },
+                onMouseover:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+                },
+                onMouseout:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+                }
+            },
+            OPT:{
+                onClick:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    if(profile.onShowOptions){
+                        var item = profile.getItemByDom(src);
+                        profile.boxing().onShowOptions(profile, item, e, src);
+                    }
+                    return false;
+                },
+                onDblclick:function(profile, e, src){
+                    return false;
                 }
             },
             BOX:{
@@ -32456,6 +32567,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onDblclick:function(profile, item, e, src){},
             onGetContent:function(profile, item, callback){},
 
+            onShowOptions:function(profile, item, e, src){},
             onClick:function(profile, item, e, src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
@@ -32505,7 +32617,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             noCtrlKey:true,
             singleOpen:false,
             dynDestory:false,
-            position:'absolute'
+            position:'absolute',
+            optBtn:false
         },
         RenderTrigger:function(){
             this.boxing()._toggleNodes(this.properties.items, true, true, true);
@@ -34957,7 +35070,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         else
                             pos=items[index].pos;
                     }
-    
+
                     arr2=box._adjustItems2(arr, pos);
                 }else{
                     arr2=arr;
@@ -34974,7 +35087,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     data = box._prepareItems(profile, arr2, base);
                     r=profile._buildItems('items', data);
                     profile.getRoot().prepend(r);
-                    
+
                     var t=profile.getRootNode().style;
                     xui.UI.$tryResize(profile, t.width, t.height, true);
                     t=null;
@@ -34985,11 +35098,11 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             });
         },
         _afterRemoveItems:function(profile){
-            if(profile.renderId){                    
+            if(profile.renderId){
                 var t=profile.getRootNode().style;
                 xui.UI.$tryResize(profile, t.width, t.height, true);
                 t=null;
-            }            
+            }
         },
         updateItem:function(subId,options){
             var self=this,
@@ -35403,7 +35516,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(t.type=='vertical'){
                         // restore resize mode
                         if(item.folded){
-                            if(item.size <= m.height() - main.min + _handlerSize){
+                           // if(item.size <= m.height() - main.min + _handlerSize){
                                 //restore h
                                 o.height(item.size);
                                 panel.show();
@@ -35418,8 +35531,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 //hidden 'move'
                                 if(!item.locked)move.css('cursor','n-resize');
                                 profile.getSubNode('MOVE').tagClass('-checked',false);
-                            }else
-                                xui.message('no enough space!');
+                           // }else
+                           //    xui.message('no enough space!');
                         // to min and fix mode
                         }else{
                             o.height(_handlerSize);
@@ -35438,7 +35551,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         xui.UI.$tryResize(profile,null,r.height(),true);
                     }else{
                         if(item.folded){
-                            if(item.size <= m.width()-main.min + _handlerSize){
+                           // if(item.size <= m.width()-main.min + _handlerSize){
                                 o.width(item.size);
                                 panel.show();
                                 item.folded=false;
@@ -35449,8 +35562,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                                 if(!item.locked)move.css('cursor','w-resize');
                                 profile.getSubNode('MOVE').tagClass('-checked',false);
-                            }else
-                                xui.message('no enough space!');
+                            //}else
+                            //    xui.message('no enough space!');
                         }else{
                             o.width(_handlerSize);
                             panel.hide();
@@ -35645,47 +35758,47 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var data = arguments.callee.upper.apply(this, arguments);
             _.arr.each(items,function(o){
                 delete o.caption;
-            });            
+            });
             return data;
         },
-        _prepareItem:function(profile, item){
+        _prepareItem:function(profile, data,item){
             var prop=profile.properties;
-            if(item.id=='main'){
-                item.cls1=profile.getClass('ITEM', '-main');
-                item.cls2  = profile.getClass('MOVE', '-main');
-                item.cls3  = profile.getClass('CMD', '-main' );
+            if(data.id=='main'){
+                data.cls1=profile.getClass('ITEM', '-main');
+                data.cls2  = profile.getClass('MOVE', '-main');
+                data.cls3  = profile.getClass('CMD', '-main' );
                 return;
             }
 
             if(prop.type=='vertical')
-                item.size = 'height:'+item.size+'px';
+                data.size = 'height:'+data.size+'px';
             else
-                item.size = 'width:'+item.size+'px';
+                data.size = 'width:'+data.size+'px';
 
             var pos;
             if(prop.type=='vertical'){
-                if(item.pos=='before')
+                if(data.pos=='before')
                     pos='top';
                 else
                     pos='bottom';
             }else{
-                if(item.pos=='before')
+                if(data.pos=='before')
                     pos='left';
                 else
                     pos='right';
             }
 
-            item.cls1  = profile.getClass('ITEM', '-' + pos );
-            item.cls2  = profile.getClass('MOVE', '-' + pos );
-            item.cls3  = profile.getClass('CMD', '-' + pos );
-            item.display = item.hidden?'display:none':'';
-            item.moveDisplay = item.locked?'display:none':'';
-            item.cmdDisplay = item.cmd?'':'display:none';
+            data.cls1  = profile.getClass('ITEM', '-' + pos );
+            data.cls2  = profile.getClass('MOVE', '-' + pos );
+            data.cls3  = profile.getClass('CMD', '-' + pos );
+            data.display = data.hidden?'display:none':'';
+            data.moveDisplay = data.locked?'display:none':'';
+            data.cmdDisplay = data.cmd?'':'display:none';
 
-            if(_.isStr(item.overflow))
-                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
+            if(_.isStr(data.overflow))
+                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
             else if(_.isStr(prop.overflow))
-                item._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
+                data._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
         },
         RenderTrigger:function(){
             var t, profile=this;
@@ -35699,142 +35812,131 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             });
         },
         _onresize:function(profile,width,height){
-            var _t,t=profile.properties, m,n, itemId, temp1,temp2,temp, key=profile.keys.ITEM, panel=profile.keys.PANEL,
-            move=profile.getSubNode('MOVE',true),
-            _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
+            var t=profile.properties,
+                key=profile.keys.ITEM,
+                panel=profile.keys.PANEL,
+                move=profile.getSubNode('MOVE',true),
+                main=profile.getItemByItemId('main'),
+                mainmin=main.min||10,
+                _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
 
-            var obj={}, obj2={};
+            var obj={}, obj2={},obj3={};
             _.arr.each(t.items,function(o){
                 itemId = profile.getSubIdByItemId(o.id);
                 obj[itemId] = {};
                 obj2[itemId] = {};
+                obj3[itemId] = o;
             });
+
+            var fun=function(prop,w,width,left,right,offset,forceoffset){
+                var _t,m,m1,itemId, temp1=0,temp2=0,temp=0,blocknumb=0,offsetbak=offset;
+                _.arr.each(prop.items,function(o){
+                    if(o.id=='main')return;
+                    if(o.pos=='before'){
+                        itemId = profile.getSubIdByItemId(o.id);
+                        if(o.hidden){
+                            m=0;
+                            obj2[itemId][width]=o.size;
+                        }else if(o.folded){
+                            m=obj2[itemId][width]=_handlerSize;
+                        }else{
+                            blocknumb++;
+                            m=m1=o.size;
+                            if(m>offset+o.min){
+                                m-=offset;
+                            }else{
+                                offset=m-o.min;
+                                m=o.min;
+                            }
+                            m-=forceoffset;
+                            m=Math.max(m,(o.locked?0:_handlerSize));
+                        }
+                        obj2[itemId][left]=temp1;
+                        temp1 +=m;
+                        obj[itemId][left]=0;
+                        obj[itemId][width] = m - (o.locked?0:_handlerSize);
+                        obj2[itemId][right]=obj[itemId][right]='auto';
+                        obj2[itemId][width] = m;
+                        if(!o.locked)mainmin+=_handlerSize;
+                    }
+                });
+                _.arr.each(prop.items,function(o){
+                    if(o.id=='main')return;
+                    if(o.pos=='after'){
+                        itemId = profile.getSubIdByItemId(o.id);
+                        if(o.hidden){
+                            m=0;
+                            obj2[itemId][width]=o.size;
+                        }else if(o.folded){
+                            m=obj2[itemId][width]=_handlerSize;
+                        }else{
+                            blocknumb++;
+                            m=m1=o.size;
+                            if(m>offset+o.min){
+                                m-=offset;
+                            }else{
+                                offset=m-o.min;
+                                m=o.min;
+                            }
+                            m-=forceoffset;
+                            m=Math.max(m,(o.locked?0:_handlerSize));
+                        }
+                        obj2[itemId][right]=temp2;
+                        temp2 +=m;
+                        obj[itemId][right]=0;
+                        obj[itemId][width] = m-(o.locked?0:_handlerSize);
+                        obj2[itemId][left]=obj[itemId][left]='auto';
+                        obj2[itemId][width] = m;
+                        if(!o.locked)mainmin+=_handlerSize;
+                    }
+                },null,true);
+                temp = temp1+temp2;
+
+                //set main
+                if(w-temp>=mainmin || forceoffset){
+                    _t=profile.getSubIdByItemId('main');
+                    obj2[_t][width]=obj[_t][width]=w-temp;
+                    obj2[_t][left]=temp1;
+                }else{
+                    var args=_.toArr(arguments);
+                    // second time only
+                    if(!offsetbak){
+                        args[args.length-2]=(mainmin-(w-temp))/blocknumb;
+                    }
+                    // third time only
+                    else{
+                        args[args.length-2]=offsetbak;
+                        args[args.length-1]=(mainmin-(w-temp))/blocknumb;
+                    }
+                    //second time
+                    fun.apply(null,args);
+                }
+            };
+
             if(t.type!='vertical'){
                 if(!_.isNull(width)){
                     //get left
-                    temp=temp1=temp2=0;
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId = profile.getSubIdByItemId(o.id);
-                        if(o.pos=='before'){
-                            n=profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].width=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].width=_handlerSize;
-                            }else
-                                m= n.width();
-
-                            obj2[itemId].left=temp1;
-                            temp1 +=m;
-                            obj2[itemId].right='auto';
-                            obj[itemId].right='auto';
-                            obj[itemId].left=0;
-                            obj[itemId].width = m - (o.locked?0:_handlerSize);
-                        }
+                    fun(t,width,'width','left','right',0,0);
+                    _.each(obj2,function(o,i){
+                        if(o.width)obj3[i].size=o.width;
                     });
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId = profile.getSubIdByItemId(o.id);
-                        if(o.pos=='after'){
-                            n =profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].width=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].width=_handlerSize;
-                            }else
-                                m= n.width();
-
-                            obj2[itemId].right=temp2;
-                            temp2 +=m;
-                            obj2[itemId].left='auto';
-                            obj[itemId].right=0;
-                            obj[itemId].left='auto';
-                            obj[itemId].width = m-(o.locked?0:_handlerSize);
-                        }
-                    },null,true);
-                    temp = temp1+temp2;
-
-                    //set main
-                    //specify widht/height first,
-                    if(width-temp>=0){
-                        _t=profile.getSubIdByItemId('main');
-                        obj[_t].width=width-temp;
-                        obj2[_t].width=width-temp;
-                        obj2[_t].left=temp1;
-                    }
-                }
+                 }
                 if(!_.isNull(height)){
                     _.each(obj,function(o,id){
-                        o.height=height;
-                        obj2[id].height=height;
+                        obj2[id].height=o.height=height;
                     });
                 }
             }else{
                 if(!_.isNull(height)){
-                    //get top
-                    temp=temp1=temp2=0;
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId=profile.getSubIdByItemId(o.id);
-                        if(o.pos=='before'){
-                            n=profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].height=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].height=_handlerSize;
-                            }else
-                                m= n.height();
-                            obj2[itemId].top=temp1;
-                            temp1 += m;
-                            obj2[itemId].bottom='auto';
-                            obj[itemId].top=0;
-                            obj[itemId].bottom='auto';
-                            obj[itemId].height=m-(o.locked?0:_handlerSize);
-                        }
+                    //get left
+                    fun(t,height,'height','top','bottom',0,0);
+                    _.each(obj2,function(o,i){
+                        if(o.height)obj3[i].size=o.height;
                     });
-                    _.arr.each(t.items,function(o){
-                        if(o.id=='main')return;
-                        itemId=profile.getSubIdByItemId(o.id);
-                        if(o.pos=='after'){
-                            n=profile.getSubNode('ITEM', itemId);
-
-                            if(o.hidden){
-                                m=0;
-                                obj2[itemId].height=o.size;
-                            }else if(o.folded){
-                                m=obj2[itemId].height=_handlerSize;
-                            }else
-                                m= n.height();
-
-                            obj2[itemId].bottom=temp2;
-                            temp2 += m;
-                            obj2[itemId].top='auto';
-                            obj[itemId].bottom=0;
-                            obj[itemId].top='auto';
-                            obj[itemId].height=m-(o.locked?0:_handlerSize);
-                        }
-                    },null,true);
-
-                    temp =temp1+temp2;
-                    //set main
-                    if(height-temp>=0){
-                        _t=profile.getSubIdByItemId('main');
-                        obj[_t].height=height-temp;
-                        obj2[_t].height=height-temp;
-                        obj2[_t].top=temp1;
-                    }
                 }
                 if(!_.isNull(width)){
-                    _.each(obj,function(o, id){
-                        o.width=width;
-                        obj2[id].width=width;
+                    _.each(obj,function(o,id){
+                        obj2[id].width=o.width=width;
                     });
                 }
             }
@@ -41607,6 +41709,9 @@ if(xui.browser.ie){
             PIN:{
                 onClick:function(profile, e, src){
                     var key=profile.keys.PIN, t=profile.properties;
+                    if( profile.beforePin && false === profile.boxing().beforePin(profile, t.pinned))
+                        return;
+
                     //set pinned status
                     t.pinned = !t.pinned;
                     //set appea
@@ -41848,7 +41953,8 @@ if(xui.browser.ie){
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
             onLand:function(profile, e, src){},
-            onActivated:function(profile){}
+            onActivated:function(profile){},
+            beforePin:function(profile, value){}
         },
         RenderTrigger:function(){
             var ns=this;
@@ -42044,7 +42150,7 @@ if(xui.browser.ie){
                 var o=xui(profile.domId),
                     //in ie, .children can't get the same thread added node(modal div,  here)
                     t1=o.topZindex(),
-                    t2=o.css('zIndex');
+                    t2=parseInt(o.css('zIndex'),0);
                 o.css('zIndex',t1>t2?t1:t2);
 
                 profile.getSubNode('TBAR').tagClass('-focus');
