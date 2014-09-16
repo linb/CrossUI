@@ -930,7 +930,7 @@ _.merge(xui,{
             (function(){
                 j=a.splice(0,100);
                 for(i=0;t=j[i];i++)
-                    if(typeof(v=g(t.className))=='string')
+                    if(t.className && typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
                     _.setTimeout(arguments.callee,0);
@@ -1038,6 +1038,7 @@ _.merge(xui,{
     //test1: xui.getRes("start.a.b.c $0 $1 ($- $. $$) end-1-2")  => "c 1 2 (- . $) end"
     //tset2: xui.getRes( ["a","b","c $0 $1 ($- $. $$) end"],1,2) => "c 1 2 (- . $) end"
     getRes:function(path){
+        if(!_.isStr(path))return path;
         var arr,conf,tmp,params=arguments,rtn;
         if(typeof path=='string'){
             path=path.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;});
@@ -1048,7 +1049,7 @@ _.merge(xui,{
                 params=tmp;
             }
             arr=path.split(".");
-            arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03])/g,function(a){return xui._unescapeMap[a];});
+            arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
         }else{
             arr=path;
         }
@@ -1064,15 +1065,17 @@ _.merge(xui,{
         }
     },
     wrapRes:function(id){
+        if(!_.isStr(id))return id;
         var i=id, s,r;
         if(i.charAt(0)=='$')arguments[0]=i.substr(1,i.length-1);
         s=id;
         r= xui.getRes.apply(null,arguments);
         if(s==r)r=i;
-        return '<span id="'+xui.$localeDomId+'" class="'+s+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
+        return '<span id="'+xui.$localeDomId+'" class="'+s.replace(/([\x01\x02\x03\x04])/g,function(a){return '$'+xui._unescapeMap[a];})+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
     adjustRes:function(str, wrap, onlyBraces){
+        if(!_.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
         str=xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
@@ -3225,6 +3228,12 @@ Class('xui.absObj',"xui.absBox",{
     Static:{
         $abstract:true,
         $specialChars:{_:1,$:1},
+        DataModel:{
+            tag:'',
+            tagVar:{
+                ini:{}
+            }
+        },
         getAll:function(){
           return this.pack(this._cache);
         },

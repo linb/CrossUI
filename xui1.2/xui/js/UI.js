@@ -1296,7 +1296,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(!tnodes.isEmpty()){
                         if(_.isHash(CAObj[key])){
                             _.each(CAObj[key],function(o,i){
-                                tnodes.attr(i, clear?'':xui.adjustRes(o,0,1));
+                                tnodes.attr(i, clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o);
                             });
                         }          
                     }
@@ -1346,13 +1346,13 @@ Class("xui.UI",  "xui.absObj", {
                                 if((b=o.split(':')).length>=2){
                                     i=b.shift();o=b.join(':');
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                    tnodes.css(i, clear?'':xui.adjustRes(o,0,1));
+                                    tnodes.css(i, (clear?'':xui.adjustRes(o,0,1))||"");
                                 }
                             });
                          else if(_.isHash(CSObj[key]))
                             _.each(CSObj[key],function(o,i){
                                 i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                tnodes.css(i, clear?'':xui.adjustRes(o,0,1));
+                                tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
                             });                            
                     }
                 }));
@@ -4107,7 +4107,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             if(prop.position)a[a.length] = 'position:'+prop.position;
             if(prop.visibility)a[a.length]= 'visibility:'+prop.visibility;
-            if(prop.zIndex)a[a.length]= 'z-index:'+prop.zIndex;
+            if('zIndex' in prop)a[a.length]= 'z-index:'+prop.zIndex;
             if(prop.display)a[a.length]= 'display:'+ (prop.display=='inline-block'? xui.browser.gek?'-moz-inline-block;display:-moz-inline-box;display:inline-block;':'inline-block' :prop.display)
 
             data._style = a.join(';');

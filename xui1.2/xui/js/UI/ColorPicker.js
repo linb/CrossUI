@@ -153,7 +153,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                                 className:'xui-ui-btnc',
                                                 TRANSA:{
                                                     tabindex: '{tabindex}',
-                                                    text:xui.wrapRes('inline.transparent')
+                                                    text:"{_transparent}"
                                                 }
                                             }
                                         }
@@ -214,7 +214,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                     className:'xui-ui-btnc',
                                     SETA:{
                                         tabindex: '{tabindex}',
-                                        text:xui.wrapRes('inline.set')
+                                        text:"{_set}"
                                     }
                                 }
                             }
@@ -443,7 +443,8 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 right:'0'
             },
             TRANSA:{
-                width:'72px'
+                width:'72px',
+                'text-align':'center'
             },
             SET:{
                 position:'absolute',
@@ -722,6 +723,9 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             data.closeDisplay = data.closeBtn?'':nodisplay;
             data._width = data.advance?'410':'210';
             data.advDispay = data.advance?'':'display:none;';
+            
+            data._transparent = xui.wrapRes('inline.transparent');
+            data._set = xui.wrapRes('inline.set');
             return data;
         },
         EventHandlers:{

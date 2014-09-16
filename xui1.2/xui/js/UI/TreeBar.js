@@ -258,6 +258,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             EXTRA:{
                                 text : '{ext}',
                                 $order:5
+                            },
+                            OPT:{
+                                $order:6
                             }
                         },
                         SUB:{
@@ -361,11 +364,33 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 padding:'2px'
+            },
+            OPT:{
+                $order:1,
+                position:'absolute',
+                left:'auto',
+                top:'auto',
+                right:'2px',
+                top:'2px',
+                width:'16px',
+                height:'16px',
+                display:'none',
+                'background-image': xui.UI.$bg('icons.gif','', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-130px -224px'
+            },
+            'OPT-mouseover':{
+                $order:2,
+                'background-position':'-130px -244px'
+            },
+            'OPT-mousedown':{
+                $order:3,
+                'background-position':'-130px -264px'
             }
         },
         Behaviors:{
-            HoverEffected:{TOGGLE:'TOGGLE', BAR:'BAR'},
-            ClickEffected:{TOGGLE:'TOGGLE', BAR:'BAR'},
+            HoverEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT'},
+            ClickEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT'},
             DraggableKeys:["BAR"],
             NoDraggableKeys:['TOGGLE'],
             DroppableKeys:["BAR","TOGGLE","BOX"],
@@ -402,6 +427,27 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu)
                         return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
+                },
+                onMouseover:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+                },
+                onMouseout:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+                }
+            },
+            OPT:{
+                onClick:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    if(profile.onShowOptions){
+                        var item = profile.getItemByDom(src);
+                        profile.boxing().onShowOptions(profile, item, e, src);
+                    }
+                    return false;
+                },
+                onDblclick:function(profile, e, src){
+                    return false;
                 }
             },
             BOX:{
@@ -416,6 +462,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onDblclick:function(profile, item, e, src){},
             onGetContent:function(profile, item, callback){},
 
+            onShowOptions:function(profile, item, e, src){},
             onClick:function(profile, item, e, src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
@@ -465,7 +512,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             noCtrlKey:true,
             singleOpen:false,
             dynDestory:false,
-            position:'absolute'
+            position:'absolute',
+            optBtn:false
         },
         RenderTrigger:function(){
             this.boxing()._toggleNodes(this.properties.items, true, true, true);

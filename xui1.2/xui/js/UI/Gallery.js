@@ -15,7 +15,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     className:'{itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
                     ITEMFRAME:{
-                        style:'width:{itemWidth}px;height:{itemHeight}px;',
+                        style:'{_itemSize};',
                         CAPTION:{
                             tagName : 'div',
                             style:'{capDisplay}',
@@ -127,16 +127,35 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         Behaviors:{
             IMAGE:{
                 onLoad:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='loaded';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else{
+                        item._status='loaded';
+                    }
                 },
                 onError:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    item._status='error';
+                    var p=profile.properties,
+                          node=xui.use(src).get(0),
+                          item=profile.getItemByDom(src);
+                    if(node.src == p.loadingImg){
+                        node.src=item.image||xui.ini.img_bg;
+                    }else {
+                        item._status='error';
+                    }
                 }
             }
         },
         DataModel:({
+            autoItemSize:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            loadingImg:xui.ini.img_busy,
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -192,8 +211,14 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(item.caption===null)capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
-            //Avoid Empty Image src
-            if(!item.image)item.image=xui.ini.img_bg;
+
+            if(p.autoItemSize){
+                item.imgHeight=item.imgWidth='';
+                item._itemSize='';
+            }else{
+                item._itemSize='width:'+item.itemWidth+'px;height:'+item.itemHeight+'px;';
+            }
+            item.image=p.loadingImg;
         }
     }
 });

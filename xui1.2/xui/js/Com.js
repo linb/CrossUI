@@ -46,6 +46,8 @@ Class('xui.Com',null,{
     Instance:{
         autoDestroy:true,
         dataBindLoadType:"sync", // "async", "none"
+        background:"",
+
         _toDomElems:function(){
             var ns=this;
             if(!ns.created)

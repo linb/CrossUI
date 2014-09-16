@@ -203,7 +203,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                                     className:'xui-ui-btnc',
                                     SETA:{
                                         tabindex: '{tabindex}',
-                                        text:xui.wrapRes('inline.set')
+                                        text:"{_set}"
                                     }
                                 }
                             }
@@ -690,6 +690,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 data._todaytitle=xui.getRes("inline.today");
                 data._timectrl=none;
             }
+            data._set = xui.wrapRes('inline.set');
 
             return data;
         },

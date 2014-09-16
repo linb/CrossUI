@@ -184,6 +184,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             onSize:xui.UI.$onSize
         },
         DataModel:{
+            tabindex:null,
             defaultFocus:null,
             disableClickEffect:null,
             disableHoverEffect:null,

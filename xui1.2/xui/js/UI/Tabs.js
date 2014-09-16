@@ -750,13 +750,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
                         item = profile.getItemByDom(src),
-                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null},
+                        options={parent:null,host:null,properties:null,events:null,CS:null,CC:null,CB:null,CF:null,init:null},
                         id=item.id;
-
                     if(properties.disabled || item.disabled)return false;
                     if(properties.readonly || item.readonly)return false;
 
-                    if(profile.beforePagePop && false==profile.boxing().beforePagePop(profile,item,options))
+                    if(profile.beforePagePop && false==profile.boxing().beforePagePop(profile,item,options,e,src))
                         return false;
 
                     var panel = profile.boxing().getPanel(id),
@@ -781,22 +780,23 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     
                     if(options.events)
                         _.merge(events, options.events, 'all');
-                    if(!events.onRender){
+
+                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
+
+                    if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
+                    }else{
+                        dialog.show(options.parent||xui('body'));    
                         var arr=[];
                         _.arr.each(profile.children,function(o){
                             if(o[1]==id){
                                 arr.push(o[0]);
                             }
                         });
-                        if(arr.length)
-                            events.onRender=function(){
-                                dialog.append(xui.UI.pack(arr,false));
-                            };
+                        if(arr.length){
+                            dialog.append(xui.UI.pack(arr,false));
+                        }
+                        profile.boxing().removeChildren(id).removeItems(id);
                     }
-                    var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
-                    (options.parent||xui('body')).append(dialog);
-
-                    profile.boxing().removeChildren(id).removeItems(id);
                 }
             },
             ITEMS:{
@@ -1015,7 +1015,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         EventHandlers:{
             onIniPanelView:function(profile, item){},
-            beforePagePop:function(profile, item, options){},
+            beforePagePop:function(profile, item, options, e, src){},
             beforePageClose:function(profile, item, src){},
             afterPageClose:function(profile, item){},
             onShowOptions:function(profile,item,e,src){},

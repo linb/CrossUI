@@ -163,7 +163,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                                     className:'xui-ui-btnc',
                                     SETA:{
                                         tabindex: '{tabindex}',
-                                        text:xui.wrapRes('inline.set')
+                                        text:"{_set}"
                                     }
                                 }
                             }
@@ -571,6 +571,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             var data=arguments.callee.upper.call(this, profile);
             var nodisplay='display:none';
             data.closeDisplay = data.closeBtn?'':nodisplay;
+            data._set = xui.wrapRes('inline.set');
             return data;
         },
 //        RenderTrigger:function(){

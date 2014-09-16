@@ -652,7 +652,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             },
             maxlength:{
-            	ini:'',
+            	ini:-1,
             	action: function(value){
                   this.getSubNode('INPUT').attr('maxlength',value);
                 }
