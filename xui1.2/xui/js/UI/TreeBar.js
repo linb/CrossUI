@@ -109,10 +109,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
                 //3
                 if(profile.renderId){
-                    //open parent node
-                    if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
-                        if(!pid || profile.getItemByItemId(pid)._inited)
+                    // try to open root subs
+                    if(!pid){
                             profile.boxing()._toggleNodes(data, true, true, true);
+                    }
+                    // try to open parent node
+                    else if (profile.getItemByItemId(pid)._inited){
+                        if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
+                                profile.boxing()._toggleNodes(data, true, true, true);
+                    }
                 }
                 
                 if(b && profile.renderId)

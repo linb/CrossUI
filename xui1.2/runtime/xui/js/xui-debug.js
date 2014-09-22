@@ -2901,17 +2901,24 @@ Class('xui.absBox',null, {
         size:function(){
             return this._nodes.length;
         },
-        _each:function(fun){
-            var self=this,n;
-            for(var i=0,j=self._nodes,l=j.length;i<l;i++)
-                if(n=j[i])
-                    if(false===fun.call(self,n,i))
-                        break;
+        _each:function(fun,scope,desc){
+            var self=this,j=self._nodes,l=j.length,i,n;
+            if(desc){
+                for(i=l;i>=0;i--)
+                    if(n=j[i])
+                        if(false===fun.call(scope||self,n,i))
+                            break;
+            }else{
+                for(i=0;i<l;i++)
+                    if(n=j[i])
+                        if(false===fun.call(scope||self,n,i))
+                            break;
+            }
             n=null;
             return self;
         },
-        each:function(fun){
-            return this._each(fun);
+        each:function(fun,scope,desc){
+            return this._each(fun,scope,desc);
         },
         isEmpty:function(){
             return !this._nodes.length;
@@ -3191,9 +3198,6 @@ Class('xui.absObj',"xui.absBox",{
         self._namePool={};
         self._nameTag=self.$nameTag||('ctl_'+(t=self.KEY.split('.'))[t.length-1].toLowerCase());
         self._cache=[];
-
-        if(self===xui.absObj || self===xui.absObj)return;
-
         m=me.a1 || (me.a1=_.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){
             k={};
@@ -3228,8 +3232,10 @@ Class('xui.absObj',"xui.absBox",{
     Static:{
         $abstract:true,
         $specialChars:{_:1,$:1},
+        _objectProp:{tagVar:1},
         DataModel:{
             tag:'',
+            desc:'',
             tagVar:{
                 ini:{}
             }
@@ -7088,6 +7094,8 @@ Class('xui.Event',null,{
             
             // some cross browser css solution
             ".xui-nooutline:focus{outline:0;}"+
+            ".xui-busy{background-image:url(data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7);background-repeat:no-repeat;background-position:center center;}"+
+            ".xui-err{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC);background-repeat:no-repeat;background-position:center center;}"+
             ".xui-cls-wordwrap{"+
                 "white-space: pre-wrap;" + // css-3
                 (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999
@@ -8079,7 +8087,7 @@ Class('xui.Dom','xui.absBox',{
         */
         $removeEventHandler:function(name){
             var event=xui.Event,
-                handler=event.$eventhandler
+                handler=event.$eventhandler,
                 type;
             return this.each(function(o){
                 //remove from dom node
@@ -8577,6 +8585,37 @@ type:4
             //show
             target.cssPos(pos).css({visibility:'visible'});
 
+            return this;
+        },
+        setHoverPop : function(node, type, beforePop,beforeHide, parent){
+            var c=this.get(0),sor=xui(c);
+            if(node["xui.UI"]){
+                node=node.getRoot();
+            }else if(node['xui.UIProfile']||node['xui.Template']){
+               node=node.boxing(); 
+            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
+                node=xui(node);
+            }
+            var aysid=c.xid()+":"+node.xid();
+            sor.onMouseover(!type?null:function(prf, e, src){
+                 _.resetRun(aysid,null);
+                 if(!beforePop || false!==beforePop(prf, node, e, src))
+                    node.popToTop(src, type);
+            },aysid).onMouseout(!type?null:function(profile, e, src){
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host'))
+                            node.hide();
+                    });
+            },aysid);
+
+            node.onMouseover(!type?null:function(){
+                 _.resetRun(aysid,null);
+            },aysid).onMouseout(!type?null:function(){
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop'))
+                            node.hide();
+                    });
+            },aysid);
             return this;
         },
         //for remove obj when blur
@@ -10649,7 +10688,7 @@ Class('xui.Com',null,{
         };
     },
     After:function(){
-    	  this._pool={};
+          this._pool={};
     },
     Constructor:function(properties, events, host){
         var self=this;
@@ -10657,16 +10696,16 @@ Class('xui.Com',null,{
         self.host=host||self;
 
         self.$xid=self.constructor._ctrlId.next();
-        
+
         self.constructor._pool[self.$xid]=xui.Com._pool[self.$xid]=self;
-        
+
         self.properties = properties || (self.properties?_.clone(self.properties):{});
         //copy those from class setting
         self.events = _.copy(self.events) || {};
         if(events)
             _.merge(self.events, events, 'all');
         self._ctrlpool={};
-        
+
         self._innerCall('initialize');
     },
     Instance:{
@@ -10979,9 +11018,8 @@ Class('xui.Com',null,{
         isDestroyed:function(){
             return !!this.destroyed;
         },
-        destroy:function(threadid){
+        destroy:function(){
             var self=this,ns=self._nodes;
-            self.threadid=threadid;
             self._fireEvent('onDestroy');
             //set once
             self.destroyed=true;
@@ -11012,7 +11050,12 @@ Class('xui.Com',null,{
             }
         },
         getAllInstance:function(){
-        	return this._pool;
+            return this._pool;
+        },
+        destroyAll:function(){
+            _.each(this._pool,function(o){
+                if(!o.destroyed)o.destroy();
+            });
         },
         load:function(cls, onEnd, lang, theme, showUI){
             if(!cls){
@@ -11028,6 +11071,11 @@ Class('xui.Com',null,{
                 xui.SC(cls,function(path){
                     //if successes
                     if(path){
+                        try{
+                            _.each(this.viewStyles,function(v,k){
+                                xui('html').css(k, xui.adjustRes(v));
+                            });
+                        }catch(e){}
                         var a=this,f=function(){
                             if(!_.isFun(a))
                                 throw "'"+cls+"' is not a constructor";
@@ -11039,7 +11087,7 @@ Class('xui.Com',null,{
                             xui.setTheme(theme,true,function(){
                                 //get locale info
                                 if(lang) xui.setLang(lang, f);
-                                else f();                                
+                                else f();
                             });
                         }else{
                             //get locale info
@@ -14259,6 +14307,38 @@ Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
+        setHoverPop : function(node, type,beforePop, beforeHide,parent){
+            var c=this.get(0),sor=xui(c);
+            if(node["xui.UI"]){
+                node=node.getRoot();
+            }else if(node['xui.UIProfile']||node['xui.Template']){
+               node=node.boxing(); 
+            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
+                node=xui(node);
+            }
+            var aysid=c.getRoot().xid()+":"+node.xid();
+            c.$beforeHover=!type?null:function(profile, item, e, src, mtype){
+                if(mtype=='mouseover'){
+                    _.resetRun(aysid,null);
+                    if(!beforePop || false!==beforePop(profile, node, e, src, item))
+                        node.popToTop(src, type, parent);
+                }else{
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src,item,'host'))
+                            node.hide();
+                    });
+                }
+            };
+            node.onMouseover(!type?null:function(prf,e,src){
+                 _.resetRun(aysid,null);
+            },aysid).onMouseout(!type?null:function(prf,e,src){
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop'))
+                            node.hide();
+                    });
+            },aysid);
+            return this;
+        },
         setTheme:function(key){
             if(typeof key!="string" || !key)key=null;
             var k,arr=[];
@@ -15866,6 +15946,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         $evtsindesign:{
             "onload":1,
+            "onerror":1,
             "onunload":1,
             "onsize":1,
             "onmousedown":1,
@@ -16270,12 +16351,16 @@ Class("xui.UI",  "xui.absObj", {
                             box=profile.boxing();
                             if(mode==1){
                                 if(type=='mouseover'){
+                                    if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
+                                        return;
                                     if(prop.disableHoverEffect)
                                         return;
                                     if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))
                                         return;
                                 }
                                 if(type=='mousedown'){
+                                    if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mousedown'))
+                                        return;
                                     if(prop.disableClickEffect)
                                         return;
                                     if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mousedown'))
@@ -16286,12 +16371,16 @@ Class("xui.UI",  "xui.absObj", {
                                 nodes.tagClass('-'+type);
                             }else{
                                 if(type=='mouseup'){
+                                    if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
+                                        return;
                                     if(prop.disableClickEffect)
                                         return;
                                     if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mouseup'))
                                         return;
                                     nodes.tagClass('-mousedown', false);
                                 }else{
+                                    if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseout'))
+                                        return;
                                     if(prop.disableHoverEffect)
                                         return;
                                     if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))
@@ -16347,7 +16436,77 @@ Class("xui.UI",  "xui.absObj", {
                     Static:{
                         DataModel:{
                             dragKey:'',
-                            dropKeys:''
+                            dropKeys:'',
+                            overflow:{
+                                ini:xui.browser.isTouch?'auto':undefined,
+                                combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                                action:function(v){
+                                    var prf=this;
+                                    _.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
+                                        var node=prf.getSubNode(k,true);
+                                        if(v){
+                                            if(v.indexOf(':')!=-1){
+                                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                                    var a=s.split(/\s*:\s*/g);
+                                                    if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
+                                                });
+                                                return;
+                                            }
+                                        }
+                                        node.css('overflow',v||'');
+                                    });
+                                }
+                            },
+                            panelBgClr:{
+                                type:'color',
+                                ini:"",
+                                action:function(v){
+                                    var prf=this;
+                                    _.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
+                                        prf.getSubNode(k,true).css('background-color',v);
+                                    });
+                                }
+                            },
+                            panelBgImg:{
+                                format:'image',
+                                ini:"",
+                                action:function(v){
+                                    var prf=this;
+                                    _.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
+                                        prf.getSubNode(k,true).css('background-image',v?('url('+xui.adjustRes(v||'')+')'):'');
+                                    });
+                                }
+                            },
+                            panelBgImgPos:{
+                                ini:"",
+                                combobox:["","top left","top center","top right","center left","center center","center right","bottom left","bottom center","bottom right","0% 0%","-0px -0px"],
+                                action:function(v){
+                                    var prf=this;
+                                    _.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
+                                        prf.getSubNode(k,true).css('background-position',v);
+                                    });
+                                }
+                            },
+                            panelBgImgRepeat:{
+                                ini:"",
+                                combobox:["","repeat","repeat-x","repeat-y","no-repeat"],
+                                action:function(v){
+                                    var prf=this;
+                                    _.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
+                                        prf.getSubNode(k,true).css('background-repeat',v);
+                                    });
+                                }
+                            },
+                            panelBgImgAttachment:{
+                                ini:"",
+                                combobox:["","scroll","fixed"],
+                                action:function(v){
+                                    var prf=this;
+                                    _.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
+                                        prf.getSubNode(k,true).css('background-attachment',v);
+                                    });
+                                }
+                            }
                         },
                         $abstract:true
                     }
@@ -16498,7 +16657,17 @@ Class("xui.UI",  "xui.absObj", {
             if((t=hash.NoDroppableKeys) && t.length){
                 self.NoDroppableKeys=t;
             }
-
+            if((t=hash.PanelKeys) && t.length){
+                t=self.prototype;
+                _.arr.each(["overflow","panelBgClr","panelBgImg","panelBgImgPos","panelBgImgRepeat","panelBgImgAttachment"],function(o){
+                    var f='get'+_.str.initial(o);
+                    if(!t[f])t[f]=src[f];
+                    f='set'+_.str.initial(o);
+                    if(!t[f])t[f]=src[f];
+                    self.$DataStruct[o]="";
+                    self.$DataModel[o]=_.copy(xui.absComposed.$DataModel[o]);
+                });
+            }
             self.setEventHandlers(hls);
         },
 
@@ -16967,10 +17136,6 @@ Class("xui.UI",  "xui.absObj", {
         },
         DataModel:{
             autoTips:true,
-            tag:'',
-            tagVar:{
-                ini:{}
-            },
             "className":{
                 ini:"",
                 action:function(v,ov){
@@ -17675,9 +17840,9 @@ Class("xui.UI",  "xui.absObj", {
                 me = arguments.callee,
                 map = me.map || (me.map=_.toArr('left,top,bottom,right,width,height')),
                 a=[],
+                box=profile.box,
                 ajd=profile.box.adjustData,
-                t
-                ;
+                t;
             data = data||{};
             //can't input id in properties
             if(prop.id)delete prop.id;
@@ -17711,7 +17876,16 @@ Class("xui.UI",  "xui.absObj", {
             if('zIndex' in prop)a[a.length]= 'z-index:'+prop.zIndex;
             if(prop.display)a[a.length]= 'display:'+ (prop.display=='inline-block'? xui.browser.gek?'-moz-inline-block;display:-moz-inline-box;display:inline-block;':'inline-block' :prop.display)
 
-            data._style = a.join(';');
+           data._style = a.join(';');
+           if(box.$Behaviors.PanelKeys && !box["xui.absList"]){
+                a=[];
+                if(prop.panelBgClr)a[a.length] = 'background-color:'+prop.panelBgClr;
+                if(prop.panelBgImg)a[a.length] = 'background-image:url('+xui.adjustRes(prop.panelBgImg)+')';
+                if(prop.panelBgImgPos)a[a.length] = 'background-position:'+prop.panelBgImgPos;
+                if(prop.panelBgImgRepeat)a[a.length] = 'background-repeat:'+prop.panelBgImgRepeat;
+                if(prop.panelBgImgAttachment)a[a.length] = 'background-attachment:'+prop.panelBgImgAttachment;
+                data._panelstyle=a.join(';');
+            }
 
             if('className' in dm)
             	data._className=prop.className||"";
@@ -18016,6 +18190,36 @@ Class("xui.absList", "xui.absObj",{
                             arr.push(item.id);
                             self.setUIValue(arr.join(profile.properties.valueSeparator), true);
                         }
+                    }
+                }
+                
+                if(box.$Behaviors.PanelKeys){
+                    var hash={};
+                    if(options.hasOwnProperty('panelBgClr'))hash["background-color"]=options.panelBgClr;
+                    if(options.hasOwnProperty('panelBgImg')){
+                        hash["background-image"]=options.panelBgImg?("url("+xui.adjustRes(options.panelBgImg)+")"):"";
+                    }
+                    if(options.hasOwnProperty('panelBgImgPos'))hash["position-color"]=options.panelBgImgPos;
+                    if(options.hasOwnProperty('panelBgImgRepeat'))hash["background-repeat"]=options.panelBgImgRepeat;
+                    if(options.hasOwnProperty('panelBgImgAttachment'))hash["background-attachment"]=options.panelBgImgAttachment;
+                    if(options.hasOwnProperty('overflow')){
+                        var v=options.overflow;
+                        if(v){
+                            if(v.indexOf(':')!=-1){
+                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                    var a=s.split(/\s*:\s*/g);
+                                    if(a.length>1){
+                                        hash[_.str.trim(a[0])]=_.str.trim(a[1]||'');
+                                    }
+                                });
+                            }
+                        }
+                        hash.overflow=v||"";
+                    }
+                    if(!_.isEmpty(hash)){
+                        _.arr.each(box.$Behaviors.PanelKeys,function(k){
+                            panel=profile.getSubNode(k,nid || subId).css(hash);
+                        });
                     }
                 }
             }
@@ -18784,11 +18988,11 @@ new function(){
                 },
 */
                 image:{
-                    format:'image',
+                   format:'image',
                     action: function(value){
                         this.getSubNode('ICON')
                             .css('display',value?'':'none')
-                            .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                            .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
                     }
                 },
                 imagePos:{
@@ -18916,7 +19120,7 @@ new function(){
                     action: function(value){
                         this.getSubNode('ICON')
                             .css('display',value?'':'none')
-                            .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                            .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
                     }
                 },
                 imagePos:{
@@ -19024,7 +19228,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.isTouch?'auto':undefined,
-                    listbox:['','visible','hidden','scroll','auto'],
+                    combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
@@ -19099,7 +19303,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.isTouch?'auto':undefined,
-                    listbox:['','visible','hidden','scroll','auto','inherit'],
+                    combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
@@ -19179,7 +19383,7 @@ new function(){
             Templates:{
                 tagName:'div',
                 className:'{_className}',
-                style:'overflow:auto;border:dashed blue 1px;text-align:center;background-color:#EBEADB;{_style}',
+                style:'overflow:auto;border:dashed blue 1px;text-align:center;background-color:#EBEADB;{_style};{_panelstyle};{_overflow};',
                 text:'{tagKey}'+xui.UI.$childTag
             },
             DataModel:{
@@ -19382,6 +19586,7 @@ new function(){
             },
             cursor:{
                 ini:"auto",
+                combobox:["","default","text","pointer","move","crosshair","wait","help","e-resize","ne-resize","nw-resize","n-resize","se-resize","sw-resize","s-resize","w-resize"],
                 action:function(v){
                     this.getRoot().css('cursor',v);
                 }
@@ -20049,7 +20254,7 @@ Class("xui.UI.Resizer","xui.UI",{
         }
     },
     Initialize:function(){
-        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF','L','R','T','B','LT','RT','LB','RB']);
+        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB']);
         _.each({
             // add resizer to xui.Dom plugin
             addResizer:function(properties, onUpdate, onChange){
@@ -20212,19 +20417,26 @@ Class("xui.UI.Resizer","xui.UI",{
                 'font-size':0,
                 'line-height':0
             },
-            CONF:{
+            'CONF1, CONF2':{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
                 'background-image':xui.UI.$bg('icons.gif', '', true),
                 'background-repeat':'no-repeat',
-                'background-position':'-90px -272px',
                 'font-size':0,
                 'line-height':0,
                 cursor:'pointer'
             },
-            HANDLER:{
+            CONF2:{
+                $order:2,
+                'background-position':'-90px -272px'
+             },    
+            CONF1:{
+                $order:3,
+                'background-position':'-112px -284px'
+             },
+             HANDLER:{
                 $order:0,
                 position:'absolute',
                 display:'block',
@@ -20298,13 +20510,37 @@ Class("xui.UI.Resizer","xui.UI",{
             onDblclick:function(profile, e, src){
                 if(profile.onDblclick)profile.boxing().onDblclick(profile, e, src);
             },
-            CONF:{
+            CONF1:{
+                onMouseover:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src, 'left','mouseover');
+                    return false;
+                },
                 onMousedown:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'left','mousedown');
                     return false;
                 },
                 onClick:function(profile,e,src){
                     if(profile.onConfig)
-                        profile.boxing().onConfig(profile,e,src);
+                        return profile.boxing().onConfig(profile,e,src,'left','click');
+                    return false;
+                }
+            },
+            CONF2:{
+                onMouseover:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'right','mouseover');
+                    return false;
+                },
+                onMousedown:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'right','mousedown');
+                    return false;
+                },
+                onClick:function(profile,e,src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'right','click');
                     return false;
                 }
             },
@@ -20453,10 +20689,16 @@ Class("xui.UI.Resizer","xui.UI",{
 
             handlerSize:4,
             handlerOffset:0,
-            configBtn:{
+            leftConfigBtn:{
                 ini:false,
                 action:function(v){
-                    this.getSubNode('CONF').css('display',v?'':'none');
+                    this.getSubNode('CONF1').css('display',v?'':'none');
+                }
+            },
+            rightConfigBtn:{
+                ini:false,
+                action:function(v){
+                    this.getSubNode('CONF2').css('display',v?'':'none');
                 }
             },
 //>>
@@ -20472,7 +20714,7 @@ Class("xui.UI.Resizer","xui.UI",{
             onDblclick:function(profile, e, src){},
             onUpdate:function(profile, target, size, cssPos){},
             onChange:function(profile, proxy){},
-            onConfig:function(profile, e, src){}
+            onConfig:function(profile, e, src,pos,type){}
         },
         _dynamicTemplate:function(profile){
             var pro = profile.properties,size,pos,temp,
@@ -20488,8 +20730,9 @@ Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE:{tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
-                CONF:{tagName:'div', style:'top:2px;left:2px;width:12px;height:12px;{_showCofigBtn};'},
+                MOVE: {tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
+                CONF1:{tagName:'div', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
@@ -20525,7 +20768,8 @@ Class("xui.UI.Resizer","xui.UI",{
                 // can move?
                 if(pro._move)template.MOVE = map.MOVE;
 
-                template.CONF = map.CONF;
+                template.CONF1 = map.CONF1;
+                template.CONF2 = map.CONF2;
 
                 // change height only
                 if(pro.vertical){
@@ -20602,7 +20846,8 @@ Class("xui.UI.Resizer","xui.UI",{
 
             t.extend =  (parseInt(t.handlerSize,10)||0)/2 + (parseInt(t.handlerOffset,10)||0);
 
-            t._showCofigBtn=t.configBtn?'':'display:none';
+            t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
+            t._rightCofigBtn = t.rightConfigBtn?'':'display:none';
             return arguments.callee.upper.call(this, profile);
         },
         RenderTrigger:function(){
@@ -20776,7 +21021,7 @@ Class("xui.UI.Resizer","xui.UI",{
             PANEL:{
                 tagName:'div',
                 className:'{clsBorderType2} xui-uibg-bar',
-                style:'{background};{_overflow};',
+                style:'{_panelstyle};{background};{_overflow};',
                 text:'{html}'+xui.UI.$childTag
             }
         },'all');
@@ -20823,23 +21068,6 @@ Class("xui.UI.Resizer","xui.UI",{
                 html:1,
                 action:function(v){
                     this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
-                }
-            },
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                combobox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                    var node=this.getSubNode('PANEL');
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
                 }
             },
             borderType:{
@@ -21012,7 +21240,7 @@ Class("xui.UI.Label", "xui.UI.Widget",{
                     var self=this,k=self.keys;
                     self.getSubNodes(['ICON','SICON'])
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
                 }
             },
             imagePos:{
@@ -21566,11 +21794,11 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 }
             },
             image:{
-                format:'image',
+               format:'image',
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
                 }
             },
             imagePos:{
@@ -25181,6 +25409,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             return false;
                         }
                     }
+                },
+                onDblclick:function(profile, e, src){
+                    profile.getSubNode('BTN').onClick(true);
                 }
             },
             R1:{
@@ -25302,7 +25533,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             btnImage:{
                 action: function(value){
                     this.getSubNode('MID')
-                        .css('backgroundImage','url('+(value||'')+')');
+                        .css('backgroundImage',value?('url('+value+')'):'');
                 }
             },
             btnImagePos:{
@@ -25672,8 +25903,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
         }
     }
-});
-Class("xui.UI.Group", "xui.UI.Div",{
+});Class("xui.UI.Group", "xui.UI.Div",{
     Instance:{
         activate:function(){
             var profile = this.get(0);
@@ -25756,7 +25986,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 PANEL:{
                     $order:1,
                     tagName:'div',
-                    style:'{panelDisplay};{_overflow};',
+                    style:'{panelDisplay};{_panelstyle};{_overflow};',
                     text:'{html}'+xui.UI.$childTag
                 }
             }
@@ -25836,7 +26066,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):"");
                 }
             },
             imagePos:{
@@ -28944,6 +29174,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                         CONTENT:{
                                 tagName : 'div',
                                 $order:1,
+                                className:'xui-busy',
+                                style:'{_loadbg}',
                                 //for firefox2 image in -moz-inline-box cant change height bug
                                 IBWRAP:{
                                     tagName : 'div',
@@ -28961,6 +29193,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                             text: '{comment}',
                             $order:2
                         }
+                    },
+                    FLAG:{
+                        $order:20,
+                        className:'{flagClass}',
+                        style:'{flagStyle}'
+                    },
+                    EXTRA:{
+                        text : '{ext}',
+                        $order:30
                     }
                 }
             }
@@ -28969,6 +29210,18 @@ Class("xui.UI.Gallery", "xui.UI.List",{
     },
     Static:{
         Appearances:{
+            FLAG:{
+                position:'absolute',
+                left:'auto',
+                top:0,
+                right:0,
+                width:'32px',
+                height:'32px',
+                display:'none'
+            },
+            EXTRA:{
+                display:'none'
+            },
             KEY:{
                 overflow:'visible'
             },
@@ -29028,13 +29281,18 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null,
             	'vertical-align': 'middle'
             },
-            'CONTENT, CAPTION':{
+            CAPTION:{
             	'text-align': 'center',
                 overflow:'hidden',
-                'white-space':'nowrap'
-            },
-            CAPTION:{
+                'white-space':'nowrap',
                 'font-weight':'bold'
+            },
+            CONTENT:{
+            	'text-align': 'center',
+                overflow:'hidden',
+                'white-space':'nowrap',
+                'background-repeat':'no-repeat',
+                'background-position':'center center'
             },
             COMMENT:{
                 display:'block',
@@ -29047,23 +29305,43 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             IMAGE:{
                 onLoad:function(profile,e,src){
                     var p=profile.properties,
-                          node=xui.use(src).get(0),
+                            nn=xui.use(src),
+                          node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == p.loadingImg){
-                        node.src=item.image||xui.ini.img_bg;
-                    }else{
-                        item._status='loaded';
+                     if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
+                        if(item.autoItemSize||p.autoItemSize){
+                            nn.attr('width','');nn.attr('height','');
+                        }
+                        if(item.image){
+                            node.src=xui.adjustRes(item.image);
+                            return;
+                        }
                     }
+                    xui(node).parent(2).removeClass('xui-busy'); 
+                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    item._status='loaded';
                 },
                 onError:function(profile,e,src){
                     var p=profile.properties,
-                          node=xui.use(src).get(0),
+                          nn=xui.use(src),
+                          node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == p.loadingImg){
-                        node.src=item.image||xui.ini.img_bg;
-                    }else {
-                        item._status='error';
+                    if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
+                        if(item.autoItemSize||p.autoItemSize){
+                            nn.attr('width','');nn.attr('height','');
+                        }
+                        if(item.image){
+                            node.src=xui.adjustRes(item.image);
+                            return;
+                        }
                     }
+                    xui(node).parent(2).removeClass('xui-busy').addClass('xui-err');
+                    if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
+                    node.width=item.imgWidth||p.imgWidth;
+                    node.height=item.imgHeight||p.imgHeight;
+                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    node.style.visibility="hidden";
+                    item._status='error';
                 }
             }
         },
@@ -29074,7 +29352,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
-            loadingImg:xui.ini.img_busy,
+            loadingImg:"",
+            errImg:"",
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -29123,21 +29402,21 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         _prepareItem:function(profile, item){
             var p = profile.properties;
 
-            _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin'),function(i){
-                item[i] = item[i] || p[i];
+            _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+                item[i] = _.isSet(item[i])?item[i]:p[i];
             });
             item.capition = item.capition || '';
             if(item.caption===null)capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
 
-            if(p.autoItemSize){
-                item.imgHeight=item.imgWidth='';
+            if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
                 item._itemSize='width:'+item.itemWidth+'px;height:'+item.itemHeight+'px;';
             }
-            item.image=p.loadingImg;
+            if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
+            item.image=xui.ini.img_bg;
         }
     }
 });
@@ -29155,8 +29434,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'{itemClass} {disabled}  {readonly}',
-                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{itemDisplay}',
+                    className:'xui-busy;{itemClass} {disabled}  {readonly}',
+                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
                         tagName:'div',
@@ -29192,7 +29471,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 position:'relative',
                 cursor:'pointer',
                 border:'solid 1px #C2E4FC',
-                'vertical-align':'top'
+                'vertical-align':'top',
+                'background-repeat':'no-repeat',
+                'background-position':'center center'
             },
             IBWRAP:{
                 'font-size':0,
@@ -29223,23 +29504,44 @@ Class("xui.UI.IconList", "xui.UI.List",{
             IMAGE:{
                 onLoad:function(profile,e,src){
                     var p=profile.properties,
-                          node=xui.use(src).get(0),
+                         nn=xui.use(src),
+                          node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == p.loadingImg){
-                        node.src=item.image||xui.ini.img_bg;
-                    }else{
-                        item._status='loaded';
+                     if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
+                        if(item.autoItemSize||p.autoItemSize){
+                            nn.attr('width','');nn.attr('height','');
+                        }
+                        if(item.image){
+                            node.src=xui.adjustRes(item.image);
+                            return;
+                        }
                     }
+                    
+                    xui(node).parent(2).removeClass('xui-busy'); 
+                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    item._status='loaded';
                 },
                 onError:function(profile,e,src){
                     var p=profile.properties,
-                          node=xui.use(src).get(0),
+                          nn=xui.use(src),
+                          node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == p.loadingImg){
-                        node.src=item.image||xui.ini.img_bg;
-                    }else {
-                        item._status='error';
+                    if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
+                        if(item.autoItemSize||p.autoItemSize){
+                            nn.attr('width','');nn.attr('height','');
+                        }
+                        if(item.image){
+                            node.src=xui.adjustRes(item.image);
+                            return;
+                        }
                     }
+                    xui(node).parent(2).removeClass('xui-busy').addClass('xui-err');
+                    if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
+                    node.width=item.itemWidth||p.itemWidth;
+                    node.height=item.itemHeight||p.itemHeight;
+                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    node.style.visibility="hidden";
+                    item._status='error';
                 }
             }
         },
@@ -29250,7 +29552,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
-            loadingImg:xui.ini.img_busy,
+            loadingImg:"",
+            errImg:"",
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -29286,16 +29589,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
         }),
         _prepareItem:function(profile, item){
             var p = profile.properties;
-            _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin'),function(i){
-                item[i] = item[i] || p[i];
+            _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+                item[i] = _.isSet(item[i])?item[i]:p[i];
             });
             item._tabindex = p.tabindex;
-
-            if(p.autoItemSize){
-                item.itemWidth=item.itemHeight='';
-            }
-
-            item.image=p.loadingImg;
+            if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
+            item.image=xui.ini.img_bg;
         }
     }
 });
@@ -29436,7 +29735,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         PANEL:{
                             tagName:'div',
                             className:'{_bordertype}',
-                            style:'{panelDisplay};{_overflow};',
+                            style:'{panelDisplay};{_panelstyle};{_overflow};',
                             text:'{html}'+xui.UI.$childTag
                         }
                     }
@@ -29607,7 +29906,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
                 }
             },
             imagePos:{
@@ -30586,7 +30885,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     PANEL:{
                         tagName : 'div',
                         className:'xui-uibg-base',
-                        style:"{_overflow};",
+                        style:"{_overflow};{_bginfo}",
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -31148,24 +31447,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             width:200,
             height:200,
             position:'absolute',
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                listbox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                    var node=this.getSubNode('PANEL',true);
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-
-                }
-            },
             itemWidth:{
                 ini:0,
                 action:function(value){
@@ -31239,6 +31520,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item.itemWidth="width:"+item.itemWidth+(_.isFinite(item.itemWidth)?"px":"");
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
+
+            item._bginfo="";
+            if(t=item.panelBgClr||p.panelBgClr)
+                item._bginfo+="background-color:"+t+";";
+            if(t=item.panelBgImg||p.panelBgImg)
+                item._bginfo+="background-image:url("+xui.adjustRes(t)+");";
+            if(t=item.panelBgImgPos||p.panelBgImgPos)
+                item._bginfo+="background-position:"+t+";";
+            if(t=item.panelBgImgRepeat||p.panelBgImgRepeat)
+                item._bginfo+="background-repeat:"+t+";";
+            if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
+                item._bginfo+="background-attachment:"+t+";";
+                
             if(_.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
             else if(_.isStr(p.overflow))
@@ -32214,10 +32508,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
                 //3
                 if(profile.renderId){
-                    //open parent node
-                    if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
-                        if(!pid || profile.getItemByItemId(pid)._inited)
+                    // try to open root subs
+                    if(!pid){
                             profile.boxing()._toggleNodes(data, true, true, true);
+                    }
+                    // try to open parent node
+                    else if (profile.getItemByItemId(pid)._inited){
+                        if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
+                                profile.boxing()._toggleNodes(data, true, true, true);
+                    }
                 }
                 
                 if(b && profile.renderId)
@@ -35181,7 +35480,34 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         if(options.cmd !== item.cmd)
                             profile.getSubNodeByItemId('CMD',subId).css('display',options.cmd?'':'none');
                     }
+
+                    var hash={};
+                    if(options.hasOwnProperty('panelBgClr'))hash["background-color"]=options.panelBgClr;
+                    if(options.hasOwnProperty('panelBgImg')){
+                        hash["background-image"]=options.panelBgImg?("url("+xui.adjustRes(options.panelBgImg)+")"):"";
+                    }
+                    if(options.hasOwnProperty('panelBgImgPos'))hash["position-color"]=options.panelBgImgPos;
+                    if(options.hasOwnProperty('panelBgImgRepeat'))hash["background-repeat"]=options.panelBgImgRepeat;
+                    if(options.hasOwnProperty('panelBgImgAttachment'))hash["background-attachment"]=options.panelBgImgAttachment;
+                    if(options.hasOwnProperty('overflow')){
+                        var v=options.overflow;
+                        if(v){
+                            if(v.indexOf(':')!=-1){
+                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                    var a=s.split(/\s*:\s*/g);
+                                    if(a.length>1){
+                                        hash[_.str.trim(a[0])]=_.str.trim(a[1]||'');
+                                    }
+                                });
+                            }
+                        }
+                        hash.overflow=v||"";
+                    }
+                    if(!_.isEmpty(hash)){
+                        profile.getSubNodeByItemId('PANEL',subId).css(hash);
+                    }
                 }
+
                 //merge options
                 _.merge(item, options, 'all');
 
@@ -35225,7 +35551,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         PANEL:{
                             tagName:'div',
                             className:'xui-uibg-base',
-                            style:'position:absolute;left:0;top:0;{_overflow};',
+                            style:'position:absolute;left:0;top:0;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
                     }
@@ -35628,23 +35954,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             listKey:null,
             width:200,
             height:200,
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                listbox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                    var node=this.getSubNode('PANEL',true);
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-                }
-            },
             items:{
                 ini:[],
                 set:function(value){
@@ -35762,43 +36071,52 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             return data;
         },
         _prepareItem:function(profile, data,item){
-            var prop=profile.properties;
+            var p=profile.properties,t;
             if(data.id=='main'){
                 data.cls1=profile.getClass('ITEM', '-main');
                 data.cls2  = profile.getClass('MOVE', '-main');
                 data.cls3  = profile.getClass('CMD', '-main' );
-                return;
-            }
-
-            if(prop.type=='vertical')
-                data.size = 'height:'+data.size+'px';
-            else
-                data.size = 'width:'+data.size+'px';
-
-            var pos;
-            if(prop.type=='vertical'){
-                if(data.pos=='before')
-                    pos='top';
-                else
-                    pos='bottom';
             }else{
-                if(data.pos=='before')
-                    pos='left';
+                if(p.type=='vertical')
+                    data.size = 'height:'+data.size+'px';
                 else
-                    pos='right';
+                    data.size = 'width:'+data.size+'px';
+    
+                var pos;
+                if(p.type=='vertical'){
+                    if(data.pos=='before')
+                        pos='top';
+                    else
+                        pos='bottom';
+                }else{
+                    if(data.pos=='before')
+                        pos='left';
+                    else
+                        pos='right';
+                }
+    
+                data.cls1  = profile.getClass('ITEM', '-' + pos );
+                data.cls2  = profile.getClass('MOVE', '-' + pos );
+                data.cls3  = profile.getClass('CMD', '-' + pos );
+                data.display = data.hidden?'display:none':'';
+                data.moveDisplay = data.locked?'display:none':'';
+                data.cmdDisplay = data.cmd?'':'display:none';
             }
-
-            data.cls1  = profile.getClass('ITEM', '-' + pos );
-            data.cls2  = profile.getClass('MOVE', '-' + pos );
-            data.cls3  = profile.getClass('CMD', '-' + pos );
-            data.display = data.hidden?'display:none':'';
-            data.moveDisplay = data.locked?'display:none':'';
-            data.cmdDisplay = data.cmd?'':'display:none';
-
+            data._bginfo="";
+            if(t=data.panelBgClr||p.panelBgClr)
+                data._bginfo+="background-color:"+t+";";
+            if(t=data.panelBgImg||p.panelBgImg)
+                data._bginfo+="background-image:url("+xui.adjustRes(t)+");";
+            if(t=data.panelBgImgPos||p.panelBgImgPos)
+                data._bginfo+="background-position:"+t+";";
+            if(t=data.panelBgImgRepeat||p.panelBgImgRepeat)
+                data._bginfo+="background-repeat:"+t+";";
+            if(t=data.panelBgImgAttachment||p.panelBgImgAttachment)
+                data._bginfo+="background-attachment:"+t+";";
             if(_.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
-            else if(_.isStr(prop.overflow))
-                data._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
+            else if(_.isStr(p.overflow))
+                data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):("overflow:"+p.overflow);
         },
         RenderTrigger:function(){
             var t, profile=this;
@@ -41258,10 +41576,10 @@ editorDropListHeight
 });
 Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
-        showModal:function(parent, left, top){
-            this.show(parent, true, left, top);
+        showModal:function(parent, left, top, callback){
+            this.show(parent, true, left, top, callback);
         },
-        show:function(parent, modal, left, top){
+        show:function(parent, modal, left, top, callback){
             parent = parent || xui('body');
 
             return this.each(function(profile){
@@ -41299,6 +41617,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             box._refreshRegion(profile);
 
                         delete profile.inShowing;
+                        _.tryF(callback);
                     };
 
                 // default to center dlg
@@ -41512,7 +41831,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     className:'xui-uicon-maini',
                     PANEL:{
                         tagName:'div',
-                        style:"{_overflow};",
+                        style:"{_panelstyle};{_overflow};",
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -41803,23 +42122,6 @@ if(xui.browser.ie){
                     this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
                 }
             },
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                listbox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                                        var node=this.getSubNode('PANEL');
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-                }
-            },
             // setCaption and getCaption
             caption:{
                 ini:undefined,
@@ -41834,7 +42136,7 @@ if(xui.browser.ie){
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
                 }
             },
             imagePos:{
@@ -41862,6 +42164,16 @@ if(xui.browser.ie){
                 ini:true,
                 action:function(v){
                     var o = this.getSubNode('MAX');
+                    if(v)
+                        o.setInlineBlock();
+                    else
+                        o.css('display','none');
+                }
+            },
+            restoreBtn:{
+                ini:true,
+                action:function(v){
+                    var o = this.getSubNode('RESTORE');
                     if(v)
                         o.setInlineBlock();
                     else
@@ -41954,7 +42266,9 @@ if(xui.browser.ie){
             onShowOptions:function(profile, e, src){},
             onLand:function(profile, e, src){},
             onActivated:function(profile){},
-            beforePin:function(profile, value){}
+            beforePin:function(profile, value){},
+            beforeStatusChanged:function(profile, oldStatus, newStatus){},
+            afterStatusChanged:function(profile, oldStatus, newStatus){}
         },
         RenderTrigger:function(){
             var ns=this;
@@ -42008,6 +42322,9 @@ if(xui.browser.ie){
                 p=o.parent(),
                 t=profile.properties;
             if(!status)status=t.status;
+            if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
+                return;
+
             // unMax
             if(status=='max')
                 box._unMax(profile);
@@ -42020,6 +42337,7 @@ if(xui.browser.ie){
 
             if(t.minBtn){
                 // show restore button
+                if(t.restoreBtn)
                 profile.getSubNode('RESTORE').setInlineBlock();
                 // hide min button
                 profile.getSubNode('MIN').css('display','none');
@@ -42041,6 +42359,7 @@ if(xui.browser.ie){
                 h=profile.getSubNode('TBAR').height();
             // resize
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
         },
         _max:function(profile,status){
             var o=profile.getRoot(),
@@ -42049,6 +42368,10 @@ if(xui.browser.ie){
                 p=o.parent(),
                 t=profile.properties;
             if(!status)status=t.status;
+            
+            if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
+                return;
+            
             // if from normal status
             if(status=='min')
                 //unset min
@@ -42063,6 +42386,7 @@ if(xui.browser.ie){
                 // hide max button
                 profile.getSubNode('MAX').css('display','none');
                 // show restore button
+                if(t.restoreBtn)
                 profile.getSubNode('RESTORE').setInlineBlock();
             }
 
@@ -42080,14 +42404,17 @@ if(xui.browser.ie){
             t.status='max';
 
             ins.setDock('cover',true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),
                 box=profile.box,
                 t=profile.properties;
             if(!status)status=t.status;
-
             t.status='normal';
+
+            if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'normal', status))
+                return;
 
             // if from max
             if(status=='max')box._unMax(profile);
@@ -42120,6 +42447,7 @@ if(xui.browser.ie){
 
             // resize
             xui.UI.$tryResize(profile, t.width, t.height,true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'normal', status);
         },
         _unMin:function(profile){
             var t=profile.properties,

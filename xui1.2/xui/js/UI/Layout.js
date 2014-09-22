@@ -140,7 +140,34 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         if(options.cmd !== item.cmd)
                             profile.getSubNodeByItemId('CMD',subId).css('display',options.cmd?'':'none');
                     }
+
+                    var hash={};
+                    if(options.hasOwnProperty('panelBgClr'))hash["background-color"]=options.panelBgClr;
+                    if(options.hasOwnProperty('panelBgImg')){
+                        hash["background-image"]=options.panelBgImg?("url("+xui.adjustRes(options.panelBgImg)+")"):"";
+                    }
+                    if(options.hasOwnProperty('panelBgImgPos'))hash["position-color"]=options.panelBgImgPos;
+                    if(options.hasOwnProperty('panelBgImgRepeat'))hash["background-repeat"]=options.panelBgImgRepeat;
+                    if(options.hasOwnProperty('panelBgImgAttachment'))hash["background-attachment"]=options.panelBgImgAttachment;
+                    if(options.hasOwnProperty('overflow')){
+                        var v=options.overflow;
+                        if(v){
+                            if(v.indexOf(':')!=-1){
+                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                    var a=s.split(/\s*:\s*/g);
+                                    if(a.length>1){
+                                        hash[_.str.trim(a[0])]=_.str.trim(a[1]||'');
+                                    }
+                                });
+                            }
+                        }
+                        hash.overflow=v||"";
+                    }
+                    if(!_.isEmpty(hash)){
+                        profile.getSubNodeByItemId('PANEL',subId).css(hash);
+                    }
                 }
+
                 //merge options
                 _.merge(item, options, 'all');
 
@@ -184,7 +211,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         PANEL:{
                             tagName:'div',
                             className:'xui-uibg-base',
-                            style:'position:absolute;left:0;top:0;{_overflow};',
+                            style:'position:absolute;left:0;top:0;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
                     }
@@ -587,23 +614,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             listKey:null,
             width:200,
             height:200,
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                listbox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                    var node=this.getSubNode('PANEL',true);
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-                }
-            },
             items:{
                 ini:[],
                 set:function(value){
@@ -721,43 +731,52 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             return data;
         },
         _prepareItem:function(profile, data,item){
-            var prop=profile.properties;
+            var p=profile.properties,t;
             if(data.id=='main'){
                 data.cls1=profile.getClass('ITEM', '-main');
                 data.cls2  = profile.getClass('MOVE', '-main');
                 data.cls3  = profile.getClass('CMD', '-main' );
-                return;
-            }
-
-            if(prop.type=='vertical')
-                data.size = 'height:'+data.size+'px';
-            else
-                data.size = 'width:'+data.size+'px';
-
-            var pos;
-            if(prop.type=='vertical'){
-                if(data.pos=='before')
-                    pos='top';
-                else
-                    pos='bottom';
             }else{
-                if(data.pos=='before')
-                    pos='left';
+                if(p.type=='vertical')
+                    data.size = 'height:'+data.size+'px';
                 else
-                    pos='right';
+                    data.size = 'width:'+data.size+'px';
+    
+                var pos;
+                if(p.type=='vertical'){
+                    if(data.pos=='before')
+                        pos='top';
+                    else
+                        pos='bottom';
+                }else{
+                    if(data.pos=='before')
+                        pos='left';
+                    else
+                        pos='right';
+                }
+    
+                data.cls1  = profile.getClass('ITEM', '-' + pos );
+                data.cls2  = profile.getClass('MOVE', '-' + pos );
+                data.cls3  = profile.getClass('CMD', '-' + pos );
+                data.display = data.hidden?'display:none':'';
+                data.moveDisplay = data.locked?'display:none':'';
+                data.cmdDisplay = data.cmd?'':'display:none';
             }
-
-            data.cls1  = profile.getClass('ITEM', '-' + pos );
-            data.cls2  = profile.getClass('MOVE', '-' + pos );
-            data.cls3  = profile.getClass('CMD', '-' + pos );
-            data.display = data.hidden?'display:none':'';
-            data.moveDisplay = data.locked?'display:none':'';
-            data.cmdDisplay = data.cmd?'':'display:none';
-
+            data._bginfo="";
+            if(t=data.panelBgClr||p.panelBgClr)
+                data._bginfo+="background-color:"+t+";";
+            if(t=data.panelBgImg||p.panelBgImg)
+                data._bginfo+="background-image:url("+xui.adjustRes(t)+");";
+            if(t=data.panelBgImgPos||p.panelBgImgPos)
+                data._bginfo+="background-position:"+t+";";
+            if(t=data.panelBgImgRepeat||p.panelBgImgRepeat)
+                data._bginfo+="background-repeat:"+t+";";
+            if(t=data.panelBgImgAttachment||p.panelBgImgAttachment)
+                data._bginfo+="background-attachment:"+t+";";
             if(_.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
-            else if(_.isStr(prop.overflow))
-                data._overflow = prop.overflow.indexOf(':')!=-1?(prop.overflow):("overflow:"+prop.overflow);
+            else if(_.isStr(p.overflow))
+                data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):("overflow:"+p.overflow);
         },
         RenderTrigger:function(){
             var t, profile=this;

@@ -23,7 +23,7 @@ Class('xui.Com',null,{
         };
     },
     After:function(){
-    	  this._pool={};
+          this._pool={};
     },
     Constructor:function(properties, events, host){
         var self=this;
@@ -31,16 +31,16 @@ Class('xui.Com',null,{
         self.host=host||self;
 
         self.$xid=self.constructor._ctrlId.next();
-        
+
         self.constructor._pool[self.$xid]=xui.Com._pool[self.$xid]=self;
-        
+
         self.properties = properties || (self.properties?_.clone(self.properties):{});
         //copy those from class setting
         self.events = _.copy(self.events) || {};
         if(events)
             _.merge(self.events, events, 'all');
         self._ctrlpool={};
-        
+
         self._innerCall('initialize');
     },
     Instance:{
@@ -353,9 +353,8 @@ Class('xui.Com',null,{
         isDestroyed:function(){
             return !!this.destroyed;
         },
-        destroy:function(threadid){
+        destroy:function(){
             var self=this,ns=self._nodes;
-            self.threadid=threadid;
             self._fireEvent('onDestroy');
             //set once
             self.destroyed=true;
@@ -386,7 +385,12 @@ Class('xui.Com',null,{
             }
         },
         getAllInstance:function(){
-        	return this._pool;
+            return this._pool;
+        },
+        destroyAll:function(){
+            _.each(this._pool,function(o){
+                if(!o.destroyed)o.destroy();
+            });
         },
         load:function(cls, onEnd, lang, theme, showUI){
             if(!cls){
@@ -402,6 +406,11 @@ Class('xui.Com',null,{
                 xui.SC(cls,function(path){
                     //if successes
                     if(path){
+                        try{
+                            _.each(this.viewStyles,function(v,k){
+                                xui('html').css(k, xui.adjustRes(v));
+                            });
+                        }catch(e){}
                         var a=this,f=function(){
                             if(!_.isFun(a))
                                 throw "'"+cls+"' is not a constructor";
@@ -413,7 +422,7 @@ Class('xui.Com',null,{
                             xui.setTheme(theme,true,function(){
                                 //get locale info
                                 if(lang) xui.setLang(lang, f);
-                                else f();                                
+                                else f();
                             });
                         }else{
                             //get locale info

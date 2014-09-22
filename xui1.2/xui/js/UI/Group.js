@@ -81,7 +81,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 PANEL:{
                     $order:1,
                     tagName:'div',
-                    style:'{panelDisplay};{_overflow};',
+                    style:'{panelDisplay};{_panelstyle};{_overflow};',
                     text:'{html}'+xui.UI.$childTag
                 }
             }
@@ -161,7 +161,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):"");
                 }
             },
             imagePos:{

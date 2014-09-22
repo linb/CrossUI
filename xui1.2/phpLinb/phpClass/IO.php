@@ -449,7 +449,7 @@ class IO{
 			RETURN TRUE;
 		} else {
 			if (!is_readable($src))  throw new LINB_E("$src is not readable");
-			if ($this->fileCompare($src,$dst)) return TRUE;
+			if ( file_exists($dst) && $this->fileCompare($src,$dst)) return TRUE;
 			if (!copy($src,$dst))  throw new LINB_E("copy error.");
 			if (!$this->fileCompare($src,$dst)) {
 				//fail, delete all

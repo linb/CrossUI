@@ -31,7 +31,7 @@ Class("xui.UI.Resizer","xui.UI",{
         }
     },
     Initialize:function(){
-        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF','L','R','T','B','LT','RT','LB','RB']);
+        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB']);
         _.each({
             // add resizer to xui.Dom plugin
             addResizer:function(properties, onUpdate, onChange){
@@ -194,19 +194,26 @@ Class("xui.UI.Resizer","xui.UI",{
                 'font-size':0,
                 'line-height':0
             },
-            CONF:{
+            'CONF1, CONF2':{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
                 'background-image':xui.UI.$bg('icons.gif', '', true),
                 'background-repeat':'no-repeat',
-                'background-position':'-90px -272px',
                 'font-size':0,
                 'line-height':0,
                 cursor:'pointer'
             },
-            HANDLER:{
+            CONF2:{
+                $order:2,
+                'background-position':'-90px -272px'
+             },    
+            CONF1:{
+                $order:3,
+                'background-position':'-112px -284px'
+             },
+             HANDLER:{
                 $order:0,
                 position:'absolute',
                 display:'block',
@@ -280,13 +287,37 @@ Class("xui.UI.Resizer","xui.UI",{
             onDblclick:function(profile, e, src){
                 if(profile.onDblclick)profile.boxing().onDblclick(profile, e, src);
             },
-            CONF:{
+            CONF1:{
+                onMouseover:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src, 'left','mouseover');
+                    return false;
+                },
                 onMousedown:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'left','mousedown');
                     return false;
                 },
                 onClick:function(profile,e,src){
                     if(profile.onConfig)
-                        profile.boxing().onConfig(profile,e,src);
+                        return profile.boxing().onConfig(profile,e,src,'left','click');
+                    return false;
+                }
+            },
+            CONF2:{
+                onMouseover:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'right','mouseover');
+                    return false;
+                },
+                onMousedown:function(profile, e, src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'right','mousedown');
+                    return false;
+                },
+                onClick:function(profile,e,src){
+                    if(profile.onConfig)
+                        return profile.boxing().onConfig(profile,e,src,'right','click');
                     return false;
                 }
             },
@@ -435,10 +466,16 @@ Class("xui.UI.Resizer","xui.UI",{
 
             handlerSize:4,
             handlerOffset:0,
-            configBtn:{
+            leftConfigBtn:{
                 ini:false,
                 action:function(v){
-                    this.getSubNode('CONF').css('display',v?'':'none');
+                    this.getSubNode('CONF1').css('display',v?'':'none');
+                }
+            },
+            rightConfigBtn:{
+                ini:false,
+                action:function(v){
+                    this.getSubNode('CONF2').css('display',v?'':'none');
                 }
             },
 //>>
@@ -454,7 +491,7 @@ Class("xui.UI.Resizer","xui.UI",{
             onDblclick:function(profile, e, src){},
             onUpdate:function(profile, target, size, cssPos){},
             onChange:function(profile, proxy){},
-            onConfig:function(profile, e, src){}
+            onConfig:function(profile, e, src,pos,type){}
         },
         _dynamicTemplate:function(profile){
             var pro = profile.properties,size,pos,temp,
@@ -470,8 +507,9 @@ Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE:{tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
-                CONF:{tagName:'div', style:'top:2px;left:2px;width:12px;height:12px;{_showCofigBtn};'},
+                MOVE: {tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
+                CONF1:{tagName:'div', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
@@ -507,7 +545,8 @@ Class("xui.UI.Resizer","xui.UI",{
                 // can move?
                 if(pro._move)template.MOVE = map.MOVE;
 
-                template.CONF = map.CONF;
+                template.CONF1 = map.CONF1;
+                template.CONF2 = map.CONF2;
 
                 // change height only
                 if(pro.vertical){
@@ -584,7 +623,8 @@ Class("xui.UI.Resizer","xui.UI",{
 
             t.extend =  (parseInt(t.handlerSize,10)||0)/2 + (parseInt(t.handlerOffset,10)||0);
 
-            t._showCofigBtn=t.configBtn?'':'display:none';
+            t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
+            t._rightCofigBtn = t.rightConfigBtn?'':'display:none';
             return arguments.callee.upper.call(this, profile);
         },
         RenderTrigger:function(){

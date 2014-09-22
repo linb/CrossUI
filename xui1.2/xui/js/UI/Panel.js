@@ -135,7 +135,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         PANEL:{
                             tagName:'div',
                             className:'{_bordertype}',
-                            style:'{panelDisplay};{_overflow};',
+                            style:'{panelDisplay};{_panelstyle};{_overflow};',
                             text:'{html}'+xui.UI.$childTag
                         }
                     }
@@ -306,7 +306,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
                 }
             },
             imagePos:{

@@ -25,6 +25,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                         CONTENT:{
                                 tagName : 'div',
                                 $order:1,
+                                className:'xui-busy',
+                                style:'{_loadbg}',
                                 //for firefox2 image in -moz-inline-box cant change height bug
                                 IBWRAP:{
                                     tagName : 'div',
@@ -42,6 +44,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                             text: '{comment}',
                             $order:2
                         }
+                    },
+                    FLAG:{
+                        $order:20,
+                        className:'{flagClass}',
+                        style:'{flagStyle}'
+                    },
+                    EXTRA:{
+                        text : '{ext}',
+                        $order:30
                     }
                 }
             }
@@ -50,6 +61,18 @@ Class("xui.UI.Gallery", "xui.UI.List",{
     },
     Static:{
         Appearances:{
+            FLAG:{
+                position:'absolute',
+                left:'auto',
+                top:0,
+                right:0,
+                width:'32px',
+                height:'32px',
+                display:'none'
+            },
+            EXTRA:{
+                display:'none'
+            },
             KEY:{
                 overflow:'visible'
             },
@@ -109,13 +132,18 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null,
             	'vertical-align': 'middle'
             },
-            'CONTENT, CAPTION':{
+            CAPTION:{
             	'text-align': 'center',
                 overflow:'hidden',
-                'white-space':'nowrap'
-            },
-            CAPTION:{
+                'white-space':'nowrap',
                 'font-weight':'bold'
+            },
+            CONTENT:{
+            	'text-align': 'center',
+                overflow:'hidden',
+                'white-space':'nowrap',
+                'background-repeat':'no-repeat',
+                'background-position':'center center'
             },
             COMMENT:{
                 display:'block',
@@ -128,23 +156,43 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             IMAGE:{
                 onLoad:function(profile,e,src){
                     var p=profile.properties,
-                          node=xui.use(src).get(0),
+                            nn=xui.use(src),
+                          node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == p.loadingImg){
-                        node.src=item.image||xui.ini.img_bg;
-                    }else{
-                        item._status='loaded';
+                     if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
+                        if(item.autoItemSize||p.autoItemSize){
+                            nn.attr('width','');nn.attr('height','');
+                        }
+                        if(item.image){
+                            node.src=xui.adjustRes(item.image);
+                            return;
+                        }
                     }
+                    xui(node).parent(2).removeClass('xui-busy'); 
+                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    item._status='loaded';
                 },
                 onError:function(profile,e,src){
                     var p=profile.properties,
-                          node=xui.use(src).get(0),
+                          nn=xui.use(src),
+                          node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == p.loadingImg){
-                        node.src=item.image||xui.ini.img_bg;
-                    }else {
-                        item._status='error';
+                    if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
+                        if(item.autoItemSize||p.autoItemSize){
+                            nn.attr('width','');nn.attr('height','');
+                        }
+                        if(item.image){
+                            node.src=xui.adjustRes(item.image);
+                            return;
+                        }
                     }
+                    xui(node).parent(2).removeClass('xui-busy').addClass('xui-err');
+                    if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
+                    node.width=item.imgWidth||p.imgWidth;
+                    node.height=item.imgHeight||p.imgHeight;
+                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    node.style.visibility="hidden";
+                    item._status='error';
                 }
             }
         },
@@ -155,7 +203,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
-            loadingImg:xui.ini.img_busy,
+            loadingImg:"",
+            errImg:"",
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -204,21 +253,21 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         _prepareItem:function(profile, item){
             var p = profile.properties;
 
-            _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin'),function(i){
-                item[i] = item[i] || p[i];
+            _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+                item[i] = _.isSet(item[i])?item[i]:p[i];
             });
             item.capition = item.capition || '';
             if(item.caption===null)capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
 
-            if(p.autoItemSize){
-                item.imgHeight=item.imgWidth='';
+            if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
                 item._itemSize='width:'+item.itemWidth+'px;height:'+item.itemHeight+'px;';
             }
-            item.image=p.loadingImg;
+            if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
+            item.image=xui.ini.img_bg;
         }
     }
 });

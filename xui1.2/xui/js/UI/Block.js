@@ -8,7 +8,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             PANEL:{
                 tagName:'div',
                 className:'{clsBorderType2} xui-uibg-bar',
-                style:'{background};{_overflow};',
+                style:'{_panelstyle};{background};{_overflow};',
                 text:'{html}'+xui.UI.$childTag
             }
         },'all');
@@ -55,23 +55,6 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 html:1,
                 action:function(v){
                     this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
-                }
-            },
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                combobox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                    var node=this.getSubNode('PANEL');
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
                 }
             },
             borderType:{

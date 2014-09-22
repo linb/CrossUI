@@ -978,7 +978,7 @@ Class('xui.Dom','xui.absBox',{
         */
         $removeEventHandler:function(name){
             var event=xui.Event,
-                handler=event.$eventhandler
+                handler=event.$eventhandler,
                 type;
             return this.each(function(o){
                 //remove from dom node
@@ -1476,6 +1476,37 @@ type:4
             //show
             target.cssPos(pos).css({visibility:'visible'});
 
+            return this;
+        },
+        setHoverPop : function(node, type, beforePop,beforeHide, parent){
+            var c=this.get(0),sor=xui(c);
+            if(node["xui.UI"]){
+                node=node.getRoot();
+            }else if(node['xui.UIProfile']||node['xui.Template']){
+               node=node.boxing(); 
+            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
+                node=xui(node);
+            }
+            var aysid=c.xid()+":"+node.xid();
+            sor.onMouseover(!type?null:function(prf, e, src){
+                 _.resetRun(aysid,null);
+                 if(!beforePop || false!==beforePop(prf, node, e, src))
+                    node.popToTop(src, type);
+            },aysid).onMouseout(!type?null:function(profile, e, src){
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host'))
+                            node.hide();
+                    });
+            },aysid);
+
+            node.onMouseover(!type?null:function(){
+                 _.resetRun(aysid,null);
+            },aysid).onMouseout(!type?null:function(){
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop'))
+                            node.hide();
+                    });
+            },aysid);
             return this;
         },
         //for remove obj when blur

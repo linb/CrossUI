@@ -396,7 +396,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     PANEL:{
                         tagName : 'div',
                         className:'xui-uibg-base',
-                        style:"{_overflow};",
+                        style:"{_overflow};{_bginfo}",
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -958,24 +958,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             width:200,
             height:200,
             position:'absolute',
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                listbox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                    var node=this.getSubNode('PANEL',true);
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-
-                }
-            },
             itemWidth:{
                 ini:0,
                 action:function(value){
@@ -1049,6 +1031,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item.itemWidth="width:"+item.itemWidth+(_.isFinite(item.itemWidth)?"px":"");
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
+
+            item._bginfo="";
+            if(t=item.panelBgClr||p.panelBgClr)
+                item._bginfo+="background-color:"+t+";";
+            if(t=item.panelBgImg||p.panelBgImg)
+                item._bginfo+="background-image:url("+xui.adjustRes(t)+");";
+            if(t=item.panelBgImgPos||p.panelBgImgPos)
+                item._bginfo+="background-position:"+t+";";
+            if(t=item.panelBgImgRepeat||p.panelBgImgRepeat)
+                item._bginfo+="background-repeat:"+t+";";
+            if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
+                item._bginfo+="background-attachment:"+t+";";
+                
             if(_.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
             else if(_.isStr(p.overflow))
