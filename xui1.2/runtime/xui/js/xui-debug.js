@@ -16,7 +16,7 @@ Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all;
     obj=obj||{};
     //exists?
-    if(t=_.get(w, key.split('.')))return t;
+    if((t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xui$)return self._last=t;
 
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
@@ -108,8 +108,12 @@ Class=function(key, pkey, obj){
     //set key
     _this[key] = _this.prototype[key] = true;
 
-    //attached to global
+    //allow load App.Sub first
+    _t=t=_.get(w, key.split('.'));
     _.set(w, key.split('.'), _this);
+    if(Object.prototype.toString.call(_t)=='[object Object]')
+        for(i in _t)_this[i]=_t[i];
+
     //exe after function
     _.tryF(_this.After, [], _this);
     //exe ini function
@@ -122,7 +126,7 @@ Class=function(key, pkey, obj){
     _c.push(key);
 
     //return Class
-    return _this;
+    return self._last=_this;
 };
 //global: xui
 linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
@@ -844,6 +848,7 @@ _.merge(xui,{
     $cache:{
         thread:{},
         SC:{},
+        clsByURI:{},
         hookKey:{},
         hookKeyUp:{},
         snipScript:{},
@@ -1120,15 +1125,45 @@ _.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.SAjax(path,'',onSuccess,onFail,0,options).start()
+                xui.SAjax(path,xui.SAjax._id,onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,'',function(rsp){
+                xui.Ajax(path,xui.Ajax._id,function(rsp){
                     try{_.exec(rsp)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
                     _.tryF(onSuccess);
                 },onFail,0,options).start();
                 }
+        }
+    },
+    getLastClass:function(uri,onSuccess,onFail,force){
+        var t,c=xui.$cache.clsByURI;
+        if(!force && (t=c[uri]) && t.$xui$)
+            _.tryF(onSuccess,[t, uri]);
+        else{
+            if(xui.absIO.isCrossDomain(uri)){
+                Class._last=null;
+                xui.SAjax(uri,xui.SAjax._id,function(){
+                    if(Class._last)t=c[uri]=Class._last;
+                    Class._last=null;
+                    _.tryF(onSuccess, [t, uri]);
+                },function(){
+                    Class._last=null;
+                    _.tryF(onFail, _.toArr(arguments));
+                },0,{rspType:'script'}).start();
+            }else{
+                xui.Ajax(uri,xui.Ajax._id,function(rsp){
+                    Class._last=null;
+                    try{_.exec(rsp)}
+                    catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
+                    if(Class._last)t=c[uri]=Class._last;
+                    Class._last=null;
+                    _.tryF(onSuccess, [t, uri]);
+                },function(){
+                    Class._last=null;
+                    _.tryF(onFail, _.toArr(arguments));
+                },0,{asy:false}).start();
+            }
         }
     },
     require:function(cls,sync,onSuccess,onFail){
