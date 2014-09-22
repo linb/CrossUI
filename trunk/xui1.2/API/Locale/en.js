@@ -989,6 +989,15 @@ _.set(xui.Locale,["en","app"], {
             ],
             $memo:"All the resource string is in [xui.Locale] <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] often used together."
         },
+        getLastClass:{
+            $desc:"Gets the last class from a file.",
+            $paras:[
+                "uri [Required]: String, .js file path",
+                "onSuccess [Optional]: Function(class, uir), if it's successfully, call this function. ",
+                "onFail [Optional]: Function, if it's fail, call this function.",
+                "force [Optional]: Boolean, whether force to read the file or not."
+            ]
+        },
         include:{
             $desc:"Includes the target class .js file to the current document.",
             $paras:[

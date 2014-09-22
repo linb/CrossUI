@@ -986,6 +986,15 @@ _.set(xui.Locale,["cn","app"], {
             ],
             $memo:"所有的资源字符串都位于 [xui.Locale] <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用."
         },
+        getLastClass:{
+            $desc:"得到文件的最后一个类.",
+            $paras:[
+                "uri [必需参数]: String, .js 文件路径",
+                "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数. ",
+                "onFail [可选参数]: Function, 失败时触发的回调函数.",
+                "force [可选参数]: Boolean, 是否强制重新读取文件."
+            ]
+        },
         include:{
             $desc:"将某个类的.js 包含到当前文档中.",
             $paras:[
