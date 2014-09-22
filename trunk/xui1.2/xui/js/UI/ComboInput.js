@@ -1049,6 +1049,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             return false;
                         }
                     }
+                },
+                onDblclick:function(profile, e, src){
+                    profile.getSubNode('BTN').onClick(true);
                 }
             },
             R1:{
@@ -1170,7 +1173,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             btnImage:{
                 action: function(value){
                     this.getSubNode('MID')
-                        .css('backgroundImage','url('+(value||'')+')');
+                        .css('backgroundImage',value?('url('+value+')'):'');
                 }
             },
             btnImagePos:{

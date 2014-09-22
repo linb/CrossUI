@@ -332,11 +332,11 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 }
             },
             image:{
-                format:'image',
+               format:'image',
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
                 }
             },
             imagePos:{

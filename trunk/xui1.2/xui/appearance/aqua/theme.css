@@ -341,7 +341,8 @@ html, .xui-uibg-base{
 /*xui.UI.Gallery*/
 .xui-iconlist-item-mousedown, .xui-iconlist-item-checked{
     background-color:#CFD0D0;
-}.xui-gallery-item-mousedown, .xui-gallery-item-checked{
+}
+.xui-gallery-item-mousedown, .xui-gallery-item-checked{
     background-color:#CFD0D0;
 }
 

@@ -1090,7 +1090,7 @@ _.set(xui.Locale,["en","app"], {
                 "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events.",
+                "events [Optional] : Object, key/value pairs, com's events."
             ],
             $memo:"Equals to xui.ComFactory.newCom"
         },
@@ -3449,6 +3449,17 @@ _.set(xui.Locale,["en","app"], {
                 "alert(this.offsetTop())"
                 ]
             },
+            setHoverPop:{
+                $desc:"Sets pop window triggered by mouse hover.",
+                 $rtn:"[self]",
+                $paras:[
+                    "node [Reqired]  : Object/xui.Dom/Element. The pop window",
+                    "type [Optional] : Number, from 1 to 4, pop positoin type. [null or 0] will clear the setting",
+                    "beforePop[Optional] : Function(prf, node, e, src,item),  triggered before the window pop",
+                    "beforeHide[Optional] : Function(prf, node, e, src,item, trigger), triggered before the window hide",
+                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
+                ]
+            },
             popToTop:{
                 $desc:"Pops the first element to the top zIndex into the specified parent element.",
                 $rtn:"[self]",
@@ -4282,6 +4293,66 @@ _.set(xui.Locale,["en","app"], {
                     "var host={},o=new xui.UI.Button; o.setHost(host, 'aBtn'); alert(host.aBtn.KEY); o.setAlias('bBtn'); alert(host.aBtn);  alert(host.bBtn.KEY); "
                 ]
             },
+            getDesc:{
+                $desc:"Gets the desc message on the first Profile",
+                $rtn:"String"
+            },
+            setDesc:{
+                $desc:"Sets the desc message on the each Profile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getTag:{
+                $desc:"Gets the tag value on the first Profile",
+                $rtn:"String",
+                $snippet:[
+                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            setTag:{
+                $desc:"Sets the tag value on the each Profile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            getTagVar:{
+                $desc:"Gets the tagVar property value on the first Profile",
+                $rtn:"Object",
+                $snippet:[
+                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
+            setTagVar:{
+                $desc:"Sets the tagVar property value on the each Profile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
             serialize:{
                 $desc:"To serialize the current Object to a string representation.",
                 $rtn:"String",
@@ -4696,7 +4767,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To show the template.",
                 $rtn:"[self]",
                 $paras:[
-                     "parent [Optional] : String/Element/xui.Dom the parent DOM node.",
+                     "parent [Optional] : String/Element/xui.Dom the parent DOM node."
                 ]
             },
             refresh:{
@@ -5012,7 +5083,10 @@ _.set(xui.Locale,["en","app"], {
             ]
         },
         getAllInstance:{
-            $desc:"Get all instance.",
+            $desc:"Get all instance."
+        },
+        destroyAll:{
+            $desc:"Get all instance."
         },
         prototype:{
             KEY:{$desc:"Class Name"},
@@ -5446,7 +5520,7 @@ _.set(xui.Locale,["en","app"], {
                 "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events.",
+                "events [Optional] : Object, key/value pairs, com's events."
             ],
             $snippet:[
                 "xui.ComFactory.destroyAll();"+
@@ -6575,7 +6649,79 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
+            getOverflow:{
+                $desc:"Gets container's CSS overflow property.",
+                $rtn:"String"
+            },
+            setOverflow:{
+                $desc:"Sets container's CSS overflow property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'auto','hidden','visible','' ",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getPanelBgCrl:{
+                $desc:"Gets container's CSS background color property.",
+                $rtn:"String"
+            },
+            setPanelBgCrl:{
+                $desc:"Sets container's CSS background color property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getPanelBgImg:{
+                $desc:"Gets container's CSS background image property.",
+                $rtn:"String"
+            },
+            setPanelBgImg:{
+                $desc:"Sets container's CSS background image property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getPanelBgImgPos:{
+                $desc:"Gets container's CSS background image position property.",
+                $rtn:"String"
+            },
+            setPanelBgImgPos:{
+                $desc:"Sets container's CSS background image position property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getPanelBgImgRepeat:{
+                $desc:"Gets container's CSS background image position property.",
+                $rtn:"String"
+            },
+            setPanelBgImgRepeat:{
+                $desc:"Sets container's CSS background image position property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getPanelBgImgAttachment:{
+                $desc:"Gets container's CSS background image attachment property.",
+                $rtn:"String"
+            },
+            setPanelBgImgAttachment:{
+                $desc:"Sets container's CSS background image attachment property.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            
             onHotKeydown:{
                 $desc:"Fired when keyboard is down.",
                 $paras:[
@@ -7282,54 +7428,6 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.ui10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setLeft(20); alert(btn.getLeft())},1000)"+
-                    "}"
-                ]
-            },
-            getTag:{
-                $desc:"Gets the tag value on the first UIProfile",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            setTag:{
-                $desc:"Sets the tag value on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            getTagVar:{
-                $desc:"Gets the tagVar property value on the first UIProfile",
-                $rtn:"Object",
-                $snippet:[
-                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
-                    "}"
-                ]
-            },
-            setTagVar:{
-                $desc:"Sets the tagVar property value on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
                     "}"
                 ]
             },
@@ -8747,18 +8845,6 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorder(true).setHtml('<span>a</span>'));"+
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
-                ]
-            },
-            getOverflow:{
-                $desc:"Gets container's CSS overflow property.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"Sets container's CSS overflow property.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getBackground:{
@@ -11917,6 +12003,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
+            getErrImg:{
+                $desc:"Gets the error replacement image source.",
+                $rtn:"String"
+            },
+            setErrImg:{
+                $desc:"Sets the error replacement image source.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getAutoItemSize:{
                 $desc:"To determine whether the size of item change with the size of the picture  automatically",
                 $rtn:"Boolean"
@@ -12858,18 +12956,6 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            getOverflow:{
-                $desc:"Gets container's CSS overflow property.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"Sets container's CSS overflow property.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
             fireCmdClickEvent:{
                 $desc:"Fires 'fold/expand' command button's click event.",
                 $rtn:"[self]",
@@ -12936,7 +13022,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "sizes: Array. cols' size array.",
+                    "sizes: Array. cols' size array."
                 ]
             },
             onRelayout:{
@@ -13049,18 +13135,6 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "_.asyRun(function(){o.clearItems()},1000);"+
                     "}"
-                ]
-            },
-            getOverflow:{
-                $desc:"Gets container's CSS overflow property.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"Sets container's CSS overflow property.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getHAlign :{
@@ -14157,7 +14231,8 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "parent [Optional] : xui.Dom Object. the parent node. Default is xui('body').",
                     "left [Optional] Number, the left position.",
-                    "top [Optional] Number, the top position."
+                    "top [Optional] Number, the top position.",
+                    "callback[Optional] Fucntion, the callback fucntion."
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).showModal();",
@@ -14171,7 +14246,8 @@ _.set(xui.Locale,["en","app"], {
                     "parent [Optional] : xui.Dom Object. the parent node. Default is xui('body').",
                     "modal [Optional] : Boolean, shows in modal mode or not Default is false.",
                     "left [Optional] Number, the left position.",
-                    "top [Optional] Number, the top position."
+                    "top [Optional] Number, the top position.",
+                    "callback[Optional] Fucntion, the callback fucntion."
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100);",
@@ -14272,6 +14348,18 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());_.asyRun(function(){dlg.setMinBtn(false);},1000);"
+                ]
+            },
+            getRestoreBtn:{
+                $desc:"To determine whether this control has a restore button",
+                $rtn:"Boolean"
+            },
+            setRestoreBtn:{
+                $desc:"Specifys whether this control has a restore button.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getMaxBtn:{
@@ -14454,18 +14542,6 @@ _.set(xui.Locale,["en","app"], {
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
                 ]
             },
-            getOverflow:{
-                $desc:"Gets container's CSS overflow property.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"Sets container's CSS overflow property.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
             getStatus:{
                 $desc:"Gets dialog status. Could be 'normal', 'min' or 'max'.",
                 $rtn:"String",
@@ -14612,6 +14688,22 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the dialog activated.",
                 $paras:[
                     "profile : xui.UIProfile."
+                ]
+            },
+            beforeStatusChanged:{
+                $desc:"Fired before user change the dialog's status.  If returns false, the status will not be changed.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "oldStatus: String, the old status, min/max/normal",
+                    "newStatus: String, the new status, min/max/normal"
+                ]
+            },
+            afterStatusChanged:{
+                $desc:"Fired after the dialog status was changed.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "oldStatus: String, the old status, min/max/normal",
+                    "newStatus: String, the new status, min/max/normal"
                 ]
             },
             beforePin:{

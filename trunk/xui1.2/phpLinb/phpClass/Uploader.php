@@ -47,6 +47,7 @@ class Uploader
             'jpe' => 'image/jpeg',
             'jpeg' => 'image/jpeg',
             'js' => 'text/javascript',
+            'json' => 'application/octet-stream',
             'm4a' => 'audio/mp4',
             'mov' => 'video/quicktime',
             'mp3' => 'audio/mpeg',
@@ -91,7 +92,7 @@ class Uploader
             'compressed' => array('bin','bz','bz2','gz','sit','tar','tgz','z','zip'),
             'video' => array('asf','asx','avi','mov','mpg','mpeg','mp4','qt','ra','ram','swf','wmv'),
             'audio' => array('mp3','m4a','ra','ram','wav','wma'),
-            'web' => array('css','gif','ico','jpg','jpeg','js','htm','html','pdf','php','phps','png','shtml','sql'),
+            'web' => array('css','gif','ico','jpg','jpeg','js','json','htm','html','pdf','php','phps','png','shtml','sql'),
             'pdf' => array('pdf')
         );
         $this->mime_types = $this->MIMETYPES;

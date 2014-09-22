@@ -309,8 +309,8 @@ Class("xui.svg", "xui.UI",{
                             if(node&&(node=node.get(0))&&('raphaelid' in node)){
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
-                                    attr[tag]=node.attr();
-                                    _.filter(attr[tag],function(o,i){
+                                    var attf=node.attr();
+                                    _.filter(attf,function(o,i){
                                         if(i=='transform' && _.isArr(o) && o.length===0)o="";
                                         // get the simple transform string
                                         if(i=='transform' && o)
@@ -324,6 +324,10 @@ Class("xui.svg", "xui.UI",{
                                         }
                                         return o!=dftAttr[i];
                                     });
+                                    // keep the  original src attr
+                                    if('src' in attf && 'src' in attr[tag])
+                                        attf.src=attr[tag].src;
+                                    attr[tag]=attf;
                                 }
                             }
                         }
@@ -382,7 +386,10 @@ Class("xui.svg", "xui.UI",{
                             if(node&&(node=node.get(0))&&('raphaelid' in node)){
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
-                                    node.attr(attr2[tag]);
+                                    var rattr=_.copy(attr2[tag]);
+                                    if('src' in rattr)
+                                        rattr.src = xui.adjustRes(rattr.src);
+                                    node.attr(rattr);
                                 }
                             }
                         }

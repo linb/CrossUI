@@ -3461,11 +3461,22 @@ _.set(xui.Locale,["cn","app"], {
                 "alert(this.offsetTop())"
                 ]
             },
+            setHoverPop:{
+                $desc:"设置鼠标悬停弹出窗口.",
+                 $rtn:"[self]",
+                $paras:[
+                    "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
+                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 如果为null或0，取消设置",
+                    "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
+                    "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
+                ]
+            },
             popToTop:{
                 $desc:"将第一个元素显示成父元素的顶层.",
                 $rtn:"[self]",
                 $paras:[
-                    "pos [Reqired] : Object/xui.Dom/Element.",
+                    "pos [必需参数] : Object/xui.Dom/Element.",
                     "type [可选参数] : Number, from 1 to 4, pop positoin type. 默认为1.",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
                 ],
@@ -4287,6 +4298,66 @@ _.set(xui.Locale,["cn","app"], {
                     "var host={},o=new xui.UI.Button; o.setHost(host, 'aBtn'); alert(host.aBtn.KEY); o.setAlias('bBtn'); alert(host.aBtn);  alert(host.bBtn.KEY); "
                 ]
             },
+            getDesc:{
+                $desc:"获取控件的描述值",
+                $rtn:"String"
+            },
+            setDesc:{
+                $desc:"设置控件的描述值.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getTag:{
+                $desc:"获取控件的tag值",
+                $rtn:"String",
+                $snippet:[
+                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            setTag:{
+                $desc:"设置控件的tag值.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "}"
+                ]
+            },
+            getTagVar:{
+                $desc:"获取控件的tag变量",
+                $rtn:"Object",
+                $snippet:[
+                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
+            setTagVar:{
+                $desc:"设置控件的tag变量.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
+                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "}"
+                ]
+            },
             serialize:{
                 $desc:"将当前对象序列化为JSON字符串.",
                 $rtn:"String",
@@ -5026,7 +5097,10 @@ _.set(xui.Locale,["cn","app"], {
             ]
         },
         getAllInstance:{
-            $desc:"得到所有实例.",
+            $desc:"得到所有实例."
+        },
+        destroyAll:{
+            $desc:"销毁所有实例."
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -5072,14 +5146,14 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"向当前 Com 中添加控件.",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [Reqired] : xui.absObj Object."
+                    "obj [必需参数] : xui.absObj Object."
                 ]
             },
             setComponents:{
                 $desc:"设置目前COM的内部组件.",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [Reqired] : xui.absObj Object."
+                    "obj [必需参数]  : xui.absObj Object."
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setComponents((new xui.UI.Button()).setHost(window,'btn') ); alert(com.getComponents().get(0).alias); });},false);"
@@ -5990,7 +6064,7 @@ _.set(xui.Locale,["cn","app"], {
                 "var str=xui.Coder.formatAll('var a=function(){var a=1;var b=2;var c={a:1,b:2};};alert(1);','js',['plain','run'],'i-d'); xui.UI.Dialog.alert('xui.Coder', str)",
                 "var str=xui.Coder.formatAll('.cls{left:0;top:0}','css'); xui.UI.Dialog.alert('xui.Coder', str)",
                 "var str=xui.Coder.formatAll('<div><p>1</p><p>2</p><p><span>3</span>4</p></div>','html'); xui.UI.Dialog.alert('xui.Coder', str)",
-                "var str=xui.Coder.formatAll(' foreach ($d as $k => $v){print $k.$v;}','php',['plain']); xui.UI.Dialog.alert('xui.Coder', str)"
+                "var str=xui.Coder.formatAll(' foreach ($d as $k => $v){print $k.$v;}','php',['plain']); xui.UIshowMo.alert('xui.Coder', str)"
             ]
         },
         replace:{
@@ -6599,6 +6673,78 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getOverflow:{
+                $desc:"获取当前对象容器的CSS overflow属性.",
+                $rtn:"String"
+            },
+            setOverflow:{
+                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'auto','hidden','visible','' ",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getPanelBgCrl:{
+                $desc:"获得容器的背景色属性.",
+                $rtn:"String"
+            },
+            setPanelBgCrl:{
+                $desc:"设置容器的背景色属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getPanelBgImg:{
+                $desc:"获得容器的背景图像属性.",
+                $rtn:"String"
+            },
+            setPanelBgImg:{
+                $desc:"容器的背景图像属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getPanelBgImgPos:{
+                $desc:"获得容器的背景图像偏移属性.",
+                $rtn:"String"
+            },
+            setPanelBgImgPos:{
+                $desc:"设置容器的背景图像偏移属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getPanelBgImgRepeat:{
+                $desc:"获得容器的背景图像重复属性.",
+                $rtn:"String"
+            },
+            setPanelBgImgRepeat:{
+                $desc:"设置容器的背景图像重复属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
+            getPanelBgImgAttachment:{
+                $desc:"得到的背景图像附着属性.",
+                $rtn:"String"
+            },
+            setPanelBgImgAttachment:{
+                $desc:"设置容器的背景图像附着属性.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                ]
+            },
 
             onHotKeydown:{
                 $desc:"当热键按下时被调用.",
@@ -7103,6 +7249,28 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
                 ]
             },
+            setHoverPop:{
+                $desc:"设置鼠标悬停弹出窗口.",
+                 $rtn:"[self]",
+                $paras:[
+                    "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
+                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 如果为null或0，取消设置",
+                    "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
+                    "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
+                ]
+            },
+            setHoverPop:{
+                $desc:"设置鼠标悬停弹出窗口.",
+                 $rtn:"[self]",
+                $paras:[
+                    "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
+                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 如果为null或0，取消设置",
+                    "beforePop[可选参数] : Function(prf, node, e, src, item), 窗口弹出之前调用",
+                    "beforeHide[可选参数] : Function(prf, node, e, src, item, trigger), 窗口隐藏之前调用",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
+                ]
+            },
             getTheme:{
                 $desc:"获取当前控件的皮肤关键字.",
                 $rtn:"String"
@@ -7297,54 +7465,6 @@ _.set(xui.Locale,["cn","app"], {
                     "var block,btn;xui(id).prepend(block=new xui.UI.Block({position:'relative',border:true,dropKeys:['test']})).prepend(btn=new xui.UI.Button({position:'relative'}));"+
                     "block.onDrop(function(profile, e, node, key, data){var btn=xui.UIProfile.getFromDom(data).boxing();profile.boxing().append(btn); btn.draggable(false)});"+
                     "btn.draggable('test',btn.getDomId());"+
-                    "}"
-                ]
-            },
-            getTag:{
-                $desc:"获取控件的tag值",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            setTag:{
-                $desc:"设置控件的tag值.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
-                    "}"
-                ]
-            },
-            getTagVar:{
-                $desc:"获取控件的tag变量",
-                $rtn:"Object",
-                $snippet:[
-                    "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
-                    "}"
-                ]
-            },
-            setTagVar:{
-                $desc:"设置控件的tag变量.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
                     "}"
                 ]
             },
@@ -8476,18 +8596,6 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
-            },
-            getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
-                ]
             }
         }
     });
@@ -8694,18 +8802,6 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorder(true).setHtml('<span>a</span>'));"+
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
-                ]
-            },
-            getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
             getBackground:{
@@ -8936,7 +9032,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取图标的css position属性",
+                $desc:"获取图标的图像偏移属性",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.lbl15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8946,7 +9042,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的css position属性.",
+                $desc:"设置图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
@@ -9147,11 +9243,11 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取图标的css position属性",
+                $desc:"获取图标的图像偏移属性",
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"设置图标的css position属性.",
+                $desc:"设置图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
@@ -9300,11 +9396,11 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取图标的css position属性",
+                $desc:"获取图标的图像偏移属性",
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"设置图标的css position属性.",
+                $desc:"设置图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
@@ -9483,7 +9579,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取图标的css position属性.",
+                $desc:"获取图标的图像偏移属性.",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9493,7 +9589,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的css position属性.",
+                $desc:"设置图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
@@ -10150,7 +10246,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取编组框图标的css position属性",
+                $desc:"获取编组框图标的图像偏移属性",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.grp5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10160,7 +10256,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置编组框图标的css position属性.",
+                $desc:"设置编组框图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的位置(CSS值).",
@@ -10703,7 +10799,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBtnImagePos :{
-                $desc:"获取按钮图标的css position属性",
+                $desc:"获取按钮图标的图像偏移属性",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ci20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10713,7 +10809,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBtnImagePos :{
-                $desc:"设置按钮图标的css position属性.",
+                $desc:"设置按钮图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 对应的 CSS 值.",
@@ -11842,6 +11938,18 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
                 ]
             },
+            getErrImg:{
+                $desc:"得到加载错误代替图片地址.",
+                $rtn:"String"
+            },
+            setErrImg:{
+                $desc:"设置加载错误代替图片地址.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
             getAutoItemSize:{
                 $desc:"得到子项的尺寸是否随图片的大小自动变化.",
                 $rtn:"Boolean"
@@ -12348,7 +12456,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取图标的css position属性",
+                $desc:"获取图标的图像偏移属性",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.panel5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12358,7 +12466,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的css position属性.",
+                $desc:"设置图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
@@ -12750,7 +12858,8 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){o.insertItems([{id:'c2',size:30}],'after',false)},4000);"+
                     "}"
                 ]
-            },
+            },
+
             updateItem:{
                 $desc:"更新一个布局项,并刷新对应的DOM界面.",
                 $rtn:"[self]",
@@ -12781,18 +12890,6 @@ _.set(xui.Locale,["cn","app"], {
                     "o.append(new xui.UI.Button).append(new xui.UI.Link, 'before').append(new xui.UI.Input, 'after');"+
                     "_.asyRun(function(){o.setType('horizontal').setItems([{id:'before', pos:'before', 'size':50, min:50, max:200}, {id:'main', min:10}, {id:'after', pos:'after', size:50}, {id:'c', pos:'after', cmd:true, size:50}])},1000);"+
                     "}"
-                ]
-            },
-            getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
             fireCmdClickEvent:{
@@ -12973,18 +13070,6 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "_.asyRun(function(){o.clearItems()},1000);"+
                     "}"
-                ]
-            },
-            getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
             getHAlign :{
@@ -14082,7 +14167,8 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body').",
                     "left [可选参数] Number, 对话框左边坐标.",
-                    "top [可选参数] Number, 对话框上边坐标."
+                    "top [可选参数] Number, 对话框上边坐标.",
+                    "callback[可选参数] Fucntion, 回调函数."
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).showModal();",
@@ -14096,7 +14182,8 @@ _.set(xui.Locale,["cn","app"], {
                     "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body').",
                     "modal [可选参数] : Boolean, 模式对话框,或者是非模式对话框.默认为非模式（false）.",
                     "left [可选参数] Number, 对话框左边坐标.",
-                    "top [可选参数] Number, 对话框上边坐标."
+                    "top [可选参数] Number, 对话框上边坐标.",
+                    "callback[可选参数] Fucntion, 回调函数."
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100);",
@@ -14182,6 +14269,21 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
 
+            getRestoreBtn:{
+                $desc:"判断对话框右上角是否带有从最大最小状态返回正常按钮",
+                $rtn:"Boolean",
+                $snippet:[
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());_.asyRun(function(){dlg.setMinBtn(false);},1000);"
+                ]
+            },
+            setRestoreBtn:{
+                $desc:"设置对话框右上角是否带有从最大最小状态返回正常按钮.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
             getMinBtn:{
                 $desc:"判断对话框右上角是否带有最小化按钮",
                 $rtn:"Boolean",
@@ -14345,14 +14447,14 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取对话框左上角图标的css position属性",
+                $desc:"获取对话框左上角图标的图像偏移属性",
                 $rtn:"String",
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());_.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
                 ]
             },
             setImagePos :{
-                $desc:"设置对话框左上角图标的css position属性.",
+                $desc:"设置对话框左上角图标的图像偏移属性.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
@@ -14378,18 +14480,6 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
-                ]
-            },
-            getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
-                $rtn:"String"
-            },
-            setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
             },
             getStatus:{
@@ -14538,6 +14628,22 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"在对话框被激活时(获得焦点)调用.",
                 $paras:[
                     "profile : xui.UIProfile."
+                ]
+            },
+            beforeStatusChanged:{
+                $desc:"当对话框状态在最大、最小或普通状态之间改变前调用. 返回false可以阻止状态该变.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "oldStatus: String, 改变之前的状态, min/max/normal",
+                    "newStatus: String, 改变之后的状态, min/max/normal"
+                ]
+            },
+            afterStatusChanged:{
+                $desc:"当对话框状态在最大、最小或普通状态之间改变后调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "oldStatus: String, 改变之前的状态, min/max/normal",
+                    "newStatus: String, 改变之后的状态, min/max/normal"
                 ]
             },
             beforePin:{
@@ -18764,10 +18870,18 @@ _.set(xui.Locale,["cn","app"], {
 (function(){
 _.set(xui.Locale,["cn","doc","propname"], {
         'xui_absObj' : {
+            'tag':'附加值',
+            'tagVar':'附加对象',
+            desc:'控件说明文字' 
         },
        'xui_absComposed' : {
             'dragKey':'拖拽标识',
-            'dropKeys':'丢下标识'
+            'dropKeys':'丢下标识',
+            panelBgClr:'容器背景色',
+            panelBgImg:'容器背景图像',
+            panelBgImgPos:'背景图像偏移',
+            panelBgImgRepeat:'背景图像重复',
+            panelBgImgAttachment:'背景图像附着'
         },
         'xui_absList' : {
             'listKey':'列表键',
@@ -18826,9 +18940,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'position':'控件定位类型',
             'visibility':'控件可见属性',
             'display':'渲染盒类型',
-            'selectable':'文字可选择',
-            'tag':'附加值',
-            'tagVar':'附加对象'
+            'selectable':'文字可选择'
         },
         'xui_UI_Widget' : {
             'border':'附加边框',
@@ -18846,8 +18958,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Label' : {
             'caption':'标题文字',
-            'image':'图标路径',
-            'imagePos':'图标位置属性',
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移',
             'shadowText':'阴影文字',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
@@ -18860,8 +18972,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Button' : {
             'caption':'标题文字',
-            'image':'图标路径',
-            'imagePos':'图标位置属性_',
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
             'type':'按钮类型'
@@ -18904,8 +19016,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dropListWidth':'弹出窗口宽',
             'dropListHeight':'弹出窗口高',
             'items':'下拉框项目',
-            'btnImage':'按钮图标路径',
-            'btnImagePos':'按钮图标位置',
+            'btnImage':'背景图标路径',
+            'btnImagePos':'背景图像背景偏移',
             'increment':'增量值',
             'min':'最小值',
             'max':'最大值',
@@ -18924,11 +19036,12 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'html':'内部HTML文本',
             'overflow':'容器溢出属性',
             'caption':'对话框标题',
-            'image':'图标路径',
-            'imagePos':'图标位置属性',
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移',
             'movable':'对话框可拖动',
-            'minBtn':'最小化按钮',
-            'maxBtn':'最大化按钮',
+            'minBtn':'显示最小按钮',
+            'restoreBtn':'显示恢复按钮',
+            'maxBtn':'显示最大按钮',
             'infoBtn':'显示帮助按钮',
             'optBtn':'显示选项按钮',
             'closeBtn':'显示关闭按钮',
@@ -18954,14 +19067,14 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'hAlign':'水平对齐方式'
         },
         'xui_UI_SButton' : {
-            'image':'图标路径',
-            'imagePos':'图标位置属性',
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移',
             'caption':'按钮标题文字',
             'hAlign':'水平对齐方式'
         },
         'xui_UI_SCheckBox' : {
-            'image':'图标路径',
-            'imagePos':'图标位置属性',
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移',
             'caption':'按钮标题文字'
         },
         'xui_UI_Element' : {
@@ -18992,13 +19105,13 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'caption':'标题',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
-            'image':'图标路径',
-            'imagePos':'图标位置属性'
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移'
         },
         'xui_UI_Panel' : {
             'caption':'标题文字',
-            'image':'图标路径',
-            'imagePos':'图标位置属性',
+            'image':'背景图标路径',
+            'imagePos':'背景图像背景偏移',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
             'infoBtn':'显示帮助按钮',
@@ -19013,7 +19126,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'maxHeight':'图片最大高度',
             'src':'图像文件路径',
             'alt':'替代文字',
-            'cursor':'鼠标状态'
+            'cursor':'鼠标样式'
         },
         'xui_UI_Flash' : {
             'cover':'覆盖层',
@@ -19407,6 +19520,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeClose:"窗口关闭前",
             onActivated:"被激活",
             beforePin:"订针状态改变前",
+            beforeStatusChanged:"窗口状态改变前",
+            afterStatusChanged:"窗口状态改变后",
             onLand:"点击降落按钮",
             onRefresh:"点击刷新按钮",
             onShow:"窗口显示",
@@ -19555,7 +19670,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onShowSubMenu:"显示子菜单"
         },
         'xui_UI_ToolBar' : {
-            onClick:"鼠标点击按钮",
+            onClick:"鼠标点击按钮"
         },
         'xui_UI_Layout' : {
         },

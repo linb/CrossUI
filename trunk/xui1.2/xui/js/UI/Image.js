@@ -129,6 +129,7 @@ Class("xui.UI.Image", "xui.UI",{
             },
             cursor:{
                 ini:"auto",
+                combobox:["","default","text","pointer","move","crosshair","wait","help","e-resize","ne-resize","nw-resize","n-resize","se-resize","sw-resize","s-resize","w-resize"],
                 action:function(v){
                     this.getRoot().css('cursor',v);
                 }

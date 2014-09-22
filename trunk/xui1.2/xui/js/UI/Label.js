@@ -78,7 +78,7 @@ Class("xui.UI.Label", "xui.UI.Widget",{
                     var self=this,k=self.keys;
                     self.getSubNodes(['ICON','SICON'])
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
                 }
             },
             imagePos:{

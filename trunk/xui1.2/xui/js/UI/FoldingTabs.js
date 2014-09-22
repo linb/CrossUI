@@ -162,7 +162,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                 tagName : 'div',
                                 PANEL:{
                                     tagName : 'div',
-                                    style:'{_itemHeight}',
+                                    style:'{_itemHeight};{_overflow};{_bginfo}',
                                     className:'xui-uibg-base',
                                     text:xui.UI.$childTag
                                 }
@@ -435,7 +435,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             return arguments.callee.upper.apply(this, arguments);
         },
         _prepareItem:function(profile, item){            
-            var dpn = 'display:none';
+            var dpn = 'display:none',p=profile.properties,t;
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
             item._opt = item.optBtn?'':dpn;
@@ -451,6 +451,18 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 item._capDisplay=dpn;
             else
                 item.caption = item.caption.replace(/</g,"&lt;");
+
+            item._bginfo="";
+            if(t=item.panelBgClr||p.panelBgClr)
+                item._bginfo+="background-color:"+t+";";
+            if(t=item.panelBgImg||p.panelBgImg)
+                item._bginfo+="background-image:url("+xui.adjustRes(t)+");";
+            if(t=item.panelBgImgPos||p.panelBgImgPos)
+                item._bginfo+="background-position:"+t+";";
+            if(t=item.panelBgImgRepeat||p.panelBgImgRepeat)
+                item._bginfo+="background-repeat:"+t+";";
+            if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
+                item._bginfo+="background-attachment:"+t+";";
 
             if(item._show){
                 item._checked = profile.getClass('ITEM','-checked');

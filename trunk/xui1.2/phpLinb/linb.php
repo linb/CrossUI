@@ -14,9 +14,9 @@
     **/
     function __autoload($class){
        try{
-       	   $path = LINB::$DIR_LINB.LINB::$DIR_CLASS.str_replace('_', DIRECTORY_SEPARATOR, str_replace('.', DIRECTORY_SEPARATOR, $class)).'.php';
+           $path = LINB::$DIR_LINB.LINB::$DIR_CLASS.str_replace('_', DIRECTORY_SEPARATOR, str_replace('.', DIRECTORY_SEPARATOR, $class)).'.php';
            if(!file_exists($path)){
-           	   $path = LINB::$DIR_APP.LINB::$DIR_CLASS.str_replace('_', DIRECTORY_SEPARATOR, str_replace('.', DIRECTORY_SEPARATOR, $class)).'.php';
+               $path = LINB::$DIR_APP.LINB::$DIR_CLASS.str_replace('_', DIRECTORY_SEPARATOR, str_replace('.', DIRECTORY_SEPARATOR, $class)).'.php';
            }
            if(file_exists($path)){
                include_once($path);
@@ -27,7 +27,7 @@
                             throw new LINB_E('Class $class could not be found.'); 
                        }
                    }
-               ");           	   
+               ");                 
            }
        }catch (LINB_E $e){
            throw new LINB_E($e->getMessage(), $e->getCode());
@@ -51,15 +51,15 @@
         function __construct ($message = '', $code = 0, $file = '', $line = -1) {
             parent::__construct($message, $code);
         }
-		function _handle_exception(Exception $e) {
-	        LINB::echoException('001', $e);
-	    }
-		function _handle_error($errno, $errstr, $errfile, $errline) {
-	        LINB::echoException('001', $errstr, $errfile, $errline);
-	    }
+        function _handle_exception(Exception $e) {
+            LINB::echoException($e->getCode(), $e->getMessage());
+        }
+        function _handle_error($errno, $errstr, $errfile, $errline) {
+            LINB::echoException($errno, $errstr, $errfile, $errline);
+        }
     };
-	$err = new LINB_E();
-	set_error_handler (array ($err, '_handle_error'));
+    $err = new LINB_E();
+    set_error_handler (array ($err, '_handle_error'));
     set_exception_handler(array($err, "_handle_exception"));
     unset($err);
 
@@ -156,44 +156,44 @@
        * @return mix
        */
       public static function toStrict($type, $v, $default){
-		$map = array(
-		    'string' => array('is_string',''),
-		    'integer' => array('is_integer',0),
-		    'double' => array('is_float',0.0),
-		    'boolean' => array('is_bool',false),
-		    'array' => array('is_array',array()),
-		    'object' => array('is_object', new stdClass())
-		);
-		if(!in_array($type, array_keys($map))){
-			throw new LINB_E('$type is not a valid type.');
-		}
-		$r=$map[$type][1];
-		if(isset($v) || $map[$type][0]($v)){
-			$r=$v;
-		}else{
-			if(isset($default) || $map[$type][0]($default)){
-				$r = $default;
-			}
-		}
-		return $r;
+        $map = array(
+            'string' => array('is_string',''),
+            'integer' => array('is_integer',0),
+            'double' => array('is_float',0.0),
+            'boolean' => array('is_bool',false),
+            'array' => array('is_array',array()),
+            'object' => array('is_object', new stdClass())
+        );
+        if(!in_array($type, array_keys($map))){
+            throw new LINB_E('$type is not a valid type.');
+        }
+        $r=$map[$type][1];
+        if(isset($v) || $map[$type][0]($v)){
+            $r=$v;
+        }else{
+            if(isset($default) || $map[$type][0]($default)){
+                $r = $default;
+            }
+        }
+        return $r;
      }
      public static function toType($v, $type){
-     	switch ($type){
-     		case 'string' :
-     			return (string)$v;
-		    case 'integer' :
-     			return (integer)$v;
-		    case 'double' :
-     			return (double)$v;
-		    case 'boolean' :
-     			return (boolean)$v;
-		    case 'array' :
-     			return (array)$v;
-		    case 'object' :
-     			return (object)$v;
-		    default:
-		    	throw new LINB_E('No such type: $type!');
-     	}
+        switch ($type){
+            case 'string' :
+                return (string)$v;
+            case 'integer' :
+                return (integer)$v;
+            case 'double' :
+                return (double)$v;
+            case 'boolean' :
+                return (boolean)$v;
+            case 'array' :
+                return (array)$v;
+            case 'object' :
+                return (object)$v;
+            default:
+                throw new LINB_E('No such type: $type!');
+        }
      }
      /**
       * check arguemnts
@@ -208,30 +208,30 @@
       * )
       */
      public static function checkArgs(&$h, $a){
-     	if(is_object($h)){
-     		$o = (array)$h;
-     	}else{
-     		$o = & $h;
-     	}
+        if(is_object($h)){
+            $o = (array)$h;
+        }else{
+            $o = & $h;
+        }
 
-		foreach ($a as $k=>$v){
-			foreach ($v as $k2=>$v2){
-				if(is_null($v2)){
-					if(isset($o[$k2])){
-					    if(gettype($o[$k2]) != $k)
-						    $o[$k2] = self::toType($o[$k2], $k);
-					}else
-					    throw new LINB_E($k2." must be specified!");
-				}else{
-					$o[$k2] = self::toStrict($k, isset($o[$k2])?$o[$k2]:NULL, $v2 );
-				}
-			}
-		}
-		if(is_object($h)){
-			foreach ($o as $k=>$v){
-				$h->$k = $v;
-			}
-		}
+        foreach ($a as $k=>$v){
+            foreach ($v as $k2=>$v2){
+                if(is_null($v2)){
+                    if(isset($o[$k2])){
+                        if(gettype($o[$k2]) != $k)
+                            $o[$k2] = self::toType($o[$k2], $k);
+                    }else
+                        throw new LINB_E($k2." must be specified!");
+                }else{
+                    $o[$k2] = self::toStrict($k, isset($o[$k2])?$o[$k2]:NULL, $v2 );
+                }
+            }
+        }
+        if(is_object($h)){
+            foreach ($o as $k=>$v){
+                $h->$k = $v;
+            }
+        }
     }
 
     /**
@@ -319,7 +319,7 @@
        *
        */
       public static function handler(){
-         try{
+//         try{
              $httpdata=new stdClass;
              $data = self::SYM_DATA;
              $paras = self::SYM_PARA;
@@ -356,11 +356,11 @@
                  }
              }
              if($_SERVER['QUERY_STRING']){
-    			header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    			header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    			header ("Cache-Control: no-cache, must-revalidate");
-    			header ("Pragma: no-cache");
-    		}
+                header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+                header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+                header ("Cache-Control: no-cache, must-revalidate");
+                header ("Pragma: no-cache");
+            }
              if(isset($httpdata->$paras)){
                 if(is_string($httpdata->$paras))
                     $httpdata->$paras = LINB::$json->decode($httpdata->$paras);
@@ -371,9 +371,9 @@
                  if(isset($d))
                     echo LINB::formatResponse($d);
              }
-         }catch(LINB_E $e){
-            throw new LINB_E($e->getMessage(), $e->getCode());
-         }
+//         }catch(LINB_E $e){
+//            throw new LINB_E($e->getMessage(), $e->getCode());
+//         }
       }
       public static function formatResponse($d, $ok=true){
             $data = self::SYM_DATA;
@@ -396,14 +396,14 @@
                 $httpdata->$err = $d;
             $output=LINB::$json->encode($httpdata);
 
-     	    //use script tag     	    
-     	    if(isset($cb)){
-     	        if($cb=="window.name"){
-     	            $output="<script type='text' id='json'>".$output."</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
-     	        }else{
-     	            $output = $cb.'('.$output.')';
-     	        }
-     	    }
+            //use script tag            
+            if(isset($cb)){
+                if($cb=="window.name"){
+                    $output="<script type='text' id='json'>".$output."</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
+                }else{
+                    $output = $cb.'('.$output.')';
+                }
+            }
 
             return $output;
       }
@@ -412,11 +412,11 @@
            $id = LINB::SYM_ID;
            $msg = LINB::SYM_MESSAGE;
 
-      	    if($e instanceof Exception){
-      	    	$file = $e->getFile();
-      	    	$line = $e->getLine();
-      	    	$e = $e->getMessage();
-      	    }
+            if($e instanceof Exception){
+                $file = $e->getFile();
+                $line = $e->getLine();
+                $e = $e->getMessage();
+            }
 
             if(LINB::$debug)
                 $e = $e." at ".$file."(".$line.")";

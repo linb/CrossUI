@@ -2901,17 +2901,24 @@ Class('xui.absBox',null, {
         size:function(){
             return this._nodes.length;
         },
-        _each:function(fun){
-            var self=this,n;
-            for(var i=0,j=self._nodes,l=j.length;i<l;i++)
-                if(n=j[i])
-                    if(false===fun.call(self,n,i))
-                        break;
+        _each:function(fun,scope,desc){
+            var self=this,j=self._nodes,l=j.length,i,n;
+            if(desc){
+                for(i=l;i>=0;i--)
+                    if(n=j[i])
+                        if(false===fun.call(scope||self,n,i))
+                            break;
+            }else{
+                for(i=0;i<l;i++)
+                    if(n=j[i])
+                        if(false===fun.call(scope||self,n,i))
+                            break;
+            }
             n=null;
             return self;
         },
-        each:function(fun){
-            return this._each(fun);
+        each:function(fun,scope,desc){
+            return this._each(fun,scope,desc);
         },
         isEmpty:function(){
             return !this._nodes.length;
@@ -3191,9 +3198,6 @@ Class('xui.absObj',"xui.absBox",{
         self._namePool={};
         self._nameTag=self.$nameTag||('ctl_'+(t=self.KEY.split('.'))[t.length-1].toLowerCase());
         self._cache=[];
-
-        if(self===xui.absObj || self===xui.absObj)return;
-
         m=me.a1 || (me.a1=_.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){
             k={};
@@ -3228,8 +3232,10 @@ Class('xui.absObj',"xui.absBox",{
     Static:{
         $abstract:true,
         $specialChars:{_:1,$:1},
+        _objectProp:{tagVar:1},
         DataModel:{
             tag:'',
+            desc:'',
             tagVar:{
                 ini:{}
             }

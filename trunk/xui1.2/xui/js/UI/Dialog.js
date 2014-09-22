@@ -1,9 +1,9 @@
 Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
-        showModal:function(parent, left, top){
-            this.show(parent, true, left, top);
+        showModal:function(parent, left, top, callback){
+            this.show(parent, true, left, top, callback);
         },
-        show:function(parent, modal, left, top){
+        show:function(parent, modal, left, top, callback){
             parent = parent || xui('body');
 
             return this.each(function(profile){
@@ -41,6 +41,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             box._refreshRegion(profile);
 
                         delete profile.inShowing;
+                        _.tryF(callback);
                     };
 
                 // default to center dlg
@@ -254,7 +255,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     className:'xui-uicon-maini',
                     PANEL:{
                         tagName:'div',
-                        style:"{_overflow};",
+                        style:"{_panelstyle};{_overflow};",
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -545,23 +546,6 @@ if(xui.browser.ie){
                     this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
                 }
             },
-            overflow:{
-                ini:xui.browser.isTouch?'auto':undefined,
-                listbox:['','visible','hidden','scroll','auto'],
-                action:function(v){
-                                        var node=this.getSubNode('PANEL');
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            _.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                                if(a.length>1)node.css(_.str.trim(a[0]),_.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-                }
-            },
             // setCaption and getCaption
             caption:{
                 ini:undefined,
@@ -576,7 +560,7 @@ if(xui.browser.ie){
                 action: function(value){
                     this.getSubNode('ICON')
                         .css('display',value?'':'none')
-                        .css('backgroundImage','url('+xui.adjustRes(value||'')+')');
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
                 }
             },
             imagePos:{
@@ -604,6 +588,16 @@ if(xui.browser.ie){
                 ini:true,
                 action:function(v){
                     var o = this.getSubNode('MAX');
+                    if(v)
+                        o.setInlineBlock();
+                    else
+                        o.css('display','none');
+                }
+            },
+            restoreBtn:{
+                ini:true,
+                action:function(v){
+                    var o = this.getSubNode('RESTORE');
                     if(v)
                         o.setInlineBlock();
                     else
@@ -696,7 +690,9 @@ if(xui.browser.ie){
             onShowOptions:function(profile, e, src){},
             onLand:function(profile, e, src){},
             onActivated:function(profile){},
-            beforePin:function(profile, value){}
+            beforePin:function(profile, value){},
+            beforeStatusChanged:function(profile, oldStatus, newStatus){},
+            afterStatusChanged:function(profile, oldStatus, newStatus){}
         },
         RenderTrigger:function(){
             var ns=this;
@@ -750,6 +746,9 @@ if(xui.browser.ie){
                 p=o.parent(),
                 t=profile.properties;
             if(!status)status=t.status;
+            if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
+                return;
+
             // unMax
             if(status=='max')
                 box._unMax(profile);
@@ -762,6 +761,7 @@ if(xui.browser.ie){
 
             if(t.minBtn){
                 // show restore button
+                if(t.restoreBtn)
                 profile.getSubNode('RESTORE').setInlineBlock();
                 // hide min button
                 profile.getSubNode('MIN').css('display','none');
@@ -783,6 +783,7 @@ if(xui.browser.ie){
                 h=profile.getSubNode('TBAR').height();
             // resize
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
         },
         _max:function(profile,status){
             var o=profile.getRoot(),
@@ -791,6 +792,10 @@ if(xui.browser.ie){
                 p=o.parent(),
                 t=profile.properties;
             if(!status)status=t.status;
+            
+            if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
+                return;
+            
             // if from normal status
             if(status=='min')
                 //unset min
@@ -805,6 +810,7 @@ if(xui.browser.ie){
                 // hide max button
                 profile.getSubNode('MAX').css('display','none');
                 // show restore button
+                if(t.restoreBtn)
                 profile.getSubNode('RESTORE').setInlineBlock();
             }
 
@@ -822,14 +828,17 @@ if(xui.browser.ie){
             t.status='max';
 
             ins.setDock('cover',true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),
                 box=profile.box,
                 t=profile.properties;
             if(!status)status=t.status;
-
             t.status='normal';
+
+            if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'normal', status))
+                return;
 
             // if from max
             if(status=='max')box._unMax(profile);
@@ -862,6 +871,7 @@ if(xui.browser.ie){
 
             // resize
             xui.UI.$tryResize(profile, t.width, t.height,true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'normal', status);
         },
         _unMin:function(profile){
             var t=profile.properties,
