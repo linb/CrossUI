@@ -307,6 +307,66 @@ Class('xui.Com',null,{
             });
             return xui.absObj.pack(arr,false);
         },
+        getData:function(){
+            var hash={};
+            this.getAllComponents().each(function(prf){
+                var prop=prf.properties,
+                    ih=hash[prf.alias]={};
+                _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","value",'labelCaption'],function(k){
+                    if(k in prop)ih[k]=prop[k];
+                });
+                if('caption' in prop && _.isSet(prop.caption))
+                    ih.caption=prop.caption;
+            });
+            return hash;
+        },
+        setData:function(data){
+            this.getAllComponents().each(function(prf){
+                var prop=prf.properties,
+                    ins=prf.boxing(),
+                    ih=data[prf.alias];
+                if(ih && _.isHash(ih) && !_.isEmpty(ih)){
+                    _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","value",'labelCaption',"caption"],function(k){
+                        if(k in prop && k in ih)ins['set'+_.str.initial(k)](ih[k]);
+                    });
+                }
+            });
+            return this;
+        },
+        getValue:function(){
+            var hash={};
+            this.getAllComponents().each(function(prf){
+                if('value' in prf.properties)
+                    hash[prf.alias]=prf.properties.value;
+            });
+            return hash;
+        },
+        setValue:function(values){
+            if(!_.isEmpty(values)){
+                this.getAllComponents().each(function(prf){
+                    if('value' in prf.properties && prf.alias in values)
+                        prf.boxing().setValue(values[prf.alias])
+                });
+            }
+            return this;
+        },
+        getUIValue:function(){
+            var hash={};
+            this.getAllComponents().each(function(prf){
+                if('$UIvalue' in prf.properties)
+                    hash[prf.alias]=prf.properties.$UIvalue;
+            });
+            return hash;
+        },
+        setUIValue:function(values){
+            if(!_.isEmpty(values)){
+                this.getAllComponents().each(function(prf){
+                    if('value' in prf.properties && prf.alias in values)
+                        prf.boxing().setUIValue(values[prf.alias])
+                });
+            }
+            return this;
+        },
         getDataBinders:function(){
             if(!this._innerComsCreated)
                 this._createInnerComs();
@@ -402,8 +462,7 @@ Class('xui.Com',null,{
             if(typeof theme=='function')thowUI=theme;
 
             var fun=function(){
-                //get app class
-                xui.SC(cls,function(path){
+                var ifun=function(path){
                     //if successes
                     if(path){
                         try{
@@ -434,12 +493,22 @@ Class('xui.Com',null,{
                         _.tryF(onEnd,[e,null]);
                         throw e;
                     }
-                },true,null,{
-                    retry:0,
-                    onFail:function(e){
-                        _.tryF(onEnd,[e,null]);
-                    }
-                });
+                };
+                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+                else cls=cls+"";
+                if(/\.js$/i.test(cls))
+                    xui.fetchClass(cls,ifun,
+                        function(e){
+                            _.tryF(onEnd,[e,null]);
+                        });
+                else
+                    //get app class
+                    xui.SC(cls,ifun,true,null,{
+                        retry:0,
+                        onFail:function(e){
+                            _.tryF(onEnd,[e,null]);
+                        }
+                    });
             };
             if(xui.isDomReady)
                 fun();

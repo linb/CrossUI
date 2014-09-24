@@ -16,7 +16,7 @@ Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all;
     obj=obj||{};
     //exists?
-    if((t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xui$)return self._last=t;
+    if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xui$)return self._last=t;
 
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
@@ -1136,29 +1136,29 @@ _.merge(xui,{
                 }
         }
     },
-    getLastClass:function(uri,onSuccess,onFail,force){
+    fetchClass:function(uri,onSuccess,onFail,force){
         var t,c=xui.$cache.clsByURI;
         if(!force && (t=c[uri]) && t.$xui$)
-            _.tryF(onSuccess,[t, uri]);
+            _.tryF(onSuccess,[uri],t);
         else{
             if(xui.absIO.isCrossDomain(uri)){
-                Class._last=null;
+                Class._ignoreNSCache=1;Class._last=null;
                 xui.SAjax(uri,xui.SAjax._id,function(){
                     if(Class._last)t=c[uri]=Class._last;
-                    Class._last=null;
-                    _.tryF(onSuccess, [t, uri]);
+                    Class._ignoreNSCache=Class._last=null;
+                    _.tryF(onSuccess, [uri],t);
                 },function(){
-                    Class._last=null;
+                    Class._ignoreNSCache=1;Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
                 },0,{rspType:'script'}).start();
             }else{
                 xui.Ajax(uri,xui.Ajax._id,function(rsp){
-                    Class._last=null;
+                    Class._ignoreNSCache=Class._last=null;
                     try{_.exec(rsp)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
-                    _.tryF(onSuccess, [t, uri]);
+                    _.tryF(onSuccess, [uri],t);
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
