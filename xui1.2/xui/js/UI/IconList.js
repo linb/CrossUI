@@ -48,6 +48,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null,
                 position:'relative',
                 cursor:'pointer',
+                visibility:'hidden',
                 border:'solid 1px #C2E4FC',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
@@ -85,18 +86,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
                          nn=xui.use(src),
                           node=nn.get(0),
                           item=profile.getItemByDom(src);
-                     if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
-                        if(item.autoItemSize||p.autoItemSize){
-                            nn.attr('width','');nn.attr('height','');
-                        }
-                        if(item.image){
-                            node.src=xui.adjustRes(item.image);
-                            return;
-                        }
-                    }
-                    
+                    if(item.autoItemSize||p.autoItemSize){
+                        nn.attr('width','');nn.attr('height','');
+                    }                    
                     xui(node).parent(2).removeClass('xui-busy'); 
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                    node.style.visibility="visible";
                     item._status='loaded';
                 },
                 onError:function(profile,e,src){
@@ -104,19 +99,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                           nn=xui.use(src),
                           node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    if(node.src == xui.ini.img_bg && item.image!==xui.ini.img_bg){
-                        if(item.autoItemSize||p.autoItemSize){
-                            nn.attr('width','');nn.attr('height','');
-                        }
-                        if(item.image){
-                            node.src=xui.adjustRes(item.image);
-                            return;
-                        }
-                    }
                     xui(node).parent(2).removeClass('xui-busy').addClass('xui-err');
                     if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
-                    node.width=item.itemWidth||p.itemWidth;
-                    node.height=item.itemHeight||p.itemHeight;
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
                     item._status='error';
@@ -172,7 +156,6 @@ Class("xui.UI.IconList", "xui.UI.List",{
             });
             item._tabindex = p.tabindex;
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
-            item.image=xui.ini.img_bg;
         }
     }
 });

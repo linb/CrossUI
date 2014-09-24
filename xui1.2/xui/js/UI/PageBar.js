@@ -316,9 +316,16 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             onClick:function(profile, page){}
         },
         _ensureValue:function(profile,value){
+            value=value+'';
             var a = value.split(':'),
                 b=[],
                 fun=function(a){return parseInt(a,10)||1};
+            if(a.length<3){
+                b=profile.properties.$UIvalue.split(':');
+                a[1]=a[0];
+                a[0]=b[0];
+                a[2]=b[2];
+            }
             b[0]=fun(a[0]);
             b[1]=fun(a[1]);
             b[2]=fun(a[2]);
