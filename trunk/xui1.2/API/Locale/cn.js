@@ -986,8 +986,8 @@ _.set(xui.Locale,["cn","app"], {
             ],
             $memo:"所有的资源字符串都位于 [xui.Locale] <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用."
         },
-        getLastClass:{
-            $desc:"得到文件的最后一个类.",
+        fetchClass:{
+            $desc:"得到本地或远程文件中的类.",
             $paras:[
                 "uri [必需参数]: String, .js 文件路径",
                 "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数. ",
@@ -3475,10 +3475,10 @@ _.set(xui.Locale,["cn","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
-                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 如果为null或0，取消设置",
+                    "type [可选参数] : Number, 1到4, 弹出类型. 默认为1， 如果为null或0，取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
-                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
+                    "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body]."
                 ]
             },
             popToTop:{
@@ -5225,6 +5225,39 @@ _.set(xui.Locale,["cn","app"], {
             getAllComponents:{
                 $desc:"得到所有的内部组件.",
                 $rtn:"xui.absObj"
+            },
+            getData:{
+                $desc:"获取Com对象上的所有界面控件的数据.",
+                $rtn:"Object, 键值对"
+            },
+            setData:{
+                $desc:"设置Com对象上的所有界面控件的数据.",
+                $rtn:"[self]",
+                 $paras:[
+                    "data [必需参数] : Object, 键值对"
+                ]
+            },
+            getValue:{
+                $desc:"获取Com对象上的所有界面值控件的真实值.",
+                $rtn:"Object, 键值对"
+            },
+           setValue:{
+                $desc:"设置Com对象上的所有界面值控件的真实值.",
+                $rtn:"[self]",
+                 $paras:[
+                    "values [必需参数] : Object, 键值对"
+                ]
+            },
+            getUIValue:{
+                $desc:"获取Com对象上的所有界面值控件的界面值.",
+                $rtn:"Object, 键值对"
+            },
+            setUIValue:{
+                $desc:"设置Com对象上的所有界面值控件的界面值.",
+                $rtn:"[self]",
+                 $paras:[
+                    "values [必需参数] : Object, 键值对"
+                ]
             },
             getEvents:{
                 $desc:"获取Com对象上的所有事件处理函数.",
@@ -7263,21 +7296,10 @@ _.set(xui.Locale,["cn","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
-                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 如果为null或0，取消设置",
+                    "type [可选参数] : Number, 1到4, 弹出类型. 默认为1， 如果为null或0，取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
-                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
-                ]
-            },
-            setHoverPop:{
-                $desc:"设置鼠标悬停弹出窗口.",
-                 $rtn:"[self]",
-                $paras:[
-                    "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
-                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 如果为null或0，取消设置",
-                    "beforePop[可选参数] : Function(prf, node, e, src, item), 窗口弹出之前调用",
-                    "beforeHide[可选参数] : Function(prf, node, e, src, item, trigger), 窗口隐藏之前调用",
-                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
+                     "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body]."
                 ]
             },
             getTheme:{

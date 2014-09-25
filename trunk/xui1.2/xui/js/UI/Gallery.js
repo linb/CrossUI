@@ -89,7 +89,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 cursor:'pointer',
                 'vertical-align':'top',
                 /*opera must be 0 not 'none'*/
-                border:'solid 1px #C2E4FC',
+                border:xui.browser.ie6?'solid 1px #fefefe':'solid 1px transparent',
+                _filter:'chroma(color=#FEFEFE)',
                 margin:0
             },
             ITEMFRAME:{
@@ -149,7 +150,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             COMMENT:{
                 display:'block',
                 'font-size':'12px',
-                margin:'0 2px 0 2px',
+                margin:'2px',
                 'text-align':'center'
             }
         },

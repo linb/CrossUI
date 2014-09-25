@@ -265,10 +265,11 @@ class IO{
 	 * fail:false,
 	 * success: array(array("name","locate","type"))
 	 */
-	function search($pattern=".*", $path=".", $type=1, $sub_dir_level=0, $limit=100, $pid='*') {
+	function search($pattern=".*", $path=".", $type=1, $sub_dir_level=0, $limit=100, $start=0, $sum=0, $pid='*') {
 		// check parameters
 		$is_error = $type!=1 && $type!=0 && $type!=-1;
 		$is_error = $is_error && (!is_int($sub_dir_level) || $sub_dir_level < 0);
+		$is_error = $start && (!is_int($start) || $start < 0);
 		$is_error = $is_error && (!is_int($limit) || $limit < 1);
 		if ($is_error) throw new LINB_E('Can\'t seek file.');
 		$id=0;
@@ -280,29 +281,52 @@ class IO{
 		for ($j=0,$k=count($i);$j<$k;$j++) {
 			// not dir or file
 			if ($i[$j]["type"]==-1) continue;
-			$id++;
-			$td=$pid.'.'.(string)$id;
-
-			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
-
-			// for sub
-			if ($i[$j]["type"]==0&&$sub_dir_level) {
-				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$limit, $td)) return FALSE;
-				$result = array_merge($result, $l);
-			}
-			$i[$j]['layer']=$sub_dir_level;
-			$i[$j]['id']=$td;
-			$i[$j]['pid']=$pid;
-			$result[] = $i[$j];
-			if (count($result)>=$limit) {
-				array_splice($result, $limit);
-				break;
-			}
+			$sum++;
+			if($sum > $start + $limit) break;
+			if($sum > $start){
+        			$id++;
+        			$td=$pid.'.'.(string)$id;
+        
+        			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
+        
+        			// for sub
+        			if ($i[$j]["type"]==0&&$sub_dir_level) {
+        				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$limit, $start, $sum, $td)) return FALSE;
+        				$result = array_merge($result, $l);
+        			}
+        			$i[$j]['layer']=$sub_dir_level;
+        			$i[$j]['id']=$td;
+        			$i[$j]['pid']=$pid;
+        			$result[] = $i[$j];
+        		}
 		}
 		unset($i, $j, $k, $l, $id, $td);
 		return $result;
 	}
+	function countFile($pattern=".*", $path=".", $type=1, $sub_dir_level=0) {
+		// check parameters
+		$is_error = $type!=1 && $type!=0 && $type!=-1;
+		$is_error = $is_error && (!is_int($sub_dir_level) || $sub_dir_level < 0);
+		if ($is_error) throw new LINB_E('Can\'t seek file.');
+		unset($is_error);
+		$sum = 0;
+		// === for  "rray() == FALSE"
+		if (FALSE===$i=$this->dirList($path)) return FALSE;
+		for ($j=0,$k=count($i);$j<$k;$j++) {
+			// not dir or file
+			if ($i[$j]["type"]==-1) continue;
+			$sum++;
+			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
 
+			// for sub
+			if ($i[$j]["type"]==0&&$sub_dir_level) {
+				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1))) return FALSE;
+				$sum += $l;
+			}
+		}
+		unset($i, $j, $k, $l);
+		return $sum;
+	}
 
 	/**
 	 * delete file or dir

@@ -722,10 +722,10 @@ _.merge(_,{
 });
 _.merge(_.fun,{
     body:function(fun){
-        with (String(fun))return slice(indexOf("{") + 1, lastIndexOf("}"));
+        with(""+fun)return slice(indexOf("{") + 1, lastIndexOf("}"));
     },
     args:function(fun){
-        with (String(fun)) return slice(indexOf("(") + 1, indexOf(")")).split(',');
+        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(',');
     },
     clone:function(fun){
         return new Function(_.fun.args(fun),_.fun.body(fun));

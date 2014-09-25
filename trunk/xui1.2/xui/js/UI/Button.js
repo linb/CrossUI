@@ -277,8 +277,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
 
                 //onClick event
                 if(profile.onClick)
-                    b.onClick(profile, e, src, p.$UIvalue);
-
+                    return b.onClick(profile, e, src, p.$UIvalue);
             },
             onKeydown:function(profile, e, src){
                 var keys=xui.Event.getKey(e), key = keys.key;

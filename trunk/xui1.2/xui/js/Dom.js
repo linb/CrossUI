@@ -1380,7 +1380,6 @@ Class('xui.Dom','xui.absBox',{
             //parent.get(0).appendChild(target.get(0));
             target.cssPos(pos).css({visibility:'hidden',display:'block'});
             parent.append(target);
-
             box.left=t.scrollLeft();
             box.top=t.scrollTop();
             box.width =t.width()+box.left;
@@ -1423,56 +1422,59 @@ type:4
 |                1 |                      |  2                | |               4   |
 +------------------+                      +-------------------- +-------------------+
 */
-
-            //target size
-            var w = target.offsetWidth(), h = target.offsetHeight(),
-                hi,wi;
-            switch(type){
-                case '1':
-                    hi=false;wi=true;
-                break;
-                case '2':
-                    hi=true;wi=false;
-                break;
-                case '3':
-                    hi=false;wi=false;
-                break;
-                case '4':
-                    hi=wi=true;
-                break;
-            }
-
-            if(hi){
-                if(region.top + h < box.height)
-                    pos.top=region.top;
-                else
-                    pos.top=region.top+region.height-h;
+            if(typeof(type)=='function'){
+                pos=type(region, box, target, t);
             }else{
-                if(region.top + region.height + h < box.height)
-                    pos.top=region.top + region.height;
-                else
-                    pos.top=region.top - h;
+                //target size
+                var w = target.offsetWidth(), h = target.offsetHeight(),
+                    hi,wi;
+                switch(type){
+                    case '1':
+                        hi=false;wi=true;
+                    break;
+                    case '2':
+                        hi=true;wi=false;
+                    break;
+                    case '3':
+                        hi=false;wi=false;
+                    break;
+                    case '4':
+                        hi=wi=true;
+                    break;
+                }
+    
+                if(hi){
+                    if(region.top + h < box.height)
+                        pos.top=region.top;
+                    else
+                        pos.top=region.top+region.height-h;
+                }else{
+                    if(region.top + region.height + h < box.height)
+                        pos.top=region.top + region.height;
+                    else
+                        pos.top=region.top - h;
+                }
+                if(wi){
+                    if(region.left + w < box.width)
+                        pos.left=region.left;
+                    else
+                        pos.left=region.left+region.width-w;
+                }else{
+                    if(region.left + region.width + w < box.width)
+                        pos.left=region.left + region.width;
+                    else
+                        pos.left=region.left - w;
+                }
+    
+                //over right
+                if(pos.left + w>  box.width)pos.left = box.width - w;
+                //over left
+                if(pos.left < box.left)pos.left = box.left;
+                //over bottom
+                if(pos.top + h>  box.height)pos.top = box.height - h;
+                //over top
+                if(pos.top < box.top)pos.top = box.top;
             }
-            if(wi){
-                if(region.left + w < box.width)
-                    pos.left=region.left;
-                else
-                    pos.left=region.left+region.width-w;
-            }else{
-                if(region.left + region.width + w < box.width)
-                    pos.left=region.left + region.width;
-                else
-                    pos.left=region.left - w;
-            }
-
-            //over right
-            if(pos.left + w>  box.width)pos.left = box.width - w;
-            //over left
-            if(pos.left < box.left)pos.left = box.left;
-            //over bottom
-            if(pos.top + h>  box.height)pos.top = box.height - h;
-            //over top
-            if(pos.top < box.top)pos.top = box.top;
             //show
             target.cssPos(pos).css({visibility:'visible'});
 
@@ -1487,21 +1489,22 @@ type:4
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
+            if(!_.isDefined(type))type=1;
             var aysid=c.xid()+":"+node.xid();
-            sor.onMouseover(!type?null:function(prf, e, src){
+            sor.onMouseover(type===null?null:function(prf, e, src){
                  _.resetRun(aysid,null);
                  if(!beforePop || false!==beforePop(prf, node, e, src))
                     node.popToTop(src, type);
-            },aysid).onMouseout(!type?null:function(profile, e, src){
+            },aysid).onMouseout(type===null?null:function(profile, e, src){
                     _.resetRun(aysid,function(){
                         if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host'))
                             node.hide();
                     });
             },aysid);
 
-            node.onMouseover(!type?null:function(){
+            node.onMouseover(type===null?null:function(){
                  _.resetRun(aysid,null);
-            },aysid).onMouseout(!type?null:function(){
+            },aysid).onMouseout(type===null?null:function(){
                     _.resetRun(aysid,function(){
                         if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop'))
                             node.hide();

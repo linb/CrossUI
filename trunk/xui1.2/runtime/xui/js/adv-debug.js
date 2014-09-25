@@ -15379,7 +15379,7 @@ Class("xui.svg", "xui.UI",{
                 if(p.disabled)return false;
                 //onClick event
                 if(profile.onClick)
-                    profile.boxing().onClick(profile, e, src);
+                    return profile.boxing().onClick(profile, e, src);
             }
         },
         EventHandlers:{
@@ -16100,7 +16100,7 @@ Class("xui.svg.absComb", "xui.svg",{
                 if(p.disabled)return false;
                 //onClick event
                 if(profile.onClick)
-                    profile.boxing().onClick(profile, e, src);
+                    return profile.boxing().onClick(profile, e, src);
             },
             TEXT:{
                 onClick:function(profile, e, src){
@@ -16111,7 +16111,7 @@ Class("xui.svg.absComb", "xui.svg",{
                     if(profile.onTextClick)
                         rtn=profile.boxing().onTextClick(profile, e, src);
                     if(rtn!==false && profile.onClick)
-                        profile.boxing().onClick(profile, e, src);
+                        return profile.boxing().onClick(profile, e, src);
                 }
             }
         },
