@@ -1350,7 +1350,9 @@ Class('xui.Dom','xui.absBox',{
             target.css({position:'absolute',left:xui.Dom.HIDE_VALUE, top:xui.Dom.HIDE_VALUE,display:'block', zIndex:xui.Dom.TOP_ZINDEX++});
 
             if(pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string'){
-                type = (type || 1).toString();
+                if(typeof(type)!="function"){
+                    type=(type||1)+'';
+                }
                 var node=xui(pos),
                     //base region
                     abspos = node.offset(null, parent);
@@ -1361,7 +1363,9 @@ Class('xui.Dom','xui.absBox',{
                     height:node.offsetHeight()
                 };
              }else{
-                type = type?'3':'0';
+                if(typeof(type)!="function"){
+                    type = type?'3':'0';
+                }
                 t=type=='0'?0:8;
                 region = pos.region || {
                     left:pos.left-t,
