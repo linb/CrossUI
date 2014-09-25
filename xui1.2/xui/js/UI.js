@@ -658,7 +658,7 @@ Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
-        setHoverPop : function(node, type,beforePop, beforeHide,parent){
+        setHoverPop : function(node, type, beforePop, beforeHide, parent){
             var c=this.get(0),sor=xui(c);
             if(node["xui.UI"]){
                 node=node.getRoot();
@@ -667,8 +667,9 @@ Class("xui.UI",  "xui.absObj", {
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
+            if(!_.isDefined(type))type=1;
             var aysid=c.getRoot().xid()+":"+node.xid();
-            c.$beforeHover=!type?null:function(profile, item, e, src, mtype){
+            c.$beforeHover=type===null?null:function(profile, item, e, src, mtype){
                 if(mtype=='mouseover'){
                     _.resetRun(aysid,null);
                     if(!beforePop || false!==beforePop(profile, node, e, src, item))
@@ -680,9 +681,9 @@ Class("xui.UI",  "xui.absObj", {
                     });
                 }
             };
-            node.onMouseover(!type?null:function(prf,e,src){
+            node.onMouseover(type===null?null:function(prf,e,src){
                  _.resetRun(aysid,null);
-            },aysid).onMouseout(!type?null:function(prf,e,src){
+            },aysid).onMouseout(type===null?null:function(prf,e,src){
                     _.resetRun(aysid,function(){
                         if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop'))
                             node.hide();
@@ -5233,7 +5234,7 @@ new function(){
                     var p=profile.properties;
                     if(p.disabled)return false;
                     if(profile.onClick)
-                        profile.boxing().onClick(profile, e, src);
+                        return profile.boxing().onClick(profile, e, src);
                 }
             },
             EventHandlers:{
@@ -5307,7 +5308,7 @@ new function(){
                     if(p.disabled)return false;
                     profile.getSubNode('FOCUS').focus();
                     if(profile.onClick)
-                        profile.boxing().onClick(profile, e, src);
+                        return profile.boxing().onClick(profile, e, src);
                 },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key;

@@ -989,8 +989,8 @@ _.set(xui.Locale,["en","app"], {
             ],
             $memo:"All the resource string is in [xui.Locale] <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] often used together."
         },
-        getLastClass:{
-            $desc:"Gets the last class from a file.",
+        fetchClass:{
+            $desc:"Gets the last class from a locale or remote URI.",
             $paras:[
                 "uri [Required]: String, .js file path",
                 "onSuccess [Optional]: Function(class, uir), if it's successfully, call this function. ",
@@ -3463,7 +3463,7 @@ _.set(xui.Locale,["en","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [Reqired]  : Object/xui.Dom/Element. The pop window",
-                    "type [Optional] : Number, from 1 to 4, pop positoin type. [null or 0] will clear the setting",
+                    "type [Optional] : Number, from 1 to 4, pop positoin type. Default is 1, [null or 0] will clear the setting",
                     "beforePop[Optional] : Function(prf, node, e, src,item),  triggered before the window pop",
                     "beforeHide[Optional] : Function(prf, node, e, src,item, trigger), triggered before the window hide",
                     "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
@@ -5209,6 +5209,39 @@ _.set(xui.Locale,["en","app"], {
             getAllComponents:{
                 $desc:"Gets all Components in a specified xui.Com Object.",
                 $rtn:"xui.absObj"
+            },
+            getData:{
+                $desc:"Collects and gets the data struct map of all UI components.",
+                $rtn:"Object, key/value pairs "
+            },
+            setData:{
+                $desc:"Sets data struct map of all UI components.",
+                $rtn:"[self]",
+                 $paras:[
+                    "data [Required] : Object, key/value pairs "
+                ]
+            },
+            getValue:{
+                $desc:"Collects and gets value map of all UI components.",
+                $rtn:"Object, key/value pairs "
+            },
+           setValue:{
+                $desc:"Sets value map of all UI components.",
+                $rtn:"[self]",
+                 $paras:[
+                    "values [Required] : Object, key/value pairs "
+                ]
+            },
+            getUIValue:{
+                $desc:"Collects and gets UI value map of all UI components.",
+                $rtn:"Object, key/value pairs "
+            },
+            setUIValue:{
+                $desc:"Sets UI value map of all UI components.",
+                $rtn:"[self] ",
+                 $paras:[
+                    "values [Required] : Object, key/value pairs "
+                ]
             },
             getEvents:{
                 $desc:"Gets all events or a specified event from a Com Object.",
@@ -7233,6 +7266,17 @@ _.set(xui.Locale,["en","app"], {
                   "value [Required] : String.",
                   "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
               ]
+            },
+            setHoverPop:{
+                $desc:"Sets pop window triggered by mouse hover.",
+                 $rtn:"[self]",
+                $paras:[
+                    "node [Reqired]  : Object/xui.Dom/Element. The pop window",
+                    "type [Optional] : Number, from 1 to 4, pop positoin type. Default is 1, [null or 0] will clear the setting",
+                    "beforePop[Optional] : Function(prf, node, e, src),  triggered before the window pop",
+                    "beforeHide[Optional] : Function(prf, node, e, src, trigger), triggered before the window hide",
+                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
+                ]
             },
             getTheme:{
                 $desc:"Gets the current control's theme key.",

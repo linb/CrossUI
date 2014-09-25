@@ -39,7 +39,7 @@ Class("xui.UI.Image", "xui.UI",{
                 var p=profile.properties;
                 if(p.disabled)return false;
                 if(profile.onClick)
-                    profile.boxing().onClick(profile, e, src);
+                    return profile.boxing().onClick(profile, e, src);
             },
             onDblclick:function(profile, e, src){
                 var p=profile.properties;
@@ -51,7 +51,6 @@ Class("xui.UI.Image", "xui.UI",{
         RenderTrigger:function(){
             var self=this, pro=self.properties, v=pro.src;
             if(v){
-                pro.value=pro.$UIvalue='';
                 self.boxing().setSrc(v, v!=xui.ini.img_bg);
             }
         },
