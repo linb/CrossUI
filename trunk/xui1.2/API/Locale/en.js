@@ -14816,6 +14816,25 @@ _.set(xui.Locale,["en","app"], {
         }
     });
     
+    _.set(xui.Locale,["cn","doc","xui","UI","HTMLButton"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.UI.HTMLButton Class",
+        constructor:{
+            desc:"Creates a xui.UI.HTMLButton Object."
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            onClick:{
+                $desc:"Fired when an tool bar item is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element."
+                ]
+            }
+        }
+    });
+
     _.set(xui.Locale,["en","doc","xui","UI","Span"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Span Class",

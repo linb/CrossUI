@@ -14734,6 +14734,25 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
+    _.set(xui.Locale,["cn","doc","xui","UI","HTMLButton"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.UI.HTMLButton 类",
+        constructor:{
+            $desc:"生成一个xui.UI.HTMLButton."
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            onClick:{
+                $desc:"当单击按钮时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            }
+        }
+    });
+
     _.set(xui.Locale,["cn","doc","xui","UI","Span"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Span 类",
@@ -19575,6 +19594,9 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onChecked:"改变选中状态"
         },
         'xui_UI_Element' : {
+        },
+        'xui_UI_HTMLButton' : {
+            onClick:"鼠标点击"
         },
         'xui_UI_Span' : {
         },
