@@ -5506,7 +5506,7 @@ new function(){
                 className:'{_className}',
                 style:'{_style};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
-                tabindex:'-1',
+                tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
@@ -5540,7 +5540,8 @@ new function(){
                             });
                         }
                     }
-                }
+                },
+                tabindex:-1
             },
             Appearances:{
                 KEY:{
@@ -5558,14 +5559,45 @@ new function(){
             }
         }
     });
-    
+    Class(u+".HTMLButton", u+".Element",{
+        Static:{
+            Templates:{
+                tagName:'button',
+                className:'{_className}',
+                style:'{_style};',
+                tabindex: '{tabindex}',
+                text:'{html}'+xui.UI.$childTag
+            },
+            DataModel:{
+                nodeName:null,
+                tabindex:1
+            },
+            Appearances:{
+                KEY:{
+                    'line-height':'1.22em',
+                    'cursor':'pointer'
+                }
+            },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, value){}
+            }
+        }
+    });
     Class(u+".Span", u,{
         Static:{
             Templates:{
                 className:'{_className}',
                 style:'{_style};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
-                tabindex:'-1',
+                tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
@@ -5594,7 +5626,8 @@ new function(){
                         }
                         node.css('overflow',v||'');
                     }
-                }
+                },
+                tabindex:-1
             },
             Appearances:{
                 KEY:{
@@ -5626,7 +5659,7 @@ new function(){
                 className:'xui-nooutline {_className}',
                 style:'{_style};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
-                tabindex:'-1',
+                tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
@@ -5669,7 +5702,8 @@ new function(){
                         }
                         node.css('overflow',v||'');
                     }
-                }
+                },
+                tabindex:-1
             },
             RenderTrigger:function(){
                 // only div
