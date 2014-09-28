@@ -3555,7 +3555,21 @@ Class("xui.UI",  "xui.absObj", {
             },
             dockMinW:0,
             dockMinH:0,
-            tips:''
+            tips:'',
+            rotate:{
+                ini:0,
+                action:function(v){
+                    var root=this.getRoot(),ins=this.boxing();
+                    v=parseInt(v,10);
+                    v=v%360;
+                    if(v<0)v=v+360;
+                    if(this.box['xui.svg']){
+                            ins.setAttr("KEY", {transform:'r'+v}, false);
+                    }else{
+                            root.css('transform', "rotate("+v+"deg)");
+                    }
+                }
+            }
         },
         EventHandlers:{
             beforeRender:function(profile){},
@@ -3590,6 +3604,9 @@ Class("xui.UI",  "xui.absObj", {
             }
             if(p.disabled)
                 b.setDisabled(true,true);
+
+            if(p.rotate)
+                b.setRotate(p.rotate,true);
 
             self._inValid=1;
         },
@@ -5762,23 +5779,8 @@ new function(){
                         rootNode=prf.getRootNode(),
                        css="";
                     var hash1=prop.normalStatus,
-                        hash2=_.copy(prop.hoverStatus),
-                        hash3=_.copy(prop.activeStatus);
-                    // for IE<8 simuate
-                    _.each(hash1,function(o,i){
-                        if(!(i in hash2) &&  !xui.Dom.css3Support(i)){
-                            // $gradient => background-image
-                            if(i=="$gradient" && ("background-image" in hash2))return;
-                            hash2[i]=hash1[i];
-                        }
-                    });
-                    _.each(hash2,function(o,i){
-                        if(!(i in hash3) &&  !xui.Dom.css3Support(i)){
-                            // $gradient => background-image
-                            if(i=="$gradient" && ("background-image" in hash3))return;
-                            hash3[i]=hash2[i];
-                        }
-                    });
+                        hash2=prop.hoverStatus,
+                        hash3=prop.activeStatus;
                     if(hash1&&!_.isEmpty(hash1))css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
                     if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
                     if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";

@@ -8032,6 +8032,18 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getRotate:{
+                $desc:"获取控件旋转角度",
+                $rtn:"Number"
+            },
+            setRotate:{
+                $desc:"设置控件旋转角度.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number. 0~360",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             setDockMinH:{
                 $desc:"设置停靠的最小高度.",
                 $rtn:"[self]",
@@ -19050,6 +19062,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dockFloat':'停靠漂浮',
             'dockMinW':'停靠最小宽度',
             'dockMinH':'停靠最小高度',
+             rotate:"旋转角度",
             'tips':'工具提示文本',
             'left':'左边沿坐标',
             'top':'上边沿坐标',

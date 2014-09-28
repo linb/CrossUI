@@ -8007,6 +8007,18 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getRotate:{
+                $desc:"Gets the control's rotate prop",
+                $rtn:"Number"
+            },
+            setRotate:{
+                $desc:"Sets the control's rotate prop",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number. 0~360",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             setDockMinH:{
                 $desc:"Sets dock minimal height on the each UIProfile.",
                 $rtn:"[self]",

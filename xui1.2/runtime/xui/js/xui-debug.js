@@ -1162,7 +1162,7 @@ _.merge(xui,{
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
-                },0,{asy:false}).start();
+                },0,{rspType:'text',asy:false}).start();
             }
         }
     },
@@ -1933,7 +1933,7 @@ Class('xui.absIO',null,{
         if(typeof self.query=='object' && self.reqType!="xml")
             self.query=_.copy(self.query, function(o){return o!==undefined});
 
-        if(!self._useForm && typeof self.query!='string' && self.reqType!="xml")
+        if(!self._useForm && _.isHash(self.query) && self.reqType!="xml")
             self.query = con._buildQS(self.query, self.reqType=="json",self.method=='POST');
 
         return self;
@@ -13285,14 +13285,15 @@ Class("xui.Tips", null,{
         /* set callback function
         callback: function(hashStr<"string after #!">)
         */
-    	setCallback: function(callback){
-    	    var self=this,
-    		    hash = location.hash;
-            if(!hash)hash ='';
-    		self._callback = callback;
+        setCallback: function(callback){
+            var self=this,
+                hash = location.hash;
+            if(hash)hash='#!' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!/,''));
+            else hash="#!";
+            self._callback = callback;
 
             if(callback){
-        		self._lastFI = hash;
+                self._lastFI = decodeURIComponent(hash);
                 switch(self._type){
                     case 'event':
                         window.onhashchange=self._checker;
@@ -13301,7 +13302,7 @@ Class("xui.Tips", null,{
                         document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));
                         var doc=document.getElementById(self._fid).contentWindow.document;
                         doc.open("javascript:'<html></html>'");
-                        doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('');</scri" + "pt></head><body></body></html>");
+                        doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('"+hash+"');</scri" + "pt></head><body></body></html>");
                         doc.close();
                     case 'timer':
                         if(self._itimer)
@@ -13309,60 +13310,62 @@ Class("xui.Tips", null,{
                         self._itimer = setInterval(self._checker,100);
                     break;
                 }
-        		self._callback(decodeURIComponent(hash.replace(/^#!/, '')));
+                self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')));
             }else{
                 if(self._itimer)
                     clearInterval(self._itimer);
             }
-    		return self;
-    	},
-    	_checker: function(hash){
-    	    var self=xui.History;
-    	    if(typeof self._callback!='function'){
-    	        if(self._itimer)
-    	            clearInterval(self._itimer);
-    	        return;
-    	    }
+            return self;
+        },
+        _checker: function(hash){
+            var self=xui.History;
+            if(typeof self._callback!='function'){
+                if(self._itimer)
+                    clearInterval(self._itimer);
+                return;
+            }
             switch(self._type){
                 case "iframe":
                     if(_.isSet(hash))
                         location.hash=hash;
                 case 'event':
                 case 'timer':
-        			if(decodeURIComponent(location.hash) != decodeURIComponent(self._lastFI)) {
-        				self._lastFI = location.hash;
-        				self._callback(decodeURIComponent(location.hash.replace(/^#!/, '')));
-        			}
-    			break;
-    		}
-    	},
-    	getFI:function(){
-    	    return this._lastFI;
-    	},
+                    if(decodeURIComponent(location.hash) != decodeURIComponent(self._lastFI)) {
+                        self._lastFI = decodeURIComponent(location.hash);
+                        self._callback(decodeURIComponent(location.hash.replace(/^#(!)?/, '')));
+                    }
+                break;
+            }
+        },
+        getFI:function(){
+            return this._lastFI;
+        },
         /*change Fragement Identifier(string after '#!')
         */
-    	setFI:function(fi,triggerCallback){
-    	    var self=this;
-    	    if(!self._callback)return;
-    	    if(fi)fi='#!' + encodeURIComponent((''+fi).replace(/^#!/,''));
-            if(self._lastFI == fi)return false;
-            
+        setFI:function(fi,triggerCallback){
+            var self=this;
+            if(!self._callback)return;
+            // ensure encode once
+            if(fi)fi='#!' + encodeURIComponent((''+decodeURIComponent(fi)).replace(/^#!/,''));
+            else fi="#!";
+            if(self._lastFI == decodeURIComponent(fi))return false;
+
             switch(self._type){
                 case "iframe":
-        			var doc=document.getElementById(self._fid).contentWindow.document;
+                    var doc=document.getElementById(self._fid).contentWindow.document;
                     doc.open("javascript:'<html></html>'");
-                    doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('#!"+encodeURIComponent(fi.replace(/^#!/,''))+"');</scri" + "pt></head><body></body></html>");
-                    doc.close();                        
+                    doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('"+fi+"');</scri" + "pt></head><body></body></html>");
+                    doc.close();
                 break;
                 case 'event':
                 case 'timer':
-        			location.hash = self._lastFI = fi;            			
+                    location.hash = self._lastFI = decodeURIComponent(fi);
+                if(triggerCallback!==false)
+                    _.tryF(self._callback,[decodeURIComponent(fi.replace(/^#!/,''))]);
                 break;
             }
-                
-            if(triggerCallback!==false)
-		        _.tryF(self._callback,[decodeURIComponent(fi.replace(/^#!/,''))]);
-    	}
+
+        }
     }
 });Class('xui.ComFactory',null,{
     Initialize:function(){
@@ -17360,7 +17363,21 @@ Class("xui.UI",  "xui.absObj", {
             },
             dockMinW:0,
             dockMinH:0,
-            tips:''
+            tips:'',
+            rotate:{
+                ini:0,
+                action:function(v){
+                    var root=this.getRoot(),ins=this.boxing();
+                    v=parseInt(v,10);
+                    v=v%360;
+                    if(v<0)v=v+360;
+                    if(this.box['xui.svg']){
+                            ins.setAttr("KEY", {transform:'r'+v}, false);
+                    }else{
+                            root.css('transform', "rotate("+v+"deg)");
+                    }
+                }
+            }
         },
         EventHandlers:{
             beforeRender:function(profile){},
@@ -17395,6 +17412,9 @@ Class("xui.UI",  "xui.absObj", {
             }
             if(p.disabled)
                 b.setDisabled(true,true);
+
+            if(p.rotate)
+                b.setRotate(p.rotate,true);
 
             self._inValid=1;
         },
@@ -19567,23 +19587,8 @@ new function(){
                         rootNode=prf.getRootNode(),
                        css="";
                     var hash1=prop.normalStatus,
-                        hash2=_.copy(prop.hoverStatus),
-                        hash3=_.copy(prop.activeStatus);
-                    // for IE<8 simuate
-                    _.each(hash1,function(o,i){
-                        if(!(i in hash2) &&  !xui.Dom.css3Support(i)){
-                            // $gradient => background-image
-                            if(i=="$gradient" && ("background-image" in hash2))return;
-                            hash2[i]=hash1[i];
-                        }
-                    });
-                    _.each(hash2,function(o,i){
-                        if(!(i in hash3) &&  !xui.Dom.css3Support(i)){
-                            // $gradient => background-image
-                            if(i=="$gradient" && ("background-image" in hash3))return;
-                            hash3[i]=hash2[i];
-                        }
-                    });
+                        hash2=prop.hoverStatus,
+                        hash3=prop.activeStatus;
                     if(hash1&&!_.isEmpty(hash1))css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
                     if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
                     if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
