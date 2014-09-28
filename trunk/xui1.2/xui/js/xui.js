@@ -1162,7 +1162,7 @@ _.merge(xui,{
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
-                },0,{asy:false}).start();
+                },0,{rspType:'text',asy:false}).start();
             }
         }
     },
@@ -1933,7 +1933,7 @@ Class('xui.absIO',null,{
         if(typeof self.query=='object' && self.reqType!="xml")
             self.query=_.copy(self.query, function(o){return o!==undefined});
 
-        if(!self._useForm && typeof self.query!='string' && self.reqType!="xml")
+        if(!self._useForm && _.isHash(self.query) && self.reqType!="xml")
             self.query = con._buildQS(self.query, self.reqType=="json",self.method=='POST');
 
         return self;
