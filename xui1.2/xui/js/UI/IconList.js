@@ -12,7 +12,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy;{itemClass} {disabled}  {readonly}',
+                    className:'xui-busy {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -48,11 +48,13 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null,
                 position:'relative',
                 cursor:'pointer',
-                visibility:'hidden',
                 border:'solid 1px #C2E4FC',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
                 'background-position':'center center'
+            },
+            IMAGE:{
+                visibility:'hidden'
             },
             IBWRAP:{
                 'font-size':0,

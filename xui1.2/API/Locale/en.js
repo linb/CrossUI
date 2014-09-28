@@ -8446,6 +8446,66 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
+    
+    _.set(xui.Locale,["cn","doc","xui","UI","CSSBox"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.UI.CSSBox Class",
+        constructor:{
+            $desc:"Creates a xui.UI.CSSBox Object."
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            getClassName:{
+              $desc:"Gets the class name",
+              $rtn:"String"
+            },
+            setClassName:{
+              $desc:"Sets the class name",
+              $rtn:"[self]",
+              $paras:[
+                  "value [Required] : String.",
+                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+              ]
+            },
+            getNormalStatus:{
+                $desc:"Gets the normal status CSS.",
+                $rtn:"Object, key/value pairs"
+            },
+            setNormalStatus:{
+                $desc:"Sets the normal status CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [Required] : Object, key/value pairs.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]                
+            },
+            getHoverStatus:{
+                $desc:"Gets the hover status CSS.",
+                $rtn:"Object, key/value pairs"
+            },
+            setHoverStatus:{
+                $desc:"Sets the hover status CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [Required] : Object, key/value pairs.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]                
+            },
+            getActiveStatus:{
+                $desc:"Gets the active status CSS.",
+                $rtn:"Object, key/value pairs"
+            },
+            setActiveStatus:{
+                $desc:"Sets the active status CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [Required] : Object, key/value pairs.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]                
+            },
+        }
+    });
+    
     _.set(xui.Locale,["en","doc","xui","UI","Widget"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Widget Class",
@@ -14865,6 +14925,14 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required] : String, 'auto','hidden','visible','' ",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            onClick:{
+                $desc:"Fired when an tool bar item is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element."
                 ]
             }
         }

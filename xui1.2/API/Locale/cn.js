@@ -5984,6 +5984,7 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
+
     _.set(xui.Locale,["cn","doc","xui","Tips"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Tips 类(静态类)",
@@ -6139,8 +6140,7 @@ _.set(xui.Locale,["cn","app"], {
             $memo:"该函数仅用于突出显示."
         }
     });
-
-
+    
     _.set(xui.Locale,["cn","doc","xui","absList"], {
         prototype:{
             activate:{
@@ -8477,6 +8477,66 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
+    
+    _.set(xui.Locale,["cn","doc","xui","UI","CSSBox"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.UI.CSSBox 类",
+        constructor:{
+            $desc:"生成一个xui.UI.CSSBox对象."
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            getClassName:{
+              $desc:"得到目标css类名.",
+              $rtn:"String"
+            },
+            setClassName:{
+                $desc:"设置目标css类名.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
+            getNormalStatus:{
+                $desc:"得到正常状态的CSS设置.",
+                $rtn:"Object, 键值对"
+            },
+            setNormalStatus:{
+                $desc:"设置正常状态的CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [必需参数] : Object, 键值对 .",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]                
+            },
+            getHoverStatus:{
+                $desc:"得到悬停状态的CSS设置.",
+                $rtn:"Object, 键值对"
+            },
+            setHoverStatus:{
+                $desc:"设置悬停状态的CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [必需参数] : Object, 键值对 .",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]                
+            },
+            getActiveStatus:{
+                $desc:"得到激活状态的CSS设置.",
+                $rtn:"Object, 键值对"
+            },
+            setActiveStatus:{
+                $desc:"设置激活状态的CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [必需参数] : Object, 键值对 .",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]                
+            },
+        }
+    });
+
     _.set(xui.Locale,["cn","doc","xui","UI","Widget"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Widget 类",
@@ -14784,6 +14844,14 @@ _.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 'auto','hidden','visible','' ",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
                 ]
+            },
+            onClick:{
+                $desc:"当单击按钮时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
@@ -18962,9 +19030,14 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'proxyType':'代理种类',
             'name':'绑定器唯一名'
         },
+        'xui_UI_CSSBox':{
+             "normalStatus":"正常状态",
+             "hoverStatus":"悬停状态",
+             "activeStatus":"激活状态"
+        },
         'xui_UI' : {
             'autoTips':'自动工具提示',
-            'className':'根节点CSS类',
+            'className':'CSS类名',
             'disableClickEffect':'禁用点击效果',
             'disableHoverEffect':'禁用悬停效果',
             'disableTips':'禁用工具提示',
@@ -19599,6 +19672,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onClick:"鼠标点击"
         },
         'xui_UI_Span' : {
+            onClick:"鼠标点击"
         },
         'xui_UI_Div' : {
         },

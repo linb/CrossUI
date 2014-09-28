@@ -19,6 +19,17 @@ Class("xui.CSS", null,{
                      .replace(ns._reg5,'')
                      .replace(ns._reg6,',').toLowerCase();
         },
+        _appendSS:function(container,txt, id){
+            var fc=document.createElement('style');
+            fc.type="text/css";
+            if(id)fc.id=id;
+            if(xui.browser.ie && fc.styleSheet && "cssText" in fc.styleSheet)
+                fc.styleSheet.cssText = txt||'';
+            else
+                try{fc.appendChild(document.createTextNode(txt||''))}catch(p){fc.styleSheet.cssText = txt||''}
+            container.appendChild(fc);
+            return fc;
+        },
         _createCss:function(id, txt,last){
             var ns=this,
                 head=this._getHead(),
