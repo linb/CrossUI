@@ -5767,11 +5767,15 @@ new function(){
                     // for IE<8 simuate
                     _.each(hash1,function(o,i){
                         if(!(i in hash2) &&  !xui.Dom.css3Support(i)){
+                            // $gradient => background-image
+                            if(i=="$gradient" && ("background-image" in hash2))return;
                             hash2[i]=hash1[i];
                         }
                     });
                     _.each(hash2,function(o,i){
                         if(!(i in hash3) &&  !xui.Dom.css3Support(i)){
+                            // $gradient => background-image
+                            if(i=="$gradient" && ("background-image" in hash3))return;
                             hash3[i]=hash2[i];
                         }
                     });

@@ -2538,7 +2538,7 @@ type:4
                     n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
                 }
 
-                if(name=="$gradients"){
+                if(name=="$gradient"){
                     return ns.$setGradients(node,value);
                 }else if(name=='opacity'){
                     value=_.isFinite(value)?
