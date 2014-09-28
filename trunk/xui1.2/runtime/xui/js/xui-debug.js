@@ -6793,6 +6793,17 @@ Class('xui.Event',null,{
                      .replace(ns._reg5,'')
                      .replace(ns._reg6,',').toLowerCase();
         },
+        _appendSS:function(container,txt, id){
+            var fc=document.createElement('style');
+            fc.type="text/css";
+            if(id)fc.id=id;
+            if(xui.browser.ie && fc.styleSheet && "cssText" in fc.styleSheet)
+                fc.styleSheet.cssText = txt||'';
+            else
+                try{fc.appendChild(document.createTextNode(txt||''))}catch(p){fc.styleSheet.cssText = txt||''}
+            container.appendChild(fc);
+            return fc;
+        },
         _createCss:function(id, txt,last){
             var ns=this,
                 head=this._getHead(),
@@ -7388,7 +7399,7 @@ Class('xui.Dom','xui.absBox',{
                     cache=xui.$cache.profileMap,
                     fragment,uiObj,p,i,o,j,v,uiObj,arr=[];
                 target.each(function(o){
-                    uiObj=(p=o.id)&&(p=cache[p])&&p.LayoutTrigger&&dom.getStyle(one,'display')!='none'&&p.LayoutTrigger;
+                    uiObj=(p=o.id)&&(p=cache[p])&&p.LayoutTrigger&&(one===xui('body').get(0)||dom.getStyle(one,'display')!='none')&&p.LayoutTrigger;
                     if(uiObj)arr.push([uiObj,p]);
                 });
                 if(ns.length==1)
@@ -8801,14 +8812,16 @@ type:4
                     if(n.tagName=='IMG' && /\.png$/i.test(n.src)){
                         n.style.height = n.height;
                         n.style.width = n.width;
-                        n.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")";
+                        n.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")";
+                        if('msfilter' in n.style)n.style.msfilter = n.style.filter;
                         n.src = xui.ini.img_bg;
                     }
                     var bgimg = n.currentStyle.backgroundImage || n.style.backgroundImage,
                         bgmatch = bgimg.match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
                     if(bgmatch){
                         n.style.backgroundImage = 'url(' + xui.ini.img_bg + ')';
-                        n.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")";
+                        n.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")";
+                        if('msfilter' in n.style)n.style.msfilter = n.style.filter;
                     }
                 });
             }
@@ -8905,7 +8918,6 @@ type:4
         },
         getStyle:function(node, name){
             if(!node || node.nodeType!=1)return '';
-
             var ns=xui.Dom,
                 css3prop=xui.Dom._css3prop;
 
@@ -8966,7 +8978,8 @@ type:4
                 return d*(Math.PI/180);
             };
             if(!value){
-                node.style.filter = node.style.filter.replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
             }else{
                 r=value.match(/(rotate)\(\s*([\d.-]+)deg\s*\)/);
@@ -8996,7 +9009,8 @@ type:4
                 transX=parseFloat(transX)||0;
                 transY=parseFloat(transY)||0;
             
-                node.style.filter = node.style.filter.replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
                 var ow=node.offsetWidth,oh=node.offsetHeight;
             
@@ -9023,7 +9037,8 @@ type:4
                     m21 += Math.tan(toD(skewY));
                 }
                 
-                node.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')";
+                node.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')";
+                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 
                 var w=node.offsetWidth,h=node.offsetHeight;
                 if(w!=ow || transX){
@@ -9037,10 +9052,11 @@ type:4
         $textShadowIE:function(node, value, box){
             if(!value){
                 var f=function(s){
-                    return s.replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"");
+                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"");
                 },
                 s1=node.style.filter,
-                s2=node.style.msfilter;
+                s2=('msfilter' in node.style)?node.style.msfilter:"";
+                
                 if(s1)node.style.filter=f(s1);
                 if(s2)node.style.msfilter=f(s2);
                 if(!box)
@@ -9053,7 +9069,8 @@ type:4
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
-                    node.style.msfilter=node.style.filter=f(r[1],r[2],r[4],r[6]||"#000000");
+                    node.style.filter=(node.style.filter||"")+f(r[1],r[2],r[4],r[6]||"#000000");
+                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                     if(!box)
                         node.style.backgroundColor="#cccccc";
                 }
@@ -9130,15 +9147,16 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style["filter"] = node.style["filter"].replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     rate=rate||1;
 
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
 
-                	var ew=node.offsetWidth ,
-                	eh=node.offsetHeight,
+                	var ew=node.offsetWidth||0,
+                	eh=node.offsetHeight||0,
                 	aw=ew*rate*2,
                 	ah=eh*rate*2;
 
@@ -9195,7 +9213,8 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s["filter"] = 'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)';
+                	s.filter = (s.filter||"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)';
+                	if('msfilter' in s)s.msfilter = s.filter;
                     
                     // the first node
                     if(node.firstChild)
@@ -9203,8 +9222,10 @@ type:4
                     else
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
-                	if(stops[stops.length-1].opacity)
-                	    node.style["filter"] = "progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	if(stops[stops.length-1].opacity){
+                	    node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                	}
                 }
             },
             iecracker21=function(node, orient, stops){
@@ -9228,13 +9249,14 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style["filter"] = node.style["filter"].replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
 
-                	var ew=node.offsetWidth ,
-                	eh=node.offsetHeight,
+                	var ew=node.offsetWidth||0 ,
+                	eh=node.offsetHeight||0,
                 	size=Math.min(ew,eh),
                 	xs=0,xe=size,ys=0,ye=size;
 
@@ -9277,7 +9299,8 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s["filter"] = 'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')';
+                	s.filter = (s.filter||"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')';
+                	if('msfilter' in s)s.msfilter = s.filter;
                     
                     // the first node
                     if(node.firstChild)
@@ -9285,15 +9308,18 @@ type:4
                     else
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
-                	if(stops[stops.length-1].opacity)
-                	    node.style["filter"] = "progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	if(stops[stops.length-1].opacity){
+                	    node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                	}
                 }
             },
             iecracker2=function(node,orient,stops){
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
                 if(!orient){
-                    node.style["filter"] = node.style["filter"].replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'');
+                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'');
+                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                     var i,a=node.childNodes,l=a.length;
                     for(i=0;i<l;i++){
                         if(a[i].nodeType==1 && a[i].id==id){
@@ -9302,7 +9328,8 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style["filter"] = node.style["filter"].replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr,
@@ -9337,7 +9364,8 @@ type:4
                 	        outerColor=t;
                     	break;
                 	}
-                	node.style["filter"] = "progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")";
+                	node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")";
+                	if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
@@ -9600,7 +9628,9 @@ type:4
             if(stops){
                 if(stops.length>1){
                     _.arr.stableSort(stops,function(x,y){
-                        return x.pos>y.pos?1:x.pos==y.pos?0:-1;
+                        x=parseFloat(x.pos);
+                        y=parseFloat(y.pos);
+                        return x>y?1:x==y?0:-1;
                     });
                 }else{
                     return;
@@ -9628,6 +9658,21 @@ type:4
                             css1(node,orient,stops,shape,size,rate);
                     }
                 }
+            }
+        },
+        $adjustCss:function(hash,returnStr){
+            var fack={nodeType:1,style:{}};
+            xui.Dom.setStyle(fack,hash);
+            if(returnStr){
+                var arr=[];
+                if(xui.browser.ie&&xui.browser.ver==8&&fack.style.filter)
+                    fack.style["-ms-filter"]=fack.style.filter;
+                _.each(fack.style,function(o,i){
+                    arr.push(i.replace(/([A-Z])/g, "-$1" ).toLowerCase()+":"+o);
+                });
+                return arr.join(';');
+            }else{
+                return fack.style;
             }
         },
         setStyle:function(node, name , value){
@@ -9660,9 +9705,9 @@ type:4
                             :1;
                     value= value >0.9999 ? '' : ((!ns.css3Support("opacity"))&&xb.ie) ? "alpha(opacity="+ 100*value +")" : value;
                     if((!ns.css3Support("opacity"))&&xb.ie){
-                        node.zoom=1;
+                        node.style.zoom=1;
                         name='filter';
-                        value = node.style.filter.replace(r1, "") + value;
+                        value = (node.style.filter||"").replace(r1, "") + value;
                     }
                 }else if(_.arr.indexOf(css3prop,n1)!=-1){
                     if(!ns.css3Support(name)){
@@ -9704,7 +9749,7 @@ type:4
             var self=arguments.callee,
                 _c=self._c||(self._c={});
             
-            key=key.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
+            key=key.replace("$","").replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
             
             if(key in _c)return _c[key];
 
@@ -13800,10 +13845,10 @@ Class('xui.UIProfile','xui.Profile', {
                 ele=null;
             }
             
-            if(ns.CA){
+            if(ns.CA&&!_.isEmpty(ns.CA)){
                 ins.setCustomAttr(ns.CA);
             }
-            if(ns.CS){
+            if(ns.CS&&!_.isEmpty(ns.CS)){
                 ins.setCustomStyle(ns.CS);
             }
 
@@ -14114,12 +14159,12 @@ Class('xui.UIProfile','xui.Profile', {
                 box=ns.box,
                 str=box._rpt(ns, xui.UI.$doTemplate(ns, _.get(xui.$cache.template,[box.KEY, ns._hash]), items, key)),
                 nodes = xui.UI.$toDom(ns, str.replace(ns._cacheR2,''), addEventHandler);
-            // set custom styles for the given nodes only
-            if(ns.CS){
-                ns.boxing().setCustomStyle(ns.CS,undefined,nodes);
-            }
-            if(ns.CA){
+            if(ns.CA&&!_.isEmpty(ns.CA)){
                 ns.boxing().setCustomAttr(ns.CA,undefined,nodes);
+            }
+            // set custom styles for the given nodes only
+            if(ns.CS&&!_.isEmpty(ns.CS)){
+                ns.boxing().setCustomStyle(ns.CS,undefined,nodes);
             }
             return nodes;
         },
@@ -14525,6 +14570,7 @@ Class("xui.UI",  "xui.absObj", {
                 np=c._namePool,
                 df1=xui.UI.__resetDftProp,
                 df2=c.__resetDftProp,
+                df3=c.$adjustProp,
                 ds=c.$DataStruct,
                 alias,temp;
             if(properties && properties['xui.Profile']){
@@ -14542,13 +14588,14 @@ Class("xui.UI",  "xui.absObj", {
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
             }
             np[alias]=1;
-
+    
             for(var i in ds){
                 if(!(i in profile.properties)){
                     temp = df2&&(i in df2) ? df2[i] : df1&&(i in df1) ? df1[i] : ds[i];
                     profile.properties[i]=typeof temp=='object'?_.clone(temp,true):temp;
                 }
             }
+            if(typeof(df3)=="function")df3(profile);
 
             profile.keys = c.$Keys;
 
@@ -14715,7 +14762,7 @@ Class("xui.UI",  "xui.absObj", {
             return this.each(function(o){
                 if(o.renderId){
                     o.getRoot().hide();
-                    o.properties.top=o.properties.left=-10000;
+                    o.properties.top=o.properties.left=parseInt(xui.Dom.HIDE_VALUE,10);
                     o.properties.dockIgnore=true;
                 }
             });
@@ -15199,7 +15246,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         adjustDock:function(force){
             return this.each(function(o){
-                if(o.properties.dock && o.properties.dock!='none' && o.renderId){
+                if('dock' in o.properties && o.properties.dock && o.properties.dock!='none' && o.renderId){
                     var n=o.getRootNode();
                     // ensure display
                     if(n.clientHeight){
@@ -16226,7 +16273,7 @@ Class("xui.UI",  "xui.absObj", {
         }
         */
         $buildTemplate:function(profile, template, key, obj, arr){
-            if(template && String(template.tagName).toLowerCase()=='text'){
+            if(template && (template.tagName+"").toLowerCase()=='text'){
                 arr[arr.length] = template.text;
                 return;
             }
@@ -16340,13 +16387,15 @@ Class("xui.UI",  "xui.absObj", {
                 arr[arr.length]='</'+tagName+'>';
 
             if(first){
-                var a0=obj[0],a1=obj[1];
-                arr.join('').replace(r7,function(a,b,c,d){
+                var a0=obj[0],a1=obj[1],str=arr.join(''),has=false;
+                str.replace(r7,function(a,b,c,d){
                     if(b)a0[a0.length]=b;
                     a1[a0.length]=a0[a0.length]=c;
                     if(d)a0[a0.length]=d;
+                    has=true;
                     return '';
                 });
+                if(!has){a0[0]=str;}
             }
         },
         _rpt:function(profile,temp){
@@ -18356,6 +18405,16 @@ Class("xui.absList", "xui.absObj",{
             return this;
         }
     },
+    Static:{
+        getDropKeys:function(profile,node){
+            var item=profile.getSubItemByDom(node);
+            return (item&&item.dropKeys) ||profile.properties.dropKeys;
+        },
+        getDragKey:function(profile,node){
+            var item=profile.getSubItemByDom(node);
+            return (item&&item.dragKey) ||profile.properties.dragKey;
+        }
+    },
     Initialize:function(){
         var o=this.prototype;
         _.arr.each(_.toArr('getItemByItemId,getItemByDom,getSubIdByItemId,getSubNodeByItemId'),function(s){
@@ -18904,6 +18963,7 @@ new function(){
             }
         }
     });
+    
     Class(u+".Link", u,{
         Static:{
             Appearances:{
@@ -18960,6 +19020,7 @@ new function(){
             }
         }
     });
+    
     Class(u+".SLabel", u,{
         Static:{
             Templates:{
@@ -19151,6 +19212,7 @@ new function(){
             }
         }
     });
+    
     Class(u+".SCheckBox", [u,"xui.absValue"],{
         Instance:{
             activate:function(){
@@ -19319,6 +19381,7 @@ new function(){
             }
         }
     });
+    
     Class(u+".HTMLButton", u+".Element",{
         Static:{
             Templates:{
@@ -19331,6 +19394,12 @@ new function(){
             DataModel:{
                 nodeName:null,
                 tabindex:1
+            },
+            Appearances:{
+                KEY:{
+                    'line-height':'1.22em',
+                    'cursor':'pointer'
+                }
             },
             Behaviors:{
                 onClick:function(profile, e, src){
@@ -19345,6 +19414,7 @@ new function(){
             }
         }
     });
+    
     Class(u+".Span", u,{
         Static:{
             Templates:{
@@ -19388,11 +19458,153 @@ new function(){
                     'line-height':'1.22em'
                 }
             },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, value){}
+            },
             _prepareData:function(profile){
                 var data=arguments.callee.upper.call(this, profile);
                 if(_.isStr(data.overflow))
                     data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
                 return data;
+            }
+        }
+    });
+
+    Class(u+".CSSBox", u+".Span",{
+        Instance:{
+            adjustDock:null,
+            draggable:null,
+            busy:null,
+            free:null
+        },
+        Static:{
+            $noDomRoot:true,
+            $onlyHideRoot:true,
+            _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1},
+            Templates:{
+                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;position:absolute;z-index:0;'
+            },
+            DataModel:{
+                className:{
+                    ini:null,
+                    action:function(){
+                        this.box._refreshCSS(this);
+                    }
+                },
+                normalStatus:{
+                    ini:{},
+                    action:function(v){
+                        this.box._refreshCSS(this);
+                    }
+                },
+                hoverStatus:{
+                    ini:{},
+                    action:function(v){
+                        this.box._refreshCSS(this);
+                    }
+                },
+                activeStatus:{
+                    ini:{},
+                    action:function(v){
+                        this.box._refreshCSS(this);
+                    }
+                },
+                position:null,
+                display:null,
+                visibility:null,
+                zIndex:null,
+                left:null,
+                top:null,
+                width:null,
+                height:null,
+                right:null,
+                bottom:null,
+                dock:null,
+                renderer:null,
+                display:null,
+                html:null,
+                selectable:null,
+                overflow:null,
+                tabindex:null,
+                autoTips:null,
+                disableClickEffect:null,
+                disableHoverEffect:null,
+                disableTips:null,
+                disabled:null,
+                defaultFocus:null,
+                doc:null,
+                dockIgnore:null,
+                dockOrder:null,
+                dockMargin:null,
+                dockFloat:null,
+                dockMinW:null,
+                dockMinH:null,
+                tips:null
+            },
+            $adjustProp:function(profile){
+                profile.properties.className=profile.properties.className||('xui-css-'+profile.$xid);
+            },
+            RenderTrigger:function(){
+                var prf=this;
+                prf.box._refreshCSS(prf);
+                if(!prf.$inDesign){
+                    xui('body').prepend(prf.getRoot());
+                }
+            },
+            _refreshCSS:function(prf){
+                _.resetRun(prf.key+":"+prf.$xid,function(){
+                    if(prf.destroyed)return;
+                    var prop=prf.properties,
+                        cls=prop.className,
+                        rootNode=prf.getRootNode(),
+                       css="";
+                    var hash1=prop.normalStatus,
+                        hash2=_.copy(prop.hoverStatus),
+                        hash3=_.copy(prop.activeStatus);
+                    // for IE<8 simuate
+                    _.each(hash1,function(o,i){
+                        if(!(i in hash2) &&  !xui.Dom.css3Support(i)){
+                            hash2[i]=hash1[i];
+                        }
+                    });
+                    _.each(hash2,function(o,i){
+                        if(!(i in hash3) &&  !xui.Dom.css3Support(i)){
+                            hash3[i]=hash2[i];
+                        }
+                    });
+                    if(hash1&&!_.isEmpty(hash1))css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
+                    if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
+                    if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
+                    rootNode.innerHTML="Text";
+                    if(css)xui.CSS._appendSS(rootNode, css);
+                    xui.Dom._setClass(rootNode, cls);
+                });
+            },
+            EventHandlers:{
+                onContextmenu:null,
+                onDock:null,
+                onLayout:null,
+                onMove:null,
+                onRender:null,
+                onResize:null,
+                onShowTips:null,
+                beforeAppend:null,
+                afterAppend:null,
+                beforeRender:null,
+                afterRender:null,
+                beforeRemove:null,
+                afterRemove:null,
+                onHotKeydown:null,
+                onHotKeypress:null,
+                onHotKeyup:null
             }
         }
     });
@@ -29557,7 +29769,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy;{itemClass} {disabled}  {readonly}',
+                    className:'xui-busy {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -29593,11 +29805,13 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null,
                 position:'relative',
                 cursor:'pointer',
-                visibility:'hidden',
                 border:'solid 1px #C2E4FC',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
                 'background-position':'center center'
+            },
+            IMAGE:{
+                visibility:'hidden'
             },
             IBWRAP:{
                 'font-size':0,
