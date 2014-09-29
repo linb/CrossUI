@@ -281,14 +281,13 @@ class IO{
 		for ($j=0,$k=count($i);$j<$k;$j++) {
 			// not dir or file
 			if ($i[$j]["type"]==-1) continue;
+    			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
+
 			$sum++;
 			if($sum > $start + $limit) break;
 			if($sum > $start){
         			$id++;
         			$td=$pid.'.'.(string)$id;
-        
-        			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
-        
         			// for sub
         			if ($i[$j]["type"]==0&&$sub_dir_level) {
         				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$limit, $start, $sum, $td)) return FALSE;
@@ -315,8 +314,8 @@ class IO{
 		for ($j=0,$k=count($i);$j<$k;$j++) {
 			// not dir or file
 			if ($i[$j]["type"]==-1) continue;
-			$sum++;
 			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
+			$sum++;
 
 			// for sub
 			if ($i[$j]["type"]==0&&$sub_dir_level) {

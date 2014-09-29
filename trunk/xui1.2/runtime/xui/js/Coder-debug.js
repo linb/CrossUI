@@ -9,7 +9,7 @@ Class("xui.Coder", null,{
             '.sh .cmd-ruler{width:25px;}'+
             '.sh .sh-toggle{width:16px;cursor:pointer;font-size:14px;color:blue;vertical-align:baseline;}'+
             '.sh ol{color: #FF97A9; margin: 0px 0px 0px 45px; padding: 0; border-bottom: 1px solid #EBEADB; }'+
-            '.sh ol li{color: #000157;border-left: 3px solid #6CE26C;padding-left: 10px;line-height: 14px;list-style: decimal none;margin:0;border-bottom: 1px dashed #E2E2E2;}'+
+            '.sh ol li{color: #000157;border-left: 3px solid #6CE26C;padding-left: 10px;line-height: 14px;list-style: decimal none;margin:0;/*border-bottom: 1px dashed #E2E2E2;*/}'+
             '.sh-con span{vertical-align:inherit;'+(xui.browser.ie?'zoom:0;':'')+'}'+
             '.sh .js .comment, .sh .php .comment{ color: green; }'+
             '.sh .js .string, .sh .php .string{ color: #ff1493; }'+
@@ -458,7 +458,7 @@ Class("xui.Coder", null,{
             if(alist[alist.length-1]==""){alist.pop();}
 
             var aa=[];
-            aa.push("<div id='"+_key+":"+id+":' class='sh'>");
+            aa.push("<div id='"+_key+":"+id+":' class='sh' "+"style='"+(height?("overflow:hidden;height:"+height+(_.isFinite(height)?"px":"")):"") +"'>");
             if(arrActions && arrActions[0]){
                 aa.push("<div id='"+_key+"-"+'sh-cmd'+":"+id+":' class='sh-cmd'>");
 
@@ -476,7 +476,7 @@ Class("xui.Coder", null,{
             aa.push("<pre style='display:none'>");
             aa.push(_str.replace(/<([\w\/])/g,"&lt;$1"));
             aa.push("</pre>");
-            aa.push("<div id='"+_key+"-"+'sh-con'+":"+id+":'class='sh-con' "+"style='"+(height?"overflow:auto;height:"+height+"px;'":"") +(fold?"display:none;":"")+";'><ol id='"+_key+"-"+'ol'+":"+id+":' start='1' class='"+type+"'><li>");
+            aa.push("<div id='"+_key+"-"+'sh-con'+":"+id+":'class='sh-con' "+"style='"+(height?("overflow:auto;height:"+height+(_.isFinite(height)?"px":"")+";"):"") +(fold?"display:none;":"")+"'><ol id='"+_key+"-"+'ol'+":"+id+":' start='1' class='"+type+"'><li>");
             aa.push(alist.join('&nbsp;</li><li>'));
             aa.push("</li></ol></div>");
             aa.push("</div>");
