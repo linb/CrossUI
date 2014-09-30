@@ -832,8 +832,10 @@ Class("xui.UI",  "xui.absObj", {
             return self;
         },
         busy:function(message,html,key,subId){
-            message=typeof message=='string'?message:'Loading...';
-            html=typeof html=='string'?html:'<span style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:16px;">'+message+'</span>';
+            var msg=typeof message=='string'?message:'Loading...',
+                htm=typeof html=='string'?html:'<span style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:16px;">'+msg+'</span>';
+            // busy dom too
+            if(message===true||html===true)xui.Dom.busy();
             return this.each(function(profile){
                 _.resetRun(profile.$xid+':busy',function(profile,key,subId){
                     // destroyed
@@ -846,18 +848,19 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:11px;line-height:24px;cursor:wait;"><div>'+html+'</div></div>');
+                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:11px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
                         xui([node.get(0)]).css({opacity:0.5});
                     }
                     node=profile.$busy;
 
-                    xui([node.get(1).firstChild]).html(html,false).css('paddingTop',(parentNode.offsetHeight()||0)/2+'px');
+                    xui([node.get(1).firstChild]).html(htm,false).css('paddingTop',(parentNode.offsetHeight()||0)/2+'px');
 
                     parentNode.append(node);
                 },50,[profile,key,subId]);
             });
         },
         free:function(){
+            xui.Dom.free();
             return this.each(function(profile){
                 _.resetRun(profile.$xid+':busy');
                 if(profile.$busy){
@@ -1696,11 +1699,6 @@ Class("xui.UI",  "xui.absObj", {
                 'background-position' : 'center',
                 margin:'0 2px'
             },
-            '.xui-ui-busy':{
-                'background-image': 'url('+xui.ini.img_busy+')',
-                'background-repeat':'no-repeat', 
-                'background-position': 'center center'
-            },
             '.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-refresh, .xui-uicmd-toggle, .xui-uicmd-toggle2, .xui-uicmd-min, .xui-uicmd-max,.xui-uicmd-restore,.xui-uicmd-pin, .xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add, .xui-uicmd-remove':{
                 'background-image': xui.UI.$bg('icons.gif', '', true),
                 'background-repeat':'no-repeat', 
@@ -2231,6 +2229,23 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-item-row':{
                 display:"block",
                 'white-space': 'nowrap'
+            },
+            '.xui-ui-busy':{
+                'background-image': 'url('+xui.ini.img_busy+')',
+                'background-repeat':'no-repeat', 
+                'background-position': 'center center'
+            },
+            '.xui-uicmd-toggle-busy':{
+                $order:7,
+                'background-image': 'url('+xui.ini.img_busy+')',
+                'background-repeat':'no-repeat', 
+                'background-position': 'center center'
+            },
+            '.xui-uicmd-toggle2-busy':{
+                $order:7,
+                'background-image': 'url('+xui.ini.img_busy+')',
+                'background-repeat':'no-repeat', 
+                'background-position': 'center center'
             }
         });
     },

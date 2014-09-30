@@ -77,7 +77,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
                 profile.inShowing=1;
                 if(t=p.fromRegion)
-                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,fun,500,0,'expoIn').start();
+                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,fun,300,0,'expoIn').start();
                 else
                     fun();
             });
@@ -103,7 +103,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     delete profile.inHiding;
                 };
                 if(t)
-                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, fun,500,0,'expoOut').start();
+                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, fun,300,0,'expoOut').start();
                 else
                     fun();
             });
@@ -121,7 +121,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 };
 
                 if(t)
-                    xui.Dom.animate({border:'dashed 1px #ff0000'},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,500,0,'expoOut').start();
+                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
                 else
                     fun();
             });
@@ -821,7 +821,7 @@ if(xui.browser.ie){
             if(t.resizer && profile.$resizer)
                 profile.$resizer.hide();
 
-            if(t.shadow)
+            if(t.shadow && (parseInt(t.dockMargin.right,10)<6||parseInt(t.dockMargin.bottom)<6))
                 //ins.setShadow(false);
                 ins._unShadow(false);
 

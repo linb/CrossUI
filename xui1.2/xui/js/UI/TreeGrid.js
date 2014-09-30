@@ -4174,59 +4174,66 @@ editorDropListHeight
             //close
             if(item._checked){
                 if(!flag){
-                    var h = subNs.height();
+                    var onend=function(){
+                        subNs.css({display:'none',height:0});
+                        markNode.tagClass('-checked', false);
+                        item._checked = false;
+                        profile.box._asy(profile);
 
-                    if(pro.animCollapse)
-                        subNs.animate({'height':[h,0]},null,function(){
-                            subNs.css({display:'none'})
-                        }, 200, 0, 'expoIn', profile.key+profile.id).start();
-                    else
-                        subNs.css({
-                            display:'none',
-                            height:0
-                        });
-
-                    markNode.tagClass('-checked', false);
-                    item._checked = false;
-                    profile.box._asy(profile);
+                        //clear rows cache
+                        delete profile.$allrowscache;
+                        profile.box._adjustBody(profile,'showrow');
+                    };
+                    if(pro.animCollapse) subNs.animate({'height':[subNs.height(),0]},null,onend, 200, 0, 'expoOut', profile.key+profile.id).start();
+                    else onend();
                 }
             }else{
                 //open
                 if(flag){
                     var openSub = function(profile, item, id, markNode, subNs, sub){
                         var b=profile.boxing(),
-                            p = profile.properties;
+                            p = profile.properties,
+                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
                         //created
                         if(!item._inited){
                             delete item.sub;
                             //before insertRows
                             item._inited=true;
                             //subNs.css('display','none');
-
-                            if(typeof sub=='string')
-                                subNs.html(item.sub=sub,false);
-                            else if(_.isArr(sub))
-                                b.insertRows(sub, item.id);
-                            else if(sub['xui.Template']||sub['xui.UI'])
-                                subNs.append(item.sub=sub.render(true));
-
+                            if(sub){
+                                if(typeof sub=='string')
+                                    subNs.html(item.sub=sub,false);
+                                else if(_.isArr(sub))
+                                    b.insertRows(sub, item.id);
+                                else if(sub['xui.Template']||sub['xui.UI'])
+                                    subNs.append(item.sub=sub.render(true));
+                            }
                             //set checked items
                             b._setCtrlValue(b.getUIValue(), true);
                         }
 
-                        var h = subNs.height(true);
-                        if(p.animCollapse)
-                            subNs.animate({'height':[0,h]},function(){
-                                subNs.css({display:''})
-                            },function(){
-                                subNs.css({height:'auto'})
-                            }, 200, 0, 'expoOut', profile.key+profile.id).start();
-                        else
-                            subNs.css({display:'',height:'auto'});
-
-                        markNode.tagClass('-checked');
-                        item._checked = true;
-                        profile.box._asy(profile);
+                        var h=0;
+                        subNs.css("height","0px").css("display",'');
+                        subNs.children().each(function(o){
+                            h+=o.offsetHeight;
+                        });
+                        var onend=function(){
+                            markNode.removeClass('xui-ui-busy');
+                            markNode.tagClass('-busy', false);
+                            if(empty){
+                                markNode.css('background','none');
+                            }else{
+                                subNs.css({display:'',height:'auto'});
+                                markNode.tagClass('-checked');
+                            }
+                            item._checked = true;
+                            profile.box._asy(profile);
+                            //clear rows cache
+                            delete profile.$allrowscache;
+                            profile.box._adjustBody(profile,'showrow');
+                        };
+                        if(p.animCollapse) subNs.animate({'height':[0,h]},null,onend, 200, 0, 'expoIn', profile.key+profile.id).start();
+                        else onend();
                     };
 
                     var sub = item.sub, callback=function(sub){
@@ -4235,8 +4242,9 @@ editorDropListHeight
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
+                        markNode.addClass('xui-ui-busy');
                         var r=profile.boxing().onGetContent(profile, item, callback);
-                        if(r){
+                        if(r||r===false){
                             //return true: continue UI changing
                             if(r===true)
                                 item._inited=true;
@@ -4245,9 +4253,6 @@ editorDropListHeight
                     }
                 }
             }
-            //clear rows cache
-            delete profile.$allrowscache;
-            profile.box._adjustBody(profile,'showrow');
         },
         _getCellId:function(profile, rowId, colId){
             return _.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
@@ -4856,11 +4861,11 @@ editorDropListHeight
             }
         },
         _adjustBody:function(profile, trigger, callback){
-            profile.getSubNode('SCROLL').css('overflow','hidden');
             if(!profile.renderId || profile.destroyed)return;
             _.resetRun(profile.$xid+'4',function(){
                 // destroyed
                 if(!profile.renderId || profile.destroyed)return;
+                profile.getSubNode('SCROLL').css('overflow','hidden');
                 var overflowX=profile.box._adjustRelWith(profile);
 
                 var body=profile.getSubNode('ROWS'),

@@ -1310,7 +1310,7 @@ Class('xui.Dom','xui.absBox',{
             if((step||0)>0)
                 time=step*16;
             else
-                time = time||300;
+                time = time||200;
 
             type = hash[type]!==undefined?type:'expoIn';
 
