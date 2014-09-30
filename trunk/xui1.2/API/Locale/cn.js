@@ -19380,7 +19380,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_TreeBar' : {
             'iniFold':'默认收缩子行',
-            'animCollapse':'动画暂开收缩',
+            'animCollapse':'收展动画',
             'group':'分组模式',
             'selMode':'点选模式',
             'noCtrlKey':'无Ctrl辅助多选',
@@ -19414,7 +19414,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'rowNumbered':'显示行号',
             'editable':'可编辑',
             'iniFold':'默认收缩子行',
-            'animCollapse':'动画暂开收缩',
+            'animCollapse':'收展动画',
             'gridHandlerCaption':'表格手柄标题',
             'showHeader':'是否显示表头',
             'headerHeight':'表头高度',

@@ -320,7 +320,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 $order:1,
                'background-color': '#fffa9f'
             },
-            'BAR-checked':{
+            'BAR-mousedown, BAR-checked':{
                 $order:2,
                'background-color': '#fffa9f'
             },
@@ -483,7 +483,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             width:200,
             height:200,
             iniFold:true,
-            animCollapse:false,
+            animCollapse:true,
             dock:'fill',
             group:{
                 ini:false,
@@ -767,34 +767,28 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(ins.beforeFold && false===ins.beforeFold(profile,item)){
                         return;
                     }
-                    var h=subNs.height();
-
-                    if(properties.animCollapse)
-                        subNs.animate({'height':[h,0]},null,function(){
-                            subNs.css({display:'none'})
-                        }, 200, 0, 'expoIn', profile.key+profile.id).start();
-                    else
-                        subNs.css({
-                            display:'none',
-                            height:0
-                        });
-
-                    markNode.tagClass('-checked', false);
-                    barNode.tagClass('-expand',false).tagClass('-fold');
-                    item._checked = false;
-
-                    if(properties.dynDestory){
-                        var s=item.sub, arr=[];
-                        for(var i=0,l=s.length;i<l;i++)
-                            arr.push(s[i].id);
-                        profile.boxing().removeItems(arr);
-                        item.sub=true;
-                        delete item._inited;
-                    }
-                    if(ins.afterFold)
-                        ins.afterFold(profile,item);
+                    var onend=function(){
+                        subNs.css({display:'none',height:0});
+                        markNode.tagClass('-checked', false);
+                        barNode.tagClass('-expand',false).tagClass('-fold');
+                        item._checked = false;
+                        if(properties.dynDestory){
+                            var s=item.sub, arr=[];
+                            for(var i=0,l=s.length;i<l;i++)
+                                arr.push(s[i].id);
+                            profile.boxing().removeItems(arr);
+                            item.sub=true;
+                            delete item._inited;
+                        }
+                        if(ins.afterFold)
+                            ins.afterFold(profile,item);
+                    };
+                    if(!recursive){
+                         if(properties.animCollapse){
+                            subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                        }else onend();
+                    }else onend();
                 }
-
                 if(recursive && item.sub && !properties.dynDestory){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
@@ -810,23 +804,24 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                     var openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
                             var b=profile.boxing(),
-                                p=profile.properties;
+                                p=profile.properties,
+                                empty = sub===false ||  (_.isArr(sub) && sub.length===0);
                             //created
                             if(!item._inited){
                                 delete item.sub;
                                 //before insertRows
                                 item._inited=true;
-                                //subNs.css('display','none');
-                                if(typeof sub=='string')
-                                    subNs.html(item.sub=sub,false);
-                                else if(_.isArr(sub)){
-                                    b.insertItems(sub, item.id);
-                                    // for []
-                                    if(!item.sub)item.sub=sub;                                    
-                                }else if(sub['xui.Template']||sub['xui.UI']){
-                                    subNs.append(item.sub=sub.render(true));
+                                if(sub){
+                                    if(typeof sub=='string')
+                                        subNs.html(item.sub=sub,false);
+                                    else if(_.isArr(sub)){
+                                        b.insertItems(sub, item.id);
+                                        // for []
+                                        if(!item.sub)item.sub=sub;                                    
+                                    }else if(sub['xui.Template']||sub['xui.UI']){
+                                        subNs.append(item.sub=sub.render(true));
+                                    }
                                 }
-
                                 //set checked items
                                 profile._innerSet=1;
                                 b.setUIValue(b.getUIValue(), true);
@@ -836,41 +831,47 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(p.singleOpen)
                                 b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
 
-                            if(!recursive){
-                                var h = subNs.height(true);
-                                if(p.animCollapse)
-                                    subNs.animate({'height':[0,h]},function(){
-                                            subNs.css({display:''})
-                                        },function(){
-                                            subNs.css({height:'auto'})
-                                        },200, 0, 'expoOut', profile.key+profile.id).start();
-                                else
-                                    subNs.css({display:'',height:'auto'});
-                            }else
+                            var onend=function(){
                                 subNs.css({display:'',height:'auto'});
+                                markNode.removeClass('xui-ui-busy');
+                                if(empty){
+                                    markNode.css('background-image','none');
+                                }else{
+                                    markNode.tagClass('-checked');
+                                    barNode.tagClass('-fold',false).tagClass('-expand');
+                                }
+                                item._checked = true;
+                                if(ins.afterExpand)
+                                    ins.afterExpand(profile,item);
+                            };
+                            if(!recursive){
+                                var h=0;
+                                subNs.css("height","0px").css("display",'');
+                                subNs.children().each(function(o){
+                                    h+=o.offsetHeight;
+                                });
+                                if(p.animCollapse){
+                                    subNs.animate({'height':[0,h]},null,onend,200, null, 'expoIn', profile.key+profile.id).start();
+                                }else onend();
+                            }else onend();
+                    },
+                    sub=item.sub,
+                    callback=function(sub){
+                        openSub(profile, item, id, markNode, subNs, barNode, sub, recursive)
+                    },t;
 
-                            markNode.tagClass('-checked');
-                            barNode.tagClass('-fold',false).tagClass('-expand');
-
-                            item._checked = true;
-                        },
-                        sub=item.sub,
-                        callback=function(sub){
-                            openSub(profile, item, id, markNode, subNs, barNode, sub, recursive)
-                        },
-                        t;
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
+                        markNode.addClass('xui-ui-busy');
                         var r=profile.boxing().onGetContent(profile, item, callback);
-                        if(r){
-                            //return true: continue UI changing
+                        if(r||r===false){
+                            //return true: toggle icon will be checked
                             if(r===true)
                                 item._inited=true;
                             callback(r);
-                        }                                                              }
-                    if(ins.afterExpand)
-                        ins.afterExpand(profile,item);
+                        }
+                    }
                 }
                 if(recursive && item.sub){
                     _.arr.each(item.sub,function(o){

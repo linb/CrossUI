@@ -11,20 +11,16 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
     },
     Initialize:function(){
         this.addTemplateKeys(['IMAGE']);
-        var t=this.getTemplate();
-        delete t.$submap.items.ITEM.BAR.tabindex;
-        t.$submap.items.ITEM.BAR.ITEMCAPTION.tabindex='{_tabindex}';
-        this.setTemplate(t);
     },
     Static:{
-        _focusNodeKey:'ITEMCAPTION',
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
             },
             ITEM:{
                 'white-space': 'nowrap',
-                position:'relative'
+                position:'relative',
+                overflow:'hidden'
             },
             BAR:{
                zoom:xui.browser.ie?1:null,
@@ -32,7 +28,17 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                display:'block',
                'font-size':'12px',
                padding:'0',
-               border: '0'
+               border: '0',
+               'outline-offset':'-1px',
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
+            },
+            'BAR-mouseover':{
+                $order:12,
+               'background-color': '#eee'
+            },
+            'BAR-mouseover, BAR-checked':{
+               $order:14,
+               'background-color':'#eee'
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,
@@ -40,7 +46,8 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 'font-size':'1px',
                 //1px for ie8
                 'line-height':'1px',
-                position:'relative'
+                position:'relative',
+                overflow:'hidden'
             },
             BOX:{
                 left:0,
@@ -134,62 +141,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             'IMAGE-vertical':{
                 $order:16,
                 'background-position' : '-228px -236px'
-            },
-            ITEMCAPTION:{
-                cursor:'pointer',
-               'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
-            },
-            'ITEMCAPTION-mouseover':{
-                $order:12,
-               'background-color': '#eee'
-            },
-            'BAR-checked':{
-            },
-            'ITEMCAPTION-mousedown, BAR-checked ITEMCAPTION':{
-               $order:14,
-               'background-color':'#4E8FDF',
-               'color':'#fff'
             }
         },
         Behaviors:{
-            HoverEffected:{ITEMCAPTION:'ITEMCAPTION'},
-            ClickEffected:{TOGGLE:'TOGGLE', ITEMCAPTION:'ITEMCAPTION'},
-            DraggableKeys:["ITEMCAPTION"],
-            DroppableKeys:["BAR","TOGGLE","BOX"],
-            BAR:{
-                onDblclick:null,
-                onClick:null,
-                onKeydown:null,
-                onContextmenu:null,
-                afterMouseover:null,
-                afterMouseout:null,
-                afterMousedown:null,
-                afterMouseup:null,
-                beforeDragbegin:null,
-                beforeDragstop:null,
-                beforeMousedown:null
-            },
-            ITEMCAPTION:{
-                onDblclick:function(profile, e, src){
-                    var properties = profile.properties,
-                        item = profile.getItemByDom(src),
-                        rtn=profile.onDblclick && profile.boxing().onDblclick(profile, item, src);
-                    if(item.sub && rtn!==false){
-                        profile.getSubNode('TOGGLE',profile.getSubId(src)).onClick();
-                    }
-                },
-                onClick:function(profile, e, src){
-                    return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
-                },
-                onKeydown:function(profile, e, src){
-                    return profile.box._onkeydownbar(profile,e,xui.use(src).parent().xid());
-                },
-                onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu)
-                        return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
-                }
-            },
             MARK:{
                 onClick:function(profile, e, src){
                    return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
@@ -199,9 +153,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 onClick:function(profile, e, src){
                    return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
                 }
-            },
-            BOX:{
-                onScroll:null
             }
         },
         DataModel:{
