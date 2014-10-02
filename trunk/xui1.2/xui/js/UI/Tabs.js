@@ -279,7 +279,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     caption = profile.getItemByItemId(id).caption;
                 profile.getSubNodeByItemId('CAPTION', id).html(
                     profile.getItemByItemId(id).caption=mark?('*'+caption):caption.replace(/^\*/,'')
-                ).css('fontStyle',mark?'italic':'normal');
+                ).css({color:mark?'#ff0000':'','font-weight':mark?'bold':''});
                 subId._dirty=mark;
             }
             return this;
@@ -648,8 +648,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         box.setUIValue(item.id);
                         //if success
                         if(box.getUIValue() == item.id){
-                            box.onItemSelected(profile, item, e, src);
-                            return false;
+                            rt=box.onItemSelected(profile, item, e, src)||rt2;
+                            return rt;
                         }
                     }
                 }
@@ -1028,7 +1028,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             item._opt = item.optBtn?'':dpn;
             item.itemDisplay = item.hidden?dpn:'';
             if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth="width:"+item.itemWidth+(_.isFinite(item.itemWidth)?"px":"");
+                item.itemWidth="width:"+t+(_.isFinite(t)?"px":"");
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
 

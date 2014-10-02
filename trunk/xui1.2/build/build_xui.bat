@@ -84,4 +84,6 @@ rd %outPath% /S /Q
 del /q xui.js
 del /q adv.js
 
+IF ERRORLEVEL 0 goto done
 pause
+:done

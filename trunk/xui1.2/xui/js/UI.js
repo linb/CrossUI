@@ -222,7 +222,7 @@ Class('xui.UIProfile','xui.Profile', {
             return xui(this.renderId?[this.renderId]:[],false);
         },
         getContainer:function(subId){
-            if(subId=typeof subId=='string'?subId:null)subId=this.getSubIdByItemId(subId);
+            if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
             return this.box._CONTAINERKEY?this.getSubNode(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNode(this.keys.PANEL, subId):this.getRoot();
         },
         linkParent:function(parentProfile, linkId, index){
@@ -667,7 +667,7 @@ Class("xui.UI",  "xui.absObj", {
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
-            if(!_.isDefined(type))type=1;
+            if(!_.isDefined(type))type='12';
             var aysid=c.getRoot().xid()+":"+node.xid();
             c.$beforeHover=type===null?null:function(profile, item, e, src, mtype){
                 if(mtype=='mouseover'){
@@ -848,7 +848,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:11px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
+                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:12px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
                         xui([node.get(0)]).css({opacity:0.5});
                     }
                     node=profile.$busy;
@@ -1173,6 +1173,11 @@ Class("xui.UI",  "xui.absObj", {
                     }
                 }
                 if(pro.renderId){
+                    var oldp;
+                    if(pro.parent && _.get(pro,["properties","dock"])!='none' && !_.get(pro,["properties","dockIgnore"]) && !_.get(pro,["properties","dockFloat"])){
+                        if(target['xui.absBox'])
+                            oldp=target.reBoxing().parent();
+                    }
                     parentNode=inParent?parentNode:pro.getContainer(subId);
                     if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
                         if(!base){
@@ -1181,6 +1186,9 @@ Class("xui.UI",  "xui.absObj", {
                             baseN[pre?'addPrev':'addNext'](target);
                         }
                     }
+                    //adjust old parent
+                    if(oldp&&oldp.get(0))
+                        oldp.onSize();
                 }else{
                     if(!target['xui.UI']){
                         _.arr.insertAny(pro.exchildren||(pro.exchildren=[]),[target,subId],index,true);
@@ -1444,6 +1452,8 @@ Class("xui.UI",  "xui.absObj", {
         },
         adjustDock:function(force){
             return this.each(function(o){
+                if(!o.renderId)return;
+                // adjust self
                 if('dock' in o.properties && o.properties.dock && o.properties.dock!='none' && o.renderId){
                     var n=o.getRootNode();
                     // ensure display
@@ -1458,6 +1468,11 @@ Class("xui.UI",  "xui.absObj", {
                         }
                         xui.UI.$dock(o,true,true);
                     }
+                }
+                // adjust children
+                if(o.$onDock){
+                    var n =o.boxing().getContainer(true);
+                    if(n&&n.onSize&&n.get(0))n.onSize();
                 }
             });
         }
@@ -2196,6 +2211,10 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-outset':{
                 border:'solid 1px',
                 'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa'
+            },
+            '.xui-uiborder-none':{
+                $order:10,
+                border:'none'
             }
         });
 
@@ -4160,8 +4179,10 @@ Class("xui.UI",  "xui.absObj", {
             }
 
             //run once now
-            if(value != 'none' && trigger)
-                profile.$dockFun({width:1, height:1, $dockid:_.arr.indexOf(['width','height','fill','cover'],value)!=-1?profile.$xid:null, $type: value});
+            if(trigger)
+                p.onSize();
+//            if(value != 'none' && trigger)
+//                profile.$dockFun({width:1, height:1, $dockid:_.arr.indexOf(['width','height','fill','cover'],value)!=-1?profile.$xid:null, $type: value});
         },
 
         _beforeSerialized:function(profile){
@@ -5610,6 +5631,12 @@ new function(){
     });
     
     Class(u+".HTMLButton", u+".Element",{
+        Instance:{
+            activate:function(){
+                this.getRoot().focus();
+                return this;
+            }
+        },
         Static:{
             Templates:{
                 tagName:'button',

@@ -83,7 +83,7 @@ Class("xui.UI.Shadow","xui.UI",{
         });
     },
     Static:{
-        SIZE:8,
+        SIZE:4,
         Templates:{
             tagName:'div',
             R:{
