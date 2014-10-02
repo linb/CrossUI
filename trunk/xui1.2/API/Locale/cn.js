@@ -8546,6 +8546,18 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]                
             },
+            getFocusStatus:{
+                $desc:"得到焦点状态的CSS设置.",
+                $rtn:"Object, 键值对"
+            },
+            setFocusStatus:{
+                $desc:"设置焦点状态的CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [必需参数] : Object, 键值对 .",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]                
+            }
         }
     });
 
@@ -19045,7 +19057,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_CSSBox':{
              "normalStatus":"正常状态",
              "hoverStatus":"悬停状态",
-             "activeStatus":"激活状态"
+             "activeStatus":"激活状态",
+             "focusStatus":"焦点状态"
         },
         'xui_UI' : {
             'autoTips':'自动工具提示',

@@ -8515,6 +8515,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]                
             },
+            getFocusStatus:{
+                $desc:"Gets the focus status CSS.",
+                $rtn:"Object, key/value pairs"
+            },
+            setFocusStatus:{
+                $desc:"Sets the focus status CSS.",
+                $rtn:"[self],",
+                $paras:[
+                    "value [Required] : Object, key/value pairs.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]                
+            }
         }
     });
     
