@@ -5742,7 +5742,7 @@ new function(){
         Static:{
             $noDomRoot:true,
             $onlyHideRoot:true,
-            _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1},
+            _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;position:absolute;z-index:0;'
             },
@@ -5766,6 +5766,12 @@ new function(){
                     }
                 },
                 activeStatus:{
+                    ini:{},
+                    action:function(v){
+                        this.box._refreshCSS(this);
+                    }
+                },
+                focusStatus:{
                     ini:{},
                     action:function(v){
                         this.box._refreshCSS(this);
@@ -5822,10 +5828,12 @@ new function(){
                        css="";
                     var hash1=prop.normalStatus,
                         hash2=prop.hoverStatus,
-                        hash3=prop.activeStatus;
+                        hash3=prop.activeStatus,
+                        hash4=prop.focusStatus;
                     if(hash1&&!_.isEmpty(hash1))css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
                     if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
                     if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
+                    if(hash4&&!_.isEmpty(hash4))css+="."+cls+":focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
                     rootNode.innerHTML="Text";
                     if(css)xui.CSS._appendSS(rootNode, css);
                     xui.Dom._setClass(rootNode, cls);

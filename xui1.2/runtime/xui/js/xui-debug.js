@@ -2323,17 +2323,13 @@ Class('xui.SAjax','xui.absIO',{
         "No":{},
         $response:function(obj,id) {
             var self=this;
-            try{
-                if(obj && (o = self._pool[id])){
-                    for(var i=0,l=o.length;i<l;i++){
-                        o[i]._response=obj;
-                        o[i]._onResponse();
-                    }
-                }else
-                    self._onError(new Error("SAjax return value formatting error--"+obj));
-            }catch(e){
-                xui.Debugger && xui.Debugger.trace(e);
-            }
+            if(obj && (o = self._pool[id])){
+                for(var i=0,l=o.length;i<l;i++){
+                    o[i]._response=obj;
+                    o[i]._onResponse();
+                }
+            }else
+                self._onError(new Error("SAjax return value formatting error--"+obj));
         },
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
@@ -14664,7 +14660,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:11px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
+                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:12px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
                         xui([node.get(0)]).css({opacity:0.5});
                     }
                     node=profile.$busy;
@@ -19447,6 +19443,12 @@ new function(){
     });
     
     Class(u+".HTMLButton", u+".Element",{
+        Instance:{
+            activate:function(){
+                this.getRoot().focus();
+                return this;
+            }
+        },
         Static:{
             Templates:{
                 tagName:'button',
@@ -19552,7 +19554,7 @@ new function(){
         Static:{
             $noDomRoot:true,
             $onlyHideRoot:true,
-            _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1},
+            _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;position:absolute;z-index:0;'
             },
@@ -19576,6 +19578,12 @@ new function(){
                     }
                 },
                 activeStatus:{
+                    ini:{},
+                    action:function(v){
+                        this.box._refreshCSS(this);
+                    }
+                },
+                focusStatus:{
                     ini:{},
                     action:function(v){
                         this.box._refreshCSS(this);
@@ -19632,10 +19640,12 @@ new function(){
                        css="";
                     var hash1=prop.normalStatus,
                         hash2=prop.hoverStatus,
-                        hash3=prop.activeStatus;
+                        hash3=prop.activeStatus,
+                        hash4=prop.focusStatus;
                     if(hash1&&!_.isEmpty(hash1))css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
                     if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
                     if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
+                    if(hash4&&!_.isEmpty(hash4))css+="."+cls+":focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
                     rootNode.innerHTML="Text";
                     if(css)xui.CSS._appendSS(rootNode, css);
                     xui.Dom._setClass(rootNode, cls);

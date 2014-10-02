@@ -15924,7 +15924,7 @@ Class("xui.svg.image", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.image(prop.src,prop.x,prop.y,prop.width,prop.height);
+            var obj = paper.image(xui.adjustRes(prop.src),prop.x,prop.y,prop.width,prop.height);
             obj.node.id=prf.box.KEY+":"+prf.serialId+":";
             return paper.set().push(obj);
         }
