@@ -367,7 +367,7 @@ html, .xui-uibg-base{
 }
 /*xui.UI.Tabs*/
 .xui-tabs-items{
-    padding:0 0 5px 0;
+    padding:0 0 3px 0;
 }
 .xui-tabs-list{
     background-image: url(Tabs/line.gif);
@@ -376,7 +376,7 @@ html, .xui-uibg-base{
     border-bottom-color:#C6E0EF;
 }
 .xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
-    background-image: url(Public/button.gif);
+    background-image: url(ToolBar/button.png);
 }
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop, .xui-tabs-left-mouseover, .xui-tabs-right-mouseover, .xui-tabs-drop-mouseover{
     background-image: url(Tabs/cmds.png);
@@ -384,7 +384,7 @@ html, .xui-uibg-base{
 
 /*xui.UI.ButtonViews*/
 .xui-buttonviews-item, .xui-buttonviews-itemi, .xui-buttonviews-itemc{
-    background-image: url(Public/button.gif);
+    background-image: url(ToolBar/button.png);
 }
 
 /*xui.UI.Stacks*/
@@ -408,6 +408,9 @@ html, .xui-uibg-base{
 /*xui.UI.PopMenu*/
 .xui-popmenu-items{
     background-image:url(PopMenu/bg.gif);
+}
+.xui-popmenu-border {
+    border: 1px solid #aca899;
 }
 .xui-popmenu-box{
     background-color:#F4FCFF;
@@ -484,6 +487,7 @@ html, .xui-uibg-base{
 /*xui.UI.ToolBar and xui.UI.MenuBar*/
 .xui-toolbar-handler, .xui-menubar-handler{
     background-image: url(Public/handler.gif);
+    width:4px;
 }
 .xui-toolbar-split{
     background-image: url(Public/split_vertical.gif);
@@ -491,6 +495,10 @@ html, .xui-uibg-base{
 .xui-toolbar-drop{
     background-image: url(Button/drop.gif);
 }
+.xui-toolbar-btn, .xui-toolbar-btni, .xui-toolbar-btnc{
+    background-image: url(ToolBar/button.png);
+}
+
 .xui-menubar-item-mouseover,
 .xui-menubar-item-mouseover .xui-menubar-itemi,
 .xui-menubar-item-mouseover .xui-menubar-itemc,

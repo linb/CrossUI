@@ -336,7 +336,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             HoverEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
             ClickEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
             onMousedown:function(profile, e){
-                profile.box._active(profile);
+                if(!profile.$inModal)
+                    profile.box._active(profile);
             },
             afterKeydown:function(profile, e){
                 var keys = xui.Event.getKey(e);
@@ -821,7 +822,7 @@ if(xui.browser.ie){
             if(t.resizer && profile.$resizer)
                 profile.$resizer.hide();
 
-            if(t.shadow && (parseInt(t.dockMargin.right,10)<6||parseInt(t.dockMargin.bottom)<6))
+            if(t.shadow && (parseInt(t.dockMargin.right,10)<xui.UI.Shadow.SIZE||parseInt(t.dockMargin.bottom)<xui.UI.Shadow.SIZE))
                 //ins.setShadow(false);
                 ins._unShadow(false);
 

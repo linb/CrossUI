@@ -1079,19 +1079,19 @@ _.merge(xui,{
         return '<span id="'+xui.$localeDomId+'" class="'+s.replace(/([\x01\x02\x03\x04])/g,function(a){return '$'+xui._unescapeMap[a];})+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
-    adjustRes:function(str, wrap, onlyBraces){
+    adjustRes:function(str, wrap, onlyBraces, onlyVars){
         if(!_.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
         str=xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
                     // protect $@{
-            return c=='$' ? d :
+            return c=='$' ? onlyVars?a:d :
                     // $a.b.c-1-3
-                    f=='$' ? wrap(g) :
+                    f=='$' ? onlyVars?a:wrap(g) :
                     // $(a.b.c-d) 
-                    i=='$' ? wrap(j) : 
+                    i=='$' ? onlyVars?a:wrap(j) : 
                     // $a
-                    l=='$' ? wrap(m) :
+                    l=='$' ? onlyVars?a:wrap(m) :
                     // variable: @a@ @a.b.c@ {a.b.c}
                      ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:""))
                      : a;
@@ -1902,7 +1902,7 @@ Class('xui.absIO',null,{
         //give defalut value to those members
         _.merge(options,{
             id : options.id || (''+(con._id++)),
-            uri : options.uri||'',
+            uri : options.uri?xui.adjustRes(options.uri,0,1,1):'',
             username:options.username||undefined,
             password:options.password||undefined,
             query : options.query||'',
@@ -2323,17 +2323,13 @@ Class('xui.SAjax','xui.absIO',{
         "No":{},
         $response:function(obj,id) {
             var self=this;
-            try{
-                if(obj && (o = self._pool[id])){
-                    for(var i=0,l=o.length;i<l;i++){
-                        o[i]._response=obj;
-                        o[i]._onResponse();
-                    }
-                }else
-                    self._onError(new Error("SAjax return value formatting error--"+obj));
-            }catch(e){
-                xui.Debugger && xui.Debugger.trace(e);
-            }
+            if(obj && (o = self._pool[id])){
+                for(var i=0,l=o.length;i<l;i++){
+                    o[i]._response=obj;
+                    o[i]._onResponse();
+                }
+            }else
+                self._onError(new Error("SAjax return value formatting error--"+obj));
         },
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');

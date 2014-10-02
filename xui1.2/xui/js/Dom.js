@@ -1351,7 +1351,7 @@ Class('xui.Dom','xui.absBox',{
 
             if(pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string'){
                 if(typeof(type)!="function"){
-                    type=(type||1)+'';
+                    type=(type||12)+'';
                 }
                 var node=xui(pos),
                     //base region
@@ -1431,45 +1431,53 @@ type:4
             }else{
                 //target size
                 var w = target.offsetWidth(), h = target.offsetHeight(),
-                    hi,wi;
-                switch(type){
-                    case '1':
-                        hi=false;wi=true;
-                    break;
-                    case '2':
-                        hi=true;wi=false;
-                    break;
-                    case '3':
-                        hi=false;wi=false;
-                    break;
-                    case '4':
-                        hi=wi=true;
-                    break;
-                }
-    
-                if(hi){
-                    if(region.top + h < box.height)
-                        pos.top=region.top;
-                    else
-                        pos.top=region.top+region.height-h;
+                    adjust=function(type){
+                        var hi,wi;
+                        switch(type){
+                            case '1':
+                                hi=false;wi=true;
+                            break;
+                            case '2':
+                                hi=true;wi=false;
+                            break;
+                            case '3':
+                                hi=wi=false;
+                            break;
+                            case '4':
+                                hi=wi=true;
+                            break;
+                        }
+            
+                        if(hi){
+                            if(region.top + h < box.height)
+                                pos.top=region.top;
+                            else
+                                pos.top=region.top+region.height-h;
+                        }else{
+                            if(region.top + region.height + h < box.height)
+                                pos.top=region.top + region.height;
+                            else
+                                pos.top=region.top - h;
+                        }
+                        if(wi){
+                            if(region.left + w < box.width)
+                                pos.left=region.left;
+                            else
+                                pos.left=region.left+region.width-w;
+                        }else{
+                            if(region.left + region.width + w < box.width)
+                                pos.left=region.left + region.width;
+                            else
+                                pos.left=region.left - w;
+                        }
+                    };
+
+                if(type=='12'){
+                    adjust('1');
+                    if(pos.top + h>  box.height || pos.top < box.top)adjust('2');
                 }else{
-                    if(region.top + region.height + h < box.height)
-                        pos.top=region.top + region.height;
-                    else
-                        pos.top=region.top - h;
+                    adjust(type);
                 }
-                if(wi){
-                    if(region.left + w < box.width)
-                        pos.left=region.left;
-                    else
-                        pos.left=region.left+region.width-w;
-                }else{
-                    if(region.left + region.width + w < box.width)
-                        pos.left=region.left + region.width;
-                    else
-                        pos.left=region.left - w;
-                }
-    
                 //over right
                 if(pos.left + w>  box.width)pos.left = box.width - w;
                 //over left
@@ -1493,7 +1501,7 @@ type:4
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
-            if(!_.isDefined(type))type=1;
+            if(!_.isDefined(type))type='12';
             var aysid=c.xid()+":"+node.xid();
             sor.onMouseover(type===null?null:function(prf, e, src){
                  _.resetRun(aysid,null);
