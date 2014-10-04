@@ -628,7 +628,7 @@ Class('xui.Dom','xui.absBox',{
         css:function(name, value){
             if(typeof name=='object' || value!==undefined){
                 this.each(function(o){
-                    xui.Dom.setStyle(o,name,value)
+                        xui.Dom.setStyle(o,name,value)
                 });
                 
                 if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
@@ -643,6 +643,112 @@ Class('xui.Dom','xui.absBox',{
             }else{
                 return xui.Dom.getStyle(this.get(0), name);
             };
+        },
+       rotate:function(v){
+            if(_.isSet(v)){
+                if(_.isFinite(v))v+='deg';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/rotate\([^)]*\)/i.test(transform))transform=transform.replace(/(rotate\()([^)]+)/i, '$1'+v);
+                    else transform+=" rotate("+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/rotate\(([-\d.]+)/i.exec(this.get(0).style.transform);
+               return arr?parseFloat(arr[1]||0):0;
+            }
+        },
+       scaleX:function(v){
+            if(_.isSet(v)){
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale('+v+',1)');
+                    else transform+=" scale("+v+",1)";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               if(arr)return parseFloat(arr[2]||1);
+               else{
+                    arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
+                    return arr?arr[1]:1;
+                }
+            }
+        },
+        scaleY:function(v){
+            if(_.isSet(v)){
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale(1,'+v+')');
+                    else transform+=" scale(1,"+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               if(arr)return parseFloat(arr[3]||1);
+               else{
+                    arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
+                    return arr?arr[1]:1;
+                }
+            }
+        },
+        translateX:function(v){
+            if(_.isSet(v)){
+                if(_.isFinite(v))v+='px';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    else transform+=" translate("+v+",0)";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?(arr[2]||"").replace(/\s/g,''):'';
+            }
+        },
+        translateY:function(v){
+            if(_.isSet(v)){
+                if(_.isFinite(v))v+='px';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    else transform+=" translate(0,"+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?(arr[3]||"").replace(/\s/g,''):'';
+            }
+        },
+        skewX:function(v){
+            if(_.isSet(v)){
+                 if(_.isFinite(v))v+='deg';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    else transform+=" skew("+v+",0deg)";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(skew\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?parseFloat(arr[2]||0):0;
+            }
+        },
+        skewY:function(v){
+            if(_.isSet(v)){
+                 if(_.isFinite(v))v+='deg';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    else transform+=" skew(0deg,"+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(skew\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?parseFloat(arr[3]||0):0;
+            }
         },
         /*
         *IE/opera \r\n will take 2 chars
@@ -713,18 +819,28 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         //left,top format: "23px"
-        show:function(left,top){
-            var style,t,auto='auto',v=xui.Dom.HIDE_VALUE,vv;
+        show:function(left,top,callback,showEffects,ignoreEffects){
+            var style,t,v=xui.Dom.HIDE_VALUE,vv;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
+                var tid=xui.getNodeData(o,'_inthread');
+                if(tid){
+                    xui.Thread(tid).abort('force');
+                    xui.setNodeData(o,'_inthread');
+                }
+
                 style=o.style;
                 vv=xui.getNodeData(o);
-                if( t = (top || (style.top==v && (vv._top || auto))))style.top = t;
-                if( t = (left || (style.left==v && (vv._left || auto))))style.left = t;
-                if(t=vv._position)if(style.position!=t)style.position=t;
-                vv._xuihide=0;
+                if(vv._xuihide){
+                    if(t=vv._left)if(style.left!=t)style.left=t;
+                    if(t=vv._top)if(style.top!=t)style.top=t;
+                    if(t=vv._position)if(style.position!=t)style.position=t;
+                    if(style.visibility!='visible')style.visibility='visible';
+                    vv._xuihide=0;
+                }
+                if(_.isSet(left))style.left=left;
+                if(_.isSet(top))style.top=top;
 
-                if(style.visibility!='visible')style.visibility='visible';
                 //ie6 bug
               /*  if(xui.browser.ie6){
                     t=style.wordWrap=='normal';
@@ -732,22 +848,40 @@ Class('xui.Dom','xui.absBox',{
                         style.wordWrap=t?'break-word':'normal'
                     })
                 }*/
+                showEffects=ignoreEffects?null:showEffects?showEffects:_.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
+                if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
+                if(showEffects)xui.Dom._vAnimate(o,true,showEffects,callback);else if(callback)callback();
             });
         },
-        hide:function(){
-            var style,t,vv;
+        hide:function(callback,hideEffects,ignoreEffects){
+            var style,vv;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
-                style=o.style;t=xui([o]);
-                vv=xui.getNodeData(o);
-                if(vv._xuihide!==1){
-                    vv._position = style.position;
-                    vv._top = style.top;
-                    vv._left = style.left;
-                    vv._xuihide=1;
+                var tid=xui.getNodeData(o,'_inthread');
+                if(tid){
+                    xui.Thread(tid).abort('force');
+                    xui.setNodeData(o,'_inthread');
                 }
-                if(style.position!='absolute')style.position = 'absolute';
-                style.top = style.left = xui.Dom.HIDE_VALUE;
+
+                style=o.style;
+                vv=xui.getNodeData(o);
+                var fun=function(){
+                    if(vv._xuihide!==1){
+                        vv._position = style.position;
+                        vv._visibility = style.visibility;
+                        vv._top = style.top;
+                        vv._left = style.left;
+                        vv._xuihide=1;
+                    }
+                    if(style.position!='absolute')style.position = 'absolute';
+                    style.visibility="hidden";
+                    style.top = style.left = xui.Dom.HIDE_VALUE;
+                    
+                    if(callback)callback();
+                };
+                hideEffects=ignoreEffects?null:hideEffects?hideEffects:_.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
+               if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
+                if(hideEffects)xui.Dom._vAnimate(o,false,hideEffects,fun);else fun();
             });
         },
         cssRegion:function(region,triggerEvent) {
@@ -1242,107 +1376,287 @@ Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(args, onStart, onEnd, time, step, type, threadid, unit){
+        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
             var me=arguments.callee,
-            hash = me.lib ||  (me.lib = {
-                linear:function(x,s){return x/s},
-                expoIn:function(x,s){return (x/s==0)?0:Math.pow(2,10*(x/s-1))},
-                expoOut:function(x,s){return (x/s==1)?1:-Math.pow(2,-10*x/s)+1},
-                expoInOut:function(x,s){
-                    if(x==0)return 0;
-                    else if(x==s)return 1;
-                    else if((x/=s/2) < 1) return 1/2 * Math.pow(2, 10 * (x - 1));
-                    return 1/2 * (-Math.pow(2, -10 * --x) + 2);
-                },
-                sineIn:function(x,s){return -1*Math.cos(x/s*(Math.PI/2))+1},
-                sineOut:function(x,s){return Math.sin(x/s*(Math.PI/2))},
-                sineInOut:function(x,s){return -1/2*(Math.cos(Math.PI*x/s)-1)},
-                backIn:function(x,s){
-                    var n=1.70158;
-                    return (x/=s)*x*((n+1)*x - n);
-                },
-                backOut:function(x,s){
-                    var n=1.70158;
-                    return ((x=x/s-1)*x*((n+1)*x + n) + 1);
-                },
-                backInOut:function(x,s){
-                    var n=1.70158;
-                    if ((x/=s/2) < 1) return 1/2*(x*x*(((n*=(1.525))+1)*x - n));
-                    return 1/2*((x-=2)*x*(((n*=(1.525))+1)*x + n) + 2);
-                },
-                bounceOut:function(x,s){
-                    if((x/=s) < (1/2.75))return 7.5625*x*x;
-                    else if(x < (2/2.75))return 7.5625*(x-=(1.5/2.75))*x + .75;
-                    else if(x < (2.5/2.75))return 7.5625*(x-=(2.25/2.75))*x + .9375;
-                    else return 7.5625*(x-=(2.625/2.75))*x + .984375;
-                }
-            }),
-            color = me.color || (me.color = function(type, args, step, j){
-                var f,fun,value = 0 + (100-0)*hash[type](j,step), from = args[0], to = args[1];
+                effects = {
+			linear: function (t, b, c, d) {
+				return c * t / d + b;
+			},
+			quadIn: function (t, b, c, d) {
+				return c * (t /= d) * t + b;
+			},
+			quadOut: function (t, b, c, d) {
+				return -c * (t /= d) * (t - 2) + b;
+			},
+			quadInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t + b;
+				}
+				return -c / 2 * ((--t) * (t - 2) - 1) + b;
+			},
+			cubicIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t + b;
+			},
+			cubicOut: function (t, b, c, d) {
+				return c * ((t = t / d - 1) * t * t + 1) + b;
+			},
+			cubicInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t + b;
+				}
+				return c / 2 * ((t -= 2) * t * t + 2) + b;
+			},
+			easeIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t + b;
+			},
+			easeOut: function (t, b, c, d) {
+				return c * ((t = t / d - 1) * t * t + 1) + b;
+			},
+			easeInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t + b;
+				}
+				return c / 2 * ((t -= 2) * t * t + 2) + b;
+			},
+			quartIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t * t + b;
+			},
+			quartOut: function (t, b, c, d) {
+				return -c * ((t = t / d - 1) * t * t * t - 1) + b;
+			},
+			quartInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t * t + b;
+				}
+				return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
+			},
+			quintIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t * t * t + b;
+			},
+			quintOut: function (t, b, c, d) {
+				return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+			},
+			quintInOut: function (t, b, c, d) {
 
-                if(typeof from !='string' || typeof to != 'string')return '#fff';
-                if(value<0)
-                    return from;
-                else if(value>100)
-                    return to;
-
-                f=function(str){
-                    return (str.charAt(0)!='#')?('#'+str):str;
-                };
-                from=f(from);to=f(to);
-
-                f=function(str, i, j){
-                    return parseInt(str.slice(i,j),16)||0;
-                };
-                fun=function(o){
-                    return {red:f(o,1,3),green:f(o,3,5),blue:f(o,5,7)}
-                };
-                from = fun(from);to = fun(to);
-
-                f=function(from, to, value,c){
-                    var r= from[c]+Math.round((value/100)*(to[c]-from[c]));
-                    return (r < 16 ? '0' : '') + r.toString(16)
-                };
-                return '#' + f(from,to, value, 'red') + f(from,to, value, 'green') + f(from,to, value, 'blue');
-            });
-            
-            // Estimate time by steps
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t * t * t + b;
+				}
+				return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
+			},
+			sineIn: function (t, b, c, d) {
+				return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+			},
+			sineOut: function (t, b, c, d) {
+				return c * Math.sin(t / d * (Math.PI / 2)) + b;
+			},
+			sineInOut: function (t, b, c, d) {
+				return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+			},
+			expoIn: function (t, b, c, d) {
+				return (t === 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
+			},
+			expoOut: function (t, b, c, d) {
+				return (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
+			},
+			expoInOut: function (t, b, c, d) {
+				if (t === 0) { return b; }
+				if (t === d) { return b + c; }
+				if ((t /= d / 2) < 1) {
+					return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+				}
+				return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
+			},
+			circIn: function (t, b, c, d) {
+				return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
+			},
+			circOut: function (t, b, c, d) {
+				return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
+			},
+			circInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+				}
+				return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
+			},
+			bounceIn: function (t, b, c, d) {
+				return c - effects.bounceOut(d - t, 0, c, d) + b;
+			},
+			bounceOut: function (t, b, c, d) {
+				if ((t /= d) < (1 / 2.75)) {
+					return c * (7.5625 * t * t) + b;
+				} else if (t < (2 / 2.75)) {
+					return c * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75) + b;
+				} else if (t < (2.5 / 2.75)) {
+					return c * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375) + b;
+				} else {
+					return c * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375) + b;
+				}
+			},
+			bounceInOut: function (t, b, c, d) {
+				if (t < d / 2) {
+					return effects.bounceIn(t * 2, 0, c, d) * 0.5 + b;
+				}
+				return effects.bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
+			},
+			elasticIn: function (t, b, c, d, a, p) {
+				if (t === 0) { return b; }
+				if ((t /= d) === 1) {
+					return b + c;
+				}
+				if (!p) {
+					p = d * 0.3;
+				}
+				if (!a) {
+					a = 1;
+				}
+				var s = 0;
+				if (a < Math.abs(c)) {
+					a = c;
+					s = p / 4;
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(c / a);
+				}
+				return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+			},
+			elasticOut: function (t, b, c, d, a, p) {
+				if (t === 0) {
+					return b;
+				}
+				if ((t /= d) === 1) {
+					return b + c;
+				}
+				if (!p) {
+					p = d * 0.3;
+				}
+				if (!a) {
+					a = 1;
+				}
+				var s = 0;
+				if (a < Math.abs(c)) {
+					a = c;
+					s = p / 4;
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(c / a);
+				}
+				return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
+			},
+			elasticInOut: function (t, b, c, d, a, p) {
+				if (t === 0) {
+					return b;
+				}
+				if ((t /= d / 2) === 2) {
+					return b + c;
+				}
+				if (!p) {
+					p = d * (0.3 * 1.5);
+				}
+				if (!a) {
+					a = 1;
+				}
+				var s = 0;
+				if (a < Math.abs(c)) {
+					a = c;
+					s = p / 4;
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(c / a);
+				}
+				if (t < 1) {
+					return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+				}
+				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
+			}
+		},
+                color = me.color || (me.color = function(from,to,curvalue){
+                    if(typeof from !='string' || typeof to != 'string')return '#fff';
+                    if(curvalue<0)return from;
+                    if(curvalue>1) return to;
+    
+                    var f,f1,f2,f3;
+                    f=function(str){
+                        return (str.charAt(0)!='#')?('#'+str):str;
+                    };
+                    from=f(from);to=f(to);
+    
+                    f1=function(str, i, j){
+                        return parseInt(str.slice(i,j),16)||0;
+                    };
+                    f2=function(o){
+                        return {red:f1(o,1,3),green:f1(o,3,5),blue:f1(o,5,7)}
+                    };
+                    from = f2(from);
+                    to = f2(to);
+    
+                    f3=function(from, to, value,c){
+                        var r= from[c]+Math.round(value*(to[c]-from[c]));
+                        return (r < 16 ? '0' : '') + r.toString(16)
+                    };
+                    return '#' + f3(from,to, curvalue, 'red') + f3(from,to, curvalue, 'green') + f3(from,to, curvalue, 'blue');
+                });
+            if(!params){
+                if(onEnd)_.tryF(onEnd);
+                return;
+            }
+            // Estimate duration by steps
             if((step||0)>0)
-                time=step*16;
+                duration=step*16;
             else
-                time = time||200;
+                duration = duration||200;
 
-            type = hash[type]!==undefined?type:'expoIn';
+            type = effects[type]!==undefined?type:'expoIn';
 
-            var startTime,self=this, funs=[function(threadid){
-                var off = _() - startTime;
-                // the last time
-                if(off >= time)off=time;
-                _.each(args,function(o,i){
-                    if(typeof o == 'function') o(hash[type](off,time));
+            var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
+                var offtime=_() - starttime, curvalue,u,s,e;
+                if(offtime >= duration)offtime=duration;
+                _.each(params,function(o,i){
+                    s=o[0];e=o[1];u=o[3];
+                    curvalue = effects[type](offtime, 0, 1, duration);
+                    if(typeof o == 'function') o.call(self, curvalue);
                     else{
-                        var value = String( _.str.endWith(i.toLowerCase(),'color') ? color(type, o, time, off) : (o[0] + (o[1]-o[0])*hash[type](off,time)));
-                        (self[i]) ? (self[i](value+(unit||''))) :(self.css(i, value+(unit||'')));
+                        if(_.str.endWith(i.toLowerCase(),'color')){
+                            curvalue = color(s, e, curvalue);
+                        }else{
+                            if(!_.isFinite(e)){
+                                u=e.replace(/[-\d.]*/,'');
+                                s=parseFloat(s);
+                                e=parseFloat(e);
+                            }
+                            curvalue = s + (e-s)*curvalue;
+                        }
+                        curvalue+=u||unit||'';
+                        (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
                     }
                 });
-                if(off==time){
-                    xui.Thread(threadid).abort();
+                if(offtime==duration){
+                    xui.Thread(threadid).abort('normal');
                     return false;
                 }
             }];
-            return xui.Thread(threadid||_.id(), funs, 0, null, function(){
-                startTime=_();
+
+            var tid=xui.getNodeData(node,'_inthread');
+            if(tid && xui.Thread.isAlive(tid)){
+                xui.Thread(tid).abort('force');
+                xui.setNodeData(node,'_inthread',null);
+            }
+
+            return xui.Thread(threadid||_.id(), funs, 0, null, function(tid){
+                xui.setNodeData(node,'_inthread',tid);
+                starttime=_();
                 _.tryF(onStart,arguments,this);
-            }, onEnd ,true);
+            }, function(tid,flag){
+                if('force'!=flag)
+                    _.tryF(onEnd,arguments,this);
+                //maybe destroyed
+                if(node&&node.$xid)
+                    xui.setNodeData(node,'_inthread',null);
+            },true);
         },
         /*
         pos: {left:,top:} or dom element
         parent:parent node
         type:1,2,3,4
         */
-        popToTop : function(pos, type, parent){
+        popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
             var region, target=this, t;
-
             parent=xui(parent);
             if(parent.isEmpty())parent=xui('body');
 
@@ -1490,9 +1804,12 @@ type:4
             //show
             target.cssPos(pos).css({visibility:'visible'});
 
+            showEffects=ignoreEffects?null:showEffects?showEffects:_.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
+            if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
+            if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
             return this;
         },
-        setHoverPop : function(node, type, beforePop,beforeHide, parent){
+        setHoverPop : function(node, type, beforePop,beforeHide, parent, showEffects, hideEffects){
             var c=this.get(0),sor=xui(c);
             if(node["xui.UI"]){
                 node=node.getRoot();
@@ -1501,26 +1818,37 @@ type:4
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
+            if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
+            if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
             if(!_.isDefined(type))type='12';
-            var aysid=c.xid()+":"+node.xid();
+            var baseid=c.getRoot().xid(),aysid=baseid+":"+node.xid();
             sor.onMouseover(type===null?null:function(prf, e, src){
                  _.resetRun(aysid,null);
-                 if(!beforePop || false!==beforePop(prf, node, e, src))
-                    node.popToTop(src, type);
+                    var ignore=xui.getNodeData(baseid,'$ui.hover.pop');
+                    if(!beforePop || false!==beforePop(profile, node, e, src, item, ignore)){
+                        if(!ignore){
+                            node.popToTop(src, type, parent,showEffects);
+                            xui.setNodeData(baseid,'$ui.hover.pop',1);
+                        }
+                 }
             },aysid).onMouseout(type===null?null:function(profile, e, src){
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host'))
-                            node.hide();
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host')){
+                            node.hide(null,hideEffects);
+                            xui.setNodeData(baseid,'$ui.hover.pop',0);
+                        }
                     });
             },aysid);
 
             node.onMouseover(type===null?null:function(){
                  _.resetRun(aysid,null);
             },aysid).onMouseout(type===null?null:function(){
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop'))
-                            node.hide();
-                    });
+                _.resetRun(aysid,function(){
+                    if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop')){
+                        node.hide(null,hideEffects);
+                        xui.setNodeData(baseid,'$ui.hover.pop',0);
+                    }
+                });
             },aysid);
             return this;
         },
@@ -1665,7 +1993,7 @@ type:4
                     if(n.tagName=='IMG' && /\.png$/i.test(n.src)){
                         n.style.height = n.height;
                         n.style.width = n.width;
-                        n.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")";
+                        n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                         if('msfilter' in n.style)n.style.msfilter = n.style.filter;
                         n.src = xui.ini.img_bg;
                     }
@@ -1673,7 +2001,7 @@ type:4
                         bgmatch = bgimg.match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
                     if(bgmatch){
                         n.style.backgroundImage = 'url(' + xui.ini.img_bg + ')';
-                        n.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")";
+                        n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                         if('msfilter' in n.style)n.style.msfilter = n.style.filter;
                     }
                 });
@@ -1831,7 +2159,7 @@ type:4
                 return d*(Math.PI/180);
             };
             if(!value){
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
             }else{
@@ -1862,7 +2190,7 @@ type:4
                 transX=parseFloat(transX)||0;
                 transY=parseFloat(transY)||0;
             
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
                 var ow=node.offsetWidth,oh=node.offsetHeight;
@@ -1890,9 +2218,8 @@ type:4
                     m21 += Math.tan(toD(skewY));
                 }
                 
-                node.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')";
+                node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                
                 var w=node.offsetWidth,h=node.offsetHeight;
                 if(w!=ow || transX){
                     node.style.marginLeft = -(w-ow)/2 + transX + 'px';
@@ -1900,18 +2227,19 @@ type:4
                 if(h!=oh || transY){
                     node.style.marginTop=-(h-oh)/2 + transY +  'px';
                 }
+                // fake
+                node.style.transform=value;
             }
         },
         $textShadowIE:function(node, value, box){
             if(!value){
                 var f=function(s){
-                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"");
+                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 },
-                s1=node.style.filter,
-                s2=('msfilter' in node.style)?node.style.msfilter:"";
+                s1=node.style.filter;
                 
                 if(s1)node.style.filter=f(s1);
-                if(s2)node.style.msfilter=f(s2);
+                if('msfilter' in node.style)node.style.msfilter=f(s1);
                 if(!box)
                     node.style.backgroundColor="";
             }else{
@@ -1922,7 +2250,7 @@ type:4
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
-                    node.style.filter=(node.style.filter||"")+f(r[1],r[2],r[4],r[6]||"#000000");
+                    node.style.filter=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                     if(!box)
                         node.style.backgroundColor="#cccccc";
@@ -1935,7 +2263,7 @@ type:4
         *stops:{clr:, pos:, opacity:}
         *rate:0~1
         *shape: circle or ellipse, only for radial
-        *size: farthest-corner....
+        *size: farthest-corner..
         */
         $setGradients:function(node, value){
             var ns=this,
@@ -2000,7 +2328,7 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     rate=rate||1;
@@ -2066,7 +2394,7 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s.filter = (s.filter||"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)';
+                	s.filter = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	if('msfilter' in s)s.msfilter = s.filter;
                     
                     // the first node
@@ -2076,7 +2404,7 @@ type:4
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
                 	if(stops[stops.length-1].opacity){
-                	    node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 	}
                 }
@@ -2102,7 +2430,7 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     var innerColor=stops[0].clr,
@@ -2152,7 +2480,7 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s.filter = (s.filter||"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')';
+                	s.filter =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	if('msfilter' in s)s.msfilter = s.filter;
                     
                     // the first node
@@ -2162,7 +2490,7 @@ type:4
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
                 	if(stops[stops.length-1].opacity){
-                	    node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 	}
                 }
@@ -2171,7 +2499,7 @@ type:4
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
                 if(!orient){
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'');
+                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                     var i,a=node.childNodes,l=a.length;
                     for(i=0;i<l;i++){
@@ -2181,7 +2509,7 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     var innerColor=stops[0].clr,
@@ -2217,7 +2545,7 @@ type:4
                 	        outerColor=t;
                     	break;
                 	}
-                	node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")";
+                	node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }
             },
@@ -2513,6 +2841,23 @@ type:4
                 }
             }
         },
+        _vAnimate:function(node,isIn,setting,callback){
+            if(!setting || !setting.params || _.isEmpty(setting.params)){
+                if(callback)_.tryF(callback);
+                return;
+            }
+
+            var params=setting.params,reset={};
+            node=xui(node);
+            _.each(params,function(o,i){reset[i]=o[0]});
+
+            node.animate(params, function(threadid){
+                if(isIn)node.css(reset);
+            },function(threadid){
+                if(!isIn)node.css(reset);
+                if(callback)_.tryF(callback);
+            },setting.duration,0,setting.type).start();
+        },
         $adjustCss:function(hash,returnStr){
             var fack={nodeType:1,style:{}};
             xui.Dom.setStyle(fack,hash);
@@ -2528,71 +2873,88 @@ type:4
                 return fack.style;
             }
         },
+        _cssfake:{rotate:1, scaleX:1,scaleY:1,translateX:1,translateY:1,skewX:1,skewY:1},
         setStyle:function(node, name , value){
             var ns=xui.Dom,
                 css3prop=xui.Dom._css3prop,
-                xb=xui.browser;
+                xb=xui.browser,
+                fake=ns._cssfake;
+
             if(node.nodeType != 1)return;
             if(typeof name == 'string'){
-                var me=this.getStyle,
-                c1 = me._c1 || (me._c1={}),
-                r1 = me._r1 || (me._r1=/alpha\([^\)]*\)/ig),
-                map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1});
-                var name2,name3,name4;
-                name = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()}));
-
-                var n1=name;
-                if(n1.indexOf("border")===0){
-                    n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
-                }
-
-                if(name=="$gradient"){
-                    return ns.$setGradients(node,value);
-                }else if(name=='opacity'){
-                    value=_.isFinite(value)?
-                            parseFloat(value)>1?
-                                1
-                                :parseFloat(value)<=0?
-                                    0
-                                :parseFloat(value)
-                            :1;
-                    value= value >0.9999 ? '' : ((!ns.css3Support("opacity"))&&xb.ie) ? "alpha(opacity="+ 100*value +")" : value;
-                    if((!ns.css3Support("opacity"))&&xb.ie){
-                        node.style.zoom=1;
-                        name='filter';
-                        value = (node.style.filter||"").replace(r1, "") + value;
+                if(fake[name]){
+                    xui(node)[name](value);
+                }else{
+                    var me=this.getStyle,
+                    c1 = me._c1 || (me._c1={}),
+                    r1 = me._r1 || (me._r1=/alpha\([^\)]*\)/ig),
+                    map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1});
+                    var name2,name3,name4;
+                    name = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()}));
+    
+                    var n1=name;
+                    if(n1.indexOf("border")===0){
+                        n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
                     }
-                }else if(_.arr.indexOf(css3prop,n1)!=-1){
-                    if(!ns.css3Support(name)){
-                        if(xb.ie && xb.ver<9){
-                            switch(name){
-                                case "transform":
-                                linb.Dom.$transformIE(node,value);
-                                break;
-                                case "boxShadow":
-                                linb.Dom.$textShadowIE(node,value, true);
-                                break;
+    
+                    if(name=="$gradient"){
+                        return ns.$setGradients(node,value);
+                    }else if(name=='opacity'){
+                        value=_.isFinite(value)?
+                                parseFloat(value)>1?
+                                    1
+                                    :parseFloat(value)<=0?
+                                        0
+                                    :parseFloat(value)
+                                :1;
+                        value= value >0.9999 ? '' : value;
+                        if((!ns.css3Support("opacity"))&&xb.ie){
+                            if(value==='')value=1;
+                            // fake
+                            node.style.opacity=value;
+                            node.style.zoom=1;
+                            value = "alpha(opacity="+ 100*value +")";
+                            var ov = (node.style.filter||"").replace(r1, "");
+                            value = (ov?(ov+","):"") + value;
+                            name="filter";
+                            if(xb.ver==8)name2="msfilter";
+                        }
+                    }else if(_.arr.indexOf(css3prop,n1)!=-1){
+                        if(!ns.css3Support(name)){
+                            if(xb.ie && xb.ver<9){
+                                switch(name){
+                                    case "transform":
+                                    linb.Dom.$transformIE(node,value);
+                                    break;
+                                    case "boxShadow":
+                                    linb.Dom.$textShadowIE(node,value, true);
+                                    break;
+                                }
+                            }
+                            if(name=="textShadow" && xb.ie && xb.ver<10){
+                                linb.Dom.$textShadowIE(node,value);
+                            }
+                            return this;
+                        }else{
+                            if(xb.cssTag2){
+                                if(name!="textShadow"){
+                                    name2=xb.cssTag2 + name.charAt(0).toUpperCase() + name.substr(1);
+                                }
                             }
                         }
-                        if(name=="textShadow" && xb.ie && xb.ver<10){
-                            linb.Dom.$textShadowIE(node,value);
-                        }
-                        return this;
-                    }else{
-                        if(xb.cssTag2){
-                            if(name!="textShadow"){
-                                name2=xb.cssTag2 + name.charAt(0).toUpperCase() + name.substr(1);
-                            }
-                        }
+                    }else if(map[name]){
+                        name = xb.ie?"styleFloat":"cssFloat";
                     }
-                }else if(map[name]){
-                    name = xb.ie?"styleFloat":"cssFloat";
+    
+                    if(name=="filter"){
+                        value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    }
+                    node.style[name]=value;
+                    if(name2)node.style[name2]=value;
+                    if(name3)node.style[name3]=value;
+                    if(name4)node.style[name4]=value;
+                    
                 }
-
-                node.style[name]=value;
-                if(name2)node.style[name2]=value;
-                if(name3)node.style[name3]=value;
-                if(name4)node.style[name4]=value;
             }else
                 for(var i in name)
                     arguments.callee.call(this,node, i, name[i]);
@@ -2702,6 +3064,29 @@ type:4
                 }
             }
             return _c[key]=rt;
+        },
+        $preDefinedEffects:{
+           "Classic":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
+           "Blur":[{type:"easeOut",duration:200,params: {opacity:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0]}}],
+           "Drop":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
+           "From Below":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
+           "From Above":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
+           "Slide In LR":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Slide In TB":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Flip V":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
+           "Flip H":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
+        },
+        _getEffects:function(key,isIn){
+                if(key && typeof(key)=="string"){
+                    key=this.$preDefinedEffects[key];
+                    key=key?isIn?key[0]:key[1]:null;
+                }
+                if(key &&xui.browser.ie&&xui.browser.ver<=8){
+                    _.filter(key,function(o,i){
+                        return !xui.Dom._cssfake[i];
+                    });
+                }
+                return key;
         },
         _setPxStyle:function(node, key, value){
             if(node.nodeType != 1)return false;
@@ -2835,17 +3220,17 @@ type:4
         free:function(label){
            xui.Dom.setCover(false,label);
         },
-        animate:function(css, args, onStart, onEnd, time, step, type, threadid, unit){
+        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit){
             var node = document.createElement('div');
             _.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
             document.body.appendChild(node);
-            return xui([node]).animate(args, onStart, function(){
+            return xui([node]).animate(params, onStart, function(){
                 _.tryF(onEnd);
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
-            }, time, step, type, threadid, unit);
+            }, duration, step, type, threadid, unit);
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){

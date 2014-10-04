@@ -107,7 +107,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var drop=profile.$drop, cached=profile.properties.cachePopWnd;
             if(drop){
                 if(!cached){
-                    drop.boxing().destroy();
+                    drop.boxing().destroy(true);
                     delete profile.$drop;
                     if(focus)
                         profile.boxing().activate();
@@ -284,7 +284,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
                                 else
-                                    o.destroy();
+                                    o.destroy(true);
                                 return false;
                             });
                             o.beforeUIValueSet(function(p, ovalue, value){
@@ -330,7 +330,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
                                 else
-                                    o.destroy();
+                                    o.destroy(true);
                                 return false
                             });
                             o.beforeUIValueSet(function(p, o, v){
@@ -349,7 +349,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
                                 else
-                                    o.destroy();
+                                    o.destroy(true);
                                 return false
                             });
                             o.beforeUIValueSet(function(p, o, v){

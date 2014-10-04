@@ -532,7 +532,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         instance = profile.boxing();
                     if(properties.disabled||properties.readonly)return;
                     if(false===instance.beforeClose(profile, src)) return;
-                    instance.destroy();
+                    instance.destroy(true);
                 }
             }
         },

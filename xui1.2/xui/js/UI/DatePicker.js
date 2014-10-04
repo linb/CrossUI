@@ -481,7 +481,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         instance = profile.boxing();
                     if(p.disabled||p.readonly)return;
                     if(false===instance.beforeClose(profile, src)) return;
-                    instance.destroy();
+                    instance.destroy(true);
                 }
             },
             PRE:{

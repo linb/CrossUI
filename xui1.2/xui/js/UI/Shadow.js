@@ -30,7 +30,7 @@ Class("xui.UI.Shadow","xui.UI",{
                 _.arr.each(xui.UI.Shadow._cache,function(o){
                     if(o && o.renderId && o._target)
                         if(_.arr.indexOf(s,xui(o._target).get(0))!=-1)
-                            o.boxing().destroy();
+                            o.boxing().destroy(true);
                 });
                 return this;
             }

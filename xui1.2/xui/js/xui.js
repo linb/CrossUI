@@ -187,20 +187,21 @@ _.merge(_,{
         else clearTimeout(Math.abs(id));
     },
     fun:function(){return function(){}},
-    exec:function(script){
+    exec:function(script, id){
         var me=this,
             d=document,
             h=d.getElementsByTagName("head")[0] || d.documentElement,
             s=d.createElement("script");
         s.type = "text/javascript";
+        if(id)s.id=id;
         if(xui.browser.ie)
             s.text=script;
         else
             s.appendChild(d.createTextNode(script));
-        h.insertBefore(s, h.firstChild);
+        h.appendChild(s);
         s.disalbed=true;
         s.disabled=false;
-        h.removeChild(s);
+        if(!id)h.removeChild(s);
     },
     /*
     get something from deep hash
@@ -228,6 +229,7 @@ _.merge(_,{
         _.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
     */
     set:function(hash,path,value){
+        if(!hash)return;
         if(typeof path!='string'){
             var v,i=0,m,last=path.length-1;
             for(;i<last;){
@@ -1154,7 +1156,7 @@ _.merge(xui,{
             }else{
                 xui.Ajax(uri,xui.Ajax._id,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
-                    try{_.exec(rsp)}
+                    try{_.exec(rsp,uri)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
@@ -1658,7 +1660,7 @@ Class('xui.Thread',null,{
 
             // if callback return false, stop.
             if(t.callback && false===_.tryF(t.callback, [p.id], self, true))
-                return self.abort();
+                return self.abort('callback');
 
             // if set suspend at t.task or t.callback , stop continue running
             if(p.status!=="run")
@@ -1672,19 +1674,19 @@ Class('xui.Thread',null,{
                 p._start=true;
                 //call onstart
                 if(false===_.tryF(p.onStart,[p.id],self))
-                    return self.abort();
+                    return self.abort('start');
             }
             if(p.status!="run")
                 p.status="run";
 
             if(!p.tasks.length)
-                return self.abort();
+                return self.abort('empty');
 
             if(p.index>=p.tasks.length){
                 if(p.cycle===true)
                     self.profile.index = 0;
                 else
-                    return self.abort();
+                    return self.abort('normal');
             }
             task=p.tasks[p.index];
 
@@ -1736,11 +1738,11 @@ Class('xui.Thread',null,{
             self.start(time);
             return self;
         },
-        abort:function(){
+        abort:function(flag){
             var t=this.profile;
             t.status="stop";
             _.clearTimeout(t._asy);
-            _.tryF(t.onEnd, [t.id]);
+            _.tryF(t.onEnd, [t.id,flag]);
             this.__gc();
         },
         links:function(thread){

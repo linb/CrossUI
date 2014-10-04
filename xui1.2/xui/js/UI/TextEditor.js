@@ -162,7 +162,7 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                             break;
                         default:
                             if(profile.tips){
-                                profile.tips.destroy();
+                                profile.tips.destroy(true);
                                 profile.tips=null;
                             }
                     }

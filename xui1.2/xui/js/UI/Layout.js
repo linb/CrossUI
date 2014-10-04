@@ -896,7 +896,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     //get left
                     fun(t,width,'width','left','right',0,0);
                     _.each(obj2,function(o,i){
-                        if(o.width)obj3[i].size=o.width;
+                        if(o.width && !obj3[i].folded)obj3[i].size=o.width;
                     });
                  }
                 if(!_.isNull(height)){
@@ -909,7 +909,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     //get left
                     fun(t,height,'height','top','bottom',0,0);
                     _.each(obj2,function(o,i){
-                        if(o.height)obj3[i].size=o.height;
+                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
                     });
                 }
                 if(!_.isNull(width)){

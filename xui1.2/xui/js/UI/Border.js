@@ -62,7 +62,7 @@ Class("xui.UI.Border","xui.UI",{
                 var s = this.id();
                 _.arr.each(xui.UI.Border._cache,function(o){
                     if(o.$edgeId==s)
-                        o.boxing()._detach().destroy();
+                        o.boxing()._detach().destroy(true);
                 });
                 return this;
             }

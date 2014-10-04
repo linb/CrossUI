@@ -282,7 +282,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         if(arr.length){
                             dialog.append(xui.UI.pack(arr,false));
                         }
-                        profile.boxing().removeChildren().destroy();
+                        profile.boxing().removeChildren().destroy(true);
                     }
                 }
             }

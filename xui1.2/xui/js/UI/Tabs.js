@@ -921,7 +921,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             }
                         }
                     },onHide:function(){
-                        profile._droppopmenu.destroy();
+                        profile._droppopmenu.destroy(true);
                         delete profile._droppopmenu;
                     }});
                     menu.pop(src);

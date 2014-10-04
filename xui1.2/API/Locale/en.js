@@ -631,8 +631,8 @@ _.set(xui.Locale,["en","app"], {
                     "str [Required] : String."
                 ],
                 $snippet:[
-                    "alert(_.toUTF8('\u6c49\u5b57'));",
-                    "alert(_.fromUTF8(_.toUTF8('\u6c49\u5b57')));"
+                    "alert(_.toUTF8('\u6C49\u5B57'));",
+                    "alert(_.fromUTF8(_.toUTF8('\u6C49\u5B57')));"
                 ]
             },
             fromUTF8:{
@@ -642,8 +642,8 @@ _.set(xui.Locale,["en","app"], {
                     "str [Required] : String."
                 ],
                 $snippet:[
-                    "alert(_.toUTF8('\u6c49\u5b57'));",
-                    "alert(_.fromUTF8(_.toUTF8('\u6c49\u5b57')));"
+                    "alert(_.toUTF8('\u6C49\u5B57'));",
+                    "alert(_.fromUTF8(_.toUTF8('\u6C49\u5B57')));"
                 ]
             },
             urlEncode:{
@@ -2452,10 +2452,10 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"xui.Thread",
             $paras:[
                 "css [Required] : Object[CSS Key/value pairs].",
-                "args [Required] : Object[Key/value([from value, to value]) pairs] .",
+                "params [Required] : Object[Key/value([from value, to value]) pairs] .",
                 "onStart [Optional]: Function(threadid:String). this function will be called before the shell thread triggered the first task.",
                 "onEnd [Optional]: Function(threadid:String). this function will be called after the shell thread finishes the last task.",
-                "time [Optional]: Number(ms), the duration of this animation. Default is 300.",
+                "duration [Optional]: Number(ms), the duration of this animation. Default is 300.",
                 "step [Optional]: Number, the step number of this animation. Default is 0. [Deprecated]",
                 "type [Optional]: String, the animate type. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' or 'bounceOut'. Default is 'expoIn'.",
                 "threadid [Optional]: String, Assigns an unique id to the shell thread Object."
@@ -2770,10 +2770,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Wraps a 'Special Effects' animation into a xui.Thread Object(shell thread).",
                 $rtn:"xui.Thread",
                 $paras:[
-                    "args [Required] : Object[Key/value([from value, to value]) pairs] .",
+                    "params [Required] : Object[Key/value([from value, to value]) pairs] .",
                     "onStart [Optional]: Function(threadid:String). this function will be called before the shell thread triggered the first task.",
                     "onEnd [Optional]: Function(threadid:String). this function will be called after the shell thread finishes the last task.",
-                    "time [Optional]: Number(ms), the duration of this animation. Default is 200.",
+                    "duration [Optional]: Number(ms), the duration of this animation. Default is 200.",
                     "step [Optional]: Number, the step number of this animation. Default is 0. [Deprecated]",
                     "type [Optional]: String, the type. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' or 'bounceOut'. Default is 'expoIn'.",
                     "threadid [Optional]: String, Assigns an unique id to the shell thread Object."
@@ -3393,6 +3393,55 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            rotate:{
+                $desc:"Gets CSS transform's rotate property on the first element, or sets it to all elements.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [Optional] : Number."
+                ]
+            },
+            scaleX:{
+                $desc:"Gets CSS transform's scaleX property on the first element, or sets it to all elements.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [Optional] : Number."
+                ]
+            },
+            scaleY:{
+                $desc:"Gets CSS transform's scaleY property on the first element, or sets it to all elements.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [Optional] : Number."
+                ]
+            },
+            translateX:{
+                $desc:"Gets CSS transform's translateX property on the first element, or sets it to all elements.",
+                $rtn:"String/[self]",
+                $paras:[
+                    "value [Optional] : String."
+                ]
+            },
+            translateY:{
+                $desc:"Gets CSS transform's translateY property on the first element, or sets it to all elements.",
+                $rtn:"String/[self]",
+                $paras:[
+                    "value [Optional] : String."
+                ]
+            },
+            skewX:{
+                $desc:"Gets CSS transform's skewX property on the first element, or sets it to all elements.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [Optional] : Number."
+                ]
+            },
+            skewY:{
+                $desc:"Gets CSS transform's skewY property on the first element, or sets it to all elements.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [Optional] : Number."
+                ]
+            },
             scrollTop:{
                 $desc:"Gets(the first element) or sets(all elements) the scrollTop value.",
                 $rtn:"Number/[self]",
@@ -3405,7 +3454,6 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
             left:{
                 $desc:"Gets(the first element) or sets(all elements) the css left value.",
                 $rtn:"Number/[self]",
@@ -5819,7 +5867,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the proxy type for this remoting call.",
                 $rtn:"[self].",
                 $paras:[
-                    "value [Required] : String. auto/Ajax/SAjax/IAjax֮һ,ĬɏΪauto.",
+                    "value [Required] : String. auto/Ajax/SAjax/IAjax\u00D6\u00AE\u00D2\u00BB,\u00C4\u00AC\u00C9\u008F\u00CE\u00AAauto.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -5831,7 +5879,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the request data type for this remoting call.",
                 $rtn:"[self].",
                 $paras:[
-                    "value [Required] : String. HTTP,JSON,XML,SOAP ֮һ",
+                    "value [Required] : String. HTTP,JSON,XML,SOAP \u00D6\u00AE\u00D2\u00BB",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -5843,7 +5891,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the response data type for this remoting call.",
                 $rtn:"[self].",
                 $paras:[
-                    "value [Required] : String. JSON,XML,SOAP ֮һ",
+                    "value [Required] : String. JSON,XML,SOAP \u00D6\u00AE\u00D2\u00BB",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -8007,18 +8055,6 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            getRotate:{
-                $desc:"Gets the control's rotate prop",
-                $rtn:"Number"
-            },
-            setRotate:{
-                $desc:"Sets the control's rotate prop",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Number. 0~360",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
             setDockMinH:{
                 $desc:"Sets dock minimal height on the each UIProfile.",
                 $rtn:"[self]",
@@ -8047,6 +8083,42 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){btn.setDockMinW(300);xui(id).width(200);},1000);"+
                     "_.asyRun(function(){btn.setDockMinW(50);xui(id).width(100);},2000);"+
                     "}"
+                ]
+            },
+            getShowEffects:{
+                $desc:"Gets the show effects string or object on the first UIProfile",
+                $rtn:"Object/String"
+            },
+            setShowEffects:{
+                $desc:"Sets the show effects string or object on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String or Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getHideEffects:{
+                $desc:"Gets the hide effects string or object on the first UIProfile",
+                $rtn:"Object/String"
+            },
+            setHideEffects:{
+                $desc:"Sets the hideeffects string or object on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String or Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getRotate:{
+                $desc:"Gets the control's rotate prop",
+                $rtn:"Number"
+            },
+            setRotate:{
+                $desc:"Sets the control's rotate prop",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number. 0~360",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getDomId:{
@@ -9564,27 +9636,27 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getImage :{
-                $desc:"»򈢍¼±鴲l·¾¶",
+                $desc:"\u00C2\u00BB\u00F2\u0088\u00A2\u008D\u00C2\u00BC\u00C2\u00B1\u00E9\u00B4\u00B2l\u00C2\u00B7\u00C2\u00BE\u00C2\u00B6",
                 $rtn:"String"
             },
             setImage :{
-                $desc:"ʨ׃ͼ±鴲l·¾¶, ²¢ˢт½脦.",
+                $desc:"\u00CA\u00A8\u00D7\u0083\u00CD\u00BC\u00C2\u00B1\u00E9\u00B4\u00B2l\u00C2\u00B7\u00C2\u00BE\u00C2\u00B6, \u00C2\u00B2\u00C2\u00A2\u00CB\u00A2\u00D1\u0082\u00C2\u00BD\u00E8\u0084\u00A6.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [±ِ賎˽] :String, ͼ±鴲l·¾¶.",
-                    "force [¿ʑ¡²ϊ�oolean, ǿ׆ʨ׃¸Ċ�µ,¼´ʹ˴єӑ¾­ʨ׃Ϊ¸Ėµ ĬɏΪ [false]."
+                    "value [\u00C2\u00B1\u00D9\u0090\u00E8\u00B3\u008E\u00CB\u00BD] :String, \u00CD\u00BC\u00C2\u00B1\u00E9\u00B4\u00B2l\u00C2\u00B7\u00C2\u00BE\u00C2\u00B6.",
+                    "force [\u00C2\u00BF\u00CA\u0091\u00C2\u00A1\u00C2\u00B2\u00CF\u008A\u00EF\u00BF\u00BDoolean, \u00C7\u00BF\u00D7\u0086\u00CA\u00A8\u00D7\u0083\u00C2\u00B8\u00C4\u008A\u00EF\u00BF\u00BD\u00C2\u00B5,\u00C2\u00BC\u00C2\u00B4\u00CA\u00B9\u00CB\u00B4\u00D1\u0094\u00D3\u0091\u00C2\u00BE\u00C2\u00AD\u00CA\u00A8\u00D7\u0083\u00CE\u00AA\u00C2\u00B8\u00C4\u0096\u00C2\u00B5 \u00C4\u00AC\u00C9\u008F\u00CE\u00AA [false]."
                 ]
             },
             getImagePos :{
-                $desc:"»򈢍¼±궄css position˴є",
+                $desc:"\u00C2\u00BB\u00F2\u0088\u00A2\u008D\u00C2\u00BC\u00C2\u00B1\u00EA\u00B6\u0084css position\u00CB\u00B4\u00D1\u0094",
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"ʨ׃ͼ±궄css position˴є, ²¢ˢт½脦.",
+                $desc:"\u00CA\u00A8\u00D7\u0083\u00CD\u00BC\u00C2\u00B1\u00EA\u00B6\u0084css position\u00CB\u00B4\u00D1\u0094, \u00C2\u00B2\u00C2\u00A2\u00CB\u00A2\u00D1\u0082\u00C2\u00BD\u00E8\u0084\u00A6.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [±ِ賎˽] : String, ͼ±궄Дʾλ׃.",
-                    "force [¿ʑ¡²ϊ�oolean, ǿ׆ʨ׃¸Ċ�µ,¼´ʹ˴єӑ¾­ʨ׃Ϊ¸Ėµ ĬɏΪ [false]."
+                    "value [\u00C2\u00B1\u00D9\u0090\u00E8\u00B3\u008E\u00CB\u00BD] : String, \u00CD\u00BC\u00C2\u00B1\u00EA\u00B6\u0084\u00D0\u0094\u00CA\u00BE\u00CE\u00BB\u00D7\u0083.",
+                    "force [\u00C2\u00BF\u00CA\u0091\u00C2\u00A1\u00C2\u00B2\u00CF\u008A\u00EF\u00BF\u00BDoolean, \u00C7\u00BF\u00D7\u0086\u00CA\u00A8\u00D7\u0083\u00C2\u00B8\u00C4\u008A\u00EF\u00BF\u00BD\u00C2\u00B5,\u00C2\u00BC\u00C2\u00B4\u00CA\u00B9\u00CB\u00B4\u00D1\u0094\u00D3\u0091\u00C2\u00BE\u00C2\u00AD\u00CA\u00A8\u00D7\u0083\u00CE\u00AA\u00C2\u00B8\u00C4\u0096\u00C2\u00B5 \u00C4\u00AC\u00C9\u008F\u00CE\u00AA [false]."
                 ]
             },
             onChecked:{
@@ -10164,7 +10236,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the label's positoin.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : left, right, top, bottom ֮һ.",
+                    "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -10200,7 +10272,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets the label's horizontal alignment.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String, 'left', 'center' or 'right'. ĬɏΪ 'left'.",
+                    "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -16718,8 +16790,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Updates a specifed row.",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [Required] : String, ѐid.",
-                    "options [Required] : key/value Object, ѨҪ¸��"
+                    "rowId [Required] : String, \u00D1\u0090id.",
+                    "options [Required] : key/value Object, \u00D1\u00A8\u00D2\u00AA\u00C2\u00B8\u00EF\u00BF\u00BD\u00EF\u00BF\u00BD"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid130-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18703,7 +18775,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getTop:{
-                $desc:"Returns the distance between the top side of an element and the left side of its parent paper¡£",
+                $desc:"Returns the distance between the top side of an element and the left side of its parent paper\u00C2\u00A1\u00C2\u00A3",
                 $rtn:"Number"
             },
             setTop:{
@@ -18736,11 +18808,11 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             toFront:{
-                $desc:"Moves the element so it is the closest to the viewer¡¯s eyes, on top of other elements.",
+                $desc:"Moves the element so it is the closest to the viewer\u00C2\u00A1\u00C2\u00AFs eyes, on top of other elements.",
                 $rtn:"[self]"
             },
             toBack:{
-                $desc:"Moves the element so it is the furthest from the viewer¡¯s eyes, behind other elements.",
+                $desc:"Moves the element so it is the furthest from the viewer\u00C2\u00A1\u00C2\u00AFs eyes, behind other elements.",
                 $rtn:"[self]"
             },
             getAttr:{

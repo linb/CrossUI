@@ -111,12 +111,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             });
         },
-        pop:function(obj, type, parent){
+        pop:function(obj, type, parent,ignoreEffects){
             var profile=this.get(0),
+                p=profile.properties,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
                 cm='$childPopMenu';
-
             //ensure rendered
             if(!profile.renderId){
                 var o=profile.boxing().render(true);
@@ -152,47 +152,49 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             profile[cm]=profile[sms]=profile[hl]=null;
             return this;
         },
-        hide:function(triggerEvent, e){
+        hide:function(triggerEvent, ignoreEffects , e){
             var t,
                 profile=this.get(0),
+                p=profile.properties,
                 root=profile.getRoot(),
                 sms='$subPopMenuShowed',
                 hl='$highLight',
-                cm='$childPopMenu';
-
-            if(false!==triggerEvent)
-                if(false===profile.boxing().beforeHide(profile, e))
-                    return this;
-
-            if(!root || root.css('display')=='none')return;
-
-            //remove trigger
-            root.setBlurTrigger(profile.$xid,null);
-
-            if(profile.$hideMenuPool)
-                profile.$hideMenuPool.append(root);
-            else
-                root.css('display','none');
-
-            if(t=profile[hl])
-               xui([t]).tagClass('-mouseover',false);
-
-            //hide all parent pop
-            var p=profile[cm],q;
-            if(t=profile[sms])t.hide();
-            while(p){
-                p.boxing().hide();
-                p=(q=p)[cm];
-                q[cm] = q[sms] = q[hl] = null;
-            }
-            profile[cm]=profile[sms]=profile[hl]=null;
-            if(t=profile.$parentPopMenu)t[sms]=null;
-            
-            if(profile.$popGrp)
-                _.arr.removeValue(profile.$popGrp,root._get(0));
-
-            if(false!==triggerEvent)
-                profile.boxing().onHide(profile);
+                cm='$childPopMenu',
+                fun=function(){
+                    if(false!==triggerEvent)
+                        if(false===profile.boxing().beforeHide(profile, ignoreEffects, e))
+                            return this;
+        
+                    if(!root || root.css('display')=='none')return;
+        
+                    //remove trigger
+                    root.setBlurTrigger(profile.$xid,null);
+                    if(profile.$hideMenuPool)
+                        profile.$hideMenuPool.append(root);
+                    else
+                        root.css('display','none');
+        
+                    if(t=profile[hl])
+                       xui([t]).tagClass('-mouseover',false);
+        
+                    //hide all parent pop
+                    var p=profile[cm],q;
+                    if(t=profile[sms])t.hide(triggerEvent, ignoreEffects);
+                    while(p){
+                        p.boxing().hide(triggerEvent, ignoreEffects);
+                        p=(q=p)[cm];
+                        q[cm] = q[sms] = q[hl] = null;
+                    }
+                    profile[cm]=profile[sms]=profile[hl]=null;
+                    if(t=profile.$parentPopMenu)t[sms]=null;
+                    
+                    if(profile.$popGrp)
+                        _.arr.removeValue(profile.$popGrp,root._get(0));
+        
+                    if(false!==triggerEvent)
+                        profile.boxing().onHide(profile);
+                };
+            root.hide(fun,null,ignoreEffects);
             return this;
         },
         _afterInsertItems:function(profile){
@@ -321,7 +323,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         this.setTemplate(t);
     },
     Static:{
-        $noDomRoot:true,
+        $initRootHidden:true,
         Appearances:{
             KEY:{
                 'font-size':'12px',
@@ -545,7 +547,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                             //no create
                             if(!(pop = profile[all][itemId])){
-                                pop = (new xui.UI.PopMenu({position:'absolute', items:item.sub, autoHide:profile.properties.autoHide})).render(true);
+                                var pro=profile.properties;
+                                pop = (new xui.UI.PopMenu({position:'absolute', items:item.sub, autoHide:pro.autoHide, showEffects:pro.showEffects, hideEffects:pro.hideEffects})).render(true);
                                 pop.onShowSubMenu(function(pro, item, src){
                                     return profile.boxing().onShowSubMenu(profile, item, src);
                                 });
@@ -758,7 +761,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             tips:null,
             border:null,
             resizer:null,
-
+            showEffects:"Blur",
+            hideEffects:"",
             autoTips:false,
             shadow:true,
             _maxHeight:260,
@@ -798,7 +802,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 });
                 if(!b){
                     while(b=profile.$parentPopMenu)profile=b;
-                    profile.boxing().hide(true,e);
+                    profile.boxing().hide(true,null,e);
                     if(profile.$popGrp)
                         profile.$popGrp.length=0;
                 }

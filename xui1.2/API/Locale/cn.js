@@ -2463,10 +2463,10 @@ _.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Thread",
             $paras:[
                 "css [必需参数] : Object[CSS 键值对]. 不变的CSS样式",
-                "args [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
+                "params [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
                 "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数.",
                 "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数.",
-                "time [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
+                "duration [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
                 "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated]建议不要使用.",
                 "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'.  默认为'linear'.",
                 "threadid [可选参数]: String, shell线程的全局识别id."
@@ -2781,10 +2781,10 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"包装特殊效果的动画到一个xui.Thread对象中(shell线程).",
                 $rtn:"xui.Thread",
                 $paras:[
-                    "args [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
+                    "params [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
                     "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数.",
                     "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数.",
-                    "time [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
+                    "duration [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
                     "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated] 建议不要使用.",
                     "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'. 默认为'linear'.",
                     "threadid [可选参数]: String, shell线程的全局识别id."
@@ -3403,6 +3403,55 @@ _.set(xui.Locale,["cn","app"], {
                     "var id='xui.temp.scrollLeft'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative; border:solid 1px;padding:10px;\"><div style=\"overflow:auto; width:50px;height:50px;\" id='+id+' />aaaaaaaaaaaaa bbbbbbbbbbb cccccccccc dddddddd</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui(id).scrollLeft(xui(id).scrollWidth()); alert(xui(id).scrollLeft())"+
                     "}"
+                ]
+            },
+            rotate:{
+                $desc:"获取第一个元素的CSS变形属性中的旋转角度, 或设置到所有元素.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [可选参数] : Number."
+                ]
+            },
+            scaleX:{
+                $desc:"获取第一个元素的CSS变形属性中的X方向伸缩度, 或设置到所有元素.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [可选参数] : Number."
+                ]
+            },
+            scaleY:{
+                $desc:"获取第一个元素的CSS变形属性中的Y方向伸缩度, 或设置到所有元素.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [可选参数] : Number."
+                ]
+            },
+            translateX:{
+                $desc:"获取第一个元素的CSS变形属性中的X方向平移, 或设置到所有元素.",
+                $rtn:"String/[self]",
+                $paras:[
+                    "value [可选参数] : String."
+                ]
+            },
+            translateY:{
+                $desc:"获取第一个元素的CSS变形属性中的Y方向平移, 或设置到所有元素.",
+                $rtn:"String/[self]",
+                $paras:[
+                    "value [可选参数] : String."
+                ]
+            },
+            skewX:{
+                $desc:"获取第一个元素的CSS变形属性中的X方向倾斜度, 或设置到所有元素.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [可选参数] : Number."
+                ]
+            },
+            skewY:{
+                $desc:"获取第一个元素的CSS变形属性中的Y方向倾斜度, 或设置到所有元素.",
+                $rtn:"Number/[self]",
+                $paras:[
+                    "value [可选参数] : Number."
                 ]
             },
             scrollTop:{
@@ -8032,18 +8081,6 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-            getRotate:{
-                $desc:"获取控件旋转角度",
-                $rtn:"Number"
-            },
-            setRotate:{
-                $desc:"设置控件旋转角度.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Number. 0~360",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
             setDockMinH:{
                 $desc:"设置停靠的最小高度.",
                 $rtn:"[self]",
@@ -8072,6 +8109,42 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){btn.setDockMinW(300);xui(id).width(200);},1000);"+
                     "_.asyRun(function(){btn.setDockMinW(50);xui(id).width(100);},2000);"+
                     "}"
+                ]
+            },
+            getShowEffects:{
+                $desc:"获取控件的出现动画特效",
+                $rtn:"Object/String"
+            },
+            setShowEffects:{
+                $desc:"设置控件的出现动画特效",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String or Object.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getHideEffects:{
+                $desc:"获取控件的隐去或销毁动画特效",
+                $rtn:"Object/String"
+            },
+            setHideEffects:{
+                $desc:"设置控件的隐去或销毁动画特效",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String or Object.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getRotate:{
+                $desc:"获取控件旋转角度",
+                $rtn:"Number"
+            },
+            setRotate:{
+                $desc:"设置控件旋转角度.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number. 0~360",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getDomId:{
@@ -19014,7 +19087,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_absObj' : {
             'tag':'附加值',
             'tagVar':'附加对象',
-            desc:'控件说明文字' 
+            desc:'组件描述' 
         },
        'xui_absComposed' : {
             'dragKey':'拖拽标识',
@@ -19076,6 +19149,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dockMinW':'停靠最小宽度',
             'dockMinH':'停靠最小高度',
              rotate:"旋转角度",
+             showEffects:"出现动画特效",
+             hideEffects:"消失动画特效",
             'tips':'工具提示文本',
             'left':'左边沿坐标',
             'top':'上边沿坐标',
@@ -19436,7 +19511,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'rowHandlerWidth':'行头手柄宽',
             'rowResizer':'可拖动改变行高',
             'colHidable':'隐藏列',
-            'colResizer':'拖动改变列高',
+            'colResizer':'拖动改变列宽',
             'colSortable':'可排序列',
             'colMovable':'可移动列',
             'header':'表头对象',

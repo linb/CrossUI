@@ -30,7 +30,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                padding:'0',
                border: '0',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'BAR-mouseover':{
                 $order:12,
