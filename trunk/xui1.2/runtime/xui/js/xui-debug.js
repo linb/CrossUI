@@ -187,20 +187,21 @@ _.merge(_,{
         else clearTimeout(Math.abs(id));
     },
     fun:function(){return function(){}},
-    exec:function(script){
+    exec:function(script, id){
         var me=this,
             d=document,
             h=d.getElementsByTagName("head")[0] || d.documentElement,
             s=d.createElement("script");
         s.type = "text/javascript";
+        if(id)s.id=id;
         if(xui.browser.ie)
             s.text=script;
         else
             s.appendChild(d.createTextNode(script));
-        h.insertBefore(s, h.firstChild);
+        h.appendChild(s);
         s.disalbed=true;
         s.disabled=false;
-        h.removeChild(s);
+        if(!id)h.removeChild(s);
     },
     /*
     get something from deep hash
@@ -228,6 +229,7 @@ _.merge(_,{
         _.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
     */
     set:function(hash,path,value){
+        if(!hash)return;
         if(typeof path!='string'){
             var v,i=0,m,last=path.length-1;
             for(;i<last;){
@@ -1154,7 +1156,7 @@ _.merge(xui,{
             }else{
                 xui.Ajax(uri,xui.Ajax._id,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
-                    try{_.exec(rsp)}
+                    try{_.exec(rsp,uri)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
@@ -1658,7 +1660,7 @@ Class('xui.Thread',null,{
 
             // if callback return false, stop.
             if(t.callback && false===_.tryF(t.callback, [p.id], self, true))
-                return self.abort();
+                return self.abort('callback');
 
             // if set suspend at t.task or t.callback , stop continue running
             if(p.status!=="run")
@@ -1672,19 +1674,19 @@ Class('xui.Thread',null,{
                 p._start=true;
                 //call onstart
                 if(false===_.tryF(p.onStart,[p.id],self))
-                    return self.abort();
+                    return self.abort('start');
             }
             if(p.status!="run")
                 p.status="run";
 
             if(!p.tasks.length)
-                return self.abort();
+                return self.abort('empty');
 
             if(p.index>=p.tasks.length){
                 if(p.cycle===true)
                     self.profile.index = 0;
                 else
-                    return self.abort();
+                    return self.abort('normal');
             }
             task=p.tasks[p.index];
 
@@ -1736,11 +1738,11 @@ Class('xui.Thread',null,{
             self.start(time);
             return self;
         },
-        abort:function(){
+        abort:function(flag){
             var t=this.profile;
             t.status="stop";
             _.clearTimeout(t._asy);
-            _.tryF(t.onEnd, [t.id]);
+            _.tryF(t.onEnd, [t.id,flag]);
             this.__gc();
         },
         links:function(thread){
@@ -7779,7 +7781,7 @@ Class('xui.Dom','xui.absBox',{
         css:function(name, value){
             if(typeof name=='object' || value!==undefined){
                 this.each(function(o){
-                    xui.Dom.setStyle(o,name,value)
+                        xui.Dom.setStyle(o,name,value)
                 });
                 
                 if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
@@ -7794,6 +7796,112 @@ Class('xui.Dom','xui.absBox',{
             }else{
                 return xui.Dom.getStyle(this.get(0), name);
             };
+        },
+       rotate:function(v){
+            if(_.isSet(v)){
+                if(_.isFinite(v))v+='deg';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/rotate\([^)]*\)/i.test(transform))transform=transform.replace(/(rotate\()([^)]+)/i, '$1'+v);
+                    else transform+=" rotate("+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/rotate\(([-\d.]+)/i.exec(this.get(0).style.transform);
+               return arr?parseFloat(arr[1]||0):0;
+            }
+        },
+       scaleX:function(v){
+            if(_.isSet(v)){
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale('+v+',1)');
+                    else transform+=" scale("+v+",1)";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               if(arr)return parseFloat(arr[2]||1);
+               else{
+                    arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
+                    return arr?arr[1]:1;
+                }
+            }
+        },
+        scaleY:function(v){
+            if(_.isSet(v)){
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale(1,'+v+')');
+                    else transform+=" scale(1,"+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               if(arr)return parseFloat(arr[3]||1);
+               else{
+                    arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
+                    return arr?arr[1]:1;
+                }
+            }
+        },
+        translateX:function(v){
+            if(_.isSet(v)){
+                if(_.isFinite(v))v+='px';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    else transform+=" translate("+v+",0)";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?(arr[2]||"").replace(/\s/g,''):'';
+            }
+        },
+        translateY:function(v){
+            if(_.isSet(v)){
+                if(_.isFinite(v))v+='px';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    else transform+=" translate(0,"+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?(arr[3]||"").replace(/\s/g,''):'';
+            }
+        },
+        skewX:function(v){
+            if(_.isSet(v)){
+                 if(_.isFinite(v))v+='deg';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    else transform+=" skew("+v+",0deg)";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(skew\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?parseFloat(arr[2]||0):0;
+            }
+        },
+        skewY:function(v){
+            if(_.isSet(v)){
+                 if(_.isFinite(v))v+='deg';
+                return this.each(function(o){
+                    var transform=o.style.transform||"";
+                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    else transform+=" skew(0deg,"+v+")";
+                    xui.Dom.setStyle(o,'transform',transform);
+                });
+            }else{
+               var arr=/(skew\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+               return arr?parseFloat(arr[3]||0):0;
+            }
         },
         /*
         *IE/opera \r\n will take 2 chars
@@ -7864,18 +7972,28 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         //left,top format: "23px"
-        show:function(left,top){
-            var style,t,auto='auto',v=xui.Dom.HIDE_VALUE,vv;
+        show:function(left,top,callback,showEffects,ignoreEffects){
+            var style,t,v=xui.Dom.HIDE_VALUE,vv;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
+                var tid=xui.getNodeData(o,'_inthread');
+                if(tid){
+                    xui.Thread(tid).abort('force');
+                    xui.setNodeData(o,'_inthread');
+                }
+
                 style=o.style;
                 vv=xui.getNodeData(o);
-                if( t = (top || (style.top==v && (vv._top || auto))))style.top = t;
-                if( t = (left || (style.left==v && (vv._left || auto))))style.left = t;
-                if(t=vv._position)if(style.position!=t)style.position=t;
-                vv._xuihide=0;
+                if(vv._xuihide){
+                    if(t=vv._left)if(style.left!=t)style.left=t;
+                    if(t=vv._top)if(style.top!=t)style.top=t;
+                    if(t=vv._position)if(style.position!=t)style.position=t;
+                    if(style.visibility!='visible')style.visibility='visible';
+                    vv._xuihide=0;
+                }
+                if(_.isSet(left))style.left=left;
+                if(_.isSet(top))style.top=top;
 
-                if(style.visibility!='visible')style.visibility='visible';
                 //ie6 bug
               /*  if(xui.browser.ie6){
                     t=style.wordWrap=='normal';
@@ -7883,22 +8001,40 @@ Class('xui.Dom','xui.absBox',{
                         style.wordWrap=t?'break-word':'normal'
                     })
                 }*/
+                showEffects=ignoreEffects?null:showEffects?showEffects:_.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
+                if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
+                if(showEffects)xui.Dom._vAnimate(o,true,showEffects,callback);else if(callback)callback();
             });
         },
-        hide:function(){
-            var style,t,vv;
+        hide:function(callback,hideEffects,ignoreEffects){
+            var style,vv;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
-                style=o.style;t=xui([o]);
-                vv=xui.getNodeData(o);
-                if(vv._xuihide!==1){
-                    vv._position = style.position;
-                    vv._top = style.top;
-                    vv._left = style.left;
-                    vv._xuihide=1;
+                var tid=xui.getNodeData(o,'_inthread');
+                if(tid){
+                    xui.Thread(tid).abort('force');
+                    xui.setNodeData(o,'_inthread');
                 }
-                if(style.position!='absolute')style.position = 'absolute';
-                style.top = style.left = xui.Dom.HIDE_VALUE;
+
+                style=o.style;
+                vv=xui.getNodeData(o);
+                var fun=function(){
+                    if(vv._xuihide!==1){
+                        vv._position = style.position;
+                        vv._visibility = style.visibility;
+                        vv._top = style.top;
+                        vv._left = style.left;
+                        vv._xuihide=1;
+                    }
+                    if(style.position!='absolute')style.position = 'absolute';
+                    style.visibility="hidden";
+                    style.top = style.left = xui.Dom.HIDE_VALUE;
+                    
+                    if(callback)callback();
+                };
+                hideEffects=ignoreEffects?null:hideEffects?hideEffects:_.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
+               if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
+                if(hideEffects)xui.Dom._vAnimate(o,false,hideEffects,fun);else fun();
             });
         },
         cssRegion:function(region,triggerEvent) {
@@ -8393,107 +8529,287 @@ Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(args, onStart, onEnd, time, step, type, threadid, unit){
+        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
             var me=arguments.callee,
-            hash = me.lib ||  (me.lib = {
-                linear:function(x,s){return x/s},
-                expoIn:function(x,s){return (x/s==0)?0:Math.pow(2,10*(x/s-1))},
-                expoOut:function(x,s){return (x/s==1)?1:-Math.pow(2,-10*x/s)+1},
-                expoInOut:function(x,s){
-                    if(x==0)return 0;
-                    else if(x==s)return 1;
-                    else if((x/=s/2) < 1) return 1/2 * Math.pow(2, 10 * (x - 1));
-                    return 1/2 * (-Math.pow(2, -10 * --x) + 2);
-                },
-                sineIn:function(x,s){return -1*Math.cos(x/s*(Math.PI/2))+1},
-                sineOut:function(x,s){return Math.sin(x/s*(Math.PI/2))},
-                sineInOut:function(x,s){return -1/2*(Math.cos(Math.PI*x/s)-1)},
-                backIn:function(x,s){
-                    var n=1.70158;
-                    return (x/=s)*x*((n+1)*x - n);
-                },
-                backOut:function(x,s){
-                    var n=1.70158;
-                    return ((x=x/s-1)*x*((n+1)*x + n) + 1);
-                },
-                backInOut:function(x,s){
-                    var n=1.70158;
-                    if ((x/=s/2) < 1) return 1/2*(x*x*(((n*=(1.525))+1)*x - n));
-                    return 1/2*((x-=2)*x*(((n*=(1.525))+1)*x + n) + 2);
-                },
-                bounceOut:function(x,s){
-                    if((x/=s) < (1/2.75))return 7.5625*x*x;
-                    else if(x < (2/2.75))return 7.5625*(x-=(1.5/2.75))*x + .75;
-                    else if(x < (2.5/2.75))return 7.5625*(x-=(2.25/2.75))*x + .9375;
-                    else return 7.5625*(x-=(2.625/2.75))*x + .984375;
-                }
-            }),
-            color = me.color || (me.color = function(type, args, step, j){
-                var f,fun,value = 0 + (100-0)*hash[type](j,step), from = args[0], to = args[1];
+                effects = {
+			linear: function (t, b, c, d) {
+				return c * t / d + b;
+			},
+			quadIn: function (t, b, c, d) {
+				return c * (t /= d) * t + b;
+			},
+			quadOut: function (t, b, c, d) {
+				return -c * (t /= d) * (t - 2) + b;
+			},
+			quadInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t + b;
+				}
+				return -c / 2 * ((--t) * (t - 2) - 1) + b;
+			},
+			cubicIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t + b;
+			},
+			cubicOut: function (t, b, c, d) {
+				return c * ((t = t / d - 1) * t * t + 1) + b;
+			},
+			cubicInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t + b;
+				}
+				return c / 2 * ((t -= 2) * t * t + 2) + b;
+			},
+			easeIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t + b;
+			},
+			easeOut: function (t, b, c, d) {
+				return c * ((t = t / d - 1) * t * t + 1) + b;
+			},
+			easeInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t + b;
+				}
+				return c / 2 * ((t -= 2) * t * t + 2) + b;
+			},
+			quartIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t * t + b;
+			},
+			quartOut: function (t, b, c, d) {
+				return -c * ((t = t / d - 1) * t * t * t - 1) + b;
+			},
+			quartInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t * t + b;
+				}
+				return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
+			},
+			quintIn: function (t, b, c, d) {
+				return c * (t /= d) * t * t * t * t + b;
+			},
+			quintOut: function (t, b, c, d) {
+				return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+			},
+			quintInOut: function (t, b, c, d) {
 
-                if(typeof from !='string' || typeof to != 'string')return '#fff';
-                if(value<0)
-                    return from;
-                else if(value>100)
-                    return to;
-
-                f=function(str){
-                    return (str.charAt(0)!='#')?('#'+str):str;
-                };
-                from=f(from);to=f(to);
-
-                f=function(str, i, j){
-                    return parseInt(str.slice(i,j),16)||0;
-                };
-                fun=function(o){
-                    return {red:f(o,1,3),green:f(o,3,5),blue:f(o,5,7)}
-                };
-                from = fun(from);to = fun(to);
-
-                f=function(from, to, value,c){
-                    var r= from[c]+Math.round((value/100)*(to[c]-from[c]));
-                    return (r < 16 ? '0' : '') + r.toString(16)
-                };
-                return '#' + f(from,to, value, 'red') + f(from,to, value, 'green') + f(from,to, value, 'blue');
-            });
-            
-            // Estimate time by steps
+				if ((t /= d / 2) < 1) {
+					return c / 2 * t * t * t * t * t + b;
+				}
+				return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
+			},
+			sineIn: function (t, b, c, d) {
+				return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+			},
+			sineOut: function (t, b, c, d) {
+				return c * Math.sin(t / d * (Math.PI / 2)) + b;
+			},
+			sineInOut: function (t, b, c, d) {
+				return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+			},
+			expoIn: function (t, b, c, d) {
+				return (t === 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
+			},
+			expoOut: function (t, b, c, d) {
+				return (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
+			},
+			expoInOut: function (t, b, c, d) {
+				if (t === 0) { return b; }
+				if (t === d) { return b + c; }
+				if ((t /= d / 2) < 1) {
+					return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+				}
+				return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
+			},
+			circIn: function (t, b, c, d) {
+				return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
+			},
+			circOut: function (t, b, c, d) {
+				return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
+			},
+			circInOut: function (t, b, c, d) {
+				if ((t /= d / 2) < 1) {
+					return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+				}
+				return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
+			},
+			bounceIn: function (t, b, c, d) {
+				return c - effects.bounceOut(d - t, 0, c, d) + b;
+			},
+			bounceOut: function (t, b, c, d) {
+				if ((t /= d) < (1 / 2.75)) {
+					return c * (7.5625 * t * t) + b;
+				} else if (t < (2 / 2.75)) {
+					return c * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75) + b;
+				} else if (t < (2.5 / 2.75)) {
+					return c * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375) + b;
+				} else {
+					return c * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375) + b;
+				}
+			},
+			bounceInOut: function (t, b, c, d) {
+				if (t < d / 2) {
+					return effects.bounceIn(t * 2, 0, c, d) * 0.5 + b;
+				}
+				return effects.bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
+			},
+			elasticIn: function (t, b, c, d, a, p) {
+				if (t === 0) { return b; }
+				if ((t /= d) === 1) {
+					return b + c;
+				}
+				if (!p) {
+					p = d * 0.3;
+				}
+				if (!a) {
+					a = 1;
+				}
+				var s = 0;
+				if (a < Math.abs(c)) {
+					a = c;
+					s = p / 4;
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(c / a);
+				}
+				return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+			},
+			elasticOut: function (t, b, c, d, a, p) {
+				if (t === 0) {
+					return b;
+				}
+				if ((t /= d) === 1) {
+					return b + c;
+				}
+				if (!p) {
+					p = d * 0.3;
+				}
+				if (!a) {
+					a = 1;
+				}
+				var s = 0;
+				if (a < Math.abs(c)) {
+					a = c;
+					s = p / 4;
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(c / a);
+				}
+				return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
+			},
+			elasticInOut: function (t, b, c, d, a, p) {
+				if (t === 0) {
+					return b;
+				}
+				if ((t /= d / 2) === 2) {
+					return b + c;
+				}
+				if (!p) {
+					p = d * (0.3 * 1.5);
+				}
+				if (!a) {
+					a = 1;
+				}
+				var s = 0;
+				if (a < Math.abs(c)) {
+					a = c;
+					s = p / 4;
+				} else {
+					s = p / (2 * Math.PI) * Math.asin(c / a);
+				}
+				if (t < 1) {
+					return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+				}
+				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
+			}
+		},
+                color = me.color || (me.color = function(from,to,curvalue){
+                    if(typeof from !='string' || typeof to != 'string')return '#fff';
+                    if(curvalue<0)return from;
+                    if(curvalue>1) return to;
+    
+                    var f,f1,f2,f3;
+                    f=function(str){
+                        return (str.charAt(0)!='#')?('#'+str):str;
+                    };
+                    from=f(from);to=f(to);
+    
+                    f1=function(str, i, j){
+                        return parseInt(str.slice(i,j),16)||0;
+                    };
+                    f2=function(o){
+                        return {red:f1(o,1,3),green:f1(o,3,5),blue:f1(o,5,7)}
+                    };
+                    from = f2(from);
+                    to = f2(to);
+    
+                    f3=function(from, to, value,c){
+                        var r= from[c]+Math.round(value*(to[c]-from[c]));
+                        return (r < 16 ? '0' : '') + r.toString(16)
+                    };
+                    return '#' + f3(from,to, curvalue, 'red') + f3(from,to, curvalue, 'green') + f3(from,to, curvalue, 'blue');
+                });
+            if(!params){
+                if(onEnd)_.tryF(onEnd);
+                return;
+            }
+            // Estimate duration by steps
             if((step||0)>0)
-                time=step*16;
+                duration=step*16;
             else
-                time = time||200;
+                duration = duration||200;
 
-            type = hash[type]!==undefined?type:'expoIn';
+            type = effects[type]!==undefined?type:'expoIn';
 
-            var startTime,self=this, funs=[function(threadid){
-                var off = _() - startTime;
-                // the last time
-                if(off >= time)off=time;
-                _.each(args,function(o,i){
-                    if(typeof o == 'function') o(hash[type](off,time));
+            var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
+                var offtime=_() - starttime, curvalue,u,s,e;
+                if(offtime >= duration)offtime=duration;
+                _.each(params,function(o,i){
+                    s=o[0];e=o[1];u=o[3];
+                    curvalue = effects[type](offtime, 0, 1, duration);
+                    if(typeof o == 'function') o.call(self, curvalue);
                     else{
-                        var value = String( _.str.endWith(i.toLowerCase(),'color') ? color(type, o, time, off) : (o[0] + (o[1]-o[0])*hash[type](off,time)));
-                        (self[i]) ? (self[i](value+(unit||''))) :(self.css(i, value+(unit||'')));
+                        if(_.str.endWith(i.toLowerCase(),'color')){
+                            curvalue = color(s, e, curvalue);
+                        }else{
+                            if(!_.isFinite(e)){
+                                u=e.replace(/[-\d.]*/,'');
+                                s=parseFloat(s);
+                                e=parseFloat(e);
+                            }
+                            curvalue = s + (e-s)*curvalue;
+                        }
+                        curvalue+=u||unit||'';
+                        (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
                     }
                 });
-                if(off==time){
-                    xui.Thread(threadid).abort();
+                if(offtime==duration){
+                    xui.Thread(threadid).abort('normal');
                     return false;
                 }
             }];
-            return xui.Thread(threadid||_.id(), funs, 0, null, function(){
-                startTime=_();
+
+            var tid=xui.getNodeData(node,'_inthread');
+            if(tid && xui.Thread.isAlive(tid)){
+                xui.Thread(tid).abort('force');
+                xui.setNodeData(node,'_inthread',null);
+            }
+
+            return xui.Thread(threadid||_.id(), funs, 0, null, function(tid){
+                xui.setNodeData(node,'_inthread',tid);
+                starttime=_();
                 _.tryF(onStart,arguments,this);
-            }, onEnd ,true);
+            }, function(tid,flag){
+                if('force'!=flag)
+                    _.tryF(onEnd,arguments,this);
+                //maybe destroyed
+                if(node&&node.$xid)
+                    xui.setNodeData(node,'_inthread',null);
+            },true);
         },
         /*
         pos: {left:,top:} or dom element
         parent:parent node
         type:1,2,3,4
         */
-        popToTop : function(pos, type, parent){
+        popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
             var region, target=this, t;
-
             parent=xui(parent);
             if(parent.isEmpty())parent=xui('body');
 
@@ -8641,9 +8957,12 @@ type:4
             //show
             target.cssPos(pos).css({visibility:'visible'});
 
+            showEffects=ignoreEffects?null:showEffects?showEffects:_.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
+            if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
+            if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
             return this;
         },
-        setHoverPop : function(node, type, beforePop,beforeHide, parent){
+        setHoverPop : function(node, type, beforePop,beforeHide, parent, showEffects, hideEffects){
             var c=this.get(0),sor=xui(c);
             if(node["xui.UI"]){
                 node=node.getRoot();
@@ -8652,26 +8971,37 @@ type:4
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
+            if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
+            if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
             if(!_.isDefined(type))type='12';
-            var aysid=c.xid()+":"+node.xid();
+            var baseid=c.getRoot().xid(),aysid=baseid+":"+node.xid();
             sor.onMouseover(type===null?null:function(prf, e, src){
                  _.resetRun(aysid,null);
-                 if(!beforePop || false!==beforePop(prf, node, e, src))
-                    node.popToTop(src, type);
+                    var ignore=xui.getNodeData(baseid,'$ui.hover.pop');
+                    if(!beforePop || false!==beforePop(profile, node, e, src, item, ignore)){
+                        if(!ignore){
+                            node.popToTop(src, type, parent,showEffects);
+                            xui.setNodeData(baseid,'$ui.hover.pop',1);
+                        }
+                 }
             },aysid).onMouseout(type===null?null:function(profile, e, src){
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host'))
-                            node.hide();
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host')){
+                            node.hide(null,hideEffects);
+                            xui.setNodeData(baseid,'$ui.hover.pop',0);
+                        }
                     });
             },aysid);
 
             node.onMouseover(type===null?null:function(){
                  _.resetRun(aysid,null);
             },aysid).onMouseout(type===null?null:function(){
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop'))
-                            node.hide();
-                    });
+                _.resetRun(aysid,function(){
+                    if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop')){
+                        node.hide(null,hideEffects);
+                        xui.setNodeData(baseid,'$ui.hover.pop',0);
+                    }
+                });
             },aysid);
             return this;
         },
@@ -8816,7 +9146,7 @@ type:4
                     if(n.tagName=='IMG' && /\.png$/i.test(n.src)){
                         n.style.height = n.height;
                         n.style.width = n.width;
-                        n.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")";
+                        n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                         if('msfilter' in n.style)n.style.msfilter = n.style.filter;
                         n.src = xui.ini.img_bg;
                     }
@@ -8824,7 +9154,7 @@ type:4
                         bgmatch = bgimg.match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
                     if(bgmatch){
                         n.style.backgroundImage = 'url(' + xui.ini.img_bg + ')';
-                        n.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")";
+                        n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                         if('msfilter' in n.style)n.style.msfilter = n.style.filter;
                     }
                 });
@@ -8982,7 +9312,7 @@ type:4
                 return d*(Math.PI/180);
             };
             if(!value){
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
             }else{
@@ -9013,7 +9343,7 @@ type:4
                 transX=parseFloat(transX)||0;
                 transY=parseFloat(transY)||0;
             
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"");
+                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
                 var ow=node.offsetWidth,oh=node.offsetHeight;
@@ -9041,9 +9371,8 @@ type:4
                     m21 += Math.tan(toD(skewY));
                 }
                 
-                node.style.filter = (n.style.filter||"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')";
+                node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                
                 var w=node.offsetWidth,h=node.offsetHeight;
                 if(w!=ow || transX){
                     node.style.marginLeft = -(w-ow)/2 + transX + 'px';
@@ -9051,18 +9380,19 @@ type:4
                 if(h!=oh || transY){
                     node.style.marginTop=-(h-oh)/2 + transY +  'px';
                 }
+                // fake
+                node.style.transform=value;
             }
         },
         $textShadowIE:function(node, value, box){
             if(!value){
                 var f=function(s){
-                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"");
+                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 },
-                s1=node.style.filter,
-                s2=('msfilter' in node.style)?node.style.msfilter:"";
+                s1=node.style.filter;
                 
                 if(s1)node.style.filter=f(s1);
-                if(s2)node.style.msfilter=f(s2);
+                if('msfilter' in node.style)node.style.msfilter=f(s1);
                 if(!box)
                     node.style.backgroundColor="";
             }else{
@@ -9073,7 +9403,7 @@ type:4
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
-                    node.style.filter=(node.style.filter||"")+f(r[1],r[2],r[4],r[6]||"#000000");
+                    node.style.filter=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                     if(!box)
                         node.style.backgroundColor="#cccccc";
@@ -9086,7 +9416,7 @@ type:4
         *stops:{clr:, pos:, opacity:}
         *rate:0~1
         *shape: circle or ellipse, only for radial
-        *size: farthest-corner....
+        *size: farthest-corner..
         */
         $setGradients:function(node, value){
             var ns=this,
@@ -9151,7 +9481,7 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     rate=rate||1;
@@ -9217,7 +9547,7 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s.filter = (s.filter||"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)';
+                	s.filter = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	if('msfilter' in s)s.msfilter = s.filter;
                     
                     // the first node
@@ -9227,7 +9557,7 @@ type:4
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
                 	if(stops[stops.length-1].opacity){
-                	    node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 	}
                 }
@@ -9253,7 +9583,7 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     var innerColor=stops[0].clr,
@@ -9303,7 +9633,7 @@ type:4
                 	s.backgroundColor=innerColor;
                 	
                 	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s.filter = (s.filter||"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')';
+                	s.filter =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	if('msfilter' in s)s.msfilter = s.filter;
                     
                     // the first node
@@ -9313,7 +9643,7 @@ type:4
                         node.appendChild(at);
                 	node.style.backgroundColor = outerColor;
                 	if(stops[stops.length-1].opacity){
-                	    node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")";
+                	    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 	}
                 }
@@ -9322,7 +9652,7 @@ type:4
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
                 if(!orient){
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'');
+                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                     var i,a=node.childNodes,l=a.length;
                     for(i=0;i<l;i++){
@@ -9332,7 +9662,7 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'');
+                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }else{
                     var innerColor=stops[0].clr,
@@ -9368,7 +9698,7 @@ type:4
                 	        outerColor=t;
                     	break;
                 	}
-                	node.style.filter = (node.style.filter||"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")";
+                	node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 	if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }
             },
@@ -9664,6 +9994,23 @@ type:4
                 }
             }
         },
+        _vAnimate:function(node,isIn,setting,callback){
+            if(!setting || !setting.params || _.isEmpty(setting.params)){
+                if(callback)_.tryF(callback);
+                return;
+            }
+
+            var params=setting.params,reset={};
+            node=xui(node);
+            _.each(params,function(o,i){reset[i]=o[0]});
+
+            node.animate(params, function(threadid){
+                if(isIn)node.css(reset);
+            },function(threadid){
+                if(!isIn)node.css(reset);
+                if(callback)_.tryF(callback);
+            },setting.duration,0,setting.type).start();
+        },
         $adjustCss:function(hash,returnStr){
             var fack={nodeType:1,style:{}};
             xui.Dom.setStyle(fack,hash);
@@ -9679,71 +10026,88 @@ type:4
                 return fack.style;
             }
         },
+        _cssfake:{rotate:1, scaleX:1,scaleY:1,translateX:1,translateY:1,skewX:1,skewY:1},
         setStyle:function(node, name , value){
             var ns=xui.Dom,
                 css3prop=xui.Dom._css3prop,
-                xb=xui.browser;
+                xb=xui.browser,
+                fake=ns._cssfake;
+
             if(node.nodeType != 1)return;
             if(typeof name == 'string'){
-                var me=this.getStyle,
-                c1 = me._c1 || (me._c1={}),
-                r1 = me._r1 || (me._r1=/alpha\([^\)]*\)/ig),
-                map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1});
-                var name2,name3,name4;
-                name = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()}));
-
-                var n1=name;
-                if(n1.indexOf("border")===0){
-                    n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
-                }
-
-                if(name=="$gradient"){
-                    return ns.$setGradients(node,value);
-                }else if(name=='opacity'){
-                    value=_.isFinite(value)?
-                            parseFloat(value)>1?
-                                1
-                                :parseFloat(value)<=0?
-                                    0
-                                :parseFloat(value)
-                            :1;
-                    value= value >0.9999 ? '' : ((!ns.css3Support("opacity"))&&xb.ie) ? "alpha(opacity="+ 100*value +")" : value;
-                    if((!ns.css3Support("opacity"))&&xb.ie){
-                        node.style.zoom=1;
-                        name='filter';
-                        value = (node.style.filter||"").replace(r1, "") + value;
+                if(fake[name]){
+                    xui(node)[name](value);
+                }else{
+                    var me=this.getStyle,
+                    c1 = me._c1 || (me._c1={}),
+                    r1 = me._r1 || (me._r1=/alpha\([^\)]*\)/ig),
+                    map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1});
+                    var name2,name3,name4;
+                    name = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()}));
+    
+                    var n1=name;
+                    if(n1.indexOf("border")===0){
+                        n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
                     }
-                }else if(_.arr.indexOf(css3prop,n1)!=-1){
-                    if(!ns.css3Support(name)){
-                        if(xb.ie && xb.ver<9){
-                            switch(name){
-                                case "transform":
-                                linb.Dom.$transformIE(node,value);
-                                break;
-                                case "boxShadow":
-                                linb.Dom.$textShadowIE(node,value, true);
-                                break;
+    
+                    if(name=="$gradient"){
+                        return ns.$setGradients(node,value);
+                    }else if(name=='opacity'){
+                        value=_.isFinite(value)?
+                                parseFloat(value)>1?
+                                    1
+                                    :parseFloat(value)<=0?
+                                        0
+                                    :parseFloat(value)
+                                :1;
+                        value= value >0.9999 ? '' : value;
+                        if((!ns.css3Support("opacity"))&&xb.ie){
+                            if(value==='')value=1;
+                            // fake
+                            node.style.opacity=value;
+                            node.style.zoom=1;
+                            value = "alpha(opacity="+ 100*value +")";
+                            var ov = (node.style.filter||"").replace(r1, "");
+                            value = (ov?(ov+","):"") + value;
+                            name="filter";
+                            if(xb.ver==8)name2="msfilter";
+                        }
+                    }else if(_.arr.indexOf(css3prop,n1)!=-1){
+                        if(!ns.css3Support(name)){
+                            if(xb.ie && xb.ver<9){
+                                switch(name){
+                                    case "transform":
+                                    linb.Dom.$transformIE(node,value);
+                                    break;
+                                    case "boxShadow":
+                                    linb.Dom.$textShadowIE(node,value, true);
+                                    break;
+                                }
+                            }
+                            if(name=="textShadow" && xb.ie && xb.ver<10){
+                                linb.Dom.$textShadowIE(node,value);
+                            }
+                            return this;
+                        }else{
+                            if(xb.cssTag2){
+                                if(name!="textShadow"){
+                                    name2=xb.cssTag2 + name.charAt(0).toUpperCase() + name.substr(1);
+                                }
                             }
                         }
-                        if(name=="textShadow" && xb.ie && xb.ver<10){
-                            linb.Dom.$textShadowIE(node,value);
-                        }
-                        return this;
-                    }else{
-                        if(xb.cssTag2){
-                            if(name!="textShadow"){
-                                name2=xb.cssTag2 + name.charAt(0).toUpperCase() + name.substr(1);
-                            }
-                        }
+                    }else if(map[name]){
+                        name = xb.ie?"styleFloat":"cssFloat";
                     }
-                }else if(map[name]){
-                    name = xb.ie?"styleFloat":"cssFloat";
+    
+                    if(name=="filter"){
+                        value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    }
+                    node.style[name]=value;
+                    if(name2)node.style[name2]=value;
+                    if(name3)node.style[name3]=value;
+                    if(name4)node.style[name4]=value;
+                    
                 }
-
-                node.style[name]=value;
-                if(name2)node.style[name2]=value;
-                if(name3)node.style[name3]=value;
-                if(name4)node.style[name4]=value;
             }else
                 for(var i in name)
                     arguments.callee.call(this,node, i, name[i]);
@@ -9853,6 +10217,29 @@ type:4
                 }
             }
             return _c[key]=rt;
+        },
+        $preDefinedEffects:{
+           "Classic":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
+           "Blur":[{type:"easeOut",duration:200,params: {opacity:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0]}}],
+           "Drop":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
+           "From Below":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
+           "From Above":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
+           "Slide In LR":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Slide In TB":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Flip V":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
+           "Flip H":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
+        },
+        _getEffects:function(key,isIn){
+                if(key && typeof(key)=="string"){
+                    key=this.$preDefinedEffects[key];
+                    key=key?isIn?key[0]:key[1]:null;
+                }
+                if(key &&xui.browser.ie&&xui.browser.ver<=8){
+                    _.filter(key,function(o,i){
+                        return !xui.Dom._cssfake[i];
+                    });
+                }
+                return key;
         },
         _setPxStyle:function(node, key, value){
             if(node.nodeType != 1)return false;
@@ -9986,17 +10373,17 @@ type:4
         free:function(label){
            xui.Dom.setCover(false,label);
         },
-        animate:function(css, args, onStart, onEnd, time, step, type, threadid, unit){
+        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit){
             var node = document.createElement('div');
             _.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
             document.body.appendChild(node);
-            return xui([node]).animate(args, onStart, function(){
+            return xui([node]).animate(params, onStart, function(){
                 _.tryF(onEnd);
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
-            }, time, step, type, threadid, unit);
+            }, duration, step, type, threadid, unit);
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){
@@ -10909,8 +11296,10 @@ Class('xui.Com',null,{
                         self.render();
 
                     if(false===_.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
-                        (parent||xui('body')).append(self.getUIComponents(),subId);
-                        self.getAllComponents().each(function(o){
+                        //append only
+                        (parent||xui('body')).append(self.getUIComponents(false),subId);
+                        // append and show
+                        self.getUIComponents(true).show(parent||xui('body'), subId).each(function(o){
                             if(o.KEY=='xui.UIProfile' && _.get(o,['properties','defaultFocus'])){
                                try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
                             }
@@ -11040,7 +11429,7 @@ Class('xui.Com',null,{
             // attach destroy to the first UI control
             if(self.autoDestroy)
                 _.arr.each(self._nodes,function(o){
-                    if(o.box && o.box["xui.UI"] && !o.box.$noDomRoot){
+                    if(o.box && o.box["xui.UI"] && !o.box.$initRootHidden){
                         (o.$afterDestroy=(o.$afterDestroy||{}))["comDestroyTrigger"]=function(){
                             if(self.autoDestroy && !self.destroyed)
                                 self.destroy();
@@ -11132,12 +11521,15 @@ Class('xui.Com',null,{
             });
             return nodes;
         },
-        getUIComponents:function(){
+        // flag:true => no  $initRootHidden
+        // flag:false => $initRootHidden
+        // no flag: all
+        getUIComponents:function(flag){
             if(!this._innerComsCreated)
                 this._createInnerComs();
-            var nodes = _.copy(this._nodes),t,k='xui.UI';
+            var nodes = _.copy(this._nodes),t,k='xui.UI',n='$initRootHidden';
             _.filter(nodes,function(o){
-                return !!(o.box[k]);
+                return !!(o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
             });
             return xui.UI.pack(nodes, false);
         },
@@ -14376,9 +14768,8 @@ Class('xui.UIProfile','xui.Profile', {
     Static:{
         getFromDom:function(id){
             if(
-                (
-                id=typeof id=='string'
-                    ? id.charAt(0)=='!'
+                (id = (id && id.KEY=="xui.Dom")? id.get(0).id
+                   : typeof id=='string' ? id.charAt(0)=='!'
                         ? ((id=xui.use(id).get(0)) && id.id)
                         :id
                     : (id && id.id)
@@ -14475,31 +14866,47 @@ Class("xui.UI",  "xui.absObj", {
             if(node["xui.UI"]){
                 node=node.getRoot();
             }else if(node['xui.UIProfile']||node['xui.Template']){
+                node=node.boxing(); 
+            }else if(node['xui.Template']){
                node=node.boxing(); 
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
+
             if(!_.isDefined(type))type='12';
-            var aysid=c.getRoot().xid()+":"+node.xid();
+            var baseid=c.getRoot().xid(),aysid=baseid+":"+node.xid();
             c.$beforeHover=type===null?null:function(profile, item, e, src, mtype){
                 if(mtype=='mouseover'){
                     _.resetRun(aysid,null);
-                    if(!beforePop || false!==beforePop(profile, node, e, src, item))
-                        node.popToTop(src, type, parent);
+                    var ignore=xui.getNodeData(baseid,'$ui.hover.pop')
+                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
+                    if(!beforePop || false!==beforePop(profile, node, e, src, item, ignore)){
+                        if(!ignore){
+                            node.popToTop(src, type, parent);
+                            xui.setNodeData(baseid,'$ui.hover.pop',1);
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
+                        }
+                    }
                 }else{
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src,item,'host'))
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src,item,'host')){
                             node.hide();
+                            xui.setNodeData(baseid,'$ui.hover.pop',0);
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
+                        }
                     });
                 }
             };
             node.onMouseover(type===null?null:function(prf,e,src){
                  _.resetRun(aysid,null);
             },aysid).onMouseout(type===null?null:function(prf,e,src){
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop'))
-                            node.hide();
-                    });
+                _.resetRun(aysid,function(){
+                    if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop')){
+                        node.hide();
+                        xui.setNodeData(baseid,'$ui.hover.pop',0);
+                        xui.setNodeData(node.get(0),'$ui.hover.parent',0);
+                    }
+                });
             },aysid);
             return this;
         },
@@ -14521,29 +14928,31 @@ Class("xui.UI",  "xui.absObj", {
         getTheme:function(){
             return this.get(0) && this.get(0).theme;
         },
-        destroy:function(){
+        destroy:function(ignoreEffects){
             var ns=this;
             this.each(function(o,i){
                 if(o.destroyed)return;
                 if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
-                if(o.$beforeDestroy){
-                    _.each(o.$beforeDestroy,function(f){
-                        _.tryF(f,[],o);
-                    });
-                    _.breakO(o.$beforeDestroy,2);
-                }
-                if(o.$afterDestroy){
-                    _.each(o.$afterDestroy,function(f){
-                        _.tryF(f,[],o);
-                    });
-                    _.breakO(o.$afterDestroy,2);
-                }
-                if(o.renderId){
-                    o.getRoot().remove();
-                }
-                else o.__gc();
-                    
-                _.arr.removeFrom( ns._nodes, i);
+                var p=o.properties,
+                     a=ignoreEffects?null:xui.Dom._getEffects(p.hideEffects,0),
+                 fun=function(){
+                    if(o.$beforeDestroy){
+                        _.each(o.$beforeDestroy,function(f){
+                            _.tryF(f,[],o);
+                        });
+                        _.breakO(o.$beforeDestroy,2);
+                    }
+                    if(o.$afterDestroy){
+                        _.each(o.$afterDestroy,function(f){
+                            _.tryF(f,[],o);
+                        });
+                        _.breakO(o.$afterDestroy,2);
+                    }
+                    if(o.renderId)o.getRoot().remove();
+                    else o.__gc();    
+                    _.arr.removeFrom( ns._nodes, i);
+                };
+                if(a)xui.Dom._vAnimate(o.getRoot(),false,a,fun);else fun();
             },null,true);
         },
         isDestroyed:function(){
@@ -14727,7 +15136,7 @@ Class("xui.UI",  "xui.absObj", {
             }
 
             //render UIProfiles
-            for(i=0;o=n[i++];)
+            for(i=0;o=arr[i++];)
                 o._render(triggerLayOut);
 
             a.length=arr.length=0;
@@ -14768,16 +15177,18 @@ Class("xui.UI",  "xui.absObj", {
             this.get(0).setDomId(id);
             return this;
         },
-        hide:function(){
+        hide:function(ignoreEffects){
             return this.each(function(o){
                 if(o.renderId){
-                    o.getRoot().hide();
-                    o.properties.top=o.properties.left=parseInt(xui.Dom.HIDE_VALUE,10);
-                    o.properties.dockIgnore=true;
+                    var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
+                    o.getRoot().hide(function(){
+                        t.top=t.left=parseInt(xui.Dom.HIDE_VALUE,10);
+                        t.dockIgnore=true;
+                    },a);
                 }
             });
         },
-        show:function(parent,subId,left,top){
+        show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
                 var t=o.properties,b;
                 left=(left||left===0)?(parseInt(left,10)||0):null;
@@ -14787,7 +15198,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'));
+                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'),null,a);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -14867,7 +15278,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 // keep cache refrence
                 var _c=o._cacheInstance;
-                o.boxing().destroy();
+                o.boxing().destroy(true);
 
                 //set back
                 _.merge(o,s,'all');
@@ -15050,7 +15461,7 @@ Class("xui.UI",  "xui.absObj", {
                             o.boxing().afterRemove(o,v[0],v[1],bDestroy);
 
                         if(bDestroy && !v[0].destroyed)
-                            v[0].boxing().destroy();
+                            v[0].boxing().destroy(true);
                     }
                 });
             });
@@ -15900,7 +16311,7 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 height:'100%',
                 'padding-left':'4px',
-                'background-position': 'left -261px'
+                'background-position': 'left -2`61px'
             },
             '.xui-uibar-top-s .xui-uibar-tdm':{
                 $order:3,
@@ -16621,7 +17032,7 @@ Class("xui.UI",  "xui.absObj", {
                             return this;
                         },
                         removePanel:function(){
-                            this.destroy();
+                            this.destroy(true);
                         },
                         getPanelPara:function(){
                             return _.clone(this.get(0).properties,true);
@@ -17383,6 +17794,8 @@ Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(self,true,true);
                 }
             },
+            showEffects:"",
+            hideEffects:"",
             dockMargin:{
                 ini:{left:0,top:0,right:0,bottom:0},
                 action:function(v){
@@ -18025,7 +18438,7 @@ Class("xui.UI",  "xui.absObj", {
                 if((i in p) && typeof p[i]!='number' && p[i]!='' && p[i]!='auto')p[i]=isNaN(p[i]=parseFloat(p[i]))?'auto':p[i];
 
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
 
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
@@ -19552,11 +19965,11 @@ new function(){
             free:null
         },
         Static:{
-            $noDomRoot:true,
-            $onlyHideRoot:true,
+            $initRootHidden:true,
+            $initRootCreated:true,
             _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
-                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;position:absolute;z-index:0;'
+                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;'
             },
             DataModel:{
                 className:{
@@ -19589,6 +20002,8 @@ new function(){
                         this.box._refreshCSS(this);
                     }
                 },
+                showEffects:null,
+                hideEffects:null,
                 position:null,
                 display:null,
                 visibility:null,
@@ -19870,7 +20285,8 @@ new function(){
             }
         }
     });
-};Class("xui.UI.Image", "xui.UI",{
+};
+Class("xui.UI.Image", "xui.UI",{
     Instance:{
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
@@ -20250,7 +20666,7 @@ Class("xui.UI.Border","xui.UI",{
                 var s = this.id();
                 _.arr.each(xui.UI.Border._cache,function(o){
                     if(o.$edgeId==s)
-                        o.boxing()._detach().destroy();
+                        o.boxing()._detach().destroy(true);
                 });
                 return this;
             }
@@ -20505,7 +20921,7 @@ Class("xui.UI.Shadow","xui.UI",{
                 _.arr.each(xui.UI.Shadow._cache,function(o){
                     if(o && o.renderId && o._target)
                         if(_.arr.indexOf(s,xui(o._target).get(0))!=-1)
-                            o.boxing().destroy();
+                            o.boxing().destroy(true);
                 });
                 return this;
             }
@@ -20689,7 +21105,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 var s = this.id();
                 _.arr.each(xui.UI.Resizer._cache,function(o){
                     if(o.$resizeId==s)
-                        o.boxing().destroy();
+                        o.boxing().destroy(true);
                 });
                 return this;
             },
@@ -24431,7 +24847,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 pro=self.properties,
                 tbH;
             if(self.$toolbar){
-                self.$toolbar.boxing().destroy();
+                self.$toolbar.boxing().destroy(true);
                 delete self._$tb;
                 delete self.$toolbar;
             }
@@ -24880,7 +25296,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var drop=profile.$drop, cached=profile.properties.cachePopWnd;
             if(drop){
                 if(!cached){
-                    drop.boxing().destroy();
+                    drop.boxing().destroy(true);
                     delete profile.$drop;
                     if(focus)
                         profile.boxing().activate();
@@ -25057,7 +25473,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
                                 else
-                                    o.destroy();
+                                    o.destroy(true);
                                 return false;
                             });
                             o.beforeUIValueSet(function(p, ovalue, value){
@@ -25103,7 +25519,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
                                 else
-                                    o.destroy();
+                                    o.destroy(true);
                                 return false
                             });
                             o.beforeUIValueSet(function(p, o, v){
@@ -25122,7 +25538,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(!this.destroyed)
                                     this.boxing()._cache(true);
                                 else
-                                    o.destroy();
+                                    o.destroy(true);
                                 return false
                             });
                             o.beforeUIValueSet(function(p, o, v){
@@ -28085,7 +28501,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         instance = profile.boxing();
                     if(p.disabled||p.readonly)return;
                     if(false===instance.beforeClose(profile, src)) return;
-                    instance.destroy();
+                    instance.destroy(true);
                 }
             },
             PRE:{
@@ -29023,7 +29439,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         instance = profile.boxing();
                     if(properties.disabled||properties.readonly)return;
                     if(false===instance.beforeClose(profile, src)) return;
-                    instance.destroy();
+                    instance.destroy(true);
                 }
             }
         },
@@ -29804,8 +30220,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = _.isSet(item[i])?item[i]:p[i];
             });
-            item.capition = item.capition || '';
-            if(item.caption===null)capDisplay='display:none;';
+            item.caption = item.caption || '';
+            if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
 
@@ -30265,7 +30681,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         if(arr.length){
                             dialog.append(xui.UI.pack(arr,false));
                         }
-                        profile.boxing().removeChildren().destroy();
+                        profile.boxing().removeChildren().destroy(true);
                     }
                 }
             }
@@ -31800,7 +32216,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             }
                         }
                     },onHide:function(){
-                        profile._droppopmenu.destroy();
+                        profile._droppopmenu.destroy(true);
                         delete profile._droppopmenu;
                     }});
                     menu.pop(src);
@@ -33712,7 +34128,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                padding:'0',
                border: '0',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'BAR-mouseover':{
                 $order:12,
@@ -34087,12 +34503,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             });
         },
-        pop:function(obj, type, parent){
+        pop:function(obj, type, parent,ignoreEffects){
             var profile=this.get(0),
+                p=profile.properties,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
                 cm='$childPopMenu';
-
             //ensure rendered
             if(!profile.renderId){
                 var o=profile.boxing().render(true);
@@ -34128,47 +34544,49 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             profile[cm]=profile[sms]=profile[hl]=null;
             return this;
         },
-        hide:function(triggerEvent, e){
+        hide:function(triggerEvent, ignoreEffects , e){
             var t,
                 profile=this.get(0),
+                p=profile.properties,
                 root=profile.getRoot(),
                 sms='$subPopMenuShowed',
                 hl='$highLight',
-                cm='$childPopMenu';
-
-            if(false!==triggerEvent)
-                if(false===profile.boxing().beforeHide(profile, e))
-                    return this;
-
-            if(!root || root.css('display')=='none')return;
-
-            //remove trigger
-            root.setBlurTrigger(profile.$xid,null);
-
-            if(profile.$hideMenuPool)
-                profile.$hideMenuPool.append(root);
-            else
-                root.css('display','none');
-
-            if(t=profile[hl])
-               xui([t]).tagClass('-mouseover',false);
-
-            //hide all parent pop
-            var p=profile[cm],q;
-            if(t=profile[sms])t.hide();
-            while(p){
-                p.boxing().hide();
-                p=(q=p)[cm];
-                q[cm] = q[sms] = q[hl] = null;
-            }
-            profile[cm]=profile[sms]=profile[hl]=null;
-            if(t=profile.$parentPopMenu)t[sms]=null;
-            
-            if(profile.$popGrp)
-                _.arr.removeValue(profile.$popGrp,root._get(0));
-
-            if(false!==triggerEvent)
-                profile.boxing().onHide(profile);
+                cm='$childPopMenu',
+                fun=function(){
+                    if(false!==triggerEvent)
+                        if(false===profile.boxing().beforeHide(profile, ignoreEffects, e))
+                            return this;
+        
+                    if(!root || root.css('display')=='none')return;
+        
+                    //remove trigger
+                    root.setBlurTrigger(profile.$xid,null);
+                    if(profile.$hideMenuPool)
+                        profile.$hideMenuPool.append(root);
+                    else
+                        root.css('display','none');
+        
+                    if(t=profile[hl])
+                       xui([t]).tagClass('-mouseover',false);
+        
+                    //hide all parent pop
+                    var p=profile[cm],q;
+                    if(t=profile[sms])t.hide(triggerEvent, ignoreEffects);
+                    while(p){
+                        p.boxing().hide(triggerEvent, ignoreEffects);
+                        p=(q=p)[cm];
+                        q[cm] = q[sms] = q[hl] = null;
+                    }
+                    profile[cm]=profile[sms]=profile[hl]=null;
+                    if(t=profile.$parentPopMenu)t[sms]=null;
+                    
+                    if(profile.$popGrp)
+                        _.arr.removeValue(profile.$popGrp,root._get(0));
+        
+                    if(false!==triggerEvent)
+                        profile.boxing().onHide(profile);
+                };
+            root.hide(fun,null,ignoreEffects);
             return this;
         },
         _afterInsertItems:function(profile){
@@ -34297,7 +34715,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         this.setTemplate(t);
     },
     Static:{
-        $noDomRoot:true,
+        $initRootHidden:true,
         Appearances:{
             KEY:{
                 'font-size':'12px',
@@ -34521,7 +34939,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                             //no create
                             if(!(pop = profile[all][itemId])){
-                                pop = (new xui.UI.PopMenu({position:'absolute', items:item.sub, autoHide:profile.properties.autoHide})).render(true);
+                                var pro=profile.properties;
+                                pop = (new xui.UI.PopMenu({position:'absolute', items:item.sub, autoHide:pro.autoHide, showEffects:pro.showEffects, hideEffects:pro.hideEffects})).render(true);
                                 pop.onShowSubMenu(function(pro, item, src){
                                     return profile.boxing().onShowSubMenu(profile, item, src);
                                 });
@@ -34734,7 +35153,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             tips:null,
             border:null,
             resizer:null,
-
+            showEffects:"Blur",
+            hideEffects:"",
             autoTips:false,
             shadow:true,
             _maxHeight:260,
@@ -34774,7 +35194,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 });
                 if(!b){
                     while(b=profile.$parentPopMenu)profile=b;
-                    profile.boxing().hide(true,e);
+                    profile.boxing().hide(true,null,e);
                     if(profile.$popGrp)
                         profile.$popGrp.length=0;
                 }
@@ -34824,7 +35244,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         _pop:function(item,src){
             var self=this,
                 profile=self.get(0);
-            //hide first
+            //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
 
             if(!item.sub)return ;
@@ -34847,7 +35267,10 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 profile[all] = profile[all] || {};
                 if(!profile[all][id]){
                     var callback=function(sub){
-                        var menu = xui.create('PopMenu',{position:'absolute', items:sub, autoHide:!!pro.autoShowTime});
+                        var hash={position:'absolute', items:sub, autoHide:!!pro.autoShowTime};
+                        if(pro.showEffects)hash.showEffects=pro.showEffects;
+                        if(pro.hideEffects)hash.hideEffects=pro.hideEffects;
+                        var menu = xui.create('PopMenu',hash);
                         profile.getSubNode('POOL').append(menu);
                         menu.onHide(function(pro){
                             self.hide(false);
@@ -34879,7 +35302,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         _afterInsertItems:function(){
             this.clearPopCache();
         },
-        hide:function(){
+        hide:function(ignoreEffects){
             var profile=this.get(0),menu,
             id = profile.$curPop,
             node = profile.$curElem;
@@ -34887,7 +35310,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             if(menu = profile.$allPops[id]){
                 //To avoid trigger recursive call
                 if(false!==arguments[0])
-                    menu.hide(false);
+                    menu.hide(false,ignoreEffects);
                 // collect
                 profile.getSubNode('POOL').append(menu.reBoxing());
                 xui([node]).tagClass('-mousedown',false);
@@ -35169,7 +35592,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         DataModel:{
             listKey:null,
-
             autoTips:false,
             //can't change height
             height:{
@@ -36578,7 +37000,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     //get left
                     fun(t,width,'width','left','right',0,0);
                     _.each(obj2,function(o,i){
-                        if(o.width)obj3[i].size=o.width;
+                        if(o.width && !obj3[i].folded)obj3[i].size=o.width;
                     });
                  }
                 if(!_.isNull(height)){
@@ -36591,7 +37013,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     //get left
                     fun(t,height,'height','top','bottom',0,0);
                     _.each(obj2,function(o,i){
-                        if(o.height)obj3[i].size=o.height;
+                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
                     });
                 }
                 if(!_.isNull(width)){
@@ -36790,12 +37212,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // clear collist cache
             if(profile.$col_pop){
-                profile.$col_pop.destroy();
+                profile.$col_pop.destroy(true);
                 delete profile.$col_pop;
             }
             //clear editor cache
             _.each(profile.$cache_editor,function(o){
-                if(!o.destroyed)o.destroy();
+                if(!o.destroyed)o.destroy(true);
             });
             profile.$cache_editor={};
         },
@@ -41371,7 +41793,7 @@ editorDropListHeight
                             
                         // don't cache it
                         if(!editorCacheKey && editor.get(0)){
-                            editor.destroy();
+                            editor.destroy(true);
                         }
                         editor=null;
                     };
@@ -41904,18 +42326,24 @@ editorDropListHeight
             }          
         },
         _onresize:function(profile,width,height){
-            profile.getSubNode('BORDER').cssSize({ width :width, height :height});
+            var css={};
+            if(width)css.width=width;
+            if(height)css.height=height;
+            
             var prop=profile.properties,
                 t1=profile.getSubNode('HEADER'),
                 t2=profile.getSubNode('SCROLL'),
                 cols=profile.colMap,
                 rh=0;
-            width=Math.round(width);
 
-            profile.getSubNode('BOX').cssSize({width: width, height:height});
+            profile.getSubNode('BORDER').cssSize(css);
+            profile.getSubNode('BOX').cssSize(css);
+            
             if(width)t1.width(width);
             if(height)rh=t1.offsetHeight();
-            t2.cssSize({width:width, height: height?(height-rh):null});
+            
+            css.height=height?(height-rh):null;
+            t2.cssSize(css);
 
             this._adjustBody(profile,'resize');            
         }
@@ -41923,50 +42351,16 @@ editorDropListHeight
 });
 Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
-        showModal:function(parent, left, top, callback){
-            this.show(parent, true, left, top, callback);
+        showModal:function(parent, left, top, callback, ignoreEffects){
+            this.show(parent, true, left, top, callback, ignoreEffects);
         },
-        show:function(parent, modal, left, top, callback){
+        show:function(parent, modal, left, top, callback,ignoreEffects){
             parent = parent || xui('body');
-
             return this.each(function(profile){
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    ins = profile.boxing(),
-                    fun = function(){
-                        var ins=profile.boxing();
-
-                        if(left||left===0)
-                            ins.setLeft(left);
-                        if(top||top===0)
-                            ins.setTop(top);
-                        parent.append(ins);
-                        var box=profile.box,
-                            root=profile.getRoot();
-                        
-                        var tt=profile._$rs_args;
-                        if(p.status=='normal'){
-                            // resize immidiately here, maybe max here
-                            xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
-                            root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null);
-                        }
-                        if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                            xui.UI.Div._applyAutoLoad(profile);
-
-                        if((modal || p.modal) && !profile.$inModal)
-                            box._modal(profile);
-                        ins.activate();
-
-                        if(profile.onShow)profile.boxing().onShow(profile);
-
-                        if(profile.properties.status=='normal')
-                            box._refreshRegion(profile);
-
-                        delete profile.inShowing;
-                        _.tryF(callback);
-                    };
-
+                    ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
                     case 'auto':
@@ -41998,48 +42392,83 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     left=top=0;
                 }
 
+                var f1 = function(){
+                    if(left||left===0)
+                        ins.setLeft(left);
+                    if(top||top===0)
+                        ins.setTop(top);
+                    parent.append(ins);
+                    var box=profile.box,
+                        root=profile.getRoot();
+                    
+                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                        xui.UI.Div._applyAutoLoad(profile);
+
+                    if((modal || p.modal) && !profile.$inModal)
+                        box._modal(profile);
+                        
+                    var tt=profile._$rs_args,fun=function(){
+                        ins.activate();
+                        if(profile.onShow)profile.boxing().onShow(profile);                            
+                        delete profile.inShowing;
+                        _.tryF(callback);
+                    };
+                    if(p.status=='min')
+                        box._min(profile,null,fun, ignoreEffects);
+                    else if(p.status=='max')
+                        box._max(profile,null,fun,ignoreEffects);
+                    else{
+                        // resize immidiately here, maybe max here
+                        xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
+                        root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null,fun,null,ignoreEffects);
+                        box._refreshRegion(profile);
+                    }
+                };
+
                 profile.inShowing=1;
                 if(t=p.fromRegion)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,fun,300,0,'expoIn').start();
+                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,f1,300,0,'expoIn').start();
                 else
-                    fun();
+                    f1();
             });
         },
-        hide:function(){
+        hide:function(ignoreEffects){
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
                     root=profile.getRoot();
-
-                if(profile.inHiding)return;
-                profile.inHiding=1;
-
-                if(profile.$inModal)
-                    box._unModal(profile);
-                //max has dock prop
-                if(pro.status=='max' || pro.status=='min')
-                    box._restore(profile);
-
-                root.hide();
-
-                var t=pro.fromRegion, fun=function(){
-                    delete profile.inHiding;
+                var fun=function(){
+                    if(profile.inHiding)return;
+                    profile.inHiding=1;
+                    if(profile.$inModal)
+                        box._unModal(profile);
+                    //max has dock prop
+                    if(pro.status=='max' || pro.status=='min'){
+                        var os=pro.status;
+                        box._restore(profile);
+                        pro.status=os;
+                    }
+    
+                    var t=pro.fromRegion, f1=function(){
+                        delete profile.inHiding;
+                    };
+                    if(t)
+                        xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, f1,300,0,'expoOut').start();
+                    else
+                        f1();
                 };
-                if(t)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, fun,300,0,'expoOut').start();
-                else
-                    fun();
+                root.hide(fun,null,ignoreEffects);
             });
             return this;
         },
-        close:function(triggerEvent){
+        close:function(triggerEvent,ignoreEffects){
             return this.each(function(profile){
                 if(false!==triggerEvent && profile.beforeClose && false === profile.boxing().beforeClose(profile))
                     return;
                 if(profile.inClosing)return;
                 profile.inClosing=1;
                 var pro=profile.properties, t=pro.fromRegion, fun=function(){
-                    profile.boxing().destroy();
+                    profile.boxing().destroy(ignoreEffects);
                     delete profile.inClosing;
                 };
 
@@ -42446,6 +42875,8 @@ if(xui.browser.ie){
             border:null,
             disabled:null,
             dock:'none',
+            showEffects:"Classic",
+            hideEffects:"",
             initPos:{
                 ini:'center',
                 listbox:['auto','center']
@@ -42626,13 +43057,7 @@ if(xui.browser.ie){
             };
         },
         LayoutTrigger:function(){
-            var self=this, t=self.properties, b=self.box;
-            if(t.status=='min')
-                b._min(self);
-            else if(t.status=='max')
-                b._max(self);
-            else
-                xui.UI.$tryResize(self, t.width, t.height);
+            var self=this, t=self.properties;
             // ensure modal
             if(t.modal){
                 var p=self.$modalDiv&&self.$modalDiv.parent();
@@ -42657,18 +43082,19 @@ if(xui.browser.ie){
             data.statusHeight = 'height:'+data.statusHeight+'px';
             var status=profile.properties.status;
             if(status=='min'||status=='max')
-                profile.$noR=profile.$noS=1;
+                profile.$noR=1;
             if(_.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
             return data;
         },
 
         //ov from design mode
-        _min:function(profile,status){
+        _min:function(profile,status,effectcallback,ignoreEffects){
             var o=profile.getRoot(),
                 box=profile.box,
                 p=o.parent(),
                 t=profile.properties;
+
             if(!status)status=t.status;
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
                 return;
@@ -42695,7 +43121,6 @@ if(xui.browser.ie){
             if(t.resizer && profile.$resizer)
                 profile.$resizer.hide();
 
-
             if(t.shadow)
                 profile.boxing()._unShadow(false);
 
@@ -42708,13 +43133,20 @@ if(xui.browser.ie){
             // resize
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
+            
+            if(a&&xui.browser.ie&&xui.browser.ver<=8)
+                _.filter(a.params,function(o,i){
+                    return !xui.Dom._cssfake[i];
+                });
+            o.show(null,null,effectcallback,null,ignoreEffects);
         },
-        _max:function(profile,status){
+        _max:function(profile,status,effectcallback,ignoreEffects){
             var o=profile.getRoot(),
                 box=profile.box,
                 ins=profile.boxing(),
                 p=o.parent(),
-                t=profile.properties;
+                t=profile.properties,
+                a=xui.Dom._getEffects(t.showEffects,1);
             if(!status)status=t.status;
             
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
@@ -42753,6 +43185,12 @@ if(xui.browser.ie){
 
             ins.setDock('cover',true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
+
+                if(a&&xui.browser.ie&&xui.browser.ver<=8)
+                    _.filter(a.params,function(o,i){
+                        return !xui.Dom._cssfake[i];
+                    });
+                o.show(null,null,effectcallback,null,ignoreEffects);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),
@@ -42770,7 +43208,6 @@ if(xui.browser.ie){
 
             // hide restore button
             profile.getSubNode('RESTORE').css('display','none');
-
         },
         _unMax:function(profile){
             var t=profile.properties,

@@ -22,7 +22,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         _pop:function(item,src){
             var self=this,
                 profile=self.get(0);
-            //hide first
+            //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
 
             if(!item.sub)return ;
@@ -45,7 +45,10 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 profile[all] = profile[all] || {};
                 if(!profile[all][id]){
                     var callback=function(sub){
-                        var menu = xui.create('PopMenu',{position:'absolute', items:sub, autoHide:!!pro.autoShowTime});
+                        var hash={position:'absolute', items:sub, autoHide:!!pro.autoShowTime};
+                        if(pro.showEffects)hash.showEffects=pro.showEffects;
+                        if(pro.hideEffects)hash.hideEffects=pro.hideEffects;
+                        var menu = xui.create('PopMenu',hash);
                         profile.getSubNode('POOL').append(menu);
                         menu.onHide(function(pro){
                             self.hide(false);
@@ -77,7 +80,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         _afterInsertItems:function(){
             this.clearPopCache();
         },
-        hide:function(){
+        hide:function(ignoreEffects){
             var profile=this.get(0),menu,
             id = profile.$curPop,
             node = profile.$curElem;
@@ -85,7 +88,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             if(menu = profile.$allPops[id]){
                 //To avoid trigger recursive call
                 if(false!==arguments[0])
-                    menu.hide(false);
+                    menu.hide(false,ignoreEffects);
                 // collect
                 profile.getSubNode('POOL').append(menu.reBoxing());
                 xui([node]).tagClass('-mousedown',false);
@@ -367,7 +370,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         DataModel:{
             listKey:null,
-
             autoTips:false,
             //can't change height
             height:{

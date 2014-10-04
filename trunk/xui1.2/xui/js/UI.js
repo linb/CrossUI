@@ -564,9 +564,8 @@ Class('xui.UIProfile','xui.Profile', {
     Static:{
         getFromDom:function(id){
             if(
-                (
-                id=typeof id=='string'
-                    ? id.charAt(0)=='!'
+                (id = (id && id.KEY=="xui.Dom")? id.get(0).id
+                   : typeof id=='string' ? id.charAt(0)=='!'
                         ? ((id=xui.use(id).get(0)) && id.id)
                         :id
                     : (id && id.id)
@@ -663,31 +662,47 @@ Class("xui.UI",  "xui.absObj", {
             if(node["xui.UI"]){
                 node=node.getRoot();
             }else if(node['xui.UIProfile']||node['xui.Template']){
+                node=node.boxing(); 
+            }else if(node['xui.Template']){
                node=node.boxing(); 
             }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
                 node=xui(node);
             }
+
             if(!_.isDefined(type))type='12';
-            var aysid=c.getRoot().xid()+":"+node.xid();
+            var baseid=c.getRoot().xid(),aysid=baseid+":"+node.xid();
             c.$beforeHover=type===null?null:function(profile, item, e, src, mtype){
                 if(mtype=='mouseover'){
                     _.resetRun(aysid,null);
-                    if(!beforePop || false!==beforePop(profile, node, e, src, item))
-                        node.popToTop(src, type, parent);
+                    var ignore=xui.getNodeData(baseid,'$ui.hover.pop')
+                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
+                    if(!beforePop || false!==beforePop(profile, node, e, src, item, ignore)){
+                        if(!ignore){
+                            node.popToTop(src, type, parent);
+                            xui.setNodeData(baseid,'$ui.hover.pop',1);
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
+                        }
+                    }
                 }else{
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src,item,'host'))
+                        if(!beforeHide || false!==beforeHide(profile, node,e, src,item,'host')){
                             node.hide();
+                            xui.setNodeData(baseid,'$ui.hover.pop',0);
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
+                        }
                     });
                 }
             };
             node.onMouseover(type===null?null:function(prf,e,src){
                  _.resetRun(aysid,null);
             },aysid).onMouseout(type===null?null:function(prf,e,src){
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop'))
-                            node.hide();
-                    });
+                _.resetRun(aysid,function(){
+                    if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop')){
+                        node.hide();
+                        xui.setNodeData(baseid,'$ui.hover.pop',0);
+                        xui.setNodeData(node.get(0),'$ui.hover.parent',0);
+                    }
+                });
             },aysid);
             return this;
         },
@@ -709,29 +724,31 @@ Class("xui.UI",  "xui.absObj", {
         getTheme:function(){
             return this.get(0) && this.get(0).theme;
         },
-        destroy:function(){
+        destroy:function(ignoreEffects){
             var ns=this;
             this.each(function(o,i){
                 if(o.destroyed)return;
                 if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
-                if(o.$beforeDestroy){
-                    _.each(o.$beforeDestroy,function(f){
-                        _.tryF(f,[],o);
-                    });
-                    _.breakO(o.$beforeDestroy,2);
-                }
-                if(o.$afterDestroy){
-                    _.each(o.$afterDestroy,function(f){
-                        _.tryF(f,[],o);
-                    });
-                    _.breakO(o.$afterDestroy,2);
-                }
-                if(o.renderId){
-                    o.getRoot().remove();
-                }
-                else o.__gc();
-                    
-                _.arr.removeFrom( ns._nodes, i);
+                var p=o.properties,
+                     a=ignoreEffects?null:xui.Dom._getEffects(p.hideEffects,0),
+                 fun=function(){
+                    if(o.$beforeDestroy){
+                        _.each(o.$beforeDestroy,function(f){
+                            _.tryF(f,[],o);
+                        });
+                        _.breakO(o.$beforeDestroy,2);
+                    }
+                    if(o.$afterDestroy){
+                        _.each(o.$afterDestroy,function(f){
+                            _.tryF(f,[],o);
+                        });
+                        _.breakO(o.$afterDestroy,2);
+                    }
+                    if(o.renderId)o.getRoot().remove();
+                    else o.__gc();    
+                    _.arr.removeFrom( ns._nodes, i);
+                };
+                if(a)xui.Dom._vAnimate(o.getRoot(),false,a,fun);else fun();
             },null,true);
         },
         isDestroyed:function(){
@@ -915,7 +932,7 @@ Class("xui.UI",  "xui.absObj", {
             }
 
             //render UIProfiles
-            for(i=0;o=n[i++];)
+            for(i=0;o=arr[i++];)
                 o._render(triggerLayOut);
 
             a.length=arr.length=0;
@@ -956,16 +973,18 @@ Class("xui.UI",  "xui.absObj", {
             this.get(0).setDomId(id);
             return this;
         },
-        hide:function(){
+        hide:function(ignoreEffects){
             return this.each(function(o){
                 if(o.renderId){
-                    o.getRoot().hide();
-                    o.properties.top=o.properties.left=parseInt(xui.Dom.HIDE_VALUE,10);
-                    o.properties.dockIgnore=true;
+                    var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
+                    o.getRoot().hide(function(){
+                        t.top=t.left=parseInt(xui.Dom.HIDE_VALUE,10);
+                        t.dockIgnore=true;
+                    },a);
                 }
             });
         },
-        show:function(parent,subId,left,top){
+        show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
                 var t=o.properties,b;
                 left=(left||left===0)?(parseInt(left,10)||0):null;
@@ -975,7 +994,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'));
+                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'),null,a);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -1055,7 +1074,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 // keep cache refrence
                 var _c=o._cacheInstance;
-                o.boxing().destroy();
+                o.boxing().destroy(true);
 
                 //set back
                 _.merge(o,s,'all');
@@ -1238,7 +1257,7 @@ Class("xui.UI",  "xui.absObj", {
                             o.boxing().afterRemove(o,v[0],v[1],bDestroy);
 
                         if(bDestroy && !v[0].destroyed)
-                            v[0].boxing().destroy();
+                            v[0].boxing().destroy(true);
                     }
                 });
             });
@@ -2088,7 +2107,7 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 height:'100%',
                 'padding-left':'4px',
-                'background-position': 'left -261px'
+                'background-position': 'left -2`61px'
             },
             '.xui-uibar-top-s .xui-uibar-tdm':{
                 $order:3,
@@ -2809,7 +2828,7 @@ Class("xui.UI",  "xui.absObj", {
                             return this;
                         },
                         removePanel:function(){
-                            this.destroy();
+                            this.destroy(true);
                         },
                         getPanelPara:function(){
                             return _.clone(this.get(0).properties,true);
@@ -3571,6 +3590,8 @@ Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(self,true,true);
                 }
             },
+            showEffects:"",
+            hideEffects:"",
             dockMargin:{
                 ini:{left:0,top:0,right:0,bottom:0},
                 action:function(v){
@@ -4213,7 +4234,7 @@ Class("xui.UI",  "xui.absObj", {
                 if((i in p) && typeof p[i]!='number' && p[i]!='' && p[i]!='auto')p[i]=isNaN(p[i]=parseFloat(p[i]))?'auto':p[i];
 
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
 
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
@@ -5740,11 +5761,11 @@ new function(){
             free:null
         },
         Static:{
-            $noDomRoot:true,
-            $onlyHideRoot:true,
+            $initRootHidden:true,
+            $initRootCreated:true,
             _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
-                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;position:absolute;z-index:0;'
+                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;'
             },
             DataModel:{
                 className:{
@@ -5777,6 +5798,8 @@ new function(){
                         this.box._refreshCSS(this);
                     }
                 },
+                showEffects:null,
+                hideEffects:null,
                 position:null,
                 display:null,
                 visibility:null,

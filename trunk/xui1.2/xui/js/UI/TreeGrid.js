@@ -179,12 +179,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // clear collist cache
             if(profile.$col_pop){
-                profile.$col_pop.destroy();
+                profile.$col_pop.destroy(true);
                 delete profile.$col_pop;
             }
             //clear editor cache
             _.each(profile.$cache_editor,function(o){
-                if(!o.destroyed)o.destroy();
+                if(!o.destroyed)o.destroy(true);
             });
             profile.$cache_editor={};
         },
@@ -4760,7 +4760,7 @@ editorDropListHeight
                             
                         // don't cache it
                         if(!editorCacheKey && editor.get(0)){
-                            editor.destroy();
+                            editor.destroy(true);
                         }
                         editor=null;
                     };
@@ -5293,18 +5293,24 @@ editorDropListHeight
             }          
         },
         _onresize:function(profile,width,height){
-            profile.getSubNode('BORDER').cssSize({ width :width, height :height});
+            var css={};
+            if(width)css.width=width;
+            if(height)css.height=height;
+            
             var prop=profile.properties,
                 t1=profile.getSubNode('HEADER'),
                 t2=profile.getSubNode('SCROLL'),
                 cols=profile.colMap,
                 rh=0;
-            width=Math.round(width);
 
-            profile.getSubNode('BOX').cssSize({width: width, height:height});
+            profile.getSubNode('BORDER').cssSize(css);
+            profile.getSubNode('BOX').cssSize(css);
+            
             if(width)t1.width(width);
             if(height)rh=t1.offsetHeight();
-            t2.cssSize({width:width, height: height?(height-rh):null});
+            
+            css.height=height?(height-rh):null;
+            t2.cssSize(css);
 
             this._adjustBody(profile,'resize');            
         }

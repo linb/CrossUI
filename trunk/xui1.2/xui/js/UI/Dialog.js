@@ -1,49 +1,15 @@
 Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
-        showModal:function(parent, left, top, callback){
-            this.show(parent, true, left, top, callback);
+        showModal:function(parent, left, top, callback, ignoreEffects){
+            this.show(parent, true, left, top, callback, ignoreEffects);
         },
-        show:function(parent, modal, left, top, callback){
+        show:function(parent, modal, left, top, callback,ignoreEffects){
             parent = parent || xui('body');
-
             return this.each(function(profile){
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    ins = profile.boxing(),
-                    fun = function(){
-                        var ins=profile.boxing();
-
-                        if(left||left===0)
-                            ins.setLeft(left);
-                        if(top||top===0)
-                            ins.setTop(top);
-                        parent.append(ins);
-                        var box=profile.box,
-                            root=profile.getRoot();
-                        
-                        var tt=profile._$rs_args;
-                        if(p.status=='normal'){
-                            // resize immidiately here, maybe max here
-                            xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
-                            root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null);
-                        }
-                        if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                            xui.UI.Div._applyAutoLoad(profile);
-
-                        if((modal || p.modal) && !profile.$inModal)
-                            box._modal(profile);
-                        ins.activate();
-
-                        if(profile.onShow)profile.boxing().onShow(profile);
-
-                        if(profile.properties.status=='normal')
-                            box._refreshRegion(profile);
-
-                        delete profile.inShowing;
-                        _.tryF(callback);
-                    };
-
+                    ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
                     case 'auto':
@@ -75,48 +41,83 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     left=top=0;
                 }
 
+                var f1 = function(){
+                    if(left||left===0)
+                        ins.setLeft(left);
+                    if(top||top===0)
+                        ins.setTop(top);
+                    parent.append(ins);
+                    var box=profile.box,
+                        root=profile.getRoot();
+                    
+                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                        xui.UI.Div._applyAutoLoad(profile);
+
+                    if((modal || p.modal) && !profile.$inModal)
+                        box._modal(profile);
+                        
+                    var tt=profile._$rs_args,fun=function(){
+                        ins.activate();
+                        if(profile.onShow)profile.boxing().onShow(profile);                            
+                        delete profile.inShowing;
+                        _.tryF(callback);
+                    };
+                    if(p.status=='min')
+                        box._min(profile,null,fun, ignoreEffects);
+                    else if(p.status=='max')
+                        box._max(profile,null,fun,ignoreEffects);
+                    else{
+                        // resize immidiately here, maybe max here
+                        xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
+                        root.show(left?(parseInt(left,10)||0)+'px':null, top?(parseInt(top,10)||0)+'px':null,fun,null,ignoreEffects);
+                        box._refreshRegion(profile);
+                    }
+                };
+
                 profile.inShowing=1;
                 if(t=p.fromRegion)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,fun,300,0,'expoIn').start();
+                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[t.left,left],top:[t.top,top],width:[t.width,p.width],height:[t.height,p.height]}, null,f1,300,0,'expoIn').start();
                 else
-                    fun();
+                    f1();
             });
         },
-        hide:function(){
+        hide:function(ignoreEffects){
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
                     root=profile.getRoot();
-
-                if(profile.inHiding)return;
-                profile.inHiding=1;
-
-                if(profile.$inModal)
-                    box._unModal(profile);
-                //max has dock prop
-                if(pro.status=='max' || pro.status=='min')
-                    box._restore(profile);
-
-                root.hide();
-
-                var t=pro.fromRegion, fun=function(){
-                    delete profile.inHiding;
+                var fun=function(){
+                    if(profile.inHiding)return;
+                    profile.inHiding=1;
+                    if(profile.$inModal)
+                        box._unModal(profile);
+                    //max has dock prop
+                    if(pro.status=='max' || pro.status=='min'){
+                        var os=pro.status;
+                        box._restore(profile);
+                        pro.status=os;
+                    }
+    
+                    var t=pro.fromRegion, f1=function(){
+                        delete profile.inHiding;
+                    };
+                    if(t)
+                        xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, f1,300,0,'expoOut').start();
+                    else
+                        f1();
                 };
-                if(t)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]},  null, fun,300,0,'expoOut').start();
-                else
-                    fun();
+                root.hide(fun,null,ignoreEffects);
             });
             return this;
         },
-        close:function(triggerEvent){
+        close:function(triggerEvent,ignoreEffects){
             return this.each(function(profile){
                 if(false!==triggerEvent && profile.beforeClose && false === profile.boxing().beforeClose(profile))
                     return;
                 if(profile.inClosing)return;
                 profile.inClosing=1;
                 var pro=profile.properties, t=pro.fromRegion, fun=function(){
-                    profile.boxing().destroy();
+                    profile.boxing().destroy(ignoreEffects);
                     delete profile.inClosing;
                 };
 
@@ -523,6 +524,8 @@ if(xui.browser.ie){
             border:null,
             disabled:null,
             dock:'none',
+            showEffects:"Classic",
+            hideEffects:"",
             initPos:{
                 ini:'center',
                 listbox:['auto','center']
@@ -703,13 +706,7 @@ if(xui.browser.ie){
             };
         },
         LayoutTrigger:function(){
-            var self=this, t=self.properties, b=self.box;
-            if(t.status=='min')
-                b._min(self);
-            else if(t.status=='max')
-                b._max(self);
-            else
-                xui.UI.$tryResize(self, t.width, t.height);
+            var self=this, t=self.properties;
             // ensure modal
             if(t.modal){
                 var p=self.$modalDiv&&self.$modalDiv.parent();
@@ -734,18 +731,19 @@ if(xui.browser.ie){
             data.statusHeight = 'height:'+data.statusHeight+'px';
             var status=profile.properties.status;
             if(status=='min'||status=='max')
-                profile.$noR=profile.$noS=1;
+                profile.$noR=1;
             if(_.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
             return data;
         },
 
         //ov from design mode
-        _min:function(profile,status){
+        _min:function(profile,status,effectcallback,ignoreEffects){
             var o=profile.getRoot(),
                 box=profile.box,
                 p=o.parent(),
                 t=profile.properties;
+
             if(!status)status=t.status;
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
                 return;
@@ -772,7 +770,6 @@ if(xui.browser.ie){
             if(t.resizer && profile.$resizer)
                 profile.$resizer.hide();
 
-
             if(t.shadow)
                 profile.boxing()._unShadow(false);
 
@@ -785,13 +782,20 @@ if(xui.browser.ie){
             // resize
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
+            
+            if(a&&xui.browser.ie&&xui.browser.ver<=8)
+                _.filter(a.params,function(o,i){
+                    return !xui.Dom._cssfake[i];
+                });
+            o.show(null,null,effectcallback,null,ignoreEffects);
         },
-        _max:function(profile,status){
+        _max:function(profile,status,effectcallback,ignoreEffects){
             var o=profile.getRoot(),
                 box=profile.box,
                 ins=profile.boxing(),
                 p=o.parent(),
-                t=profile.properties;
+                t=profile.properties,
+                a=xui.Dom._getEffects(t.showEffects,1);
             if(!status)status=t.status;
             
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
@@ -830,6 +834,12 @@ if(xui.browser.ie){
 
             ins.setDock('cover',true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
+
+                if(a&&xui.browser.ie&&xui.browser.ver<=8)
+                    _.filter(a.params,function(o,i){
+                        return !xui.Dom._cssfake[i];
+                    });
+                o.show(null,null,effectcallback,null,ignoreEffects);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),
@@ -847,7 +857,6 @@ if(xui.browser.ie){
 
             // hide restore button
             profile.getSubNode('RESTORE').css('display','none');
-
         },
         _unMax:function(profile){
             var t=profile.properties,

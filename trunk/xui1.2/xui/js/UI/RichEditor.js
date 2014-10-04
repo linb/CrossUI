@@ -465,7 +465,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 pro=self.properties,
                 tbH;
             if(self.$toolbar){
-                self.$toolbar.boxing().destroy();
+                self.$toolbar.boxing().destroy(true);
                 delete self._$tb;
                 delete self.$toolbar;
             }

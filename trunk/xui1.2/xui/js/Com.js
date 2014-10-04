@@ -153,8 +153,10 @@ Class('xui.Com',null,{
                         self.render();
 
                     if(false===_.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
-                        (parent||xui('body')).append(self.getUIComponents(),subId);
-                        self.getAllComponents().each(function(o){
+                        //append only
+                        (parent||xui('body')).append(self.getUIComponents(false),subId);
+                        // append and show
+                        self.getUIComponents(true).show(parent||xui('body'), subId).each(function(o){
                             if(o.KEY=='xui.UIProfile' && _.get(o,['properties','defaultFocus'])){
                                try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
                             }
@@ -284,7 +286,7 @@ Class('xui.Com',null,{
             // attach destroy to the first UI control
             if(self.autoDestroy)
                 _.arr.each(self._nodes,function(o){
-                    if(o.box && o.box["xui.UI"] && !o.box.$noDomRoot){
+                    if(o.box && o.box["xui.UI"] && !o.box.$initRootHidden){
                         (o.$afterDestroy=(o.$afterDestroy||{}))["comDestroyTrigger"]=function(){
                             if(self.autoDestroy && !self.destroyed)
                                 self.destroy();
@@ -376,12 +378,15 @@ Class('xui.Com',null,{
             });
             return nodes;
         },
-        getUIComponents:function(){
+        // flag:true => no  $initRootHidden
+        // flag:false => $initRootHidden
+        // no flag: all
+        getUIComponents:function(flag){
             if(!this._innerComsCreated)
                 this._createInnerComs();
-            var nodes = _.copy(this._nodes),t,k='xui.UI';
+            var nodes = _.copy(this._nodes),t,k='xui.UI',n='$initRootHidden';
             _.filter(nodes,function(o){
-                return !!(o.box[k]);
+                return !!(o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
             });
             return xui.UI.pack(nodes, false);
         },

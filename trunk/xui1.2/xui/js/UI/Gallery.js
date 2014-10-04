@@ -242,8 +242,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = _.isSet(item[i])?item[i]:p[i];
             });
-            item.capition = item.capition || '';
-            if(item.caption===null)capDisplay='display:none;';
+            item.caption = item.caption || '';
+            if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
 

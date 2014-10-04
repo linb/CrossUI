@@ -52,7 +52,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 var s = this.id();
                 _.arr.each(xui.UI.Resizer._cache,function(o){
                     if(o.$resizeId==s)
-                        o.boxing().destroy();
+                        o.boxing().destroy(true);
                 });
                 return this;
             },
