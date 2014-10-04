@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="keywords" content="GUI design,GUI builder,web UI,RAD,RIA,development tool,multi-platform,cross-platform,web app" />
+    <meta name="description" content="Built by CrossUI RAD Tools - Develop Once,Deploy Anywhere, HTML5, CSS3 and JavaScript for all platforms" />
+    <meta name="copyright" content="copyright@crossui.com" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrossUI - Develop Once,Deploy Anywhere, HTML5, CSS3 and JavaScript for all platforms - Examples - misc templates</title>
+</head>
+    <body>
+        <script type="text/javascript" src="../../../runtime/xui/js/xui-debug.js"></script>
+        <script type="text/javascript">
+            xui.main(function(){
+                var data=['Button','Input','ComboInput','Link','CheckBox','ProgressBar','Group'], ui=[], list=[];
+                _.arr.each(data,function(str){
+                    var ctrl= new (xui.SC.get('xui.UI.'+str));
+                    ctrl.setPosition('relative');
+                    ui.push(ctrl.get(0));
+                    //use html string here
+                    list.push({key:str, ctrl:ctrl.toHtml()});
+                });
+                
+                var tpl=new xui.Template({
+                    '':'<div style="padding:20px;position:relative;">{list}</div>', 
+                    list:'<div style="background-color:#ddd;font-weight:bold;;position:relative;">{key}</div><div style="position:relative;">{ctrl}</div>'
+                    },{
+                        list:list
+                    });
+                xui('body').append(tpl);
+
+                //ensure to render it
+                xui.UI.pack(ui).render(true);
+            });
+        </script>
+</body>
+</html>
