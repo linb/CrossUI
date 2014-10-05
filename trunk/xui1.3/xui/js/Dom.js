@@ -1378,7 +1378,7 @@ Class('xui.Dom','xui.absBox',{
         */
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
             var me=arguments.callee,
-                effects = {
+                effects = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
 			linear: function (t, b, c, d) {
 				return c * t / d + b;
 			},
@@ -1565,7 +1565,7 @@ Class('xui.Dom','xui.absBox',{
 				}
 				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
 			}
-		},
+		}),
                 color = me.color || (me.color = function(from,to,curvalue){
                     if(typeof from !='string' || typeof to != 'string')return '#fff';
                     if(curvalue<0)return from;
@@ -1608,7 +1608,7 @@ Class('xui.Dom','xui.absBox',{
                 var offtime=_() - starttime, curvalue,u,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){
-                    s=o[0];e=o[1];u=o[3];
+                    s=o[0];e=o[1];u=o[2];
                     curvalue = effects[type](offtime, 0, 1, duration);
                     if(typeof o == 'function') o.call(self, curvalue);
                     else{
@@ -1620,7 +1620,7 @@ Class('xui.Dom','xui.absBox',{
                                 s=parseFloat(s);
                                 e=parseFloat(e);
                             }
-                            curvalue = s + (e-s)*curvalue;
+                            curvalue = (s + (e-s)*curvalue).toFixed(5);
                         }
                         curvalue+=u||unit||'';
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
@@ -1641,7 +1641,7 @@ Class('xui.Dom','xui.absBox',{
             return xui.Thread(threadid||_.id(), funs, 0, null, function(tid){
                 xui.setNodeData(node,'_inthread',tid);
                 starttime=_();
-                _.tryF(onStart,arguments,this);
+                return _.tryF(onStart,arguments,this);
             }, function(tid,flag){
                 if('force'!=flag)
                     _.tryF(onEnd,arguments,this);
@@ -1809,8 +1809,7 @@ type:4
             if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
             return this;
         },
-        setHoverPop : function(node, type, beforePop,beforeHide, parent, showEffects, hideEffects){
-            var c=this.get(0),sor=xui(c);
+        setHoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
             if(node["xui.UI"]){
                 node=node.getRoot();
             }else if(node['xui.UIProfile']||node['xui.Template']){
@@ -1821,35 +1820,42 @@ type:4
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
             if(!_.isDefined(type))type='12';
-            var baseid=c.getRoot().xid(),aysid=baseid+":"+node.xid();
-            sor.onMouseover(type===null?null:function(prf, e, src){
+            
+            var aysid=groupid || (ns.id()+":"+node.xid());
+            this.onMouseover(type===null?null:function(prf, e, src){
                  _.resetRun(aysid,null);
-                    var ignore=xui.getNodeData(baseid,'$ui.hover.pop');
-                    if(!beforePop || false!==beforePop(profile, node, e, src, item, ignore)){
+                    var ignore=xui.getData([aysid,'$ui.hover.pop'])
+                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
+                    if(!beforePop || false!==beforePop(prf, node, e, src, ignore)){
                         if(!ignore){
                             node.popToTop(src, type, parent,showEffects);
-                            xui.setNodeData(baseid,'$ui.hover.pop',1);
+                            xui.setData([aysid,'$ui.hover.pop'],1);
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
                         }
                  }
-            },aysid).onMouseout(type===null?null:function(profile, e, src){
+            },aysid).onMouseout(type===null?null:function(prf, e, src){
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(profile, node,e, src, 'host')){
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'host')){
                             node.hide(null,hideEffects);
-                            xui.setNodeData(baseid,'$ui.hover.pop',0);
+                            xui.setData([aysid,'$ui.hover.pop']);
+                            node.hide();
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
                         }
                     });
             },aysid);
-
-            node.onMouseover(type===null?null:function(){
-                 _.resetRun(aysid,null);
-            },aysid).onMouseout(type===null?null:function(){
-                _.resetRun(aysid,function(){
-                    if(!beforeHide || false!==beforeHide(profile, node,e, src, 'pop')){
-                        node.hide(null,hideEffects);
-                        xui.setNodeData(baseid,'$ui.hover.pop',0);
-                    }
-                });
-            },aysid);
+            if(node){
+                node.onMouseover(type===null?null:function(){
+                     _.resetRun(aysid,null);
+                },aysid).onMouseout(type===null?null:function(prf,e,src){
+                    _.resetRun(aysid,function(){
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
+                            node.hide(null,hideEffects);
+                            xui.setData([aysid,'$ui.hover.pop']);
+                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
+                        }
+                    });
+                },aysid);
+            }
             return this;
         },
         //for remove obj when blur
@@ -1881,6 +1887,8 @@ type:4
                     a=_.copy(arr);
                     _.arr.each(a,function(i){
                         v=arr[i];
+                        if(!v)return;
+
                         b=true;
                         var isChild=function(){
                             var nds=v.target.get();

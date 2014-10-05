@@ -1,7 +1,7 @@
 _.set(xui.Locale,["cn","app"], {
     en:'英文',
     cn:'中文',
-    apititle:"CrossUI 1.2 - API 文档",
+    apititle:"CrossUI 1.3 - API 文档",
 
     search:'API查询',
     lQ1:'按API查询',
@@ -11052,6 +11052,13 @@ _.set(xui.Locale,["cn","app"], {
                     "popCtl : xui.UI, 弹出窗口对象."
                 ]
             },
+            afterPopHide:{
+                $desc:"在弹出窗口隐去后调用.",
+                $paras:[
+                    "profile : xui.UIdestroyed.",
+                    "popCtl : xui.UI, 弹出窗口对象."
+                ]
+            },
             onClick:{
                 $desc:"当鼠标单击控件pop按钮时调用(只对 'popbox' 或 'getter'类型的有效).",
                 $paras:[
@@ -19730,6 +19737,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeComboPop:"构造弹出窗口前",
             beforePopShow:"显示弹出窗口前",
             afterPopShow:"显示弹出窗口后",
+            afterPopHide:"隐去弹出窗口后",
             onClick:"点击",
             onCommand:"点击命令按钮",
             onFileDlgOpen:"打开文件选择框"

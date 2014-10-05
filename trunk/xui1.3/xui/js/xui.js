@@ -1,5 +1,5 @@
 /*
-CrossUI(xui) 1.2
+CrossUI(xui) 1.3
 Copyright(c) 2014- CrossUI.com
 Open Source under LGPL 3 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html)
 */
@@ -835,7 +835,7 @@ _.merge(Class, {
 
 //function dependency: xui.Dom xui.Thread
 _.merge(xui,{
-    version:1.2,
+    version:1.3,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -859,7 +859,7 @@ _.merge(xui,{
 
         //ghost divs
         ghostDiv:[],
-
+        data:{},
         //cache purge map for dom element
         domPurgeData:{},
         //cache DomProfile or UIProfile
@@ -1266,6 +1266,12 @@ _.merge(xui,{
         if(!node)return;
         return _.get(xui.$cache.domPurgeData[typeof node=='string'?node:xui.getId(node)],path);
     },
+    setData:function(path,value){
+        return _.set(xui.$cache.data,path,value);
+    },
+    getData:function(path){
+        return _.get(xui.$cache.data,path);
+    },
     setNodeData:function(node,path,value){
         if(!node)return;
         return _.set(xui.$cache.domPurgeData[typeof node=='string'?node:xui.getId(node)],path,value);
@@ -1661,20 +1667,37 @@ Class('xui.Thread',null,{
             // if callback return false, stop.
             if(t.callback && false===_.tryF(t.callback, [p.id], self, true))
                 return self.abort('callback');
-
             // if set suspend at t.task or t.callback , stop continue running
             if(p.status!=="run")
                 return;
 
             self.start();
         },
-        start:function(time){
+        start:function(time, delaycb){
             var self=this, p=self.profile, task,delay;
+
+            if(p.__delaycb){
+                _.tryF(p.__delaycb,[p.id],self);
+                delete p.__delaycb;
+            }
+            if(delaycb){
+                p.__delaycb=delaycb;
+            }
+
             if(p._start===false){
                 p._start=true;
                 //call onstart
-                if(false===_.tryF(p.onStart,[p.id],self))
-                    return self.abort('start');
+                if(p.onStart){
+                    var r=_.tryF(p.onStart,[p.id],self);
+                    if(false===r){
+                        return self.abort('start');
+                    }else if(true===r){
+                        return;
+                    }else if(_.isNumb(r)){
+                        self.suspend(r);
+                        return;
+                    }
+                }
             }
             if(p.status!="run")
                 p.status="run";
@@ -1698,11 +1721,10 @@ Class('xui.Thread',null,{
                 _.clearTimeout(p._asy);
 
             p._asy = _.asyRun(self._task, p._left, [], self);
-
             p.time=_();
             return self;
         },
-        suspend:function(time){
+        suspend:function(time,delaycb){
             var n,p=this.profile;
             if(p.status=="pause")return;
             p.status="pause";
@@ -1715,7 +1737,7 @@ Class('xui.Thread',null,{
             p._left=(n>=0?n:0);
 
             if((Number(time) || 0))
-                this.resume(time);
+                this.resume(time, delaycb);
 
             return this;
         },
@@ -1725,7 +1747,7 @@ Class('xui.Thread',null,{
         false:set timeout to 0
         undefined: timetou to left
         */
-        resume:function(time){
+        resume:function(time, delaycb){
             var self=this;
             if(self.profile.status=="run")return;
 
@@ -1735,7 +1757,7 @@ Class('xui.Thread',null,{
                         (Number(time) || 0);
 
             self.profile.status="run";
-            self.start(time);
+            self.start(time, delaycb);
             return self;
         },
         abort:function(flag){

@@ -1,7 +1,7 @@
 _.set(xui.Locale,["en","app"], {
     en:'English',
     cn:'Chinese',
-    apititle:"CrossUI 1.2 - API Documentation",
+    apititle:"CrossUI 1.3 - API Documentation",
 
     search:'Search',
     lQ1:'Search API',
@@ -11124,6 +11124,13 @@ _.set(xui.Locale,["en","app"], {
             },
             afterPopShow:{
                 $desc:"Fired after the pop-up window shows.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "popCtl : xui.UI, pop-up window UI Control."
+                ]
+            },
+            afterPopHide:{
+                $desc:"Fired after the pop-up window hides.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "popCtl : xui.UI, pop-up window UI Control."

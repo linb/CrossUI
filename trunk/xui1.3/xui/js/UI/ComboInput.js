@@ -100,7 +100,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return t(profile, value);
             return value;
         },
-        _cache:function(focus){
+        _cache:function(type, focus){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
             
@@ -130,6 +130,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             }
             delete profile.$poplink;
+
+            if(profile.afterPopHide)
+                this.afterPopHide(profile, drop, type);
             return cached;
         },
         clearPopCache:function(){
@@ -282,7 +285,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 o.setHeight('auto');
                             o.afterClick(function(){
                                 if(!this.destroyed)
-                                    this.boxing()._cache(true);
+                                    this.boxing()._cache('',true);
                                 else
                                     o.destroy(true);
                                 return false;
@@ -298,7 +301,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 b2.setUIValue(value);
 
                                 //cache pop
-                                return b2._cache(true);
+                                return b2._cache('',true);
                             });
                             break;
                         case 'time':
@@ -307,14 +310,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.setHost(profile);
                             o.beforeClose(function(){
                                if(!this.destroyed)
-                                    this.boxing()._cache(true);
+                                    this.boxing()._cache('',true);
                                 return false
                             });
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
                                 b2.setUIValue(v);
-                                return b2._cache(true);
+                                return b2._cache('',true);
                             });
                             break;
                         case 'date':
@@ -328,7 +331,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.setHost(profile);
                             o.beforeClose(function(){
                                 if(!this.destroyed)
-                                    this.boxing()._cache(true);
+                                    this.boxing()._cache('',true);
                                 else
                                     o.destroy(true);
                                 return false
@@ -337,7 +340,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 var b2=this.boxing();
                                 //update value
                                 b2.setUIValue(String(v.getTime()));
-                                return b2._cache(true);
+                                return b2._cache('',true);
                             });
 
                             break;
@@ -347,7 +350,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.setHost(profile);
                             o.beforeClose(function(){
                                 if(!this.destroyed)
-                                    this.boxing()._cache(true);
+                                    this.boxing()._cache('',true);
                                 else
                                     o.destroy(true);
                                 return false
@@ -356,7 +359,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 var b2=this.boxing();
                                 //update value
                                 b2.setUIValue((v=='transparent'?'':'#')+v);
-                                return b2._cache(true);
+                                return b2._cache('',true);
                             });
                             break;
                     }
@@ -411,7 +414,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 //for on blur disappear
                 node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
-                    box._cache();
+                    box._cache('blur');
                 });
 
                 //for esc
@@ -420,15 +423,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     _.asyRun(function(){
                         delete profile.$escclosedrop;
                     });
+
                     box.activate();
                     //unhook
                     xui.Event.keyboardHook('esc');
-                    box._cache(true);
+                    box._cache('esc',true);
                 });
                 
                 if(profile.afterPopShow)
                     box.afterPopShow(profile, profile.$drop);
-
             });
         },
         expand:function(){
@@ -439,11 +442,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         collapse:function(){
             var profile=this.get(0);
             if(profile.renderId && profile.$poplink)
-                profile.boxing()._cache();
+                profile.boxing()._cache('call');
         },
         getPopWnd:function(force){
             var profile=this.get(0);
-            if(profile.$drop && (force||profile.$poplink))
+            if(profile && profile.$drop && (force||profile.$poplink))
                 return profile.$drop.boxing();
         }
     },
@@ -1087,6 +1090,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             beforeComboPop:function(profile, pos, e, src){},
             beforePopShow:function(profile, popCtl){},
             afterPopShow:function(profile, popCtl){},
+            afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, value){}
         },
         _posMap:{
@@ -1286,6 +1290,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 off=prop.increment*(flag?1:-1),
                 task={delay:300},
                 fun=function(){
+                    if(profile.destroyed)return false;
                     var v=((+prop.$UIvalue)||0)+off;
                     v=(_.isSet(v)&&v!=="")?_.formatNumeric(profile.box._number(profile, v), prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero):"";
                     profile.boxing().setUIValue(v);
