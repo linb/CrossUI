@@ -112,11 +112,11 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             "ITEM-none CAPTION":{
                 padding:'1px 4px'
             },
-            "ITEM-left CAPTION":{
-                padding:'1px 4px 1px 12px'
+            "ITEM-left":{
+                padding:'4px 4px 2px 12px'
             },
-            "ITEM-right CAPTION":{
-                padding:'1px 12px 1px 1px'
+            "ITEM-right":{
+                padding:'4px 12px 2px 2px'
             }
         },
         DataModel:({
@@ -131,7 +131,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             itemWidth:{
                 ini:0,
                 action:function(value){
-                    this.getSubNode('ITEM',true).width(value);
+                    this.getSubNode('ITEM',true).width(value||'auto');
                 }
             },
             itemAlign:{

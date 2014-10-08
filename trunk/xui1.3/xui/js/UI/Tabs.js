@@ -323,6 +323,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
+                className:"xui-uibg-base",
                 style:'{_liststyle}',
                 ITEMS:{
                     tagName : 'div',
@@ -595,7 +596,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return false;
-                    if(profile.getKey(xui.Event.getSrc(e).parentNode.id)==profile.keys.CMDS)return false;
+                    var t;
+                    if((t=xui.Event.getSrc(e).parentNode) && t.id && (profile.getKey(t.id))==profile.keys.CMDS)return false;
 
                     var prop = profile.properties,
                         dm=profile.box.$DataModel,

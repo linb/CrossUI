@@ -1,4 +1,4 @@
-//UIProfile Class
+
 Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
@@ -657,55 +657,51 @@ Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
-        setHoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
-            var c=this.get(0),sor=xui(c);
-            if(node["xui.UI"]){
-                node=node.getRoot();
-            }else if(node['xui.UIProfile']||node['xui.Template']){
-                node=node.boxing(); 
-            }else if(node['xui.Template']){
-               node=node.boxing(); 
-            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
-                node=xui(node);
-            }
-
+        hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
+            node=xui(node);
             if(!_.isDefined(type))type='12';
-            var aysid=groupid||(c.getRoot().xid()+":"+node.xid());
-            c.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
-                if(mtype=='mouseover'){
-                    _.resetRun(aysid,null);
-                    var ignore=xui.getData([aysid,'$ui.hover.pop'])
-                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
-                    if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
+            var aysid=groupid||(this.getRoot().xid()+":"+node.xid());
+            this.each(function(o){
+                o.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
+                    if(e.$force)return;
+                    if(mtype=='mouseover'){
+                        _.resetRun(aysid,null);
+                        var ignore=xui.getData([aysid,'$ui.hover.pop'])
+                                        && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
+                        if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
+                                node.popToTop(src, type, parent);
+                        }
                         if(!ignore){
-                            node.popToTop(src, type, parent);
                             xui.setData([aysid,'$ui.hover.pop'],1);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
+                            xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                         }
-                    }
-                }else{
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src,item,'host')){
-                            node.hide();
+                    }else{
+                        _.resetRun(aysid,function(){
+                            if(!beforeHide || false!==beforeHide(prf, node,e, src,item,'host')){
+                                node.hide();
+                            }
                             xui.setData([aysid,'$ui.hover.pop']);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
-                        }
-                    });
-                }
-            };
+                            xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
+                        });
+                    }
+                };
+            });
             if(node){
-                node.onMouseover(type===null?null:function(){
-                     _.resetRun(aysid,null);
+                node.onMouseover(type===null?null:function(e){
+                    if(e.$force)return;
+                    _.resetRun(aysid,null);
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
+                    if(e.$force)return;
                     _.resetRun(aysid,function(){
                         if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop')){
                             node.hide();
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
                         }
+                        xui.setData([aysid,'$ui.hover.pop']);
+                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     });
                 },aysid);
             }
+            node.css('display','none');
             return this;
         },
         setTheme:function(key){
@@ -2361,6 +2357,9 @@ Class("xui.UI",  "xui.absObj", {
             "onmousedown":1,
             "onmouseup":1
         },
+        _handleEventConf:function(conf, args){
+            var ns=this;
+        },
         $addEventsHanlder:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
                 eh=xui.Event._eventHandler,
@@ -2555,23 +2554,30 @@ Class("xui.UI",  "xui.absObj", {
                 delete template.id;
 
             if(template.className!==null){
-                //className
-                t = u.$CLS + (key?'-'+key.toLowerCase():'');
                 //save bak
                 bak = template.className || '';
-                tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
-
-                //default class first
-                template['class'] =  'xui-node xui-node-'+tagN+' ' + t+' '+
-                    //custom class here
-                    bak + ' ' +
-                    //add a special
-                    (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' ) +
+                if(!template._NativeElement){
+                    //className
+                    t = u.$CLS + (key?'-'+key.toLowerCase():'');
+                    tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
+    
+                    //default class first
+                    template['class'] =  'xui-node xui-node-'+tagN+' ' + t+' '+
+                        //custom class here
+                        bak + ' ' +
+                        //add a special
+                        (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
+                }else{
+                    //default class first
+                    template['class'] =  bak + ' ' +
+                        //add a special
+                        (lkey==profile.key ? ((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ') : '' ) ;
+                }
+                template['class'] +=  '' +
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"")
-                    ;
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"");
             }
             delete template.className;
 
@@ -3569,6 +3575,7 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
             defaultFocus:false,
+            hoverPop:'',
             dock:{
                 ini:'none',
                 listbox:['none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'],
@@ -3648,7 +3655,7 @@ Class("xui.UI",  "xui.absObj", {
             onContextmenu:function(profile, e, src, item){}
         },
         RenderTrigger:function(){
-            var self=this, b=self.boxing(),p=self.properties;
+            var self=this, b=self.boxing(),p=self.properties,t;
             //avoid the resize blazzing
             if(self.box._onresize){
                 var style=self.getRootNode().style,t
@@ -3659,11 +3666,19 @@ Class("xui.UI",  "xui.absObj", {
                 xui.UI.$tryResize(self,p.width,p.height);
                 style=null;
             }
-            if(p.disabled)
-                b.setDisabled(true,true);
-
-            if(p.rotate)
-                b.setRotate(p.rotate,true);
+            if(p.disabled) b.setDisabled(true,true);
+            if(p.rotate) b.setRotate(p.rotate,true);
+            if(p.hoverPop){
+                _.asyRun(function(){
+                    if(!self.destroyed && self.host && (t=self.host[p.hoverPop]) && !t.destroyed && (t=t.get(0)) && t.renderId){
+                        b.hoverPop(t,'12',function(){
+                            p.tagVar.hoverFrom=arguments;
+                        },function(){
+                            delete p.tagVar.hoverFrom;
+                        });
+                    }
+                });
+            }            
 
             self._inValid=1;
         },
@@ -5595,7 +5610,9 @@ new function(){
         Static:{
             _objectProp:{tagVar:1,dockMargin:1,attributes:1},
             Templates:{
+                _NativeElement:true,
                 tagName:'{nodeName}',
+                // dont set class to HTML Element
                 className:'{_className}',
                 style:'{_style};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
@@ -5662,7 +5679,9 @@ new function(){
         },
         Static:{
             Templates:{
+                _NativeElement:true,
                 tagName:'button',
+                // dont set class to HTML Element
                 className:'{_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
@@ -5764,7 +5783,6 @@ new function(){
         },
         Static:{
             $initRootHidden:true,
-            $initRootCreated:true,
             _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;'

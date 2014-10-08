@@ -56,7 +56,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 'font-size':'12px',
                 height:'100%',
                 height:'18px',
-                'padding':'5px 0 5px 8px',
+                'padding':'5px 8px',
                 'white-space':'nowrap'
             },
             PANEL:{
