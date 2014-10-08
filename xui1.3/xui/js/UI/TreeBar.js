@@ -56,7 +56,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
             });
         },
-        insertItems:function(arr, pid, base ,before){
+        insertItems:function(arr, pid, base ,before, toggle){
             if(!arr || !_.isArr(arr) || arr.length<1)return this;
             var node,data,
                 b=this._afterInsertItems;
@@ -108,15 +108,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     _.arr.insertAny(tar,data, before?index:(index+1));
                 }
                 //3
-                if(profile.renderId){
+                if(profile.renderId && toggle!==false){
                     // try to open root subs
                     if(!pid){
-                            profile.boxing()._toggleNodes(data, true, true, true);
+                        profile.boxing()._toggleNodes(data, true, true, true);
                     }
                     // try to open parent node
                     else if (profile.getItemByItemId(pid)._inited){
                         if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
-                                profile.boxing()._toggleNodes(data, true, true, true);
+                            profile.boxing()._toggleNodes(data, true, true, true);
                     }
                 }
                 
@@ -137,7 +137,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             
                             if(init && (_.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
                             
-                            self.toggleNode(o.id, expand, false);
+                            self.toggleNode(o.id, expand, false, !recursive);
                             if(recursive && o.sub && _.isArr(o.sub) && o.sub.length){
                                 f(o.sub);
                             }
@@ -151,12 +151,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         *expand:true->expand false->fold
         *recursive:true open recursively
         */
-        toggleNode:function(id, expand, recursive){
+        toggleNode:function(id, expand, recursive, stopanim){
             var profile=this.get(0),ns=this,self=arguments.callee;
             if(id){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive);
+                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||!recursive);
             }else{
                 _.arr.each(profile.properties.items,function(item){
                     self.call(ns,item.id,expand,recursive);
@@ -750,7 +750,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.mark2Display = 'display:none';
             }
         },
-        _setSub:function(profile, item, flag, recursive){
+        _setSub:function(profile, item, flag, recursive,stopanim){
             var id=profile.domId,
                 ins=profile.boxing(),
                 itemId = profile.getSubIdByItemId(item.id),
@@ -758,7 +758,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 barNode = profile.getSubNode('BAR', itemId),
                 markNode = profile.getSubNode('TOGGLE', itemId),
                 subNs = profile.getSubNode('SUB', itemId);
-                ;
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
@@ -783,7 +782,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
                     };
-                    if(!recursive){
+                    if(!stopanim){
                          if(properties.animCollapse){
                             subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
                         }else onend();
@@ -792,7 +791,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(recursive && item.sub && !properties.dynDestory){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
-                            profile.box._setSub(profile, o, flag, recursive);
+                            profile.box._setSub(profile, o, flag, recursive, true);
                     });
                 }
             }else{
@@ -801,59 +800,60 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
                         return;
                     }
-
-                    var openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
-                            var b=profile.boxing(),
-                                p=profile.properties,
-                                empty = sub===false ||  (_.isArr(sub) && sub.length===0);
-                            //created
-                            if(!item._inited){
-                                delete item.sub;
-                                //before insertRows
-                                item._inited=true;
-                                if(sub){
-                                    if(typeof sub=='string')
-                                        subNs.html(item.sub=sub,false);
-                                    else if(_.isArr(sub)){
-                                        b.insertItems(sub, item.id);
-                                        // for []
-                                        if(!item.sub)item.sub=sub;                                    
-                                    }else if(sub['xui.Template']||sub['xui.UI']){
-                                        subNs.append(item.sub=sub.render(true));
-                                    }
+                    var onend=function(empty){
+                        subNs.css({display:'',height:'auto'});
+                        markNode.removeClass('xui-ui-busy');
+                        if(empty){
+                            markNode.css('background-image','none');
+                        }else{
+                            markNode.tagClass('-checked');
+                            barNode.tagClass('-fold',false).tagClass('-expand');
+                        }
+                        item._checked = true;
+                        if(ins.afterExpand)
+                            ins.afterExpand(profile,item);
+                    },
+                    openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
+                        var b=profile.boxing(),
+                            p=profile.properties,
+                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
+                        //created
+                        if(!item._inited){
+                            delete item.sub;
+                            //before insertRows
+                            item._inited=true;
+                            if(sub){
+                                if(typeof sub=='string')
+                                    subNs.html(item.sub=sub,false);
+                                else if(_.isArr(sub)){
+                                    b.insertItems(sub, item.id,null,false,false);
+                                    // for []
+                                    if(!item.sub)item.sub=sub;                                    
+                                }else if(sub['xui.Template']||sub['xui.UI']){
+                                    subNs.append(item.sub=sub.render(true));
                                 }
-                                //set checked items
-                                profile._innerSet=1;
-                                b.setUIValue(b.getUIValue(), true);
-                                delete profile._innerSet;
                             }
+                            //set checked items
+                            profile._innerSet=1;
+                            b.setUIValue(b.getUIValue(), true);
+                            delete profile._innerSet;
+                        }
 
-                            if(p.singleOpen)
-                                b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
+                        if(p.singleOpen)
+                            b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
 
-                            var onend=function(){
-                                subNs.css({display:'',height:'auto'});
-                                markNode.removeClass('xui-ui-busy');
-                                if(empty){
-                                    markNode.css('background-image','none');
-                                }else{
-                                    markNode.tagClass('-checked');
-                                    barNode.tagClass('-fold',false).tagClass('-expand');
-                                }
-                                item._checked = true;
-                                if(ins.afterExpand)
-                                    ins.afterExpand(profile,item);
-                            };
-                            if(!recursive){
-                                var h=0;
-                                subNs.css("height","0px").css("display",'');
-                                subNs.children().each(function(o){
-                                    h+=o.offsetHeight;
-                                });
-                                if(p.animCollapse){
-                                    subNs.animate({'height':[0,h]},null,onend,200, null, 'expoIn', profile.key+profile.id).start();
-                                }else onend();
-                            }else onend();
+                        if(!stopanim){
+                            var h=0;
+                            subNs.css("height","0px").css("display",'');
+                            subNs.children().each(function(o){
+                                h+=o.offsetHeight;
+                            });
+                            if(p.animCollapse){
+                                subNs.animate({'height':[0,h]},null,function(){
+                                    onend(empty);
+                                },200, null, 'expoIn', profile.key+profile.id).start();
+                            }else onend(empty);
+                        }else onend(empty);
                     },
                     sub=item.sub,
                     callback=function(sub){
@@ -873,10 +873,10 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }
                     }
                 }
-                if(recursive && item.sub){
+                if(recursive&& item.sub){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length && !o._checked)
-                            profile.box._setSub(profile, o, flag, recursive);
+                            profile.box._setSub(profile, o, flag, recursive, true);
                     });
                 }
             }

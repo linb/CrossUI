@@ -1472,8 +1472,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay};',
                         className:'{cellCls}',
                         CELLA:{
+                            _NativeElement:true,
                             tagName:'button',
-                            className:'xui-button-border {cellClass}',
+                            className:'xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -1806,12 +1807,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'CELL-checkbox':{
                 'text-align':'center'
             },
-            'CELL-button CELLA':{
+            'KEY-tgbtn':{
                 width:'100%',
                 padding: 0,
                 'vertical-align': 'middle',
-                'font-size':'12px',
-                'line-height':'100%'
+                'line-height':'100%',
+                height:'100%'
             },
             'CELL-mouseover':{
                 $order:5,

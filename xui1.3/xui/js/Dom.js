@@ -1378,194 +1378,39 @@ Class('xui.Dom','xui.absBox',{
         */
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
             var me=arguments.callee,
-                effects = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
-			linear: function (t, b, c, d) {
-				return c * t / d + b;
-			},
-			quadIn: function (t, b, c, d) {
-				return c * (t /= d) * t + b;
-			},
-			quadOut: function (t, b, c, d) {
-				return -c * (t /= d) * (t - 2) + b;
-			},
-			quadInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t + b;
-				}
-				return -c / 2 * ((--t) * (t - 2) - 1) + b;
-			},
-			cubicIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t + b;
-			},
-			cubicOut: function (t, b, c, d) {
-				return c * ((t = t / d - 1) * t * t + 1) + b;
-			},
-			cubicInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t + b;
-				}
-				return c / 2 * ((t -= 2) * t * t + 2) + b;
-			},
-			easeIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t + b;
-			},
-			easeOut: function (t, b, c, d) {
-				return c * ((t = t / d - 1) * t * t + 1) + b;
-			},
-			easeInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t + b;
-				}
-				return c / 2 * ((t -= 2) * t * t + 2) + b;
-			},
-			quartIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t * t + b;
-			},
-			quartOut: function (t, b, c, d) {
-				return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-			},
-			quartInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t * t + b;
-				}
-				return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
-			},
-			quintIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t * t * t + b;
-			},
-			quintOut: function (t, b, c, d) {
-				return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
-			},
-			quintInOut: function (t, b, c, d) {
-
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t * t * t + b;
-				}
-				return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
-			},
-			sineIn: function (t, b, c, d) {
-				return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-			},
-			sineOut: function (t, b, c, d) {
-				return c * Math.sin(t / d * (Math.PI / 2)) + b;
-			},
-			sineInOut: function (t, b, c, d) {
-				return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
-			},
-			expoIn: function (t, b, c, d) {
-				return (t === 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
-			},
-			expoOut: function (t, b, c, d) {
-				return (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-			},
-			expoInOut: function (t, b, c, d) {
-				if (t === 0) { return b; }
-				if (t === d) { return b + c; }
-				if ((t /= d / 2) < 1) {
-					return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
-				}
-				return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
-			},
-			circIn: function (t, b, c, d) {
-				return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
-			},
-			circOut: function (t, b, c, d) {
-				return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
-			},
-			circInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
-				}
-				return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
-			},
-			bounceIn: function (t, b, c, d) {
-				return c - effects.bounceOut(d - t, 0, c, d) + b;
-			},
-			bounceOut: function (t, b, c, d) {
-				if ((t /= d) < (1 / 2.75)) {
-					return c * (7.5625 * t * t) + b;
-				} else if (t < (2 / 2.75)) {
-					return c * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75) + b;
-				} else if (t < (2.5 / 2.75)) {
-					return c * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375) + b;
-				} else {
-					return c * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375) + b;
-				}
-			},
-			bounceInOut: function (t, b, c, d) {
-				if (t < d / 2) {
-					return effects.bounceIn(t * 2, 0, c, d) * 0.5 + b;
-				}
-				return effects.bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
-			},
-			elasticIn: function (t, b, c, d, a, p) {
-				if (t === 0) { return b; }
-				if ((t /= d) === 1) {
-					return b + c;
-				}
-				if (!p) {
-					p = d * 0.3;
-				}
-				if (!a) {
-					a = 1;
-				}
-				var s = 0;
-				if (a < Math.abs(c)) {
-					a = c;
-					s = p / 4;
-				} else {
-					s = p / (2 * Math.PI) * Math.asin(c / a);
-				}
-				return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-			},
-			elasticOut: function (t, b, c, d, a, p) {
-				if (t === 0) {
-					return b;
-				}
-				if ((t /= d) === 1) {
-					return b + c;
-				}
-				if (!p) {
-					p = d * 0.3;
-				}
-				if (!a) {
-					a = 1;
-				}
-				var s = 0;
-				if (a < Math.abs(c)) {
-					a = c;
-					s = p / 4;
-				} else {
-					s = p / (2 * Math.PI) * Math.asin(c / a);
-				}
-				return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
-			},
-			elasticInOut: function (t, b, c, d, a, p) {
-				if (t === 0) {
-					return b;
-				}
-				if ((t /= d / 2) === 2) {
-					return b + c;
-				}
-				if (!p) {
-					p = d * (0.3 * 1.5);
-				}
-				if (!a) {
-					a = 1;
-				}
-				var s = 0;
-				if (a < Math.abs(c)) {
-					a = c;
-					s = p / 4;
-				} else {
-					s = p / (2 * Math.PI) * Math.asin(c / a);
-				}
-				if (t < 1) {
-					return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-				}
-				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
-			}
-		}),
+                tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
+			linear:function(s,c) {return (1/s)*c;},
+			sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
+			sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
+			sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
+			quadIn:function(s,c) {return (c/=s)*c;},
+			quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
+			quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
+			cubicIn:function(s,c) {return (c/=s)*c*c;},
+			cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
+			cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
+			quartIn:function(s,c) {return (c/=s)*c*c*c;},
+			quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
+			quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
+			quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
+			quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
+			quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
+			expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
+			expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
+			expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
+			circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
+			circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
+			circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
+			bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
+			bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
+			bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
+			backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
+			backOut:function(s,c) {var k=1.70158;	return ((c=c/s-1)*c*((k+1)*c+k)+1);},
+			backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
+			elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
+			elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
+			elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
+                }),
                 color = me.color || (me.color = function(from,to,curvalue){
                     if(typeof from !='string' || typeof to != 'string')return '#fff';
                     if(curvalue<0)return from;
@@ -1602,14 +1447,14 @@ Class('xui.Dom','xui.absBox',{
             else
                 duration = duration||200;
 
-            type = effects[type]!==undefined?type:'expoIn';
+            type = tween[type]!==undefined?type:'circIn';
 
             var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){
                     s=o[0];e=o[1];u=o[2];
-                    curvalue = effects[type](offtime, 0, 1, duration);
+                    curvalue = tween[type](duration, offtime);
                     if(typeof o == 'function') o.call(self, curvalue);
                     else{
                         if(_.str.endWith(i.toLowerCase(),'color')){
@@ -1658,7 +1503,8 @@ Class('xui.Dom','xui.absBox',{
         popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
             var region, target=this, t;
             parent=xui(parent);
-            if(parent.isEmpty())parent=xui('body');
+            if(parent.isEmpty())
+                parent=xui('body');
 
             //prepare
             target.css({position:'absolute',left:xui.Dom.HIDE_VALUE, top:xui.Dom.HIDE_VALUE,display:'block', zIndex:xui.Dom.TOP_ZINDEX++});
@@ -1789,6 +1635,9 @@ type:4
                 if(type=='12'){
                     adjust('1');
                     if(pos.top + h>  box.height || pos.top < box.top)adjust('2');
+                }else if(type=='21'){
+                    adjust('2');
+                    if(pos.left + w>  box.width || pos.left < box.left)adjust('1');
                 }else{
                     adjust(type);
                 }
@@ -1809,53 +1658,51 @@ type:4
             if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
             return this;
         },
-        setHoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
-            if(node["xui.UI"]){
-                node=node.getRoot();
-            }else if(node['xui.UIProfile']||node['xui.Template']){
-               node=node.boxing(); 
-            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
-                node=xui(node);
-            }
+        hoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
+            node=xui(node);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
             if(!_.isDefined(type))type='12';
-            
-            var aysid=groupid || (ns.id()+":"+node.xid());
+
+            var aysid=groupid || (this.xid()+":"+node.xid());
             this.onMouseover(type===null?null:function(prf, e, src){
+                    if(e.$force)return;
                  _.resetRun(aysid,null);
                     var ignore=xui.getData([aysid,'$ui.hover.pop'])
-                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
+                                    && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                     if(!beforePop || false!==beforePop(prf, node, e, src, ignore)){
-                        if(!ignore){
                             node.popToTop(src, type, parent,showEffects);
-                            xui.setData([aysid,'$ui.hover.pop'],1);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
-                        }
-                 }
+                    }
+                    if(!ignore){
+                        xui.setData([aysid,'$ui.hover.pop'],1);
+                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
+                    }
             },aysid).onMouseout(type===null?null:function(prf, e, src){
+                    if(e.$force)return;
                     _.resetRun(aysid,function(){
                         if(!beforeHide || false!==beforeHide(prf, node,e, src, 'host')){
                             node.hide(null,hideEffects);
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            node.hide();
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
                         }
+                        xui.setData([aysid,'$ui.hover.pop']);
+                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     });
             },aysid);
             if(node){
-                node.onMouseover(type===null?null:function(){
+                node.onMouseover(type===null?null:function(e){
+                    if(e.$force)return;
                      _.resetRun(aysid,null);
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
+                    if(e.$force)return;
                     _.resetRun(aysid,function(){
                         if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
                             node.hide(null,hideEffects);
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
                         }
+                        xui.setData([aysid,'$ui.hover.pop']);
+                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     });
                 },aysid);
             }
+            node.css('display','none');
             return this;
         },
         //for remove obj when blur
@@ -3074,15 +2921,15 @@ type:4
             return _c[key]=rt;
         },
         $preDefinedEffects:{
-           "Classic":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
-           "Blur":[{type:"easeOut",duration:200,params: {opacity:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0]}}],
-           "Drop":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
-           "From Below":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
-           "From Above":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
-           "Slide In TB":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
-           "Flip V":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
-           "Flip H":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
+           "Classic":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
+           "Blur":[{type:"circOut",duration:200,params: {opacity:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0]}}],
+           "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
+           "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
+           "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
+           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
+           "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
         },
         _getEffects:function(key,isIn){
                 if(key && typeof(key)=="string"){

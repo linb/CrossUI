@@ -107,7 +107,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var drop=profile.$drop, cached=profile.properties.cachePopWnd;
             if(drop){
                 if(!cached){
-                    drop.boxing().destroy(true);
+                    if(!drop.destroyed)
+                        drop.boxing().destroy(true);
                     delete profile.$drop;
                     if(focus)
                         profile.boxing().activate();
@@ -118,11 +119,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             if(!profile.box)return;
                             delete profile.__tryToHide;
 
-                            if(xui.browser.opr)
-                                drop.getRoot().css('display','none');
-                            if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
-                            profile.getSubNode('POOL').append(drop.getRoot());
-                            
+                            if(!drop.destroyed){
+                                if(xui.browser.opr)
+                                    drop.getRoot().css('display','none');
+                                if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
+                                profile.getSubNode('POOL').append(drop.getRoot());
+                            }                            
                             if(focus)
                                 profile.boxing().activate();
                         });

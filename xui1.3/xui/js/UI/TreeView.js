@@ -196,7 +196,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     item.innerIcons=html;
 
                     // for the last one
-                    item.togglemark = cls+getType(item.sub, arr[ll]);
+                    item.togglemark = item.sub?(cls+getType(item.sub, arr[ll])):'xui-uicmd-none';
                 }
             }else{
                 oitem._deep=0;
@@ -204,7 +204,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.rulerStyle='';
                 item.innerIcons='';
 
-                item.togglemark = cls+getType(item.sub, oitem._icons[0]);
+                item.togglemark = item.sub?(cls+getType(item.sub, oitem._icons[0])):'xui-uicmd-none';
             }
             // show image
             item.imageDisplay='';

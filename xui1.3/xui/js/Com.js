@@ -105,23 +105,46 @@ Class('xui.Com',null,{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var t, self=this;
+            var t,k,r,self=this;
             if(self.events && (t=self.events[name])){
-                if(typeof t=='string')t=self[t];
-                if(typeof t=='function')
-                    return t.apply(host || self.host||self, args||[]);
+                if(t){
+                    if(typeof t=='string')t=self[t];                
+                    if(typeof t=='function')
+                        r=t.apply(host || self.host||self, args||[]);
+                    else if(_.isArr(k=t)){
+                        for(var i=0,l=k.length;i<l;i++){
+                            t=k[i];
+                            if(typeof t=='string')t=self[t];                
+                            if(typeof t=='function')
+                                r=t.apply(host || self.host||self, args||[]);
+                        }
+                    }
+                    return r;
+                }
             }
         },
         // for inner events
         _fireEvent:function(name, args){
-            var t, self=this;
+            var t,k,r,self=this;
             if(self.events && (t=self.events[name])){
-                if(typeof t=='string')t=self[t];
                 self.$lastEvent=name;
-                if(typeof t=='function'){
+                if(t){
                     args=args||[];
                     args.splice(0,0,self,self.threadid);
-                    return t.apply(self.host||self, args);
+
+                    if(typeof t=='string')t=self[t];
+                    if(typeof t=='function'){
+                        r=t.apply(self.host||self, args);
+                    }else if(_.isArr(k=t)){
+                        for(var i=0,l=k.length;i<l;i++){
+                            t=k[i];
+                            if(typeof t=='string')t=self[t];                
+                            if(typeof t=='function'){
+                                r=t.apply(self.host||self, args);
+                            }
+                        }
+                    }
+                    return r;
                 }
             }
         },
@@ -479,6 +502,8 @@ Class('xui.Com',null,{
                             if(!_.isFun(a))
                                 throw "'"+cls+"' is not a constructor";
                             var o=new a();
+                            // record it
+                            a._callfrom=cls;
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[null,o],o);
                         };

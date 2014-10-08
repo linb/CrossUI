@@ -3400,7 +3400,7 @@ Class('xui.absObj',"xui.absBox",{
                     self.$EventHandlers[i]=o;
                     var f=function(fun){
                         var l=arguments.length;
-                        if(l==1 && (typeof fun == 'function' || typeof fun == 'string'))
+                        if(l==1 && (typeof fun == 'function' || typeof fun == 'string' || _.isHash(fun) || _.isArr(fun)))
                             return this.each(function(v){
                                 if(v.renderId)
                                     v.clearCache();
@@ -3415,13 +3415,20 @@ Class('xui.absObj',"xui.absBox",{
                                 delete v[i];
                             });
                         else{
-                            var args=[], v=this.get(0), t=v[i], k=v.host || v,j;
+                            var args=[], v=this.get(0), t=v[i], k=v.host || v,j,o,r;
                             if(v.$inDesign)return;
                             if(arguments[0]!=v)args[0]=v;
                             for(j=0;j<l;j++)args[args.length]=arguments[j];
                             v.$lastEvent=i;
-                            if(typeof t=='string')t=k[t];
-                            if(typeof t=='function')return _.tryF(t, args, k);
+                            if(!_.isArr(t))t=[t];
+                            l=t.length;
+                            for(j=0;j<l;j++){
+                                o=t[j];
+                                if(typeof o=='string')o=k[o];
+                                if(typeof o=='function')r=_.tryF(o, args, k);
+                                else if(_.isHash(o))r=_.tryF(v.box._handleEventConf,[o,args],k);
+                            }
+                            return r;
                         }
                     };
                     f.$event$=1;
