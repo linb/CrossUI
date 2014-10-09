@@ -658,26 +658,31 @@ Class("xui.UI",  "xui.absObj", {
     },
     Instance:{
         hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
+            var prf=this.get(0),source=prf.boxing();
+            if(!prf.box.$EventHandlers.beforeHoverEffect){
+                source.getRoot().hoverPop(node, type, beforePop,beforeHide, parent, groupid);
+                return this;
+            }
             node=xui(node);
-            if(!_.isDefined(type))type='12';
-            var aysid=groupid||(this.getRoot().xid()+":"+node.xid());
-            this.each(function(o){
+            if(!_.isDefined(type))type='outer';
+            var aysid=groupid||(source.getRoot().xid()+":"+node.xid());
+            source.each(function(o){
                 o.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
                     if(e.$force)return;
                     if(mtype=='mouseover'){
                         _.resetRun(aysid,null);
                         var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                         && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
-                        if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
-                                node.popToTop(src, type, parent);
-                        }
                         if(!ignore){
-                            xui.setData([aysid,'$ui.hover.pop'],1);
+                            if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
+                                node.popToTop(src, type, parent);
+                            }
+                            xui.setData([aysid,'$ui.hover.pop'],item);
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                         }
                     }else{
                         _.resetRun(aysid,function(){
-                            if(!beforeHide || false!==beforeHide(prf, node,e, src,item,'host')){
+                            if(!beforeHide || false!==beforeHide(prf, node,e, src ,item, 'host')){
                                 node.hide();
                             }
                             xui.setData([aysid,'$ui.hover.pop']);
@@ -693,10 +698,11 @@ Class("xui.UI",  "xui.absObj", {
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop')){
+                        var item=xui.getData([aysid,'$ui.hover.pop']);
+                        if(!beforeHide || false!==beforeHide(prf,node, e,src,item, 'pop')){
                             node.hide();
                         }
-                        xui.setData([aysid,'$ui.hover.pop']);
+                        xui.setData([aysid,'$ui.hover.pop'])
                         xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     });
                 },aysid);
@@ -3585,7 +3591,32 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
             defaultFocus:false,
-            hoverPop:'',
+            hoverPop:{
+                ini:'',
+                action:function(v,ov){
+                     var ns=this,b=ns.boxing(),p=ns.properties,t;
+                     if(!ns.destroyed && ns.host){
+                         if(ov && (t=ns.host[ov]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
+                            b.hoverPop(t,null);
+                         if(v && (t=ns.host[v]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
+                            b.hoverPop(t, p.hoverPopType, function(){
+                                p.tagVar.hoverFrom=arguments;
+                            },function(){
+                                delete p.tagVar.hoverFrom;
+                            });
+                     }
+                }
+            },
+            hoverPopType:{
+                ini:'outer',
+                listbox:['outer','inner',
+                'outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright',
+                'top-outerleft','top-left','top-center','top-right','top-outerright',
+                'middle-outerleft','middle-left','middle-center','middle-right','middle-outerright',
+                'bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright',
+                'outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright'
+                ],
+            },
             dock:{
                 ini:'none',
                 listbox:['none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'],
@@ -3680,13 +3711,7 @@ Class("xui.UI",  "xui.absObj", {
             if(p.rotate) b.setRotate(p.rotate,true);
             if(p.hoverPop){
                 _.asyRun(function(){
-                    if(!self.destroyed && self.host && (t=self.host[p.hoverPop]) && !t.destroyed && (t=t.get(0)) && t.renderId){
-                        b.hoverPop(t,'12',function(){
-                            p.tagVar.hoverFrom=arguments;
-                        },function(){
-                            delete p.tagVar.hoverFrom;
-                        });
-                    }
+                    b.setHoverPop(p.hoverPop,true);
                 });
             }            
 

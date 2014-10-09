@@ -694,8 +694,9 @@ _.merge(_,{
             var i, l, a=arr;
             if(!a)return a;
             if(!_.isArr(a)){
-                if((a=a._nodes) || !_.isArr(a))
-                    throw 'errNotArray';
+                if(!_.isArr(a._nodes))
+                    return a;
+                a=a._nodes;
                 if(desc===undefined)
                     desc=1;
             }
@@ -3400,7 +3401,7 @@ Class('xui.absObj',"xui.absBox",{
                     self.$EventHandlers[i]=o;
                     var f=function(fun){
                         var l=arguments.length;
-                        if(l==1 && (typeof fun == 'function' || typeof fun == 'string'))
+                        if(l==1 && (typeof fun == 'function' || typeof fun == 'string' || _.isHash(fun) || _.isArr(fun)))
                             return this.each(function(v){
                                 if(v.renderId)
                                     v.clearCache();
@@ -3415,13 +3416,20 @@ Class('xui.absObj',"xui.absBox",{
                                 delete v[i];
                             });
                         else{
-                            var args=[], v=this.get(0), t=v[i], k=v.host || v,j;
+                            var args=[], v=this.get(0), t=v[i], k=v.host || v,j,o,r;
                             if(v.$inDesign)return;
                             if(arguments[0]!=v)args[0]=v;
                             for(j=0;j<l;j++)args[args.length]=arguments[j];
                             v.$lastEvent=i;
-                            if(typeof t=='string')t=k[t];
-                            if(typeof t=='function')return _.tryF(t, args, k);
+                            if(!_.isArr(t))t=[t];
+                            l=t.length;
+                            for(j=0;j<l;j++){
+                                o=t[j];
+                                if(typeof o=='string')o=k[o];
+                                if(typeof o=='function')r=_.tryF(o, args, k);
+                                else if(_.isHash(o))r=_.tryF(v.box._handleEventConf,[o,args],k);
+                            }
+                            return r;
                         }
                     };
                     f.$event$=1;
@@ -7249,7 +7257,7 @@ Class('xui.Dom','xui.absBox',{
                     }
                 });
             else
-                return this.get(0).id;
+                return this.get(0)&&this.get(0).id;
         },
 
         /*dom collection
@@ -8553,194 +8561,39 @@ Class('xui.Dom','xui.absBox',{
         */
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
             var me=arguments.callee,
-                effects = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
-			linear: function (t, b, c, d) {
-				return c * t / d + b;
-			},
-			quadIn: function (t, b, c, d) {
-				return c * (t /= d) * t + b;
-			},
-			quadOut: function (t, b, c, d) {
-				return -c * (t /= d) * (t - 2) + b;
-			},
-			quadInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t + b;
-				}
-				return -c / 2 * ((--t) * (t - 2) - 1) + b;
-			},
-			cubicIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t + b;
-			},
-			cubicOut: function (t, b, c, d) {
-				return c * ((t = t / d - 1) * t * t + 1) + b;
-			},
-			cubicInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t + b;
-				}
-				return c / 2 * ((t -= 2) * t * t + 2) + b;
-			},
-			easeIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t + b;
-			},
-			easeOut: function (t, b, c, d) {
-				return c * ((t = t / d - 1) * t * t + 1) + b;
-			},
-			easeInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t + b;
-				}
-				return c / 2 * ((t -= 2) * t * t + 2) + b;
-			},
-			quartIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t * t + b;
-			},
-			quartOut: function (t, b, c, d) {
-				return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-			},
-			quartInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t * t + b;
-				}
-				return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
-			},
-			quintIn: function (t, b, c, d) {
-				return c * (t /= d) * t * t * t * t + b;
-			},
-			quintOut: function (t, b, c, d) {
-				return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
-			},
-			quintInOut: function (t, b, c, d) {
-
-				if ((t /= d / 2) < 1) {
-					return c / 2 * t * t * t * t * t + b;
-				}
-				return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
-			},
-			sineIn: function (t, b, c, d) {
-				return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-			},
-			sineOut: function (t, b, c, d) {
-				return c * Math.sin(t / d * (Math.PI / 2)) + b;
-			},
-			sineInOut: function (t, b, c, d) {
-				return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
-			},
-			expoIn: function (t, b, c, d) {
-				return (t === 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
-			},
-			expoOut: function (t, b, c, d) {
-				return (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-			},
-			expoInOut: function (t, b, c, d) {
-				if (t === 0) { return b; }
-				if (t === d) { return b + c; }
-				if ((t /= d / 2) < 1) {
-					return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
-				}
-				return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
-			},
-			circIn: function (t, b, c, d) {
-				return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
-			},
-			circOut: function (t, b, c, d) {
-				return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
-			},
-			circInOut: function (t, b, c, d) {
-				if ((t /= d / 2) < 1) {
-					return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
-				}
-				return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
-			},
-			bounceIn: function (t, b, c, d) {
-				return c - effects.bounceOut(d - t, 0, c, d) + b;
-			},
-			bounceOut: function (t, b, c, d) {
-				if ((t /= d) < (1 / 2.75)) {
-					return c * (7.5625 * t * t) + b;
-				} else if (t < (2 / 2.75)) {
-					return c * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75) + b;
-				} else if (t < (2.5 / 2.75)) {
-					return c * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375) + b;
-				} else {
-					return c * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375) + b;
-				}
-			},
-			bounceInOut: function (t, b, c, d) {
-				if (t < d / 2) {
-					return effects.bounceIn(t * 2, 0, c, d) * 0.5 + b;
-				}
-				return effects.bounceOut(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
-			},
-			elasticIn: function (t, b, c, d, a, p) {
-				if (t === 0) { return b; }
-				if ((t /= d) === 1) {
-					return b + c;
-				}
-				if (!p) {
-					p = d * 0.3;
-				}
-				if (!a) {
-					a = 1;
-				}
-				var s = 0;
-				if (a < Math.abs(c)) {
-					a = c;
-					s = p / 4;
-				} else {
-					s = p / (2 * Math.PI) * Math.asin(c / a);
-				}
-				return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-			},
-			elasticOut: function (t, b, c, d, a, p) {
-				if (t === 0) {
-					return b;
-				}
-				if ((t /= d) === 1) {
-					return b + c;
-				}
-				if (!p) {
-					p = d * 0.3;
-				}
-				if (!a) {
-					a = 1;
-				}
-				var s = 0;
-				if (a < Math.abs(c)) {
-					a = c;
-					s = p / 4;
-				} else {
-					s = p / (2 * Math.PI) * Math.asin(c / a);
-				}
-				return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
-			},
-			elasticInOut: function (t, b, c, d, a, p) {
-				if (t === 0) {
-					return b;
-				}
-				if ((t /= d / 2) === 2) {
-					return b + c;
-				}
-				if (!p) {
-					p = d * (0.3 * 1.5);
-				}
-				if (!a) {
-					a = 1;
-				}
-				var s = 0;
-				if (a < Math.abs(c)) {
-					a = c;
-					s = p / 4;
-				} else {
-					s = p / (2 * Math.PI) * Math.asin(c / a);
-				}
-				if (t < 1) {
-					return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-				}
-				return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 + c + b;
-			}
-		}),
+                tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
+			linear:function(s,c) {return (1/s)*c;},
+			sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
+			sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
+			sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
+			quadIn:function(s,c) {return (c/=s)*c;},
+			quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
+			quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
+			cubicIn:function(s,c) {return (c/=s)*c*c;},
+			cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
+			cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
+			quartIn:function(s,c) {return (c/=s)*c*c*c;},
+			quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
+			quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
+			quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
+			quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
+			quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
+			expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
+			expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
+			expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
+			circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
+			circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
+			circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
+			bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
+			bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
+			bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
+			backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
+			backOut:function(s,c) {var k=1.70158;	return ((c=c/s-1)*c*((k+1)*c+k)+1);},
+			backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
+			elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
+			elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
+			elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
+                }),
                 color = me.color || (me.color = function(from,to,curvalue){
                     if(typeof from !='string' || typeof to != 'string')return '#fff';
                     if(curvalue<0)return from;
@@ -8777,14 +8630,14 @@ Class('xui.Dom','xui.absBox',{
             else
                 duration = duration||200;
 
-            type = effects[type]!==undefined?type:'expoIn';
+            type = tween[type]!==undefined?type:'circIn';
 
             var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){
                     s=o[0];e=o[1];u=o[2];
-                    curvalue = effects[type](offtime, 0, 1, duration);
+                    curvalue = tween[type](duration, offtime);
                     if(typeof o == 'function') o.call(self, curvalue);
                     else{
                         if(_.str.endWith(i.toLowerCase(),'color')){
@@ -8833,7 +8686,8 @@ Class('xui.Dom','xui.absBox',{
         popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
             var region, target=this, t;
             parent=xui(parent);
-            if(parent.isEmpty())parent=xui('body');
+            if(parent.isEmpty())
+                parent=xui('body');
 
             //prepare
             target.css({position:'absolute',left:xui.Dom.HIDE_VALUE, top:xui.Dom.HIDE_VALUE,display:'block', zIndex:xui.Dom.TOP_ZINDEX++});
@@ -8851,7 +8705,7 @@ Class('xui.Dom','xui.absBox',{
                     width:node.offsetWidth(),
                     height:node.offsetHeight()
                 };
-             }else{
+            }else{
                 if(typeof(type)!="function"){
                     type = type?'3':'0';
                 }
@@ -8919,13 +8773,44 @@ type:4
                 pos=type(region, box, target, t);
             }else{
                 //target size
-                var w = target.offsetWidth(), h = target.offsetHeight(),
-                    adjust=function(type){
+                var w = target.offsetWidth(), 
+                    h = target.offsetHeight(),
+                    arr=type.split(/-/g);
+                if(arr.length==2){
+                    var vp=arr[0],hp=arr[1];
+                    switch(vp){
+                        case "outertop":
+                            pos.top=region.top-h;break;
+                        case "top":
+                            pos.top=region.top;break;
+                        case "middle":
+                            pos.top=region.top+region.height/2-h/2;break;
+                        case "bottom":
+                            pos.top=region.top+region.height-h;break;
+                        default:
+                        //case "outerbottom":
+                            pos.top=region.top+region.height;
+                    }
+                    switch(hp){
+                        case "outerleft":
+                            pos.left=region.left-w;break;
+                        case "left":
+                            pos.left=region.left;break;
+                        case "center":
+                            pos.left=region.left+region.width/2-w/2;break;
+                        case "right":
+                            pos.left=region.left+region.width-w;break;
+                        default:
+                        //case "outerright":
+                            pos.left=region.left+region.width;
+                    }
+                }else{
+                    if(type=="outer")type="12";
+                    else if(type=="inner")type="4"; 
+
+                    var adjust=function(type){
                         var hi,wi;
                         switch(type){
-                            case '1':
-                                hi=false;wi=true;
-                            break;
                             case '2':
                                 hi=true;wi=false;
                             break;
@@ -8935,6 +8820,9 @@ type:4
                             case '4':
                                 hi=wi=true;
                             break;
+                            default:
+                            //case '1':
+                                hi=false;wi=true;
                         }
             
                         if(hi){
@@ -8959,22 +8847,26 @@ type:4
                             else
                                 pos.left=region.left - w;
                         }
+                        //over right
+                        if(pos.left + w>  box.width)pos.left = box.width - w;
+                        //over left
+                        if(pos.left < box.left)pos.left = box.left;
+                        //over bottom
+                        if(pos.top + h>  box.height)pos.top = box.height - h;
+                        //over top
+                        if(pos.top < box.top)pos.top = box.top;
                     };
-
-                if(type=='12'){
-                    adjust('1');
-                    if(pos.top + h>  box.height || pos.top < box.top)adjust('2');
-                }else{
-                    adjust(type);
+    
+                    if(type=='12'){
+                        adjust('1');
+                        if(pos.top < region.top+region.height && pos.top+h > region.top)adjust('2');
+                    }else if(type=='21'){
+                        adjust('2');
+                        if(pos.left < region.left+region.width && pos.left+w > region.left)adjust('1');
+                    }else{
+                        adjust(type);
+                    }
                 }
-                //over right
-                if(pos.left + w>  box.width)pos.left = box.width - w;
-                //over left
-                if(pos.left < box.left)pos.left = box.left;
-                //over bottom
-                if(pos.top + h>  box.height)pos.top = box.height - h;
-                //over top
-                if(pos.top < box.top)pos.top = box.top;
             }
             //show
             target.cssPos(pos).css({visibility:'visible'});
@@ -8984,53 +8876,51 @@ type:4
             if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
             return this;
         },
-        setHoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
-            if(node["xui.UI"]){
-                node=node.getRoot();
-            }else if(node['xui.UIProfile']||node['xui.Template']){
-               node=node.boxing(); 
-            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
-                node=xui(node);
-            }
+        hoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
+            node=xui(node);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
-            if(!_.isDefined(type))type='12';
-            
-            var aysid=groupid || (ns.id()+":"+node.xid());
+            if(!_.isDefined(type))type='outer';
+
+            var aysid=groupid || (this.xid()+":"+node.xid());
             this.onMouseover(type===null?null:function(prf, e, src){
-                 _.resetRun(aysid,null);
-                    var ignore=xui.getData([aysid,'$ui.hover.pop'])
-                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
-                    if(!beforePop || false!==beforePop(prf, node, e, src, ignore)){
-                        if(!ignore){
-                            node.popToTop(src, type, parent,showEffects);
-                            xui.setData([aysid,'$ui.hover.pop'],1);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
-                        }
-                 }
+                if(e.$force)return;
+                _.resetRun(aysid,null);
+                var ignore=xui.getData([aysid,'$ui.hover.pop'])
+                                && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
+                if(!ignore){
+                    if(!beforePop || false!==beforePop(prf, node, e, src, null, ignore)){
+                        node.popToTop(src, type, parent,showEffects);
+                    }
+                    xui.setData([aysid,'$ui.hover.pop'],1);
+                    xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
+                }
             },aysid).onMouseout(type===null?null:function(prf, e, src){
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'host')){
-                            node.hide(null,hideEffects);
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            node.hide();
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
-                        }
-                    });
+                if(e.$force)return;
+                _.resetRun(aysid,function(){
+                    if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'host')){
+                        node.hide(null,hideEffects);
+                    }
+                    xui.setData([aysid,'$ui.hover.pop']);
+                    xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
+                });
             },aysid);
             if(node){
-                node.onMouseover(type===null?null:function(){
+                node.onMouseover(type===null?null:function(e){
+                    if(e.$force)return;
                      _.resetRun(aysid,null);
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
+                    if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'pop')){
                             node.hide(null,hideEffects);
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
                         }
+                        xui.setData([aysid,'$ui.hover.pop']);
+                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     });
                 },aysid);
             }
+            node.css('display','none');
             return this;
         },
         //for remove obj when blur
@@ -9290,8 +9180,7 @@ type:4
                 b = name = 'filter';
 
             value= node.style[name];
-            if(!value){
-
+            if(!value || value==="initial"){
                 var me = arguments.callee,t,
                 brs=xui.browser,
                 map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1}),
@@ -10249,15 +10138,15 @@ type:4
             return _c[key]=rt;
         },
         $preDefinedEffects:{
-           "Classic":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
-           "Blur":[{type:"easeOut",duration:200,params: {opacity:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0]}}],
-           "Drop":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
-           "From Below":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
-           "From Above":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
-           "Slide In TB":[{type:"easeOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
-           "Flip V":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
-           "Flip H":[{type:"easeOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"easeIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
+           "Classic":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
+           "Blur":[{type:"circOut",duration:200,params: {opacity:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0]}}],
+           "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
+           "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
+           "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
+           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
+           "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
         },
         _getEffects:function(key,isIn){
                 if(key && typeof(key)=="string"){
@@ -11278,23 +11167,46 @@ Class('xui.Com',null,{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var t, self=this;
+            var t,k,r,self=this;
             if(self.events && (t=self.events[name])){
-                if(typeof t=='string')t=self[t];
-                if(typeof t=='function')
-                    return t.apply(host || self.host||self, args||[]);
+                if(t){
+                    if(typeof t=='string')t=self[t];                
+                    if(typeof t=='function')
+                        r=t.apply(host || self.host||self, args||[]);
+                    else if(_.isArr(k=t)){
+                        for(var i=0,l=k.length;i<l;i++){
+                            t=k[i];
+                            if(typeof t=='string')t=self[t];                
+                            if(typeof t=='function')
+                                r=t.apply(host || self.host||self, args||[]);
+                        }
+                    }
+                    return r;
+                }
             }
         },
         // for inner events
         _fireEvent:function(name, args){
-            var t, self=this;
+            var t,k,r,self=this;
             if(self.events && (t=self.events[name])){
-                if(typeof t=='string')t=self[t];
                 self.$lastEvent=name;
-                if(typeof t=='function'){
+                if(t){
                     args=args||[];
                     args.splice(0,0,self,self.threadid);
-                    return t.apply(self.host||self, args);
+
+                    if(typeof t=='string')t=self[t];
+                    if(typeof t=='function'){
+                        r=t.apply(self.host||self, args);
+                    }else if(_.isArr(k=t)){
+                        for(var i=0,l=k.length;i<l;i++){
+                            t=k[i];
+                            if(typeof t=='string')t=self[t];                
+                            if(typeof t=='function'){
+                                r=t.apply(self.host||self, args);
+                            }
+                        }
+                    }
+                    return r;
                 }
             }
         },
@@ -11652,6 +11564,8 @@ Class('xui.Com',null,{
                             if(!_.isFun(a))
                                 throw "'"+cls+"' is not a constructor";
                             var o=new a();
+                            // record it
+                            a._callfrom=cls;
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[null,o],o);
                         };
@@ -14225,14 +14139,11 @@ Class("xui.Tips", null,{
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
             xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
         }else{
-            xui.log=xui.echo;
-        }
-            
-        if(xui.browser.isTouch){
+            xui.log=xui.echo;   
             window.onerror=this.err;
         }
     }
-});//UIProfile Class
+});
 Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
@@ -14891,55 +14802,57 @@ Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
-        setHoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
-            var c=this.get(0),sor=xui(c);
-            if(node["xui.UI"]){
-                node=node.getRoot();
-            }else if(node['xui.UIProfile']||node['xui.Template']){
-                node=node.boxing(); 
-            }else if(node['xui.Template']){
-               node=node.boxing(); 
-            }else if(typeof(node)=="string" && node.chartAt(0)=="!"){
-                node=xui(node);
+        hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
+            var prf=this.get(0),source=prf.boxing();
+            if(!prf.box.$EventHandlers.beforeHoverEffect){
+                source.getRoot().hoverPop(node, type, beforePop,beforeHide, parent, groupid);
+                return this;
             }
-
-            if(!_.isDefined(type))type='12';
-            var aysid=groupid||(c.getRoot().xid()+":"+node.xid());
-            c.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
-                if(mtype=='mouseover'){
-                    _.resetRun(aysid,null);
-                    var ignore=xui.getData([aysid,'$ui.hover.pop'])
-                                    && xui.getNodeData(node.get(0),'$ui.hover.parent')==src;
-                    if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
+            node=xui(node);
+            if(!_.isDefined(type))type='outer';
+            var aysid=groupid||(source.getRoot().xid()+":"+node.xid());
+            source.each(function(o){
+                o.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
+                    if(e.$force)return;
+                    if(mtype=='mouseover'){
+                        _.resetRun(aysid,null);
+                        var ignore=xui.getData([aysid,'$ui.hover.pop'])
+                                        && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                         if(!ignore){
-                            node.popToTop(src, type, parent);
-                            xui.setData([aysid,'$ui.hover.pop'],1);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',src);
+                            if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
+                                node.popToTop(src, type, parent);
+                            }
+                            xui.setData([aysid,'$ui.hover.pop'],item);
+                            xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                         }
+                    }else{
+                        _.resetRun(aysid,function(){
+                            if(!beforeHide || false!==beforeHide(prf, node,e, src ,item, 'host')){
+                                node.hide();
+                            }
+                            xui.setData([aysid,'$ui.hover.pop']);
+                            xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
+                        });
                     }
-                }else{
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src,item,'host')){
-                            node.hide();
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
-                        }
-                    });
-                }
-            };
+                };
+            });
             if(node){
-                node.onMouseover(type===null?null:function(){
-                     _.resetRun(aysid,null);
+                node.onMouseover(type===null?null:function(e){
+                    if(e.$force)return;
+                    _.resetRun(aysid,null);
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
+                    if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop')){
+                        var item=xui.getData([aysid,'$ui.hover.pop']);
+                        if(!beforeHide || false!==beforeHide(prf,node, e,src,item, 'pop')){
                             node.hide();
-                            xui.setData([aysid,'$ui.hover.pop']);
-                            xui.setNodeData(node.get(0),'$ui.hover.parent',0);
                         }
+                        xui.setData([aysid,'$ui.hover.pop'])
+                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     });
                 },aysid);
             }
+            node.css('display','none');
             return this;
         },
         setTheme:function(key){
@@ -15647,13 +15560,23 @@ Class("xui.UI",  "xui.absObj", {
                                 if((b=o.split(':')).length>=2){
                                     i=b.shift();o=b.join(':');
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                    tnodes.css(i, (clear?'':xui.adjustRes(o,0,1))||"");
+                                    tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
                                 }
                             });
                          else if(_.isHash(CSObj[key]))
-                            _.each(CSObj[key],function(o,i){
-                                i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
+                            _.each(CSObj[key],function(v,i){
+                                if(_.isStr(v)){
+                                    _.arr.each(v.split(';'),function(o){
+                                        if((b=o.split(':')).length>=2){
+                                            i=b.shift();o=b.join(':');
+                                            i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
+                                            tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
+                                        }
+                                    });
+                                }else{
+                                    i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
+                                    tnodes.css(i, (clear?'':(v && typeof v=="string")?xui.adjustRes(v,0,1):v)||"");
+                                }
                             });                            
                     }
                 }));
@@ -16214,7 +16137,7 @@ Class("xui.UI",  "xui.absObj", {
                 $order:6,
                 'background-position': '-220px -110px'
             },
-            '.xui-uicmd-none':{
+            '.xui-uicmd-none, .xui-display-none':{
                 display:'none'
             },
             '.xui-uicmd-empty':{
@@ -16595,6 +16518,9 @@ Class("xui.UI",  "xui.absObj", {
             "onmousedown":1,
             "onmouseup":1
         },
+        _handleEventConf:function(conf, args){
+            var ns=this;
+        },
         $addEventsHanlder:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
                 eh=xui.Event._eventHandler,
@@ -16789,23 +16715,30 @@ Class("xui.UI",  "xui.absObj", {
                 delete template.id;
 
             if(template.className!==null){
-                //className
-                t = u.$CLS + (key?'-'+key.toLowerCase():'');
                 //save bak
                 bak = template.className || '';
-                tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
-
-                //default class first
-                template['class'] =  'xui-node xui-node-'+tagN+' ' + t+' '+
-                    //custom class here
-                    bak + ' ' +
-                    //add a special
-                    (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' ) +
+                if(!template._NativeElement){
+                    //className
+                    t = u.$CLS + (key?'-'+key.toLowerCase():'');
+                    tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
+    
+                    //default class first
+                    template['class'] =  'xui-node xui-node-'+tagN+' ' + t+' '+
+                        //custom class here
+                        bak + ' ' +
+                        //add a special
+                        (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
+                }else{
+                    //default class first
+                    template['class'] =  bak + ' ' +
+                        //add a special
+                        (lkey==profile.key ? ((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ') : '' ) ;
+                }
+                template['class'] +=  '' +
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"")
-                    ;
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"");
             }
             delete template.className;
 
@@ -17803,6 +17736,32 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
             defaultFocus:false,
+            hoverPop:{
+                ini:'',
+                action:function(v,ov){
+                     var ns=this,b=ns.boxing(),p=ns.properties,t;
+                     if(!ns.destroyed && ns.host){
+                         if(ov && (t=ns.host[ov]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
+                            b.hoverPop(t,null);
+                         if(v && (t=ns.host[v]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
+                            b.hoverPop(t, p.hoverPopType, function(){
+                                p.tagVar.hoverFrom=arguments;
+                            },function(){
+                                delete p.tagVar.hoverFrom;
+                            });
+                     }
+                }
+            },
+            hoverPopType:{
+                ini:'outer',
+                listbox:['outer','inner',
+                'outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright',
+                'top-outerleft','top-left','top-center','top-right','top-outerright',
+                'middle-outerleft','middle-left','middle-center','middle-right','middle-outerright',
+                'bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright',
+                'outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright'
+                ],
+            },
             dock:{
                 ini:'none',
                 listbox:['none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'],
@@ -17882,7 +17841,7 @@ Class("xui.UI",  "xui.absObj", {
             onContextmenu:function(profile, e, src, item){}
         },
         RenderTrigger:function(){
-            var self=this, b=self.boxing(),p=self.properties;
+            var self=this, b=self.boxing(),p=self.properties,t;
             //avoid the resize blazzing
             if(self.box._onresize){
                 var style=self.getRootNode().style,t
@@ -17893,11 +17852,13 @@ Class("xui.UI",  "xui.absObj", {
                 xui.UI.$tryResize(self,p.width,p.height);
                 style=null;
             }
-            if(p.disabled)
-                b.setDisabled(true,true);
-
-            if(p.rotate)
-                b.setRotate(p.rotate,true);
+            if(p.disabled) b.setDisabled(true,true);
+            if(p.rotate) b.setRotate(p.rotate,true);
+            if(p.hoverPop){
+                _.asyRun(function(){
+                    b.setHoverPop(p.hoverPop,true);
+                });
+            }            
 
             self._inValid=1;
         },
@@ -18513,10 +18474,14 @@ Class("xui.UI",  "xui.absObj", {
             //can't input id in properties
             if(prop.id)delete prop.id;
 
+            // cant null
+            if('nodeName' in dm && !prop.nodeName)
+                prop.nodeName="xui";
+
             //give default caption
             if('caption' in dm && prop.caption!==null)
                 prop.caption = prop.caption===undefined ? profile.alias : prop.caption;
-
+            
             if('html' in dm && prop.html)
                 data.html = xui.adjustRes(prop.html,0,1);
             if('src' in dm && prop.src)
@@ -19829,7 +19794,9 @@ new function(){
         Static:{
             _objectProp:{tagVar:1,dockMargin:1,attributes:1},
             Templates:{
+                _NativeElement:true,
                 tagName:'{nodeName}',
+                // dont set class to HTML Element
                 className:'{_className}',
                 style:'{_style};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
@@ -19875,6 +19842,17 @@ new function(){
                     'line-height':'1.22em'
                 }
             },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, value){}
+            },
             RenderTrigger:function(){
                 var v=this.properties.attributes;
                 if(!_.isEmpty(v)){
@@ -19896,7 +19874,9 @@ new function(){
         },
         Static:{
             Templates:{
+                _NativeElement:true,
                 tagName:'button',
+                // dont set class to HTML Element
                 className:'{_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
@@ -19911,17 +19891,6 @@ new function(){
                     'line-height':'1.22em',
                     'cursor':'pointer'
                 }
-            },
-            Behaviors:{
-                onClick:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return false;
-                    if(profile.onClick)
-                        return profile.boxing().onClick(profile, e, src);
-                }
-            },
-            EventHandlers:{
-                onClick:function(profile, e, value){}
             }
         }
     });
@@ -19998,7 +19967,6 @@ new function(){
         },
         Static:{
             $initRootHidden:true,
-            $initRootCreated:true,
             _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;'
@@ -22205,6 +22173,17 @@ Class("xui.UI.Label", "xui.UI.Widget",{
 
             _textSshadowSize:4
         },
+        Behaviors:{
+            onClick:function(profile, e, src){
+                var p=profile.properties;
+                if(p.disabled)return false;
+                if(profile.onClick)
+                    return profile.boxing().onClick(profile, e, src);
+            }
+        },
+        EventHandlers:{
+            onClick:function(profile, e, src){}
+        },
         RenderTrigger:function(){
             var p = this.properties, o=this.boxing();
             if(p.fontSize)o.setFontSize(p.fontSize,true);
@@ -24107,6 +24086,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             var d=arguments.callee.upper.call(this, profile);
 
             d._type = d.type || '';
+            if(d.maxlength<0)d.maxlength="";
+            
             if(xui.browser.kde)
                 d._css='resize:none;';
             d.hAlign=d.hAlign?("text-align:" + d.hAlign):"";
@@ -25328,7 +25309,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var drop=profile.$drop, cached=profile.properties.cachePopWnd;
             if(drop){
                 if(!cached){
-                    drop.boxing().destroy(true);
+                    if(!drop.destroyed)
+                        drop.boxing().destroy(true);
                     delete profile.$drop;
                     if(focus)
                         profile.boxing().activate();
@@ -25339,11 +25321,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             if(!profile.box)return;
                             delete profile.__tryToHide;
 
-                            if(xui.browser.opr)
-                                drop.getRoot().css('display','none');
-                            if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
-                            profile.getSubNode('POOL').append(drop.getRoot());
-                            
+                            if(!drop.destroyed){
+                                if(xui.browser.opr)
+                                    drop.getRoot().css('display','none');
+                                if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
+                                profile.getSubNode('POOL').append(drop.getRoot());
+                            }                            
                             if(focus)
                                 profile.boxing().activate();
                         });
@@ -26076,7 +26059,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             INPUT:{
                 onChange:function(profile, e, src){
-                    if(profile.$_onedit||profile.$_inner)return;
+                    if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var o=profile._inValid,
                         b=profile.box,
                         instance=profile.boxing(),
@@ -29695,6 +29678,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         EXTRA:{
                             text : '{ext}',
                             $order:30
+                        },
+                        OPT:{
+                            $order:40
                         }
                     }
                 }
@@ -29754,11 +29740,33 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'ITEM-checked MARK':{
                 $order:2,
                 'background-position': '0 -70px'
+            },
+            OPT:{
+                $order:10,
+                position:'absolute',
+                left:'auto',
+                top:'auto',
+                right:'2px',
+                top:'2px',
+                width:'16px',
+                height:'16px',
+                display:'none',
+                'background-image': xui.UI.$bg('icons.gif','', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-130px -224px'
+            },
+            'OPT-mouseover':{
+                $order:20,
+                'background-position':'-130px -244px'
+            },
+            'OPT-mousedown':{
+                $order:30,
+                'background-position':'-130px -264px'
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:'ITEM'},
-            ClickEffected:{ITEM:'ITEM'},
+            HoverEffected:{ITEM:'ITEM', OPT:'OPT'},
+            ClickEffected:{ITEM:'ITEM', OPT:'OPT'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
             onSize:xui.UI.$onSize,
@@ -29890,9 +29898,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu)
                         return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
+                },
+                onMouseover:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+                },
+                onMouseout:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+                }
+            },
+            OPT:{
+                onClick:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    if(profile.onShowOptions){
+                        var item = profile.getItemByDom(src);
+                        profile.boxing().onShowOptions(profile, item, e, src);
+                    }
+                    return false;
+                },
+                onDblclick:function(profile, e, src){
+                    return false;
                 }
             }
-            
         },
         DataModel:{
             selMode:{
@@ -29930,13 +29958,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var ns=this.getSubNode('ITEM',true);
                     if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
-            }
+            },
+            optBtn:false
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
             onDblclick:function(profile, item, e, src){},
+            onShowOptions:function(profile, item, e, src){},
             onItemSelected:function(profile, item, e, src, type){}
         },
         _onStartDrag:function(profile, e, src, pos){
@@ -30565,9 +30595,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     $order:2,
                     tagName:'div',
                     className:'xui-uicon-main',
+                    style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
                         className:'xui-uicon-maini',
+                        style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
                             className:'{_bordertype}',
@@ -30580,6 +30612,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     $order:3,
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
+                    style:"{_bbarDisplay}",
                     BBART:{
                         cellpadding:"0",
                         cellspacing:"0",
@@ -30625,7 +30658,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 'line-height':'1.22em',
                 zoom:xui.browser.ie6?1:null
             },
-
             CAPTION:{
                 'font-size':'12px',
                 cursor:'pointer',
@@ -30814,6 +30846,17 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     //force to resize
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
+            },
+            noFrame:{
+                ini:false,
+                action:function(v){
+                    var ns=this,root=ns.getRoot();
+                    ns.getSubNode('BBAR').css('display',v?'none':'');
+                    ns.getSubNode('MAIN').css('paddingLeft',v?'0':'');
+                    ns.getSubNode('MAINI').css('paddingRight',v?'0':'');
+                    //force to resize
+                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                }
             }
         },
         EventHandlers:{
@@ -30850,33 +30893,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             
             data._bordertype='xui-uiborder-'+data.borderType;
             
-            profile._toggle = !!data.toggle;
+            data._bbarDisplay=data.noFrame?nodisplay:"";
+            data._leftp=data.noFrame?"padding-left:0;":"";
+            data._rightp=data.noFrame?"padding-right:0;":"";
 
+            profile._toggle = !!data.toggle;
             return data;
         },
-        _onresize:function(profile,width,height){
-            var isize={},
-                v1=profile.getSubNode('TBAR'),
-                v2=profile.getSubNode('PANEL'),
-                v4=profile.getSubNode('BBAR'),
-                v5=profile.getSubNode('MAIN'),
-                v6=profile.getSubNode('MAINI'),
-                size=profile.properties.borderType=='none'?0:2,
-                h1,h4,t;
-            if(height){
-                if(height=='auto')
-                    isize.height=height;
-                else{
-                    h1=v1.height(), h4=v4.height();
-                    if((t=height-h1-h4)>0)
-                        isize.height=t-size;
-                }
-            }
-            if(width)
-                isize.width=width-(parseInt(v6.css('paddingRight'),10)||0)-(parseInt(v5.css('paddingLeft'),10)||0)-v2._borderW();
-            v2.cssSize(isize, true);
-        },
-
         _toggle:function(profile, value){
             var p=profile.properties, ins=profile.boxing();
 
@@ -30921,7 +30944,35 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         ins.afterFold(profile);
                 }
             }
-        }
+        },
+        _onresize:function(profile,width,height){
+            var isize={},
+                p=profile.properties,
+                noFrame=p.noFrame,
+                v1=profile.getSubNode('TBAR'),
+                v2=profile.getSubNode('PANEL'),
+                v4=profile.getSubNode('BBAR'),
+                v5=profile.getSubNode('MAIN'),
+                v6=profile.getSubNode('MAINI'),
+                size=profile.properties.borderType=='none'?0:2,
+                h1,h4,t;
+            if(height){
+                if(height=='auto')
+                    isize.height=height;
+                else{
+                    h1=v1.height();
+                    h4=noFrame?0:v4.height();
+                    if((t=height-h1-h4)>0)
+                        isize.height=t-size;
+                }
+            }
+            if(width)
+                isize.width=width 
+                    -(noFrame?0:(parseInt(v6.css('paddingRight'),10)||0))
+                    -(noFrame?0:(parseInt(v5.css('paddingLeft'),10)||0))
+                    -v2._borderW();
+            v2.cssSize(isize, true);
+        } 
     }
 });
 Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
@@ -31655,6 +31706,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
+                className:"xui-uibg-base",
                 style:'{_liststyle}',
                 ITEMS:{
                     tagName : 'div',
@@ -31927,7 +31979,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return false;
-                    if(profile.getKey(xui.Event.getSrc(e).parentNode.id)==profile.keys.CMDS)return false;
+                    var t;
+                    if((t=xui.Event.getSrc(e).parentNode) && t.id && (profile.getKey(t.id))==profile.keys.CMDS)return false;
 
                     var prop = profile.properties,
                         dm=profile.box.$DataModel,
@@ -32654,7 +32707,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'font-size':'12px',
                 height:'100%',
                 height:'18px',
-                'padding':'5px 0 5px 8px',
+                'padding':'5px 8px',
                 'white-space':'nowrap'
             },
             PANEL:{
@@ -33175,11 +33228,11 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             "ITEM-none CAPTION":{
                 padding:'1px 4px'
             },
-            "ITEM-left CAPTION":{
-                padding:'1px 4px 1px 12px'
+            "ITEM-left":{
+                padding:'4px 4px 2px 12px'
             },
-            "ITEM-right CAPTION":{
-                padding:'1px 12px 1px 1px'
+            "ITEM-right":{
+                padding:'4px 12px 2px 2px'
             }
         },
         DataModel:({
@@ -33194,7 +33247,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             itemWidth:{
                 ini:0,
                 action:function(value){
-                    this.getSubNode('ITEM',true).width(value);
+                    this.getSubNode('ITEM',true).width(value||'auto');
                 }
             },
             itemAlign:{
@@ -33298,7 +33351,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
             });
         },
-        insertItems:function(arr, pid, base ,before){
+        insertItems:function(arr, pid, base ,before, toggle){
             if(!arr || !_.isArr(arr) || arr.length<1)return this;
             var node,data,
                 b=this._afterInsertItems;
@@ -33350,15 +33403,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     _.arr.insertAny(tar,data, before?index:(index+1));
                 }
                 //3
-                if(profile.renderId){
+                if(profile.renderId && toggle!==false){
                     // try to open root subs
                     if(!pid){
-                            profile.boxing()._toggleNodes(data, true, true, true);
+                        profile.boxing()._toggleNodes(data, true, true, true);
                     }
                     // try to open parent node
                     else if (profile.getItemByItemId(pid)._inited){
                         if(!(('iniFold' in k)?k.iniFold:profile.properties.iniFold))
-                                profile.boxing()._toggleNodes(data, true, true, true);
+                            profile.boxing()._toggleNodes(data, true, true, true);
                     }
                 }
                 
@@ -33373,32 +33426,29 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         _toggleNodes:function(items, expand, recursive, init){
             var self=this,prf=self.get(0),pro=prf.properties,
-                f=function(items){
+                f=function(items,expand,recursive,init){
                     if(_.isArr(items)){
                         _.arr.each(items,function(o){
-                            
                             if(init && (_.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
-                            
-                            self.toggleNode(o.id, expand, false);
-                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length){
-                                f(o.sub);
-                            }
+                            self.toggleNode(o.id, expand, false, recursive);
+                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length)
+                                f(o.sub,expand,true,init);
                         });
                     }
                 };
-            f(items);
+            f(items,expand,recursive,init);
             return self;
         },
         /*
         *expand:true->expand false->fold
         *recursive:true open recursively
         */
-        toggleNode:function(id, expand, recursive){
+        toggleNode:function(id, expand, recursive, stopanim){
             var profile=this.get(0),ns=this,self=arguments.callee;
             if(id){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive);
+                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive);
             }else{
                 _.arr.each(profile.properties.items,function(item){
                     self.call(ns,item.id,expand,recursive);
@@ -33613,7 +33663,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 padding:'2px'
             },
             OPT:{
-                $order:1,
+                $order:10,
                 position:'absolute',
                 left:'auto',
                 top:'auto',
@@ -33627,11 +33677,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                'background-position':'-130px -224px'
             },
             'OPT-mouseover':{
-                $order:2,
+                $order:20,
                 'background-position':'-130px -244px'
             },
             'OPT-mousedown':{
-                $order:3,
+                $order:30,
                 'background-position':'-130px -264px'
             }
         },
@@ -33992,7 +34042,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.mark2Display = 'display:none';
             }
         },
-        _setSub:function(profile, item, flag, recursive){
+        _setSub:function(profile, item, flag, recursive, stopanim){
             var id=profile.domId,
                 ins=profile.boxing(),
                 itemId = profile.getSubIdByItemId(item.id),
@@ -34000,7 +34050,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 barNode = profile.getSubNode('BAR', itemId),
                 markNode = profile.getSubNode('TOGGLE', itemId),
                 subNs = profile.getSubNode('SUB', itemId);
-                ;
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
@@ -34025,7 +34074,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
                     };
-                    if(!recursive){
+                    if(!stopanim){
                          if(properties.animCollapse){
                             subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
                         }else onend();
@@ -34034,7 +34083,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(recursive && item.sub && !properties.dynDestory){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
-                            profile.box._setSub(profile, o, flag, recursive);
+                            profile.box._setSub(profile, o, flag, recursive, true);
                     });
                 }
             }else{
@@ -34043,59 +34092,61 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
                         return;
                     }
-
-                    var openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
-                            var b=profile.boxing(),
-                                p=profile.properties,
-                                empty = sub===false ||  (_.isArr(sub) && sub.length===0);
-                            //created
-                            if(!item._inited){
-                                delete item.sub;
-                                //before insertRows
-                                item._inited=true;
-                                if(sub){
-                                    if(typeof sub=='string')
-                                        subNs.html(item.sub=sub,false);
-                                    else if(_.isArr(sub)){
-                                        b.insertItems(sub, item.id);
-                                        // for []
-                                        if(!item.sub)item.sub=sub;                                    
-                                    }else if(sub['xui.Template']||sub['xui.UI']){
-                                        subNs.append(item.sub=sub.render(true));
-                                    }
+                    var onend=function(empty){
+                        subNs.css({display:'',height:'auto'});
+                        markNode.removeClass('xui-ui-busy');
+                        if(empty){
+                            // markNode.css('background-image','none');
+                            // do nothing
+                        }else{
+                            markNode.tagClass('-checked');
+                            barNode.tagClass('-fold',false).tagClass('-expand');
+                        }
+                        item._checked = true;
+                        if(ins.afterExpand)
+                            ins.afterExpand(profile,item);
+                    },
+                    openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
+                        var b=profile.boxing(),
+                            p=profile.properties,
+                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
+                        //created
+                        if(!item._inited){
+                            delete item.sub;
+                            //before insertRows
+                            item._inited=true;
+                            if(sub){
+                                if(typeof sub=='string')
+                                    subNs.html(item.sub=sub,false);
+                                else if(_.isArr(sub)){
+                                    b.insertItems(sub, item.id,null,false,false);
+                                    // for []
+                                    if(!item.sub)item.sub=sub;                                    
+                                }else if(sub['xui.Template']||sub['xui.UI']){
+                                    subNs.append(item.sub=sub.render(true));
                                 }
-                                //set checked items
-                                profile._innerSet=1;
-                                b.setUIValue(b.getUIValue(), true);
-                                delete profile._innerSet;
                             }
+                            //set checked items
+                            profile._innerSet=1;
+                            b.setUIValue(b.getUIValue(), true);
+                            delete profile._innerSet;
+                        }
 
-                            if(p.singleOpen)
-                                b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
+                        if(p.singleOpen)
+                            b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
 
-                            var onend=function(){
-                                subNs.css({display:'',height:'auto'});
-                                markNode.removeClass('xui-ui-busy');
-                                if(empty){
-                                    markNode.css('background-image','none');
-                                }else{
-                                    markNode.tagClass('-checked');
-                                    barNode.tagClass('-fold',false).tagClass('-expand');
-                                }
-                                item._checked = true;
-                                if(ins.afterExpand)
-                                    ins.afterExpand(profile,item);
-                            };
-                            if(!recursive){
-                                var h=0;
-                                subNs.css("height","0px").css("display",'');
-                                subNs.children().each(function(o){
-                                    h+=o.offsetHeight;
-                                });
-                                if(p.animCollapse){
-                                    subNs.animate({'height':[0,h]},null,onend,200, null, 'expoIn', profile.key+profile.id).start();
-                                }else onend();
-                            }else onend();
+                        if(!stopanim){
+                            var h=0;
+                            subNs.css("height","0px").css("display",'');
+                            subNs.children().each(function(o){
+                                h+=o.offsetHeight;
+                            });
+                            if(p.animCollapse){
+                                subNs.animate({'height':[0,h]},null,function(){
+                                    onend(empty);
+                                },200, null, 'expoIn', profile.key+profile.id).start();
+                            }else onend(empty);
+                        }else onend(empty);
                     },
                     sub=item.sub,
                     callback=function(sub){
@@ -34115,10 +34166,10 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }
                     }
                 }
-                if(recursive && item.sub){
+                if(recursive&& item.sub){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length && !o._checked)
-                            profile.box._setSub(profile, o, flag, recursive);
+                            profile.box._setSub(profile, o, flag, recursive, true);
                     });
                 }
             }
@@ -34291,7 +34342,13 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             }
         },
         DataModel:{
-            group:null
+            group:null,
+            noIcons:{
+                ini:false,
+                action:function(v){
+                    this.getSubNode("ITEMICON",true).css('display',v?'none':'');
+                }
+            }
         },
         _buildIcon:function(cls, type){
             return "<span class='"+cls+type+"'></span>";
@@ -34331,7 +34388,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     item.innerIcons=html;
 
                     // for the last one
-                    item.togglemark = cls+getType(item.sub, arr[ll]);
+                    item.togglemark = item.sub?(cls+getType(item.sub, arr[ll])):'xui-uicmd-none';
                 }
             }else{
                 oitem._deep=0;
@@ -34339,12 +34396,14 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.rulerStyle='';
                 item.innerIcons='';
 
-                item.togglemark = cls+getType(item.sub, oitem._icons[0]);
+                item.togglemark = item.sub?(cls+getType(item.sub, oitem._icons[0])):'xui-uicmd-none';
             }
             // show image
-            item.imageDisplay='';
+            item.imageDisplay=p.noIcons?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
+
+            item._noicon=p.onIcons?"":"";
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item.itemDisplay=item.hidden?'display:none;':'';
@@ -38542,8 +38601,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay};',
                         className:'{cellCls}',
                         CELLA:{
+                            _NativeElement:true,
                             tagName:'button',
-                            className:'xui-button-border {cellClass}',
+                            className:'xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -38876,12 +38936,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'CELL-checkbox':{
                 'text-align':'center'
             },
-            'CELL-button CELLA':{
+            'KEY-tgbtn':{
                 width:'100%',
                 padding: 0,
                 'vertical-align': 'middle',
-                'font-size':'12px',
-                'line-height':'100%'
+                'line-height':'100%',
+                height:'100%'
             },
             'CELL-mouseover':{
                 $order:5,
@@ -41782,12 +41842,12 @@ editorEvents
                     //undo function is a must
                     editor.undo=function(refocus){
                         var editor=this;
-
+                        
                         // row dirty alert
                         if(profile.box)
                             profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
 
-                        if(editor.get(0)){
+                        if(editor.get(0) && editor.get(0).box){
                             // for ie's setBlurTrigger doesn't trigger onchange event
                             editor.getSubNode('INPUT').onBlur(true);
 
@@ -41886,8 +41946,8 @@ editorEvents
                             _.tryF(editor.undo,[true],editor);
                     })
                     .beforeNextFocus(function(pro, e){
-                        if(editor){
-                            _.tryF(editor.undo,[],editor);
+                        if(editor){    
+                            _.tryF(editor.undo,[true],editor);
                             var hash=xui.Event.getEventPara(e);
                             if(hash.keyCode=='enter')hash.keyCode='right';
 
@@ -43821,7 +43881,8 @@ if(xui.browser.ie){
                 if(height=='auto'){
                     isize.height=height;
                 }else{
-                    h1=v1.height(), h4=v4.height();
+                    h1=v1.height();
+                    h4=v4.height();
                     if((t=size.height-h1-h4)>0)
                         isize.height=t;
                 }
