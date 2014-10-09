@@ -3923,6 +3923,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
                                     DELC:{
                                         className:'xui-ui-btnc',
                                         DELA:{
+                                            _NativeElement:true,
                                             tagName:'button',
                                             text:'{removeText}'
                                         }

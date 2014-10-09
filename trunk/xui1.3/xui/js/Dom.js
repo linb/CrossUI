@@ -1522,7 +1522,7 @@ Class('xui.Dom','xui.absBox',{
                     width:node.offsetWidth(),
                     height:node.offsetHeight()
                 };
-             }else{
+            }else{
                 if(typeof(type)!="function"){
                     type = type?'3':'0';
                 }
@@ -1590,13 +1590,44 @@ type:4
                 pos=type(region, box, target, t);
             }else{
                 //target size
-                var w = target.offsetWidth(), h = target.offsetHeight(),
-                    adjust=function(type){
+                var w = target.offsetWidth(), 
+                    h = target.offsetHeight(),
+                    arr=type.split(/-/g);
+                if(arr.length==2){
+                    var vp=arr[0],hp=arr[1];
+                    switch(vp){
+                        case "outertop":
+                            pos.top=region.top-h;break;
+                        case "top":
+                            pos.top=region.top;break;
+                        case "middle":
+                            pos.top=region.top+region.height/2-h/2;break;
+                        case "bottom":
+                            pos.top=region.top+region.height-h;break;
+                        default:
+                        //case "outerbottom":
+                            pos.top=region.top+region.height;
+                    }
+                    switch(hp){
+                        case "outerleft":
+                            pos.left=region.left-w;break;
+                        case "left":
+                            pos.left=region.left;break;
+                        case "center":
+                            pos.left=region.left+region.width/2-w/2;break;
+                        case "right":
+                            pos.left=region.left+region.width-w;break;
+                        default:
+                        //case "outerright":
+                            pos.left=region.left+region.width;
+                    }
+                }else{
+                    if(type=="outer")type="12";
+                    else if(type=="inner")type="4"; 
+
+                    var adjust=function(type){
                         var hi,wi;
                         switch(type){
-                            case '1':
-                                hi=false;wi=true;
-                            break;
                             case '2':
                                 hi=true;wi=false;
                             break;
@@ -1606,6 +1637,9 @@ type:4
                             case '4':
                                 hi=wi=true;
                             break;
+                            default:
+                            //case '1':
+                                hi=false;wi=true;
                         }
             
                         if(hi){
@@ -1630,25 +1664,26 @@ type:4
                             else
                                 pos.left=region.left - w;
                         }
+                        //over right
+                        if(pos.left + w>  box.width)pos.left = box.width - w;
+                        //over left
+                        if(pos.left < box.left)pos.left = box.left;
+                        //over bottom
+                        if(pos.top + h>  box.height)pos.top = box.height - h;
+                        //over top
+                        if(pos.top < box.top)pos.top = box.top;
                     };
-
-                if(type=='12'){
-                    adjust('1');
-                    if(pos.top + h>  box.height || pos.top < box.top)adjust('2');
-                }else if(type=='21'){
-                    adjust('2');
-                    if(pos.left + w>  box.width || pos.left < box.left)adjust('1');
-                }else{
-                    adjust(type);
+    
+                    if(type=='12'){
+                        adjust('1');
+                        if(pos.top < region.top+region.height && pos.top+h > region.top)adjust('2');
+                    }else if(type=='21'){
+                        adjust('2');
+                        if(pos.left < region.left+region.width && pos.left+w > region.left)adjust('1');
+                    }else{
+                        adjust(type);
+                    }
                 }
-                //over right
-                if(pos.left + w>  box.width)pos.left = box.width - w;
-                //over left
-                if(pos.left < box.left)pos.left = box.left;
-                //over bottom
-                if(pos.top + h>  box.height)pos.top = box.height - h;
-                //over top
-                if(pos.top < box.top)pos.top = box.top;
             }
             //show
             target.cssPos(pos).css({visibility:'visible'});
@@ -1662,30 +1697,30 @@ type:4
             node=xui(node);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
-            if(!_.isDefined(type))type='12';
+            if(!_.isDefined(type))type='outer';
 
             var aysid=groupid || (this.xid()+":"+node.xid());
             this.onMouseover(type===null?null:function(prf, e, src){
-                    if(e.$force)return;
-                 _.resetRun(aysid,null);
-                    var ignore=xui.getData([aysid,'$ui.hover.pop'])
-                                    && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
-                    if(!beforePop || false!==beforePop(prf, node, e, src, ignore)){
-                            node.popToTop(src, type, parent,showEffects);
+                if(e.$force)return;
+                _.resetRun(aysid,null);
+                var ignore=xui.getData([aysid,'$ui.hover.pop'])
+                                && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
+                if(!ignore){
+                    if(!beforePop || false!==beforePop(prf, node, e, src, null, ignore)){
+                        node.popToTop(src, type, parent,showEffects);
                     }
-                    if(!ignore){
-                        xui.setData([aysid,'$ui.hover.pop'],1);
-                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
-                    }
+                    xui.setData([aysid,'$ui.hover.pop'],1);
+                    xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
+                }
             },aysid).onMouseout(type===null?null:function(prf, e, src){
-                    if(e.$force)return;
-                    _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'host')){
-                            node.hide(null,hideEffects);
-                        }
-                        xui.setData([aysid,'$ui.hover.pop']);
-                        xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
-                    });
+                if(e.$force)return;
+                _.resetRun(aysid,function(){
+                    if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'host')){
+                        node.hide(null,hideEffects);
+                    }
+                    xui.setData([aysid,'$ui.hover.pop']);
+                    xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
+                });
             },aysid);
             if(node){
                 node.onMouseover(type===null?null:function(e){
@@ -1694,7 +1729,7 @@ type:4
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'pop')){
                             node.hide(null,hideEffects);
                         }
                         xui.setData([aysid,'$ui.hover.pop']);

@@ -337,7 +337,9 @@ html, .xui-uibg-base{
 .xui-list-mark{
     background-image: url(Public/icons.gif);
 }
-
+.xui-list-opt{
+    background-image: url(Public/icons.gif);
+}
 /*xui.UI.Gallery*/
 .xui-iconlist-item-mousedown, .xui-iconlist-item-checked{
     background-color:#CFD0D0;
