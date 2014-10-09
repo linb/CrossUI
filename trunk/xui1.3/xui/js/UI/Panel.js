@@ -129,9 +129,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     $order:2,
                     tagName:'div',
                     className:'xui-uicon-main',
+                    style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
                         className:'xui-uicon-maini',
+                        style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
                             className:'{_bordertype}',
@@ -144,6 +146,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     $order:3,
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
+                    style:"{_bbarDisplay}",
                     BBART:{
                         cellpadding:"0",
                         cellspacing:"0",
@@ -189,7 +192,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 'line-height':'1.22em',
                 zoom:xui.browser.ie6?1:null
             },
-
             CAPTION:{
                 'font-size':'12px',
                 cursor:'pointer',
@@ -378,6 +380,17 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     //force to resize
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
+            },
+            noFrame:{
+                ini:false,
+                action:function(v){
+                    var ns=this,root=ns.getRoot();
+                    ns.getSubNode('BBAR').css('display',v?'none':'');
+                    ns.getSubNode('MAIN').css('paddingLeft',v?'0':'');
+                    ns.getSubNode('MAINI').css('paddingRight',v?'0':'');
+                    //force to resize
+                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                }
             }
         },
         EventHandlers:{
@@ -414,33 +427,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             
             data._bordertype='xui-uiborder-'+data.borderType;
             
-            profile._toggle = !!data.toggle;
+            data._bbarDisplay=data.noFrame?nodisplay:"";
+            data._leftp=data.noFrame?"padding-left:0;":"";
+            data._rightp=data.noFrame?"padding-right:0;":"";
 
+            profile._toggle = !!data.toggle;
             return data;
         },
-        _onresize:function(profile,width,height){
-            var isize={},
-                v1=profile.getSubNode('TBAR'),
-                v2=profile.getSubNode('PANEL'),
-                v4=profile.getSubNode('BBAR'),
-                v5=profile.getSubNode('MAIN'),
-                v6=profile.getSubNode('MAINI'),
-                size=profile.properties.borderType=='none'?0:2,
-                h1,h4,t;
-            if(height){
-                if(height=='auto')
-                    isize.height=height;
-                else{
-                    h1=v1.height(), h4=v4.height();
-                    if((t=height-h1-h4)>0)
-                        isize.height=t-size;
-                }
-            }
-            if(width)
-                isize.width=width-(parseInt(v6.css('paddingRight'),10)||0)-(parseInt(v5.css('paddingLeft'),10)||0)-v2._borderW();
-            v2.cssSize(isize, true);
-        },
-
         _toggle:function(profile, value){
             var p=profile.properties, ins=profile.boxing();
 
@@ -485,6 +478,34 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         ins.afterFold(profile);
                 }
             }
-        }
+        },
+        _onresize:function(profile,width,height){
+            var isize={},
+                p=profile.properties,
+                noFrame=p.noFrame,
+                v1=profile.getSubNode('TBAR'),
+                v2=profile.getSubNode('PANEL'),
+                v4=profile.getSubNode('BBAR'),
+                v5=profile.getSubNode('MAIN'),
+                v6=profile.getSubNode('MAINI'),
+                size=profile.properties.borderType=='none'?0:2,
+                h1,h4,t;
+            if(height){
+                if(height=='auto')
+                    isize.height=height;
+                else{
+                    h1=v1.height();
+                    h4=noFrame?0:v4.height();
+                    if((t=height-h1-h4)>0)
+                        isize.height=t-size;
+                }
+            }
+            if(width)
+                isize.width=width 
+                    -(noFrame?0:(parseInt(v6.css('paddingRight'),10)||0))
+                    -(noFrame?0:(parseInt(v5.css('paddingLeft'),10)||0))
+                    -v2._borderW();
+            v2.cssSize(isize, true);
+        } 
     }
 });

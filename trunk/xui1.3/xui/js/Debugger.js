@@ -219,10 +219,7 @@ Class('xui.Debugger', null, {
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
             xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
         }else{
-            xui.log=xui.echo;
-        }
-            
-        if(xui.browser.isTouch){
+            xui.log=xui.echo;   
             window.onerror=this.err;
         }
     }

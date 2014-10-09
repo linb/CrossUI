@@ -694,8 +694,9 @@ _.merge(_,{
             var i, l, a=arr;
             if(!a)return a;
             if(!_.isArr(a)){
-                if((a=a._nodes) || !_.isArr(a))
-                    throw 'errNotArray';
+                if(!_.isArr(a._nodes))
+                    return a;
+                a=a._nodes;
                 if(desc===undefined)
                     desc=1;
             }

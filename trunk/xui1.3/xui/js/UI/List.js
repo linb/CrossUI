@@ -137,6 +137,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         EXTRA:{
                             text : '{ext}',
                             $order:30
+                        },
+                        OPT:{
+                            $order:40
                         }
                     }
                 }
@@ -196,11 +199,33 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             'ITEM-checked MARK':{
                 $order:2,
                 'background-position': '0 -70px'
+            },
+            OPT:{
+                $order:10,
+                position:'absolute',
+                left:'auto',
+                top:'auto',
+                right:'2px',
+                top:'2px',
+                width:'16px',
+                height:'16px',
+                display:'none',
+                'background-image': xui.UI.$bg('icons.gif','', true),
+               'background-repeat':'no-repeat',
+               'background-position':'-130px -224px'
+            },
+            'OPT-mouseover':{
+                $order:20,
+                'background-position':'-130px -244px'
+            },
+            'OPT-mousedown':{
+                $order:30,
+                'background-position':'-130px -264px'
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:'ITEM'},
-            ClickEffected:{ITEM:'ITEM'},
+            HoverEffected:{ITEM:'ITEM', OPT:'OPT'},
+            ClickEffected:{ITEM:'ITEM', OPT:'OPT'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
             onSize:xui.UI.$onSize,
@@ -332,9 +357,29 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu)
                         return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
+                },
+                onMouseover:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+                },
+                onMouseout:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+                }
+            },
+            OPT:{
+                onClick:function(profile, e, src){
+                    if(!profile.properties.optBtn)return;
+                    if(profile.onShowOptions){
+                        var item = profile.getItemByDom(src);
+                        profile.boxing().onShowOptions(profile, item, e, src);
+                    }
+                    return false;
+                },
+                onDblclick:function(profile, e, src){
+                    return false;
                 }
             }
-            
         },
         DataModel:{
             selMode:{
@@ -372,13 +417,15 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     var ns=this.getSubNode('ITEM',true);
                     if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
-            }
+            },
+            optBtn:false
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
             onDblclick:function(profile, item, e, src){},
+            onShowOptions:function(profile, item, e, src){},
             onItemSelected:function(profile, item, e, src, type){}
         },
         _onStartDrag:function(profile, e, src, pos){

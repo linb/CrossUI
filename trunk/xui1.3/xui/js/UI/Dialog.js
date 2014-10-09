@@ -1396,7 +1396,8 @@ if(xui.browser.ie){
                 if(height=='auto'){
                     isize.height=height;
                 }else{
-                    h1=v1.height(), h4=v4.height();
+                    h1=v1.height();
+                    h4=v4.height();
                     if((t=size.height-h1-h4)>0)
                         isize.height=t;
                 }

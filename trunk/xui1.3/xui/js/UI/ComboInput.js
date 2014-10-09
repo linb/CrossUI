@@ -857,7 +857,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             INPUT:{
                 onChange:function(profile, e, src){
-                    if(profile.$_onedit||profile.$_inner)return;
+                    if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var o=profile._inValid,
                         b=profile.box,
                         instance=profile.boxing(),

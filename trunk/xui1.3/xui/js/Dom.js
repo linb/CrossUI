@@ -74,7 +74,7 @@ Class('xui.Dom','xui.absBox',{
                     }
                 });
             else
-                return this.get(0).id;
+                return this.get(0)&&this.get(0).id;
         },
 
         /*dom collection
@@ -1962,8 +1962,7 @@ type:4
                 b = name = 'filter';
 
             value= node.style[name];
-            if(!value){
-
+            if(!value || value==="initial"){
                 var me = arguments.callee,t,
                 brs=xui.browser,
                 map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1}),
