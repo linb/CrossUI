@@ -131,20 +131,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         _toggleNodes:function(items, expand, recursive, init){
             var self=this,prf=self.get(0),pro=prf.properties,
-                f=function(items){
+                f=function(items,expand,recursive,init){
                     if(_.isArr(items)){
                         _.arr.each(items,function(o){
-                            
                             if(init && (_.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
-                            
-                            self.toggleNode(o.id, expand, false, !recursive);
-                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length){
-                                f(o.sub);
-                            }
+                            self.toggleNode(o.id, expand, false, recursive);
+                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length)
+                                f(o.sub,expand,true,init);
                         });
                     }
                 };
-            f(items);
+            f(items,expand,recursive,init);
             return self;
         },
         /*
@@ -156,7 +153,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             if(id){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||!recursive);
+                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive);
             }else{
                 _.arr.each(profile.properties.items,function(item){
                     self.call(ns,item.id,expand,recursive);
@@ -371,7 +368,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 padding:'2px'
             },
             OPT:{
-                $order:1,
+                $order:10,
                 position:'absolute',
                 left:'auto',
                 top:'auto',
@@ -385,11 +382,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                'background-position':'-130px -224px'
             },
             'OPT-mouseover':{
-                $order:2,
+                $order:20,
                 'background-position':'-130px -244px'
             },
             'OPT-mousedown':{
-                $order:3,
+                $order:30,
                 'background-position':'-130px -264px'
             }
         },
@@ -750,7 +747,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.mark2Display = 'display:none';
             }
         },
-        _setSub:function(profile, item, flag, recursive,stopanim){
+        _setSub:function(profile, item, flag, recursive, stopanim){
             var id=profile.domId,
                 ins=profile.boxing(),
                 itemId = profile.getSubIdByItemId(item.id),
@@ -804,7 +801,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         subNs.css({display:'',height:'auto'});
                         markNode.removeClass('xui-ui-busy');
                         if(empty){
-                            markNode.css('background-image','none');
+                            // markNode.css('background-image','none');
+                            // do nothing
                         }else{
                             markNode.tagClass('-checked');
                             barNode.tagClass('-fold',false).tagClass('-expand');

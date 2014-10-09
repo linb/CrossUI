@@ -1409,13 +1409,23 @@ Class("xui.UI",  "xui.absObj", {
                                 if((b=o.split(':')).length>=2){
                                     i=b.shift();o=b.join(':');
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                    tnodes.css(i, (clear?'':xui.adjustRes(o,0,1))||"");
+                                    tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
                                 }
                             });
                          else if(_.isHash(CSObj[key]))
-                            _.each(CSObj[key],function(o,i){
-                                i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
+                            _.each(CSObj[key],function(v,i){
+                                if(_.isStr(v)){
+                                    _.arr.each(v.split(';'),function(o){
+                                        if((b=o.split(':')).length>=2){
+                                            i=b.shift();o=b.join(':');
+                                            i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
+                                            tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
+                                        }
+                                    });
+                                }else{
+                                    i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
+                                    tnodes.css(i, (clear?'':(v && typeof v=="string")?xui.adjustRes(v,0,1):v)||"");
+                                }
                             });                            
                     }
                 }));
@@ -1976,7 +1986,7 @@ Class("xui.UI",  "xui.absObj", {
                 $order:6,
                 'background-position': '-220px -110px'
             },
-            '.xui-uicmd-none':{
+            '.xui-uicmd-none, .xui-display-none':{
                 display:'none'
             },
             '.xui-uicmd-empty':{
@@ -4294,10 +4304,14 @@ Class("xui.UI",  "xui.absObj", {
             //can't input id in properties
             if(prop.id)delete prop.id;
 
+            // cant null
+            if('nodeName' in dm && !prop.nodeName)
+                prop.nodeName="xui";
+
             //give default caption
             if('caption' in dm && prop.caption!==null)
                 prop.caption = prop.caption===undefined ? profile.alias : prop.caption;
-
+            
             if('html' in dm && prop.html)
                 data.html = xui.adjustRes(prop.html,0,1);
             if('src' in dm && prop.src)
@@ -5658,6 +5672,17 @@ new function(){
                     'line-height':'1.22em'
                 }
             },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, value){}
+            },
             RenderTrigger:function(){
                 var v=this.properties.attributes;
                 if(!_.isEmpty(v)){
@@ -5696,17 +5721,6 @@ new function(){
                     'line-height':'1.22em',
                     'cursor':'pointer'
                 }
-            },
-            Behaviors:{
-                onClick:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return false;
-                    if(profile.onClick)
-                        return profile.boxing().onClick(profile, e, src);
-                }
-            },
-            EventHandlers:{
-                onClick:function(profile, e, value){}
             }
         }
     });

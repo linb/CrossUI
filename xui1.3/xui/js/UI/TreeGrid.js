@@ -4713,12 +4713,12 @@ editorEvents
                     //undo function is a must
                     editor.undo=function(refocus){
                         var editor=this;
-
+                        
                         // row dirty alert
                         if(profile.box)
                             profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
 
-                        if(editor.get(0)){
+                        if(editor.get(0) && editor.get(0).box){
                             // for ie's setBlurTrigger doesn't trigger onchange event
                             editor.getSubNode('INPUT').onBlur(true);
 
@@ -4817,8 +4817,8 @@ editorEvents
                             _.tryF(editor.undo,[true],editor);
                     })
                     .beforeNextFocus(function(pro, e){
-                        if(editor){
-                            _.tryF(editor.undo,[],editor);
+                        if(editor){    
+                            _.tryF(editor.undo,[true],editor);
                             var hash=xui.Event.getEventPara(e);
                             if(hash.keyCode=='enter')hash.keyCode='right';
 

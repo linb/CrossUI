@@ -181,6 +181,17 @@ Class("xui.UI.Label", "xui.UI.Widget",{
 
             _textSshadowSize:4
         },
+        Behaviors:{
+            onClick:function(profile, e, src){
+                var p=profile.properties;
+                if(p.disabled)return false;
+                if(profile.onClick)
+                    return profile.boxing().onClick(profile, e, src);
+            }
+        },
+        EventHandlers:{
+            onClick:function(profile, e, src){}
+        },
         RenderTrigger:function(){
             var p = this.properties, o=this.boxing();
             if(p.fontSize)o.setFontSize(p.fontSize,true);

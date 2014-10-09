@@ -690,6 +690,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             var d=arguments.callee.upper.call(this, profile);
 
             d._type = d.type || '';
+            if(d.maxlength<0)d.maxlength="";
+            
             if(xui.browser.kde)
                 d._css='resize:none;';
             d.hAlign=d.hAlign?("text-align:" + d.hAlign):"";

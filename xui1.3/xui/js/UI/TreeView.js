@@ -156,7 +156,13 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             }
         },
         DataModel:{
-            group:null
+            group:null,
+            noIcons:{
+                ini:false,
+                action:function(v){
+                    this.getSubNode("ITEMICON",true).css('display',v?'none':'');
+                }
+            }
         },
         _buildIcon:function(cls, type){
             return "<span class='"+cls+type+"'></span>";
@@ -207,9 +213,11 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.togglemark = item.sub?(cls+getType(item.sub, oitem._icons[0])):'xui-uicmd-none';
             }
             // show image
-            item.imageDisplay='';
+            item.imageDisplay=p.noIcons?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
+
+            item._noicon=p.onIcons?"":"";
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item.itemDisplay=item.hidden?'display:none;':'';
