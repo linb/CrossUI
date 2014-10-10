@@ -3519,7 +3519,7 @@ _.set(xui.Locale,["cn","app"], {
                 "alert(this.offsetTop())"
                 ]
             },
-            setHoverPop:{
+            hoverPop:{
                 $desc:"设置鼠标悬停弹出窗口.",
                  $rtn:"[self]",
                 $paras:[
@@ -3527,7 +3527,10 @@ _.set(xui.Locale,["cn","app"], {
                     "type [可选参数] : Number, 1到4, 弹出类型. 默认为1， 如果为null或0，取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
-                    "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body]."
+                    "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body].",
+                    "groupid[Optional] : String.  组标识 id",
+                    "showEffects[Optional] : Object, 出现动画的配置",
+                    "hideEffects[Optional] : Object, 隐去动画的配置"
                 ]
             },
             popToTop:{
@@ -7340,7 +7343,7 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
                 ]
             },
-            setHoverPop:{
+            hoverPop:{
                 $desc:"设置鼠标悬停弹出窗口.",
                  $rtn:"[self]",
                 $paras:[
@@ -7348,7 +7351,8 @@ _.set(xui.Locale,["cn","app"], {
                     "type [可选参数] : Number, 1到4, 弹出类型. 默认为1， 如果为null或0，取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
-                     "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body]."
+                     "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body].",
+                    "groupid[Optional] : String.  组标识 id"
                 ]
             },
             getTheme:{
@@ -7917,6 +7921,18 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean, 默认为[false].",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getHoverPop:{
+                $desc:"获取控件的悬停弹出目标",
+                $rtn:"String"
+            },
+            setHoverPop:{
+                $desc:"设置控件的悬停弹出目标.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 弹出目标的别名，弹出目标必须要在当前控件的 host 中.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -9242,6 +9258,14 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
+            },
+            onClick:{
+                $desc:"当鼠标单击时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
@@ -9365,7 +9389,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"当单击按钮时调用.",
+                $desc:"当鼠标单击时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -9467,7 +9491,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"当单击按钮时调用.",
+                $desc:"当鼠标单击时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -9792,7 +9816,7 @@ _.set(xui.Locale,["cn","app"], {
             },
 
             onClick:{
-                $desc:"当单击按钮时调用.",
+                $desc:"当鼠标单击时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -9806,7 +9830,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickDrop:{
-                $desc:"当单击按钮时调用（当按钮的 type 为'drop'时才有效）.",
+                $desc:"当鼠标单击drop按钮时调用（当按钮的 type 为'drop'时才有效）.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -11952,6 +11976,19 @@ _.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
+            }, 
+            
+            getOptBtn:{
+                $desc:"判断是否带有选项按钮",
+                $rtn:"Boolean"
+            },
+            setOptBtn:{
+                $desc:"设置是否带有选项按钮.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
             },
             onItemSelected:{
                 $desc:"当列表项被选择时调用.",
@@ -12009,6 +12046,15 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.List({selMode:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
                     "o.onDblclick(function(p,item,s){alert(item.id);});"+
                     "}"
+                ]
+            },
+            onShowOptions :{
+                $desc:"当鼠标单击选项按钮的时候触发.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
@@ -12496,7 +12542,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置面板是否带有关闭按钮.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ],
                 $snippet:[
@@ -12504,6 +12550,18 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
                     "_.asyRun(function(){btn.setCloseBtn(true); alert(btn.getCloseBtn ())},1000)"+
                     "}"
+                ]
+            },
+            getNoFrame:{
+                $desc:"判断面板是否带有外框架.",
+                $rtn:"Boolean"
+            },
+            setNoFrame:{
+                $desc:"设置面板是否带有外框架.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getPopBtn :{
@@ -12520,7 +12578,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置面板是否带有弹出按钮.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ],
                 $snippet:[
@@ -12544,7 +12602,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置面板是否带有选项按钮.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ],
                 $snippet:[
@@ -12562,7 +12620,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置面板是否带有帮助按钮.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -12574,7 +12632,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置面板是否带有刷新按钮.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -12592,7 +12650,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置面板是否带有打开/收缩按钮.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ],
                 $snippet:[
@@ -13919,7 +13977,6 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
-
     _.set(xui.Locale,["cn","doc","xui","UI","PopMenu"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.PopMenu 类",
@@ -14081,7 +14138,6 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-
 
     _.set(xui.Locale,["cn","doc","xui","UI","MenuBar"], {
         KEY:{$desc:"本类名"},
@@ -14894,6 +14950,14 @@ _.set(xui.Locale,["cn","app"], {
                     "value [Required] : 键值对.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
                 ]
+            },
+            onClick:{
+                $desc:"当鼠标单击时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
@@ -14905,15 +14969,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.UI.HTMLButton."
         },
         prototype:{
-            KEY:{$desc:"本类名"},
-            onClick:{
-                $desc:"当单击按钮时调用.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
-                ]
-            }
+            KEY:{$desc:"本类名"}
         }
     });
 
@@ -14950,7 +15006,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"当单击按钮时调用.",
+                $desc:"当鼠标单击时调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event, DOM事件元素.",
@@ -15991,15 +16047,6 @@ _.set(xui.Locale,["cn","app"], {
                     "src: String, 事件所属DOM元素的xid."
                 ]
             },
-            onShowOptions :{
-                $desc:"当鼠标单击选项按钮的时候触发.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "item: Object, 项对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
-                ]
-            },
             onClick:{
                 $desc:"在单击条目的时候触发该事件.",
                 $paras:[
@@ -16037,12 +16084,38 @@ _.set(xui.Locale,["cn","app"], {
             },
             afterFold:{
                 $desc:"在某个节点折叠后调用."
+            },
+            onShowOptions :{
+                $desc:"当鼠标单击选项按钮的时候触发.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
     _.set(xui.Locale,["cn","doc","xui","UI","TreeView"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.UI.TreeView 类"
+        $desc:"xui.UI.TreeView 类",
+        constructor:{
+            $desc:"生成xui.UI.TreeView."
+        },
+        prototype:{
+            getNoIcons:{
+                $desc:"判断是否带有图标",
+                $rtn:"Boolean"
+            },
+            setNoIcons:{
+                $desc:"设置是否带有图标.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            }
+        }
     });
 
     _.set(xui.Locale,["cn","doc","xui","UI","TreeGrid"], {
@@ -19148,6 +19221,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'disableTips':'禁用工具提示',
             'disabled':'禁用控件',
             'defaultFocus':'自动获得焦点',
+            hoverPop:"悬停弹出对象",
             'dock':'停靠类型',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
@@ -19350,7 +19424,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'closeBtn':'显示关闭按钮',
             'refreshBtn':'显示刷新按钮',
             'popBtn':'显示弹出按钮',
-            'borderType':'边框类型'
+            'borderType':'边框类型',
+            noFrame:"隐藏外框"
         },
         'xui_UI_Image' : {
             'maxWidth':'图像最大宽度',
@@ -19400,7 +19475,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'borderType':'边框类型',
             'noCtrlKey':'Ctrl辅助多选',
             'maxHeight':'最大高度',
-            'itemRow':'单项独占行'
+            'itemRow':'单项独占行',
+            'optBtn':'显示选项按钮'
         },
         'xui_UI_Gallery' : {
             'itemMargin':'画廊项外补丁',
@@ -19484,7 +19560,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'optBtn':'显示选项按钮'
         },
         'xui_UI_TreeView' : {
-
+            noIcons:"隐藏图标"
         },
         'xui_UI_MenuBar' : {
             'parentID':'父对象标示',
@@ -19841,6 +19917,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
               afterClick:"鼠标点击后",
               onClick:"鼠标点击",
               onDblclick:"鼠标双击",
+              onShowOptions:"点击选项按钮",
               onItemSelected :"选中条目"
         },
         'xui_UI_Gallery' : {
