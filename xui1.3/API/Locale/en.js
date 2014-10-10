@@ -3506,7 +3506,7 @@ _.set(xui.Locale,["en","app"], {
                 "alert(this.offsetTop())"
                 ]
             },
-            setHoverPop:{
+            hoverPop:{
                 $desc:"Sets pop window triggered by mouse hover.",
                  $rtn:"[self]",
                 $paras:[
@@ -3514,7 +3514,10 @@ _.set(xui.Locale,["en","app"], {
                     "type [Optional] : Number, from 1 to 4, pop positoin type. Default is 1, [null or 0] will clear the setting",
                     "beforePop[Optional] : Function(prf, node, e, src,item),  triggered before the window pop",
                     "beforeHide[Optional] : Function(prf, node, e, src,item, trigger), triggered before the window hide",
-                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
+                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body].",
+                    "groupid[Optional] : String. the group id",
+                    "showEffects[Optional] : Object, show effects config object",
+                    "hideEffects[Optional] : Object, hide effects config object"
                 ]
             },
             popToTop:{
@@ -7315,7 +7318,7 @@ _.set(xui.Locale,["en","app"], {
                   "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
               ]
             },
-            setHoverPop:{
+            hoverPop:{
                 $desc:"Sets pop window triggered by mouse hover.",
                  $rtn:"[self]",
                 $paras:[
@@ -7323,7 +7326,8 @@ _.set(xui.Locale,["en","app"], {
                     "type [Optional] : Number, from 1 to 4, pop positoin type. Default is 1, [null or 0] will clear the setting",
                     "beforePop[Optional] : Function(prf, node, e, src),  triggered before the window pop",
                     "beforeHide[Optional] : Function(prf, node, e, src, trigger), triggered before the window hide",
-                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
+                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body].",
+                    "groupid[Optional] : String. The group id"
                 ]
             },
             getTheme:{
@@ -7891,6 +7895,18 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean, default is [false]",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getHoverPop:{
+                $desc:"Gets hover pop target (alias).",
+                $rtn:"String"
+            },
+            setHoverPop:{
+                $desc:"Sets hover pop target (alias).",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, the pop target's alias, which has to be in the same host.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -9306,6 +9322,14 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
+            },
+            onClick:{
+                $desc:"Fired when user click it.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element."
+                ]
             }
         }
     });
@@ -9429,7 +9453,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             onClick:{
-                $desc:"Fired when button is clicked.",
+                $desc:"Fired when user click it.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event.",
@@ -9531,7 +9555,7 @@ _.set(xui.Locale,["en","app"], {
             },
 
             onClick:{
-                $desc:"Fired when button is clicked.",
+                $desc:"Fired when user click it.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event.",
@@ -9854,7 +9878,7 @@ _.set(xui.Locale,["en","app"], {
             },
 
             onClick:{
-                $desc:"Fired when button is clicked.",
+                $desc:"Fired when user click it.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event.",
@@ -9868,7 +9892,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             onClickDrop:{
-                $desc:"Fired when button is clicked.",
+                $desc:"Fired when user click the drop button.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "e : Event.",
@@ -12030,6 +12054,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
+            getOptBtn:{
+                $desc:"To determine whether this control has an option button",
+                $rtn:"Boolean"
+            },
+            setOptBtn:{
+                $desc:"Specifys whether this control has an option button.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             onItemSelected:{
                 $desc:"Fired when list item is selected.",
                 $paras:[
@@ -12052,15 +12088,6 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile.",
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
-                    "src : String, the event source DOM element's xid."
-                ]
-            },
-            onShowOptions :{
-                $desc:"Fired when user click the option button.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "item: list item Object.",
-                    "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
             },
@@ -12095,6 +12122,15 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.List({selMode:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
                     "o.onDblclick(function(p,item,s){alert(item.id);});"+
                     "}"
+                ]
+            },
+            onShowOptions :{
+                $desc:"Fired when user click the option button.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
                 ]
             }
         }
@@ -12582,7 +12618,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Specifys whether close button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ],
                 $snippet:[
@@ -12590,6 +12626,18 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
                     "_.asyRun(function(){btn.setCloseBtn(true); alert(btn.getCloseBtn ())},1000)"+
                     "}"
+                ]
+            },
+            getNoFrame:{
+                $desc:"To determine whether outter frame shows up or not.",
+                $rtn:"Boolean"
+            },
+            setNoFrame:{
+                $desc:"Specifys whether outter frame shows up or not.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getPopBtn :{
@@ -12606,7 +12654,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Specifys whether pop button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ],
                 $snippet:[
@@ -12630,7 +12678,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Specifys whether option button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ],
                 $snippet:[
@@ -12648,7 +12696,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Specifys whether help button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },            
@@ -12660,7 +12708,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Specifys whether refresh button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -12678,7 +12726,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Specifys whether toggle button shows up or not.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String.",
+                    "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ],
                 $snippet:[
@@ -13187,7 +13235,6 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-
 
     _.set(xui.Locale,["en","doc","xui","UI","ColLayout"], {
         KEY:{$desc:"Class Name"},
@@ -14004,7 +14051,6 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-
     _.set(xui.Locale,["en","doc","xui","UI","PopMenu"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.PopMenu Class",
@@ -14167,7 +14213,6 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-
     _.set(xui.Locale,["en","doc","xui","UI","MenuBar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.MenuBar Class",
@@ -14329,7 +14374,6 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-
 
     _.set(xui.Locale,["en","doc","xui","UI","Dialog"], {
         KEY:{$desc:"Class Name"},
@@ -14975,6 +15019,14 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : key/value pairs.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
+            },
+            onClick:{
+                $desc:"Fired when user click it.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "e : Event.",
+                    "src : Element."
+                ]
             }
         }
     });
@@ -14986,15 +15038,7 @@ _.set(xui.Locale,["en","app"], {
             desc:"Creates a xui.UI.HTMLButton Object."
         },
         prototype:{
-            KEY:{$desc:"Class Name"},
-            onClick:{
-                $desc:"Fired when an tool bar item is clicked.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "e : Event.",
-                    "src : Element."
-                ]
-            }
+            KEY:{$desc:"Class Name"}
         }
     });
 
@@ -15789,7 +15833,6 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
             getAnimCollapse :{
                 $desc:"To determine whether to show animate when a tree node collapses.",
                 $rtn:"Boolean",
@@ -16028,8 +16071,7 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
-
+            
             onGetContent:{
                 $desc:"Fired when the UI needs to build a sub items.",
                 $paras:[
@@ -16109,13 +16151,39 @@ _.set(xui.Locale,["en","app"], {
             },
             afterFold:{
                 $desc:"Fired after a node collapses."
+            },
+            onShowOptions :{
+                $desc:"Fired when user click the option button.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
             }
         }
     });
 
     _.set(xui.Locale,["en","doc","xui","UI","TreeView"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.UI.TreeView Class"
+        $desc:"xui.UI.TreeView Class",
+        constructor:{
+            $desc:"Creates a xui.UI.TreeView Object."
+        },
+        prototype:{
+            getNoIcons:{
+                $desc:"To determine whether this control has icons or not",
+                $rtn:"Boolean"
+            },
+            setNoIcons:{
+                $desc:"Specifys whether this control has icons or not.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            }
+        }
     });
 
 
