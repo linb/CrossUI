@@ -218,8 +218,8 @@ Class('xui.Debugger', null, {
 
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
             xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
-        }else{
-            xui.log=xui.echo;   
+        }else if(xui.debugMode){
+            xui.log=xui.echo;
             window.onerror=this.err;
         }
     }

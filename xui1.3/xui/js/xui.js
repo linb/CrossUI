@@ -845,7 +845,6 @@ _.merge(xui,{
     $localeKey:'en',
     $localeDomId:'xlid',
     $dateFormat:'',
-    debugMode:true,
 
     Locale:{},
     $cache:{
