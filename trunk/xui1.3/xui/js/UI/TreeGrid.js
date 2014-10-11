@@ -239,7 +239,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         addHotRow:function(focusColId){
             var prf=this.get(0);
             if(prf.renderId)
-                prf.box._addTempRow(prf, focusColId);
+                prf.box._addTempRow(prf, focusColId||null);
             return this;
         },
         removeHotRow:function(){
@@ -1811,11 +1811,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'text-align':'center'
             },
             'KEY-tgbtn':{
+                $order:100,
                 width:'100%',
                 padding: 0,
-                'vertical-align': 'middle',
+                'vertical-align': 'text-bottom',
                 'line-height':'100%',
                 height:'100%'
+            },
+            'CELL-disabled KEY-tgbtn':{
+                 $order:101,
+                 color:'#ababab'
             },
             'CELL-mouseover':{
                 $order:5,
@@ -3200,6 +3205,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeInitHotRow:function(profile){},
             onInitHotRow:function(profile){},
+
             beforeHotRowAdded:function(profile, row, leaveGrid){},
             afterHotRowAdded:function(profile, row){},
 
@@ -3352,7 +3358,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var row=[],
                 ins=profile.boxing();
             if(profile.onInitHotRow)
-                row=ins.onInitHotRow(profile);
+                row=ins.onInitHotRow(profile)||row;
 
             if(_.isArr(row))
                 row={cells:row};
@@ -3611,7 +3617,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
             o.properties.rows = _.clone(pp.rows, function(o,i,d){
-                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && (i=="id"?o.charAt(0)!="-":true);
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && ((i=="id"&&typeof(o)=="string")?o.charAt(0)!="-":true);
             });
             if(o.properties.header.length===0)delete o.properties.header;
             if(o.properties.grpCols.length===0)delete o.properties.grpCols;
@@ -4204,7 +4210,7 @@ editorEvents
                             p = profile.properties,
                             empty = sub===false ||  (_.isArr(sub) && sub.length===0);
                         //created
-                        if(!item._inited){
+                        if(!empty && !item._inited){
                             delete item.sub;
                             //before insertRows
                             item._inited=true;
@@ -4230,12 +4236,13 @@ editorEvents
                             markNode.removeClass('xui-ui-busy');
                             markNode.tagClass('-busy', false);
                             if(empty){
-                                markNode.css('background','none');
+                                // markNode.css('background-image','none');
+                                // do nothing
                             }else{
                                 subNs.css({display:'',height:'auto'});
                                 markNode.tagClass('-checked');
+                                item._checked = true;
                             }
-                            item._checked = true;
                             profile.box._asy(profile);
                             //clear rows cache
                             delete profile.$allrowscache;

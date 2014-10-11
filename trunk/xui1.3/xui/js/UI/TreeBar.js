@@ -806,17 +806,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }else{
                             markNode.tagClass('-checked');
                             barNode.tagClass('-fold',false).tagClass('-expand');
+                            item._checked = true;
+                            if(ins.afterExpand)
+                                ins.afterExpand(profile,item);
                         }
-                        item._checked = true;
-                        if(ins.afterExpand)
-                            ins.afterExpand(profile,item);
                     },
                     openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
                         var b=profile.boxing(),
                             p=profile.properties,
                             empty = sub===false ||  (_.isArr(sub) && sub.length===0);
                         //created
-                        if(!item._inited){
+                        if(!empty&& !item._inited){
                             delete item.sub;
                             //before insertRows
                             item._inited=true;
