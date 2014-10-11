@@ -323,7 +323,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
-                className:"xui-uibg-base",
                 style:'{_liststyle}',
                 ITEMS:{
                     tagName : 'div',

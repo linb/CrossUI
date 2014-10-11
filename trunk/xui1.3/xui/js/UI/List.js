@@ -130,8 +130,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION:{
-                            tagName : 'text',
-                            text : '&nbsp;{caption}',
+                            text : '{caption}',
                             $order:20
                         },
                         EXTRA:{
@@ -155,7 +154,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ITEMS:{
                 position:'relative',
                 overflow:'auto',
-                'overflow-x': 'hidden'
+                'overflow-x': 'hidden',
+                'padding':'1px'
             },
             ITEM:{
                 display:'block',
@@ -164,12 +164,15 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 border:0,
                 cursor:'pointer',
                 'font-size':'12px',
-                padding:'4px 2px',
+                padding:"2px",
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
                'background-image':xui.UI.$bg('item.gif', ''),
-               'background-repeat':'repeat-x'
+               'background-repeat':'repeat-x',
+               'border-radius':'3px',
+               padding:'1px',
+               border:'solid 1px #D9D9D9'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -199,6 +202,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             'ITEM-checked MARK':{
                 $order:2,
                 'background-position': '0 -70px'
+            },
+            CAPTION:{
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                padding:'2px'
             },
             OPT:{
                 $order:10,

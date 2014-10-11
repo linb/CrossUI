@@ -253,7 +253,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{
-                                text : '&nbsp;{caption}',
+                                text : '{caption}',
                                 className:"{disabled}  {readonly}",
                                 $order:4
                             },
@@ -303,7 +303,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                display:'block',
                overflow: 'hidden',
                'font-size':'12px',
-               padding:'2px 4px',
+               padding:'1px 4px',
                border: '1px solid',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,

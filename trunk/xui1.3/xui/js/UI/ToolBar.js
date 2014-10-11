@@ -242,12 +242,12 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':0,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
-                padding:'2px 4px 0px 2px',
+                padding:'1px 2px 0px 1px',
                 'vertical-align':'middle'
             },
             ITEM:{
                 'vertical-align':'middle',
-                padding:'1px'
+                padding:'0px'
             },
             'BTNC a':{
                 padding:0
@@ -382,7 +382,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             var d=arguments.callee.upper.call(this, profile);
             var p = profile.properties;
 
-            d.mode = p.hAlign=='right'?'text-align:right;':'';
+            d.mode = p.hAlign!='left'?('text-align:'+p.hAlign+';'):'';
 
             return d;
         },

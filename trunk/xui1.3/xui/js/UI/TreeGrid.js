@@ -573,7 +573,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             _.breakO(cell[o]);
                             //clear cellMap
                             delete cell[o];
-                            profile.reclaimSubId(o.slice(2), 'cell');
+                            profile.reclaimSubId(o.slice(3), 'cell');
                         });
 
                         //clear properties.row array
@@ -592,7 +592,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         nodes.push(profile.getSubNode('ROW', id).get(0));
                     }
-                    profile.reclaimSubId(id.slice(2), 'row');
+                    profile.reclaimSubId(id.slice(3), 'row');
                 }else{
                     var f=function(rows){
                         var index=_.arr.subIndexOf(rows, "id", id);
@@ -791,7 +791,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             _.breakO(cell[o]);
                             //clear cellMap
                             delete cell[o];
-                            profile.reclaimSubId(o.slice(2), 'cell');
+                            profile.reclaimSubId(o.slice(3), 'cell');
                         });
 
                         //clear profile.rowMap2
@@ -803,7 +803,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         nodes.push(profile.getSubNode('HCELL', id).get(0));
                     }
-                    profile.reclaimSubId(id.slice(2), 'header');
+                    profile.reclaimSubId(id.slice(3), 'header');
                 }
 
                 var applaycell=function(rows){
@@ -841,9 +841,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return this;
 
             for(var i in profile.cellMap)
-                profile.reclaimSubId(i.slice(2), 'cell');
+                profile.reclaimSubId(i.slice(3), 'cell');
             for(var i in profile.rowMap)
-                profile.reclaimSubId(i.slice(2), 'row');
+                profile.reclaimSubId(i.slice(3), 'row');
 
             //remove links
             _.each(profile.colMap,function(o){
@@ -1523,7 +1523,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             BOX:{
                 display:'block',
                 position:'relative',
-                overflow:'hidden'
+                overflow:'hidden',
+                'text-align':'left'
             },
 
             HEADER:{
@@ -1532,7 +1533,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
-                overflow:'hidden'
+                overflow:'hidden',
+                'text-align':'left'
             },
             HI:{
                 position:'relative'
@@ -1549,7 +1551,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             SCROLL:{
                 overflow:'auto',
-                position:'relative'
+                position:'relative',
+                'text-align':'left'
             },
             ARROW:{
                 position:'absolute',
@@ -3608,7 +3611,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
             o.properties.rows = _.clone(pp.rows, function(o,i,d){
-                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && (i=="id"?o.charAt(0)!="-":true);
             });
             if(o.properties.header.length===0)delete o.properties.header;
             if(o.properties.grpCols.length===0)delete o.properties.grpCols;
@@ -3676,7 +3679,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // links
             col._cells={};
-            col[SubID]='h_'+profile.pickSubId('header');
+            col[SubID]='-h_'+profile.pickSubId('header');
 
             col.id=col.id||col[SubID];
 
@@ -3731,7 +3734,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //cell/cell link to header
             cell._col=col;
             //_serialId
-            cell[SubID]='c_'+profile.pickSubId('cell');
+            cell[SubID]='-c_'+profile.pickSubId('cell');
             // give id
             cell.id=cell.id||cell[SubID];
             // adjust
@@ -4069,13 +4072,13 @@ editorEvents
                 // give id (avoid conflicts)
                 if(!row.id || a[row.id]){
                     while(a[t=ider.next()]);
-                    row.id=t;
+                    row.id="-"+t;
                 }else{
                     row.id+="";
                 }
 
                 // give _serialId
-                temp='r_'+profile.pickSubId('row');
+                temp='-r_'+profile.pickSubId('row');
                 row[SubID]=temp;
                 b[temp]=row;
 

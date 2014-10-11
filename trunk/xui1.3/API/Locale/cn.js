@@ -3524,7 +3524,7 @@ _.set(xui.Locale,["cn","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
-                    "type [可选参数] : Number, 1到4, 弹出类型. 默认为1， 如果为null或0，取消设置",
+                    "type [可选参数] : String, 参考popToTop, 如果为null，取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
                     "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body].",
@@ -3538,7 +3538,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element.",
-                    "type [可选参数] : Number, from 1 to 4, pop positoin type. 默认为1.",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright', 向前兼容也可以是1~4,12,21. 默认为outer.",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
                 ],
                 $snippet:[
@@ -7348,9 +7348,9 @@ _.set(xui.Locale,["cn","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
-                    "type [可选参数] : Number, 1到4, 弹出类型. 默认为1， 如果为null或0，取消设置",
-                    "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
-                    "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
+                    "type [可选参数] : String, 参考houverPosType属性, 如果为null, 取消设置",
+                    "beforePop[可选参数] : Function(prf, node, e, src, item), 窗口弹出之前调用",
+                    "beforeHide[可选参数] : Function(prf, node, e, src, trigger, item), 窗口隐藏之前调用",
                      "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body].",
                     "groupid[Optional] : String.  组标识 id"
                 ]
@@ -7933,6 +7933,18 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 弹出目标的别名，弹出目标必须要在当前控件的 host 中.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            getHoverPopType:{
+                $desc:"获取控件的悬停弹出类型",
+                $rtn:"String"
+            },
+            setHoverPopType:{
+                $desc:"设置控件的悬停弹出类型.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 以下之一： 'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright','1','2','3','4','12','21'. 默认是 'outer'. ",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -19222,6 +19234,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'disabled':'禁用控件',
             'defaultFocus':'自动获得焦点',
             hoverPop:"悬停弹出对象",
+            hoverPopType:"悬停弹出类型",
             'dock':'停靠类型',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
