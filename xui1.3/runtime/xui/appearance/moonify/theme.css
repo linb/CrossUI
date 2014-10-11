@@ -413,6 +413,21 @@ html, .xui-uibg-base{
 .xui-treeview-opt{
     background-image: url(Public/icons.gif);
 }
+.xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
+    background-image: url(List/item.gif);
+}
+.xui-treeview-bar-mouseover{
+    background-color:#406DB8;
+    color:#fff;
+}
+.xui-treeview-bar-mousedown{
+    background-color:#406DB8;
+    color:#fff;
+}
+.xui-treeview-bar-checked{
+    background-color:#406DB8;
+    color:#fff;
+}
 /*xui.UI.Tabs*/
 .xui-tabs-items{
     padding:0 0 4px 0;

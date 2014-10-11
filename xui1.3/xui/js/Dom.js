@@ -1706,7 +1706,7 @@ type:4
                 var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                 && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                 if(!ignore){
-                    if(!beforePop || false!==beforePop(prf, node, e, src, null, ignore)){
+                    if(!beforePop || false!==beforePop(prf, node, e, src)){
                         node.popToTop(src, type, parent,showEffects);
                     }
                     xui.setData([aysid,'$ui.hover.pop'],1);
@@ -1715,7 +1715,7 @@ type:4
             },aysid).onMouseout(type===null?null:function(prf, e, src){
                 if(e.$force)return;
                 _.resetRun(aysid,function(){
-                    if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'host')){
+                    if(!beforeHide || false!==beforeHide(prf, node,e, src,'host')){
                         node.hide(null,hideEffects);
                     }
                     xui.setData([aysid,'$ui.hover.pop']);
@@ -1729,7 +1729,7 @@ type:4
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'pop')){
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
                             node.hide(null,hideEffects);
                         }
                         xui.setData([aysid,'$ui.hover.pop']);

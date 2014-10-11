@@ -16,6 +16,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
+                'padding':'1px'
             },
             ITEM:{
                 'white-space': 'nowrap',
@@ -27,18 +28,32 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'font-size':'12px',
-               padding:'0',
+               padding:'1px',
                border: '0',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
-            'BAR-mouseover':{
-                $order:12,
-               'background-color': '#eee'
+            'BAR-mouseover, BAR-mousedown, BAR-checked':{
+               'background-image':xui.UI.$bg('item.gif','','List'),
+               'background-repeat':'repeat-x',
+               'border-radius':'3px',
+               padding:'0',
+               border:'solid 1px #ccc'
             },
-            'BAR-mouseover, BAR-checked':{
-               $order:14,
-               'background-color':'#eee'
+            'BAR-mouseover':{
+                $order:1,
+                'background-color':'#FAD200',
+                'background-position': 'left -51px'
+            },
+            'BAR-mousedown':{
+                $order:2,
+                'background-color':'#F5D22D',
+                'background-position': 'left -101px'
+            },
+            'BAR-checked':{
+                $order:2,
+                'background-color':'#AAD2FA',
+                'background-position': 'left top'
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,

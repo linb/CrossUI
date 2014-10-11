@@ -845,7 +845,6 @@ _.merge(xui,{
     $localeKey:'en',
     $localeDomId:'xlid',
     $dateFormat:'',
-    debugMode:true,
 
     Locale:{},
     $cache:{
@@ -8889,7 +8888,7 @@ type:4
                 var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                 && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                 if(!ignore){
-                    if(!beforePop || false!==beforePop(prf, node, e, src, null, ignore)){
+                    if(!beforePop || false!==beforePop(prf, node, e, src)){
                         node.popToTop(src, type, parent,showEffects);
                     }
                     xui.setData([aysid,'$ui.hover.pop'],1);
@@ -8898,7 +8897,7 @@ type:4
             },aysid).onMouseout(type===null?null:function(prf, e, src){
                 if(e.$force)return;
                 _.resetRun(aysid,function(){
-                    if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'host')){
+                    if(!beforeHide || false!==beforeHide(prf, node,e, src,'host')){
                         node.hide(null,hideEffects);
                     }
                     xui.setData([aysid,'$ui.hover.pop']);
@@ -8912,7 +8911,7 @@ type:4
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, null, 'pop')){
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
                             node.hide(null,hideEffects);
                         }
                         xui.setData([aysid,'$ui.hover.pop']);
@@ -12615,11 +12614,11 @@ Class('xui.DragDrop',null,{
             this._stop=true;
         },
         _end:function(){
-            var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
+            var d=this,win=window,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
                 mm2,mu2;
             if(xui.browser.isTouch){
-                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
-                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
+                mm2=(xui.browser.ie&&win.PointerEvent)?"onpointermove":(xui.browser.ie&&win.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&win.PointerEvent)?"onpointerup":(xui.browser.ie&&win.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
             
             if(d._proxy) d._unpack();
@@ -12639,7 +12638,7 @@ Class('xui.DragDrop',null,{
             return  d;
         },
         startDrag:function(e, targetNode, profile, dragKey, dragData){
-            var d=this,t;
+            var d=this,win=window,t;
             if(d._profile.isWorking)return false;
             //clear
             d._end()._reset();
@@ -12647,7 +12646,7 @@ Class('xui.DragDrop',null,{
             d.__touchingfordd = e.type=="xuitouchdown";
 
             profile=_.isHash(profile)?profile:{};
-            e = e || window.event;
+            e = e || win.event;
             // not left button
             if(xui.Event.getBtn(e) !== 'left')
                return true;
@@ -12668,8 +12667,8 @@ Class('xui.DragDrop',null,{
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup",
                 mm2,mu2;
             if(xui.browser.isTouch){
-                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
-                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
+                mm2=(xui.browser.ie&&win.PointerEvent)?"onpointermove":(xui.browser.ie&&win.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&win.PointerEvent)?"onpointerup":(xui.browser.ie&&win.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
 
             profile.x = _pos.left;
@@ -12767,9 +12766,7 @@ Class('xui.DragDrop',null,{
                 d.$ondragstart=doc.ondragstart;
                 d.$onselectstart=body.onselectstart;
                 doc.ondragstart = body.onselectstart = null;
-                if(doc.selection && doc.selection.empty)doc.selection.empty();
-            }
-
+                if(doc.selection && doc.selection.empty)try{doc.selection.empty()}catch(e){}            }
             //avoid select
             xui.Event.stopBubble(e);
 
@@ -14138,8 +14135,8 @@ Class("xui.Tips", null,{
 
         if(_.isDefined(window.console) && (typeof window.console.log=="function")){
             xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
-        }else{
-            xui.log=xui.echo;   
+        }else if(xui.debugMode){
+            xui.log=xui.echo;
             window.onerror=this.err;
         }
     }
@@ -14819,7 +14816,7 @@ Class("xui.UI",  "xui.absObj", {
                         var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                         && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                         if(!ignore){
-                            if(!beforePop || false!==beforePop(prf, node, e, src, item, ignore)){
+                            if(!beforePop || false!==beforePop(prf, node, e, src, item)){
                                 node.popToTop(src, type, parent);
                             }
                             xui.setData([aysid,'$ui.hover.pop'],item);
@@ -14827,7 +14824,7 @@ Class("xui.UI",  "xui.absObj", {
                         }
                     }else{
                         _.resetRun(aysid,function(){
-                            if(!beforeHide || false!==beforeHide(prf, node,e, src ,item, 'host')){
+                            if(!beforeHide || false!==beforeHide(prf, node,e, src ,'host',item)){
                                 node.hide();
                             }
                             xui.setData([aysid,'$ui.hover.pop']);
@@ -14844,7 +14841,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(e.$force)return;
                     _.resetRun(aysid,function(){
                         var item=xui.getData([aysid,'$ui.hover.pop']);
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,item, 'pop')){
+                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop',item)){
                             node.hide();
                         }
                         xui.setData([aysid,'$ui.hover.pop'])
@@ -15566,13 +15563,20 @@ Class("xui.UI",  "xui.absObj", {
                          else if(_.isHash(CSObj[key]))
                             _.each(CSObj[key],function(v,i){
                                 if(_.isStr(v)){
-                                    _.arr.each(v.split(';'),function(o){
-                                        if((b=o.split(':')).length>=2){
-                                            i=b.shift();o=b.join(':');
-                                            i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
-                                            tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
-                                        }
-                                    });
+                                    // "cursor":"point"
+                                    if(v.indexOf(';')==-1){
+                                         tnodes.css(i, (clear?'':(v && typeof v=="string")?xui.adjustRes(v,0,1):v)||"");
+                                    }
+                                    // "overflow":"overflow-x:auto;overflow-y:hidden"
+                                    else{
+                                        _.arr.each(v.split(';'),function(o){
+                                            if((b=o.split(':')).length>=2){
+                                                i=b.shift();o=b.join(':');
+                                                i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
+                                                tnodes.css(i, (clear?'':(o && typeof o=="string")?xui.adjustRes(o,0,1):o)||"");
+                                            }
+                                        });
+                                    }
                                 }else{
                                     i=i.replace(/\-(\w)/g,function(a,b){return b.toUpperCase()});
                                     tnodes.css(i, (clear?'':(v && typeof v=="string")?xui.adjustRes(v,0,1):v)||"");
@@ -17760,7 +17764,7 @@ Class("xui.UI",  "xui.absObj", {
                 'middle-outerleft','middle-left','middle-center','middle-right','middle-outerright',
                 'bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright',
                 'outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright'
-                ],
+                ]
             },
             dock:{
                 ini:'none',
@@ -17841,26 +17845,25 @@ Class("xui.UI",  "xui.absObj", {
             onContextmenu:function(profile, e, src, item){}
         },
         RenderTrigger:function(){
-            var self=this, b=self.boxing(),p=self.properties,t;
+            var prf=this, b=prf.boxing(),p=prf.properties,t;
             //avoid the resize blazzing
-            if(self.box._onresize){
-                var style=self.getRootNode().style,t
+            if(prf.box._onresize){
+                var style=prf.getRootNode().style,t
                 if((t=style.visibility)!='hidden'){
-                   self._$visibility=t;
+                   prf._$visibility=t;
                    style.visibility='hidden';
                 }
-                xui.UI.$tryResize(self,p.width,p.height);
+                xui.UI.$tryResize(prf,p.width,p.height);
                 style=null;
             }
             if(p.disabled) b.setDisabled(true,true);
             if(p.rotate) b.setRotate(p.rotate,true);
-            if(p.hoverPop){
+             if(!prf.$inDesign && p.hoverPop){
                 _.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
                 });
             }            
-
-            self._inValid=1;
+            prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){
             if(force || ((w||h) && (profile._resize_w!=w || profile._resize_h!=h))){
@@ -18436,7 +18439,7 @@ Class("xui.UI",  "xui.absObj", {
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
                 p.items = _.clone(p.items,function(o,i,d){
-                    return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined
+                    return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined;
                 });
             }
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
@@ -20937,8 +20940,8 @@ Class("xui.UI.Shadow","xui.UI",{
                         size;
                     if(xui.Dom.css3Support("boxShadow")){
                         size=parseInt(d._shadowSize*3/4,10);
-                        node.css("boxShadow",size+"px "+size+"px "+size+"px #717C8C");
-                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#717C8C");
+                        node.css("boxShadow",size+"px "+size+"px "+size+"px #c2c2c2");
+                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#c2c2c2");
                     }else{
                         if(node.$getShadow())return;
                         o.$shadow=node.addShadow({shadowSize:d._shadowSize});
@@ -21231,7 +21234,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 'line-height':0,
 
                 //for ie
-                '*background': 'url('+xui.ini.path+'bg.gif)',
+                background: (xui.browser.ie&&!xui.browser.newie)?('url('+xui.ini.path+'bg.gif)'):'',
                 /*for get top Index, when it's static*/
                 'z-index':60,
                 cursor:'move'
@@ -29671,8 +29674,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION:{
-                            tagName : 'text',
-                            text : '&nbsp;{caption}',
+                            text : '{caption}',
                             $order:20
                         },
                         EXTRA:{
@@ -29696,7 +29698,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             ITEMS:{
                 position:'relative',
                 overflow:'auto',
-                'overflow-x': 'hidden'
+                'overflow-x': 'hidden',
+                'padding':'1px'
             },
             ITEM:{
                 display:'block',
@@ -29705,12 +29708,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 border:0,
                 cursor:'pointer',
                 'font-size':'12px',
-                padding:'4px 2px',
+                padding:"2px",
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
                'background-image':xui.UI.$bg('item.gif', ''),
-               'background-repeat':'repeat-x'
+               'background-repeat':'repeat-x',
+               'border-radius':'3px',
+               padding:'1px',
+               border:'solid 1px #D9D9D9'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -29740,6 +29746,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'ITEM-checked MARK':{
                 $order:2,
                 'background-position': '0 -70px'
+            },
+            CAPTION:{
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                padding:'2px'
             },
             OPT:{
                 $order:10,
@@ -31706,7 +31716,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             LIST:{
                 $order:0,
                 tagName : 'div',
-                className:"xui-uibg-base",
                 style:'{_liststyle}',
                 ITEMS:{
                     tagName : 'div',
@@ -33548,7 +33557,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{
-                                text : '&nbsp;{caption}',
+                                text : '{caption}',
                                 className:"{disabled}  {readonly}",
                                 $order:4
                             },
@@ -33598,7 +33607,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                display:'block',
                overflow: 'hidden',
                'font-size':'12px',
-               padding:'2px 4px',
+               padding:'1px 4px',
                border: '1px solid',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
@@ -34202,6 +34211,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
+                'padding':'1px'
             },
             ITEM:{
                 'white-space': 'nowrap',
@@ -34213,18 +34223,32 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'font-size':'12px',
-               padding:'0',
+               padding:'1px',
                border: '0',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
-            'BAR-mouseover':{
-                $order:12,
-               'background-color': '#eee'
+            'BAR-mouseover, BAR-mousedown, BAR-checked':{
+               'background-image':xui.UI.$bg('item.gif','','List'),
+               'background-repeat':'repeat-x',
+               'border-radius':'3px',
+               padding:'0',
+               border:'solid 1px #ccc'
             },
-            'BAR-mouseover, BAR-checked':{
-               $order:14,
-               'background-color':'#eee'
+            'BAR-mouseover':{
+                $order:1,
+                'background-color':'#FAD200',
+                'background-position': 'left -51px'
+            },
+            'BAR-mousedown':{
+                $order:2,
+                'background-color':'#F5D22D',
+                'background-position': 'left -101px'
+            },
+            'BAR-checked':{
+                $order:2,
+                'background-color':'#AAD2FA',
+                'background-position': 'left top'
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,
@@ -35503,7 +35527,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'vertical-align':'middle'
             },
             LIST:{
-                padding:'2px'
+                padding:'1px'
             },
             ITEMS:{
                 'vertical-align':'middle'
@@ -35978,12 +36002,12 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':0,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
-                padding:'2px 4px 0px 2px',
+                padding:'1px 2px 0px 1px',
                 'vertical-align':'middle'
             },
             ITEM:{
                 'vertical-align':'middle',
-                padding:'1px'
+                padding:'0px'
             },
             'BTNC a':{
                 padding:0
@@ -36118,7 +36142,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             var d=arguments.callee.upper.call(this, profile);
             var p = profile.properties;
 
-            d.mode = p.hAlign=='right'?'text-align:right;':'';
+            d.mode = p.hAlign!='left'?('text-align:'+p.hAlign+';'):'';
 
             return d;
         },
@@ -37702,7 +37726,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             _.breakO(cell[o]);
                             //clear cellMap
                             delete cell[o];
-                            profile.reclaimSubId(o.slice(2), 'cell');
+                            profile.reclaimSubId(o.slice(3), 'cell');
                         });
 
                         //clear properties.row array
@@ -37721,7 +37745,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         nodes.push(profile.getSubNode('ROW', id).get(0));
                     }
-                    profile.reclaimSubId(id.slice(2), 'row');
+                    profile.reclaimSubId(id.slice(3), 'row');
                 }else{
                     var f=function(rows){
                         var index=_.arr.subIndexOf(rows, "id", id);
@@ -37920,7 +37944,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             _.breakO(cell[o]);
                             //clear cellMap
                             delete cell[o];
-                            profile.reclaimSubId(o.slice(2), 'cell');
+                            profile.reclaimSubId(o.slice(3), 'cell');
                         });
 
                         //clear profile.rowMap2
@@ -37932,7 +37956,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         nodes.push(profile.getSubNode('HCELL', id).get(0));
                     }
-                    profile.reclaimSubId(id.slice(2), 'header');
+                    profile.reclaimSubId(id.slice(3), 'header');
                 }
 
                 var applaycell=function(rows){
@@ -37970,9 +37994,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return this;
 
             for(var i in profile.cellMap)
-                profile.reclaimSubId(i.slice(2), 'cell');
+                profile.reclaimSubId(i.slice(3), 'cell');
             for(var i in profile.rowMap)
-                profile.reclaimSubId(i.slice(2), 'row');
+                profile.reclaimSubId(i.slice(3), 'row');
 
             //remove links
             _.each(profile.colMap,function(o){
@@ -38652,7 +38676,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             BOX:{
                 display:'block',
                 position:'relative',
-                overflow:'hidden'
+                overflow:'hidden',
+                'text-align':'left'
             },
 
             HEADER:{
@@ -38661,7 +38686,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
-                overflow:'hidden'
+                overflow:'hidden',
+                'text-align':'left'
             },
             HI:{
                 position:'relative'
@@ -38678,7 +38704,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             SCROLL:{
                 overflow:'auto',
-                position:'relative'
+                position:'relative',
+                'text-align':'left'
             },
             ARROW:{
                 position:'absolute',
@@ -40737,7 +40764,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
             o.properties.rows = _.clone(pp.rows, function(o,i,d){
-                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
+                return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && (i=="id"?o.charAt(0)!="-":true);
             });
             if(o.properties.header.length===0)delete o.properties.header;
             if(o.properties.grpCols.length===0)delete o.properties.grpCols;
@@ -40805,7 +40832,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // links
             col._cells={};
-            col[SubID]='h_'+profile.pickSubId('header');
+            col[SubID]='-h_'+profile.pickSubId('header');
 
             col.id=col.id||col[SubID];
 
@@ -40860,7 +40887,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //cell/cell link to header
             cell._col=col;
             //_serialId
-            cell[SubID]='c_'+profile.pickSubId('cell');
+            cell[SubID]='-c_'+profile.pickSubId('cell');
             // give id
             cell.id=cell.id||cell[SubID];
             // adjust
@@ -41198,13 +41225,13 @@ editorEvents
                 // give id (avoid conflicts)
                 if(!row.id || a[row.id]){
                     while(a[t=ider.next()]);
-                    row.id=t;
+                    row.id="-"+t;
                 }else{
                     row.id+="";
                 }
 
                 // give _serialId
-                temp='r_'+profile.pickSubId('row');
+                temp='-r_'+profile.pickSubId('row');
                 row[SubID]=temp;
                 b[temp]=row;
 

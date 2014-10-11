@@ -300,11 +300,11 @@ Class('xui.DragDrop',null,{
             this._stop=true;
         },
         _end:function(){
-            var d=this,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
+            var d=this,win=window,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
                 mm2,mu2;
             if(xui.browser.isTouch){
-                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
-                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
+                mm2=(xui.browser.ie&&win.PointerEvent)?"onpointermove":(xui.browser.ie&&win.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&win.PointerEvent)?"onpointerup":(xui.browser.ie&&win.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
             
             if(d._proxy) d._unpack();
@@ -324,7 +324,7 @@ Class('xui.DragDrop',null,{
             return  d;
         },
         startDrag:function(e, targetNode, profile, dragKey, dragData){
-            var d=this,t;
+            var d=this,win=window,t;
             if(d._profile.isWorking)return false;
             //clear
             d._end()._reset();
@@ -332,7 +332,7 @@ Class('xui.DragDrop',null,{
             d.__touchingfordd = e.type=="xuitouchdown";
 
             profile=_.isHash(profile)?profile:{};
-            e = e || window.event;
+            e = e || win.event;
             // not left button
             if(xui.Event.getBtn(e) !== 'left')
                return true;
@@ -353,8 +353,8 @@ Class('xui.DragDrop',null,{
             var doc=document, body=doc.body, _pos = xui.Event.getPos(e),md="onmousedown",mm="onmousemove",mu="onmouseup",
                 mm2,mu2;
             if(xui.browser.isTouch){
-                mm2=(xui.browser.ie&&window.PointerEvent)?"onpointermove":(xui.browser.ie&&window.MSPointerEvent)?"onmspointermove":"ontouchmove";
-                mu2=(xui.browser.ie&&window.PointerEvent)?"onpointerup":(xui.browser.ie&&window.MSPointerEvent)?"onmspointerup":"ontouchend";
+                mm2=(xui.browser.ie&&win.PointerEvent)?"onpointermove":(xui.browser.ie&&win.MSPointerEvent)?"onmspointermove":"ontouchmove";
+                mu2=(xui.browser.ie&&win.PointerEvent)?"onpointerup":(xui.browser.ie&&win.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
 
             profile.x = _pos.left;
@@ -452,9 +452,7 @@ Class('xui.DragDrop',null,{
                 d.$ondragstart=doc.ondragstart;
                 d.$onselectstart=body.onselectstart;
                 doc.ondragstart = body.onselectstart = null;
-                if(doc.selection && doc.selection.empty)doc.selection.empty();
-            }
-
+                if(doc.selection && doc.selection.empty)try{doc.selection.empty()}catch(e){}            }
             //avoid select
             xui.Event.stopBubble(e);
 

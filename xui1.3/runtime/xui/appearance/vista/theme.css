@@ -5,12 +5,16 @@ html, .xui-uibg-base{
 .xui-uibg-bar{
     background:#C6E0EF;
 }
+.xui-uiborder-flat{
+    border-color:#7ba3cb;
+}
 .xui-uiborder-inset{
-    border-color:#ACB9BF #F1FAFF #F1FAFF #ACB9BF;
+    border-color:#7ba3cb #F1FAFF #F1FAFF #7ba3cb;
 }
 .xui-uiborder-outset{
-    border-color:#F1FAFF #ACB9BF #ACB9BF #F1FAFF;
+    border-color:#F1FAFF #7ba3cb #7ba3cb #F1FAFF;
 }
+
 
 /*
 .xui-ui-draggable{}
@@ -368,6 +372,21 @@ html, .xui-uibg-base{
 .xui-treeview-opt{
     background-image: url(Public/icons.gif);
 }
+.xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
+    background-image: url(List/item.gif);
+}
+.xui-treeview-bar-mouseover{
+    background-color:#F2F7FE;
+    border:solid 1px #B8D6FB;
+}
+.xui-treeview-bar-mousedown{
+    background-color:#DEEDFE;
+     border:solid 1px #D9D9D9;
+}
+.xui-treeview-bar-checked{
+    background-color:#DBEAFD;
+     border:solid 1px #D9D9D9;
+}
 /*xui.UI.Tabs*/
 .xui-tabs-items{
     padding:0 0 3px 0;
@@ -433,13 +452,13 @@ html, .xui-uibg-base{
 /*xui.UI.Layout*/
 .xui-layout-move-top, .xui-layout-move-bottom{
     height:6px;
-    border-top:solid 1px #6d6d6d;
-    border-bottom:solid 1px #6d6d6d;
+    border-top:solid 1px #7ba3cb;
+    border-bottom:solid 1px #7ba3cb;
 }
 .xui-layout-move-left, .xui-layout-move-right{
     width:6px;
-    border-left:solid 1px #6d6d6d;
-    border-right:solid 1px #6d6d6d;
+    border-left:solid 1px #7ba3cb;
+    border-right:solid 1px #7ba3cb;
 }
 .xui-layout-move-top-mouseover, .xui-layout-move-bottom-mouseover,
 .xui-layout-move-left-mouseover, .xui-layout-move-right-mouseover{

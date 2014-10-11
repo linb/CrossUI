@@ -46,8 +46,8 @@ Class("xui.UI.Shadow","xui.UI",{
                         size;
                     if(xui.Dom.css3Support("boxShadow")){
                         size=parseInt(d._shadowSize*3/4,10);
-                        node.css("boxShadow",size+"px "+size+"px "+size+"px #717C8C");
-                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#717C8C");
+                        node.css("boxShadow",size+"px "+size+"px "+size+"px #c2c2c2");
+                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#c2c2c2");
                     }else{
                         if(node.$getShadow())return;
                         o.$shadow=node.addShadow({shadowSize:d._shadowSize});

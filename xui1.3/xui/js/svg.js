@@ -1919,7 +1919,9 @@ Class("xui.svg", "xui.UI",{
             return bb;
         },
         $setBB:function(prf,type,bbox,attr,el,notify){
-            var h={};
+            var h={},
+                // for IE9 cant set bbox prop
+                copy=function(o){var a={};for(var i in o)a[i]=o[i];return a;};
             switch(type){
                 case 'circle':{
                     if(_.isNumb(bbox.width))
@@ -1956,13 +1958,13 @@ Class("xui.svg", "xui.UI",{
                     var obbox,textAnchor;
                     if(el){
                         el._.dirty=1;
-                        obbox=el._getBBox(true);
+                        obbox=copy(el._getBBox(true));
                         textAnchor=el.attr('text-anchor');
                     }else{
                         var div=xui.Dom.getEmptyDiv(),
                             r=Raphael(div.get(0).id,1,1),
                             t=r.text(0,0,attr.text);
-                       obbox=t._getBBox(true);
+                       obbox=copy(t._getBBox(true));
                        textAnchor=t.attr('text-anchor');
                        t.remove();
                        r.remove();
@@ -2042,18 +2044,18 @@ Class("xui.svg", "xui.UI",{
                     var obbox;
                     if(el){
                         el._.dirty=1;
-                        obbox=el._getBBox(true);
+                        obbox=copy(el._getBBox(true));
                     }else{
                         var div=xui.Dom.getEmptyDiv(),
                             r=Raphael(div.get(0).id,1,1),
                             t=r.path("");
                        t.attr(attr);
-                       obbox=t._getBBox(true);
+                       obbox=copy(t._getBBox(true));
                        t.remove();
                        r.remove();
                        div.empty();
                     }
-                    var obbox2=_.copy(obbox);
+                    var obbox2=copy(obbox);
                     
                     //if(obbox.width===0 || obbox.height===0)
                     //    return;

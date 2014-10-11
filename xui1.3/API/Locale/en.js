@@ -3511,9 +3511,9 @@ _.set(xui.Locale,["en","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [Reqired]  : Object/xui.Dom/Element. The pop window",
-                    "type [Optional] : Number, from 1 to 4, pop positoin type. Default is 1, [null or 0] will clear the setting",
-                    "beforePop[Optional] : Function(prf, node, e, src,item),  triggered before the window pop",
-                    "beforeHide[Optional] : Function(prf, node, e, src,item, trigger), triggered before the window hide",
+                    "type [Optional] : String, refer to popToTop, [null] will clear the setting",
+                    "beforePop[Optional] : Function(prf, node, e, src),  triggered before the window pop",
+                    "beforeHide[Optional] : Function(prf, node, e, src, trigger), triggered before the window hide",
                     "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body].",
                     "groupid[Optional] : String. the group id",
                     "showEffects[Optional] : Object, show effects config object",
@@ -3525,7 +3525,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "pos [Reqired] : {left:Number,top:Number} Object(The css left and top value) or xui.Dom Object(for getting position).",
-                    "type [Optional] : Number, from 1 to 4, pop position type. Default is 1.",
+                    "type [Optional] : String. one of 'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright','1','2','3','4','12','21'.Default is 'outer'.",
                     "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
                 ],
                 $snippet:[
@@ -7323,9 +7323,9 @@ _.set(xui.Locale,["en","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "node [Reqired]  : Object/xui.Dom/Element. The pop window",
-                    "type [Optional] : Number, from 1 to 4, pop positoin type. Default is 1, [null or 0] will clear the setting",
+                    "type [Optional] : String, refer to hoverPopTYpe, [null] will clear the setting",
                     "beforePop[Optional] : Function(prf, node, e, src),  triggered before the window pop",
-                    "beforeHide[Optional] : Function(prf, node, e, src, trigger), triggered before the window hide",
+                    "beforeHide[Optional] : Function(prf, node, e, src, trigger,item), triggered before the window hide",
                     "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body].",
                     "groupid[Optional] : String. The group id"
                 ]
@@ -7907,6 +7907,18 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the pop target's alias, which has to be in the same host.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getHoverPopType:{
+                $desc:"Gets hover pop type.",
+                $rtn:"String"
+            },
+            setHoverPop:{
+                $desc:"Sets hover pop type.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, one of 'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright','1','2','3','4','12','21'. Default is 'outer'.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },

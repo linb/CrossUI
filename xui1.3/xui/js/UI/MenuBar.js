@@ -185,7 +185,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'vertical-align':'middle'
             },
             LIST:{
-                padding:'2px'
+                padding:'1px'
             },
             ITEMS:{
                 'vertical-align':'middle'

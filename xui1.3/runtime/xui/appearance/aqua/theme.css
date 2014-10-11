@@ -428,7 +428,22 @@ html, .xui-uibg-base{
 .xui-treeview-opt{
     background-image: url(Public/icons.gif);
 }
-
+.xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
+    background-image: url(List/item.gif);
+    border: 1px solid #6D6D6D;
+}
+.xui-treeview-bar-mouseover{
+    background-color:#0149DC;
+    color:#fff;
+}
+.xui-treeview-bar-mousedown{
+    background-color:#0149DC;
+    color:#fff;
+}
+.xui-treeview-bar-checked{
+    background-color:#0149DC;
+    color:#fff;
+}
 /*xui.UI.Tabs*/
 .xui-tabs-items{
     padding:0 0 8px 0;
