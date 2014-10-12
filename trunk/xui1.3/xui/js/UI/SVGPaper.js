@@ -80,12 +80,15 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                     });
                 }
             }
-            if(profile.$inDesign && profile._paper){
+            if(profile._paper){
             	  _.setTimeout(function(){
-            	  	  if(profile && !profile.destroyed){
-                        profile._frame=profile._paper.rect(0,0,w,h,8)
-                            .attr({"stroke-dasharray": ". ", stroke: "#666"});
-                        profile._frame._decoration=1;
+            	        if(profile && !profile.destroyed){
+            	  	    // ensure right position
+            	  	    if(profile.$designerRoot)
+                                 profile._frame=profile._paper.rect(0,0,1,1,0).attr({"stroke-width":"0px"});
+            	  	    else if(profile.$inDesign)
+                                profile._frame=profile._paper.rect(0,0,w,h,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
+                            if(profile._frame)profile._frame._decoration=1;
                     }
                 });
             }
