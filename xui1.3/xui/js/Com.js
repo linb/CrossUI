@@ -156,6 +156,8 @@ Class('xui.Com',null,{
             return false;
         },
         show:function(onEnd,parent,subId,threadid,left,top){
+            parent=parent||xui('body');
+
             var self=this,f=function(){
                 var style=self.customStyle;
                 if(style && !_.isEmpty(style)){
@@ -177,23 +179,21 @@ Class('xui.Com',null,{
 
                     if(false===_.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
                         //append only
-                        (parent||xui('body')).append(self.getUIComponents(false),subId);
+                        parent.append(self.getUIComponents(false),subId);
                         // append and show
-                        self.getUIComponents(true).show(parent||xui('body'), subId).each(function(o){
+                        self.getUIComponents(true).show(parent, subId).each(function(o){
                             if(o.KEY=='xui.UIProfile' && _.get(o,['properties','defaultFocus'])){
                                try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
                             }
                         });
                     }
+                    self.renderId='ok';
                     _.tryF(onEnd,[null, self, threadid],self.host);
                 }
             };
             self.threadid=threadid;
-
-            if(self.created)
-                f();
-            else
-                self.create(f,threadid);
+            if(self.created) f();
+            else self.create(f,threadid);
             return self;
         },
         render:function(triggerLayout){

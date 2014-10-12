@@ -6036,6 +6036,7 @@ new function(){
 
                     ifr.id=ifr.name=id;
                     if(_.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
+                    prop._frameName=id;
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();                    
