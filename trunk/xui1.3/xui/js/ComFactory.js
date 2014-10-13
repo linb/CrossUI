@@ -147,15 +147,17 @@ Class('xui.ComFactory',null,{
                         _.tryF(o[config.iniMethod ||'create'], args, o);
                     };
                 xui.Thread.observableRun(function(threadid){
-                    var f=function(a,b,threadid){
-                        var cls;
-                        if(cls=xui.SC.get(clsPath)){
+                    var f=function(threadid){
+                        // this for js path doesn't match Class name space
+                        var cls=this||xui.SC.get(clsPath);
+                        // it must be a xui Class
+                        if(cls&&cls.$xui$){
                             xui.Thread(threadid).insert({
                                 task:task,
                                 args:[cls, config,threadid]
                             });
                         }else{
-                            var e=new Error("Variable not found (maybe SyntaxError) - " + clsPath);
+                            var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
                             _.tryF(onEnd,[e,null,threadid]);
                             if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                             throw e;
@@ -163,7 +165,7 @@ Class('xui.ComFactory',null,{
                     };
                     xui.SC(clsPath, function(path){
                         if(path)
-                            f(0,0,threadid);
+                            f.call(this, threadid);
                         else{
                             var e=new Error("No class name");
                             _.tryF(onEnd,[e,null, threadid]);
