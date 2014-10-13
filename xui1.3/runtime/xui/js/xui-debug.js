@@ -1149,6 +1149,11 @@ _.merge(xui,{
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     _.tryF(onSuccess, [uri],t);
+                    var s=xui.getClassName(uri);
+                    if(t&&t.KEY!=s)
+                        _.asyRun(function(){
+                            throw "Class namespace '"+t.KEY+"' and path '"+uri+"' maybe do not match!";
+                        });
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
@@ -1161,6 +1166,11 @@ _.merge(xui,{
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
                     _.tryF(onSuccess, [uri],t);
+                    var s=xui.getClassName(uri);
+                    if(t&&t.KEY!=s)
+                        _.asyRun(function(){
+                            throw "Class namespace '"+t.KEY+"' and path '"+uri+"' maybe do not match!";
+                        });
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
@@ -1220,6 +1230,16 @@ _.merge(xui,{
         if(pre.slice(-1)!="/")
             pre+="/";
         return pre + key.join('\/') + (tag||'\/');
+    },
+    getClassName:function(uri){
+        var a=uri.split(/\/js\//g),
+            b,c;
+        if(_.isSet(a[1])){
+            b=a[0].split(/\//g);
+            b=b[b.length-1];
+            a=a[1].replace(/\.js$/i,"");
+          return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
+        }
     },
     log:_.fun(),
     echo:_.fun(),
@@ -2602,7 +2622,7 @@ Class('xui.SC',null,{
             isAsy = !!isAsy;
             var i,t,r,o,funs=[],ep=xui.SC.get,ct=xui.$cache.snipScript,
             f= function(text,n,threadid){
-                var self=this;
+                var self=this,t;
                 if(text){
                     //test again when asy end.
                     if(!ep(s)){
@@ -2614,7 +2634,13 @@ Class('xui.SC',null,{
                             try{_.exec(text)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
-                _.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||{});
+                t=Class._last;
+                Class._ignoreNSCache=Class._last=null;
+                _.tryF(self.$cb,[self.$tag,text,threadid],t||ep(s)||{});
+                if(t&&t.KEY!=s)
+                    _.asyRun(function(){
+                        throw "Class namespace '"+s+"' and path '"+this.uri+"' maybe do not match!";
+                    });
             },fe=function(text){
                 var self=this;
                 //for loadSnips resume with error too
@@ -2635,6 +2661,7 @@ Class('xui.SC',null,{
                      o=xui.getPath(s,'.js','js');
                      options = options ||{};
                      options.$tag = s;
+                     Class._ignoreNSCache=1;Class._last=null;
                      var ajax;
                      //asy and not for loadSnips
                      if(isAsy && !options.$p){
@@ -13853,15 +13880,17 @@ Class("xui.Tips", null,{
                         _.tryF(o[config.iniMethod ||'create'], args, o);
                     };
                 xui.Thread.observableRun(function(threadid){
-                    var f=function(a,b,threadid){
-                        var cls;
-                        if(cls=xui.SC.get(clsPath)){
+                    var f=function(threadid){
+                        // this for js path doesn't match Class name space
+                        var cls=this||xui.SC.get(clsPath);
+                        // it must be a xui Class
+                        if(cls&&cls.$xui$){
                             xui.Thread(threadid).insert({
                                 task:task,
                                 args:[cls, config,threadid]
                             });
                         }else{
-                            var e=new Error("Variable not found (maybe SyntaxError) - " + clsPath);
+                            var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
                             _.tryF(onEnd,[e,null,threadid]);
                             if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                             throw e;
@@ -13869,7 +13898,7 @@ Class("xui.Tips", null,{
                     };
                     xui.SC(clsPath, function(path){
                         if(path)
-                            f(0,0,threadid);
+                            f.call(this, threadid);
                         else{
                             var e=new Error("No class name");
                             _.tryF(onEnd,[e,null, threadid]);
