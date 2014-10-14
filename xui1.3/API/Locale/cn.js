@@ -1014,6 +1014,16 @@ _.set(xui.Locale,["cn","app"], {
                 "xui.include('App.doesntexist', 'App/js/doesntexist.js', function(){alert('success');},function(){alert('fail')});"
             ]
         },
+        mailTo:{
+            $desc:"弹出系统邮件发送窗口.",
+            $paras:[
+                "email [必需参数]: String, 邮件地址",
+                "subject [可选参数]: String, 标题",
+                "body [可选参数]: String, 内容",
+                "cc [可选参数]: String, 抄送地址",
+                "bcc  [可选参数]: String, 暗送地址"
+            ]
+        },
         require:{
             $desc:"确保某个类加载到内存.",
             $paras:[
@@ -3538,7 +3548,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element.",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright', 向前兼容也可以是1~4,12,21. 默认为outer.",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
                 ],
                 $snippet:[
@@ -7944,7 +7954,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件的悬停弹出类型.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 以下之一： 'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright','1','2','3','4','12','21'. 默认是 'outer'. ",
+                    "value [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -19738,8 +19748,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onIniResource:"初始化资源",
             beforeIniComponents:"初始化控件前",
             afterIniComponents:"初始化控件后",
-            onReady:"初始化完毕",
-            onRender:"部件渲染完毕", 
+            onReady:"页面准备就绪",
+            onRender:"部件渲染完成", 
             onDestroy:"部件销毁"
         },
         'xui_absObj' : {
@@ -19769,7 +19779,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeDirtyMark:"显示脏标识",
             beforeUIValueSet:"界面值设置前",
             beforeValueSet:"控件值设置前",
-            onChange:"界面值变化",
+            onChange:"界面值改变",
             afterUIValueSet:"界面值设置后",
             afterValueSet:"控件值设置后"
         },
@@ -19786,8 +19796,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
         'xui_UI' : {
             beforeAppend:"界面加载前",
             afterAppend:"界面加载后",
-            beforeRender:"控件渲染前",
-            onRender:"控件界面渲染",
+            beforeRender:"部件渲染前",
+            onRender:"部件渲染完成",
             beforeRemove:"界面移除前",
             afterRemove:"界面移除后",
             beforeDestroy:"控件销毁前",

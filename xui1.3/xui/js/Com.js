@@ -105,19 +105,18 @@ Class('xui.Com',null,{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var t,k,r,self=this;
+            var t,o,r,l,self=this;
             if(self.events && (t=self.events[name])){
                 if(t){
-                    if(typeof t=='string')t=self[t];                
-                    if(typeof t=='function')
-                        r=t.apply(host || self.host||self, args||[]);
-                    else if(_.isArr(k=t)){
-                        for(var i=0,l=k.length;i<l;i++){
-                            t=k[i];
-                            if(typeof t=='string')t=self[t];                
-                            if(typeof t=='function')
-                                r=t.apply(host || self.host||self, args||[]);
-                        }
+                    var host=host||self.host||self;
+                    args=args||[];
+                    if(!_.isArr(t))t=[t];
+                    l=t.length;
+                    for(var i=0;i<l;i++){
+                        o=t[i];
+                        if(typeof o=='string')o=self[o];
+                        if(typeof o=='function')r=o.apply(host, args);
+                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,host);
                     }
                     return r;
                 }
@@ -125,24 +124,21 @@ Class('xui.Com',null,{
         },
         // for inner events
         _fireEvent:function(name, args){
-            var t,k,r,self=this;
+            var t,o,r,l,self=this;
             if(self.events && (t=self.events[name])){
                 self.$lastEvent=name;
                 if(t){
+                    var host=self.host||self
                     args=args||[];
                     args.splice(0,0,self,self.threadid);
 
-                    if(typeof t=='string')t=self[t];
-                    if(typeof t=='function'){
-                        r=t.apply(self.host||self, args);
-                    }else if(_.isArr(k=t)){
-                        for(var i=0,l=k.length;i<l;i++){
-                            t=k[i];
-                            if(typeof t=='string')t=self[t];                
-                            if(typeof t=='function'){
-                                r=t.apply(self.host||self, args);
-                            }
-                        }
+                    if(!_.isArr(t))t=[t];
+                    l=t.length;
+                    for(var i=0;i<l;i++){
+                        o=t[i];
+                        if(typeof o=='string')o=self[o];
+                        if(typeof o=='function')r=o.apply(host, args);
+                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,host);
                     }
                     return r;
                 }

@@ -1138,6 +1138,14 @@ _.merge(xui,{
                 }
         }
     },
+    mailTo:function(email, subject,body,cc,bcc){
+       var url = 'mailto:'+email+
+            '?subject=' +encodeURIComponent(xui.adjustRes(subject||""))
+            + '&body= ' + encodeURIComponent(xui.adjustRes(body||""))
+            + '&cc= ' + (cc||"")
+            + '&bcc= ' + (bcc||"");
+        xui.IAjax(url).start();
+    },
     fetchClass:function(uri,onSuccess,onFail,force){
         var t,c=xui.$cache.clsByURI;
         if(!force && (t=c[uri]) && t.$xui$)
@@ -1152,7 +1160,7 @@ _.merge(xui,{
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
-                            throw "Class namespace '"+t.KEY+"' and path '"+uri+"' maybe do not match!";
+                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                         });
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
@@ -1169,7 +1177,7 @@ _.merge(xui,{
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
-                            throw "Class namespace '"+t.KEY+"' and path '"+uri+"' maybe do not match!";
+                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                         });
                 },function(){
                     Class._last=null;
@@ -1576,6 +1584,59 @@ new function(){
     xui._localParts=xui._uriReg.exec(xui._curHref.toLowerCase())||[];
 };
 
+new function(){
+    xui.pseudocode={
+        exec:function(conf, args, scope){
+           var  t,m,n,p,type=conf.type||"other",
+                scope=conf.scope==="[this]"?scope:conf.scope,
+                target=conf.target,
+                method=conf.method+"",
+                params=conf.params||[],
+                timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+            if(target && method && target!="none"&&method!="none"){
+                if(method.indexOf("-")){
+                    t=method.split(/-/g);
+                    method=t[0];
+                    for(var i=1,l=t.length;i<l;i++)
+                        if(t[i])params[i-1]=t[i];
+                }
+                var fun=function(){
+                    switch(type){
+                        case 'page':
+                            break;
+                        case 'control':
+                                if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],params);
+                            break;
+                        case 'other':
+                            switch(target){
+                                case 'url':
+                                    switch(method){
+                                        case "open":
+                                            window.open.apply(null, params);
+                                            break;
+                                        case "mailTo":
+                                            xui.mailTo.apply(xui,params);
+                                            break;
+                                    }
+                                break;
+                                case 'dlg':
+                                    if(_.isFun(t=_.get(xui,[method])))t.apply(xui,params);
+                                break;
+                            }
+                            break;
+                    }
+                };
+    
+                if(timeout!==null)_.asyRun(fun,timeout);
+                else fun();
+            }
+
+            return conf["return"];
+        },
+        toCode:function(conf, args, scope){
+        }
+    };
+};
 /*xui.Thread
 *  dependency: _ ; Class ; xui
 parameters:
@@ -2622,7 +2683,7 @@ Class('xui.SC',null,{
             isAsy = !!isAsy;
             var i,t,r,o,funs=[],ep=xui.SC.get,ct=xui.$cache.snipScript,
             f= function(text,n,threadid){
-                var self=this,t;
+                var self=this,t,uri=this.uri;
                 if(text){
                     //test again when asy end.
                     if(!ep(s)){
@@ -2639,7 +2700,7 @@ Class('xui.SC',null,{
                 _.tryF(self.$cb,[self.$tag,text,threadid],t||ep(s)||{});
                 if(t&&t.KEY!=s)
                     _.asyRun(function(){
-                        throw "Class namespace '"+s+"' and path '"+this.uri+"' maybe do not match!";
+                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                     });
             },fe=function(text){
                 var self=this;
@@ -3443,19 +3504,21 @@ Class('xui.absObj',"xui.absBox",{
                             });
                         else{
                             var args=[], v=this.get(0), t=v[i], k=v.host || v,j,o,r;
-                            if(v.$inDesign)return;
-                            if(arguments[0]!=v)args[0]=v;
-                            for(j=0;j<l;j++)args[args.length]=arguments[j];
-                            v.$lastEvent=i;
-                            if(!_.isArr(t))t=[t];
-                            l=t.length;
-                            for(j=0;j<l;j++){
-                                o=t[j];
-                                if(typeof o=='string')o=k[o];
-                                if(typeof o=='function')r=_.tryF(o, args, k);
-                                else if(_.isHash(o))r=_.tryF(v.box._handleEventConf,[o,args],k);
+                            if(t){
+                                if(v.$inDesign)return;
+                                if(arguments[0]!=v)args[0]=v;
+                                for(j=0;j<l;j++)args[args.length]=arguments[j];
+                                v.$lastEvent=i;
+                                if(!_.isArr(t))t=[t];
+                                l=t.length;
+                                for(j=0;j<l;j++){
+                                    o=t[j];
+                                    if(typeof o=='string')o=k[o];
+                                    if(typeof o=='function')r=_.tryF(o, args, k);
+                                    else if(_.isHash(o))r=xui.pseudocode.exec(o,args,k);
+                                }
+                                return r;
                             }
-                            return r;
                         }
                     };
                     f.$event$=1;
