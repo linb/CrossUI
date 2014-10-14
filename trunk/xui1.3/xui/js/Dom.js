@@ -1509,7 +1509,7 @@ Class('xui.Dom','xui.absBox',{
             //prepare
             target.css({position:'absolute',left:xui.Dom.HIDE_VALUE, top:xui.Dom.HIDE_VALUE,display:'block', zIndex:xui.Dom.TOP_ZINDEX++});
 
-            if(pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string'){
+            if(pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string'){
                 if(typeof(type)!="function"){
                     type=(type||12)+'';
                 }
@@ -1594,7 +1594,7 @@ type:4
                     h = target.offsetHeight(),
                     arr=type.split(/-/g);
                 if(arr.length==2){
-                    var vp=arr[0],hp=arr[1];
+                    var hp=arr[0],vp=arr[1];
                     switch(vp){
                         case "outertop":
                             pos.top=region.top-h;break;

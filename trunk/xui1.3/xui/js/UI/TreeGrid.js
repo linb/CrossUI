@@ -391,9 +391,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if('sub' in options){
                         t=ns.getSubNode('ROWTOGGLE',rid);
                         if(options.sub)
-                            t.removeClass('xui-uicmd-empty').addClass('xui-uicmd-toggle2')
+                            t.removeClass('xui-uicmd-none').addClass('xui-uicmd-toggle2')
                         else
-                            t.removeClass('xui-uicmd-toggle2').addClass('xui-uicmd-empty')
+                            t.removeClass('xui-uicmd-toggle2').addClass('xui-uicmd-none')
                     }
 
                     if(t=options.height)
@@ -1403,30 +1403,30 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     style:'{cellStyle}{firstCellStyle}',
                                     className:'{cellClass}{firstCellClass}',
                                     ROWLRULER:{
+                                        $order:1,
                                         style:'{_treeMode};width:{_rulerW}px'
                                     },
-                                    ROWTOGGLE:{
+                                    MARK:{
                                         $order:2,
+                                        style:'{_rowMarkDisplay}'
+                                    },
+                                    ROWNUM:{
+                                        $order:3,
+                                        style:'{_rowNumbDisplay}'
+                                    },
+                                    ROWTOGGLE:{
+                                        $order:4,
                                         style:'{_treeMode};',
                                         className:'{subClass}'
                                     },
+                                    FCELLCAPTION:{
+                                        $order:5,
+                                        text:'{caption}'
+                                    },
                                     FHANDLER:{
+                                        $order:6,
                                         tagName:'div',
                                         style:'{rowDDDisplay}'
-                                    },
-                                    FCELLINN:{
-                                        $order:3,
-                                        ROWNUM:{
-                                            style:'{_rowNumbDisplay}'
-                                        },
-                                        FCELLCAPTION:{
-                                            $order:1,
-                                            text:'{caption}'
-                                        }
-                                    },
-                                    MARK:{
-                                        $order:1,
-                                        style:'{_rowMarkDisplay}'
                                     }
                                 }
                             },
@@ -1474,7 +1474,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLA:{
                             _NativeElement:true,
                             tagName:'button',
-                            className:'xui-treegrid-tgbtn {cellClass}',
+                            className:'xui-wrapper xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -1661,7 +1661,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'padding-right':'1px',
                 overflow:'visible'
             },
-            'CELLS-group FCELLCAPTION, CELLS-group CELLA, CELLS-group FCELLINN':{
+            'CELLS-group FCELLCAPTION, CELLS-group CELLA, CELLS-group ROWNUM':{
                 'font-weight':'bold',
                 color:'#3764A0',
                 overflow:'visible'
@@ -1743,7 +1743,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'font-size':0,
                 'line-height':0
             },
-            'FCELLCAPTION, FCELLINN':{
+            'FCELLCAPTION, ROWNUM':{
                 'vertical-align':'middle',
                 overflow:'hidden'
             },
@@ -1954,7 +1954,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
-                        id = profile.getSubId(src)
+                        id = profile.getSubId(src),
                         col = profile.colMap[id];
                     if(col && col.relWidth)return;
 
@@ -3504,7 +3504,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 w=flag;
             else if(flag===true){
                 var ws=[],t;
-                profile.getSubNode('FCELLINN',true).each(function(o){
+                profile.getSubNode('FCELLCAPTION',true).each(function(o){
                     if((t=o.parentNode).parentNode.offsetHeight>0 && xui.Dom.getStyle(t,'overflow')!='visible')
                         if(n=map[profile.getSubId(o.id)])
                             ws.push(xui([o]).width() + n._layer*ww);
@@ -4130,7 +4130,7 @@ editorEvents
                 cells = t.cells = [];
 
                 t[SubID]=temp;
-                t.subClass = row.sub?'xui-uicmd-toggle2':'xui-uicmd-empty';
+                t.subClass = row.sub?'xui-uicmd-toggle2':'xui-uicmd-none';
 
                 // id to dom item id
                 a[row.id]=temp;
@@ -5243,7 +5243,7 @@ editorEvents
                 }
             });
 
-            var fixW=0,relWTotal=0,relWCol=[],relWCol2=[];
+            var fixW=0,relWTotal=0,relWCol=[],relWCol2=[],overflowX;
             if(prop.rowHandler){
                 borderC++;
                 fixW=prop.rowHandlerWidth;

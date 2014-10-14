@@ -1017,6 +1017,16 @@ _.set(xui.Locale,["en","app"], {
                 "xui.include('App.doesntexist', 'App/js/doesntexist.js', function(){alert('success');},function(){alert('fail')});"
             ]
         },
+        mailTo:{
+            $desc:"Pop up system email window.",
+            $paras:[
+                "email [Required]: String, email addrss",
+                "subject [Optional]: String, email subject",
+                "body [Optional]: String, email  body",
+                "cc [Optional]: String, cc address",
+                "bcc  [Optional]: String, bcc address"
+            ]
+        },
         require:{
             $desc:"Requires a class.",
             $paras:[
@@ -3525,7 +3535,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "pos [Reqired] : {left:Number,top:Number} Object(The css left and top value) or xui.Dom Object(for getting position).",
-                    "type [Optional] : String. one of 'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright','1','2','3','4','12','21'.Default is 'outer'.",
+                    "type [Optional] : String. one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'.Default is 'outer'.",
                     "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]."
                 ],
                 $snippet:[
@@ -7918,7 +7928,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Sets hover pop type.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : String, one of 'outer','inner','outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright','top-outerleft','top-left','top-center','top-right','top-outerright','middle-outerleft','middle-left','middle-center','middle-right','middle-outerright','bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright','outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright','1','2','3','4','12','21'. Default is 'outer'.",
+                    "value [Required] : String, one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'. Default is 'outer'.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },

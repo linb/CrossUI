@@ -790,7 +790,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             });
         },
         _onresize:function(profile,width,height){
-            var t=profile.properties,
+            var t=profile.properties,itemId,
                 key=profile.keys.ITEM,
                 panel=profile.keys.PANEL,
                 move=profile.getSubNode('MOVE',true),

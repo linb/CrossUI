@@ -998,7 +998,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'),null,a);
+                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'),null,ignoreEffects);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -3617,11 +3617,11 @@ Class("xui.UI",  "xui.absObj", {
             hoverPopType:{
                 ini:'outer',
                 listbox:['outer','inner',
-                'outertop-outerleft','outertop-left','outertop-center','outertop-right','outertop-outerright',
-                'top-outerleft','top-left','top-center','top-right','top-outerright',
-                'middle-outerleft','middle-left','middle-center','middle-right','middle-outerright',
-                'bottom-outerleft','bottom-left','bottom-center','bottom-right','bottom-outerright',
-                'outerbottom-outerleft','outerbottom-left','outerbottom-center','outerbottom-right','outerbottom-outerright'
+                'outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop',
+                'outerleft-top','left-top','center-top','right-top','outerright-top',
+                'outerleft-middle','left-middle','center-middle','right-middle','outerright-middle',
+                'outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom',
+                'outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom'
                 ]
             },
             dock:{
@@ -4678,8 +4678,10 @@ Class("xui.absList", "xui.absObj",{
                     if(typeof self.setUIValue=='function'){
                         var uiv=profile.properties.$UIvalue||"", arr=(''+uiv).split(profile.properties.valueSeparator);
                         if(arr.length && _.arr.indexOf(arr, subId)!=-1){
-                            if(nid)_.arr.removeValue(arr,subId);
-                            arr.push(item.id);
+                            if(nid){
+                                _.arr.removeValue(arr,subId);
+                                arr.push(item.id);
+                            }
                             self.setUIValue(arr.join(profile.properties.valueSeparator), true);
                         }
                     }
@@ -5010,23 +5012,19 @@ Class("xui.absValue", "xui.absObj",{
             this.each(function(profile){
                 var prop=profile.properties, r,
                     ovalue = prop.$UIvalue,
-                    box = profile.boxing(),
-                    changed = ovalue !== value;
+                    box = profile.boxing();
+                if(force || (ovalue !== value)){
+                    if(
+                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
+                      )
+                        return;
 
-                if(changed || force){
-                    if(changed){
-                        if(
-                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
-                          )
-                            return;
-    
-                        //can get return value
-                        if(r!==undefined && typeof r!=='boolean')value=r;
-                        //before _setCtrlValue
-                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
-                            value = r.call(profile.box, profile, value);
-                    }
+                    //can get return value
+                    if(r!==undefined && typeof r!=='boolean')value=r;
+                    //before _setCtrlValue
+                    if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
+                        value = r.call(profile.box, profile, value);
                     if(typeof(r=profile.$onUIValueSet)=='function'){
                         r=r.call(profile,value);
                         if(_.isSet(r))value=r;
@@ -5035,20 +5033,16 @@ Class("xui.absValue", "xui.absObj",{
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
 
-                    if(changed){
-                        //value copy
-                        prop.$UIvalue = value;
-                    }
+                    //value copy
+                    prop.$UIvalue = value;
 
                     if(profile.renderId)box._setDirtyMark();
 
-                    if(changed){
-                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
-                        if(profile.onChange)box.onChange(profile, ovalue, value);
-    
-                        if(!prop.dirtyMark)
-                            box.setValue(value);
-                    }
+                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
+                    if(profile.onChange)box.onChange(profile, ovalue, value);
+
+                    if(!prop.dirtyMark)
+                        box.setValue(value);
                 }
             });
             return this;
@@ -5658,7 +5652,7 @@ new function(){
                 _NativeElement:true,
                 tagName:'{nodeName}',
                 // dont set class to HTML Element
-                className:'{_className}',
+                className:'xui-wrapper {_className}',
                 style:'{_style};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',
@@ -5738,7 +5732,7 @@ new function(){
                 _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'{_className}',
+                className:'xui-wrapper {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag
