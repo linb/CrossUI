@@ -15695,6 +15695,7 @@ Class("xui.svg", "xui.UI",{
                             hh=('height' in h)?h.height:null,
                             opath= h.path ||attr.path,
                             npath=Raphael.transformPath(opath, "s"+((_.isSet(ww)&&ww!==obbox2.width)?(obbox2.width===0?(ww>=0?1.1:0.9):ww/obbox2.width):"1")+","+((_.isSet(hh)&&hh!==obbox2.height)?(obbox2.height===0?(hh>=0?1.1:0.9):hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
+/*
                         if(_.isStr(opath)){
                             if(/[mlhvcsqtaz]/.test(opath)){
                                 opath = Raphael._pathToAbsolute(opath);
@@ -15736,7 +15737,7 @@ Class("xui.svg", "xui.UI",{
                                 }
                             }
                         }
-
+*/
                         h.path=npath.join('');
                     }
                 }break;

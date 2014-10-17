@@ -5016,7 +5016,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(force || (ovalue !== value)){
                     if(
                         (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
+                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force)))
                       )
                         return;
 
@@ -5038,8 +5038,8 @@ Class("xui.absValue", "xui.absObj",{
 
                     if(profile.renderId)box._setDirtyMark();
 
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
-                    if(profile.onChange)box.onChange(profile, ovalue, value);
+                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force);
+                    if(profile.onChange)box.onChange(profile, ovalue, value, force);
 
                     if(!prop.dirtyMark)
                         box.setValue(value);
@@ -5474,17 +5474,6 @@ new function(){
                 }
             },
             DataModel:{
-/*custom property test for UIDesigner
-                test:{
-                    ini:1,
-                    custom:function(p,k,v,submit){
-                        console.log(p,k,v);
-                        _.asyRun(function(){
-                            submit(++v);
-                        });
-                    }
-                },
-*/
                 image:{
                    format:'image',
                     action: function(value){
@@ -5956,7 +5945,7 @@ new function(){
             Templates:{
                 tagName:'div',
                 className:'xui-nooutline {_className}',
-                style:'{_style};{_overflow};',
+                style:'{_style};{_panelstyle};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag

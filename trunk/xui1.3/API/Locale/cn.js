@@ -17183,6 +17183,18 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getEditMode:{
+                $desc:"获取编辑模式. 'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'.",
+                $rtn:"String"
+            },
+            setEditMode:{
+                $desc:"设置编辑模式. ",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getShowHeader :{
                 $desc:"判断是否显示表头",
                 $rtn:"Boolean",
@@ -19606,6 +19618,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'selMode':'表格点选模式',
             'altRowsBg':'背景色区分行',
             'rowNumbered':'显示行号',
+            "editMode":"编辑模式",
             'editable':'可编辑',
             'iniFold':'默认收缩子行',
             'animCollapse':'收展动画',
@@ -19616,7 +19629,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'rowHandler':'行头手柄',
             'rowHandlerWidth':'行头手柄宽',
             'rowResizer':'可拖动改变行高',
-            'colHidable':'隐藏列',
+            'colHidable':'可隐藏列',
             'colResizer':'拖动改变列宽',
             'colSortable':'可排序列',
             'colMovable':'可移动列',
@@ -19837,7 +19850,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforePopShow:"显示弹出窗口前",
             afterPopShow:"显示弹出窗口后",
             afterPopHide:"隐去弹出窗口后",
-            onClick:"点击",
+            onClick:"点击输入框",
             onCommand:"点击命令按钮",
             onFileDlgOpen:"打开文件选择框"
         },

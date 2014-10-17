@@ -17252,6 +17252,18 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getEditMode:{
+                $desc:"Sets edit moce . 'focus', 'sharp', 'hover' or 'inline'. Default is 'focus'.",
+                $rtn:"String"
+            },
+            setEditMode:{
+                $desc:"Gets edit moce .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. 'focus', 'sharp', 'hover' or 'inline'. ",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getShowHeader :{
                 $desc:"To determines whether grid header shows up or not",
                 $rtn:"Boolean",

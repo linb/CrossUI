@@ -192,6 +192,9 @@ Class('xui.Com',null,{
             else self.create(f,threadid);
             return self;
         },
+        hide:function(){
+            this.getUIComponents(true).hide();
+        },
         render:function(triggerLayout){
             var self=this;
             if(self.renderId!='ok'){
