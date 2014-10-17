@@ -30,7 +30,7 @@ Class("xui.History",null,{
                         self._itimer = setInterval(self._checker,100);
                     break;
                 }
-                self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')));
+                self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true);
             }else{
                 if(self._itimer)
                     clearInterval(self._itimer);

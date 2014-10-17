@@ -1125,6 +1125,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     ifr.id=ifr.name=id;
                     if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
+                    item._frameName=id;
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();

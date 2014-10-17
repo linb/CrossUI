@@ -1355,9 +1355,9 @@ Class('xui.Dom','xui.absBox',{
         inn:true for include the inner node
         set:true for give focus
         */
-        nextFocus:function(downwards, includeChild, setFocus){
+        nextFocus:function(downwards, includeChild, setFocus, pattern){
             downwards=_.isBool(downwards)?downwards:true;
-            var self=this.get(0),node = this.$iterator('',downwards,includeChild,function(node){return node!==self && xui([node]).$canFocus()});
+            var self=this.get(0),node = this.$iterator('',downwards,includeChild,function(node){return node!==self && (!pattern || (node.id&&pattern.test(node.id))) && xui([node]).$canFocus()});
             if(!node.isEmpty() && setFocus!==false)node.focus();
             self=null;
             return node;

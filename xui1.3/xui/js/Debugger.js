@@ -129,7 +129,7 @@ Class('xui.Debugger', null, {
             if(!xui.debugMode)return false;
             xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
         };
-        xui.message = function(body, head, width, time){
+        xui.message = function(body, head, width, duration){
            width = width || 200;
            if(xui.browser.ie)width=width+(width%2);
            var div, h, me=arguments.callee,
@@ -212,7 +212,7 @@ Class('xui.Debugger', null, {
                      div.hide();
                      div.__hide=1;
                 },300,0).start();
-            }, time||5000);
+            }, duration||5000);
             me=null;
         };
 

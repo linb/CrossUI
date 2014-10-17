@@ -56,8 +56,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
                         
+                    ins.activate();
                     var tt=profile._$rs_args,fun=function(){
-                        ins.activate();
                         if(profile.onShow)profile.boxing().onShow(profile);                            
                         delete profile.inShowing;
                         _.tryF(callback);

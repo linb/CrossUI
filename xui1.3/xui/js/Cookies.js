@@ -12,13 +12,14 @@ Class("xui.Cookies", null,{
     		return this;
         },
         get:function(name){
-        	var i,a,ca = document.cookie.split( "; " );
+        	var i,a,ca = document.cookie.split( "; " ),hash={};
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
-        		if(a[0]==escape(name))
-        		    return a[1]?unescape(a[1]):'';
+        	        hash[a[0]]=a[1]?unescape(a[1]):'';
+        		if(name && a[0]==escape(name))
+        		    return hash[a[0]];
         	}
-        	return null;
+        	return name?null:hash;
         },
         remove:function(name){
         	return this.set(name,"",-1).set(name,"/",-1);

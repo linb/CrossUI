@@ -1054,6 +1054,9 @@ _.merge(xui,{
                 tmp=path.split('-');
                 path=tmp[0];
                 params=tmp;
+            }else if(_.isArr(params[1])){
+                params=params[1];
+                params.unshift(path);
             }
             arr=path.split(".");
             arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
@@ -1081,7 +1084,7 @@ _.merge(xui,{
         return '<span id="'+xui.$localeDomId+'" class="'+s.replace(/([\x01\x02\x03\x04])/g,function(a){return '$'+xui._unescapeMap[a];})+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
-    adjustRes:function(str, wrap, onlyBraces, onlyVars){
+    adjustRes:function(str, wrap, onlyBraces, onlyVars, params, scope){
         if(!_.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
@@ -1089,16 +1092,23 @@ _.merge(xui,{
                     // protect $@{
             return c=='$' ? onlyVars?a:d :
                     // $a.b.c-1-3
-                    f=='$' ? onlyVars?a:wrap(g) :
+                    f=='$' ? onlyVars?a:wrap(g,params) :
                     // $(a.b.c-d) 
-                    i=='$' ? onlyVars?a:wrap(j) : 
+                    i=='$' ? onlyVars?a:wrap(j,params) : 
                     // $a
-                    l=='$' ? onlyVars?a:wrap(m) :
+                    l=='$' ? onlyVars?a:wrap(m,params) :
                     // variable: @a@ @a.b.c@ {a.b.c}
-                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:""))
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x,scope)) || (_.isSet(z)?z:""))
                      : a;
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
+    },
+    adjustVar:function(obj,scope,t){
+        return typeof(obj)=="string" ?
+                    (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
+                    xui.SC.get(t[1], scope)
+                   : xui.adjustRes(obj, false, true, true, null, scope)
+                   : obj;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return (
@@ -1241,12 +1251,13 @@ _.merge(xui,{
     },
     getClassName:function(uri){
         var a=uri.split(/\/js\//g),
-            b,c;
-        if(_.isSet(a[1])){
-            b=a[0].split(/\//g);
+            b,c,n=a.length;
+        if(n>=2){
+            // get the last one: any/js/any/App/js/index.js
+            b=a[n-2].split(/\//g);
             b=b[b.length-1];
-            a=a[1].replace(/\.js$/i,"");
-          return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
+            a=a[n-1].replace(/\.js$/i,"");
+            return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
         }
     },
     log:_.fun(),
@@ -1586,41 +1597,108 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope){
+        exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
-                scope=conf.scope==="[this]"?scope:conf.scope,
+                _ns={
+                    "temp":temp,
+                    "page":scope,
+                    "args":args,
+                    "global":xui.$cache.data
+                },
                 target=conf.target,
                 method=conf.method+"",
                 params=conf.params||[],
+                iparams=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             if(target && method && target!="none"&&method!="none"){
+                _.arr.each(params,function(o){
+                    if(typeof(o)=="string"){
+                        o=_.str.trim(o);
+                        // for file
+                        if(_.str.startWith(o,"[data]")){
+                            o=xui.getFileSync(o.replace("[data]",""));
+                            o=_.unserialize(o);
+                        }else
+                            o=xui.adjustVar(o, _ns);
+                    }
+                    iparams.push(o);
+                });
                 if(method.indexOf("-")){
-                    t=method.split(/-/g);
+                    t=method.split("-");
                     method=t[0];
                     for(var i=1,l=t.length;i<l;i++)
-                        if(t[i])params[i-1]=t[i];
+                        if(t[i])iparams[i-1]=t[i];
                 }
                 var fun=function(){
                     switch(type){
                         case 'page':
+                            // handle switch
+                            if(method=="switch"){
+                                if(!xui.History._callback){
+                                    xui.History.setCallback(function(fi,init){
+                                       if(init)return;
+                                       var ar=_.urlDecode(fi||"");
+                                       if(!ar.xuicom){
+                                            ar.xuicom="App";
+                                            ar.cache=true;
+                                        }
+                                        if(!ar.cache){
+                                            xui.Com.destroyAll();
+                                        }else{
+                                            _.each(xui.Com.getAllInstance(),function(o){
+                                                o.hide();
+                                            });
+                                        }
+                                        xui.showCom(ar.xuicom);
+                                    });
+                                }
+                                
+                                var fi="xuicom="+target;
+                                if(iparams[0])fi+="&cache="+(iparams[0]?"1":"0")
+                                xui.History.setFI(fi);
+                                return;
+                            }
+                            // try to get com
+                            var cls=_.get(window,target.split(".")),ins;
+                            // get first one
+                            if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
+
+                            // handle hide / destroy
+                            if(method=="show"){
+                                // handle other methods
+                                var ff=function(err,ins){
+                                    if(err)return;
+                                    // special for xui.Com.show
+                                    iparams.unshift(null);
+                                    if(_.isFun(t=_.get(ins,[method])))t.apply(ins,iparams);
+                                };
+                                if(!ins)xui.getCom(target,ff);  else ff(null, ins);
+                            }else{
+                                if(ins && _.isFun(t=_.get(ins,[method])))t.apply(ins,iparams)
+                                return;
+                            }
                             break;
                         case 'control':
-                                if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],params);
+                                if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],iparams);
                             break;
                         case 'other':
                             switch(target){
                                 case 'url':
                                     switch(method){
                                         case "open":
-                                            window.open.apply(null, params);
+                                            window.open(iparams[0],iparams[1],iparams[2],iparams[3]);
                                             break;
                                         case "mailTo":
-                                            xui.mailTo.apply(xui,params);
+                                            xui.mailTo.apply(xui,iparams);
                                             break;
                                     }
                                 break;
-                                case 'dlg':
-                                    if(_.isFun(t=_.get(xui,[method])))t.apply(xui,params);
+                                case 'msg':
+                                    if(method=="busy"||method=="free"){
+                                        if(_.isFun(t=_.get(xui.Dom,[method])))t.apply(xui.Dom,iparams);
+                                    }else{
+                                        if(_.isFun(t=_.get(xui,[method])))t.apply(xui,iparams);
+                                    }
                                 break;
                             }
                             break;
@@ -1632,9 +1710,9 @@ new function(){
             }
 
             return conf["return"];
-        },
-        toCode:function(conf, args, scope){
-        }
+        }/*,
+        toCode:function(conf, args, scope,temp){
+        }*/
     };
 };
 /*xui.Thread
@@ -3511,13 +3589,33 @@ Class('xui.absObj',"xui.absBox",{
                                 v.$lastEvent=i;
                                 if(!_.isArr(t))t=[t];
                                 l=t.length;
-                                for(j=0;j<l;j++){
-                                    o=t[j];
-                                    if(typeof o=='string')o=k[o];
-                                    if(typeof o=='function')r=_.tryF(o, args, k);
-                                    else if(_.isHash(o))r=xui.pseudocode.exec(o,args,k);
-                                }
-                                return r;
+                                // alert/confirm/prompt will pause the chain, and resume
+                                // prompt will give some input
+                                var temp={};
+                                var n=0,fun=function(input){
+                                    // set prompt's global var
+                                    if(_.isSet(input))
+                                        temp.input=input;
+                                        //_.set(xui.$cache.data,['pseudocode','input'],input);
+                                    //resume from [n]
+                                    for(j=n;j<l;j++){
+                                        n=j+1;
+                                        o=t[j];
+                                        if(typeof o=='string')o=k[o];
+                                        if(typeof o=='function')r=_.tryF(o, args, k);
+                                        else if(_.isHash(o)){
+                                            if(o.resume){
+                                                // resume
+                                                (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
+                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                                break;
+                                            }else
+                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                        }
+                                    }
+                                    return r;
+                                };
+                                return fun();
                             }
                         }
                     };
@@ -8627,9 +8725,9 @@ Class('xui.Dom','xui.absBox',{
         inn:true for include the inner node
         set:true for give focus
         */
-        nextFocus:function(downwards, includeChild, setFocus){
+        nextFocus:function(downwards, includeChild, setFocus, pattern){
             downwards=_.isBool(downwards)?downwards:true;
-            var self=this.get(0),node = this.$iterator('',downwards,includeChild,function(node){return node!==self && xui([node]).$canFocus()});
+            var self=this.get(0),node = this.$iterator('',downwards,includeChild,function(node){return node!==self && (!pattern || (node.id&&pattern.test(node.id))) && xui([node]).$canFocus()});
             if(!node.isEmpty() && setFocus!==false)node.focus();
             self=null;
             return node;
@@ -11343,6 +11441,9 @@ Class('xui.Com',null,{
             else self.create(f,threadid);
             return self;
         },
+        hide:function(){
+            this.getUIComponents(true).hide();
+        },
         render:function(triggerLayout){
             var self=this;
             if(self.renderId!='ok'){
@@ -11718,13 +11819,14 @@ Class("xui.Cookies", null,{
     		return this;
         },
         get:function(name){
-        	var i,a,ca = document.cookie.split( "; " );
+        	var i,a,ca = document.cookie.split( "; " ),hash={};
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
-        		if(a[0]==escape(name))
-        		    return a[1]?unescape(a[1]):'';
+        	        hash[a[0]]=a[1]?unescape(a[1]):'';
+        		if(name && a[0]==escape(name))
+        		    return hash[a[0]];
         	}
-        	return null;
+        	return name?null:hash;
         },
         remove:function(name){
         	return this.set(name,"",-1).set(name,"/",-1);
@@ -13733,7 +13835,7 @@ Class("xui.Tips", null,{
                         self._itimer = setInterval(self._checker,100);
                     break;
                 }
-                self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')));
+                self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true);
             }else{
                 if(self._itimer)
                     clearInterval(self._itimer);
@@ -14134,7 +14236,7 @@ Class("xui.Tips", null,{
             if(!xui.debugMode)return false;
             xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
         };
-        xui.message = function(body, head, width, time){
+        xui.message = function(body, head, width, duration){
            width = width || 200;
            if(xui.browser.ie)width=width+(width%2);
            var div, h, me=arguments.callee,
@@ -14217,7 +14319,7 @@ Class("xui.Tips", null,{
                      div.hide();
                      div.__hide=1;
                 },300,0).start();
-            }, time||5000);
+            }, duration||5000);
             me=null;
         };
 
@@ -19246,7 +19348,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(force || (ovalue !== value)){
                     if(
                         (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value)))
+                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force)))
                       )
                         return;
 
@@ -19268,8 +19370,8 @@ Class("xui.absValue", "xui.absObj",{
 
                     if(profile.renderId)box._setDirtyMark();
 
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value);
-                    if(profile.onChange)box.onChange(profile, ovalue, value);
+                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force);
+                    if(profile.onChange)box.onChange(profile, ovalue, value, force);
 
                     if(!prop.dirtyMark)
                         box.setValue(value);
@@ -19704,17 +19806,6 @@ new function(){
                 }
             },
             DataModel:{
-/*custom property test for UIDesigner
-                test:{
-                    ini:1,
-                    custom:function(p,k,v,submit){
-                        console.log(p,k,v);
-                        _.asyRun(function(){
-                            submit(++v);
-                        });
-                    }
-                },
-*/
                 image:{
                    format:'image',
                     action: function(value){
@@ -20186,7 +20277,7 @@ new function(){
             Templates:{
                 tagName:'div',
                 className:'xui-nooutline {_className}',
-                style:'{_style};{_overflow};',
+                style:'{_style};{_panelstyle};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag
@@ -24525,7 +24616,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             width:400,
             height:300,
             frameTemplate:{
-                ini:'<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>',
+                ini:'<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>',
                 action:function(){
                     this.boxing().refresh();
                 }
@@ -32601,6 +32692,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     ifr.id=ifr.name=id;
                     if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
+                    item._frameName=id;
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();
@@ -37314,7 +37406,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         pid,base are item id
         before: insert before?
         */
-        _insertRowsToDom:function(profile, arr, pid, base, before){
+        _insertRowsToDom:function(profile, arr, pid, base, before,temp){
             //if parent not open, return
             if(pid){
                 var parent = profile.rowMap[pid];
@@ -37324,6 +37416,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 arr=[];
 
             var obj,hw,
+                box=profile.box,
                 hw=profile.getSubNode('FHCELL').width();
             //give width at here
             _.arr.each(arr,function(o){
@@ -37355,6 +37448,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 else{
                     obj.addNext(nodes);
                 }
+            }
+
+            if(temp&&temp.length){
+                _.arr.each(temp,function(o){
+                       if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                            box._editCell(profile,o);
+                });
+                temp.length=0;
             }
 
             //add sub
@@ -37632,9 +37733,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             t.removeClass('xui-uicmd-toggle2').addClass('xui-uicmd-none')
                     }
 
-                    if(t=options.height)
-                        ns.getSubNode('CELLS',rid).height(t);
-
+                    if(t=options.height){
+                        profile.box._adjusteditorH(profile, ns.getSubNode('CELLS',rid).height(orow._height=t),t);
+                    }
                     if(t=options.rowStyle)
                         (tt=ns.getSubNode('CELLS',rid)).attr('style',tt.attr('style')+";"+t);
 
@@ -37735,8 +37836,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     // if insert to root, or the parent node is inited
                     if(!pid || k._inited){
                         //prepareData(add links)
-                        rows = c._prepareItems(profile, arr, pid);
-                        this._insertRowsToDom(profile, rows, pid, base, before, arr);
+                        temp=[];
+                        rows = c._prepareItems(profile, arr, pid,temp);
+                        this._insertRowsToDom(profile, rows, pid, base, before,temp);
 
                         //render
                         _.arr.each(arr,function(o){
@@ -37928,6 +38030,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             cells=_.isArr(cells)?cells:[];
             var k=0,
                 applaycell=function(rows){
+                    var temp=[];
                     _.arr.each(rows,function(row,i){
                         if(row.group){
                             applaycell(row.sub);
@@ -37936,7 +38039,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             // this row was rendered
                             base=profile.getSubNode('CELLS',row._serialId).children().get(pos);
                             if(base){
-                                cellResult = box._parepareCell(profile,cell,row,col);
+                                cellResult = box._parepareCell(profile,cell,row,col,temp);
 
                                 // original cell only
                                 _.arr.insertAny(row.cells, cellResult[0], pos);
@@ -37949,6 +38052,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         k++;
                     });
+                    if(temp.length){
+                        _.arr.each(temp,function(o){
+                               if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                                    box._editCell(profile,o);
+                        });
+                        temp.length=0;
+                    }
                 };
             if(rows&&_.isArr(rows)){
                 applaycell(rows);
@@ -38220,7 +38330,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             _.each(colh._cells,function(o){
                                 n.push(ns.getSubNode('CELL',o).get(0));
                             });
-                            xui(n).width(colh._pxWidth=t);
+                            prf.box._adjusteditorW(prf, xui(n).width(colh._pxWidth=t),t);
 
                             ns.getSubNode('SCROLL').onScroll();
                             ns.constructor._adjustColsH(ns.get(0));
@@ -39258,8 +39368,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
 
                     o.width(w);
-                    if(col)col._pxWidth=col.width=w;
 
+                    if(col)col._pxWidth=col.width=w;
                     //collect cell id
                     var ids=[],ws=[];
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
@@ -39269,7 +39379,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         _.each(cells,function(o){
                             ids.push(profile.getSubNode(profile.keys.CELL,o).id())
                         });
-                        xui(ids).width(w);
+                        profile.box._adjusteditorW(profile, xui(ids).width(w),w);
                     }
 
                     if(profile.afterColResized)
@@ -39328,10 +39438,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             w=Math.max(col.minWidth,w);
                     }
 
-                    xui(ns).parent().width(w);
-                    o.width(col._pxWidth=col.width=w);
+                    profile.box._adjusteditorW(profile, xui(ns).parent().width(w),w);
+                    profile, o.width(col._pxWidth=col.width=w);
                     xui(ns).removeClass(cls);
-
                     if(profile.afterColResized)
                         profile.boxing().afterColResized(profile,col.id,w);
 
@@ -39402,8 +39511,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile._limited=0;
                         return;
                     }
+                    
+                    profile.box._adjusteditorH(profile, o.height(row._height=h),h);
 
-                    o.height(h);
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
                         profile.properties.headerHeight=h;
                         profile.box._adjustColsV(profile,h);
@@ -39432,7 +39542,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(profile.beforeRowResized && false===profile.boxing().beforeRowResized(profile, row.id, h))
                             return;
 
-                        cells.height(row.height=h);
+                        profile.box._adjusteditorH(profile, cells.height(row.height=row._height=h),h);
                     }else{
                         // fake
                         var h=(profile._headerLayers||0)*profile.box.$DataStruct.headerHeight;
@@ -39626,7 +39736,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui(src).parent().onMouseout(true,{$force:true});
                     xui(src).onMouseup(true);
                 },
-                beforeMouseover:function(profile, e, src){
+                beforeMouseover:function(profile, e, src){ 
                     var p=profile.properties,
                         id = profile.getSubId(src),
                         col = profile.colMap[id];
@@ -39900,11 +40010,25 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             CELL:{
                 afterMouseover:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return;
+                    var box=profile.box, p=profile.properties, i=xui.use(src).id();
                     if(p.disableHoverEffect)return;
+                    i=i.split(":")[2];
+                    if(!i)return;
+                    i=profile.cellMap[i];
+                    if(box.getCellOption(profile, i, "disabled"))return;
                     if(p.activeMode=='cell')
                         xui.use(src).tagClass('-mouseover');
+
+                   if(!profile._inHoverEdit && box.getCellOption(profile, i, "editable")&&box.getCellOption(profile, i, "editMode")=="hover"){
+                        _.resetRun(profile.key+":"+profile.$xid+":hovereditor",function(){
+                                if(profile.destroyed)return;
+                                if(profile&&profile.$curEditor){
+                                    editor=profile.$curEditor;
+                                    _.tryF(editor.undo,[],editor);
+                                }
+                                profile.box._editCell(profile, profile.getSubId(src),true);
+                        });
+                    }
                 },
                 afterMouseout:function(profile, e, src){
                     var p=profile.properties;
@@ -40019,8 +40143,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         ctrl=keys.ctrlKey,
                         cur = xui(src),
                         body = profile.getSubNode('ROWS'),
-                        first = body.nextFocus(true, true, false),
-                        last = body.nextFocus(false, true, false),
+                        keyid=new RegExp("^"+profile.box.$Keys.CELLA+":"+profile.serialId+":"),
+                        first = body.nextFocus(true, true, false,keyid),
+                        last = body.nextFocus(false, true, false,keyid),
                         cell=profile.cellMap[profile.getSubId(src)],
                         row;
 
@@ -40035,12 +40160,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     case 'tab':
                         if(shift){
                             if(src!=first.xid()){
-                                cur.nextFocus(false);
+                                cur.nextFocus(false,false,true,keyid);
                                 return false;
                             }
                         }else{
                             if(src!=last.xid()){
-                                cur.nextFocus();
+                                cur.nextFocus(true,false,true,keyid);
                                 return false;
                             }
                         }
@@ -40049,14 +40174,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(cur.get(0)==first.get(0))
                             last.focus();
                         else
-                            cur.nextFocus(false);
+                            cur.nextFocus(false,false,true,keyid);
                         return false;
                         break;
                     case 'right':
                         if(cur.get(0)==last.get(0))
                             first.focus();
                         else
-                            cur.nextFocus();
+                            cur.nextFocus(true,false,true,keyid);
                         return false;
                         break;
                     case 'up':
@@ -40188,6 +40313,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.getSubNodes(['HFMARK','MARK'],true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');
                 }
             },
+            editMode:{
+                ini:'focus',
+                listbox:["focus","sharp","hover","inline"]
+            },
             dock:'fill',
 
             altRowsBg: {
@@ -40308,7 +40437,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             rowHeight:{
                 ini:20,
                 action:function(v){
-                    this.getSubNode('CELLS', true).height(v);
+                    this.box._adjusteditorH(this, this.getSubNode('CELLS', true).height(v),v);
                 }
             },
             _colDfWidth: 80,
@@ -40491,7 +40620,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onCommand:function(profile, cell, proEditor, src){}
         },
         RenderTrigger:function(){
-            var ns=this, pro=ns.properties,ins=ns.boxing();
+            var ns=this, box=ns.box, pro=ns.properties,ins=ns.boxing();
             ns.destroyTrigger=function(){
                 var ns=this, pro=ns.properties;
                 _.breakO([ns.colMap, ns.rowMap, ns.cellMap], 3);
@@ -40518,6 +40647,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
+            
+            _.each(ns.cellMap,function(o){
+                   if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
+                        box._editCell(ns,o);
+            });
         },
         _focusEvent:function(profile, e, src){
             var ins=profile.boxing(),
@@ -40963,7 +41097,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             return [col,forDom];
         },
-        _parepareCell:function(profile,cell,row,col){
+        _parepareCell:function(profile,cell,row,col,temp){
             // build header
             var ns=this,
                 SubID=xui.UI.$tag_subId,
@@ -40983,6 +41117,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns._adjustCell(profile, cell, forDom);
             // cell only link its' dom item id to properties item
             profile.cellMap[forDom[SubID]]=cell;
+            if(temp)temp.push(cell);
             // row link to cell/cell
             row._cells[col.id]=forDom[SubID];
             // header link to cell/cell
@@ -41057,30 +41192,30 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
             return header;
         },
-        _renderCell:function(profile,cell,node,options){
+        // to set uicell, or set dom node directly
+        // uicell and node are not occur at the same time
+        _renderCell:function(profile, cell, uicell, node,options){
             var getPro=profile.box.getCellOption,
-                dom=node['xui.Dom'],
-                ncell=dom?cell:node,
                 type=getPro(profile, cell, 'type'),
                 t1='',
                 t2='',
                 caption,
-                capOut=(!dom)&&node.caption,
+                capOut=('caption' in cell) && xui.adjustRes(cell.caption),
                 reg1=/</g,
                 me=arguments.callee,
                 dcls=me._dcls||(me._dcls=profile.getClass('CELL', '-disabled')),
                 rcls=me._rcls||(me._rcls=profile.getClass('CELL', '-readonly')),
                 //1. _$caption in cell (for special set)
-                //2. caption in ncell(if [ncell] is not [cell], the [caption] maybe is the result of cell.renderer)
+                //2. caption in uicell(if [uicell] is not [cell], the [caption] maybe is the result of cell.renderer)
                 //3. renderer in cell
                 //4. default caption function
                 //5. value in cell
                 //6. ""
-                ren=me._ren||(me._ren=function(profile,cell,ncell,fun){return (
+                ren=me._ren||(me._ren=function(profile,cell,uicell,fun){return (
                         // priority 1
                         typeof cell._$caption=='string'? cell._$caption:
                         // priority 2
-                        typeof ncell.caption =='string'? xui.adjustRes(ncell.caption):
+                        (uicell && typeof uicell.caption =='string') ? uicell.caption:
                         // priority 3
                         typeof (cell.renderer||cell._renderer)=='function'? (cell.renderer||cell._renderer).call(profile,cell) :
                         // priority 4
@@ -41143,102 +41278,102 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'spin':
                     var v=parseFloat(cell.value);
                     cell.value=(v||v===0)?v:null;
-                    caption= capOut ||ren(profile,cell,ncell,f4);
+                    caption= capOut ||ren(profile,cell,uicell,f4);
                     var tpl = getPro(profile, cell, 'numberTpl');
                     if(tpl && caption)
                         caption = tpl.replace("*", caption);
-                    if(dom)
+                    if(node)
                         node.html(caption,false);
                 break;
                 case 'currency':
                     var v=parseFloat((cell.value+"").replace(/[^\d.-]/g,''));
                     cell.value=(v||v===0)?v:null;
                     //  Note that cell value has true numeric value, while caption has currency format with commas.
-                    caption= capOut ||ren(profile,cell,ncell,f5);
+                    caption= capOut ||ren(profile,cell,uicell,f5);
                     var tpl = getPro(profile, cell, 'currencyTpl');
                     if(tpl && caption!=="")
                         caption = tpl.replace("*", caption);
-                    if(dom)
+                    if(node)
                         node.html(caption,false);
                 break;
                 case 'date':
                 case 'datepicker':
                     cell.value= _.isDate(cell.value)?cell.value:_.isFinite(cell.value)?new Date(parseInt(cell.value,10)):null;
-                    caption= capOut || ren(profile,cell,ncell,f1);
-                    if(dom)
+                    caption= capOut || ren(profile,cell,uicell,f1);
+                    if(node)
                         node.html(caption, false);
                 break;
                 case 'datetime':
                     cell.value= _.isDate(cell.value)?cell.value:_.isFinite(cell.value)?new Date(parseInt(cell.value,10)):null;
-                    caption= capOut || ren(profile,cell,ncell,f0);
-                    if(dom)
+                    caption= capOut || ren(profile,cell,uicell,f0);
+                    if(node)
                         node.html(caption, false);
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
                     cell.cellClass = "xui-cls-wordwrap "+cell.cellClass;
-                    caption= capOut ||ren(profile,cell,ncell,f2);
-                    if(dom)
+                    caption= capOut ||ren(profile,cell,uicell,f2);
+                    if(node)
                         node.html(caption,false);
                 break;
                 case 'color':
                 case 'colorpicker':
                     var c=xui.UI.ColorPicker._ensureValue(0,cell.value);
                     cell.value=cell.value?((c!=="transparent"?'#':'')+c):"";
-                    caption= capOut ||ren(profile,cell,ncell);
+                    caption= capOut ||ren(profile,cell,uicell);
                     if(cell.value){
                         t1=xui.UI.ColorPicker.getTextColor(cell.value);
-                        if(dom){
+                        if(node){
                             node.html(caption,false);
                             node.css('color',t1).css('backgroundColor',cell.value);
                         }else{
-                            node.color='color:'+t1+';';
-                            node.bgcolor='background-color:'+cell.value+';';
+                            uicell.color='color:'+t1+';';
+                            uicell.bgcolor='background-color:'+cell.value+';';
                         }
                     }else{
-                        if(dom){
+                        if(node){
                             node.html(caption,false);
                             node.css('color','').css('backgroundColor','');
                         }else{
-                            //node.color='color:#000;';
-                            //node.bgcolor='background-color:#fff;';
+                            //uicell.color='color:#000;';
+                            //uicell.bgcolor='background-color:#fff;';
                         }
                     }
                 break;
                 case 'checkbox':
                     cell.value=!!cell.value;
                     caption=cell.value+'';
-                    if(dom)
+                    if(node)
                         node.first().tagClass('-checked', cell.value);
                     else
-                        node.checkboxCls = profile.getClass('CHECKBOX', cell.value?'-checked':'');
+                        uicell.checkboxCls = profile.getClass('CHECKBOX', cell.value?'-checked':'');
                 break;
                 case 'progress':
                     cell.value=parseFloat(cell.value)||0;
                     cell.value=Math.min(Math.max(cell.value,0),1);
-                    caption= capOut ||ren(profile,cell,ncell,f3);
-                    if(dom){
+                    caption= capOut ||ren(profile,cell,uicell,f3);
+                    if(node){
                         node.first().html(caption, false).width(caption);
                     }else
-                        node.progress=caption;
+                        uicell.progress=caption;
 
                 break;
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption= capOut ||ren(profile,cell,ncell,f6);
-                    if(dom)node.html((caption===null||caption===undefined)?cell.value:caption,false);
+                    caption= capOut ||ren(profile,cell,uicell,f6);
+                    if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 default:
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption= capOut ||ren(profile,cell,ncell);
-                    if(dom)node.html((caption===null||caption===undefined)?cell.value:caption,false);
+                    caption= capOut ||ren(profile,cell,uicell);
+                    if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
             }
 
             cell._$tips=caption;
 
             var t2=cell.disabled || cell._row.disabled || cell._col.disabled,
                 t3=cell.readonly || cell._row.readonly || cell._col.readonly;
-            if(!dom){
+            if(uicell){
 /*
 colRenderer
 rowRenderer
@@ -41275,14 +41410,12 @@ editorProperties
 editorEvents
 
 */
-                node.cellCls=profile.getClass('CELL', '-'+type) + (t2?(' '+dcls):'') + (t3?(' '+rcls):'');
-                node.type=type;
-                node.value=cell.value;
-                node.caption=caption;
-
-                node.cellStyle=getPro(profile, cell, 'cellStyle');
-                node.cellClass=getPro(profile, cell, 'cellClass');
-
+                uicell.cellCls=profile.getClass('CELL', '-'+type) + (t2?(' '+dcls):'') + (t3?(' '+rcls):'');
+                uicell.type=type;
+                uicell.value=cell.value;
+                uicell.caption=caption;
+                uicell.cellStyle=getPro(profile, cell, 'cellStyle');
+                uicell.cellClass=getPro(profile, cell, 'cellClass');
             }else{
                 if(t2) node.parent().addClass(dcls);
                 else node.parent().removeClass(dcls);
@@ -41295,7 +41428,7 @@ editorEvents
                     node.addClass(t2);
             }
         },
-        _prepareItems:function(profile, arr, pid){
+        _prepareItems:function(profile, arr, pid,temparr){
             var self=this,
                 pro=profile.properties,
                 mm = pro.$subMargin,
@@ -41356,7 +41489,7 @@ editorEvents
                 t._row0DfW=pro.rowHandlerWidth?('width:'+pro.rowHandlerWidth+'px'):'';
                 t._rulerW=4+_layer*mm;
 
-                t.rowHeight=row.height||pro.rowHeight;
+                row._height = t.rowHeight=row._height||row.height||pro.rowHeight;
                 t.rowHandlerDisplay=pro.rowHandler?'':NONE;
                 t.rowDDDisplay=(('rowResizer' in row)?row.rowResizer:pro.rowResizer)?'':NONE;
 
@@ -41382,7 +41515,7 @@ editorEvents
 
                 if(v=row.cells)
                     _.arr.each(pro.header,function(col,j){
-                        cellResult = profile.box._parepareCell(profile, v[j], row, col);
+                        cellResult = profile.box._parepareCell(profile, v[j], row, col,temparr);
                         v[j]=cellResult[0];
                         cells.push(cellResult[1]);
                     });
@@ -41515,7 +41648,7 @@ editorEvents
                 pdm=prop.dirtyMark,
                 psdm=prop.showDirtyMark,
                 sc=xui.absObj.$specialChars,
-                cell,node,ishotrow;
+                cell,node,ishotrow,ext;
 
             if(typeof cellId == 'string')
                 cell = profile.cellMap[cellId];
@@ -41527,49 +41660,48 @@ editorEvents
             ishotrow=cell._row.id==box._temprowid;
 
             if(!_.isHash(options))options={value:options};
-            options=_.filter(options,function(o,i){return !sc[i.charAt(0)] || i=='_$caption' });
+            options=_.filter(options,function(o,i,r){r= !sc[i.charAt(0)] || i=='_$caption'; if(!r){ext=ext||{}; ext[i]=o} return r;});
 
             if(triggerEvent){
-                if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow))
+                if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow,ext))
                     return;
             }
-
-            // * remove cell's caption first
-            delete cell.caption;
-            delete cell._$caption;
-            delete cell._$tips;
-
-            _.merge(cell,options,'all');
-
-            node=profile.getSubNode('CELLA', cellId);
-
-            if('type' in options){
-                var uicell={};
-                box._adjustCell(profile, cell, uicell);
-                node.parent().replace(profile._buildItems('rows.cells', [uicell]));
-            }else
-                box._renderCell(profile, cell, node, options);
-
-            //if update value
-            if('value' in options){
-                if(!pdm || dirtyMark===false)
-                    cell._oValue=cell.value;
-                else{
-                    if(cell.value===cell._oValue){
-                        if(psdm)
-                            node.removeClass('xui-ui-dirty');
-                        delete cell.dirty;
-                    }else{
-                        if(psdm)
-                            node.addClass('xui-ui-dirty');
-                        cell.dirty=true;
+            if(!_.isEmpty(options)){
+                // * remove cell's special setting first
+                delete cell._$caption;
+                delete cell._$tips;
+ 
+                _.merge(cell,options,'all');
+    
+                node=profile.getSubNode('CELLA', cellId);
+                if('type' in options){
+                    var uicell={};
+                    box._adjustCell(profile, cell, uicell);
+                    node.parent().replace(profile._buildItems('rows.cells', [uicell]));
+                    node=profile.getSubNode('CELLA', cellId);
+                }
+                box._renderCell(profile, cell, null, node, options);
+    
+                //if update value
+                if('value' in options){
+                    if(!pdm || dirtyMark===false)
+                        cell._oValue=cell.value;
+                    else{
+                        if(cell.value===cell._oValue){
+                            if(psdm)
+                                node.removeClass('xui-ui-dirty');
+                            delete cell.dirty;
+                        }else{
+                            if(psdm)
+                                node.addClass('xui-ui-dirty');
+                            cell.dirty=true;
+                        }
                     }
                 }
-            }
-
+            }    
             if(triggerEvent){
                 if(profile.afterCellUpdated)
-                    profile.boxing().afterCellUpdated(profile,cell, options,ishotrow);
+                    profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext);
             }
         },
         _ensureValue:function(profile,value){
@@ -41721,29 +41853,58 @@ editorEvents
                 }
             },100);
         },
-        _editCell:function(profile, cellId){
+        _adjusteditorW:function(profile, nodes,width){
+            nodes.each(function(n,i){
+                if(!(i=n.id))return;
+                i=i.split(":")[2];
+                if(i=profile.cellMap[i])
+                       if(i._editor)
+                            i._editor.setWidth(width+2);
+            });
+        },
+        _adjusteditorH:function(profile, nodes,height){
+            nodes.each(function(n,i){
+                if(!(i=n.id))return;
+                i=i.split(":")[2];
+                if(i=profile.rowMap[i]){
+                    i=i.cells;
+                    for(var j in i){
+                       j=i[j];
+                       if(j._editor)
+                            j._editor.setHeight(height+1);
+                    }
+                }
+            });
+        },
+        _editCell:function(profile, cellId, byhover){
             var cell = typeof cellId=='string'?profile.cellMap[cellId]:cellId;
             if(!cell)return;
-            if(profile.box.getCellOption(profile, cell,'disabled') || profile.box.getCellOption(profile, cell,'readonly'))return ;
-
             // real cellId
             cellId=cell._serialId;
-            var cellNode = profile.getSubNode('CELL', cellId),
-                colId = cell._col.id,
-                ishotrow=cell._row.id==profile.box._temprowid;
 
-            //clear the prev editor
-            var editor = profile.$curEditor;
-            if(editor)_.tryF(editor.undo,[],editor);
-            editor=null;
-
-            var grid = this,
-                baseNode = profile.getSubNode('SCROLL'),
-                box=profile.box,
+            var box=profile.box,
                 getPro=function(key){return box.getCellOption(profile, cell, key)};
 
+            if(getPro('disabled') || getPro('readonly') ||  !getPro('editable'))return ;
+
+            var editor,
+                grid = this,
+                colId = cell._col.id,
+                ishotrow=cell._row.id==profile.box._temprowid,
+                editMode= getPro('editMode'),
+                inline=editMode=="inline",
+                baseNode = profile.getSubNode('SCROLL'),
+                cellNode = profile.getSubNode('CELL', cellId);
+            
+            if(!inline){
+                //clear the prev editor
+                editor = profile.$curEditor;
+                if(editor)_.tryF(editor.undo,[],editor);
+                editor=null;
+            }
+
             // 1. customEditor in cell/row or header
-            editor = profile.box.getCellOption(profile, cell,'customEditor');
+            editor = getPro('customEditor');
             if(editor && typeof editor.iniEditor=='function'){
                 editor.iniEditor(profile, cell, cellNode);
                 _.tryF(editor.activate,[],editor);
@@ -41769,7 +41930,6 @@ editorEvents
                         editorEvents = getPro('editorEvents'),
                         editorFormat = getPro('editorFormat'),
                         editorMask = getPro('editorMask'),
-                        editorSharp = getPro('editorSharp'),
                         editorReadonly = getPro('editorReadonly'),
                         editorDropListWidth = getPro('editorDropListWidth'),
                         editorDropListHeight = getPro('editorDropListHeight'),
@@ -41777,17 +41937,35 @@ editorEvents
 
                     // 3. for checkbox/lable,button type
                     if(type=='checkbox'){
-                        cellNode.first().focus();
+                        if(!inline){
+                            cellNode.first().focus();
+                        }
                         return;
                     }else if(type=='button'||type=='label')
                         return;
 
-                    // 4. try to get editor from cache
-                    if(editorCacheKey && profile.$cache_editor[editorCacheKey])
-                        editor=profile.$cache_editor[editorCacheKey];
+                    if(!inline){
+                        // 4. try to get editor from cache
+                        if(editorCacheKey && profile.$cache_editor[editorCacheKey])
+                            editor=profile.$cache_editor[editorCacheKey];
+                    }
                     // 5. else, create a ComboInput Editor, and cache it
-                    if(!editor)
-                        editor=new xui.UI.ComboInput({dirtyMark:false,cachePopWnd:false,left:-1000,top:-1000,position:'absolute',visibility:'hidden',zIndex:100});
+                    if(!editor){
+                        var iniprop={
+                            dirtyMark:false,cachePopWnd:false,left:-1000,top:-1000,position:'absolute',visibility:'hidden',zIndex:100
+                        };
+                        if(inline){
+                            _.merge(iniprop,{
+                                left:0,
+                                top:0,
+                                cachePopWnd:true,
+                                width:cell._col._pxWidth+2,
+                                height:cell._row._height+1,
+                                visibility:'visible'
+                            },'all');
+                        }
+                        editor=new xui.UI.ComboInput(iniprop);
+                    }
                     switch(type){
                         case 'number':
                         case 'spin':
@@ -41841,7 +42019,8 @@ editorEvents
                             editor.setType('none').setMultiLines(true).setCommandBtn('save').onCommand(function(p){
                                 p.boxing().hide();
                             });
-                            _.tryF(editor.setResizer,[true],editor);
+                            if(!inline)
+                                _.tryF(editor.setResizer,[true],editor);
                             break;
                         case 'date':
                         case 'datepicker':
@@ -41888,9 +42067,15 @@ editorEvents
                             editor.setType(type);
                         break;
                     }
-                    baseNode.append(editor);
+                    if(inline){
+                       cellNode.append(editor); 
+                       cell._editor=editor;
+                    }else{
+                        baseNode.append(editor);
+                    }
+                    
                     //cache the stantdard editor
-                    if(editorCacheKey)
+                    if(!inline && editorCacheKey)
                         profile.$cache_editor[editorCacheKey] = editor;
 
                     if(editor.setInputReadonly && editorReadonly)
@@ -41917,10 +42102,10 @@ editorEvents
                     }
                     if(editorEvents)
                         editor.setEvents(editorEvents);
-
-                    // clear for valueFormat, setValue maybe cant set value because of valueFormat
-                    editor.resetValue();
-
+                    if(!inline){
+                        // clear for valueFormat, setValue maybe cant set value because of valueFormat
+                        editor.resetValue();
+                    }
                     //set properities
                     switch(type){
                         case 'listbox':
@@ -41957,9 +42142,8 @@ editorEvents
                     editor.get(0)._smartnav=true;
 
                     //undo function is a must
-                    editor.undo=function(refocus){
+                    editor.undo=inline?null:function(refocus){
                         var editor=this;
-                        
                         // row dirty alert
                         if(profile.box)
                             profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
@@ -41968,7 +42152,7 @@ editorEvents
                             // for ie's setBlurTrigger doesn't trigger onchange event
                             editor.getSubNode('INPUT').onBlur(true);
 
-                            if(refocus && editorSharp){
+                            if(refocus && editMode=="sharp"){
                                cell._ignorefocus=1;
                                profile.boxing().focusCell (profile.$cellInEditor);
                                _.asyRun(function(){
@@ -42014,6 +42198,7 @@ editorEvents
                         }
                         profile.$curEditor=null;
                         profile.$cellInEditor=null;
+                        profile._inHoverEdit=null;
                         // execute once
                         editor.undo=null;
                         if(profile.onEndEdit)
@@ -42052,84 +42237,101 @@ editorEvents
                         var options={value:nV};
 
                         if(_.isDefined(_$caption))
-                            options.caption=options._$caption=_$caption;
+                            options._$caption=_$caption;
 
                         if(pro.properties.hasOwnProperty("tagVar"))
                             options.tagVar=pro.properties.tagVar;
 
                         grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
 
-                        if(editorSharp)
+                        if(editMode=="sharp")
                             _.tryF(editor.undo,[true],editor);
                     })
                     .beforeNextFocus(function(pro, e){
-                        if(editor){    
+                        if(editor.undo)
                             _.tryF(editor.undo,[true],editor);
-                            var hash=xui.Event.getEventPara(e);
-                            if(hash.keyCode=='enter')hash.keyCode='right';
-
-                            profile.getSubNode('CELLA', cell._serialId).onKeydown(true,hash);
-                        }
+                        var hash=xui.Event.getEventPara(e);
+                        if(hash.keyCode=='enter')hash.keyCode='right';
+                        profile.getSubNode('CELLA', cell._serialId).onKeydown(true,hash);
                         //prevent
                         return false;
-                    })
-                    .onCancel(function(){
-                        if(editor)
-                            _.tryF(editor.undo,[],editor);
-                    })
-                    .afterPopHide(function(p,r,type){
-                        if(editorSharp)
-                            _.tryF(editor.undo,[type!="blur"&&type!="call"],editor);
-                    })
-                    .getRoot().setBlurTrigger(profile.$xid+":editor", function(){
-                        if(editor)
-                            _.tryF(editor.undo,[],editor);
-                        return false;
                     });
 
-                    var absPos=cellNode.offset(null, baseNode),
-                        size = cellNode.cssSize();
-                    //show editor
-                    if(type=='textarea'){
-                        editor.setWidth(Math.max(200,size.width+3)).setHeight(Math.max(100,size.height+2))
-                        .reLayout(true,true)
-                        .reBoxing()
-                        .popToTop(cellNode, 4, baseNode);
-                    }else{
-                        editor.setWidth(size.width+3).setHeight(size.height+2).reLayout(true);
-                        editor.reBoxing().show((absPos.left-1) + 'px',(absPos.top-1) + 'px');
+                    if(!inline){
+                        editor
+                        .onCancel(function(){
+                            if(editor)
+                                _.tryF(editor.undo,[],editor);
+                        })
+                        .afterPopHide(function(p,r,type){
+                            if(editMode=="sharp")
+                                _.tryF(editor.undo,[type!="blur"&&type!="call"],editor);
+                        })
+                        .getRoot().setBlurTrigger(profile.$xid+":editor", function(){
+                            if(editor)
+                                _.tryF(editor.undo,[],editor);
+                            return false;
+                        });
+    
+                        var absPos=cellNode.offset(null, baseNode),
+                            size = cellNode.cssSize();
+                        //show editor
+                        if(type=='textarea'){
+                            editor.setWidth(Math.max(200,size.width+3)).setHeight(Math.max(100,size.height+2))
+                            .reLayout(true,true)
+                            .reBoxing()
+                            .popToTop(cellNode, 4, baseNode);
+                        }else{
+                            editor.setWidth(size.width+3).setHeight(size.height+2).reLayout(true);
+                            editor.reBoxing().show((absPos.left-1) + 'px',(absPos.top-1) + 'px');
+                        }
+    
+                        var expand,
+                            inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
+                            issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='file'||type=='upload'));
+    
+                        if( _.isFun(editor.expand) &&
+                            editorAutoPop!==false &&
+                            (
+                                issharp ||
+                                (
+                                    (editMode=="sharp"||editMode=="focus") &&   (editorAutoPop || type=='listbox'||type=='date'||type=='datepicker'||type=='datetime'||type=='time'||type=='timepicker'||type=='color'||type=='colorpicker')
+                                )    
+                           )
+                         ){
+                            expand=1;
+                            editor.expand();
+                         }
+                        //activate editor
+                        if(editMode!="hover" || !byhover){
+                            _.asyRun(function(){
+                                // destroyed
+                                if(!profile.box)return;
+                                var target=editor;
+                                if(expand && editor.getPopWnd)
+                                    target = editor.getPopWnd();
+                                _.tryF(target&&target.activate,[],target);
+                            });
+                        }else{
+                            editor.getRoot().onMouseout(function(){if(editor) _.tryF(editor.undo,[],editor);},"tg-hover-edit");
+                            var bfun=function(){
+                                if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
+                                profile._inHoverEdit=1;
+                            };
+                            editor.onFocus(bfun).beforePopShow(bfun);
+                        }
+                        if(!inline)
+                            editor.setVisibility(issharp ? "hidden" : "visible");
                     }
-
-                    var expand;
-                    if( editorSharp||
-                        (_.isFun(editor.expand) &&
-                            (editorAutoPop!==false) &&
-                            (editorAutoPop || type=='listbox'||type=='date'||type=='datepicker'||type=='datetime'||type=='time'||type=='timepicker'||type=='color'||type=='colorpicker')
-                        )
-                     ){
-                        expand=1;
-                        editor.expand();
-                     }
-                    //activate editor
-                    _.asyRun(function(){
-                        // destroyed
-                        if(!profile.box)return;
-                        var target=editor;
-                        if(expand && editor.getPopWnd)
-                            target = editor.getPopWnd();
-                        _.tryF(target&&target.activate,[],target);
-                    });
-                    editor.setVisibility(editorSharp?"hidden":"visible");
-
                     if(profile.onBeginEdit)
                         profile.boxing().onBeginEdit(profile, cell, editor);
                 }
             }
-
-            //give a reference
-            profile.$curEditor=editor;
-            profile.$cellInEditor=cell;
-
+            if(!inline){
+                //give a reference
+                profile.$curEditor=editor;
+                profile.$cellInEditor=cell;
+            }
             if(ishotrow){
                 profile.__needchecktmprow=true;
                 profile.box._sethotrowoutterblur(profile);
@@ -42407,14 +42609,18 @@ editorEvents
                         edit=false;
                     }else{
                         edit=true;
-                        xui(src).parent().tagClass('-mousedown', false);
-                        box._editCell(profile, cell._serialId);
-                        _.asyRun(function(){
-                            // destroyed
-                            if(!profile.box)return;
-                            xui.use(src).parent().onMouseout(true,{$force:true})
-                                      .parent().onMouseout(true,{$force:true});
-                        });
+                        if(getPro(profile, cell, 'editMode')=="inline"){
+                            if(cell._editor)cell._editor.activate();
+                        }else{
+                            box._editCell(profile, cell._serialId);
+                            xui(src).parent().tagClass('-mousedown', false);
+                            _.asyRun(function(){
+                                // destroyed
+                                if(!profile.box)return;
+                                xui.use(src).parent().onMouseout(true,{$force:true})
+                                          .parent().onMouseout(true,{$force:true});
+                            });
+                        }
                     }
                 }
                 // if not in edit mode
@@ -42551,7 +42757,7 @@ editorEvents
                     if(n._nodes.length){
                         nodes.push(n.get(0));
                     }
-                    xui(nodes).width(col._pxWidth);
+                    profile.box._adjusteditorW(profile, xui(nodes).width(col._pxWidth),col._pxWidth);
                 });
             }
             return overflowX;
@@ -42597,10 +42803,10 @@ editorEvents
             t2.cssSize(css);
 
             this._adjustBody(profile,'resize');
-        }
-   }
+        }
+    }
 });
-Class("xui.UI.Dialog","xui.UI.Widget",{
+            Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
         showModal:function(parent, left, top, callback, ignoreEffects){
             this.show(parent, true, left, top, callback, ignoreEffects);
@@ -42658,8 +42864,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
                         
+                    ins.activate();
                     var tt=profile._$rs_args,fun=function(){
-                        ins.activate();
                         if(profile.onShow)profile.boxing().onShow(profile);                            
                         delete profile.inShowing;
                         _.tryF(callback);

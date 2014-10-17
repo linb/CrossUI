@@ -1054,6 +1054,9 @@ _.merge(xui,{
                 tmp=path.split('-');
                 path=tmp[0];
                 params=tmp;
+            }else if(_.isArr(params[1])){
+                params=params[1];
+                params.unshift(path);
             }
             arr=path.split(".");
             arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
@@ -1081,7 +1084,7 @@ _.merge(xui,{
         return '<span id="'+xui.$localeDomId+'" class="'+s.replace(/([\x01\x02\x03\x04])/g,function(a){return '$'+xui._unescapeMap[a];})+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
-    adjustRes:function(str, wrap, onlyBraces, onlyVars){
+    adjustRes:function(str, wrap, onlyBraces, onlyVars, params, scope){
         if(!_.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
@@ -1089,16 +1092,23 @@ _.merge(xui,{
                     // protect $@{
             return c=='$' ? onlyVars?a:d :
                     // $a.b.c-1-3
-                    f=='$' ? onlyVars?a:wrap(g) :
+                    f=='$' ? onlyVars?a:wrap(g,params) :
                     // $(a.b.c-d) 
-                    i=='$' ? onlyVars?a:wrap(j) : 
+                    i=='$' ? onlyVars?a:wrap(j,params) : 
                     // $a
-                    l=='$' ? onlyVars?a:wrap(m) :
+                    l=='$' ? onlyVars?a:wrap(m,params) :
                     // variable: @a@ @a.b.c@ {a.b.c}
-                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x)) || (_.isSet(z)?z:""))
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x,scope)) || (_.isSet(z)?z:""))
                      : a;
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
+    },
+    adjustVar:function(obj,scope,t){
+        return typeof(obj)=="string" ?
+                    (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
+                    xui.SC.get(t[1], scope)
+                   : xui.adjustRes(obj, false, true, true, null, scope)
+                   : obj;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return (
@@ -1241,12 +1251,13 @@ _.merge(xui,{
     },
     getClassName:function(uri){
         var a=uri.split(/\/js\//g),
-            b,c;
-        if(_.isSet(a[1])){
-            b=a[0].split(/\//g);
+            b,c,n=a.length;
+        if(n>=2){
+            // get the last one: any/js/any/App/js/index.js
+            b=a[n-2].split(/\//g);
             b=b[b.length-1];
-            a=a[1].replace(/\.js$/i,"");
-          return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
+            a=a[n-1].replace(/\.js$/i,"");
+            return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
         }
     },
     log:_.fun(),
@@ -1586,41 +1597,108 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope){
+        exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
-                scope=conf.scope==="[this]"?scope:conf.scope,
+                _ns={
+                    "temp":temp,
+                    "page":scope,
+                    "args":args,
+                    "global":xui.$cache.data
+                },
                 target=conf.target,
                 method=conf.method+"",
                 params=conf.params||[],
+                iparams=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             if(target && method && target!="none"&&method!="none"){
+                _.arr.each(params,function(o){
+                    if(typeof(o)=="string"){
+                        o=_.str.trim(o);
+                        // for file
+                        if(_.str.startWith(o,"[data]")){
+                            o=xui.getFileSync(o.replace("[data]",""));
+                            o=_.unserialize(o);
+                        }else
+                            o=xui.adjustVar(o, _ns);
+                    }
+                    iparams.push(o);
+                });
                 if(method.indexOf("-")){
-                    t=method.split(/-/g);
+                    t=method.split("-");
                     method=t[0];
                     for(var i=1,l=t.length;i<l;i++)
-                        if(t[i])params[i-1]=t[i];
+                        if(t[i])iparams[i-1]=t[i];
                 }
                 var fun=function(){
                     switch(type){
                         case 'page':
+                            // handle switch
+                            if(method=="switch"){
+                                if(!xui.History._callback){
+                                    xui.History.setCallback(function(fi,init){
+                                       if(init)return;
+                                       var ar=_.urlDecode(fi||"");
+                                       if(!ar.xuicom){
+                                            ar.xuicom="App";
+                                            ar.cache=true;
+                                        }
+                                        if(!ar.cache){
+                                            xui.Com.destroyAll();
+                                        }else{
+                                            _.each(xui.Com.getAllInstance(),function(o){
+                                                o.hide();
+                                            });
+                                        }
+                                        xui.showCom(ar.xuicom);
+                                    });
+                                }
+                                
+                                var fi="xuicom="+target;
+                                if(iparams[0])fi+="&cache="+(iparams[0]?"1":"0")
+                                xui.History.setFI(fi);
+                                return;
+                            }
+                            // try to get com
+                            var cls=_.get(window,target.split(".")),ins;
+                            // get first one
+                            if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
+
+                            // handle hide / destroy
+                            if(method=="show"){
+                                // handle other methods
+                                var ff=function(err,ins){
+                                    if(err)return;
+                                    // special for xui.Com.show
+                                    iparams.unshift(null);
+                                    if(_.isFun(t=_.get(ins,[method])))t.apply(ins,iparams);
+                                };
+                                if(!ins)xui.getCom(target,ff);  else ff(null, ins);
+                            }else{
+                                if(ins && _.isFun(t=_.get(ins,[method])))t.apply(ins,iparams)
+                                return;
+                            }
                             break;
                         case 'control':
-                                if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],params);
+                                if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],iparams);
                             break;
                         case 'other':
                             switch(target){
                                 case 'url':
                                     switch(method){
                                         case "open":
-                                            window.open.apply(null, params);
+                                            window.open(iparams[0],iparams[1],iparams[2],iparams[3]);
                                             break;
                                         case "mailTo":
-                                            xui.mailTo.apply(xui,params);
+                                            xui.mailTo.apply(xui,iparams);
                                             break;
                                     }
                                 break;
-                                case 'dlg':
-                                    if(_.isFun(t=_.get(xui,[method])))t.apply(xui,params);
+                                case 'msg':
+                                    if(method=="busy"||method=="free"){
+                                        if(_.isFun(t=_.get(xui.Dom,[method])))t.apply(xui.Dom,iparams);
+                                    }else{
+                                        if(_.isFun(t=_.get(xui,[method])))t.apply(xui,iparams);
+                                    }
                                 break;
                             }
                             break;
@@ -1632,9 +1710,9 @@ new function(){
             }
 
             return conf["return"];
-        },
-        toCode:function(conf, args, scope){
-        }
+        }/*,
+        toCode:function(conf, args, scope,temp){
+        }*/
     };
 };
 /*xui.Thread
@@ -3511,13 +3589,33 @@ Class('xui.absObj',"xui.absBox",{
                                 v.$lastEvent=i;
                                 if(!_.isArr(t))t=[t];
                                 l=t.length;
-                                for(j=0;j<l;j++){
-                                    o=t[j];
-                                    if(typeof o=='string')o=k[o];
-                                    if(typeof o=='function')r=_.tryF(o, args, k);
-                                    else if(_.isHash(o))r=xui.pseudocode.exec(o,args,k);
-                                }
-                                return r;
+                                // alert/confirm/prompt will pause the chain, and resume
+                                // prompt will give some input
+                                var temp={};
+                                var n=0,fun=function(input){
+                                    // set prompt's global var
+                                    if(_.isSet(input))
+                                        temp.input=input;
+                                        //_.set(xui.$cache.data,['pseudocode','input'],input);
+                                    //resume from [n]
+                                    for(j=n;j<l;j++){
+                                        n=j+1;
+                                        o=t[j];
+                                        if(typeof o=='string')o=k[o];
+                                        if(typeof o=='function')r=_.tryF(o, args, k);
+                                        else if(_.isHash(o)){
+                                            if(o.resume){
+                                                // resume
+                                                (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
+                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                                break;
+                                            }else
+                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                        }
+                                    }
+                                    return r;
+                                };
+                                return fun();
                             }
                         }
                     };
