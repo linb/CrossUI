@@ -217,8 +217,8 @@ _.merge(_,{
         if(!_.isSet(hash))return undefined;
         else if(typeof path=='string') return hash[path];
         else{
-            for(var i=0,l=path.length;i<l;)
-                if(!hash || (hash=hash[path[i++]])===undefined )return;
+            for(var i=0,l=path.length,t;i<l;)
+                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? typeof(hash[t])=="function" ? hash[t]() : undefined : hash[t])===undefined )return;
             return hash;
         }
     },
@@ -239,12 +239,20 @@ _.merge(_,{
             }
             path=path[last];
         }
-        if(value===undefined){
-            if(hash.hasOwnProperty && hash.hasOwnProperty(path))
-                delete hash[path];
-            else hash[path]=undefined;
+        // the last one can be a [set] function
+        if(path!=(path=(path+"").replace("()","")) ){
+            if(typeof(hash[path])=="function"){
+                hash[path](value);
+                return value;
+            }
         }else{
-            return hash[path]=value;
+            if(value===undefined){
+                if(hash.hasOwnProperty && hash.hasOwnProperty(path))
+                    delete hash[path];
+                else hash[path]=undefined;
+            }else{
+                return hash[path]=value;
+            }
         }
     },
     /* try to excute a function
@@ -728,7 +736,7 @@ _.merge(_.fun,{
         with(""+fun)return slice(indexOf("{") + 1, lastIndexOf("}"));
     },
     args:function(fun){
-        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(',');
+        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(/\s*,\s*/);
     },
     clone:function(fun){
         return new Function(_.fun.args(fun),_.fun.body(fun));
@@ -1103,7 +1111,8 @@ _.merge(xui,{
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
     },
-    adjustVar:function(obj,scope,t){
+    adjustVar:function(obj,scope){
+        var t;
         return typeof(obj)=="string" ?
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
@@ -1170,7 +1179,7 @@ _.merge(xui,{
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
-                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                         });
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
@@ -1187,7 +1196,7 @@ _.merge(xui,{
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
-                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                         });
                 },function(){
                     Class._last=null;
@@ -1599,30 +1608,59 @@ new function(){
     xui.pseudocode={
         exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
+                compare=function(x,y,s){
+                    switch(_.str.trim(s||"=")){
+                        case '=':
+                            return x===y;
+                        // TODO: other case
+                        break;
+                        default:
+                            return true;
+                    }
+                },
                 _ns={
                     "temp":temp,
                     "page":scope,
+                    "prop":scope.properties,
                     "args":args,
                     "global":xui.$cache.data
                 },
                 target=conf.target,
                 method=conf.method+"",
                 params=conf.params||[],
-                iparams=[],
+                conditions=conf.conditions||[],
+                iparams=[],iconditions=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             if(target && method && target!="none"&&method!="none"){
+                // handle conditions
+                // currently, support and only
+                // TODO: complex conditions
+                for(var i=0,l=conditions.length;i<l;i++)
+                    if(!compare(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
+                        return conf["return"];
+   
+                //adjust params
                 _.arr.each(params,function(o){
                     if(typeof(o)=="string"){
-                        o=_.str.trim(o);
-                        // for file
+                        var rpc;
                         if(_.str.startWith(o,"[data]")){
-                            o=xui.getFileSync(o.replace("[data]",""));
-                            o=_.unserialize(o);
-                        }else
-                            o=xui.adjustVar(o, _ns);
+                            o.replace("[data]","");
+                            rpc=1;
+                        }
+                        o=xui.adjustVar(o, _ns);
+                        // for file
+                        if(rpc && typeof(o)=="string")
+                            o=_.unserialize(xui.getFileSync(o));
+                    }else if(_.isHash(o)){
+                        // one layer
+                        for(var i in o)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
+                    }else if(_.isArr(o)){
+                        // one layer
+                        for(var i=0,l=o.length;i<l;i++)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
                     }
                     iparams.push(o);
                 });
+                // cover with inline params
                 if(method.indexOf("-")){
                     t=method.split("-");
                     method=t[0];
@@ -1700,11 +1738,18 @@ new function(){
                                         if(_.isFun(t=_.get(xui,[method])))t.apply(xui,iparams);
                                     }
                                 break;
+                                case "var":
+                                    if(method=="cookie"){
+                                        xui.$cache.data.Cookies=xui.Cookies.get();
+                                    }else if(iparams[0].length){
+                                        _.set(_ns, (method+"."+_.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
+                                    }
+                                break;
                             }
                             break;
                     }
                 };
-    
+                // asy
                 if(timeout!==null)_.asyRun(fun,timeout);
                 else fun();
             }
@@ -2775,10 +2820,12 @@ Class('xui.SC',null,{
                 }
                 t=Class._last;
                 Class._ignoreNSCache=Class._last=null;
-                _.tryF(self.$cb,[self.$tag,text,threadid],t||ep(s)||{});
-                if(t&&t.KEY!=s)
+                // specified class must be in the first, maybe multi classes in code
+                // and give a change to load the last class in code, if specified class doesn't exist
+                _.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
+                if(!ep(s)&&t&&t.KEY!=s)
                     _.asyRun(function(){
-                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
                     });
             },fe=function(text){
                 var self=this;
@@ -3039,6 +3086,7 @@ new function(){
     };
     //unserialize string to object
     _.unserialize = function(str, dateformat){
+        if(typeof str !="string")return str;
         try{
             str='({_:'+str+'})';
             str=eval(str);
@@ -3177,6 +3225,7 @@ Class('xui.absBox',null, {
                                 : _.isArr(arr)
                                     ? arr
                                     : [arr];
+            o.n0=o._nodes[0];
             return o;
         },
         _unique:function(arr){
@@ -3511,7 +3560,7 @@ Class('xui.absObj',"xui.absBox",{
                     //custom set
                     var $set = o.set;
                     m = ps[n];
-                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force){
+                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force,tag){
                         return this.each(function(v){
                             if(!v.properties)return;
                             //if same return
@@ -3522,7 +3571,7 @@ Class('xui.absObj',"xui.absBox",{
                                 return;
 
                             if(typeof $set=='function'){
-                                $set.call(v,value,ovalue);
+                                $set.call(v,value,force,tag);
                             }else{
                                 var m = _.get(v.box.$DataModel, [i, 'action']);
                                 v.properties[i] = value;

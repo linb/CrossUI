@@ -33,7 +33,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         if(target<p.dateStart || target>date.add(p.dateStart,'ms',p.width*p._rate)){
                             p.dateStart=target;
                             var k=p.$UIvalue;
-                            this.refresh().setUIValue(k,true);
+                            this.refresh().setUIValue(k,true,null,'task');
                         }
                     }else{
                         p.dateStart=target;
@@ -569,7 +569,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         if(profile.beforeNewTask && false===b.beforeNewTask(profile, task)){}else
                             b.addTasks([task]);
                     }else
-                        b.setUIValue(from+":"+to);
+                        b.setUIValue(from+":"+to,null,null,'drag');
 
                     profile.$dd_ox =profile.$dd_oleft=null;
                 }
@@ -643,7 +643,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                             box._cache();
                         });
                     }
-                    o.setValue(from,true).setHost(profile);
+                    o.setValue(from,true,'click').setHost(profile);
                     node=o.reBoxing();
                     node.popToTop(src);
 
@@ -723,7 +723,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         if(profile.beforeTaskUpdated && false===profile.boxing().beforeTaskUpdated(profile, profile.getItemByDom(src), from, to)){}else
                             box._resetItem(profile,r,src);
                     }else
-                        profile.boxing().setUIValue(from+":"+to);
+                        profile.boxing().setUIValue(from+":"+to,null,null,'drag2');
 
                     profile.$dd_type = null;
 
@@ -1963,7 +1963,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 ins.setItems(items);
                 
                 if(!pro.multiTasks){
-                    ins.setUIValue(uivalue, true);
+                    ins.setUIValue(uivalue, true,null,'resize');
                 }else{
                     var arr=[];
                     // filter tasks
@@ -2015,7 +2015,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
 
             //if singleTask, setUIValue
             if(!pro.multiTasks){
-                ins.setUIValue(uivalue, true);
+                ins.setUIValue(uivalue, true,null,'refresh');
             //if multiTasks, call iniContent to get tasks
             }else{
                 if(force)

@@ -1042,7 +1042,7 @@ if(xui.browser.ie){
 
         _adjust:function(dialog,caption, content, left, top){
             caption = caption ||'';
-            if(!content){
+            if(!_.isSet(content)){
                 content = caption;
                 caption = "";
             }
@@ -1311,7 +1311,7 @@ if(xui.browser.ie){
                         else
                             delete dialog._$_clickYes;
 
-                        dialog._$inp.setValue('');
+                        dialog._$inp.setValue('',null,'prompt');
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
@@ -1363,7 +1363,7 @@ if(xui.browser.ie){
             }
             dialog.setCaption(title||'Prompt');
             dialog._$con.setHtml(caption||"");
-            dialog._$inp.setValue(content||"",true);
+            dialog._$inp.setValue(content||"",true,'prompt');
             dialog._$onYes=onYes;
             dialog._$onNo=onNo;
             delete dialog._$_clickYes;

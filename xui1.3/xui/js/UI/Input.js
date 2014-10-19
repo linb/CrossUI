@@ -334,7 +334,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         value="";
                     }
                     // trigger events
-                    profile.boxing().setUIValue(value);
+                    profile.boxing().setUIValue(value,null,null,'onchange');
                     // input/textarea is special, ctrl value will be set before the $UIvalue
                     p.$UIvalue=value;
                     if(o!==profile._inValid) if(profile.renderId)profile.boxing()._setDirtyMark();
@@ -399,7 +399,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
-                        profile.boxing().setUIValue(p.value,true);
+                        profile.boxing().setUIValue(p.value,true,null,'esc');
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -861,7 +861,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     value=a.join('');
                     src.value=value;
                     // maybe cant fire _setCtrlValue
-                    profile.boxing().setUIValue(value==maskStr?"":value);
+                    profile.boxing().setUIValue(value==maskStr?"":value,null,null,'mask');
                     ns._setCaret(profile,src,i);
                 }
             }else{
@@ -879,7 +879,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 value=a.join('');
                 src.value=value;
                 // maybe cant fire _setCtrlValue
-                profile.boxing().setUIValue(value==maskStr?"":value);
+                profile.boxing().setUIValue(value==maskStr?"":value,null,null,'mask');
             }
 
         },
@@ -936,7 +936,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         v="";
                     }
                     // dont trigger _setContrlValue
-                    profile.boxing().setUIValue(v,undefined,true);
+                    profile.boxing().setUIValue(v,undefined,true,null,'asycheck');
                 }
             });
         },

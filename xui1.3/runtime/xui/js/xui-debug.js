@@ -217,8 +217,8 @@ _.merge(_,{
         if(!_.isSet(hash))return undefined;
         else if(typeof path=='string') return hash[path];
         else{
-            for(var i=0,l=path.length;i<l;)
-                if(!hash || (hash=hash[path[i++]])===undefined )return;
+            for(var i=0,l=path.length,t;i<l;)
+                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? typeof(hash[t])=="function" ? hash[t]() : undefined : hash[t])===undefined )return;
             return hash;
         }
     },
@@ -239,12 +239,20 @@ _.merge(_,{
             }
             path=path[last];
         }
-        if(value===undefined){
-            if(hash.hasOwnProperty && hash.hasOwnProperty(path))
-                delete hash[path];
-            else hash[path]=undefined;
+        // the last one can be a [set] function
+        if(path!=(path=(path+"").replace("()","")) ){
+            if(typeof(hash[path])=="function"){
+                hash[path](value);
+                return value;
+            }
         }else{
-            return hash[path]=value;
+            if(value===undefined){
+                if(hash.hasOwnProperty && hash.hasOwnProperty(path))
+                    delete hash[path];
+                else hash[path]=undefined;
+            }else{
+                return hash[path]=value;
+            }
         }
     },
     /* try to excute a function
@@ -728,7 +736,7 @@ _.merge(_.fun,{
         with(""+fun)return slice(indexOf("{") + 1, lastIndexOf("}"));
     },
     args:function(fun){
-        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(',');
+        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(/\s*,\s*/);
     },
     clone:function(fun){
         return new Function(_.fun.args(fun),_.fun.body(fun));
@@ -1103,7 +1111,8 @@ _.merge(xui,{
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
     },
-    adjustVar:function(obj,scope,t){
+    adjustVar:function(obj,scope){
+        var t;
         return typeof(obj)=="string" ?
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
@@ -1170,7 +1179,7 @@ _.merge(xui,{
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
-                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                         });
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
@@ -1187,7 +1196,7 @@ _.merge(xui,{
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
-                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                         });
                 },function(){
                     Class._last=null;
@@ -1599,30 +1608,59 @@ new function(){
     xui.pseudocode={
         exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
+                compare=function(x,y,s){
+                    switch(_.str.trim(s||"=")){
+                        case '=':
+                            return x===y;
+                        // TODO: other case
+                        break;
+                        default:
+                            return true;
+                    }
+                },
                 _ns={
                     "temp":temp,
                     "page":scope,
+                    "prop":scope.properties,
                     "args":args,
                     "global":xui.$cache.data
                 },
                 target=conf.target,
                 method=conf.method+"",
                 params=conf.params||[],
-                iparams=[],
+                conditions=conf.conditions||[],
+                iparams=[],iconditions=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             if(target && method && target!="none"&&method!="none"){
+                // handle conditions
+                // currently, support and only
+                // TODO: complex conditions
+                for(var i=0,l=conditions.length;i<l;i++)
+                    if(!compare(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
+                        return conf["return"];
+   
+                //adjust params
                 _.arr.each(params,function(o){
                     if(typeof(o)=="string"){
-                        o=_.str.trim(o);
-                        // for file
+                        var rpc;
                         if(_.str.startWith(o,"[data]")){
-                            o=xui.getFileSync(o.replace("[data]",""));
-                            o=_.unserialize(o);
-                        }else
-                            o=xui.adjustVar(o, _ns);
+                            o.replace("[data]","");
+                            rpc=1;
+                        }
+                        o=xui.adjustVar(o, _ns);
+                        // for file
+                        if(rpc && typeof(o)=="string")
+                            o=_.unserialize(xui.getFileSync(o));
+                    }else if(_.isHash(o)){
+                        // one layer
+                        for(var i in o)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
+                    }else if(_.isArr(o)){
+                        // one layer
+                        for(var i=0,l=o.length;i<l;i++)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
                     }
                     iparams.push(o);
                 });
+                // cover with inline params
                 if(method.indexOf("-")){
                     t=method.split("-");
                     method=t[0];
@@ -1700,11 +1738,18 @@ new function(){
                                         if(_.isFun(t=_.get(xui,[method])))t.apply(xui,iparams);
                                     }
                                 break;
+                                case "var":
+                                    if(method=="cookie"){
+                                        xui.$cache.data.Cookies=xui.Cookies.get();
+                                    }else if(iparams[0].length){
+                                        _.set(_ns, (method+"."+_.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
+                                    }
+                                break;
                             }
                             break;
                     }
                 };
-    
+                // asy
                 if(timeout!==null)_.asyRun(fun,timeout);
                 else fun();
             }
@@ -2775,10 +2820,12 @@ Class('xui.SC',null,{
                 }
                 t=Class._last;
                 Class._ignoreNSCache=Class._last=null;
-                _.tryF(self.$cb,[self.$tag,text,threadid],t||ep(s)||{});
-                if(t&&t.KEY!=s)
+                // specified class must be in the first, maybe multi classes in code
+                // and give a change to load the last class in code, if specified class doesn't exist
+                _.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
+                if(!ep(s)&&t&&t.KEY!=s)
                     _.asyRun(function(){
-                            throw "The class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
                     });
             },fe=function(text){
                 var self=this;
@@ -3039,6 +3086,7 @@ new function(){
     };
     //unserialize string to object
     _.unserialize = function(str, dateformat){
+        if(typeof str !="string")return str;
         try{
             str='({_:'+str+'})';
             str=eval(str);
@@ -3177,6 +3225,7 @@ Class('xui.absBox',null, {
                                 : _.isArr(arr)
                                     ? arr
                                     : [arr];
+            o.n0=o._nodes[0];
             return o;
         },
         _unique:function(arr){
@@ -3511,7 +3560,7 @@ Class('xui.absObj',"xui.absBox",{
                     //custom set
                     var $set = o.set;
                     m = ps[n];
-                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force){
+                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force,tag){
                         return this.each(function(v){
                             if(!v.properties)return;
                             //if same return
@@ -3522,7 +3571,7 @@ Class('xui.absObj',"xui.absBox",{
                                 return;
 
                             if(typeof $set=='function'){
-                                $set.call(v,value,ovalue);
+                                $set.call(v,value,force,tag);
                             }else{
                                 var m = _.get(v.box.$DataModel, [i, 'action']);
                                 v.properties[i] = value;
@@ -3797,6 +3846,7 @@ Class('xui.absObj',"xui.absBox",{
 
             self._nodes.push(profile);
             profile._cacheInstance=self;
+            self.n0=profile;
 
             if(!profile.name)self.setName(alias);
 
@@ -3991,8 +4041,8 @@ Class('xui.absObj',"xui.absBox",{
                 if(!con.WDSLCache)con.WDSLCache={};
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
-                       if(prf.afterInvoke)
-                            prf.boxing().afterInvoke(prf, rspData);
+                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
+                        if(prf.onError)prf.boxing().onError(prf, rspData);
                         _.tryF(onFail,arguments,this);
                         _.tryF(onEnd,arguments,this);
                     });
@@ -4112,12 +4162,12 @@ Class('xui.absObj',"xui.absBox",{
                         else if(responseType=="SOAP")
                             rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                     }
-
+                   if(prf.onData)prf.boxing().onData(prf, rspData);
                     _.tryF(onSuccess,arguments,this);
                 },
                 function(rspData){
-                   if(prf.afterInvoke)
-                        prf.boxing().afterInvoke(prf, rspData);
+                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
+                   if(prf.onError)prf.boxing().onError(prf, rspData);
                     _.tryF(onFail,arguments,this);
                 },
                 threadid,
@@ -4366,19 +4416,25 @@ Class('xui.absObj',"xui.absBox",{
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            }/*,
+            },
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
-                    this.read(null,null,null,null,true);
+                    this.invoke(function(d){
+                        xui.alert("onData",_.stringify(d));
+                    },function(e){
+                        xui.alert("onError",_.stringify(e));
+                    });
                 }
-            }*/
+            }
         },
         EventHandlers:{
             beforeUpdateDataToUI:function(profile, dataToUI){},
             afterUpdateDataFromUI:function(profile, dataFromUI){},
             beforeInvoke:function(profile){},
             afterInvoke:function(profile,rspData){},
+            onData:function(profile,rspData){},
+            onError:function(profile,rspData){},
             beforeRead:function(profile){},
             afterRead:function(profile,rspData){},
             beforeWrite:function(profile){},
@@ -11294,7 +11350,7 @@ Class('xui.Com',null,{
     },
     Instance:{
         autoDestroy:true,
-        dataBindLoadType:"sync", // "async", "none"
+        dataBindLoadType:"none", // "sync", "async", "none"
         background:"",
 
         _toDomElems:function(){
@@ -11618,7 +11674,7 @@ Class('xui.Com',null,{
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setValue(values[prf.alias])
+                        prf.boxing().setValue(values[prf.alias,null,'com'])
                 });
             }
             return this;
@@ -11635,7 +11691,7 @@ Class('xui.Com',null,{
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setUIValue(values[prf.alias])
+                        prf.boxing().setUIValue(values[prf.alias],null,null,'com')
                 });
             }
             return this;
@@ -11805,24 +11861,25 @@ Class('xui.Com',null,{
             onDestroy:function(com){}
         }
     }
-});
-Class("xui.Cookies", null,{
+});Class("xui.Cookies", null,{
     Static:{
         set:function(name,value,days,path,domain,isSecure){
-	        if(name){
+	    if(name){
+	        if(typeof value !="string")value=_.serialize(value);
     	        document.cookie = escape(name) + "=" + escape(value) +
     		        (days?";expires="+(new Date((new Date()).getTime()+(24*60*60*1000*days))).toGMTString():"")+
     		        (path?";path="+path:"")+
     		        (domain?";domain="+domain:"")+ 
     		        (isSecure?";secure":"");
-    		}
-    		return this;
+    	    }
+            return this;
         },
         get:function(name){
-        	var i,a,ca = document.cookie.split( "; " ),hash={};
+        	var i,a,s,ca = document.cookie.split( "; " ),hash={};
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
-        	        hash[a[0]]=a[1]?unescape(a[1]):'';
+        	        s=a[1]?unescape(a[1]):'';
+        	        hash[a[0]]=_.unserialize(s)||s;
         		if(name && a[0]==escape(name))
         		    return hash[a[0]];
         	}
@@ -15181,6 +15238,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             self._nodes.push(profile);
             profile._cacheInstance=self;
+            self.n0=profile;
 
             return self;
         },
@@ -15426,6 +15484,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(_c){
                     _.merge(_c,o,'all');
                     o.get(0)._cacheInstance=_c;
+                    _c.n0=o.get(0);
                 }
 
                 //for functions like: UI refresh itself
@@ -15453,7 +15512,7 @@ Class("xui.UI",  "xui.absObj", {
                 replace=null;
 
                 if(uiv)
-                    o.setUIValue(uiv,true);
+                    o.setUIValue(uiv,true,null,'refresh');
                     
                 if(ar){
                     o.get(0).$afterRefresh=ar;
@@ -16677,6 +16736,7 @@ Class("xui.UI",  "xui.absObj", {
         $ID:"\x01id\x01",
         $DOMID:'\x01domid\x01',
         $CLS:"\x01cls\x01",
+        $COMCLS:"\x01comcls\x01",
         $childTag:"<!--\x03{id}\x04-->",
 
         $onSize:function(profile,e){
@@ -16882,8 +16942,6 @@ Class("xui.UI",  "xui.absObj", {
                 return;
             }
             var self =arguments.callee,
-                host = profile.host,
-                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
                 behavior = profile.behavior?key?profile.behavior[key]:profile.behavior:null,
                 prop=profile.properties,
                 map1 = self.map1 ||(self.map1={tagName:1,text:1}),
@@ -16932,7 +16990,8 @@ Class("xui.UI",  "xui.absObj", {
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"");
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + ' '+
+                    u.$COMCLS +" xui-custom"
             }
             delete template.className;
 
@@ -16987,7 +17046,7 @@ Class("xui.UI",  "xui.absObj", {
             arr[arr.length]='>';
 
             if(!map2[tagName] && text)
-                arr[arr.length]=text.replace(/\{comcls\}/g, comCls||"");
+                arr[arr.length]=text;
 
             // add sub node
             for(var i=0,l=a.length;i<l;){
@@ -17011,6 +17070,8 @@ Class("xui.UI",  "xui.absObj", {
         },
         _rpt:function(profile,temp){
             var me=arguments.callee,
+                host = profile.host,
+                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
                 ui=xui.UI,
                 tag=ui.$tag_special,
                 ca=function(h,s,i){
@@ -17022,7 +17083,8 @@ Class("xui.UI",  "xui.absObj", {
                 h1={
                     id:profile.serialId,
                     cls:profile.getClass('KEY'),
-                    domid:profile.$domId
+                    domid:profile.$domId,
+                    comcls:comCls
                 },
                 h2={
                     A:profile.CA,
@@ -19014,7 +19076,7 @@ Class("xui.absList", "xui.absObj",{
                                 _.arr.removeValue(arr,subId);
                                 arr.push(item.id);
                             }
-                            self.setUIValue(arr.join(profile.properties.valueSeparator), true);
+                            self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
                         }
                     }
                 }
@@ -19155,28 +19217,34 @@ Class("xui.absList", "xui.absObj",{
                             rhash[i]=item.id||item;
                         });
                         _.arr.each(children,function(arr){
-                            var added;
+                            var added,t;
                             if(_.isSet(arr[1])){
                                 // add by id
                                 if(hash[arr[1]]){
-                                    ins.append(arr[0],arr[1]);
+                                    t=xui.create(arr[0]);
+                                    ins.append(t,arr[1]);
+                                    if(o.$panelRestore)o.$panelRestore(t.get(0));
                                     added=1;
                                 }else{
                                     // add by index
                                     if(rhash[arr[2]]){
-                                        ins.append(arr[0],rhash[arr[2]]);
+                                        t=xui.create(arr[0]);
+                                        ins.append(t,rhash[arr[2]]);
+                                        if(o.$panelRestore)o.$panelRestore(t.get(0));
                                         added=1;
                                     }
                                 }
                             }
                             if(!added){
-                                ins.append(arr[0],bv);
+                                t=xui.create(arr[0]);
+                                ins.append(t,bv);
+                                if(o.$panelRestore)o.$panelRestore(t.get(0));
                             }
                         });
                     }
                     //try to set value
                     if(_.isSet(bv)){
-                        ins.setValue(bv,true);
+                        ins.setValue(bv,true,'items');
                     }
                     if(o.renderId){
                         //resize
@@ -19325,7 +19393,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(pro.value !== value || pro.$UIvalue!==value){
                     if(profile.box._beforeResetValue)profile.box._beforeResetValue(profile);
                     if(typeof(r=profile.$onValueSet)=='function'){
-                        r=r.call(profile,value);
+                        r=r.call(profile,pro.value,value);
                         if(_.isSet(r))value=r;
                     }
 
@@ -19339,42 +19407,45 @@ Class("xui.absValue", "xui.absObj",{
             self._setDirtyMark();
             return self;
         },
-        setUIValue:function(value, force, triggerEventOnly){
+        setUIValue:function(value, force, triggerEventOnly, tag){
             var self=this;
             this.each(function(profile){
                 var prop=profile.properties, r,
                     ovalue = prop.$UIvalue,
                     box = profile.boxing();
                 if(force || (ovalue !== value)){
-                    if(
-                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force)))
-                      )
-                        return;
-
-                    //can get return value
-                    if(r!==undefined && typeof r!=='boolean')value=r;
-                    //before _setCtrlValue
-                    if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
-                        value = r.call(profile.box, profile, value);
-                    if(typeof(r=profile.$onUIValueSet)=='function'){
-                        r=r.call(profile,value);
-                        if(_.isSet(r))value=r;
+                    if(!profile._forInnerUIStyle){
+                        if(
+                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
+                          )
+                            return;
+                        //can get return value
+                        if(r!==undefined && typeof r!=='boolean')value=r;
+                        //before _setCtrlValue
+                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
+                            value = r.call(profile.box, profile, value);
+                        if(typeof(r=profile.$onUIValueSet)=='function'){
+                            r=r.call(profile,value,force,tag);
+                            if(_.isSet(r))value=r;
+                        }
                     }
 
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
-
-                    //value copy
-                    prop.$UIvalue = value;
-
-                    if(profile.renderId)box._setDirtyMark();
-
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force);
-                    if(profile.onChange)box.onChange(profile, ovalue, value, force);
-
-                    if(!prop.dirtyMark)
-                        box.setValue(value);
+        
+                    if(!profile._forInnerUIStyle){
+                        //value copy
+                        prop.$UIvalue = value;
+    
+                        if(profile.renderId)box._setDirtyMark();
+    
+                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
+                        if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
+    
+                        if(!prop.dirtyMark)
+                            box.setValue(value,null,'uiv');
+                    }
                 }
             });
             return this;
@@ -19386,7 +19457,7 @@ Class("xui.absValue", "xui.absObj",{
                     var ins=profile.boxing();
                     if(ins.checkValid()){
                         // prop.value = ins.getUIValue();
-                        ins.setValue(ins.getUIValue(),true);
+                        ins.setValue(ins.getUIValue(),true,'update');
                         ins._setDirtyMark();
                     }
                 }
@@ -19450,7 +19521,7 @@ Class("xui.absValue", "xui.absObj",{
                     var db=xui.DataBinder.getFromName(p.dataBinder);
                     if(db && (t=db.get(0)) && (t=t.properties.data) && _.isSet(t=t[value]))
                         //p.value=t;
-                        profile.boxing().setValue(t,true);
+                        profile.boxing().setValue(t,true,'datafield');
                 }
             },
             readonly:{
@@ -19466,37 +19537,37 @@ Class("xui.absValue", "xui.absObj",{
             // setValue and getValue
             value:{
                 ini:null,
-                set:function(value){
+                set:function(value,force, tag){
                     var profile=this,
                         p=profile.properties,r,
-                        ovalue = p.value,
-                        box=profile.boxing(),
-                        nv=value;
+                        ovalue=p.value,
+                        box=profile.boxing();
 
                     //check format
-                    if(profile.box._checkValid && profile.box._checkValid(profile, nv)===false)return;
+                    if(profile.box._checkValid && profile.box._checkValid(profile, value)===false)return;
                     //if return false in beforeValueSet, not set
-                    if(profile.beforeValueSet && false=== (r=box.beforeValueSet(profile, ovalue, nv)))return;
+                    if(profile.beforeValueSet && false=== (r=box.beforeValueSet(profile, ovalue, value,force, tag)))return;
                     // can get return value
-                    if(r!==undefined)nv=r;
+                    if(r!==undefined)value=r;
                     //before _setCtrlValue
                     //ensure value
                     if(typeof (r=profile.box._ensureValue)=='function')
-                        nv = r.call(profile.box, profile, nv);
+                        value = r.call(profile.box, profile, value);
 
                     if(typeof(r=profile.$onValueSet)=='function'){
-                        r=r.call(profile,nv);
-                        if(_.isSet(r))nv=r;
+                        r=r.call(profile,ovalue,value,force,tag);
+                        if(_.isSet(r))value=r;
                     }
 
                     //before value copy
-                    if(profile.renderId)box._setCtrlValue(nv);
+                    if(profile.renderId)box._setCtrlValue(value);
                     //value copy
-                    p.value = p.$UIvalue = nv;
+                    p.value = p.$UIvalue = value;
 
                     if(!profile._inValid)profile._inValid=1;
                     if(profile.renderId)box._setDirtyMark();
-                    if(profile.afterValueSet)box.afterValueSet(profile, ovalue, nv);
+                    if(profile.afterValueSet)box.afterValueSet(profile, ovalue, value, force, tag);
+                    if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
             dirtyMark:true,
@@ -19514,13 +19585,14 @@ Class("xui.absValue", "xui.absObj",{
         },
         EventHandlers:{
            //real value set
-            beforeValueSet:function(profile, oldValue, newValue){},
-            afterValueSet:function(profile, oldValue, newValue){},
+            beforeValueSet:function(profile, oldValue, newValue,force, tag){},
+            afterValueSet:function(profile, oldValue, newValue,force, tag){},
+            onValueChange:function(profile, oldValue, newValue, force, tag){},
 
             //ui value set
-            beforeUIValueSet:function(profile, oldValue, newValue){},
-            afterUIValueSet:function(profile, oldValue, newValue){},
-            onChange:function(profile, oldValue, newValue){},
+            beforeUIValueSet:function(profile, oldValue, newValue, force, tag){},
+            afterUIValueSet:function(profile, oldValue, newValue, force, tag){},
+            onChange:function(profile, oldValue, newValue, force, tag){},
 
             beforeDirtyMark:function(profile, dirty){}
         },
@@ -19919,7 +19991,7 @@ new function(){
                     var p=profile.properties,b=profile.boxing();
                     if(p.disabled)return false;
                     if(p.readonly)return false;
-                    b.setUIValue(!p.$UIvalue);
+                    b.setUIValue(!p.$UIvalue,null,null,'click');
                     if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
                     profile.getSubNode('FOCUS').focus();
                 },
@@ -21891,7 +21963,7 @@ Class("xui.UI.Resizer","xui.UI",{
             });
         },
         _onDragbegin:function(profile, e){
-            var
+            var prop=profile.properties,
             //set target to specific target
             //or, set target to resizer
             o = profile.properties._attached?profile._target:xui([profile.renderId]),
@@ -21914,6 +21986,7 @@ Class("xui.UI.Resizer","xui.UI",{
 
             //get pos for target and proxy
             profile.o_pos = profile.proxy.cssPos();
+
             //get current w h from target
             profile.o_w2 =profile.o_w =w;
             profile.o_h2 =profile.o_h = h;
@@ -22750,7 +22823,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 if(p.type=='status'){
                     if(p.readonly)return false;
                     
-                    b.setUIValue(!p.$UIvalue);
+                    b.setUIValue(!p.$UIvalue,null,null,'click');
                     if(profile.onChecked)
                         b.onChecked(profile, e, p.$UIvalue);
                 }
@@ -22874,7 +22947,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             var self=this,p = self.properties, o=self.boxing();
             //set value later
             if(p.type=='status' && p.value)
-                o.setValue(true, true);
+                o.setValue(true, true, 'render');
         },
         EventHandlers:{
             onClick:function(profile, e, src, value){},
@@ -22961,7 +23034,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 var p=profile.properties,b=profile.boxing();
                 if(p.disabled || p.readonly)return false;
                 //onClick event
-                b.setUIValue(!p.$UIvalue);
+                b.setUIValue(!p.$UIvalue,null,null,'click');
 
                 if(profile.onChecked)b.onChecked(profile, p.$UIvalue);
                 profile.getSubNode('FOCUS').focus();
@@ -23272,7 +23345,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             arr[0]=v;
                         else arr[1]=v;
                     }
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'click');
                 }
             },
             IND1:{
@@ -23323,7 +23396,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         type=profile.properties.type=='vertical',
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue);
                     arr[0]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent().get(0)[type?'offsetHeight':'offsetWidth'])*100;
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'drag');
                 },
                 onDragstop:function(profile, e, src){
                     xui(src).onMouseout(true,{$force:true}).onMouseup(true);
@@ -23378,7 +23451,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         type=profile.properties.type=='vertical',
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue);
                     arr[1]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent().get(0)[type?'offsetHeight':'offsetWidth'])*100;
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'drag2');
                 },
                 onDragstop:function(profile, e, src){
                     xui(src).onMouseout(true,{$force:true}).onMouseup(true);
@@ -23396,7 +23469,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         arr[0]=100;
                     else
                         arr[1]=100;
-                    b.setUIValue(profile.box._adjustValue(profile,arr));
+                    b.setUIValue(profile.box._adjustValue(profile,arr),null,null,'click2');
                 }
             },
             DECREASE:{
@@ -23533,7 +23606,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     arr[0] += off;
                     if(p.isRange)
                         arr[1] += off;
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'auto');
                     task.delay *=0.8;
                 };
             task.task=fun;
@@ -23907,7 +23980,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         value="";
                     }
                     // trigger events
-                    profile.boxing().setUIValue(value);
+                    profile.boxing().setUIValue(value,null,null,'onchange');
                     // input/textarea is special, ctrl value will be set before the $UIvalue
                     p.$UIvalue=value;
                     if(o!==profile._inValid) if(profile.renderId)profile.boxing()._setDirtyMark();
@@ -23972,7 +24045,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
-                        profile.boxing().setUIValue(p.value,true);
+                        profile.boxing().setUIValue(p.value,true,null,'esc');
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -24434,7 +24507,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     value=a.join('');
                     src.value=value;
                     // maybe cant fire _setCtrlValue
-                    profile.boxing().setUIValue(value==maskStr?"":value);
+                    profile.boxing().setUIValue(value==maskStr?"":value,null,null,'mask');
                     ns._setCaret(profile,src,i);
                 }
             }else{
@@ -24452,7 +24525,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 value=a.join('');
                 src.value=value;
                 // maybe cant fire _setCtrlValue
-                profile.boxing().setUIValue(value==maskStr?"":value);
+                profile.boxing().setUIValue(value==maskStr?"":value,null,null,'mask');
             }
 
         },
@@ -24509,7 +24582,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         v="";
                     }
                     // dont trigger _setContrlValue
-                    profile.boxing().setUIValue(v,undefined,true);
+                    profile.boxing().setUIValue(v,undefined,true,null,'asycheck');
                 }
             });
         },
@@ -25011,8 +25084,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 if(!profile.__oldv)
                     profile.__oldv=body.innerHTML;
                 if(body.innerHTML!=profile.__oldv){
+                    var ov=profile.__oldv;
                     profile.__oldv=body.innerHTML;
-                    profile.boxing().onChange(profile);
+                    profile.boxing().onChange(profile,ov,body.innerHTML);
                 }
             }
         },
@@ -25183,7 +25257,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         });
                     };
 
-                    o.setValue('',true);
+                    o.setValue('',true,'clear');
                     node=o.reBoxing();
                     node.popToTop(src);
 
@@ -25196,7 +25270,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     node.setBlurTrigger(editor.$xid, function(){
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
-                            o.setUIValue(o._getCtrlValue());
+                            o.setUIValue(o._getCtrlValue(),null,null,'blur');
 
                          _clear();
                     });
@@ -25329,10 +25403,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         });
                         break;
                      case 'html':
-                         o.setValue(editor.boxing().getUIValue(),true);
+                         o.setValue(editor.boxing().getUIValue(),true,'editor');
                          o.beforeUIValueSet(function(p,o,v){
                             _clear();
-                            editor.boxing().setUIValue(v);
+                            editor.boxing().setUIValue(v,null,null,'html');
                         });
                         break;
                 }
@@ -25540,7 +25614,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //a special node, must delete if from cache here:
                     delete profile.$_domid[profile.keys['FILE']];
                     xui([o]).addPrev(c).remove(false);
-                    this.setUIValue(c.value||"");
+                    this.setUIValue(c.value||"",null,null,'setfile');
                 }
             }
             return this;
@@ -25575,7 +25649,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 xui([o]).addPrev(c).remove(false);
                 c=null;
 
-                this.setUIValue(this.getValue());
+                this.setUIValue(this.getValue(),null,null,'getfile');
 
                 return o;
             }
@@ -25679,7 +25753,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                         value = item[0].caption;
                                 }
                                 //update value
-                                b2.setUIValue(value);
+                                b2.setUIValue(value,null,null,'pick');
 
                                 //cache pop
                                 return b2._cache('',true);
@@ -25697,7 +25771,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
-                                b2.setUIValue(v);
+                                b2.setUIValue(v,null,null,'pick');
                                 return b2._cache('',true);
                             });
                             break;
@@ -25720,7 +25794,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
-                                b2.setUIValue(String(v.getTime()));
+                                b2.setUIValue(String(v.getTime()),null,null,'pick');
                                 return b2._cache('',true);
                             });
 
@@ -25739,7 +25813,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
-                                b2.setUIValue((v=='transparent'?'':'#')+v);
+                                b2.setUIValue((v=='transparent'?'':'#')+v,null,null,'pick');
                                 return b2._cache('',true);
                             });
                             break;
@@ -25768,18 +25842,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'helpinput':
                     case 'time':
                     case 'timepicker':
-                        o.setValue(profile.properties.$UIvalue, true);
+                        o.setValue(profile.properties.$UIvalue, true,'pop');
                         break;
                     case 'date':
                     case 'datepicker':
                     case 'datetime':
                         var t = profile.$drop.properties;
                         if(t=profile.properties.$UIvalue)
-                            o.setValue(new Date( parseInt(t,10)), true);
+                            o.setValue(new Date( parseInt(t,10)), true,'pop');
                         break;
                     case 'color':
                     case 'colorpicker':
-                        o.setValue(profile.properties.$UIvalue.replace('#',''), true);
+                        o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
                         break;
                 }
 
@@ -26197,7 +26271,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,src);
                 },
                 onChange:function(profile, e, src){
-                    profile.boxing().setUIValue(xui.use(src).get(0).value+'');
+                    profile.boxing().setUIValue(xui.use(src).get(0).value+'',null,null,'onchange');
                 }
             },
             BTN:{
@@ -26251,7 +26325,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             instance._setCtrlValue(uiv);
                         else{
                             // trigger events
-                            instance.setUIValue(v);
+                            instance.setUIValue(v,null,null,'onchange');
                             // input/textarea is special, ctrl value will be set before the $UIvalue
                             profile.properties.$UIvalue=v;
                             if(o!==profile._inValid) if(profile.renderId)instance._setDirtyMark();
@@ -26272,7 +26346,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                         
                         profile.$_onedit=true;
-                        profile.boxing().setUIValue(p.value,true);
+                        profile.boxing().setUIValue(p.value,true,null,'esc');
                         profile.$_onedit=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
@@ -26403,7 +26477,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //fire onchange first
                     if(k.key=='enter' && (!m||k.altKey) && !p.inputReadonly && !profile.$inputReadonly){
                         profile.$_onedit=true;
-                        profile.boxing().setUIValue(profile.boxing()._fromEditor(xui.use(src).get(0).value),true);
+                        profile.boxing().setUIValue(profile.boxing()._fromEditor(xui.use(src).get(0).value),true,null,'enter');
                         profile.$_onedit=false;
                     }
 
@@ -26517,13 +26591,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             numberTpl:{
                 ini:"",
                 action: function(){
-                    this.boxing().setUIValue(this.properties.$UIvalue,true);
+                    this.boxing().setUIValue(this.properties.$UIvalue,true,null,'tpl');
                 }
             },
             currencyTpl:{
                 ini:"$ *",
                 action: function(){
-                    this.boxing().setUIValue(this.properties.$UIvalue,true);
+                    this.boxing().setUIValue(this.properties.$UIvalue,true,null,'tpl');
                 }
             },
             listKey:{
@@ -26674,7 +26748,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.destroyed)return false;
                     var v=((+prop.$UIvalue)||0)+off;
                     v=(_.isSet(v)&&v!=="")?_.formatNumeric(profile.box._number(profile, v), prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero):"";
-                    profile.boxing().setUIValue(v);
+                    profile.boxing().setUIValue(v,null,null,'spin');
                     task.delay *=0.9;
                 };
             task.task=fun;
@@ -27678,7 +27752,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     p.boxing()._setCtrlValue(p.$tempValue=sid,false);
                     p.box._vC(p);
                     if(!p.properties.advance)
-                        p.boxing().setUIValue(sid,true);
+                        p.boxing().setUIValue(sid,true,null,'click');
                         
                     return false;
                 },
@@ -27686,7 +27760,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var sid=p.getSubId(s);
                     p.boxing()._setCtrlValue(p.$tempValue=sid,false);
                     p.box._vC(p);
-                    p.boxing().setUIValue(sid,true);
+                    p.boxing().setUIValue(sid,true,null,'dblclick');
                     return false;
                 }
             },
@@ -27698,13 +27772,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SET:{
                 onClick:function(p,e,src){
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true);
+                    p.boxing().setUIValue(p.$tempValue,true,null,'setbtn');
                 }
             },
             TRANS:{
                 onClick:function(p,e,src){
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue='transparent',true);
+                    p.boxing().setUIValue(p.$tempValue='transparent',true,null,'transbtn');
                 }
             },
             CANCEL:{
@@ -27854,7 +27928,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onDblclick:function(p,e,src){
                     p.box._updateValueByPos(p, e);
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true);
+                    p.boxing().setUIValue(p.$tempValue,true,null,'advdblclick');
                 }
             },
             ADVCLR:{
@@ -27888,7 +27962,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onDblclick:function(p,e,src){
                     p.box._updateValueByPos(p, e);
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true);
+                    p.boxing().setUIValue(p.$tempValue,true,null,'adv2dblclick');
                 }
             }
         },
@@ -27915,7 +27989,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             beforeClose:function(profile, src){}
         },
         RenderTrigger:function(){
-            this.$onValueSet=this.$onUIValueSet=function(v){
+            this.$onValueSet=this.$onUIValueSet=function(o,v){
                 this.box._setClrName(this,v);
             };
         },
@@ -28666,13 +28740,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     // set dir
                     if(!p.timeInput)
                         //onClick event
-                        profile.boxing().setUIValue(v);
+                        profile.boxing().setUIValue(v,null,null,'click');
                 },
                 onDblclick:function(profile,e,src){
                     var p=profile.properties;
                     if(p.timeInput){
                         xui.use(src).onMouseout(true,{$force:true});
-                        profile.boxing().setUIValue(profile.$tempValue, true);
+                        profile.boxing().setUIValue(profile.$tempValue, true,null,'dblclick');
                     }
                 }
             },
@@ -28683,13 +28757,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         profile.properties.timeInput ?
                         new Date :
                         xui.Date.getTimSpanStart(new Date,'d',1)
-                    ,true);
+                    ,true,null,'today');
                 }
             },
             SET:{
                 onClick:function(profile,e,src){
                     xui.use(src).onMouseout(true,{$force:true});
-                    profile.boxing().setUIValue(profile.$tempValue, true);
+                    profile.boxing().setUIValue(profile.$tempValue, true,null,'set');
                 }
             },
             CLOSE:{
@@ -29543,7 +29617,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         a=v.split(':');
                     a[0]=profile.$hour;
                     a[1]=profile.$minute;
-                    profile.boxing().setUIValue(a.join(':'),true);
+                    profile.boxing().setUIValue(a.join(':'),true,null,'click');
                     if(profile.box)profile.box._hourC(profile);
                 }
             },
@@ -29563,7 +29637,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 },
                 onDblclick:function(profile, e, src){
                     profile.$hour=profile.getSubId(src);
-                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true);
+                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true,null,'dblclick');
                     if(profile.box)profile.box._hourC(profile);
                 }
             },
@@ -29578,7 +29652,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 },
                 onClick:function(profile, e, src){
                     profile.$minute=profile.getSubId(src);
-                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true);
+                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true,null,'click2');
                     if(profile.box)profile.box._hourC(profile);
                 }
             },
@@ -30017,7 +30091,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                             //update string value only for setCtrlValue
                             if(box.getUIValue() !== value){
-                                box.setUIValue(value);
+                                box.setUIValue(value,null,null,'click');
                                 if(box.get(0) && box.getUIValue() == value)
                                     box.onItemSelected(profile, item, e, src, checktype);
                             }
@@ -30027,7 +30101,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(properties.readonly|| item.readonly)return false;
                         if(box.getUIValue() !== item.id){
                             profile.$firstV=item;
-                            box.setUIValue(item.id);
+                            box.setUIValue(item.id,null,null,'click');
                             if(box.get(0) && box.getUIValue() == item.id)
                                 box.onItemSelected(profile, item, e, src, 1);
                         }
@@ -31236,7 +31310,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 var v=o.properties.value,
                     a=v.split(':');
                 a[1]=parseInt(value,10)||a[0];
-                o.boxing().setValue(a.join(':'));
+                o.boxing().setValue(a.join(':'),null,'page');
             });
         }
     },
@@ -31833,7 +31907,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     profile.getSubNode('PANEL',true).remove();
             });
-            self.setValue(null,true);
+            self.setValue(null,true,'clear');
             arguments.callee.upper.apply(self,arguments);
             return self;
         },
@@ -32203,7 +32277,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             if(box.getUIValue() == value)
                                 rt=false;
                             else{
-                                box.setUIValue(value);
+                                box.setUIValue(value,null,null,'md');
                                 if(box.get(0) && box.getUIValue() == value)
                                     rt=box.onItemSelected(profile, item, e, src, checktype)||rt2;
                             }
@@ -32213,7 +32287,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     }
                     // for single selection
                     if(box.getUIValue() != item.id){
-                        box.setUIValue(item.id);
+                        box.setUIValue(item.id,null,null,'md');
                         //if success
                         if(box.getUIValue() == item.id){
                             rt=box.onItemSelected(profile, item, e, src)||rt2;
@@ -32576,7 +32650,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var self=this,v,i,ins;
             // set default value
             if(v=self.properties.value){
-                (ins=self.boxing()).setUIValue(v);
+                (ins=self.boxing()).setUIValue(v,null,null,'render');
                 if(i=self.getItemByItemId(v))
                     ins.onItemSelected(self, i);
             }
@@ -33500,7 +33574,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(itemId){
                         profile.getSubNode('BAR',itemId).tagClass('-checked');
                         //scroll
-                        if(!profile._innerSet){
+                        if(!profile._noScroll){
                             var o = profile.getSubNode('ITEM',itemId);
                             if(o){
                                 var items = profile.getSubNode('BOX'),
@@ -34067,9 +34141,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
     
                     //update string value only for _setCtrlValue
                     if(box.getUIValue() != value){
-                        profile._innerSet=1;
-                        box.setUIValue(value);
-                        delete profile._innerSet;
+                        profile._noScroll=1;
+                        box.setUIValue(value,null,null,'click');
+                        delete profile._noScroll;
                         if(box.get(0) && box.getUIValue() == value)
                             box.onItemSelected(profile, item, e, src, checktype);
                     }
@@ -34078,9 +34152,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             case 'single':
                 if(box.getUIValue() != item.id){
                     profile.$firstV=item;
-                    profile._innerSet=1;
-                    box.setUIValue(item.id);
-                    delete profile._innerSet;
+                    profile._noScroll=1;
+                    box.setUIValue(item.id,null,null,'click');
+                    delete profile._noScroll;
                     if(box.get(0) && box.getUIValue() == item.id)
                         box.onItemSelected(profile, item, e, src, 1);
                 }
@@ -34309,11 +34383,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 }else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs.append(item.sub=sub.render(true));
                                 }
+                                var s=0,arr=b.getUIValue(true);
+                                if(arr && arr.length){
+                                    _.arr.each(sub,function(o){
+                                        if(_.arr.indexOf(arr, o.id||o)!=-1){
+                                            s=1;
+                                            return false;
+                                        }
+                                    });
+                                    if(s){
+                                        //set checked items
+                                        profile._forInnerUIStyle=profile._noScroll=1;
+                                        b.setUIValue(b.getUIValue(), true,null,'sub');
+                                        delete profile._forInnerUIStyle;
+                                        delete profile._noScroll;
+                                    }
+                                }
                             }
-                            //set checked items
-                            profile._innerSet=1;
-                            b.setUIValue(b.getUIValue(), true);
-                            delete profile._innerSet;
                         }
 
                         if(p.singleOpen)
@@ -37720,7 +37806,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(arr.length && _.arr.indexOf(arr, rowId)!=-1){
                             if(nid)
                                 _.arr.removeValue(arr, rowId);
-                            ns.setUIValue(arr.join(profile.properties.valueSeparator), true);
+                            ns.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'sub');
                         }
                     }
 
@@ -39268,13 +39354,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(profile._$checkAll){
                         delete profile._$checkAll;
-                        profile.boxing().setUIValue("");
+                        profile.boxing().setUIValue("",null,null,'checkbox');
                         xui.use(src).tagClass('-checked',false)
                         profile.boxing().onRowSelected(profile, "allrows", e, src, -1);
                     }else{
                         profile._$checkAll=true;
                         xui.use(src).tagClass('-checked')
-                        profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator));
+                        profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator),null,null,'click');
                         profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
                 }
@@ -41772,7 +41858,7 @@ editorEvents
 
                     //update string value only for setCtrlValue
                     if(box.getUIValue() != value){
-                        box.setUIValue(value);
+                        box.setUIValue(value,null,null,'click');
                         if(box.get(0) && box.getUIValue() == value)
                             box.onRowSelected(profile, targetItem, e, src, checktype);
                     }
@@ -41781,7 +41867,7 @@ editorEvents
             case 'single':
                 if(box.getUIValue() != sid){
                     profile.$firstV=targetItem;
-                    box.setUIValue(sid);
+                    box.setUIValue(sid,null,null,'click');
                     if(box.get(0) && box.getUIValue() == sid)
                         box.onRowSelected(profile, targetItem, e, src, 1);
                 }
@@ -42129,13 +42215,13 @@ editorEvents
 
                     // must set value here, after setItems/setListKey
                     //$editorValue must be set in beforeIniEditor
-                    editor.setValue(cell.$editorValue||cell.value,true);
+                    editor.setValue(cell.$editorValue||cell.value,true,'editorini');
                     delete cell.$editorValue;
 
                     //$tag for compatible
                     if(cell.$tag){
                         if(editor.setCaption)editor.setCaption(cell.$tag);
-                        else if(editor.setValue)editor.setValue(cell.$tag);
+                        else if(editor.setValue)editor.setValue(cell.$tag,null,'editortag');
                     }
                     //give a reference
                     editor.get(0).$cell = cell;
@@ -42162,7 +42248,7 @@ editorEvents
                             editor.getRoot().setBlurTrigger(profile.$xid+":editor");
                             if(profile.properties && !profile.properties.directInput){
                                 editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null).afterPopHide(null);
-                                editor.setValue('',true);
+                                editor.setValue('',true,'editorreset');
                             }
                             // clear those setting
                             if(editorFormat){
@@ -43850,7 +43936,7 @@ if(xui.browser.ie){
 
         _adjust:function(dialog,caption, content, left, top){
             caption = caption ||'';
-            if(!content){
+            if(!_.isSet(content)){
                 content = caption;
                 caption = "";
             }
@@ -44119,7 +44205,7 @@ if(xui.browser.ie){
                         else
                             delete dialog._$_clickYes;
 
-                        dialog._$inp.setValue('');
+                        dialog._$inp.setValue('',null,'prompt');
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
@@ -44171,7 +44257,7 @@ if(xui.browser.ie){
             }
             dialog.setCaption(title||'Prompt');
             dialog._$con.setHtml(caption||"");
-            dialog._$inp.setValue(content||"",true);
+            dialog._$inp.setValue(content||"",true,'prompt');
             dialog._$onYes=onYes;
             dialog._$onNo=onNo;
             delete dialog._$_clickYes;

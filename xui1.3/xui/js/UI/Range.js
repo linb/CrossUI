@@ -200,7 +200,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         arr = p.$UIvalue.split(':');
                     profile._v1=d.curPos.left;
                     arr[0]= ((profile._v1)/rate + p.min);
-                    box.setUIValue(arr.join(':'));
+                    box.setUIValue(arr.join(':'),null,null,'drag');
 
                     if(profile._v1==profile._v2){
                         xui.use(src).css('zIndex',10);
@@ -245,7 +245,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         arr = p.$UIvalue.split(':');
                     profile._v2=d.curPos.left;
                     arr[1]= ((profile._v2)/rate + p.min);
-                    box.setUIValue(arr.join(':'));
+                    box.setUIValue(arr.join(':'),null,null,'drag2');
                 }
             }
         },
@@ -266,7 +266,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t);
+                        b.setValue(t,null,'min');
                 }
             },
             max:{
@@ -275,7 +275,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t);
+                        b.setValue(t,null,'max');
                 }
             },
             unit:{
@@ -378,7 +378,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     profile._v2=left;
                     arr[1]= ((profile._v2)/rate + pro.min);
                 }
-                profile.boxing().setUIValue(arr.join(':'));                
+                profile.boxing().setUIValue(arr.join(':'),null,null,'kb');                
             }
         },
         _ondrag:function(profile, left, src, tag){

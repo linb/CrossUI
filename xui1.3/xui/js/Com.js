@@ -45,7 +45,7 @@ Class('xui.Com',null,{
     },
     Instance:{
         autoDestroy:true,
-        dataBindLoadType:"sync", // "async", "none"
+        dataBindLoadType:"none", // "sync", "async", "none"
         background:"",
 
         _toDomElems:function(){
@@ -369,7 +369,7 @@ Class('xui.Com',null,{
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setValue(values[prf.alias])
+                        prf.boxing().setValue(values[prf.alias,null,'com'])
                 });
             }
             return this;
@@ -386,7 +386,7 @@ Class('xui.Com',null,{
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setUIValue(values[prf.alias])
+                        prf.boxing().setUIValue(values[prf.alias],null,null,'com')
                 });
             }
             return this;

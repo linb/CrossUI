@@ -661,7 +661,7 @@ Class("xui.UI.Resizer","xui.UI",{
             });
         },
         _onDragbegin:function(profile, e){
-            var
+            var prop=profile.properties,
             //set target to specific target
             //or, set target to resizer
             o = profile.properties._attached?profile._target:xui([profile.renderId]),
@@ -684,6 +684,7 @@ Class("xui.UI.Resizer","xui.UI",{
 
             //get pos for target and proxy
             profile.o_pos = profile.proxy.cssPos();
+
             //get current w h from target
             profile.o_w2 =profile.o_w =w;
             profile.o_h2 =profile.o_h = h;

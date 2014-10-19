@@ -270,7 +270,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
                 if(p.type=='status'){
                     if(p.readonly)return false;
                     
-                    b.setUIValue(!p.$UIvalue);
+                    b.setUIValue(!p.$UIvalue,null,null,'click');
                     if(profile.onChecked)
                         b.onChecked(profile, e, p.$UIvalue);
                 }
@@ -394,7 +394,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             var self=this,p = self.properties, o=self.boxing();
             //set value later
             if(p.type=='status' && p.value)
-                o.setValue(true, true);
+                o.setValue(true, true, 'render');
         },
         EventHandlers:{
             onClick:function(profile, e, src, value){},

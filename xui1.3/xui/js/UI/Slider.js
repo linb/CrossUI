@@ -279,7 +279,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             arr[0]=v;
                         else arr[1]=v;
                     }
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'click');
                 }
             },
             IND1:{
@@ -330,7 +330,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         type=profile.properties.type=='vertical',
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue);
                     arr[0]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent().get(0)[type?'offsetHeight':'offsetWidth'])*100;
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'drag');
                 },
                 onDragstop:function(profile, e, src){
                     xui(src).onMouseout(true,{$force:true}).onMouseup(true);
@@ -385,7 +385,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         type=profile.properties.type=='vertical',
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue);
                     arr[1]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent().get(0)[type?'offsetHeight':'offsetWidth'])*100;
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'drag2');
                 },
                 onDragstop:function(profile, e, src){
                     xui(src).onMouseout(true,{$force:true}).onMouseup(true);
@@ -403,7 +403,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         arr[0]=100;
                     else
                         arr[1]=100;
-                    b.setUIValue(profile.box._adjustValue(profile,arr));
+                    b.setUIValue(profile.box._adjustValue(profile,arr),null,null,'click2');
                 }
             },
             DECREASE:{
@@ -540,7 +540,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     arr[0] += off;
                     if(p.isRange)
                         arr[1] += off;
-                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr));
+                    profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'auto');
                     task.delay *=0.8;
                 };
             task.task=fun;

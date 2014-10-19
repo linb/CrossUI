@@ -75,7 +75,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 var v=o.properties.value,
                     a=v.split(':');
                 a[1]=parseInt(value,10)||a[0];
-                o.boxing().setValue(a.join(':'));
+                o.boxing().setValue(a.join(':'),null,'page');
             });
         }
     },

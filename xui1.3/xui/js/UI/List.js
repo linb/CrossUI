@@ -299,7 +299,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
                             //update string value only for setCtrlValue
                             if(box.getUIValue() !== value){
-                                box.setUIValue(value);
+                                box.setUIValue(value,null,null,'click');
                                 if(box.get(0) && box.getUIValue() == value)
                                     box.onItemSelected(profile, item, e, src, checktype);
                             }
@@ -309,7 +309,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         if(properties.readonly|| item.readonly)return false;
                         if(box.getUIValue() !== item.id){
                             profile.$firstV=item;
-                            box.setUIValue(item.id);
+                            box.setUIValue(item.id,null,null,'click');
                             if(box.get(0) && box.getUIValue() == item.id)
                                 box.onItemSelected(profile, item, e, src, 1);
                         }

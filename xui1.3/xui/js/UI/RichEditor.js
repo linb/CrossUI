@@ -439,8 +439,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 if(!profile.__oldv)
                     profile.__oldv=body.innerHTML;
                 if(body.innerHTML!=profile.__oldv){
+                    var ov=profile.__oldv;
                     profile.__oldv=body.innerHTML;
-                    profile.boxing().onChange(profile);
+                    profile.boxing().onChange(profile,ov,body.innerHTML);
                 }
             }
         },
@@ -611,7 +612,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         });
                     };
 
-                    o.setValue('',true);
+                    o.setValue('',true,'clear');
                     node=o.reBoxing();
                     node.popToTop(src);
 
@@ -624,7 +625,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     node.setBlurTrigger(editor.$xid, function(){
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
-                            o.setUIValue(o._getCtrlValue());
+                            o.setUIValue(o._getCtrlValue(),null,null,'blur');
 
                          _clear();
                     });
@@ -757,10 +758,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         });
                         break;
                      case 'html':
-                         o.setValue(editor.boxing().getUIValue(),true);
+                         o.setValue(editor.boxing().getUIValue(),true,'editor');
                          o.beforeUIValueSet(function(p,o,v){
                             _clear();
-                            editor.boxing().setUIValue(v);
+                            editor.boxing().setUIValue(v,null,null,'html');
                         });
                         break;
                 }

@@ -394,7 +394,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
 
                             //update string value only for setCtrlValue
                             if(box.getUIValue() !== value){
-                                box.setUIValue(value);
+                                box.setUIValue(value,null,null,'click');
                                 if(box.get(0) && box.getUIValue() == value)
                                     box.onItemSelected(profile, item, e, src, checktype);
                             }
@@ -403,7 +403,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     case 'single':
 
                         if(box.getUIValue() !== item.id){
-                            box.setUIValue(item.id);
+                            box.setUIValue(item.id,null,null,'click');
                             if(box.get(0) && box.getUIValue() == item.id)
                                 box.onItemSelected(profile, item, e, src, 1);
                         }
