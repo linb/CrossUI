@@ -961,8 +961,16 @@ _.set(xui.Locale,["cn","app"], {
                 "alert(xui.getPath('xui.b.c')); alert(xui.getPath('xui.b.c','.js')); alert(xui.getPath('xui.b.c','.gif','img')); "
             ]
         },
+        adjustVar:{
+            $desc:"尝试将内部的XUI伪代码变量调整到JS变量.",
+            $rtn:"Object",
+            $paras:[
+                "obj [必需参数]: Object,  变量.",
+                "scope [可选参数]: Object, 作用域对象. 默认为 [window]."
+            ]
+        },
         adjustRes:{
-            $desc:"调整字符串内部的资源字符串（以 $开头并包括'.'的词）.",
+            $desc:"调整字符串内部的资源字符串.",
             $rtn:'String',
             $paras:[
                 "str [必需参数]: String, 包含资源id的字符串.",
@@ -5176,7 +5184,7 @@ _.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             dataBindLoadType:{
-                $desc:"数据绑定功能类型.  none, sync, async之一.  默认sync"
+                $desc:"数据绑定功能类型.  none, sync, async之一.  默认 none"
             },
             autoDestroy:{
                 $desc:"本Com是否随着第一个内UI控件的销毁而销毁."
@@ -6005,6 +6013,22 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.Profile."
                 ]
             },
+            onData:{
+                $desc:"在得到数据之后调用.",
+                $rtn:"Object",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, 从远程调用返回的数据"
+                ]
+            },
+            onError:{
+                $desc:"在出现错误后调用.",
+                $rtn:"Object",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, 从远程调用返回的数据"
+                ]
+            },
             afterInvoke:{
                 $desc:"在invoke之后调用.",
                 $rtn:"Object",
@@ -6585,7 +6609,9 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "oldValue : String, 旧的界面值.",
-                    "newValue : String, 新的界面值."
+                    "newValue : String, 新的界面值.",
+                    "force : Boolean, 是否为强制调用",
+                    "tag : String, 调用时的附加值"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6603,7 +6629,9 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "oldValue : String, 旧的界面值.",
-                    "newValue : String, 新的界面值."
+                    "newValue : String, 新的界面值.",
+                    "force : Boolean, 是否为强制调用",
+                    "tag : String, 调用时的附加值"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6617,11 +6645,23 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onChange:{
-                $desc:"当有值的控件值改变时被调用.",
+                $desc:"当有值的控件在界面值改变时被调用.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "oldValue : String, 旧的界面值.",
-                    "newValue : String, 新的界面值."
+                    "newValue : String, 新的界面值.",
+                    "force : Boolean, 是否为强制调用",
+                    "tag : String, 调用时的附加值"
+                ]
+            },
+            onValueChange:{
+                $desc:"当有值的控件在内部值改变时被调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "oldValue : String, 旧值.",
+                    "newValue : String, 新值.",
+                    "force : Boolean, 是否为强制调用",
+                    "tag : String, 调用时的附加值"
                 ]
             },
             beforeValueSet:{
@@ -6629,7 +6669,9 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "oldValue :String, 旧的内部值.",
-                    "newValue : String, 新的内部值."
+                    "newValue : String, 新的内部值.",
+                    "force : Boolean, 是否为强制调用",
+                    "tag : String, 调用时的附加值"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6647,7 +6689,9 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile.",
                     "oldValue : String, 旧的内部值.",
-                    "newValue : String, 新的内部值."
+                    "newValue : String, 新的内部值.",
+                    "force : Boolean, 是否为强制调用",
+                    "tag : String, 调用时的附加值"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -19239,7 +19283,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'queryArgs':'数据请求参数',
             'queryOptions':'自定义参数',
             'proxyType':'代理种类',
-            'name':'绑定器唯一名'
+            'name':'绑定器唯一名',
+            "proxyInvoker":"数据触发器"
         },
         'xui_UI_CSSBox':{
              "normalStatus":"正常状态",
@@ -19797,6 +19842,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             afterValueSet:"控件值设置后"
         },
         'xui_DataBinder' : {
+            onData:"数据获得成功",
+            onError:"数据获得失败",
             beforeUpdateDataToUI:"将数据更新到绑定控件",
             afterUpdateDataFromUI:"从绑定控件获得数据",
             beforeInvoke:"远程调用之前",

@@ -849,6 +849,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             self._nodes.push(profile);
             profile._cacheInstance=self;
+            self.n0=profile;
 
             return self;
         },
@@ -1094,6 +1095,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(_c){
                     _.merge(_c,o,'all');
                     o.get(0)._cacheInstance=_c;
+                    _c.n0=o.get(0);
                 }
 
                 //for functions like: UI refresh itself
@@ -1121,7 +1123,7 @@ Class("xui.UI",  "xui.absObj", {
                 replace=null;
 
                 if(uiv)
-                    o.setUIValue(uiv,true);
+                    o.setUIValue(uiv,true,null,'refresh');
                     
                 if(ar){
                     o.get(0).$afterRefresh=ar;
@@ -2345,6 +2347,7 @@ Class("xui.UI",  "xui.absObj", {
         $ID:"\x01id\x01",
         $DOMID:'\x01domid\x01',
         $CLS:"\x01cls\x01",
+        $COMCLS:"\x01comcls\x01",
         $childTag:"<!--\x03{id}\x04-->",
 
         $onSize:function(profile,e){
@@ -2550,8 +2553,6 @@ Class("xui.UI",  "xui.absObj", {
                 return;
             }
             var self =arguments.callee,
-                host = profile.host,
-                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
                 behavior = profile.behavior?key?profile.behavior[key]:profile.behavior:null,
                 prop=profile.properties,
                 map1 = self.map1 ||(self.map1={tagName:1,text:1}),
@@ -2600,7 +2601,8 @@ Class("xui.UI",  "xui.absObj", {
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + " xui-custom" + (comCls||"");
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + ' '+
+                    u.$COMCLS +" xui-custom"
             }
             delete template.className;
 
@@ -2655,7 +2657,7 @@ Class("xui.UI",  "xui.absObj", {
             arr[arr.length]='>';
 
             if(!map2[tagName] && text)
-                arr[arr.length]=text.replace(/\{comcls\}/g, comCls||"");
+                arr[arr.length]=text;
 
             // add sub node
             for(var i=0,l=a.length;i<l;){
@@ -2679,6 +2681,8 @@ Class("xui.UI",  "xui.absObj", {
         },
         _rpt:function(profile,temp){
             var me=arguments.callee,
+                host = profile.host,
+                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
                 ui=xui.UI,
                 tag=ui.$tag_special,
                 ca=function(h,s,i){
@@ -2690,7 +2694,8 @@ Class("xui.UI",  "xui.absObj", {
                 h1={
                     id:profile.serialId,
                     cls:profile.getClass('KEY'),
-                    domid:profile.$domId
+                    domid:profile.$domId,
+                    comcls:comCls
                 },
                 h2={
                     A:profile.CA,
@@ -4682,7 +4687,7 @@ Class("xui.absList", "xui.absObj",{
                                 _.arr.removeValue(arr,subId);
                                 arr.push(item.id);
                             }
-                            self.setUIValue(arr.join(profile.properties.valueSeparator), true);
+                            self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
                         }
                     }
                 }
@@ -4823,28 +4828,34 @@ Class("xui.absList", "xui.absObj",{
                             rhash[i]=item.id||item;
                         });
                         _.arr.each(children,function(arr){
-                            var added;
+                            var added,t;
                             if(_.isSet(arr[1])){
                                 // add by id
                                 if(hash[arr[1]]){
-                                    ins.append(arr[0],arr[1]);
+                                    t=xui.create(arr[0]);
+                                    ins.append(t,arr[1]);
+                                    if(o.$panelRestore)o.$panelRestore(t.get(0));
                                     added=1;
                                 }else{
                                     // add by index
                                     if(rhash[arr[2]]){
-                                        ins.append(arr[0],rhash[arr[2]]);
+                                        t=xui.create(arr[0]);
+                                        ins.append(t,rhash[arr[2]]);
+                                        if(o.$panelRestore)o.$panelRestore(t.get(0));
                                         added=1;
                                     }
                                 }
                             }
                             if(!added){
-                                ins.append(arr[0],bv);
+                                t=xui.create(arr[0]);
+                                ins.append(t,bv);
+                                if(o.$panelRestore)o.$panelRestore(t.get(0));
                             }
                         });
                     }
                     //try to set value
                     if(_.isSet(bv)){
-                        ins.setValue(bv,true);
+                        ins.setValue(bv,true,'items');
                     }
                     if(o.renderId){
                         //resize
@@ -4993,7 +5004,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(pro.value !== value || pro.$UIvalue!==value){
                     if(profile.box._beforeResetValue)profile.box._beforeResetValue(profile);
                     if(typeof(r=profile.$onValueSet)=='function'){
-                        r=r.call(profile,value);
+                        r=r.call(profile,pro.value,value);
                         if(_.isSet(r))value=r;
                     }
 
@@ -5007,42 +5018,45 @@ Class("xui.absValue", "xui.absObj",{
             self._setDirtyMark();
             return self;
         },
-        setUIValue:function(value, force, triggerEventOnly){
+        setUIValue:function(value, force, triggerEventOnly, tag){
             var self=this;
             this.each(function(profile){
                 var prop=profile.properties, r,
                     ovalue = prop.$UIvalue,
                     box = profile.boxing();
                 if(force || (ovalue !== value)){
-                    if(
-                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force)))
-                      )
-                        return;
-
-                    //can get return value
-                    if(r!==undefined && typeof r!=='boolean')value=r;
-                    //before _setCtrlValue
-                    if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
-                        value = r.call(profile.box, profile, value);
-                    if(typeof(r=profile.$onUIValueSet)=='function'){
-                        r=r.call(profile,value);
-                        if(_.isSet(r))value=r;
+                    if(!profile._forInnerUIStyle){
+                        if(
+                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
+                          )
+                            return;
+                        //can get return value
+                        if(r!==undefined && typeof r!=='boolean')value=r;
+                        //before _setCtrlValue
+                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
+                            value = r.call(profile.box, profile, value);
+                        if(typeof(r=profile.$onUIValueSet)=='function'){
+                            r=r.call(profile,value,force,tag);
+                            if(_.isSet(r))value=r;
+                        }
                     }
 
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
-
-                    //value copy
-                    prop.$UIvalue = value;
-
-                    if(profile.renderId)box._setDirtyMark();
-
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force);
-                    if(profile.onChange)box.onChange(profile, ovalue, value, force);
-
-                    if(!prop.dirtyMark)
-                        box.setValue(value);
+        
+                    if(!profile._forInnerUIStyle){
+                        //value copy
+                        prop.$UIvalue = value;
+    
+                        if(profile.renderId)box._setDirtyMark();
+    
+                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
+                        if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
+    
+                        if(!prop.dirtyMark)
+                            box.setValue(value,null,'uiv');
+                    }
                 }
             });
             return this;
@@ -5054,7 +5068,7 @@ Class("xui.absValue", "xui.absObj",{
                     var ins=profile.boxing();
                     if(ins.checkValid()){
                         // prop.value = ins.getUIValue();
-                        ins.setValue(ins.getUIValue(),true);
+                        ins.setValue(ins.getUIValue(),true,'update');
                         ins._setDirtyMark();
                     }
                 }
@@ -5118,7 +5132,7 @@ Class("xui.absValue", "xui.absObj",{
                     var db=xui.DataBinder.getFromName(p.dataBinder);
                     if(db && (t=db.get(0)) && (t=t.properties.data) && _.isSet(t=t[value]))
                         //p.value=t;
-                        profile.boxing().setValue(t,true);
+                        profile.boxing().setValue(t,true,'datafield');
                 }
             },
             readonly:{
@@ -5134,37 +5148,37 @@ Class("xui.absValue", "xui.absObj",{
             // setValue and getValue
             value:{
                 ini:null,
-                set:function(value){
+                set:function(value,force, tag){
                     var profile=this,
                         p=profile.properties,r,
-                        ovalue = p.value,
-                        box=profile.boxing(),
-                        nv=value;
+                        ovalue=p.value,
+                        box=profile.boxing();
 
                     //check format
-                    if(profile.box._checkValid && profile.box._checkValid(profile, nv)===false)return;
+                    if(profile.box._checkValid && profile.box._checkValid(profile, value)===false)return;
                     //if return false in beforeValueSet, not set
-                    if(profile.beforeValueSet && false=== (r=box.beforeValueSet(profile, ovalue, nv)))return;
+                    if(profile.beforeValueSet && false=== (r=box.beforeValueSet(profile, ovalue, value,force, tag)))return;
                     // can get return value
-                    if(r!==undefined)nv=r;
+                    if(r!==undefined)value=r;
                     //before _setCtrlValue
                     //ensure value
                     if(typeof (r=profile.box._ensureValue)=='function')
-                        nv = r.call(profile.box, profile, nv);
+                        value = r.call(profile.box, profile, value);
 
                     if(typeof(r=profile.$onValueSet)=='function'){
-                        r=r.call(profile,nv);
-                        if(_.isSet(r))nv=r;
+                        r=r.call(profile,ovalue,value,force,tag);
+                        if(_.isSet(r))value=r;
                     }
 
                     //before value copy
-                    if(profile.renderId)box._setCtrlValue(nv);
+                    if(profile.renderId)box._setCtrlValue(value);
                     //value copy
-                    p.value = p.$UIvalue = nv;
+                    p.value = p.$UIvalue = value;
 
                     if(!profile._inValid)profile._inValid=1;
                     if(profile.renderId)box._setDirtyMark();
-                    if(profile.afterValueSet)box.afterValueSet(profile, ovalue, nv);
+                    if(profile.afterValueSet)box.afterValueSet(profile, ovalue, value, force, tag);
+                    if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
             dirtyMark:true,
@@ -5182,13 +5196,14 @@ Class("xui.absValue", "xui.absObj",{
         },
         EventHandlers:{
            //real value set
-            beforeValueSet:function(profile, oldValue, newValue){},
-            afterValueSet:function(profile, oldValue, newValue){},
+            beforeValueSet:function(profile, oldValue, newValue,force, tag){},
+            afterValueSet:function(profile, oldValue, newValue,force, tag){},
+            onValueChange:function(profile, oldValue, newValue, force, tag){},
 
             //ui value set
-            beforeUIValueSet:function(profile, oldValue, newValue){},
-            afterUIValueSet:function(profile, oldValue, newValue){},
-            onChange:function(profile, oldValue, newValue){},
+            beforeUIValueSet:function(profile, oldValue, newValue, force, tag){},
+            afterUIValueSet:function(profile, oldValue, newValue, force, tag){},
+            onChange:function(profile, oldValue, newValue, force, tag){},
 
             beforeDirtyMark:function(profile, dirty){}
         },
@@ -5587,7 +5602,7 @@ new function(){
                     var p=profile.properties,b=profile.boxing();
                     if(p.disabled)return false;
                     if(p.readonly)return false;
-                    b.setUIValue(!p.$UIvalue);
+                    b.setUIValue(!p.$UIvalue,null,null,'click');
                     if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
                     profile.getSubNode('FOCUS').focus();
                 },

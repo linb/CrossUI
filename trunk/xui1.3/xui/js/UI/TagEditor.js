@@ -160,10 +160,10 @@ Class("xui.UI.TagEditor", ['xui.UI',"xui.absValue"], {
             height:32
         },
         RenderTrigger:function(){            
-            this.$onValueSet=this.$onUIValueSet=function(v){
+            this.$onValueSet=this.$onUIValueSet=function(o,v){
                 v=v.split(this.properties.valueSeparator);
                 _.arr.each(this.__inputs,function(o,i){
-                    o.boxing().setValue(v[i]||"",true);
+                    o.boxing().setValue(v[i]||"",true,'render');
                 });
             };
 
@@ -247,7 +247,7 @@ Class("xui.UI.TagEditor", ['xui.UI',"xui.absValue"], {
                     });
                     var sp=profile.properties.valueSeparator,uiv=arr.join(sp);
                     var oi=profile._inValid;
-                    profile.boxing().setUIValue(uiv);
+                    profile.boxing().setUIValue(uiv,null,null,'inner');
                     
                     // input/textarea is special, ctrl value will be set before the $UIvalue
                     prop.$UIvalue=uiv;

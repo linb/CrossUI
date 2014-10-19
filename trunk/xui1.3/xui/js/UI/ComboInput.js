@@ -161,7 +161,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //a special node, must delete if from cache here:
                     delete profile.$_domid[profile.keys['FILE']];
                     xui([o]).addPrev(c).remove(false);
-                    this.setUIValue(c.value||"");
+                    this.setUIValue(c.value||"",null,null,'setfile');
                 }
             }
             return this;
@@ -196,7 +196,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 xui([o]).addPrev(c).remove(false);
                 c=null;
 
-                this.setUIValue(this.getValue());
+                this.setUIValue(this.getValue(),null,null,'getfile');
 
                 return o;
             }
@@ -300,7 +300,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                         value = item[0].caption;
                                 }
                                 //update value
-                                b2.setUIValue(value);
+                                b2.setUIValue(value,null,null,'pick');
 
                                 //cache pop
                                 return b2._cache('',true);
@@ -318,7 +318,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
-                                b2.setUIValue(v);
+                                b2.setUIValue(v,null,null,'pick');
                                 return b2._cache('',true);
                             });
                             break;
@@ -341,7 +341,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
-                                b2.setUIValue(String(v.getTime()));
+                                b2.setUIValue(String(v.getTime()),null,null,'pick');
                                 return b2._cache('',true);
                             });
 
@@ -360,7 +360,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             o.beforeUIValueSet(function(p, o, v){
                                 var b2=this.boxing();
                                 //update value
-                                b2.setUIValue((v=='transparent'?'':'#')+v);
+                                b2.setUIValue((v=='transparent'?'':'#')+v,null,null,'pick');
                                 return b2._cache('',true);
                             });
                             break;
@@ -389,18 +389,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'helpinput':
                     case 'time':
                     case 'timepicker':
-                        o.setValue(profile.properties.$UIvalue, true);
+                        o.setValue(profile.properties.$UIvalue, true,'pop');
                         break;
                     case 'date':
                     case 'datepicker':
                     case 'datetime':
                         var t = profile.$drop.properties;
                         if(t=profile.properties.$UIvalue)
-                            o.setValue(new Date( parseInt(t,10)), true);
+                            o.setValue(new Date( parseInt(t,10)), true,'pop');
                         break;
                     case 'color':
                     case 'colorpicker':
-                        o.setValue(profile.properties.$UIvalue.replace('#',''), true);
+                        o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
                         break;
                 }
 
@@ -818,7 +818,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,src);
                 },
                 onChange:function(profile, e, src){
-                    profile.boxing().setUIValue(xui.use(src).get(0).value+'');
+                    profile.boxing().setUIValue(xui.use(src).get(0).value+'',null,null,'onchange');
                 }
             },
             BTN:{
@@ -872,7 +872,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             instance._setCtrlValue(uiv);
                         else{
                             // trigger events
-                            instance.setUIValue(v);
+                            instance.setUIValue(v,null,null,'onchange');
                             // input/textarea is special, ctrl value will be set before the $UIvalue
                             profile.properties.$UIvalue=v;
                             if(o!==profile._inValid) if(profile.renderId)instance._setDirtyMark();
@@ -893,7 +893,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                         
                         profile.$_onedit=true;
-                        profile.boxing().setUIValue(p.value,true);
+                        profile.boxing().setUIValue(p.value,true,null,'esc');
                         profile.$_onedit=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
@@ -1024,7 +1024,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //fire onchange first
                     if(k.key=='enter' && (!m||k.altKey) && !p.inputReadonly && !profile.$inputReadonly){
                         profile.$_onedit=true;
-                        profile.boxing().setUIValue(profile.boxing()._fromEditor(xui.use(src).get(0).value),true);
+                        profile.boxing().setUIValue(profile.boxing()._fromEditor(xui.use(src).get(0).value),true,null,'enter');
                         profile.$_onedit=false;
                     }
 
@@ -1138,13 +1138,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             numberTpl:{
                 ini:"",
                 action: function(){
-                    this.boxing().setUIValue(this.properties.$UIvalue,true);
+                    this.boxing().setUIValue(this.properties.$UIvalue,true,null,'tpl');
                 }
             },
             currencyTpl:{
                 ini:"$ *",
                 action: function(){
-                    this.boxing().setUIValue(this.properties.$UIvalue,true);
+                    this.boxing().setUIValue(this.properties.$UIvalue,true,null,'tpl');
                 }
             },
             listKey:{
@@ -1295,7 +1295,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.destroyed)return false;
                     var v=((+prop.$UIvalue)||0)+off;
                     v=(_.isSet(v)&&v!=="")?_.formatNumeric(profile.box._number(profile, v), prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero):"";
-                    profile.boxing().setUIValue(v);
+                    profile.boxing().setUIValue(v,null,null,'spin');
                     task.delay *=0.9;
                 };
             task.task=fun;

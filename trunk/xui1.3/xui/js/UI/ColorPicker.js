@@ -495,7 +495,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     p.boxing()._setCtrlValue(p.$tempValue=sid,false);
                     p.box._vC(p);
                     if(!p.properties.advance)
-                        p.boxing().setUIValue(sid,true);
+                        p.boxing().setUIValue(sid,true,null,'click');
                         
                     return false;
                 },
@@ -503,7 +503,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     var sid=p.getSubId(s);
                     p.boxing()._setCtrlValue(p.$tempValue=sid,false);
                     p.box._vC(p);
-                    p.boxing().setUIValue(sid,true);
+                    p.boxing().setUIValue(sid,true,null,'dblclick');
                     return false;
                 }
             },
@@ -515,13 +515,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             SET:{
                 onClick:function(p,e,src){
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true);
+                    p.boxing().setUIValue(p.$tempValue,true,null,'setbtn');
                 }
             },
             TRANS:{
                 onClick:function(p,e,src){
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue='transparent',true);
+                    p.boxing().setUIValue(p.$tempValue='transparent',true,null,'transbtn');
                 }
             },
             CANCEL:{
@@ -671,7 +671,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 onDblclick:function(p,e,src){
                     p.box._updateValueByPos(p, e);
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true);
+                    p.boxing().setUIValue(p.$tempValue,true,null,'advdblclick');
                 }
             },
             ADVCLR:{
@@ -705,7 +705,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 onDblclick:function(p,e,src){
                     p.box._updateValueByPos(p, e);
                     p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true);
+                    p.boxing().setUIValue(p.$tempValue,true,null,'adv2dblclick');
                 }
             }
         },
@@ -732,7 +732,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             beforeClose:function(profile, src){}
         },
         RenderTrigger:function(){
-            this.$onValueSet=this.$onUIValueSet=function(v){
+            this.$onValueSet=this.$onUIValueSet=function(o,v){
                 this.box._setClrName(this,v);
             };
         },

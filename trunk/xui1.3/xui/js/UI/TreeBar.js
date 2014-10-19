@@ -21,7 +21,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(itemId){
                         profile.getSubNode('BAR',itemId).tagClass('-checked');
                         //scroll
-                        if(!profile._innerSet){
+                        if(!profile._noScroll){
                             var o = profile.getSubNode('ITEM',itemId);
                             if(o){
                                 var items = profile.getSubNode('BOX'),
@@ -588,9 +588,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
     
                     //update string value only for _setCtrlValue
                     if(box.getUIValue() != value){
-                        profile._innerSet=1;
-                        box.setUIValue(value);
-                        delete profile._innerSet;
+                        profile._noScroll=1;
+                        box.setUIValue(value,null,null,'click');
+                        delete profile._noScroll;
                         if(box.get(0) && box.getUIValue() == value)
                             box.onItemSelected(profile, item, e, src, checktype);
                     }
@@ -599,9 +599,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             case 'single':
                 if(box.getUIValue() != item.id){
                     profile.$firstV=item;
-                    profile._innerSet=1;
-                    box.setUIValue(item.id);
-                    delete profile._innerSet;
+                    profile._noScroll=1;
+                    box.setUIValue(item.id,null,null,'click');
+                    delete profile._noScroll;
                     if(box.get(0) && box.getUIValue() == item.id)
                         box.onItemSelected(profile, item, e, src, 1);
                 }
@@ -830,11 +830,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 }else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs.append(item.sub=sub.render(true));
                                 }
+                                var s=0,arr=b.getUIValue(true);
+                                if(arr && arr.length){
+                                    _.arr.each(sub,function(o){
+                                        if(_.arr.indexOf(arr, o.id||o)!=-1){
+                                            s=1;
+                                            return false;
+                                        }
+                                    });
+                                    if(s){
+                                        //set checked items
+                                        profile._forInnerUIStyle=profile._noScroll=1;
+                                        b.setUIValue(b.getUIValue(), true,null,'sub');
+                                        delete profile._forInnerUIStyle;
+                                        delete profile._noScroll;
+                                    }
+                                }
                             }
-                            //set checked items
-                            profile._innerSet=1;
-                            b.setUIValue(b.getUIValue(), true);
-                            delete profile._innerSet;
                         }
 
                         if(p.singleOpen)

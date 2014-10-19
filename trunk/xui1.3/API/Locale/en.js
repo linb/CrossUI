@@ -964,6 +964,14 @@ _.set(xui.Locale,["en","app"], {
                 "alert(xui.getPath('xui.b.c')); alert(xui.getPath('xui.b.c','.js')); alert(xui.getPath('xui.b.c','.gif','img')); "
             ]
         },
+        adjustVar:{
+            $desc:"Try to adjust XUI pseudocode to JS variable.",
+            $rtn:"Object",
+            $paras:[
+                "obj [Required]: Object,  variable.",
+                "scope [Optional]: Object, the scope object.  Default is [window]."
+            ]
+        },
         adjustRes:{
             $desc:"Adjust the string with resource id (a word beginning with '$' and including '.').",
             $rtn:'String',
@@ -5160,6 +5168,9 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            dataBindLoadType:{
+                $desc:"DataBinder type. one of 'none, sync, async'. Default is [none]"
+            },
             autoDestroy:{
                 $desc:"To determine whether the first inner UI control's detory will trigger com's destroy or not.",
                 $rtn:"Boolean"
@@ -5990,6 +6001,22 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.Profile."
                 ]
             },
+            onData:{
+                $desc:"Fired when data returns.",
+                $rtn:"Object",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, the data from remoting call"
+                ]
+            },
+            onError:{
+                $desc:"Fired when error raises.",
+                $rtn:"Object",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, the data from remoting call"
+                ]
+            },
             afterInvoke:{
                 $desc:"Fired after invoke function is called.",
                 $rtn:"Object",
@@ -6559,8 +6586,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired before setUIValue is called. If returns false, setUIValue function will be ignored.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "oldValue : String, the old UIValue.",
-                    "newValue : String, the new UIValue."
+                    "oldValue : String, old UIValue.",
+                    "newValue : String, new UIValue.",
+                    "force : Boolean, force to call or not.",
+                    "tag : call extra info"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6577,8 +6606,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired after setUIValue is called.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "oldValue :String,  the old UIValue.",
-                    "newValue : String, the new UIValue."
+                    "oldValue :String, old UIValue.",
+                    "newValue : String, new UIValue.",
+                    "force : Boolean, force to call or not.",
+                    "tag : call extra info"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6592,19 +6623,33 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             onChange:{
-                $desc:"Fired when control value is changed!",
+                $desc:"Fired when control's UI value is changed!",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "oldValue :String,  the old UIValue.",
-                    "newValue : String, the new UIValue."
+                    "oldValue :String, old UIValue.",
+                    "newValue : String, new UIValue.",
+                    "force : Boolean, force to call or not.",
+                    "tag : call extra info"
+                ]
+            },
+            onValueChange:{
+                $desc:"Fired when control's inner value is changed!",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "oldValue :String,  old Value.",
+                    "newValue : String, new Value.",
+                    "force : Boolean, force to call or not.",
+                    "tag : call extra info"
                 ]
             },
             beforeValueSet:{
                 $desc:"Fired before setValue is called. If returns false, setValue function will be ignored.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "oldValue : String, the old UIValue.",
-                    "newValue : String, the new UIValue."
+                    "oldValue : String, old Value.",
+                    "newValue : String, new Value.",
+                    "force : Boolean, force to call or not.",
+                    "tag : call extra info"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6621,8 +6666,10 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired after setValue is called.",
                 $paras:[
                     "profile : xui.UIProfile.",
-                    "oldValue : String, the old UIValue.",
-                    "newValue : String, the new UIValue."
+                    "oldValue : String, old Value.",
+                    "newValue : String, new Value.",
+                    "force : Boolean, force to call or not.",
+                    "tag : call extra info"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

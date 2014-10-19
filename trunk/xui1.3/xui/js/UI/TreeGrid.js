@@ -392,7 +392,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(arr.length && _.arr.indexOf(arr, rowId)!=-1){
                             if(nid)
                                 _.arr.removeValue(arr, rowId);
-                            ns.setUIValue(arr.join(profile.properties.valueSeparator), true);
+                            ns.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'sub');
                         }
                     }
 
@@ -1940,13 +1940,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(profile._$checkAll){
                         delete profile._$checkAll;
-                        profile.boxing().setUIValue("");
+                        profile.boxing().setUIValue("",null,null,'checkbox');
                         xui.use(src).tagClass('-checked',false)
                         profile.boxing().onRowSelected(profile, "allrows", e, src, -1);
                     }else{
                         profile._$checkAll=true;
                         xui.use(src).tagClass('-checked')
-                        profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator));
+                        profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator),null,null,'click');
                         profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
                 }
@@ -4444,7 +4444,7 @@ editorEvents
 
                     //update string value only for setCtrlValue
                     if(box.getUIValue() != value){
-                        box.setUIValue(value);
+                        box.setUIValue(value,null,null,'click');
                         if(box.get(0) && box.getUIValue() == value)
                             box.onRowSelected(profile, targetItem, e, src, checktype);
                     }
@@ -4453,7 +4453,7 @@ editorEvents
             case 'single':
                 if(box.getUIValue() != sid){
                     profile.$firstV=targetItem;
-                    box.setUIValue(sid);
+                    box.setUIValue(sid,null,null,'click');
                     if(box.get(0) && box.getUIValue() == sid)
                         box.onRowSelected(profile, targetItem, e, src, 1);
                 }
@@ -4801,13 +4801,13 @@ editorEvents
 
                     // must set value here, after setItems/setListKey
                     //$editorValue must be set in beforeIniEditor
-                    editor.setValue(cell.$editorValue||cell.value,true);
+                    editor.setValue(cell.$editorValue||cell.value,true,'editorini');
                     delete cell.$editorValue;
 
                     //$tag for compatible
                     if(cell.$tag){
                         if(editor.setCaption)editor.setCaption(cell.$tag);
-                        else if(editor.setValue)editor.setValue(cell.$tag);
+                        else if(editor.setValue)editor.setValue(cell.$tag,null,'editortag');
                     }
                     //give a reference
                     editor.get(0).$cell = cell;
@@ -4834,7 +4834,7 @@ editorEvents
                             editor.getRoot().setBlurTrigger(profile.$xid+":editor");
                             if(profile.properties && !profile.properties.directInput){
                                 editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null).afterPopHide(null);
-                                editor.setValue('',true);
+                                editor.setValue('',true,'editorreset');
                             }
                             // clear those setting
                             if(editorFormat){

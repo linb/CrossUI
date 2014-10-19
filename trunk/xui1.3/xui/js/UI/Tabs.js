@@ -266,7 +266,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     profile.getSubNode('PANEL',true).remove();
             });
-            self.setValue(null,true);
+            self.setValue(null,true,'clear');
             arguments.callee.upper.apply(self,arguments);
             return self;
         },
@@ -636,7 +636,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             if(box.getUIValue() == value)
                                 rt=false;
                             else{
-                                box.setUIValue(value);
+                                box.setUIValue(value,null,null,'md');
                                 if(box.get(0) && box.getUIValue() == value)
                                     rt=box.onItemSelected(profile, item, e, src, checktype)||rt2;
                             }
@@ -646,7 +646,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     }
                     // for single selection
                     if(box.getUIValue() != item.id){
-                        box.setUIValue(item.id);
+                        box.setUIValue(item.id,null,null,'md');
                         //if success
                         if(box.getUIValue() == item.id){
                             rt=box.onItemSelected(profile, item, e, src)||rt2;
@@ -1009,7 +1009,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var self=this,v,i,ins;
             // set default value
             if(v=self.properties.value){
-                (ins=self.boxing()).setUIValue(v);
+                (ins=self.boxing()).setUIValue(v,null,null,'render');
                 if(i=self.getItemByItemId(v))
                     ins.onItemSelected(self, i);
             }

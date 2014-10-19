@@ -439,7 +439,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         a=v.split(':');
                     a[0]=profile.$hour;
                     a[1]=profile.$minute;
-                    profile.boxing().setUIValue(a.join(':'),true);
+                    profile.boxing().setUIValue(a.join(':'),true,null,'click');
                     if(profile.box)profile.box._hourC(profile);
                 }
             },
@@ -459,7 +459,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 },
                 onDblclick:function(profile, e, src){
                     profile.$hour=profile.getSubId(src);
-                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true);
+                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true,null,'dblclick');
                     if(profile.box)profile.box._hourC(profile);
                 }
             },
@@ -474,7 +474,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 },
                 onClick:function(profile, e, src){
                     profile.$minute=profile.getSubId(src);
-                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true);
+                    profile.boxing().setUIValue(profile.$hour+":"+profile.$minute,true,null,'click2');
                     if(profile.box)profile.box._hourC(profile);
                 }
             },

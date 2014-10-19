@@ -32,6 +32,7 @@ Class("xui.DataBinder","xui.absObj",{
 
             self._nodes.push(profile);
             profile._cacheInstance=self;
+            self.n0=profile;
 
             if(!profile.name)self.setName(alias);
 
@@ -226,8 +227,8 @@ Class("xui.DataBinder","xui.absObj",{
                 if(!con.WDSLCache)con.WDSLCache={};
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
-                       if(prf.afterInvoke)
-                            prf.boxing().afterInvoke(prf, rspData);
+                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
+                        if(prf.onError)prf.boxing().onError(prf, rspData);
                         _.tryF(onFail,arguments,this);
                         _.tryF(onEnd,arguments,this);
                     });
@@ -347,12 +348,12 @@ Class("xui.DataBinder","xui.absObj",{
                         else if(responseType=="SOAP")
                             rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                     }
-
+                   if(prf.onData)prf.boxing().onData(prf, rspData);
                     _.tryF(onSuccess,arguments,this);
                 },
                 function(rspData){
-                   if(prf.afterInvoke)
-                        prf.boxing().afterInvoke(prf, rspData);
+                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
+                   if(prf.onError)prf.boxing().onError(prf, rspData);
                     _.tryF(onFail,arguments,this);
                 },
                 threadid,
@@ -601,19 +602,25 @@ Class("xui.DataBinder","xui.absObj",{
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            }/*,
+            },
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
-                    this.read(null,null,null,null,true);
+                    this.invoke(function(d){
+                        xui.alert("onData",_.stringify(d));
+                    },function(e){
+                        xui.alert("onError",_.stringify(e));
+                    });
                 }
-            }*/
+            }
         },
         EventHandlers:{
             beforeUpdateDataToUI:function(profile, dataToUI){},
             afterUpdateDataFromUI:function(profile, dataFromUI){},
             beforeInvoke:function(profile){},
             afterInvoke:function(profile,rspData){},
+            onData:function(profile,rspData){},
+            onError:function(profile,rspData){},
             beforeRead:function(profile){},
             afterRead:function(profile,rspData){},
             beforeWrite:function(profile){},

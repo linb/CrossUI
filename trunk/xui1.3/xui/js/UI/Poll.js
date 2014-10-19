@@ -201,7 +201,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
                     r.top-=3;
                 if(r.top<0)r.top=0;
 
-                o.setValue(value||'',true)
+                o.setValue(value||'',true,'inner')
                 .setWidth(r.width + (parseInt(node.css('paddingLeft'),10)||0)+ (parseInt(node.css('paddingRight'),10)||0))
                 .onCommand(function(p){
                     var pro=p.properties,v=pro.$UIvalue, ov=pro.value;

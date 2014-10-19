@@ -87,7 +87,7 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                     profile.box._onchange(profile,xui.use(src).get(0));
                 },
                 onChange:function(profile, e, src){
-                    profile.boxing().setUIValue(xui.use(src).get(0).value);
+                    profile.boxing().setUIValue(xui.use(src).get(0).value,null,null,'onchange');
                     profile.box._onchange(profile,xui.use(src).get(0));
                 },
                 afterKeydown:function(profile, e, src){
@@ -800,7 +800,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
 
                             //update string value only for setCtrlValue
                             if(box.getUIValue() !== value){
-                                box.setUIValue(value);
+                                box.setUIValue(value,null,null,'click');
                                 if(box.get(0) && box.getUIValue() == value)
                                     box.onItemSelected(profile, item, e, src, checktype);
                             }
@@ -809,7 +809,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     case 'single':
 
                         if(box.getUIValue() !== item.id){
-                            box.setUIValue(item.id);
+                            box.setUIValue(item.id,null,null,'click');
                             if(box.get(0) && box.getUIValue() == item.id)
                                 box.onItemSelected(profile, item, e, src, 1);
                         }
@@ -1543,7 +1543,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         if(target<p.dateStart || target>date.add(p.dateStart,'ms',p.width*p._rate)){
                             p.dateStart=target;
                             var k=p.$UIvalue;
-                            this.refresh().setUIValue(k,true);
+                            this.refresh().setUIValue(k,true,null,'task');
                         }
                     }else{
                         p.dateStart=target;
@@ -2079,7 +2079,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         if(profile.beforeNewTask && false===b.beforeNewTask(profile, task)){}else
                             b.addTasks([task]);
                     }else
-                        b.setUIValue(from+":"+to);
+                        b.setUIValue(from+":"+to,null,null,'drag');
 
                     profile.$dd_ox =profile.$dd_oleft=null;
                 }
@@ -2153,7 +2153,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                             box._cache();
                         });
                     }
-                    o.setValue(from,true).setHost(profile);
+                    o.setValue(from,true,'click').setHost(profile);
                     node=o.reBoxing();
                     node.popToTop(src);
 
@@ -2233,7 +2233,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         if(profile.beforeTaskUpdated && false===profile.boxing().beforeTaskUpdated(profile, profile.getItemByDom(src), from, to)){}else
                             box._resetItem(profile,r,src);
                     }else
-                        profile.boxing().setUIValue(from+":"+to);
+                        profile.boxing().setUIValue(from+":"+to,null,null,'drag2');
 
                     profile.$dd_type = null;
 
@@ -3473,7 +3473,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 ins.setItems(items);
                 
                 if(!pro.multiTasks){
-                    ins.setUIValue(uivalue, true);
+                    ins.setUIValue(uivalue, true,null,'resize');
                 }else{
                     var arr=[];
                     // filter tasks
@@ -3525,7 +3525,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
 
             //if singleTask, setUIValue
             if(!pro.multiTasks){
-                ins.setUIValue(uivalue, true);
+                ins.setUIValue(uivalue, true,null,'refresh');
             //if multiTasks, call iniContent to get tasks
             }else{
                 if(force)
@@ -3696,10 +3696,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             height:32
         },
         RenderTrigger:function(){            
-            this.$onValueSet=this.$onUIValueSet=function(v){
+            this.$onValueSet=this.$onUIValueSet=function(o,v){
                 v=v.split(this.properties.valueSeparator);
                 _.arr.each(this.__inputs,function(o,i){
-                    o.boxing().setValue(v[i]||"",true);
+                    o.boxing().setValue(v[i]||"",true,'render');
                 });
             };
 
@@ -3783,7 +3783,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     });
                     var sp=profile.properties.valueSeparator,uiv=arr.join(sp);
                     var oi=profile._inValid;
-                    profile.boxing().setUIValue(uiv);
+                    profile.boxing().setUIValue(uiv,null,null,'inner');
                     
                     // input/textarea is special, ctrl value will be set before the $UIvalue
                     prop.$UIvalue=uiv;
@@ -4017,7 +4017,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
                     r.top-=3;
                 if(r.top<0)r.top=0;
 
-                o.setValue(value||'',true)
+                o.setValue(value||'',true,'inner')
                 .setWidth(r.width + (parseInt(node.css('paddingLeft'),10)||0)+ (parseInt(node.css('paddingRight'),10)||0))
                 .onCommand(function(p){
                     var pro=p.properties,v=pro.$UIvalue, ov=pro.value;
@@ -5004,7 +5004,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         arr = p.$UIvalue.split(':');
                     profile._v1=d.curPos.left;
                     arr[0]= ((profile._v1)/rate + p.min);
-                    box.setUIValue(arr.join(':'));
+                    box.setUIValue(arr.join(':'),null,null,'drag');
 
                     if(profile._v1==profile._v2){
                         xui.use(src).css('zIndex',10);
@@ -5049,7 +5049,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                         arr = p.$UIvalue.split(':');
                     profile._v2=d.curPos.left;
                     arr[1]= ((profile._v2)/rate + p.min);
-                    box.setUIValue(arr.join(':'));
+                    box.setUIValue(arr.join(':'),null,null,'drag2');
                 }
             }
         },
@@ -5070,7 +5070,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t);
+                        b.setValue(t,null,'min');
                 }
             },
             max:{
@@ -5079,7 +5079,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t);
+                        b.setValue(t,null,'max');
                 }
             },
             unit:{
@@ -5182,7 +5182,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     profile._v2=left;
                     arr[1]= ((profile._v2)/rate + pro.min);
                 }
-                profile.boxing().setUIValue(arr.join(':'));                
+                profile.boxing().setUIValue(arr.join(':'),null,null,'kb');                
             }
         },
         _ondrag:function(profile, left, src, tag){

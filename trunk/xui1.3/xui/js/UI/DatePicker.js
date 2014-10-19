@@ -449,13 +449,13 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     // set dir
                     if(!p.timeInput)
                         //onClick event
-                        profile.boxing().setUIValue(v);
+                        profile.boxing().setUIValue(v,null,null,'click');
                 },
                 onDblclick:function(profile,e,src){
                     var p=profile.properties;
                     if(p.timeInput){
                         xui.use(src).onMouseout(true,{$force:true});
-                        profile.boxing().setUIValue(profile.$tempValue, true);
+                        profile.boxing().setUIValue(profile.$tempValue, true,null,'dblclick');
                     }
                 }
             },
@@ -466,13 +466,13 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         profile.properties.timeInput ?
                         new Date :
                         xui.Date.getTimSpanStart(new Date,'d',1)
-                    ,true);
+                    ,true,null,'today');
                 }
             },
             SET:{
                 onClick:function(profile,e,src){
                     xui.use(src).onMouseout(true,{$force:true});
-                    profile.boxing().setUIValue(profile.$tempValue, true);
+                    profile.boxing().setUIValue(profile.$tempValue, true,null,'set');
                 }
             },
             CLOSE:{

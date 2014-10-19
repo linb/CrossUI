@@ -77,7 +77,7 @@ Class("xui.UI.CheckBox", "xui.UI.Button",{
                 var p=profile.properties,b=profile.boxing();
                 if(p.disabled || p.readonly)return false;
                 //onClick event
-                b.setUIValue(!p.$UIvalue);
+                b.setUIValue(!p.$UIvalue,null,null,'click');
 
                 if(profile.onChecked)b.onChecked(profile, p.$UIvalue);
                 profile.getSubNode('FOCUS').focus();

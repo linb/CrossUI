@@ -87,7 +87,7 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                     profile.box._onchange(profile,xui.use(src).get(0));
                 },
                 onChange:function(profile, e, src){
-                    profile.boxing().setUIValue(xui.use(src).get(0).value);
+                    profile.boxing().setUIValue(xui.use(src).get(0).value,null,null,'onchange');
                     profile.box._onchange(profile,xui.use(src).get(0));
                 },
                 afterKeydown:function(profile, e, src){
