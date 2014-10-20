@@ -5907,6 +5907,18 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
+            getRequestId:{
+                $desc:"获取远程数请求的标识ID.",
+                $rtn:"String"
+            },
+            setRequestId:{
+                $desc:"设置远程数请求的标识ID.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String. 自定义的请求标识.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getRequestType:{
                 $desc:"获取向远程数据源发送数据请求的数类型.",
                 $rtn:"String"
@@ -6010,7 +6022,8 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"在invoke之前调用.  返回false可以阻止远程调用.",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile."
+                    "profile : xui.Profile.",
+                    "requestId : String"
                 ]
             },
             onData:{
@@ -6018,7 +6031,8 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据"
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
                 ]
             },
             onError:{
@@ -6026,7 +6040,8 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据"
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
                 ]
             },
             afterInvoke:{
@@ -6034,14 +6049,16 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据"
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
                 ]
             },
             beforeRead:{
                 $desc:"在read之前调用.  返回false可以阻止远程调用.",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile."
+                    "profile : xui.Profile.",
+                    "requestId : String"
                 ]
             },
             afterRead:{
@@ -6049,14 +6066,16 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据"
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
                 ]
             },
             beforeWrite:{
                 $desc:"在write之前调用.  返回false可以阻止远程调用.",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile."
+                    "profile : xui.Profile.",
+                    "requestId : String"
                 ]
             },
             afterWrite:{
@@ -6064,7 +6083,8 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据"
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
                 ]
             }
         }
@@ -19281,10 +19301,11 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'requestType':'数据请求类型',
             'responseType':'接收数据类型',
             'queryArgs':'数据请求参数',
-            'queryOptions':'自定义参数',
+            'queryOptions':'自定义调用选项',
             'proxyType':'代理种类',
             'name':'绑定器唯一名',
-            "proxyInvoker":"数据触发器"
+            "proxyInvoker":"数据触发器",
+            "requestId":"数据请求ID"
         },
         'xui_UI_CSSBox':{
              "normalStatus":"正常状态",

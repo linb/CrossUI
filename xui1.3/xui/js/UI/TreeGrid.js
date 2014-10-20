@@ -124,8 +124,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             if(temp&&temp.length){
                 _.arr.each(temp,function(o){
-                       if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                            box._editCell(profile,o);
+                    if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                        box._editCell(profile,o);
                 });
                 temp.length=0;
             }
@@ -726,8 +726,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         _.arr.each(temp,function(o){
-                               if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                                    box._editCell(profile,o);
+                            if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                                box._editCell(profile,o);
                         });
                         temp.length=0;
                     }
@@ -3323,10 +3323,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
-            
             _.each(ns.cellMap,function(o){
-                   if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
-                        box._editCell(ns,o);
+                if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
+                    box._editCell(ns,o);
             });
         },
         _focusEvent:function(profile, e, src){

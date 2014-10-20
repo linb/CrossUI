@@ -12,8 +12,8 @@ Class('xui.SOAP',null,{
             // sync call for wsdl
             xui.Ajax(queryURL+'?wsdl',null,function(rspData){
                 rst=rspData;
-            },function(rspData){
-                _.tryF(onFail,[rspData],this);
+            },function(){
+                _.tryF(onFail,arguments,this);
             },null,{
                 method:'GET',
                 rspType:'xml',

@@ -31,7 +31,7 @@ Class("xui.UI.Resizer","xui.UI",{
         }
     },
     Initialize:function(){
-        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB']);
+        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB','REGION']);
         _.each({
             // add resizer to xui.Dom plugin
             addResizer:function(properties, onUpdate, onChange){

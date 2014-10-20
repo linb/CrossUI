@@ -208,6 +208,7 @@ Class("xui.DataBinder","xui.absObj",{
                 dsType=prop.dataSourceType,
                 responseType=prop.responseType,
                 requestType=prop.requestType,
+                requestId=prop.requestId,
                 hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
                 queryURL=(hashModel?(((prop.queryURL.lastIndexOf("/")!=prop.queryURL.length-1)?(prop.queryURL+"/"):prop.queryURL)+prop.queryModel):prop.queryURL),
                 queryUserName=prop.queryUserName;
@@ -217,7 +218,7 @@ Class("xui.DataBinder","xui.absObj",{
             if(dsType!="remoting")return;
 
             // Normally, Gives a change to modify "queryArgs" for XML
-            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf))
+            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
 
             // for auto adjusting options
@@ -227,7 +228,7 @@ Class("xui.DataBinder","xui.absObj",{
                 if(!con.WDSLCache)con.WDSLCache={};
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
-                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
+                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                         if(prf.onError)prf.boxing().onError(prf, rspData);
                         _.tryF(onFail,arguments,this);
                         _.tryF(onEnd,arguments,this);
@@ -319,17 +320,9 @@ Class("xui.DataBinder","xui.absObj",{
             _.merge(options, queryOptions);
 
             _.merge(options, rMap, 'all');
+            options.proxyType=proxyType;
 
-            var ajax=(
-                // specify
-                proxyType ? (proxyType=="sajax"?xui.SAjax:proxyType=="iajax"?xui.IAjax:xui.Ajax)
-                // include a file => IAjax
-                :((function(d){if(!_.isHash(d))return 0; for(var i in d)if(d[i]&&d[i].nodeType==1)return 1})(queryArgs)) ? xui.IAjax
-                // post: crossdomain => IAjax, else Ajax
-                : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(queryURL) ? xui.IAjax  : xui.Ajax
-                // get : crossdomain => SAjax, else Ajax
-                : xui.absIO.isCrossDomain(queryURL) ? xui.SAjax : xui.Ajax
-             ).apply(null, [
+            var ajax=xui._getrpc(queryURL, queryArgs, options).apply(null, [
                 queryURL,
                 queryArgs,
                 function(rspData){
@@ -337,7 +330,7 @@ Class("xui.DataBinder","xui.absObj",{
 
                     // Normally, Gives a change to modify the "rspData" format for XML
                     if(prf.afterInvoke){
-                        mapb = prf.boxing().afterInvoke(prf, rspData);
+                        mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                         if(_.isSet(mapb))rspData=mapb;
                         mapb=null;
                     }
@@ -348,12 +341,12 @@ Class("xui.DataBinder","xui.absObj",{
                         else if(responseType=="SOAP")
                             rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                     }
-                   if(prf.onData)prf.boxing().onData(prf, rspData);
-                    _.tryF(onSuccess,arguments,this);
+                   if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
+                   _.tryF(onSuccess,arguments,this);
                 },
                 function(rspData){
-                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
-                   if(prf.onError)prf.boxing().onError(prf, rspData);
+                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                   if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
                     _.tryF(onFail,arguments,this);
                 },
                 threadid,
@@ -371,17 +364,18 @@ Class("xui.DataBinder","xui.absObj",{
         "read":function(onSuccess, onFail, onStart, onEnd, mode, threadid, options, adjustData){
             var ns=this,prf=ns.get(0),
                 prop=prf.properties,
+                requestId=prop.requestId,
                 dsType=prop.dataSourceType;
             if(dsType=='none'||dsType=='memory')return;
 
-            if(prf.beforeRead && false===prf.boxing().beforeRead(prf))
+            if(prf.beforeRead && false===prf.boxing().beforeRead(prf, requestId||this.uid))
                 return;
 
             return ns.invoke(function(rspData){
                 var mapb;
                 // Normally, Gives a change to modify the "rspData" format to suitable key/value maps
                 if(prf.afterRead){
-                    mapb = prf.boxing().afterRead(prf, rspData);
+                    mapb = prf.boxing().afterRead(prf, rspData, requestId||this.uid);
                     if(_.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
@@ -398,13 +392,13 @@ Class("xui.DataBinder","xui.absObj",{
             var ns=this,prf=ns.get(0),dsType=prf.properties.dataSourceType;
             if(dsType=='none'||dsType=='memory')return;
 
-            if(prf.beforeWrite && false===prf.boxing().beforeWrite(prf))
+            if(prf.beforeWrite && false===prf.boxing().beforeWrite(prf, requestId||this.uid))
                 return;
 
             return ns.invoke(function(rspData){
                var mapb;
                if(prf.afterWrite){
-                    mapb = prf.boxing().afterWrite(prf, rspData);
+                    mapb = prf.boxing().afterWrite(prf, rspData, requestId||this.uid);
                     if(_.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
@@ -540,6 +534,7 @@ Class("xui.DataBinder","xui.absObj",{
             "data":{
                 ini:{}
             },
+            requestId:"",
             dataSourceType:{
                 ini:"none",
                 listbox:["none","memory","remoting"]
@@ -617,14 +612,14 @@ Class("xui.DataBinder","xui.absObj",{
         EventHandlers:{
             beforeUpdateDataToUI:function(profile, dataToUI){},
             afterUpdateDataFromUI:function(profile, dataFromUI){},
-            beforeInvoke:function(profile){},
-            afterInvoke:function(profile,rspData){},
-            onData:function(profile,rspData){},
-            onError:function(profile,rspData){},
-            beforeRead:function(profile){},
-            afterRead:function(profile,rspData){},
-            beforeWrite:function(profile){},
-            afterWrite:function(profile,rspData){}
+            beforeInvoke:function(profile, requestId){},
+            afterInvoke:function(profile, rspData, requestId){},
+            onData:function(profile, rspData, requestId){},
+            onError:function(profile, rspData, requestId){},
+            beforeRead:function(profile, requestId){},
+            afterRead:function(profile, rspData, requestId){},
+            beforeWrite:function(profile, requestId){},
+            afterWrite:function(profile, rspData, requestId){}
         }
     }
 });

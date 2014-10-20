@@ -1119,24 +1119,23 @@ _.merge(xui,{
                    : xui.adjustRes(obj, false, true, true, null, scope)
                    : obj;
     },
-    request:function(uri, query, onSuccess, onFail, threadid, options){
-        return (
-        // specify
-        (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
+    _getrpc:function(uri,query,options){
+        return (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
         // include a file => IAjax
         :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if(d[i]&&d[i].nodeType==1)return 1})(query))) ? xui.IAjax
         // post: crossdomain => IAjax, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.IAjax  : xui.Ajax
         // get : crossdomain => SAjax, else Ajax
-        : xui.absIO.isCrossDomain(uri) ? xui.SAjax : xui.Ajax
-
-        ).apply(null, arguments).start()
+        : xui.absIO.isCrossDomain(uri) ? xui.SAjax : xui.Ajax;
+    },
+    request:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui._getrpc(uri, query, options).apply(null, arguments).start();
     },
     getFileSync:function(uri, rspType, onSuccess, onFail, options){
-        return xui.Ajax(uri,xui.Ajax._id,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri,xui.Ajax.uid,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, rspType, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.Ajax._id,onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,xui.Ajax.uid,onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1146,10 +1145,10 @@ _.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.SAjax(path,xui.SAjax._id,onSuccess,onFail,0,options).start()
+                xui.SAjax(path,xui.SAjax.uid,onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui.Ajax._id,function(rsp){
+                xui.Ajax(path,xui.Ajax.uid,function(rsp){
                     try{_.exec(rsp)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
                     _.tryF(onSuccess);
@@ -1172,7 +1171,7 @@ _.merge(xui,{
         else{
             if(xui.absIO.isCrossDomain(uri)){
                 Class._ignoreNSCache=1;Class._last=null;
-                xui.SAjax(uri,xui.SAjax._id,function(){
+                xui.SAjax(uri,xui.SAjax.uid,function(){
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     _.tryF(onSuccess, [uri],t);
@@ -1186,7 +1185,7 @@ _.merge(xui,{
                     _.tryF(onFail, _.toArr(arguments));
                 },0,{rspType:'script'}).start();
             }else{
-                xui.Ajax(uri,xui.Ajax._id,function(rsp){
+                xui.Ajax(uri,xui.Ajax.uid,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
                     try{_.exec(rsp,uri)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
@@ -1642,23 +1641,27 @@ new function(){
    
                 //adjust params
                 _.arr.each(params,function(o){
-                    if(typeof(o)=="string"){
-                        var rpc;
-                        if(_.str.startWith(o,"[data]")){
-                            o=o.replace("[data]","");
-                            rpc=1;
+                    var f=function(o){
+                        if(typeof(o)=="string"){
+                            var rpc;
+                            if(_.str.startWith(o,"[data]")){
+                                o=o.replace("[data]","");
+                                rpc=1;
+                            }
+                            o=xui.adjustVar(o, _ns);
+                            // for file
+                            if(rpc && typeof(o)=="string")
+                                o=_.unserialize(xui.getFileSync(o));
+                        }else if(_.isHash(o)){
+                            // one layer
+                            for(var i in o)o[i]=f(o);
+                        }else if(_.isArr(o)){
+                            // one layer
+                            for(var i=0,l=o.length;i<l;i++)o[i]=f(o);
                         }
-                        o=xui.adjustVar(o, _ns);
-                        // for file
-                        if(rpc && typeof(o)=="string")
-                            o=_.unserialize(xui.getFileSync(o));
-                    }else if(_.isHash(o)){
-                        // one layer
-                        for(var i in o)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
-                    }else if(_.isArr(o)){
-                        // one layer
-                        for(var i=0,l=o.length;i<l;i++)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
-                    }
+                        return o;
+                    };
+                    o=f(o);
                     iparams.push(o);
                 });
                 // cover with inline params
@@ -2144,6 +2147,7 @@ Class('xui.absIO',null,{
         //give defalut value to those members
         _.merge(options,{
             id : options.id || (''+(con._id++)),
+            uid: (''+(con.uid++)),
             uri : options.uri?xui.adjustRes(options.uri,0,1,1):'',
             username:options.username||undefined,
             password:options.password||undefined,
@@ -2239,6 +2243,7 @@ Class('xui.absIO',null,{
     Static:{
         $abstract:true,
         _id:1,
+        uid:1,
         method:'GET',
         retry:0,
         timeout:60000,
