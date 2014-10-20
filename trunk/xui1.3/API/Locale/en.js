@@ -5895,6 +5895,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
+            getRequestId:{
+                $desc:"Gets the this remoting call's request id.",
+                $rtn:"String"
+            },
+            setRequestId:{
+                $desc:"Sets the this remoting call's request id.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String. A custom request Id",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getRequestType:{
                 $desc:"Gets the request data type for this remoting call.",
                 $rtn:"String"
@@ -5998,7 +6010,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired before invoke function is called. If returns false, invoke function will be ignored.",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile."
+                    "profile : xui.Profile.",
+                    "requestId : String"
                 ]
             },
             onData:{
@@ -6006,7 +6019,8 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call"
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
                 ]
             },
             onError:{
@@ -6014,7 +6028,8 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call"
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
                 ]
             },
             afterInvoke:{
@@ -6022,14 +6037,16 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call"
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
                 ]
             },
             beforeRead:{
                 $desc:"Fired before read function is called. If returns false, read function will be ignored.",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile."
+                    "profile : xui.Profile.",
+                    "requestId : String"
                 ]
             },
             afterRead:{
@@ -6037,14 +6054,16 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call"
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
                 ]
             },
             beforeWrite:{
                 $desc:"Fired before write function is called. If returns false, write function will be ignored.",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile."
+                    "profile : xui.Profile.",
+                    "requestId : String"
                 ]
             },
             afterWrite:{
@@ -6052,7 +6071,8 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call"
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
                 ]
             }
         }

@@ -1119,24 +1119,23 @@ _.merge(xui,{
                    : xui.adjustRes(obj, false, true, true, null, scope)
                    : obj;
     },
-    request:function(uri, query, onSuccess, onFail, threadid, options){
-        return (
-        // specify
-        (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
+    _getrpc:function(uri,query,options){
+        return (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
         // include a file => IAjax
         :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if(d[i]&&d[i].nodeType==1)return 1})(query))) ? xui.IAjax
         // post: crossdomain => IAjax, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.IAjax  : xui.Ajax
         // get : crossdomain => SAjax, else Ajax
-        : xui.absIO.isCrossDomain(uri) ? xui.SAjax : xui.Ajax
-
-        ).apply(null, arguments).start()
+        : xui.absIO.isCrossDomain(uri) ? xui.SAjax : xui.Ajax;
+    },
+    request:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui._getrpc(uri, query, options).apply(null, arguments).start();
     },
     getFileSync:function(uri, rspType, onSuccess, onFail, options){
-        return xui.Ajax(uri,xui.Ajax._id,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri,xui.Ajax.uid,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, rspType, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.Ajax._id,onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,xui.Ajax.uid,onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1146,10 +1145,10 @@ _.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.SAjax(path,xui.SAjax._id,onSuccess,onFail,0,options).start()
+                xui.SAjax(path,xui.SAjax.uid,onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui.Ajax._id,function(rsp){
+                xui.Ajax(path,xui.Ajax.uid,function(rsp){
                     try{_.exec(rsp)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
                     _.tryF(onSuccess);
@@ -1172,7 +1171,7 @@ _.merge(xui,{
         else{
             if(xui.absIO.isCrossDomain(uri)){
                 Class._ignoreNSCache=1;Class._last=null;
-                xui.SAjax(uri,xui.SAjax._id,function(){
+                xui.SAjax(uri,xui.SAjax.uid,function(){
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     _.tryF(onSuccess, [uri],t);
@@ -1186,7 +1185,7 @@ _.merge(xui,{
                     _.tryF(onFail, _.toArr(arguments));
                 },0,{rspType:'script'}).start();
             }else{
-                xui.Ajax(uri,xui.Ajax._id,function(rsp){
+                xui.Ajax(uri,xui.Ajax.uid,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
                     try{_.exec(rsp,uri)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
@@ -1642,23 +1641,27 @@ new function(){
    
                 //adjust params
                 _.arr.each(params,function(o){
-                    if(typeof(o)=="string"){
-                        var rpc;
-                        if(_.str.startWith(o,"[data]")){
-                            o=o.replace("[data]","");
-                            rpc=1;
+                    var f=function(o){
+                        if(typeof(o)=="string"){
+                            var rpc;
+                            if(_.str.startWith(o,"[data]")){
+                                o=o.replace("[data]","");
+                                rpc=1;
+                            }
+                            o=xui.adjustVar(o, _ns);
+                            // for file
+                            if(rpc && typeof(o)=="string")
+                                o=_.unserialize(xui.getFileSync(o));
+                        }else if(_.isHash(o)){
+                            // one layer
+                            for(var i in o)o[i]=f(o);
+                        }else if(_.isArr(o)){
+                            // one layer
+                            for(var i=0,l=o.length;i<l;i++)o[i]=f(o);
                         }
-                        o=xui.adjustVar(o, _ns);
-                        // for file
-                        if(rpc && typeof(o)=="string")
-                            o=_.unserialize(xui.getFileSync(o));
-                    }else if(_.isHash(o)){
-                        // one layer
-                        for(var i in o)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
-                    }else if(_.isArr(o)){
-                        // one layer
-                        for(var i=0,l=o.length;i<l;i++)o[i]=typeof(o[i])=="string"?xui.adjustVar(o[i], _ns):o[i];
-                    }
+                        return o;
+                    };
+                    o=f(o);
                     iparams.push(o);
                 });
                 // cover with inline params
@@ -2144,6 +2147,7 @@ Class('xui.absIO',null,{
         //give defalut value to those members
         _.merge(options,{
             id : options.id || (''+(con._id++)),
+            uid: (''+(con.uid++)),
             uri : options.uri?xui.adjustRes(options.uri,0,1,1):'',
             username:options.username||undefined,
             password:options.password||undefined,
@@ -2239,6 +2243,7 @@ Class('xui.absIO',null,{
     Static:{
         $abstract:true,
         _id:1,
+        uid:1,
         method:'GET',
         retry:0,
         timeout:60000,
@@ -4036,6 +4041,7 @@ Class('xui.absObj',"xui.absBox",{
                 dsType=prop.dataSourceType,
                 responseType=prop.responseType,
                 requestType=prop.requestType,
+                requestId=prop.requestId,
                 hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
                 queryURL=(hashModel?(((prop.queryURL.lastIndexOf("/")!=prop.queryURL.length-1)?(prop.queryURL+"/"):prop.queryURL)+prop.queryModel):prop.queryURL),
                 queryUserName=prop.queryUserName;
@@ -4045,7 +4051,7 @@ Class('xui.absObj',"xui.absBox",{
             if(dsType!="remoting")return;
 
             // Normally, Gives a change to modify "queryArgs" for XML
-            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf))
+            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
 
             // for auto adjusting options
@@ -4055,7 +4061,7 @@ Class('xui.absObj',"xui.absBox",{
                 if(!con.WDSLCache)con.WDSLCache={};
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
-                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
+                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                         if(prf.onError)prf.boxing().onError(prf, rspData);
                         _.tryF(onFail,arguments,this);
                         _.tryF(onEnd,arguments,this);
@@ -4147,17 +4153,9 @@ Class('xui.absObj',"xui.absBox",{
             _.merge(options, queryOptions);
 
             _.merge(options, rMap, 'all');
+            options.proxyType=proxyType;
 
-            var ajax=(
-                // specify
-                proxyType ? (proxyType=="sajax"?xui.SAjax:proxyType=="iajax"?xui.IAjax:xui.Ajax)
-                // include a file => IAjax
-                :((function(d){if(!_.isHash(d))return 0; for(var i in d)if(d[i]&&d[i].nodeType==1)return 1})(queryArgs)) ? xui.IAjax
-                // post: crossdomain => IAjax, else Ajax
-                : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(queryURL) ? xui.IAjax  : xui.Ajax
-                // get : crossdomain => SAjax, else Ajax
-                : xui.absIO.isCrossDomain(queryURL) ? xui.SAjax : xui.Ajax
-             ).apply(null, [
+            var ajax=xui._getrpc(queryURL, queryArgs, options).apply(null, [
                 queryURL,
                 queryArgs,
                 function(rspData){
@@ -4165,7 +4163,7 @@ Class('xui.absObj',"xui.absBox",{
 
                     // Normally, Gives a change to modify the "rspData" format for XML
                     if(prf.afterInvoke){
-                        mapb = prf.boxing().afterInvoke(prf, rspData);
+                        mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                         if(_.isSet(mapb))rspData=mapb;
                         mapb=null;
                     }
@@ -4176,12 +4174,12 @@ Class('xui.absObj',"xui.absBox",{
                         else if(responseType=="SOAP")
                             rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                     }
-                   if(prf.onData)prf.boxing().onData(prf, rspData);
-                    _.tryF(onSuccess,arguments,this);
+                   if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
+                   _.tryF(onSuccess,arguments,this);
                 },
                 function(rspData){
-                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData);
-                   if(prf.onError)prf.boxing().onError(prf, rspData);
+                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                   if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
                     _.tryF(onFail,arguments,this);
                 },
                 threadid,
@@ -4199,17 +4197,18 @@ Class('xui.absObj',"xui.absBox",{
         "read":function(onSuccess, onFail, onStart, onEnd, mode, threadid, options, adjustData){
             var ns=this,prf=ns.get(0),
                 prop=prf.properties,
+                requestId=prop.requestId,
                 dsType=prop.dataSourceType;
             if(dsType=='none'||dsType=='memory')return;
 
-            if(prf.beforeRead && false===prf.boxing().beforeRead(prf))
+            if(prf.beforeRead && false===prf.boxing().beforeRead(prf, requestId||this.uid))
                 return;
 
             return ns.invoke(function(rspData){
                 var mapb;
                 // Normally, Gives a change to modify the "rspData" format to suitable key/value maps
                 if(prf.afterRead){
-                    mapb = prf.boxing().afterRead(prf, rspData);
+                    mapb = prf.boxing().afterRead(prf, rspData, requestId||this.uid);
                     if(_.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
@@ -4226,13 +4225,13 @@ Class('xui.absObj',"xui.absBox",{
             var ns=this,prf=ns.get(0),dsType=prf.properties.dataSourceType;
             if(dsType=='none'||dsType=='memory')return;
 
-            if(prf.beforeWrite && false===prf.boxing().beforeWrite(prf))
+            if(prf.beforeWrite && false===prf.boxing().beforeWrite(prf, requestId||this.uid))
                 return;
 
             return ns.invoke(function(rspData){
                var mapb;
                if(prf.afterWrite){
-                    mapb = prf.boxing().afterWrite(prf, rspData);
+                    mapb = prf.boxing().afterWrite(prf, rspData, requestId||this.uid);
                     if(_.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
@@ -4368,6 +4367,7 @@ Class('xui.absObj',"xui.absBox",{
             "data":{
                 ini:{}
             },
+            requestId:"",
             dataSourceType:{
                 ini:"none",
                 listbox:["none","memory","remoting"]
@@ -4445,14 +4445,14 @@ Class('xui.absObj',"xui.absBox",{
         EventHandlers:{
             beforeUpdateDataToUI:function(profile, dataToUI){},
             afterUpdateDataFromUI:function(profile, dataFromUI){},
-            beforeInvoke:function(profile){},
-            afterInvoke:function(profile,rspData){},
-            onData:function(profile,rspData){},
-            onError:function(profile,rspData){},
-            beforeRead:function(profile){},
-            afterRead:function(profile,rspData){},
-            beforeWrite:function(profile){},
-            afterWrite:function(profile,rspData){}
+            beforeInvoke:function(profile, requestId){},
+            afterInvoke:function(profile, rspData, requestId){},
+            onData:function(profile, rspData, requestId){},
+            onError:function(profile, rspData, requestId){},
+            beforeRead:function(profile, requestId){},
+            afterRead:function(profile, rspData, requestId){},
+            beforeWrite:function(profile, requestId){},
+            afterWrite:function(profile, rspData, requestId){}
         }
     }
 });(xui.Locale.en||(xui.Locale.en={})).inline={
@@ -12372,8 +12372,8 @@ Class('xui.Com',null,{
             // sync call for wsdl
             xui.Ajax(queryURL+'?wsdl',null,function(rspData){
                 rst=rspData;
-            },function(rspData){
-                _.tryF(onFail,[rspData],this);
+            },function(){
+                _.tryF(onFail,arguments,this);
             },null,{
                 method:'GET',
                 rspType:'xml',
@@ -21365,7 +21365,7 @@ Class("xui.UI.Resizer","xui.UI",{
         }
     },
     Initialize:function(){
-        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB']);
+        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB','REGION']);
         _.each({
             // add resizer to xui.Dom plugin
             addResizer:function(properties, onUpdate, onChange){
@@ -37570,8 +37570,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             if(temp&&temp.length){
                 _.arr.each(temp,function(o){
-                       if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                            box._editCell(profile,o);
+                    if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                        box._editCell(profile,o);
                 });
                 temp.length=0;
             }
@@ -38172,8 +38172,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         _.arr.each(temp,function(o){
-                               if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                                    box._editCell(profile,o);
+                            if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                                box._editCell(profile,o);
                         });
                         temp.length=0;
                     }
@@ -40769,10 +40769,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
-            
             _.each(ns.cellMap,function(o){
-                   if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
-                        box._editCell(ns,o);
+                if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
+                    box._editCell(ns,o);
             });
         },
         _focusEvent:function(profile, e, src){
