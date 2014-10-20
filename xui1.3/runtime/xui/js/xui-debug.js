@@ -1629,6 +1629,7 @@ new function(){
                 method=conf.method+"",
                 params=conf.params||[],
                 conditions=conf.conditions||[],
+                adjust=conf.adjust||null,
                 iparams=[],iconditions=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             if(target && method && target!="none"&&method!="none"){
@@ -1644,7 +1645,7 @@ new function(){
                     if(typeof(o)=="string"){
                         var rpc;
                         if(_.str.startWith(o,"[data]")){
-                            o.replace("[data]","");
+                            o=o.replace("[data]","");
                             rpc=1;
                         }
                         o=xui.adjustVar(o, _ns);
@@ -1742,6 +1743,19 @@ new function(){
                                     if(method=="cookie"){
                                         xui.$cache.data.Cookies=xui.Cookies.get();
                                     }else if(iparams[0].length){
+                                        if(adjust){
+                                            switch(adjust){
+                                                case "serialize":
+                                                    iparams[1]=_.serialize(iparams[1]);
+                                                break;
+                                                case "unserialize":
+                                                    iparams[1]=_.unserialize(iparams[1]);
+                                                break;
+                                                case "stringify":
+                                                    iparams[1]=_.stringify(iparams[1]);
+                                                break;
+                                            }
+                                        }
                                         _.set(_ns, (method+"."+_.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
                                     }
                                 break;
@@ -3630,7 +3644,7 @@ Class('xui.absObj',"xui.absBox",{
                                 delete v[i];
                             });
                         else{
-                            var args=[], v=this.get(0), t=v[i], k=v.host || v,j,o,r;
+                            var args=[], v=this.get(0), t=v[i], host=v.host || v,j,o,r;
                             if(t){
                                 if(v.$inDesign)return;
                                 if(arguments[0]!=v)args[0]=v;
@@ -3650,16 +3664,16 @@ Class('xui.absObj',"xui.absBox",{
                                     for(j=n;j<l;j++){
                                         n=j+1;
                                         o=t[j];
-                                        if(typeof o=='string')o=k[o];
-                                        if(typeof o=='function')r=_.tryF(o, args, k);
+                                        if(typeof o=='string')o=host[o];
+                                        if(typeof o=='function')r=_.tryF(o, args, host);
                                         else if(_.isHash(o)){
                                             if(o.resume){
                                                 // resume
                                                 (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
-                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                                r=xui.pseudocode.exec(o,args,host,temp);
                                                 break;
                                             }else
-                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                                r=xui.pseudocode.exec(o,args,host,temp);
                                         }
                                     }
                                     return r;
@@ -11417,13 +11431,31 @@ Class('xui.Com',null,{
                     args=args||[];
                     if(!_.isArr(t))t=[t];
                     l=t.length;
-                    for(var i=0;i<l;i++){
-                        o=t[i];
-                        if(typeof o=='string')o=self[o];
-                        if(typeof o=='function')r=o.apply(host, args);
-                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,host);
-                    }
-                    return r;
+                    var temp={};
+                    var n=0,fun=function(input){
+                        // set prompt's global var
+                        if(_.isSet(input))
+                            temp.input=input;
+                            //_.set(xui.$cache.data,['pseudocode','input'],input);
+                        //resume from [n]
+                        for(j=n;j<l;j++){
+                            n=j+1;
+                            o=t[j];
+                            if(typeof o=='string')o=host[o];
+                            if(typeof o=='function')r=_.tryF(o, args, host);
+                            else if(_.isHash(o)){
+                                if(o.resume){
+                                    // resume
+                                    (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
+                                    r=xui.pseudocode.exec(o,args,host,temp);
+                                    break;
+                                }else
+                                    r=xui.pseudocode.exec(o,args,host,temp);
+                            }
+                        }
+                        return r;
+                    };
+                    return fun();
                 }
             }
         },
@@ -11674,7 +11706,7 @@ Class('xui.Com',null,{
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setValue(values[prf.alias,null,'com'])
+                        prf.boxing().setValue(values[prf.alias],null,'com')
                 });
             }
             return this;
@@ -25917,7 +25949,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 style:"{_saveDisplay}",
                 STOP:{},
                 SMID:{
-                    className:"{_commandCls}"
+                    className:"{_commandCls} {btncls}"
                 }
             }
         },'all');
@@ -40703,12 +40735,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
-            onCommand:function(profile, cell, proEditor, src){}
+            onCommand:function(profile, cell, proEditor, src){},
+            onEditorClick:function(profile, cell, proEditor, src){}
         },
         RenderTrigger:function(){
             var ns=this, box=ns.box, pro=ns.properties,ins=ns.boxing();
             ns.destroyTrigger=function(){
                 var ns=this, pro=ns.properties;
+                _.each(ns.cellMap,function(cell){
+                    if(cell._editor)cell._editor.destroy();
+                });
                 _.breakO([ns.colMap, ns.rowMap, ns.cellMap], 3);
                 pro.header.length=0;
                 pro.rows.length=0;
@@ -42147,6 +42183,10 @@ editorEvents
                                     editor.onCommand(function(pro, node){
                                         return profile.boxing().onCommand(profile, pro.$cell, pro, node);
                                     });
+                                if(profile.onEditorClick)
+                                    editor.onClick(function(pro, node){
+                                        return profile.boxing().onEditorClick(profile, pro.$cell, pro, node);
+                                    });
                             }
                             break;
                         case 'file':
@@ -42206,11 +42246,6 @@ editorEvents
                                 editor.setListKey(t);
                             }
                             break;
-                        case 'cmdbox':
-                        case 'popbox':
-                            // reset Caption
-                            if(editor.setCaption)
-                                editor.setCaption(cell.caption||"");
                     }
 
                     // must set value here, after setItems/setListKey
@@ -42218,6 +42253,13 @@ editorEvents
                     editor.setValue(cell.$editorValue||cell.value,true,'editorini');
                     delete cell.$editorValue;
 
+                    if(editor.setCaption){
+                        if(editorProperties&&('caption' in editorProperties)){
+                            editor.setCaption(editorProperties.caption,true);
+                        }else  if(type=="cmdbox"||type=="popbox"){
+                            editor.setCaption(cell.caption||"",true);
+                        }
+                    }
                     //$tag for compatible
                     if(cell.$tag){
                         if(editor.setCaption)editor.setCaption(cell.$tag);
@@ -42399,12 +42441,26 @@ editorEvents
                                 _.tryF(target&&target.activate,[],target);
                             });
                         }else{
-                            editor.getRoot().onMouseout(function(){if(editor) _.tryF(editor.undo,[],editor);},"tg-hover-edit");
                             var bfun=function(){
                                 if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
                                 profile._inHoverEdit=1;
+                            },cfun=function(){
+                                if(editor)editor.getRoot().onMouseout(function(){if(editor) _.tryF(editor.undo,[],editor);},"tg-hover-edit");
+                                profile._inHoverEdit=0;
+                            },dfun=function(){
+                                if(editor) _.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(bfun);
+                            editor.onFocus(bfun).beforePopShow(function(){
+                                bfun();
+                                editor.onBlur(null);
+                                // for compitable
+                                if(profile.beforePopShow)
+                                    return profile.boxing().beforePopShow(profile, pro.$cell, pro, popCtl);
+                            }).afterPopHide(function(){
+                                cfun();
+                                editor.onBlur(dfun);
+                            }).onBlur(dfun);
+
                         }
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");

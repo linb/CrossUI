@@ -464,7 +464,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 style:"{_saveDisplay}",
                 STOP:{},
                 SMID:{
-                    className:"{_commandCls}"
+                    className:"{_commandCls} {btncls}"
                 }
             }
         },'all');

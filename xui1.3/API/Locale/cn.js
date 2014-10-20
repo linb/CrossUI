@@ -19839,7 +19839,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeValueSet:"控件值设置前",
             onChange:"界面值改变",
             afterUIValueSet:"界面值设置后",
-            afterValueSet:"控件值设置后"
+            afterValueSet:"控件值设置后",
+            onValueChange:"内部值改变"
         },
         'xui_DataBinder' : {
             onData:"数据获得成功",

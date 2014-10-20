@@ -1629,6 +1629,7 @@ new function(){
                 method=conf.method+"",
                 params=conf.params||[],
                 conditions=conf.conditions||[],
+                adjust=conf.adjust||null,
                 iparams=[],iconditions=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             if(target && method && target!="none"&&method!="none"){
@@ -1644,7 +1645,7 @@ new function(){
                     if(typeof(o)=="string"){
                         var rpc;
                         if(_.str.startWith(o,"[data]")){
-                            o.replace("[data]","");
+                            o=o.replace("[data]","");
                             rpc=1;
                         }
                         o=xui.adjustVar(o, _ns);
@@ -1742,6 +1743,19 @@ new function(){
                                     if(method=="cookie"){
                                         xui.$cache.data.Cookies=xui.Cookies.get();
                                     }else if(iparams[0].length){
+                                        if(adjust){
+                                            switch(adjust){
+                                                case "serialize":
+                                                    iparams[1]=_.serialize(iparams[1]);
+                                                break;
+                                                case "unserialize":
+                                                    iparams[1]=_.unserialize(iparams[1]);
+                                                break;
+                                                case "stringify":
+                                                    iparams[1]=_.stringify(iparams[1]);
+                                                break;
+                                            }
+                                        }
                                         _.set(_ns, (method+"."+_.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
                                     }
                                 break;
@@ -3630,7 +3644,7 @@ Class('xui.absObj',"xui.absBox",{
                                 delete v[i];
                             });
                         else{
-                            var args=[], v=this.get(0), t=v[i], k=v.host || v,j,o,r;
+                            var args=[], v=this.get(0), t=v[i], host=v.host || v,j,o,r;
                             if(t){
                                 if(v.$inDesign)return;
                                 if(arguments[0]!=v)args[0]=v;
@@ -3650,16 +3664,16 @@ Class('xui.absObj',"xui.absBox",{
                                     for(j=n;j<l;j++){
                                         n=j+1;
                                         o=t[j];
-                                        if(typeof o=='string')o=k[o];
-                                        if(typeof o=='function')r=_.tryF(o, args, k);
+                                        if(typeof o=='string')o=host[o];
+                                        if(typeof o=='function')r=_.tryF(o, args, host);
                                         else if(_.isHash(o)){
                                             if(o.resume){
                                                 // resume
                                                 (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
-                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                                r=xui.pseudocode.exec(o,args,host,temp);
                                                 break;
                                             }else
-                                                r=xui.pseudocode.exec(o,args,k,temp);
+                                                r=xui.pseudocode.exec(o,args,host,temp);
                                         }
                                     }
                                     return r;
