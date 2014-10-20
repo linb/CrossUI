@@ -112,13 +112,31 @@ Class('xui.Com',null,{
                     args=args||[];
                     if(!_.isArr(t))t=[t];
                     l=t.length;
-                    for(var i=0;i<l;i++){
-                        o=t[i];
-                        if(typeof o=='string')o=self[o];
-                        if(typeof o=='function')r=o.apply(host, args);
-                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,host);
-                    }
-                    return r;
+                    var temp={};
+                    var n=0,fun=function(input){
+                        // set prompt's global var
+                        if(_.isSet(input))
+                            temp.input=input;
+                            //_.set(xui.$cache.data,['pseudocode','input'],input);
+                        //resume from [n]
+                        for(j=n;j<l;j++){
+                            n=j+1;
+                            o=t[j];
+                            if(typeof o=='string')o=host[o];
+                            if(typeof o=='function')r=_.tryF(o, args, host);
+                            else if(_.isHash(o)){
+                                if(o.resume){
+                                    // resume
+                                    (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
+                                    r=xui.pseudocode.exec(o,args,host,temp);
+                                    break;
+                                }else
+                                    r=xui.pseudocode.exec(o,args,host,temp);
+                            }
+                        }
+                        return r;
+                    };
+                    return fun();
                 }
             }
         },
@@ -369,7 +387,7 @@ Class('xui.Com',null,{
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setValue(values[prf.alias,null,'com'])
+                        prf.boxing().setValue(values[prf.alias],null,'com')
                 });
             }
             return this;

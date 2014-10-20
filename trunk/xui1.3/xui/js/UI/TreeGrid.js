@@ -3289,12 +3289,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
-            onCommand:function(profile, cell, proEditor, src){}
+            onCommand:function(profile, cell, proEditor, src){},
+            onEditorClick:function(profile, cell, proEditor, src){}
         },
         RenderTrigger:function(){
             var ns=this, box=ns.box, pro=ns.properties,ins=ns.boxing();
             ns.destroyTrigger=function(){
                 var ns=this, pro=ns.properties;
+                _.each(ns.cellMap,function(cell){
+                    if(cell._editor)cell._editor.destroy();
+                });
                 _.breakO([ns.colMap, ns.rowMap, ns.cellMap], 3);
                 pro.header.length=0;
                 pro.rows.length=0;
@@ -4733,6 +4737,10 @@ editorEvents
                                     editor.onCommand(function(pro, node){
                                         return profile.boxing().onCommand(profile, pro.$cell, pro, node);
                                     });
+                                if(profile.onEditorClick)
+                                    editor.onClick(function(pro, node){
+                                        return profile.boxing().onEditorClick(profile, pro.$cell, pro, node);
+                                    });
                             }
                             break;
                         case 'file':
@@ -4792,11 +4800,6 @@ editorEvents
                                 editor.setListKey(t);
                             }
                             break;
-                        case 'cmdbox':
-                        case 'popbox':
-                            // reset Caption
-                            if(editor.setCaption)
-                                editor.setCaption(cell.caption||"");
                     }
 
                     // must set value here, after setItems/setListKey
@@ -4804,6 +4807,13 @@ editorEvents
                     editor.setValue(cell.$editorValue||cell.value,true,'editorini');
                     delete cell.$editorValue;
 
+                    if(editor.setCaption){
+                        if(editorProperties&&('caption' in editorProperties)){
+                            editor.setCaption(editorProperties.caption,true);
+                        }else  if(type=="cmdbox"||type=="popbox"){
+                            editor.setCaption(cell.caption||"",true);
+                        }
+                    }
                     //$tag for compatible
                     if(cell.$tag){
                         if(editor.setCaption)editor.setCaption(cell.$tag);
@@ -4985,12 +4995,26 @@ editorEvents
                                 _.tryF(target&&target.activate,[],target);
                             });
                         }else{
-                            editor.getRoot().onMouseout(function(){if(editor) _.tryF(editor.undo,[],editor);},"tg-hover-edit");
                             var bfun=function(){
                                 if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
                                 profile._inHoverEdit=1;
+                            },cfun=function(){
+                                if(editor)editor.getRoot().onMouseout(function(){if(editor) _.tryF(editor.undo,[],editor);},"tg-hover-edit");
+                                profile._inHoverEdit=0;
+                            },dfun=function(){
+                                if(editor) _.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(bfun);
+                            editor.onFocus(bfun).beforePopShow(function(){
+                                bfun();
+                                editor.onBlur(null);
+                                // for compitable
+                                if(profile.beforePopShow)
+                                    return profile.boxing().beforePopShow(profile, pro.$cell, pro, popCtl);
+                            }).afterPopHide(function(){
+                                cfun();
+                                editor.onBlur(dfun);
+                            }).onBlur(dfun);
+
                         }
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");
