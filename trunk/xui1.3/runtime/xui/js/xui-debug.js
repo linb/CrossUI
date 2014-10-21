@@ -1608,11 +1608,27 @@ new function(){
         exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
                 compare=function(x,y,s){
-                    switch(_.str.trim(s||"=")){
+                    switch(_.str.trim(s)){
                         case '=':
-                            return x===y;
-                        // TODO: other case
-                        break;
+                            return x==y;
+                        case '!=':
+                            return parseFloat(x)!=parseFloat(y);
+                        case '>':
+                            return parseFloat(x)>parseFloat(y);
+                        case '<':
+                            return parseFloat(x)<parseFloat(y);
+                        case '>=':
+                            return parseFloat(x)>=parseFloat(y);
+                        case '<=':
+                            return parseFloat(x)<=parseFloat(y);
+                        case 'include':
+                            return (x+"").indexOf(y+"")!=-1;
+                        case 'exclude':
+                            return (x+"").indexOf(y+"")==-1;
+                        case 'begin':
+                            return (x+"").indexOf(y+"")===0;
+                        case 'end':
+                            return (x+"").indexOf(y+"")===(x+"").length-(y+"").length;
                         default:
                             return true;
                     }
@@ -3650,21 +3666,19 @@ Class('xui.absObj',"xui.absBox",{
                             });
                         else{
                             var args=[], v=this.get(0), t=v[i], host=v.host || v,j,o,r;
-                            if(t){
+                            if(t && (!_.isArr(t) || t.length)){
                                 if(v.$inDesign)return;
                                 if(arguments[0]!=v)args[0]=v;
                                 for(j=0;j<l;j++)args[args.length]=arguments[j];
                                 v.$lastEvent=i;
                                 if(!_.isArr(t))t=[t];
                                 l=t.length;
-                                // alert/confirm/prompt will pause the chain, and resume
-                                // prompt will give some input
+                                if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
                                 var temp={};
                                 var n=0,fun=function(data){
                                     // set prompt's global var
                                     if(_.isStr(this))temp[this+""]=data||"";
-                                        //_.set(xui.$cache.data,['pseudocode','input'],input);
-                                    //resume from [n]
+                                    //callback from [n]
                                     for(j=n;j<l;j++){
                                         n=j+1;
                                         o=t[j];
@@ -4057,7 +4071,7 @@ Class('xui.absObj',"xui.absBox",{
                 queryUserName=prop.queryUserName;
                 queryPasswrod=prop.queryPasswrod;
                 queryArgs=_.copy(prop.queryArgs),
-                tokenParams=_.copy(tokenParams),
+                tokenParams=_.copy(prop.tokenParams),
                 queryOptions=_.copy(prop.queryOptions);
 
             if(requestType=="HTTP")
@@ -5150,10 +5164,13 @@ Class('xui.Event',null,{
         },
         getEventPara:function(event, mousePos){
             if(!mousePos)mousePos=xui.Event.getPos(event);
-            var keys = this.getKey(event), h={
+            var keys = this.getKey(event), 
+            button=this.getBtn(event), 
+            h={
+                button:button,
                 pageX:mousePos&&mousePos.left,
                 pageY:mousePos&&mousePos.top,
-                keyCode:keys.key,
+                key:keys.key,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
                 altKey:keys.altKey
@@ -11444,33 +11461,42 @@ Class('xui.Com',null,{
         fireEvent:function(name, args, host){
             var t,o,r,l,self=this;
             if(self.events && (t=self.events[name])){
-                if(t){
+                if(t && (!_.isArr(t) || t.length)){
                     var host=host||self.host||self;
                     args=args||[];
                     if(!_.isArr(t))t=[t];
                     l=t.length;
+                    if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
                     var temp={};
-                    var n=0,fun=function(input){
+                    var n=0,fun=function(data){
                         // set prompt's global var
-                        if(_.isSet(input))
-                            temp.input=input;
-                            //_.set(xui.$cache.data,['pseudocode','input'],input);
-                        //resume from [n]
+                        if(_.isStr(this))temp[this+""]=data||"";
+                        //callback from [n]
                         for(j=n;j<l;j++){
                             n=j+1;
                             o=t[j];
                             if(typeof o=='string')o=host[o];
                             if(typeof o=='function')r=_.tryF(o, args, host);
                             else if(_.isHash(o)){
-                                if(o.resume){
-                                    // resume
-                                    (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
-                                    r=xui.pseudocode.exec(o,args,host,temp);
+                                if('onOK' in o ||'onKO' in o){
+                                    // onOK
+                                    if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                        if(fun)fun.apply("okData",arguments);
+                                    };
+                                    if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
+                                        if(fun)fun.apply("koData",arguments);
+                                    };
+                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                        n=temp=fun=null;
+                                    }
                                     break;
                                 }else
-                                    r=xui.pseudocode.exec(o,args,host,temp);
+                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                        n=j;break;
+                                    }
                             }
                         }
+                        if(n==j)n=temp=fun=null;
                         return r;
                     };
                     return fun();
@@ -19467,38 +19493,34 @@ Class("xui.absValue", "xui.absObj",{
                     ovalue = prop.$UIvalue,
                     box = profile.boxing();
                 if(force || (ovalue !== value)){
-                    if(!profile._forInnerUIStyle){
-                        if(
-                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
-                          )
-                            return;
-                        //can get return value
-                        if(r!==undefined && typeof r!=='boolean')value=r;
-                        //before _setCtrlValue
-                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
-                            value = r.call(profile.box, profile, value);
-                        if(typeof(r=profile.$onUIValueSet)=='function'){
-                            r=r.call(profile,value,force,tag);
-                            if(_.isSet(r))value=r;
-                        }
+                    if(
+                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
+                      )
+                        return;
+                    //can get return value
+                    if(r!==undefined && typeof r!=='boolean')value=r;
+                    //before _setCtrlValue
+                    if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
+                        value = r.call(profile.box, profile, value);
+                    if(typeof(r=profile.$onUIValueSet)=='function'){
+                        r=r.call(profile,value,force,tag);
+                        if(_.isSet(r))value=r;
                     }
 
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
         
-                    if(!profile._forInnerUIStyle){
-                        //value copy
-                        prop.$UIvalue = value;
-    
-                        if(profile.renderId)box._setDirtyMark();
-    
-                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
-                        if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
-    
-                        if(!prop.dirtyMark)
-                            box.setValue(value,null,'uiv');
-                    }
+                    //value copy
+                    prop.$UIvalue = value;
+
+                    if(profile.renderId)box._setDirtyMark();
+
+                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
+                    if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
+
+                    if(!prop.dirtyMark)
+                        box.setValue(value,null,'uiv');
                 }
             });
             return this;
@@ -30319,7 +30341,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 po=data.profile,
                 ps=data.domId,
                 oitem,
-                t=xui.absObj.$specialChars;
+                t=xui.absObj.$specialChars,
+                uiv=profile.properties.$UIvalue;
             //remove
             oitem=_.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
             po.boxing().removeItems([oitem.id]);
@@ -30328,6 +30351,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 profile.boxing().insertItems([oitem], item.id, true);
             else
                 profile.boxing().insertItems([oitem]);
+
+            if(oitem.id==uiv)
+                profile.boxing().setUIValue(oitem.id,true,null,'drop');
 
             return false;
         },
@@ -34327,7 +34353,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem,
                 ks=profile.keys,
                 t=xui.absObj.$specialChars,
-                b=profile.boxing();
+                b=profile.boxing(),
+                arr=_.copy(b.getUIValue(true));
             //remove
             oitem=_.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
             po.boxing().removeItems([oitem.id]);
@@ -34340,6 +34367,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             else if(k==ks.TOGGLE)
                 b.insertItems([oitem], item.id, null, false);
 
+            if(arr && arr.length){
+                if(_.arr.indexOf(arr, oitem.id)!=-1){
+                    //set checked items
+                    profile._noScroll=1;
+                    b.setUIValue(arr,true,null,'drop');
+                    delete profile._noScroll;
+                }
+            }
             return false;
         },
         _prepareItem:function(profile, item, oitem, pid, index,len){
@@ -34457,9 +34492,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                     });
                                     if(s){
                                         //set checked items
-                                        profile._forInnerUIStyle=profile._noScroll=1;
-                                        b.setUIValue(b.getUIValue(), true,null,'sub');
-                                        delete profile._forInnerUIStyle;
+                                        profile._noScroll=1;
+                                        b._setCtrlValue(b.getUIValue());
                                         delete profile._noScroll;
                                     }
                                 }
@@ -41116,7 +41150,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ks=profile.keys,
                 t=xui.absObj.$specialChars,
                 b=profile.boxing(),
-
+                arr=_.copy(b.getUIValue(true)),
                 orow= po.rowMap[po.getSubId(ps)],
                 row= profile.rowMap[profile.getSubId(src)];
 
@@ -41131,6 +41165,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b.insertRows([orow], row.id, null, false);
             else if(k==ks.CELLS)
                 b.insertRows([orow], row._pid, row.id, true);
+            
+            if(arr && arr.length){
+                if(_.arr.indexOf(arr, orow.id)!=-1){
+                    b.setUIValue(arr,true,null,'drop');
+                }
+            }
             return false;
         },
 

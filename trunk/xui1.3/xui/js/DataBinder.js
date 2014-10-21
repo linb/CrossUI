@@ -215,7 +215,7 @@ Class("xui.DataBinder","xui.absObj",{
                 queryUserName=prop.queryUserName;
                 queryPasswrod=prop.queryPasswrod;
                 queryArgs=_.copy(prop.queryArgs),
-                tokenParams=_.copy(tokenParams),
+                tokenParams=_.copy(prop.tokenParams),
                 queryOptions=_.copy(prop.queryOptions);
 
             if(requestType=="HTTP")

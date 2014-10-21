@@ -710,7 +710,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem,
                 ks=profile.keys,
                 t=xui.absObj.$specialChars,
-                b=profile.boxing();
+                b=profile.boxing(),
+                arr=_.copy(b.getUIValue(true));
             //remove
             oitem=_.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
             po.boxing().removeItems([oitem.id]);
@@ -723,6 +724,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             else if(k==ks.TOGGLE)
                 b.insertItems([oitem], item.id, null, false);
 
+            if(arr && arr.length){
+                if(_.arr.indexOf(arr, oitem.id)!=-1){
+                    //set checked items
+                    profile._noScroll=1;
+                    b.setUIValue(arr,true,null,'drop');
+                    delete profile._noScroll;
+                }
+            }
             return false;
         },
         _prepareItem:function(profile, item, oitem, pid, index,len){
@@ -840,9 +849,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                     });
                                     if(s){
                                         //set checked items
-                                        profile._forInnerUIStyle=profile._noScroll=1;
-                                        b.setUIValue(b.getUIValue(), true,null,'sub');
-                                        delete profile._forInnerUIStyle;
+                                        profile._noScroll=1;
+                                        b._setCtrlValue(b.getUIValue());
                                         delete profile._noScroll;
                                     }
                                 }

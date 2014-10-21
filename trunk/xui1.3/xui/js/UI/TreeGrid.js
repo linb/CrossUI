@@ -3635,7 +3635,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ks=profile.keys,
                 t=xui.absObj.$specialChars,
                 b=profile.boxing(),
-
+                arr=_.copy(b.getUIValue(true)),
                 orow= po.rowMap[po.getSubId(ps)],
                 row= profile.rowMap[profile.getSubId(src)];
 
@@ -3650,6 +3650,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b.insertRows([orow], row.id, null, false);
             else if(k==ks.CELLS)
                 b.insertRows([orow], row._pid, row.id, true);
+            
+            if(arr && arr.length){
+                if(_.arr.indexOf(arr, orow.id)!=-1){
+                    b.setUIValue(arr,true,null,'drop');
+                }
+            }
             return false;
         },
 

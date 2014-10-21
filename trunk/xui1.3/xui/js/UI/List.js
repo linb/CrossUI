@@ -463,7 +463,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 po=data.profile,
                 ps=data.domId,
                 oitem,
-                t=xui.absObj.$specialChars;
+                t=xui.absObj.$specialChars,
+                uiv=profile.properties.$UIvalue;
             //remove
             oitem=_.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
             po.boxing().removeItems([oitem.id]);
@@ -472,6 +473,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 profile.boxing().insertItems([oitem], item.id, true);
             else
                 profile.boxing().insertItems([oitem]);
+
+            if(oitem.id==uiv)
+                profile.boxing().setUIValue(oitem.id,true,null,'drop');
 
             return false;
         },

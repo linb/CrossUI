@@ -5028,38 +5028,34 @@ Class("xui.absValue", "xui.absObj",{
                     ovalue = prop.$UIvalue,
                     box = profile.boxing();
                 if(force || (ovalue !== value)){
-                    if(!profile._forInnerUIStyle){
-                        if(
-                            (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                            (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
-                          )
-                            return;
-                        //can get return value
-                        if(r!==undefined && typeof r!=='boolean')value=r;
-                        //before _setCtrlValue
-                        if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
-                            value = r.call(profile.box, profile, value);
-                        if(typeof(r=profile.$onUIValueSet)=='function'){
-                            r=r.call(profile,value,force,tag);
-                            if(_.isSet(r))value=r;
-                        }
+                    if(
+                        (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
+                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
+                      )
+                        return;
+                    //can get return value
+                    if(r!==undefined && typeof r!=='boolean')value=r;
+                    //before _setCtrlValue
+                    if(profile.box && (typeof (r=profile.box._ensureValue)=='function'))
+                        value = r.call(profile.box, profile, value);
+                    if(typeof(r=profile.$onUIValueSet)=='function'){
+                        r=r.call(profile,value,force,tag);
+                        if(_.isSet(r))value=r;
                     }
 
                     //before value copy
                     if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
         
-                    if(!profile._forInnerUIStyle){
-                        //value copy
-                        prop.$UIvalue = value;
-    
-                        if(profile.renderId)box._setDirtyMark();
-    
-                        if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
-                        if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
-    
-                        if(!prop.dirtyMark)
-                            box.setValue(value,null,'uiv');
-                    }
+                    //value copy
+                    prop.$UIvalue = value;
+
+                    if(profile.renderId)box._setDirtyMark();
+
+                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
+                    if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
+
+                    if(!prop.dirtyMark)
+                        box.setValue(value,null,'uiv');
                 }
             });
             return this;
