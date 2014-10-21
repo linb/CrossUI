@@ -1670,10 +1670,10 @@ new function(){
                                 o=_.unserialize(xui.getFileSync(o));
                         }else if(_.isHash(o)){
                             // one layer
-                            for(var i in o)o[i]=f(o);
+                            for(var i in o)o[i]=f(o[i]);
                         }else if(_.isArr(o)){
                             // one layer
-                            for(var i=0,l=o.length;i<l;i++)o[i]=f(o);
+                            for(var i=0,l=o.length;i<l;i++)o[i]=f(o[i]);
                         }
                         return o;
                     };
