@@ -3660,10 +3660,9 @@ Class('xui.absObj',"xui.absBox",{
                                 // alert/confirm/prompt will pause the chain, and resume
                                 // prompt will give some input
                                 var temp={};
-                                var n=0,fun=function(input){
+                                var n=0,fun=function(data){
                                     // set prompt's global var
-                                    if(_.isSet(input))
-                                        temp.input=input;
+                                    if(_.isStr(this))temp[this+""]=data||"";
                                         //_.set(xui.$cache.data,['pseudocode','input'],input);
                                     //resume from [n]
                                     for(j=n;j<l;j++){
@@ -3672,15 +3671,25 @@ Class('xui.absObj',"xui.absBox",{
                                         if(typeof o=='string')o=host[o];
                                         if(typeof o=='function')r=_.tryF(o, args, host);
                                         else if(_.isHash(o)){
-                                            if(o.resume){
-                                                // resume
-                                                (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
-                                                r=xui.pseudocode.exec(o,args,host,temp);
+                                            if('onOK' in o ||'onKO' in o){
+                                                // onOK
+                                                if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                                    if(fun)fun.apply("okData",arguments);
+                                                };
+                                                if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
+                                                    if(fun)fun.apply("koData",arguments);
+                                                };
+                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                    n=temp=fun=null;
+                                                }
                                                 break;
                                             }else
-                                                r=xui.pseudocode.exec(o,args,host,temp);
+                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                    n=j;break;
+                                                }
                                         }
                                     }
+                                    if(n==j)n=temp=fun=null;
                                     return r;
                                 };
                                 return fun();
@@ -4038,8 +4047,9 @@ Class('xui.absObj',"xui.absBox",{
                 con=ns.constructor,
                 prf=ns.get(0),
                 prop=prf.properties,
-                dsType=prop.dataSourceType,
-                responseType=prop.responseType,
+                dsType=prop.dataSourceType;
+            if(dsType!="remoting")return;                
+            var responseType=prop.responseType,
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
@@ -4047,8 +4057,13 @@ Class('xui.absObj',"xui.absBox",{
                 queryUserName=prop.queryUserName;
                 queryPasswrod=prop.queryPasswrod;
                 queryArgs=_.copy(prop.queryArgs),
+                tokenParams=_.copy(tokenParams),
                 queryOptions=_.copy(prop.queryOptions);
-            if(dsType!="remoting")return;
+
+            if(requestType=="HTTP")
+                    queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(_.isHash(queryArgs) && !_.isEmpty(tokenParams))
+                _.merge(queryArgs,tokenParams,'all');
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
@@ -4396,6 +4411,9 @@ Class('xui.absObj',"xui.absBox",{
                 listbox:["JSON","XML","SOAP"]
             },
             queryArgs:{
+                ini:{}
+            },
+            tokenParams:{
                 ini:{}
             },
             queryOptions:{
@@ -5138,7 +5156,7 @@ Class('xui.Event',null,{
                 keyCode:keys.key,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
-                altKey:keys[3].altKey
+                altKey:keys.altKey
             };
             for(var i in event)if(i.charAt(0)=='$')h[i]=event[i];
             return h;
@@ -18130,15 +18148,18 @@ Class("xui.UI",  "xui.absObj", {
         },
         RenderTrigger:function(){
             var prf=this, b=prf.boxing(),p=prf.properties,t;
-            //avoid the resize blazzing
             if(prf.box._onresize){
-                var style=prf.getRootNode().style,t
-                if((t=style.visibility)!='hidden'){
-                   prf._$visibility=t;
-                   style.visibility='hidden';
+                //avoid the resize blazzing
+                //maybe in current version, _asyncResize is useless
+                if(prf.box._asyncResize){
+                    var style=prf.getRootNode().style,t
+                    if((t=style.visibility)!='hidden'){
+                       prf._$visibility=t;
+                       style.visibility='hidden';
+                    }
+                    style=null;
                 }
                 xui.UI.$tryResize(prf,p.width,p.height);
-                style=null;
             }
             if(p.disabled) b.setDisabled(true,true);
             if(p.rotate) b.setRotate(p.rotate,true);
@@ -20249,7 +20270,9 @@ new function(){
             $initRootHidden:true,
             _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
-                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;'
+                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
+                className:'{_className}',
+                text:'{_html}'
             },
             DataModel:{
                 className:{
@@ -20321,19 +20344,19 @@ new function(){
             },
             RenderTrigger:function(){
                 var prf=this;
-                prf.box._refreshCSS(prf);
                 if(!prf.$inDesign){
                     xui('body').prepend(prf.getRoot());
                 }
             },
-            _refreshCSS:function(prf){
-                _.resetRun(prf.key+":"+prf.$xid,function(){
-                    if(prf.destroyed)return;
-                    var prop=prf.properties,
+            _prepareData:function(profile){
+                var data=arguments.callee.upper.call(this, profile);
+                data._html = "Text"+"<"+"style type='text/css'>"+this._getCon(profile)+"<"+"/style>";
+                return data;
+            },
+            _getCon:function(prf){
+                    var prop=prf.properties,css="",
                         cls=prop.className,
-                        rootNode=prf.getRootNode(),
-                       css="";
-                    var hash1=prop.normalStatus,
+                        hash1=prop.normalStatus,
                         hash2=prop.hoverStatus,
                         hash3=prop.activeStatus,
                         hash4=prop.focusStatus;
@@ -20341,9 +20364,17 @@ new function(){
                     if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
                     if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
                     if(hash4&&!_.isEmpty(hash4))css+="."+cls+":focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
-                    rootNode.innerHTML="Text";
+                    return css;
+            },
+            _refreshCSS:function(prf){
+                var ns=this;
+                _.resetRun(prf.key+":"+prf.$xid,function(){
+                    if(prf.destroyed)return;
+                    var prop=prf.properties,
+                         rootNode=prf.getRootNode(),
+                         css=ns._getCon(prf);
+                    xui.Dom._setClass(rootNode, prop.className);
                     if(css)xui.CSS._appendSS(rootNode, css);
-                    xui.Dom._setClass(rootNode, cls);
                 });
             },
             EventHandlers:{
@@ -21255,7 +21286,8 @@ Class("xui.UI.Shadow","xui.UI",{
         });
     },
     Static:{
-        SIZE:4,
+        // In IE<=8, it has to use png to simulate box-shadow
+        SIZE:(xui.browser.ie&&xui.browser.ver<=8)?8:4,
         Templates:{
             tagName:'div',
             R:{
@@ -36702,6 +36734,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         }
     },
     Static:{
+       // _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',
@@ -37315,12 +37348,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 mainmin=main.min||10,
                 _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
 
-            var obj={}, obj2={},obj3={};
+            var obj={}, obj2={};
+            // **keep the original size
+            //,obj3={};
             _.arr.each(t.items,function(o){
                 itemId = profile.getSubIdByItemId(o.id);
                 obj[itemId] = {};
-                obj2[itemId] = {};
-                obj3[itemId] = o;
+                obj2[itemId] = {};             
+//                obj3[itemId] = o;
             });
 
             var fun=function(prop,w,width,left,right,offset,forceoffset){
@@ -37412,9 +37447,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 if(!_.isNull(width)){
                     //get left
                     fun(t,width,'width','left','right',0,0);
-                    _.each(obj2,function(o,i){
-                        if(o.width && !obj3[i].folded)obj3[i].size=o.width;
-                    });
+//                    _.each(obj2,function(o,i){
+//                       if(o.width && !obj3[i].folded)obj3[i].size=o.width;
+//                    });
                  }
                 if(!_.isNull(height)){
                     _.each(obj,function(o,id){
@@ -37425,9 +37460,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 if(!_.isNull(height)){
                     //get left
                     fun(t,height,'height','top','bottom',0,0);
-                    _.each(obj2,function(o,i){
-                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
-                    });
+//                    _.each(obj2,function(o,i){
+//                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
+//                    });
                 }
                 if(!_.isNull(width)){
                     _.each(obj,function(o,id){
@@ -37546,6 +37581,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //build dom
             var nodes = profile._buildItems('rows', arr);
+            if(temp&&temp.length){
+                _.arr.each(temp,function(o){
+                       if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                            box._editCell(profile,o);
+                });
+                temp.length=0;
+            }
             //get base dom
             if(!base){
                 //no base add to parent
@@ -37567,15 +37609,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     obj.addNext(nodes);
                 }
             }
-
-            if(temp&&temp.length){
-                _.arr.each(temp,function(o){
-                    if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                        box._editCell(profile,o);
-                });
-                temp.length=0;
-            }
-
             //add sub
             _.arr.each(arr,function(o){
                 o.open=false;
@@ -37758,6 +37791,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getRowbyRowId:function(rowId, type){
             var profile=this.get(0),v=profile.rowMap2;
+            if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
             if(v&&v[rowId]){
                 return profile.box._getRow(profile, profile.rowMap[v[rowId]], type);
             }else return;
@@ -38172,8 +38206,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         _.arr.each(temp,function(o){
-                            if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                                box._editCell(profile,o);
+                               if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                                    box._editCell(profile,o);
                         });
                         temp.length=0;
                     }
@@ -38409,8 +38443,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return v;
         },
         getHeaderByColId:function(colId, type){
-            var v=this.get(0).properties.header,
-                i=_.arr.subIndexOf(v,"id",colId);
+            var v=this.get(0).properties.header,i;
+            if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
+            i=_.arr.subIndexOf(v,"id",colId);
             return i==-1?null:
                 type=='data'?_.clone(v[i],true):
                 type=='min'?v[i].id:
@@ -38542,6 +38577,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getCellbyRowCol:function(rowId, colId, type){
             var profile=this.get(0),v;
+            if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
+            if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
             v=_.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
             v=v && profile.cellMap[v];
             return !v?null:
@@ -40769,9 +40806,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
+            
             _.each(ns.cellMap,function(o){
-                if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
-                    box._editCell(ns,o);
+                   if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
+                        box._editCell(ns,o);
             });
         },
         _focusEvent:function(profile, e, src){
@@ -41761,6 +41799,8 @@ editorEvents
             }
         },
         _getCellId:function(profile, rowId, colId){
+            if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
+            if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
             return _.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
         },
         _updCell:function(profile, cellId, options, dirtyMark, triggerEvent){
@@ -42025,8 +42065,7 @@ editorEvents
             }
 
             // 1. customEditor in cell/row or header
-            editor = getPro('customEditor');
-            if(editor && typeof editor.iniEditor=='function'){
+            if((editor = getPro('customEditor')) && typeof editor.iniEditor=='function'){
                 editor.iniEditor(profile, cell, cellNode);
                 _.tryF(editor.activate,[],editor);
                 if(profile.onBeginEdit)
@@ -42198,7 +42237,6 @@ editorEvents
                     }else{
                         baseNode.append(editor);
                     }
-                    
                     //cache the stantdard editor
                     if(!inline && editorCacheKey)
                         profile.$cache_editor[editorCacheKey] = editor;

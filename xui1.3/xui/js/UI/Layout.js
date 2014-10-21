@@ -185,6 +185,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         }
     },
     Static:{
+       // _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',
@@ -798,12 +799,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 mainmin=main.min||10,
                 _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
 
-            var obj={}, obj2={},obj3={};
+            var obj={}, obj2={};
+            // **keep the original size
+            //,obj3={};
             _.arr.each(t.items,function(o){
                 itemId = profile.getSubIdByItemId(o.id);
                 obj[itemId] = {};
-                obj2[itemId] = {};
-                obj3[itemId] = o;
+                obj2[itemId] = {};             
+//                obj3[itemId] = o;
             });
 
             var fun=function(prop,w,width,left,right,offset,forceoffset){
@@ -895,9 +898,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 if(!_.isNull(width)){
                     //get left
                     fun(t,width,'width','left','right',0,0);
-                    _.each(obj2,function(o,i){
-                        if(o.width && !obj3[i].folded)obj3[i].size=o.width;
-                    });
+//                    _.each(obj2,function(o,i){
+//                       if(o.width && !obj3[i].folded)obj3[i].size=o.width;
+//                    });
                  }
                 if(!_.isNull(height)){
                     _.each(obj,function(o,id){
@@ -908,9 +911,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 if(!_.isNull(height)){
                     //get left
                     fun(t,height,'height','top','bottom',0,0);
-                    _.each(obj2,function(o,i){
-                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
-                    });
+//                    _.each(obj2,function(o,i){
+//                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
+//                    });
                 }
                 if(!_.isNull(width)){
                     _.each(obj,function(o,id){

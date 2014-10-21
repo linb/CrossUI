@@ -100,6 +100,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //build dom
             var nodes = profile._buildItems('rows', arr);
+            if(temp&&temp.length){
+                _.arr.each(temp,function(o){
+                       if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                            box._editCell(profile,o);
+                });
+                temp.length=0;
+            }
             //get base dom
             if(!base){
                 //no base add to parent
@@ -121,15 +128,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     obj.addNext(nodes);
                 }
             }
-
-            if(temp&&temp.length){
-                _.arr.each(temp,function(o){
-                    if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                        box._editCell(profile,o);
-                });
-                temp.length=0;
-            }
-
             //add sub
             _.arr.each(arr,function(o){
                 o.open=false;
@@ -312,6 +310,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getRowbyRowId:function(rowId, type){
             var profile=this.get(0),v=profile.rowMap2;
+            if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
             if(v&&v[rowId]){
                 return profile.box._getRow(profile, profile.rowMap[v[rowId]], type);
             }else return;
@@ -726,8 +725,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         _.arr.each(temp,function(o){
-                            if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                                box._editCell(profile,o);
+                               if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                                    box._editCell(profile,o);
                         });
                         temp.length=0;
                     }
@@ -963,8 +962,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return v;
         },
         getHeaderByColId:function(colId, type){
-            var v=this.get(0).properties.header,
-                i=_.arr.subIndexOf(v,"id",colId);
+            var v=this.get(0).properties.header,i;
+            if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
+            i=_.arr.subIndexOf(v,"id",colId);
             return i==-1?null:
                 type=='data'?_.clone(v[i],true):
                 type=='min'?v[i].id:
@@ -1096,6 +1096,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getCellbyRowCol:function(rowId, colId, type){
             var profile=this.get(0),v;
+            if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
+            if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
             v=_.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
             v=v && profile.cellMap[v];
             return !v?null:
@@ -3323,9 +3325,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
+            
             _.each(ns.cellMap,function(o){
-                if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
-                    box._editCell(ns,o);
+                   if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
+                        box._editCell(ns,o);
             });
         },
         _focusEvent:function(profile, e, src){
@@ -4315,6 +4318,8 @@ editorEvents
             }
         },
         _getCellId:function(profile, rowId, colId){
+            if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
+            if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
             return _.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
         },
         _updCell:function(profile, cellId, options, dirtyMark, triggerEvent){
@@ -4579,8 +4584,7 @@ editorEvents
             }
 
             // 1. customEditor in cell/row or header
-            editor = getPro('customEditor');
-            if(editor && typeof editor.iniEditor=='function'){
+            if((editor = getPro('customEditor')) && typeof editor.iniEditor=='function'){
                 editor.iniEditor(profile, cell, cellNode);
                 _.tryF(editor.activate,[],editor);
                 if(profile.onBeginEdit)
@@ -4752,7 +4756,6 @@ editorEvents
                     }else{
                         baseNode.append(editor);
                     }
-                    
                     //cache the stantdard editor
                     if(!inline && editorCacheKey)
                         profile.$cache_editor[editorCacheKey] = editor;

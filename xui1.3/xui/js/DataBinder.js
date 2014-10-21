@@ -205,8 +205,9 @@ Class("xui.DataBinder","xui.absObj",{
                 con=ns.constructor,
                 prf=ns.get(0),
                 prop=prf.properties,
-                dsType=prop.dataSourceType,
-                responseType=prop.responseType,
+                dsType=prop.dataSourceType;
+            if(dsType!="remoting")return;                
+            var responseType=prop.responseType,
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
@@ -214,8 +215,13 @@ Class("xui.DataBinder","xui.absObj",{
                 queryUserName=prop.queryUserName;
                 queryPasswrod=prop.queryPasswrod;
                 queryArgs=_.copy(prop.queryArgs),
+                tokenParams=_.copy(tokenParams),
                 queryOptions=_.copy(prop.queryOptions);
-            if(dsType!="remoting")return;
+
+            if(requestType=="HTTP")
+                    queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(_.isHash(queryArgs) && !_.isEmpty(tokenParams))
+                _.merge(queryArgs,tokenParams,'all');
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
@@ -563,6 +569,9 @@ Class("xui.DataBinder","xui.absObj",{
                 listbox:["JSON","XML","SOAP"]
             },
             queryArgs:{
+                ini:{}
+            },
+            tokenParams:{
                 ini:{}
             },
             queryOptions:{
