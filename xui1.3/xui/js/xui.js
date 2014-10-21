@@ -1608,11 +1608,27 @@ new function(){
         exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
                 compare=function(x,y,s){
-                    switch(_.str.trim(s||"=")){
+                    switch(_.str.trim(s)){
                         case '=':
-                            return x===y;
-                        // TODO: other case
-                        break;
+                            return x==y;
+                        case '!=':
+                            return parseFloat(x)!=parseFloat(y);
+                        case '>':
+                            return parseFloat(x)>parseFloat(y);
+                        case '<':
+                            return parseFloat(x)<parseFloat(y);
+                        case '>=':
+                            return parseFloat(x)>=parseFloat(y);
+                        case '<=':
+                            return parseFloat(x)<=parseFloat(y);
+                        case 'include':
+                            return (x+"").indexOf(y+"")!=-1;
+                        case 'exclude':
+                            return (x+"").indexOf(y+"")==-1;
+                        case 'begin':
+                            return (x+"").indexOf(y+"")===0;
+                        case 'end':
+                            return (x+"").indexOf(y+"")===(x+"").length-(y+"").length;
                         default:
                             return true;
                     }
@@ -3650,21 +3666,19 @@ Class('xui.absObj',"xui.absBox",{
                             });
                         else{
                             var args=[], v=this.get(0), t=v[i], host=v.host || v,j,o,r;
-                            if(t){
+                            if(t && (!_.isArr(t) || t.length)){
                                 if(v.$inDesign)return;
                                 if(arguments[0]!=v)args[0]=v;
                                 for(j=0;j<l;j++)args[args.length]=arguments[j];
                                 v.$lastEvent=i;
                                 if(!_.isArr(t))t=[t];
                                 l=t.length;
-                                // alert/confirm/prompt will pause the chain, and resume
-                                // prompt will give some input
+                                if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
                                 var temp={};
                                 var n=0,fun=function(data){
                                     // set prompt's global var
                                     if(_.isStr(this))temp[this+""]=data||"";
-                                        //_.set(xui.$cache.data,['pseudocode','input'],input);
-                                    //resume from [n]
+                                    //callback from [n]
                                     for(j=n;j<l;j++){
                                         n=j+1;
                                         o=t[j];

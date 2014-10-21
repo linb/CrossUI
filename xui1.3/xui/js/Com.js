@@ -107,33 +107,42 @@ Class('xui.Com',null,{
         fireEvent:function(name, args, host){
             var t,o,r,l,self=this;
             if(self.events && (t=self.events[name])){
-                if(t){
+                if(t && (!_.isArr(t) || t.length)){
                     var host=host||self.host||self;
                     args=args||[];
                     if(!_.isArr(t))t=[t];
                     l=t.length;
+                    if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
                     var temp={};
-                    var n=0,fun=function(input){
+                    var n=0,fun=function(data){
                         // set prompt's global var
-                        if(_.isSet(input))
-                            temp.input=input;
-                            //_.set(xui.$cache.data,['pseudocode','input'],input);
-                        //resume from [n]
+                        if(_.isStr(this))temp[this+""]=data||"";
+                        //callback from [n]
                         for(j=n;j<l;j++){
                             n=j+1;
                             o=t[j];
                             if(typeof o=='string')o=host[o];
                             if(typeof o=='function')r=_.tryF(o, args, host);
                             else if(_.isHash(o)){
-                                if(o.resume){
-                                    // resume
-                                    (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
-                                    r=xui.pseudocode.exec(o,args,host,temp);
+                                if('onOK' in o ||'onKO' in o){
+                                    // onOK
+                                    if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                        if(fun)fun.apply("okData",arguments);
+                                    };
+                                    if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
+                                        if(fun)fun.apply("koData",arguments);
+                                    };
+                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                        n=temp=fun=null;
+                                    }
                                     break;
                                 }else
-                                    r=xui.pseudocode.exec(o,args,host,temp);
+                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                        n=j;break;
+                                    }
                             }
                         }
+                        if(n==j)n=temp=fun=null;
                         return r;
                     };
                     return fun();

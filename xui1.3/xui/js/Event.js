@@ -419,10 +419,13 @@ Class('xui.Event',null,{
         },
         getEventPara:function(event, mousePos){
             if(!mousePos)mousePos=xui.Event.getPos(event);
-            var keys = this.getKey(event), h={
+            var keys = this.getKey(event), 
+            button=this.getBtn(event), 
+            h={
+                button:button,
                 pageX:mousePos&&mousePos.left,
                 pageY:mousePos&&mousePos.top,
-                keyCode:keys.key,
+                key:keys.key,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
                 altKey:keys.altKey
