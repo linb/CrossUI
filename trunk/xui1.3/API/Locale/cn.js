@@ -5883,6 +5883,18 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
+            getTokenParams:{
+                $desc:"获取数据请求token参数.",
+                $rtn:"Object"
+            },
+            setTokenParams:{
+                $desc:"设置数据请求token参数.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getQueryOptions:{
                 $desc:"获取远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
                 $rtn:"Object"

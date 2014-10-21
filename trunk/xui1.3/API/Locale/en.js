@@ -5871,6 +5871,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
+            getTokenParams:{
+                $desc:"Gets the token parameters for this remoting call.",
+                $rtn:"Object"
+            },
+            setTokenParams:{
+                $desc:"Sets the token parameters for this remoting call.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getQueryOptions:{
                 $desc:"Gets options[a set of key/value pairs that configure the request] for this remoting call.",
                 $rtn:"Object"

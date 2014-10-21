@@ -3709,15 +3709,18 @@ Class("xui.UI",  "xui.absObj", {
         },
         RenderTrigger:function(){
             var prf=this, b=prf.boxing(),p=prf.properties,t;
-            //avoid the resize blazzing
             if(prf.box._onresize){
-                var style=prf.getRootNode().style,t
-                if((t=style.visibility)!='hidden'){
-                   prf._$visibility=t;
-                   style.visibility='hidden';
+                //avoid the resize blazzing
+                //maybe in current version, _asyncResize is useless
+                if(prf.box._asyncResize){
+                    var style=prf.getRootNode().style,t
+                    if((t=style.visibility)!='hidden'){
+                       prf._$visibility=t;
+                       style.visibility='hidden';
+                    }
+                    style=null;
                 }
                 xui.UI.$tryResize(prf,p.width,p.height);
-                style=null;
             }
             if(p.disabled) b.setDisabled(true,true);
             if(p.rotate) b.setRotate(p.rotate,true);
@@ -5828,7 +5831,9 @@ new function(){
             $initRootHidden:true,
             _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
-                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;'
+                style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
+                className:'{_className}',
+                text:'{_html}'
             },
             DataModel:{
                 className:{
@@ -5900,19 +5905,19 @@ new function(){
             },
             RenderTrigger:function(){
                 var prf=this;
-                prf.box._refreshCSS(prf);
                 if(!prf.$inDesign){
                     xui('body').prepend(prf.getRoot());
                 }
             },
-            _refreshCSS:function(prf){
-                _.resetRun(prf.key+":"+prf.$xid,function(){
-                    if(prf.destroyed)return;
-                    var prop=prf.properties,
+            _prepareData:function(profile){
+                var data=arguments.callee.upper.call(this, profile);
+                data._html = "Text"+"<"+"style type='text/css'>"+this._getCon(profile)+"<"+"/style>";
+                return data;
+            },
+            _getCon:function(prf){
+                    var prop=prf.properties,css="",
                         cls=prop.className,
-                        rootNode=prf.getRootNode(),
-                       css="";
-                    var hash1=prop.normalStatus,
+                        hash1=prop.normalStatus,
                         hash2=prop.hoverStatus,
                         hash3=prop.activeStatus,
                         hash4=prop.focusStatus;
@@ -5920,9 +5925,17 @@ new function(){
                     if(hash2&&!_.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
                     if(hash3&&!_.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
                     if(hash4&&!_.isEmpty(hash4))css+="."+cls+":focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
-                    rootNode.innerHTML="Text";
+                    return css;
+            },
+            _refreshCSS:function(prf){
+                var ns=this;
+                _.resetRun(prf.key+":"+prf.$xid,function(){
+                    if(prf.destroyed)return;
+                    var prop=prf.properties,
+                         rootNode=prf.getRootNode(),
+                         css=ns._getCon(prf);
+                    xui.Dom._setClass(rootNode, prop.className);
                     if(css)xui.CSS._appendSS(rootNode, css);
-                    xui.Dom._setClass(rootNode, cls);
                 });
             },
             EventHandlers:{

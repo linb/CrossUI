@@ -425,7 +425,7 @@ Class('xui.Event',null,{
                 keyCode:keys.key,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
-                altKey:keys[3].altKey
+                altKey:keys.altKey
             };
             for(var i in event)if(i.charAt(0)=='$')h[i]=event[i];
             return h;

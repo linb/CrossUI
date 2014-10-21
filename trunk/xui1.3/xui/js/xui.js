@@ -3660,10 +3660,9 @@ Class('xui.absObj',"xui.absBox",{
                                 // alert/confirm/prompt will pause the chain, and resume
                                 // prompt will give some input
                                 var temp={};
-                                var n=0,fun=function(input){
+                                var n=0,fun=function(data){
                                     // set prompt's global var
-                                    if(_.isSet(input))
-                                        temp.input=input;
+                                    if(_.isStr(this))temp[this+""]=data||"";
                                         //_.set(xui.$cache.data,['pseudocode','input'],input);
                                     //resume from [n]
                                     for(j=n;j<l;j++){
@@ -3672,15 +3671,25 @@ Class('xui.absObj',"xui.absBox",{
                                         if(typeof o=='string')o=host[o];
                                         if(typeof o=='function')r=_.tryF(o, args, host);
                                         else if(_.isHash(o)){
-                                            if(o.resume){
-                                                // resume
-                                                (o.params||(o.params=[]))[parseInt(o.resume,10)||0]=fun;
-                                                r=xui.pseudocode.exec(o,args,host,temp);
+                                            if('onOK' in o ||'onKO' in o){
+                                                // onOK
+                                                if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                                    if(fun)fun.apply("okData",arguments);
+                                                };
+                                                if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
+                                                    if(fun)fun.apply("koData",arguments);
+                                                };
+                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                    n=temp=fun=null;
+                                                }
                                                 break;
                                             }else
-                                                r=xui.pseudocode.exec(o,args,host,temp);
+                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                    n=j;break;
+                                                }
                                         }
                                     }
+                                    if(n==j)n=temp=fun=null;
                                     return r;
                                 };
                                 return fun();

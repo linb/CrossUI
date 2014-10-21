@@ -83,7 +83,8 @@ Class("xui.UI.Shadow","xui.UI",{
         });
     },
     Static:{
-        SIZE:4,
+        // In IE<=8, it has to use png to simulate box-shadow
+        SIZE:(xui.browser.ie&&xui.browser.ver<=8)?8:4,
         Templates:{
             tagName:'div',
             R:{
