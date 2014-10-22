@@ -1085,7 +1085,7 @@ _.set(xui.Locale,["en","app"], {
             $snippet:[
                 "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event."
             ]
-        }, 
+        },
         launch:{
             $desc:"To create a xui.Com , and show it.",
             $paras:[
@@ -1234,9 +1234,9 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Subscribes system message.",
             $rtn:"Integer",
             $paras:[
-                "topic [Required]: String, the topic.", 
-                "subscriber [Required]: String, the unique id for subscriber.", 
-                "receiver [Required]: Function, The subscriber's message receiver(callback function). If it returns [false], all the later subscribers will be ignored.", 
+                "topic [Required]: String, the topic.",
+                "subscriber [Required]: String, the unique id for subscriber.",
+                "receiver [Required]: Function, The subscriber's message receiver(callback function). If it returns [false], all the later subscribers will be ignored.",
                 "asy [Optional]: Boolean, asynchronous or not, the default value is [false]."
             ],
             $snippet:[
@@ -1253,7 +1253,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Unsubscribes system message.",
             $rtn:"undefined",
             $paras:[
-                "topic [Optional]: String, the topic. If it was not specified, all subscribers will be unsubscribed.", 
+                "topic [Optional]: String, the topic. If it was not specified, all subscribers will be unsubscribed.",
                 "subscriber [Optional]: String, the unique id for subscriber. If it was not specified, all subscribers in the topic will be unsubscribed."
             ]
         },
@@ -1261,8 +1261,8 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Publishes system message to subscribers.",
             $rtn:"undefined",
             $paras:[
-                "topic [Optional]: String, the topic. If it was not specified, the message will be published to all subscribers.", 
-                "args [Optional]: Array, arguments for the callback function.", 
+                "topic [Optional]: String, the topic. If it was not specified, the message will be published to all subscribers.",
+                "args [Optional]: Array, arguments for the callback function.",
                 "subscribers [Optional]: String/Array, the unique ids for subscriber.",
                 "scope [Optional]: Object, the callback function's scope."
             ]
@@ -1639,9 +1639,9 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Subscribes message.",
                 $rtn:"Integer",
                 $paras:[
-                    "topic [Required]: String, the topic.", 
-                    "subscriber [Required]: String, the unique id for subscriber.", 
-                    "receiver [Required]: Function, The subscriber's message receiver(callback function). If it returns [false], all the later subscribers will be ignored.", 
+                    "topic [Required]: String, the topic.",
+                    "subscriber [Required]: String, the unique id for subscriber.",
+                    "receiver [Required]: Function, The subscriber's message receiver(callback function). If it returns [false], all the later subscribers will be ignored.",
                     "asy [Optional]: Boolean, asynchronous or not, the default value is [false]."
                 ],
                 $snippet:[
@@ -1659,7 +1659,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Unsubscribes message.",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [Optional]: String, the topic. If it was not specified, all subscribers will be unsubscribed.", 
+                    "topic [Optional]: String, the topic. If it was not specified, all subscribers will be unsubscribed.",
                     "subscriber [Optional]: String, the unique id for subscriber. If it was not specified, all subscribers in the topic will be unsubscribed."
                 ]
             },
@@ -1667,8 +1667,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Publishes message to subscribers.",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [Optional]: String, the topic. If it was not specified, the message will be published to all subscribers.", 
-                    "args [Optional]: Array, arguments for the callback function.", 
+                    "topic [Optional]: String, the topic. If it was not specified, the message will be published to all subscribers.",
+                    "args [Optional]: Array, arguments for the callback function.",
                     "scope [Optional]: Object, the callback function's scope."
                 ]
             },
@@ -1776,7 +1776,7 @@ _.set(xui.Locale,["en","app"], {
             ]
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","Ajax"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Ajax Class. Dont use 'new' but 'function call' to create an instance. <br />Call function : to Create a xui.Ajax Object. <strong>xui.Ajax can handle GET/POST request in the current domain; xui.Ajax is the only one can handle the synchronous request.</strong>",
@@ -5759,7 +5759,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:'String',
                 $memo:"To see the 'getValue' snippets. "
             },
-            
+
             getData:{
                 $desc:"Gets the inner data.",
                 $rtn:"Object, key/value pairs.",
@@ -5972,7 +5972,7 @@ _.set(xui.Locale,["en","app"], {
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                     "options [Optional]: Object, a set of key/value pairs that configure the request."
-                ] 
+                ]
             },
             'read':{
                 $desc:"To invoke the remoting call for data reading.",
@@ -5986,7 +5986,7 @@ _.set(xui.Locale,["en","app"], {
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                     "options [Optional]: Object, a set of key/value pairs that configure the request.",
                     "adjustData [Optional] : Function, the adjust function for data( before data is set to the innder data property)."
-                ] 
+                ]
             },
             'write':{
                 $desc:"To invoke the remoting call for data writing.",
@@ -5999,7 +5999,7 @@ _.set(xui.Locale,["en","app"], {
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                     "options [Optional]: Object, a set of key/value pairs that configure the request."
-                ] 
+                ]
             },
 
             beforeUpdateDataToUI:{
@@ -6903,7 +6903,7 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
-            
+
             onHotKeydown:{
                 $desc:"Fired when keyboard is down.",
                 $paras:[
@@ -8647,7 +8647,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","UI","CSSBox"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.CSSBox Class",
@@ -8678,7 +8678,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]                
+                ]
             },
             getHoverStatus:{
                 $desc:"Gets the hover status CSS.",
@@ -8690,7 +8690,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]                
+                ]
             },
             getActiveStatus:{
                 $desc:"Gets the active status CSS.",
@@ -8702,7 +8702,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]                
+                ]
             },
             getFocusStatus:{
                 $desc:"Gets the focus status CSS.",
@@ -8714,11 +8714,11 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]                
+                ]
             }
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","UI","Widget"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Widget Class",
@@ -9118,7 +9118,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
     _.set(xui.Locale,["en","doc","xui","UI","Block"], {
-        
+
         $desc:"xui.UI.Block Class",
         constructor:{
             $desc:"Creates a xui.UI.Block Object."
@@ -9223,7 +9223,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","UI","Label"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Label Class",
@@ -11653,7 +11653,7 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : String.  'yyyy-mm-dd' or 'mm-dd-yyyy' or 'dd-mm-yyyy'. ",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
-            },            
+            },
             getCloseBtn:{
                 $desc:"To determine whether close button shows up or not.",
                 $rtn:"Boolean",
@@ -12800,7 +12800,7 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : Boolean.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
-            },            
+            },
             getRefreshBtn :{
                 $desc:"To determine whether refresh button shows up or not.",
                 $rtn:"Boolean"
@@ -13835,7 +13835,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a xui.UI.FoldingTabs Object."
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","UI","TagEditor"], {
        KEY:{$desc:"Class Name"},
         $desc:"xui.UI.TagEditor Class",
@@ -13972,7 +13972,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","UI","Calendar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Calendar Class",
@@ -14818,7 +14818,7 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : String.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
-            },     
+            },
             getRefreshBtn :{
                 $desc:"To determine whether refresh button shows up or not.",
                 $rtn:"Boolean"
@@ -15131,7 +15131,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","UI","HTMLButton"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.HTMLButton Class",
@@ -16172,7 +16172,7 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            
+
             onGetContent:{
                 $desc:"Fired when the UI needs to build a sub items.",
                 $paras:[
@@ -16995,14 +16995,25 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            updateCellByRowCol2:{
+                $desc:"Updates a specified cell according to row index and col index.",
+                $rtn:"[self]",
+                $paras:[
+                    "mixedId [Required] : String, [row index : col index].",
+                    "hash [Required] : key/value Object, the keys/values to be updated.",
+                    "dirtyMark [Optional] : Boolean, Make dirty mark not not. Default is [true].",
+                    "triggerEvent [Optional] : Boolean, trigger event not not. Default is [false]."
+                ]
+            },
             updateCellByRowCol:{
-                $desc:"Updates a specified cell's value according to row id and col id.",
+                $desc:"Updates a specified cell according to row id and col id.",
                 $rtn:"[self]",
                 $paras:[
                     "rowId [Required] : String, the corresponding row id.",
                     "colId [Required] : String, the corresponding col id.",
                     "hash [Required] : key/value Object, the keys/values to be updated.",
-                    "dirtyMark [Optional] : Boolean, Make dirty mark not not. Default is [true]."
+                    "dirtyMark [Optional] : Boolean, Make dirty mark not not. Default is [true].",
+                    "triggerEvent [Optional] : Boolean, trigger event not not. Default is [false]."
                 ],
                 $snippet:[
                     "var id='xui.temp.grid131'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17490,7 +17501,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "colId [Required] : String, the column id.",
                     "desc [Required] : Boolean, [True] for desc, [false] for asc. No-specified or null for switching between desc and asc.",
-                    "sortby [Required] : Function, sortby function(x,y,values,asc,colIndex,colCells){return 0|1|-1}" 
+                    "sortby [Required] : Function, sortby function(x,y,values,asc,colIndex,colCells){return 0|1|-1}"
                 ]
             },
             removeAllRows:{
@@ -18693,7 +18704,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","UI","Flash"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Flash Class",
@@ -18762,8 +18773,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Refresh the Flash."
             }
         }
-    });    
-        
+    });
+
     _.set(xui.Locale,["en","doc","xui","UI","FusionChartsXT"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.FusionChartsXT Class",
@@ -18835,7 +18846,7 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "url: String, URL."
                 ]
-            },            
+            },
             getXMLData:{
                 $desc:"Returns the XML data of chart as string.",
                 $rtn:"String"
@@ -18942,7 +18953,7 @@ _.set(xui.Locale,["en","app"], {
 
         }
     });
-    
+
     //svg
     _.set(xui.Locale,["en","doc","xui","svg"], {
         KEY:{$desc:"Class Name"},
@@ -19077,7 +19088,7 @@ _.set(xui.Locale,["en","app"], {
 
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","svg","circle"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.circle Class",
@@ -19087,7 +19098,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","svg","ellipse"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.ellipse Class",
@@ -19228,7 +19239,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
         }
     });
- 
+
     _.set(xui.Locale,["en","doc","xui","svg","ellipseComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.ellipseComb Class",
@@ -19238,7 +19249,7 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
         }
     });
-    
+
     _.set(xui.Locale,["en","doc","xui","svg","pathComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.pathComb Class",

@@ -392,6 +392,7 @@ Class('xui.Event',null,{
             // use keydown char
             res[0]=res[0];
             res.key=res[0];
+            res.keyCode=k;
             res.type=type;
             res.ctrlKey=!!res[1];
             res.shiftKey=!!res[2];
@@ -400,7 +401,6 @@ Class('xui.Event',null,{
             if(type=='keypress'){
                 if(this.$keydownchar && this.$keydownchar.length>1)
                     res.key=this.$keydownchar;
-            
             }
             // keep the prev keydown char
             else if(type=='keydown'){
@@ -426,6 +426,7 @@ Class('xui.Event',null,{
                 pageX:mousePos&&mousePos.left,
                 pageY:mousePos&&mousePos.top,
                 key:keys.key,
+                keyCode:keys.keyCode,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
                 altKey:keys.altKey

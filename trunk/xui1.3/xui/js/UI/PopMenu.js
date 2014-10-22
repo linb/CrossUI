@@ -239,14 +239,14 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
              },
             'items.split':{
                 ITEMSPLIT:{
-                    style:"{itemDisplay}"
+                    style:"{_itemDisplay}"
                 }
             },
             'items.button':{
                 ITEM:{
                     tabindex: -1,
                     className: '{itemClass} {disabled}',
-                    style:'{itemStyle}{itemDisplay}',
+                    style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
                         className:'xui-ui-icon {imageClass}',
@@ -273,7 +273,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '{itemClass} {disabled}',
-                    style:'{itemStyle}{itemDisplay}',
+                    style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
                          className:'xui-ui-icon {checkboxCls}'
@@ -298,7 +298,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '{itemClass} {disabled}',
-                    style:'{itemStyle}{itemDisplay}',
+                    style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
                          className:'xui-ui-icon {radioboxCls}'
@@ -813,7 +813,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             item.add = item.add || '';
             item.displayAdd = item.add?'':none;
             item.displaySub = item.sub?'':none;
-            item.itemDisplay=item.hidden?none:'';
+            item._itemDisplay=item.hidden?none:'';
 
             item.type=item.type||'button';
             if(item.type=='checkbox')

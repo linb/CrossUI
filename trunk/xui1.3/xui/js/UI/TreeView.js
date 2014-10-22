@@ -161,12 +161,14 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Behaviors:{
             MARK:{
                 onClick:function(profile, e, src){
-                   return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   return false;
                 }
             },
             ITEMICON:{
                 onClick:function(profile, e, src){
-                   return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   return false;
                 }
             }
         },
@@ -235,7 +237,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item._noicon=p.onIcons?"":"";
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
-            item.itemDisplay=item.hidden?'display:none;':'';
+            item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = p.selMode=='multibycheckbox'?'':'display:none;';
             item._tabindex = p.tabindex;
         },
