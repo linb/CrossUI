@@ -7,7 +7,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             items:{
                 ITEM:{
                     className:'{_itemRow} {itemClass} {disabled} {readonly}',
-                    style:'{itemStyle}',
+                    style:'{itemStyle}{_itemDisplay}',
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,

@@ -5795,7 +5795,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置数据源的类型.",
                 $rtn:"[self].",
                 $paras:[
-                    "value [必需参数] : String, 数据源的类型. 'none','memory','remoting' 之一,默认为none. 只有设置为'remoting', queryURL,queryUserName, queryPassword, queryMethod,queryAsync,queryModel,queryArgs,queryOptions,proxyType,requestType,responseType等属性才会有效.",
+                    "value [必需参数] : String, 数据源的类型. 'none','memory','remoting' 之一,默认为none. 只有设置为'remoting', queryURL,queryUserName, queryPassword, queryMethod,queryAsync,queryModel,queryArgs,tokenParams,queryOptions,proxyType,requestType,responseType等属性才会有效.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -6258,7 +6258,7 @@ _.set(xui.Locale,["cn","app"], {
             $memo:"该函数仅用于突出显示."
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","absList"], {
         prototype:{
             activate:{
@@ -8676,7 +8676,7 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    
+
     _.set(xui.Locale,["cn","doc","xui","UI","CSSBox"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.CSSBox 类",
@@ -8707,7 +8707,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]                
+                ]
             },
             getHoverStatus:{
                 $desc:"得到悬停状态的CSS设置.",
@@ -8719,7 +8719,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]                
+                ]
             },
             getActiveStatus:{
                 $desc:"得到激活状态的CSS设置.",
@@ -8731,7 +8731,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]                
+                ]
             },
             getFocusStatus:{
                 $desc:"得到焦点状态的CSS设置.",
@@ -8743,7 +8743,7 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]                
+                ]
             }
         }
     });
@@ -12074,8 +12074,8 @@ _.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
-            }, 
-            
+            },
+
             getOptBtn:{
                 $desc:"判断是否带有选项按钮",
                 $rtn:"Boolean"
@@ -16923,6 +16923,16 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            updateCellByRowCol2:{
+                $desc:"按指定格式的行序号和列序号字符串来更新指定的单元格.",
+                $rtn:"[self]",
+                $paras:[
+                    "mixedId [必需参数] : String, 格式：[行序号:列序号]",
+                    "hash [必需参数] : key/value Object, 需要更新的键值对.",
+                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识. 默认值是 [true].",
+                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]."
+                ]
+            },
             updateCellByRowCol:{
                 $desc:"更新行id和列id的单元格.",
                 $rtn:"[self]",
@@ -16930,7 +16940,8 @@ _.set(xui.Locale,["cn","app"], {
                     "rowId [必需参数] : String, 单元格在的行id.",
                     "colId [必需参数] : String, 单元格在的列id.",
                     "hash [必需参数] : key/value Object, 需要更新的键值对.",
-                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true]."
+                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true].",
+                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]."
                 ],
                 $snippet:[
                     "var id='xui.temp.grid131'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -19277,7 +19288,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_absObj' : {
             'tag':'附加值',
             'tagVar':'附加对象',
-            desc:'组件描述' 
+            desc:'组件描述'
         },
        'xui_absComposed' : {
             'dragKey':'拖拽标识',
@@ -19313,6 +19324,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'requestType':'数据请求类型',
             'responseType':'接收数据类型',
             'queryArgs':'数据请求参数',
+            'tokenParams':'Token附加参数',
             'queryOptions':'自定义调用选项',
             'proxyType':'代理种类',
             'name':'绑定器唯一名',
@@ -19840,7 +19852,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeIniComponents:"初始化控件前",
             afterIniComponents:"初始化控件后",
             onReady:"页面准备就绪",
-            onRender:"部件渲染完成", 
+            onRender:"部件渲染完成",
             onDestroy:"部件销毁"
         },
         'xui_absObj' : {
@@ -20113,7 +20125,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             afterCellUpdated:"单元格改变后",
             onClickCell:"鼠标点击单元格",
             onDblclickCell:"鼠标双击单元格",
-            
+
             beforeColDrag:"拖拽列前",
             beforeColMoved:"列移动前",
             beforeColResized:"改变宽列后",
@@ -20124,7 +20136,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             afterColShowHide:"列隐显后",
             afterColSorted:"列排序后",
             onClickHeader:"鼠标点击表头",
-            
+
             beforeHotRowAdded:"热行加入前",
             beforeInitHotRow:"热行初始化前",
             onInitHotRow:"热行初始化",
@@ -20143,7 +20155,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onClickGridHandler:"点击表格手柄",
             onBodyLayout:"布局表格体",
             onGetContent:"尝试得到子行",
-            
+
             beforeIniEditor:"初始化编辑器前",
             onBeginEdit:"编辑单元格",
             onEndEdit:"结束编辑",

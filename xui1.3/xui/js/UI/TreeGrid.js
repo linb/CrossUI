@@ -1124,6 +1124,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 con._updCell(self.get(0), t, options, dirtyMark, triggerEvent);
             return self;
         },
+        updateCellByRowCol2:function(mixedId, options, dirtyMark, triggerEvent){
+            var arr=mixedId.split(":"),
+                row=parseInt(arr[0],10),
+                col=parseInt(arr[1],10);
+            return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
+        },
         updateCell:function(cellId, options, dirtyMark, triggerEvent){
             var self=this,profile=this.get(0);
             _.each(profile.cellMap,function(o){
@@ -2185,7 +2191,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile._limited=0;
                         return;
                     }
-                    
+
                     profile.box._adjusteditorH(profile, o.height(row._height=h),h);
 
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
@@ -2410,7 +2416,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui(src).parent().onMouseout(true,{$force:true});
                     xui(src).onMouseup(true);
                 },
-                beforeMouseover:function(profile, e, src){ 
+                beforeMouseover:function(profile, e, src){
                     var p=profile.properties,
                         id = profile.getSubId(src),
                         col = profile.colMap[id];
@@ -3325,7 +3331,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
-            
+
             _.each(ns.cellMap,function(o){
                    if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
                         box._editCell(ns,o);
@@ -3650,7 +3656,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b.insertRows([orow], row.id, null, false);
             else if(k==ks.CELLS)
                 b.insertRows([orow], row._pid, row.id, true);
-            
+
             if(arr && arr.length){
                 if(_.arr.indexOf(arr, orow.id)!=-1){
                     b.setUIValue(arr,true,null,'drop');
@@ -4356,9 +4362,9 @@ editorEvents
                 // * remove cell's special setting first
                 delete cell._$caption;
                 delete cell._$tips;
- 
+
                 _.merge(cell,options,'all');
-    
+
                 node=profile.getSubNode('CELLA', cellId);
                 if('type' in options){
                     var uicell={};
@@ -4367,7 +4373,7 @@ editorEvents
                     node=profile.getSubNode('CELLA', cellId);
                 }
                 box._renderCell(profile, cell, null, node, options);
-    
+
                 //if update value
                 if('value' in options){
                     if(!pdm || dirtyMark===false)
@@ -4384,7 +4390,7 @@ editorEvents
                         }
                     }
                 }
-            }    
+            }
             if(triggerEvent){
                 if(profile.afterCellUpdated)
                     profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext);
@@ -4581,7 +4587,7 @@ editorEvents
                 inline=editMode=="inline",
                 baseNode = profile.getSubNode('SCROLL'),
                 cellNode = profile.getSubNode('CELL', cellId);
-            
+
             if(!inline){
                 //clear the prev editor
                 editor = profile.$curEditor;
@@ -4757,7 +4763,7 @@ editorEvents
                         break;
                     }
                     if(inline){
-                       cellNode.append(editor); 
+                       cellNode.append(editor);
                        cell._editor=editor;
                     }else{
                         baseNode.append(editor);
@@ -4941,7 +4947,7 @@ editorEvents
                         if(editor.undo)
                             _.tryF(editor.undo,[true],editor);
                         var hash=xui.Event.getEventPara(e);
-                        if(hash.keyCode=='enter')hash.keyCode='right';
+                        if(hash.key=='enter')hash.key='right';
                         profile.getSubNode('CELLA', cell._serialId).onKeydown(true,hash);
                         //prevent
                         return false;
@@ -4962,7 +4968,7 @@ editorEvents
                                 _.tryF(editor.undo,[],editor);
                             return false;
                         });
-    
+
                         var absPos=cellNode.offset(null, baseNode),
                             size = cellNode.cssSize();
                         //show editor
@@ -4975,18 +4981,18 @@ editorEvents
                             editor.setWidth(size.width+3).setHeight(size.height+2).reLayout(true);
                             editor.reBoxing().show((absPos.left-1) + 'px',(absPos.top-1) + 'px');
                         }
-    
+
                         var expand,
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
                             issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='file'||type=='upload'));
-    
+
                         if( _.isFun(editor.expand) &&
                             editorAutoPop!==false &&
                             (
                                 issharp ||
                                 (
                                     (editMode=="sharp"||editMode=="focus") &&   (editorAutoPop || type=='listbox'||type=='date'||type=='datepicker'||type=='datetime'||type=='time'||type=='timepicker'||type=='color'||type=='colorpicker')
-                                )    
+                                )
                            )
                          ){
                             expand=1;
@@ -5507,7 +5513,6 @@ editorEvents
             t2.cssSize(css);
 
             this._adjustBody(profile,'resize');
-        }
+        }
     }
 });
-            

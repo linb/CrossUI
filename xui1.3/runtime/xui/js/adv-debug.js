@@ -504,7 +504,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     ITEM:{
                         tagName : 'div',
                         className:'{_checked} {_precheked} {itemClass} {disabled} {readonly}',
-                        style:'{itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay} {itemStyle}',
                         HANDLE:{
                             tagName : 'div',
                             HL:{tagName : 'div'},
@@ -845,7 +845,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
             item._opt = item.optBtn?'':dpn;
-            item.itemDisplay = item.hidden?dpn:'';
+            item._itemDisplay = item.hidden?dpn:'';
 
             if(item.height && item.height!='auto'){
                 item._itemHeight="height:"+item.height+"px;";

@@ -3533,7 +3533,8 @@ Class("xui.UI",  "xui.absObj", {
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
                     hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1) : xui.adjustRes(o,true) : o;
             }
-
+            if('hidden' in dm)
+                hashOut._itemDisplay=dm.hidden?'display:none;':'';
             if('disabled' in dm)
                 hashOut.disabled= (_.isSet(hashOut.disabled) && hashOut.disabled) ?'xui-ui-itemdisabled':'';
             if('readonly' in dm)
@@ -4448,8 +4449,6 @@ Class("xui.UI",  "xui.absObj", {
                     profile.$attached.push(t);
                 }else{
                     dataItem._tabindex=tabindex;
-                    if(item.hidden)
-                        item.itemDisplay='display:none;';
 
                     //others
                     ajd(profile, item, dataItem);
@@ -4541,8 +4540,6 @@ Class("xui.absList", "xui.absObj",{
             });
         },
         removeItems:function(arr, key){
-            if(!(arr instanceof Array))arr=[arr];
-            _.arr.each(arr,function(o,i){arr[i]=''+o});
             var obj,v,
                 b=this._afterRemoveItems;
                 remove=function(profile, arr, target, data, ns, force){
@@ -4581,6 +4578,8 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
+                if(!_.isArr(arr))arr=arr.split(p.valueSeparator);
+                _.arr.each(arr,function(o,i){arr[i]=''+o});
                 // clear properties
                 remove(profile, p.items, arr, data);
                 // clear value
@@ -4662,7 +4661,7 @@ Class("xui.absList", "xui.absObj",{
 
                 //merge options
                 _.merge(item, options, 'all');
-
+                
                 //in dom already?
                 node=profile.getSubNodeByItemId('ITEM',nid || subId);
                 if(!node.isEmpty()){
@@ -4694,7 +4693,7 @@ Class("xui.absList", "xui.absObj",{
                         }
                     }
                 }
-                
+
                 if(box.$Behaviors.PanelKeys){
                     var hash={};
                     if(options.hasOwnProperty('panelBgClr'))hash["background-color"]=options.panelBgClr;

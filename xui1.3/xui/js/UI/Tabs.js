@@ -349,7 +349,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items:{
                     ITEM:{
                         className:'{itemClass} {disabled} {readonly}',
-                        style:'{itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay} {itemStyle}',
                         ITEMI:{
                             ITEMC:{
                                 HANDLE:{
@@ -1027,7 +1027,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
             item._opt = item.optBtn?'':dpn;
-            item.itemDisplay = item.hidden?dpn:'';
+            item._itemDisplay = item.hidden?dpn:'';
             if(t = item.itemWidth || p.itemWidth)
                 item.itemWidth="width:"+t+(_.isFinite(t)?"px":"");
             if(t = item.itemAlign || p.itemAlign)

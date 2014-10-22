@@ -118,7 +118,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 items:{
                     ITEM:{
                         className:'{_itemRow} {itemClass} {disabled} {readonly}',
-                        style:'{itemStyle}{itemDisplay}',
+                        style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         MARK:{
                             $order:5,

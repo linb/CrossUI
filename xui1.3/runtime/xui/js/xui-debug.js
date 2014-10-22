@@ -5137,6 +5137,7 @@ Class('xui.Event',null,{
             // use keydown char
             res[0]=res[0];
             res.key=res[0];
+            res.keyCode=k;
             res.type=type;
             res.ctrlKey=!!res[1];
             res.shiftKey=!!res[2];
@@ -5145,7 +5146,6 @@ Class('xui.Event',null,{
             if(type=='keypress'){
                 if(this.$keydownchar && this.$keydownchar.length>1)
                     res.key=this.$keydownchar;
-            
             }
             // keep the prev keydown char
             else if(type=='keydown'){
@@ -5171,6 +5171,7 @@ Class('xui.Event',null,{
                 pageX:mousePos&&mousePos.left,
                 pageY:mousePos&&mousePos.top,
                 key:keys.key,
+                keyCode:keys.keyCode,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
                 altKey:keys.altKey
@@ -8236,15 +8237,16 @@ Class('xui.Dom','xui.absBox',{
             input.focus();
             //set caret
             if(type=='number'){
-
                 if(ie){
                     var r = input.createTextRange();
                     r.collapse(true);
                     r.moveEnd('character', end);
                     r.moveStart('character', begin);
                     r.select();
-                }else
+                }else{
+                    input.focus();
                     input.setSelectionRange(begin, end);
+                }
                 return this;
             //replace text
             }else if(type=='string'){
@@ -17998,7 +18000,8 @@ Class("xui.UI",  "xui.absObj", {
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
                     hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1) : xui.adjustRes(o,true) : o;
             }
-
+            if('hidden' in dm)
+                hashOut._itemDisplay=dm.hidden?'display:none;':'';
             if('disabled' in dm)
                 hashOut.disabled= (_.isSet(hashOut.disabled) && hashOut.disabled) ?'xui-ui-itemdisabled':'';
             if('readonly' in dm)
@@ -18913,8 +18916,6 @@ Class("xui.UI",  "xui.absObj", {
                     profile.$attached.push(t);
                 }else{
                     dataItem._tabindex=tabindex;
-                    if(item.hidden)
-                        item.itemDisplay='display:none;';
 
                     //others
                     ajd(profile, item, dataItem);
@@ -19006,8 +19007,6 @@ Class("xui.absList", "xui.absObj",{
             });
         },
         removeItems:function(arr, key){
-            if(!(arr instanceof Array))arr=[arr];
-            _.arr.each(arr,function(o,i){arr[i]=''+o});
             var obj,v,
                 b=this._afterRemoveItems;
                 remove=function(profile, arr, target, data, ns, force){
@@ -19046,6 +19045,8 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
+                if(!_.isArr(arr))arr=arr.split(p.valueSeparator);
+                _.arr.each(arr,function(o,i){arr[i]=''+o});
                 // clear properties
                 remove(profile, p.items, arr, data);
                 // clear value
@@ -19127,7 +19128,7 @@ Class("xui.absList", "xui.absObj",{
 
                 //merge options
                 _.merge(item, options, 'all');
-
+                
                 //in dom already?
                 node=profile.getSubNodeByItemId('ITEM',nid || subId);
                 if(!node.isEmpty()){
@@ -19159,7 +19160,7 @@ Class("xui.absList", "xui.absObj",{
                         }
                     }
                 }
-                
+
                 if(box.$Behaviors.PanelKeys){
                     var hash={};
                     if(options.hasOwnProperty('panelBgClr'))hash["background-color"]=options.panelBgClr;
@@ -29996,7 +29997,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 items:{
                     ITEM:{
                         className:'{_itemRow} {itemClass} {disabled} {readonly}',
-                        style:'{itemStyle}{itemDisplay}',
+                        style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         MARK:{
                             $order:5,
@@ -30664,7 +30665,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ITEM:{
                     tabindex:'{_tabindex}',
                     className:'xui-busy {itemClass} {disabled}  {readonly}',
-                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{itemDisplay};{_loadbg}',
+                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
                         tagName:'div',
@@ -32080,7 +32081,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items:{
                     ITEM:{
                         className:'{itemClass} {disabled} {readonly}',
-                        style:'{itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay} {itemStyle}',
                         ITEMI:{
                             ITEMC:{
                                 HANDLE:{
@@ -32758,7 +32759,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
             item._opt = item.optBtn?'':dpn;
-            item.itemDisplay = item.hidden?dpn:'';
+            item._itemDisplay = item.hidden?dpn:'';
             if(t = item.itemWidth || p.itemWidth)
                 item.itemWidth="width:"+t+(_.isFinite(t)?"px":"");
             if(t = item.itemAlign || p.itemAlign)
@@ -33385,7 +33386,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             items:{
                 ITEM:{
                     className:'{_itemRow} {itemClass} {disabled} {readonly}',
-                    style:'{itemStyle}',
+                    style:'{itemStyle}{_itemDisplay}',
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,
@@ -33871,7 +33872,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 items:{
                     ITEM:{
                         className:'{itemClass}',
-                        style:'{itemStyle}{itemDisplay}',
+                        style:'{itemStyle}{_itemDisplay}',
                         tagName : 'div',
                         BAR:{
                             $order:0,
@@ -34251,6 +34252,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 break;
             }
             if(!ignoreClick && profile.afterClick)box.afterClick(profile,item,e,src);
+            return !ignoreClick;
         },
         _onkeydownbar:function(profile, e, src){
             var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey, ctrl=keys.ctrlKey,
@@ -34390,7 +34392,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item.togglemark = item.sub?'xui-uicmd-toggle':'xui-uicmd-none';
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
-            item.itemDisplay=item.hidden?'display:none;':'';
+            item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = (p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             //change css class
@@ -34715,12 +34717,14 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Behaviors:{
             MARK:{
                 onClick:function(profile, e, src){
-                   return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   return false;
                 }
             },
             ITEMICON:{
                 onClick:function(profile, e, src){
-                   return profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   profile.box._onclickbar(profile,e,xui.use(src).parent().xid());
+                   return false;
                 }
             }
         },
@@ -34789,7 +34793,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item._noicon=p.onIcons?"":"";
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
-            item.itemDisplay=item.hidden?'display:none;':'';
+            item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = p.selMode=='multibycheckbox'?'':'display:none;';
             item._tabindex = p.tabindex;
         },
@@ -35110,14 +35114,14 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
              },
             'items.split':{
                 ITEMSPLIT:{
-                    style:"{itemDisplay}"
+                    style:"{_itemDisplay}"
                 }
             },
             'items.button':{
                 ITEM:{
                     tabindex: -1,
                     className: '{itemClass} {disabled}',
-                    style:'{itemStyle}{itemDisplay}',
+                    style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
                         className:'xui-ui-icon {imageClass}',
@@ -35144,7 +35148,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '{itemClass} {disabled}',
-                    style:'{itemStyle}{itemDisplay}',
+                    style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
                          className:'xui-ui-icon {checkboxCls}'
@@ -35169,7 +35173,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '{itemClass} {disabled}',
-                    style:'{itemStyle}{itemDisplay}',
+                    style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
                          className:'xui-ui-icon {radioboxCls}'
@@ -35684,7 +35688,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             item.add = item.add || '';
             item.displayAdd = item.add?'':none;
             item.displaySub = item.sub?'':none;
-            item.itemDisplay=item.hidden?none:'';
+            item._itemDisplay=item.hidden?none:'';
 
             item.type=item.type||'button';
             if(item.type=='checkbox')
@@ -36272,7 +36276,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 },
                 'items.sub':{
                     ITEM:{
-                        style:'{itemDisplay}',
+                        style:'{_itemDisplay}',
                         className:" {disabled}",
                     //for firefox2 image in -moz-inline-box cant change height bug
                         IBWRAP:{
@@ -36556,7 +36560,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         dataItem.dropDisplay=item.type=="dropButton"?'':dn;
                         dataItem.boxDisplay= (dataItem.type!=="split" && (dataItem.caption || dataItem.image || dataItem.imageClass))?'':dn;
                     }
-                    dataItem.itemDisplay=item.hidden?dn:'';
+                    dataItem._itemDisplay=item.hidden?dn:'';
                     item._pid=pid;
                 };
 
@@ -38638,6 +38642,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(t=con._getCellId(self.get(0), rowId, colId))
                 con._updCell(self.get(0), t, options, dirtyMark, triggerEvent);
             return self;
+        },
+        updateCellByRowCol2:function(rowcol, options, dirtyMark, triggerEvent){
+            var arr=rowcol.split(":"),
+                row=parseInt(arr[0],10),
+                col=parseInt(arr[1],10);
+            return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
         },
         updateCell:function(cellId, options, dirtyMark, triggerEvent){
             var self=this,profile=this.get(0);
@@ -42456,7 +42466,7 @@ editorEvents
                         if(editor.undo)
                             _.tryF(editor.undo,[true],editor);
                         var hash=xui.Event.getEventPara(e);
-                        if(hash.keyCode=='enter')hash.keyCode='right';
+                        if(hash.key=='enter')hash.key='right';
                         profile.getSubNode('CELLA', cell._serialId).onKeydown(true,hash);
                         //prevent
                         return false;

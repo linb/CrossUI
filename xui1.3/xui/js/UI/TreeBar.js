@@ -228,7 +228,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 items:{
                     ITEM:{
                         className:'{itemClass}',
-                        style:'{itemStyle}{itemDisplay}',
+                        style:'{itemStyle}{_itemDisplay}',
                         tagName : 'div',
                         BAR:{
                             $order:0,
@@ -608,6 +608,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 break;
             }
             if(!ignoreClick && profile.afterClick)box.afterClick(profile,item,e,src);
+            return !ignoreClick;
         },
         _onkeydownbar:function(profile, e, src){
             var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey, ctrl=keys.ctrlKey,
@@ -747,7 +748,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item.togglemark = item.sub?'xui-uicmd-toggle':'xui-uicmd-none';
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
-            item.itemDisplay=item.hidden?'display:none;':'';
+            item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = (p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             //change css class

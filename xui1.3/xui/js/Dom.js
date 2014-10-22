@@ -761,15 +761,16 @@ Class('xui.Dom','xui.absBox',{
             input.focus();
             //set caret
             if(type=='number'){
-
                 if(ie){
                     var r = input.createTextRange();
                     r.collapse(true);
                     r.moveEnd('character', end);
                     r.moveStart('character', begin);
                     r.select();
-                }else
+                }else{
+                    input.focus();
                     input.setSelectionRange(begin, end);
+                }
                 return this;
             //replace text
             }else if(type=='string'){
