@@ -12075,7 +12075,18 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
-
+            getTagCmds:{
+                $desc:"得到命令按钮集",
+                $rtn:"Array",
+            },
+            setTagCmds:{
+                $desc:"设置命令按钮集",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array, 项数组.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getOptBtn:{
                 $desc:"判断是否带有选项按钮",
                 $rtn:"Boolean"
@@ -12153,6 +12164,29 @@ _.set(xui.Locale,["cn","app"], {
                     "item: Object, 项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onCmd:{
+                $desc:"当用户单击内部按钮的时候调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "cmdKey: String, 命令的键值.",
+                    "src: String, 事件所属DOM元素的xid."
+                ],
+                $snippet:[
+                    "var id='xui.temp.fl10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "xui(id).prepend(o);"+
+                    "o.onCmd(function(p,item,cmdKey){alert(item.id +':'+cmdKey)});"+
+                    "}",
+                    "var id='xui.temp.pool31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', position:'relative',toggle:true,items:[{id:'Button',caption:'option 1',percent:0.5,message:'50%'},{id:'CheckBox',caption:'option 2',percent:0.8,message:'80%'}]});"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "xui(id).prepend(o);"+
+                    "o.onCmd(function(p,cmdKey){alert(cmdKey)});"+
+                    "}"
                 ]
             }
         }
@@ -15313,35 +15347,6 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
-            getCmds:{
-                $desc:"获取指令数组",
-                $rtn:"Array",
-                $snippet:[
-                    "var id='xui.temp.fl1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ]
-            },
-            setCmds:{
-                $desc:"设置指令数组.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Array.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.fl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ],
-                $memo:"You have to use this function before the UIProfile is rendered."
-            },
             getActiveLast :{
                 $desc:"判断是否激活最后一个文件夹项",
                 $rtn:"Boolean",
@@ -15416,24 +15421,6 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
 
-            onClickButton:{
-                $desc:"当用户单击内部按钮的时候调用.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "item: Object, 项对象.",
-                    "cmdKey: String, 命令的键值.",
-                    "src: String, 事件所属DOM元素的xid."
-                ],
-                $snippet:[
-                    "var id='xui.temp.fl10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "o.onClickButton(function(p,item,cmdKey){alert(item.id +':'+cmdKey)});"+
-                    "}"
-                ]
-            },
-
             onGetContent:{
                 $desc:"当某个文件夹项需要填充内容时调用.",
                 $paras:[
@@ -15444,7 +15431,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.fl11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'Button',title:'a1',tips:'a1 tips'},{id:'CheckBox',title:'a2',tips:'a2 tips'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui(id).prepend(o);"+
                     "o.onGetContent(function(p,item){return new xui.UI[item.id]({position:'relative'})});"+
                     "}"
@@ -15462,36 +15449,6 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
-            getCmds:{
-                $desc:"得到命令项",
-                $rtn:"Array",
-                $snippet:[
-                    "var id='xui.temp.pool1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey',selMode:'multi', toggle:true, position:'relative',items:[{id:'a',caption:'option 1',percent:0.5,message:'50%'},{id:'b',caption:'option 2',percent:0.8,message:'80%',editable:true}]});"+
-                    "o.setCmds([{id:'new', caption:'new'}, {id:'edit', caption:'edit'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ]
-            },
-            setCmds:{
-                $desc:"设置命令项,并反映到界面.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Array.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.pool2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', toggle:true, position:'relative',items:[{id:'a',caption:'option 1',percent:0.5,message:'50%',editable:true},{id:'b',caption:'option 2',percent:0.8,message:'80%'}]});"+
-                    "o.setCmds([{id:'new', caption:'new'}, {id:'edit', caption:'edit'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ],
-                $memo:"You have to use this function before the UIProfile is rendered."
-            },
-
             fillContent:{
                 $desc:"填充内容到指定项.",
                 $rtn:"[self]",
@@ -15724,29 +15681,12 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.pool30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', position:'relative',toggle:true,items:[{id:'Button',caption:'option 1',percent:0.5,message:'50%'},{id:'CheckBox',caption:'option 2',percent:0.8,message:'80%'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui(id).prepend(o);"+
                     "o.onGetContent(function(p,item){return new xui.UI[item.id]({position:'relative'})});"+
                     "}"
                 ]
             },
-            onClickButton:{
-                $desc:"在点击命令按钮的时候调用.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "key: String, 命令按钮的键值.",
-                    "src: String, 事件所属DOM元素的xid."
-                ],
-                $snippet:[
-                    "var id='xui.temp.pool31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', position:'relative',toggle:true,items:[{id:'Button',caption:'option 1',percent:0.5,message:'50%'},{id:'CheckBox',caption:'option 2',percent:0.8,message:'80%'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "o.onClickButton(function(p,cmdKey){alert(cmdKey)});"+
-                    "}"
-                ]
-            },
-
             beforeOptionAdded:{
                 $desc:"在添加选项之前触发.",
                 $paras:[
@@ -15899,6 +15839,18 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Boolean.",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
+            getTagCmds:{
+                $desc:"得到命令按钮集",
+                $rtn:"Array",
+            },
+            setTagCmds:{
+                $desc:"设置命令按钮集",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array, 项数组.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getGroup :{
@@ -16145,6 +16097,15 @@ _.set(xui.Locale,["cn","app"], {
                     "src: String, 事件所属DOM元素的xid."
                 ]
             },
+            onDblclick:{
+                $desc:"在双击条目的时候触发该事件.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
             onClick:{
                 $desc:"在单击条目的时候触发该事件.",
                 $paras:[
@@ -16189,6 +16150,15 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, 项对象.",
                     "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onCmd:{
+                $desc:"当用户单击内部按钮的时候调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "cmdKey: String, 命令的键值.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
             }
@@ -17103,6 +17073,18 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getTagCmds:{
+                $desc:"得到命令按钮集",
+                $rtn:"Array",
+            },
+            setTagCmds:{
+                $desc:"设置命令按钮集",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array, 项数组.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             setGrpCols :{
                 $desc:"设置表头组数组对象.",
                 $rtn:"[self]",
@@ -17829,6 +17811,15 @@ _.set(xui.Locale,["cn","app"], {
                     "src : String, 按钮 DOM 元素的xid."
                 ]
             },
+            onEditorclick :{
+                $desc:"在单元格的编辑控件被点击时调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object, cell 对象.",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
+                    "src : String, 按钮 DOM 元素的xid."
+                ]
+            },
             onClickGridHandler:{
                 $desc:"当点击列头和行头的共同区域时触发.",
                 $paras:[
@@ -17853,6 +17844,15 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile.",
                     "col: Object,  列对象.",
                     "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onCmd:{
+                $desc:"当用户单击内部按钮的时候调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, 项对象.",
+                    "cmdKey: String, 命令的键值.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
             },
@@ -19388,8 +19388,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Label' : {
             'caption':'标题文字',
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移',
+            'image':'图标路径',
+            'imagePos':'图标背景偏移',
             'shadowText':'阴影文字',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
@@ -19402,8 +19402,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Button' : {
             'caption':'标题文字',
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移',
+            'image':'图标路径',
+            'imagePos':'图标背景偏移',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
             'type':'按钮类型'
@@ -19446,8 +19446,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dropListWidth':'弹出窗口宽',
             'dropListHeight':'弹出窗口高',
             'items':'下拉框项目',
-            'btnImage':'背景图标路径',
-            'btnImagePos':'背景图像背景偏移',
+            'btnImage':'图标路径',
+            'btnImagePos':'图标背景偏移',
             'increment':'增量值',
             'min':'最小值',
             'max':'最大值',
@@ -19466,8 +19466,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'html':'内部HTML文本',
             'overflow':'容器溢出属性',
             'caption':'对话框标题',
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移',
+            'image':'图标路径',
+            'imagePos':'图标背景偏移',
             'movable':'对话框可拖动',
             'minBtn':'显示最小按钮',
             'restoreBtn':'显示恢复按钮',
@@ -19497,14 +19497,14 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'hAlign':'水平对齐方式'
         },
         'xui_UI_SButton' : {
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移',
+            'image':'图标路径',
+            'imagePos':'图标背景偏移',
             'caption':'按钮标题文字',
             'hAlign':'水平对齐方式'
         },
         'xui_UI_SCheckBox' : {
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移',
+            'image':'图标路径',
+            'imagePos':'图标背景偏移',
             'caption':'按钮标题文字'
         },
         'xui_UI_Element' : {
@@ -19535,13 +19535,13 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'caption':'标题',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移'
+            'image':'图标路径',
+            'imagePos':'图标背景偏移'
         },
         'xui_UI_Panel' : {
             'caption':'标题文字',
-            'image':'背景图标路径',
-            'imagePos':'背景图像背景偏移',
+            'image':'图标路径',
+            'imagePos':'图标背景偏移',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
             'infoBtn':'显示帮助按钮',
@@ -19554,7 +19554,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Image' : {
             'maxWidth':'图像最大宽度',
-            'maxHeight':'图片最大高度',
+            'maxHeight':'图像最大高度',
             'src':'图像文件路径',
             'alt':'替代文字',
             'cursor':'鼠标样式'
@@ -19601,6 +19601,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'noCtrlKey':'Ctrl辅助多选',
             'maxHeight':'最大高度',
             'itemRow':'单项独占行',
+            'tagCmds':"命令按钮集",
             'optBtn':'显示选项按钮'
         },
         'xui_UI_Gallery' : {
@@ -19682,6 +19683,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'noCtrlKey':'无Ctrl辅助多选',
             'singleOpen':'单节点打开',
             'dynDestory':'动态销毁子行',
+            'tagCmds':"命令按钮集",
             'optBtn':'显示选项按钮'
         },
         'xui_UI_TreeView' : {
@@ -19726,6 +19728,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'header':'表头对象',
             'grpCols':'表头分组对象',
             'rows':'表格行对象',
+            'tagCmds':"命令按钮集",
             'activeMode':'焦点活动模式',
             'rowOptions':'行自定义参数',
             'colOptions':'列自定义参数',
@@ -20047,7 +20050,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
               onClick:"鼠标点击",
               onDblclick:"鼠标双击",
               onShowOptions:"点击选项按钮",
-              onItemSelected :"选中条目"
+              onItemSelected :"选中条目",
+              onCmd:"点击命令按钮"
         },
         'xui_UI_Gallery' : {
         },
@@ -20062,12 +20066,10 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeOptionChanged:"更改选项前",
             beforeOptionRemoved:"移除选项前",
             beforeTitleChanged:"更改标签前",
-            onClickButton:"点击按钮",
             onCustomEdit:"自定义编辑",
             onGetContent:"尝试获取内容"
         },
         'xui_UI_FoldingList' : {
-            onClickButton:"点击按钮",
             onGetContent:"尝试获取子项",
             onShowOptions:"点击选项按钮"
         },
@@ -20095,6 +20097,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeFold:"子项折叠前",
             onClick:"鼠标点击",
             onDblclick:"鼠标双击",
+            onCmd:"点击命令按钮",
             onGetContent:"尝试获取子项",
             onItemSelected:"选中条目",
             onShowOptions:"点击选项按钮",
@@ -20151,6 +20154,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onClickRow:"鼠标点击行",
             onDblclickRow:"鼠标双击行",
             onClickRowHandler:"点击行手柄",
+            onCmd:"点击命令按钮",
 
             onClickGridHandler:"点击表格手柄",
             onBodyLayout:"布局表格体",
@@ -20159,6 +20163,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeIniEditor:"初始化编辑器前",
             onBeginEdit:"编辑单元格",
             onEndEdit:"结束编辑",
+            onEditorClick:"当点击编辑框",
             onCommand:"点击命令按钮",
             beforeComboPop:"构造弹出窗口前",
             beforePopShow:"显示弹出窗口前",

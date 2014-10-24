@@ -298,13 +298,13 @@ html, .xui-uibg-base{
     background-image: url(List/item.gif);
 }
 .xui-list-item-mouseover{
-    background-color:#A7D9F5;
+    background-color:#EBF3FD;
 }
 .xui-list-item-mousedown{
-    background-color:#68B3DB;
+    background-color:#C1DBFC;
 }
 .xui-list-item-checked{
-    background-color:#CFD0D0;
+    background-color:#CFE4FE;
 }
 .xui-list-mark{
     background-image: url(Public/icons.gif);
@@ -376,7 +376,7 @@ html, .xui-uibg-base{
     background-image: url(List/item.gif);
 }
 .xui-treeview-bar-mouseover{
-    background-color:#F2F7FE;
+    background-color:#EBF3FD;
     border:solid 1px #B8D6FB;
 }
 .xui-treeview-bar-mousedown{
@@ -384,8 +384,14 @@ html, .xui-uibg-base{
      border:solid 1px #D9D9D9;
 }
 .xui-treeview-bar-checked{
-    background-color:#DBEAFD;
+    background-color:#CFE4FE;
      border:solid 1px #D9D9D9;
+}
+.xui-treebar-bar-mouseover{
+    background-color:#;
+}
+.xui-treebar-bar-checked{
+    background-color:#;
 }
 /*xui.UI.Tabs*/
 .xui-tabs-items{

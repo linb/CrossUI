@@ -61,90 +61,72 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();
-        t.$submap={
-            items:{
-                ITEM:{
+        t.$submap.items={
+            ITEM:{
+                tagName : 'div',
+                className:'{_checked} {_precheked} {itemClass} {disabled} {readonly}',
+                style:'{itemStyle}',
+                HEAD:{
                     tagName : 'div',
-                    className:'{_checked} {_precheked} {itemClass} {disabled} {readonly}',
-                    style:'{itemStyle}',
-                    HEAD:{
-                        tagName : 'div',
-                        HL:{tagName : 'div'},
-                        HR:{tagName : 'div'},
-                        TITLE:{
-                            tabindex: '{_tabindex}',
-                            TLEFT:{
+                    HL:{tagName : 'div'},
+                    HR:{tagName : 'div'},
+                    TITLE:{
+                        tabindex: '{_tabindex}',
+                        TLEFT:{
+                            $order:0,
+                            tagName:'div',
+                            TOGGLE:{
                                 $order:0,
-                                tagName:'div',
-                                TOGGLE:{
-                                    $order:0,
-                                    className:'xui-uicmd-toggle {_tlgchecked}'
-                                },
-                                CAP1:{
-                                    $order:1,
-                                    text:'{title}'
-                                }
+                                className:'xui-uicmd-toggle {_tlgchecked}'
                             },
-                            TRIGHT:{
+                            CAP1:{
                                 $order:1,
-                                tagName:'div',
-                                style:'{_capDisplay}',
-                                CAP2:{
-                                    $order:0,
-                                    text:'{caption}'
-                                },
-                                OPT:{
-                                    $order:1,
-                                    className:'xui-uicmd-opt',
-                                    style:'{_opt}'
-                                }
-                            }/*,
-                            TCLEAR:{
-                                $order:2,
-                                tagName:'div'
-                            }*/
-                        }
+                                text:'{title}'
+                            }
+                        },
+                        TRIGHT:{
+                            $order:1,
+                            tagName:'div',
+                            style:'{_capDisplay}',
+                            CAP2:{
+                                $order:0,
+                                text:'{caption}'
+                            },
+                            OPT:{
+                                $order:1,
+                                className:'xui-uicmd-opt',
+                                style:'{_opt}'
+                            }
+                        }/*,
+                        TCLEAR:{
+                            $order:2,
+                            tagName:'div'
+                        }*/
+                    }
+                },
+                BODY:{
+                    $order:1,
+                    tagName : 'div',
+                    className:'xui-uibg-base',
+                    BODYI:{
+                        $order:0,
+                        tagName : 'div',
+                        text:'{_body}'
                     },
-                    BODY:{
+                    TAGCMDS:{
                         $order:1,
                         tagName : 'div',
-                        className:'xui-uibg-base',
-                        BODYI:{
-                            $order:0,
-                            tagName : 'div',
-                            text:'{_body}'
-                        },
-                        CMDS:{
-                            $order:1,
-                            tagName : 'div',
-                            text:"{cmds}"
-                        }
-                    },
-                    TAIL:{
-                        $order:4,
-                        tagName : 'div',
-                        TL:{tagName : 'div'},
-                        TR:{tagName : 'div'}
+                        text:"{tagCmds}"
                     }
-                }
-            },
-            'items.cmds':{
-                $order:2,
-                CMD:{
-                    className:'xui-ui-btn',
-                    CMDI:{
-                        className:'xui-ui-btni',
-                        CMDC:{
-                            className:'xui-ui-btnc',
-                            CMDA:{
-                                tabindex: '{_tabindex}',
-                                text:'{caption}'
-                            }
-                        }
-                    }
+                },
+                TAIL:{
+                    $order:4,
+                    tagName : 'div',
+                    TL:{tagName : 'div'},
+                    TR:{tagName : 'div'}
                 }
             }
-        };
+        }
         this.setTemplate(t);
     },
     Static:{
@@ -210,6 +192,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 'font-size':0,
                 'line-height':0
             },
+            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':null,
             'ITEM-checked':{
                 $order:2,
                 'margin-bottom':'12px'
@@ -329,19 +312,12 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:null,HEAD:'HEAD',OPT:'OPT',CMD:'CMD'},
-            ClickEffected:{ITEM:null,HEAD:'HEAD',CMD:'CMD'},
+            HoverEffected:{ITEM:null,HEAD:'HEAD',OPT:'OPT'},
+            ClickEffected:{ITEM:null,HEAD:'HEAD'},
             ITEM:{onClick:null,onKeydown:null},
             HEAD:{
                 onClick:function(profile, e, src){
                     profile.boxing().toggle(profile.getItemIdByDom(src));
-                    return false;
-                }
-            },
-            CMD:{
-                onClick:function(profile,e,src){
-                    if(profile.onClickButton)
-                        profile.boxing().onClickButton(profile,profile.getItemByDom(xui.use(src).parent().get(0)), xui.use(src).id().split('_')[1],src);
                     return false;
                 }
             },
@@ -358,14 +334,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
         DataModel:({
             value:null,
             borderType:null,
-            cmds:{
-                ini:[]
-            },
             activeLast:false
         }),
         EventHandlers:{
             onGetContent:function(profile,item,onEnd){},
-            onClickButton:function(profile,item,cmdkey,src){},
             onShowOptions:function(profile,item,e,src){}
         },
          RenderTrigger:function(){
@@ -403,20 +375,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 item._checked = profile.getClass('ITEM','-checked');
                 item._tlgchecked = profile.getClass('TOGGLE','-checked');
             }
-            var cmds = item.cmds || p.cmds;
-            if(cmds && cmds.length){
-                var sid=xui.UI.$tag_subId,a;
-                a=item.cmds=[];
-                for(var i=0,t=cmds,l=t.length;i<l;i++){
-                    if(typeof t[i]=='string')t[i]={id:t[i]};
-                    if(!t[i].caption)t[i].caption=t[i].id;
-                    t[i].id=t[i].id.replace(/[^\w]/g,'_');
-
-                    o=xui.UI.adjustData(profile,t[i]);
-                    a.push(o);
-                    o[sid]=item[sid] + '_' + o.id;
-                }
-            }
+            
+            this._prepareCmds(profile, item);
         },
         _buildBody:function(profile,item){
             return item.text?'<pre>'+item.text.replace(/</g,"&lt;")+'</pre>':'';

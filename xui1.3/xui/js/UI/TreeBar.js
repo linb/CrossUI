@@ -261,8 +261,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text : '{ext}',
                                 $order:5
                             },
+                            TAGCMDS:{
+                                $order:6,
+                                tagName:'span',
+                                text:"{tagCmds}"
+                            },
                             OPT:{
-                                $order:6
+                                $order:7
                             }
                         },
                         SUB:{
@@ -270,6 +275,44 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             tagName : 'div',
                             text:xui.UI.$childTag
                         }
+                    }
+                },
+                'items.tagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                },
+                'items.tagCmds.text':{
+                    CMD:{
+                        tagName:"a",
+                        title:"{tips}",
+                        href:xui.$DEFAULTHREF,
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.button':{
+                    CMD:{
+                        _NativeElement:true,
+                        tagName:"button",
+                        title:"{tips}",
+                        style:'{_style}{itemStyle}',
+                        className:'xui-list-cmd {itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.image':{
+                    CMD:{
+                        tagName:"image",
+                        title:"{tips}",
+                        src:"{image}",
+                        border:"0",
+                        style:'{_style}{itemStyle}',
+                        className:'{cmdClas}',
+                        tabindex: '{_tabindex}',
+                        alt:"{caption}"
                     }
                 }
             }
@@ -388,6 +431,19 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             'OPT-mousedown':{
                 $order:30,
                 'background-position':'-130px -264px'
+            },
+            TAGCMDS:{
+                position:'relative',
+                "padding-right":'4px',
+                'vertical-align':'middle',
+                zoom:xui.browser.ie?1:null,
+                "float":"right"
+            },
+            CMD:{
+                "margin-left":'2px',
+                padding:'0 2px',
+                'vertical-align':'middle',
+                cursor:'pointer'
             }
         },
         Behaviors:{
@@ -452,6 +508,20 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     return false;
                 }
             },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var prop=profile.properties,
+                        item=profile.getItemByDom(xui.use(src).parent().get(0));
+                    if(!item)return false;
+
+                    if(prop.disabled|| item.disabled)return false;
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
+                    return false;
+                },
+                beforeMousedown:function(){return false;},
+                beforeMouseup:function(){return false;}
+            },
             BOX:{
                 onScroll:function(profile, e, src){
                     //for ie 'href focus' will scroll view
@@ -466,6 +536,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             onShowOptions:function(profile, item, e, src){},
             onClick:function(profile, item, e, src){},
+            onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
             
@@ -515,7 +586,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             singleOpen:false,
             dynDestory:false,
             position:'absolute',
-            optBtn:false
+            optBtn:false,
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            }
         },
         RenderTrigger:function(){
             this.boxing()._toggleNodes(this.properties.items, true, true, true);
@@ -756,6 +833,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.cls_group = profile.getClass('BAR', '-group');
                 item.mark2Display = 'display:none';
             }
+            xui.UI.List._prepareCmds(profile, item);
         },
         _setSub:function(profile, item, flag, recursive, stopanim){
             var id=profile.domId,

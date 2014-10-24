@@ -183,6 +183,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             }
         },
         DataModel:({
+            tagCmds:null,
             autoItemSize:{
                 ini:false,
                 action:function(){
@@ -236,6 +237,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             width:200,
             height:200
         }),
+        EventHandlers:{
+            onCmd:null
+        },
         _prepareItem:function(profile, item){
             var p = profile.properties;
 

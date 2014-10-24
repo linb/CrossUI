@@ -1611,6 +1611,10 @@ new function(){
                     switch(_.str.trim(s)){
                         case '=':
                             return x==y;
+                        case 'empty':
+                            return x=='';
+                        case 'non-empty':
+                            return x!='';
                         case '!=':
                             return parseFloat(x)!=parseFloat(y);
                         case '>':
@@ -9235,7 +9239,7 @@ type:4
                         if(!(v=arr[i].target))b=false;
                         else
                             v.each(function(o){
-                                if(!xui.Dom.byId(o.id))
+                                if(o!==window&&o!==document&&!xui.Dom.byId(o.id))
                                     return b=false;
                             });
                         if(!b){
@@ -9304,6 +9308,7 @@ type:4
                         target=xui();
                         target._nodes=group;
                     }
+                    target.merge(ns);
                 }else{
                     target=ns;
                 }
@@ -18000,8 +18005,8 @@ Class("xui.UI",  "xui.absObj", {
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
                     hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1) : xui.adjustRes(o,true) : o;
             }
-            if('hidden' in dm)
-                hashOut._itemDisplay=dm.hidden?'display:none;':'';
+            if('hidden' in hashIn)
+                hashOut._itemDisplay=hashIn.hidden?'display:none;':'';
             if('disabled' in dm)
                 hashOut.disabled= (_.isSet(hashOut.disabled) && hashOut.disabled) ?'xui-ui-itemdisabled':'';
             if('readonly' in dm)
@@ -18776,12 +18781,21 @@ Class("xui.UI",  "xui.absObj", {
                     return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined;
                 });
             }
+            if(p.tagCmds && p.tagCmds.length){
+                t=xui.absObj.$specialChars;
+                p.tagCmds = _.clone(p.tagCmds,function(o,i,d){
+                    return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined;
+                });
+            }
+            
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;
             if(_.isEmpty(p.resizerProp))
                 delete p.resizerProp;
             if(p.items&&(p.items.length==0||p.listKey))
                 delete p.items;
+            if(p.tagCmds&&(p.tagCmds.length==0||p.listKey))
+                delete p.tagCmds;
 
             return o;
         },
@@ -27018,8 +27032,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top=Math.max(0, (t.$b_tw||0)-$vborder);
             if(null!==ww){
                 ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
-                bw1=(commandbtn?commandbtn.offsetWidth:0);
-                bw2=(functionbtn?functionbtn.offsetWidth:0);
+                bw1=(commandbtn?16:0);
+                bw2=(functionbtn?16:0);
+//                bw1=(commandbtn?commandbtn.offsetWidth:0);
+//                bw2=(functionbtn?functionbtn.offsetWidth:0);
                 ww -= (bw1+bw2);
                 /*for ie6 bug*/
                 /*for example, if single number, 100% width will add 1*/
@@ -30016,9 +30032,52 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             text : '{ext}',
                             $order:30
                         },
+                        TAGCMDS:{
+                            $order:40,
+                            tagName:'span',
+                            text:"{tagCmds}"
+                        },
                         OPT:{
-                            $order:40
+                            $order:50
                         }
+                    }
+                },
+                'items.tagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                },
+                'items.tagCmds.text':{
+                    CMD:{
+                        tagName:"a",
+                        title:"{tips}",
+                        href:xui.$DEFAULTHREF,
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.button':{
+                    CMD:{
+                        _NativeElement:true,
+                        tagName:"button",
+                        title:"{tips}",
+                        style:'{_style}{itemStyle}',
+                        className:'xui-list-cmd {itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.image':{
+                    CMD:{
+                        tagName:"image",
+                        title:"{tips}",
+                        src:"{image}",
+                        border:"0",
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        alt:"{caption}"
                     }
                 }
             }
@@ -30107,6 +30166,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'OPT-mousedown':{
                 $order:30,
                 'background-position':'-130px -264px'
+            },
+            TAGCMDS:{
+                position:'relative',
+                "padding-right":'4px',
+                'vertical-align':'middle',
+                zoom:xui.browser.ie?1:null,
+                "float":"right"
+            },
+            CMD:{
+                "margin-left":'2px',
+                padding:'0 2px',
+                'vertical-align':'middle',
+                cursor:'pointer'
             }
         },
         Behaviors:{
@@ -30265,6 +30337,20 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onDblclick:function(profile, e, src){
                     return false;
                 }
+            },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var prop=profile.properties,
+                        item=profile.getItemByDom(xui.use(src).parent().get(0));
+                    if(!item)return false;
+
+                    if(prop.disabled|| item.disabled)return false;
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
+                    return false;
+                },
+                beforeMousedown:function(){return false;},
+                beforeMouseup:function(){return false;}
             }
         },
         DataModel:{
@@ -30304,10 +30390,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
             },
-            optBtn:false
+            optBtn:false,
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            }
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
+            onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
             onDblclick:function(profile, item, e, src){},
@@ -30366,6 +30459,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _prepareItem:function(profile, item){
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
+            this._prepareCmds(profile, item);
+        },
+        _prepareCmds:function(profile, item){
+            var p=profile.properties,
+                cmds = item.tagCmds || _.clone(p.tagCmds,true);
+            if(cmds && cmds.length){
+                var sid=xui.UI.$tag_subId,
+                    a=[],c;
+                for(var i=0,t=cmds,l=t.length;i<l;i++){
+                    if(typeof t[i]=='string')t[i]={id:t[i]};
+                    c=t[i];
+                    if(!c.caption)c.caption=c.id;
+                    c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
+                    if(!c.type)c.type="button";
+                    if(c.image)c.image=xui.adjustRes(c.image);
+                    c._style="";
+                    if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";
+                    if('height' in c)c._style+=c.height + (_.isFinite(c.height) &&"px")+ ";";
+                    a.push(c);
+                    c[sid]=(item[sid]?( item[sid] + '_'):"") + c.id;
+                }
+                item.tagCmds=a;
+            }
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;
@@ -30391,8 +30507,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 profile.getSubNode('ITEMS').width(width=='auto'?width:(width-size));
         }
     }
-});
-Class("xui.UI.Gallery", "xui.UI.List",{
+});Class("xui.UI.Gallery", "xui.UI.List",{
     Instance:{
         getStatus:function(id){
             var item=this.get(0).getItemByItemId(id);
@@ -30577,6 +30692,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             }
         },
         DataModel:({
+            tagCmds:null,
             autoItemSize:{
                 ini:false,
                 action:function(){
@@ -30630,6 +30746,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             width:200,
             height:200
         }),
+        EventHandlers:{
+            onCmd:null
+        },
         _prepareItem:function(profile, item){
             var p = profile.properties;
 
@@ -30762,6 +30881,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             }
         },
         DataModel:({
+            tagCmds:null,
             autoItemSize:{
                 ini:false,
                 action:function(){
@@ -30803,6 +30923,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
             width:200,
             height:200
         }),
+        EventHandlers:{
+            onCmd:null
+        },
         _prepareItem:function(profile, item){
             var p = profile.properties;
             _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
@@ -33443,6 +33566,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             }
         },
         DataModel:{
+            tagCmds:null,
             borderType:{
                 ini:'none'
             },
@@ -33456,6 +33580,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         Behaviors:{
             HoverEffected:{ITEM:null,MARK:'MARK'},
             ClickEffected:{ITEM:null,MARK:'MARK'}
+        },
+        EventHandlers:{
+            onCmd:null
         },
         _prepareItem:function(profile, item){
             item._markcls = profile.properties.checkBox?'xui-uicmd-check':'xui-uicmd-radio';
@@ -33586,6 +33713,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         },
         DataModel:({
             maxHeight:null,
+            tagCmds:null,
             
             itemMargin:{
                 ini:"",
@@ -33622,6 +33750,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             DroppableKeys:["ITEMS"]
         },
         EventHandlers:{
+            onCmd:null
         },
         _prepareItem:function(profile, item){
             var p = profile.properties, t;
@@ -33905,8 +34034,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text : '{ext}',
                                 $order:5
                             },
+                            TAGCMDS:{
+                                $order:6,
+                                tagName:'span',
+                                text:"{tagCmds}"
+                            },
                             OPT:{
-                                $order:6
+                                $order:7
                             }
                         },
                         SUB:{
@@ -33914,6 +34048,44 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             tagName : 'div',
                             text:xui.UI.$childTag
                         }
+                    }
+                },
+                'items.tagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                },
+                'items.tagCmds.text':{
+                    CMD:{
+                        tagName:"a",
+                        title:"{tips}",
+                        href:xui.$DEFAULTHREF,
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.button':{
+                    CMD:{
+                        _NativeElement:true,
+                        tagName:"button",
+                        title:"{tips}",
+                        style:'{_style}{itemStyle}',
+                        className:'xui-list-cmd {itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.image':{
+                    CMD:{
+                        tagName:"image",
+                        title:"{tips}",
+                        src:"{image}",
+                        border:"0",
+                        style:'{_style}{itemStyle}',
+                        className:'{cmdClas}',
+                        tabindex: '{_tabindex}',
+                        alt:"{caption}"
                     }
                 }
             }
@@ -34032,6 +34204,19 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             'OPT-mousedown':{
                 $order:30,
                 'background-position':'-130px -264px'
+            },
+            TAGCMDS:{
+                position:'relative',
+                "padding-right":'4px',
+                'vertical-align':'middle',
+                zoom:xui.browser.ie?1:null,
+                "float":"right"
+            },
+            CMD:{
+                "margin-left":'2px',
+                padding:'0 2px',
+                'vertical-align':'middle',
+                cursor:'pointer'
             }
         },
         Behaviors:{
@@ -34096,6 +34281,20 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     return false;
                 }
             },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var prop=profile.properties,
+                        item=profile.getItemByDom(xui.use(src).parent().get(0));
+                    if(!item)return false;
+
+                    if(prop.disabled|| item.disabled)return false;
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
+                    return false;
+                },
+                beforeMousedown:function(){return false;},
+                beforeMouseup:function(){return false;}
+            },
             BOX:{
                 onScroll:function(profile, e, src){
                     //for ie 'href focus' will scroll view
@@ -34110,6 +34309,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             onShowOptions:function(profile, item, e, src){},
             onClick:function(profile, item, e, src){},
+            onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
             
@@ -34159,7 +34359,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             singleOpen:false,
             dynDestory:false,
             position:'absolute',
-            optBtn:false
+            optBtn:false,
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            }
         },
         RenderTrigger:function(){
             this.boxing()._toggleNodes(this.properties.items, true, true, true);
@@ -34400,6 +34606,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.cls_group = profile.getClass('BAR', '-group');
                 item.mark2Display = 'display:none';
             }
+            xui.UI.List._prepareCmds(profile, item);
         },
         _setSub:function(profile, item, flag, recursive, stopanim){
             var id=profile.domId,
@@ -34796,6 +35003,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = p.selMode=='multibycheckbox'?'':'display:none;';
             item._tabindex = p.tabindex;
+            xui.UI.List._prepareCmds(profile, item);
         },
         _reorderItems:function(profile, pid){
             var p=profile.properties,
@@ -38643,8 +38851,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 con._updCell(self.get(0), t, options, dirtyMark, triggerEvent);
             return self;
         },
-        updateCellByRowCol2:function(rowcol, options, dirtyMark, triggerEvent){
-            var arr=rowcol.split(":"),
+        updateCellByRowCol2:function(mixedId, options, dirtyMark, triggerEvent){
+            var arr=mixedId.split(":"),
                 row=parseInt(arr[0],10),
                 col=parseInt(arr[1],10);
             return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
@@ -38981,7 +39189,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:'{cells}'
                             },
                             LCELL:{
-                                $order: 2
+                                $order: 2,
+                                text:"{tagCmds}"
                             }
                         },
                         SUB:{
@@ -39054,6 +39263,44 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:'{caption}'
                             }
                         }
+                    }
+                },
+                'rows.tagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                },
+                'rows.tagCmds.text':{
+                    CMD:{
+                        tagName:"a",
+                        title:"{tips}",
+                        href:xui.$DEFAULTHREF,
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'rows.tagCmds.button':{
+                    CMD:{
+                        _NativeElement:true,
+                        tagName:"button",
+                        title:"{tips}",
+                        style:'{_style}{itemStyle}',
+                        className:'xui-list-cmd {itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'rows.tagCmds.image':{
+                    CMD:{
+                        tagName:"image",
+                        title:"{tips}",
+                        src:"{image}",
+                        border:"0",
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        alt:"{caption}"
                     }
                 }
             }
@@ -39446,6 +39693,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'font-size':'1px',
                 //1px for ie8
                 'line-height':'1px'
+            },
+            CMD:{
+                "margin-left":'2px',
+                padding:'0 2px',
+                'vertical-align':'middle',
+                cursor:'pointer'
             }
         },
         _objectProp:{tagVar:1,dockMargin:1,rowOptions:1,colOptions:1},
@@ -39710,7 +39963,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile._limited=0;
                         return;
                     }
-                    
+
                     profile.box._adjusteditorH(profile, o.height(row._height=h),h);
 
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
@@ -39935,7 +40188,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui(src).parent().onMouseout(true,{$force:true});
                     xui(src).onMouseup(true);
                 },
-                beforeMouseover:function(profile, e, src){ 
+                beforeMouseover:function(profile, e, src){
                     var p=profile.properties,
                         id = profile.getSubId(src),
                         col = profile.colMap[id];
@@ -40497,6 +40750,22 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
                     }
                 }
+            },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var p=profile.properties,
+                        id=xui.use(src).id().split('_'),
+                        cmdkey=id[id.length-1];
+                    id.pop();
+                    var row = profile.rowMap[profile.getSubId(id.join("_"))];
+                    if(p.disabled|| row.disabled)return false;
+
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,row, cmdkey, e, src);
+                    return false;
+                },
+                beforeMousedown:function(){return false;},
+                beforeMouseup:function(){return false;}
             }
         },
         DataModel:{
@@ -40707,6 +40976,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o.properties.rows = _.copy(value);
                 }
             },
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             activeMode:{
                 ini:'row',
                 listbox:['row','cell','none'],
@@ -40775,6 +41050,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             onGetContent:function(profile, row, callback){},
             onRowSelected:function(profile, row, e, src, type){},
+            onCmd:function(profile, row, cmdkey, e, src){},
 
             beforeColDrag:function(profile, colId){},
             beforeColMoved:function(profile, colId, toId){},
@@ -40850,7 +41126,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
             ns.box.__ensurehotrow(ns,null);
-            
+
             _.each(ns.cellMap,function(o){
                    if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
                         box._editCell(ns,o);
@@ -41175,7 +41451,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b.insertRows([orow], row.id, null, false);
             else if(k==ks.CELLS)
                 b.insertRows([orow], row._pid, row.id, true);
-            
+
             if(arr && arr.length){
                 if(_.arr.indexOf(arr, orow.id)!=-1){
                     b.setUIValue(arr,true,null,'drop');
@@ -41731,6 +42007,8 @@ editorEvents
 
                 xui.UI.adjustData(profile, row, t);
 
+                xui.UI.List._prepareCmds(profile, t);
+                
                 rows.push(t);
             }
             return rows;
@@ -41881,9 +42159,9 @@ editorEvents
                 // * remove cell's special setting first
                 delete cell._$caption;
                 delete cell._$tips;
- 
+
                 _.merge(cell,options,'all');
-    
+
                 node=profile.getSubNode('CELLA', cellId);
                 if('type' in options){
                     var uicell={};
@@ -41892,7 +42170,7 @@ editorEvents
                     node=profile.getSubNode('CELLA', cellId);
                 }
                 box._renderCell(profile, cell, null, node, options);
-    
+
                 //if update value
                 if('value' in options){
                     if(!pdm || dirtyMark===false)
@@ -41909,7 +42187,7 @@ editorEvents
                         }
                     }
                 }
-            }    
+            }
             if(triggerEvent){
                 if(profile.afterCellUpdated)
                     profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext);
@@ -42106,7 +42384,7 @@ editorEvents
                 inline=editMode=="inline",
                 baseNode = profile.getSubNode('SCROLL'),
                 cellNode = profile.getSubNode('CELL', cellId);
-            
+
             if(!inline){
                 //clear the prev editor
                 editor = profile.$curEditor;
@@ -42282,7 +42560,7 @@ editorEvents
                         break;
                     }
                     if(inline){
-                       cellNode.append(editor); 
+                       cellNode.append(editor);
                        cell._editor=editor;
                     }else{
                         baseNode.append(editor);
@@ -42487,7 +42765,7 @@ editorEvents
                                 _.tryF(editor.undo,[],editor);
                             return false;
                         });
-    
+
                         var absPos=cellNode.offset(null, baseNode),
                             size = cellNode.cssSize();
                         //show editor
@@ -42500,18 +42778,18 @@ editorEvents
                             editor.setWidth(size.width+3).setHeight(size.height+2).reLayout(true);
                             editor.reBoxing().show((absPos.left-1) + 'px',(absPos.top-1) + 'px');
                         }
-    
+
                         var expand,
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
                             issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='file'||type=='upload'));
-    
+
                         if( _.isFun(editor.expand) &&
                             editorAutoPop!==false &&
                             (
                                 issharp ||
                                 (
                                     (editMode=="sharp"||editMode=="focus") &&   (editorAutoPop || type=='listbox'||type=='date'||type=='datepicker'||type=='datetime'||type=='time'||type=='timepicker'||type=='color'||type=='colorpicker')
-                                )    
+                                )
                            )
                          ){
                             expand=1;
@@ -43032,10 +43310,10 @@ editorEvents
             t2.cssSize(css);
 
             this._adjustBody(profile,'resize');
-        }
+        }
     }
 });
-            Class("xui.UI.Dialog","xui.UI.Widget",{
+Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
         showModal:function(parent, left, top, callback, ignoreEffects){
             this.show(parent, true, left, top, callback, ignoreEffects);

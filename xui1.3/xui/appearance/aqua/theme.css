@@ -316,9 +316,6 @@ html, .xui-uibg-base{
 
 
 /*xui.UI.List*/
-.xui-list-item{
-    padding:2px;
-}
 .xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{
     background-image: url(List/item.gif);
 }
