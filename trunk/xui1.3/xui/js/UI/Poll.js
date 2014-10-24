@@ -59,7 +59,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
             $order:20,
             tagName : 'DIV',
             className:"xui-uibg-bar xui-uiborder-outset {disabled}",
-            text:"{cmds}"
+            text:"{tagCmds}"
         };
         t.$submap={
             items:{
@@ -127,21 +127,10 @@ Class("xui.UI.Poll", "xui.UI.List",{
                     }
                 }
             },
-            cmds:{
-                CMD:{
-                    className:'xui-ui-btn',
-                    CMDI:{
-                        className:'xui-ui-btni',
-                        CMDC:{
-                            className:'xui-ui-btnc',
-                            CMDA:{
-                                tabindex: '{_tabindex}',
-                                text:'{caption}'
-                            }
-                        }
-                    }
-                }
-            }
+            "tagCmds":t.$submap["items.tagCmds"],
+            "tagCmds.text":t.$submap["items.tagCmds.text"],
+            "tagCmds.button":t.$submap["items.tagCmds.button"],
+            "tagCmds.image":t.$submap["items.tagCmds.image"]
         };
         t.ITEMS.className='';
         self.setTemplate(t);
@@ -266,7 +255,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
                 var p = profile.properties,
                     key = profile.getSubId(src);
                 if(p.disabled)return;
-                profile.boxing().onClickButton(profile, key, src);
+                profile.boxing().onCmd(profile, key, src);
             }
         };
         t.TOGGLE={
@@ -421,9 +410,6 @@ Class("xui.UI.Poll", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
-            cmds:{
-                ini:[]
-            },
             noTitle:{
               ini:false,
               action:function(v){
@@ -483,8 +469,8 @@ Class("xui.UI.Poll", "xui.UI.List",{
             editorType:'none'
         },
         Behaviors:{
-            HoverEffected:{DEL:'DEL',CMD:'CMD',ITEM:'MARK2'},
-            ClickEffected:{DEL:'DEL',CMD:'CMD',ITEM:'MARK2'}
+            HoverEffected:{DEL:'DEL',ITEM:'MARK2'},
+            ClickEffected:{DEL:'DEL',ITEM:'MARK2'}
         },
         EventHandlers:{
             beforeTitleChanged:function(profile, value){},
@@ -492,7 +478,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
             beforeOptionRemoved:function(profile, item){},
             beforeOptionChanged:function(profile, item, value){},
             onCustomEdit:function(profile, node, flag, value, item, callback){},
-            onClickButton:function(profile, key, src){},
+            onCmd:function(profile, key, src){},
             onGetContent:function(profile,item,callback){}
         },
         RenderTrigger:function(){
@@ -507,21 +493,8 @@ Class("xui.UI.Poll", "xui.UI.List",{
                 data._cls = profile.getClass('EDIT');
             data.titleDisplay=p.noTitle?'display:none':'';
 
-            var cmds = p.cmds, o;
-            if(cmds && cmds.length){
-                var sid=xui.UI.$tag_subId,a;
-                a=data.cmds=[];
-                for(var i=0,t=cmds,l=t.length;i<l;i++){
-                    if(typeof t[i]=='string')t[i]={id:t[i]};
-                    if(!t[i].caption)t[i].caption=t[i].id;
-                    t[i].id=t[i].id.replace(/[^\w]/g,'_');
+            this._prepareCmds(profile, data);
 
-                    o=xui.UI.adjustData(profile,t[i]);
-                    a.push(o);
-                    o._tabindex=p.tabindex;
-                    o[sid]=o.id;
-                }
-            }
             return data;
         },
         _prepareItem:function(profile, item){

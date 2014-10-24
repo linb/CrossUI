@@ -200,7 +200,7 @@ Class('App', 'xui.Com',{
                 .setHeight(116)
                 .setTabindex("4")
                 .setPosition("relative")
-                .setCmds([])
+                .setTagCmds([])
             );
             
             return children;

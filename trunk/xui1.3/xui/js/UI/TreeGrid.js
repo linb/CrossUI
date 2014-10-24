@@ -1462,7 +1462,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:'{cells}'
                             },
                             LCELL:{
-                                $order: 2
+                                $order: 2,
+                                text:"{tagCmds}"
                             }
                         },
                         SUB:{
@@ -1535,6 +1536,44 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:'{caption}'
                             }
                         }
+                    }
+                },
+                'rows.tagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                },
+                'rows.tagCmds.text':{
+                    CMD:{
+                        tagName:"a",
+                        title:"{tips}",
+                        href:xui.$DEFAULTHREF,
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'rows.tagCmds.button':{
+                    CMD:{
+                        _NativeElement:true,
+                        tagName:"button",
+                        title:"{tips}",
+                        style:'{_style}{itemStyle}',
+                        className:'xui-list-cmd {itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'rows.tagCmds.image':{
+                    CMD:{
+                        tagName:"image",
+                        title:"{tips}",
+                        src:"{image}",
+                        border:"0",
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        alt:"{caption}"
                     }
                 }
             }
@@ -1927,6 +1966,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'font-size':'1px',
                 //1px for ie8
                 'line-height':'1px'
+            },
+            CMD:{
+                "margin-left":'2px',
+                padding:'0 2px',
+                'vertical-align':'middle',
+                cursor:'pointer'
             }
         },
         _objectProp:{tagVar:1,dockMargin:1,rowOptions:1,colOptions:1},
@@ -2978,6 +3023,22 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
                     }
                 }
+            },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var p=profile.properties,
+                        id=xui.use(src).id().split('_'),
+                        cmdkey=id[id.length-1];
+                    id.pop();
+                    var row = profile.rowMap[profile.getSubId(id.join("_"))];
+                    if(p.disabled|| row.disabled)return false;
+
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,row, cmdkey, e, src);
+                    return false;
+                },
+                beforeMousedown:function(){return false;},
+                beforeMouseup:function(){return false;}
             }
         },
         DataModel:{
@@ -3188,6 +3249,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o.properties.rows = _.copy(value);
                 }
             },
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             activeMode:{
                 ini:'row',
                 listbox:['row','cell','none'],
@@ -3256,6 +3323,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             onGetContent:function(profile, row, callback){},
             onRowSelected:function(profile, row, e, src, type){},
+            onCmd:function(profile, row, cmdkey, e, src){},
 
             beforeColDrag:function(profile, colId){},
             beforeColMoved:function(profile, colId, toId){},
@@ -4212,6 +4280,8 @@ editorEvents
 
                 xui.UI.adjustData(profile, row, t);
 
+                xui.UI.List._prepareCmds(profile, t);
+                
                 rows.push(t);
             }
             return rows;

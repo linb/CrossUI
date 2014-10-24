@@ -1478,8 +1478,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top=Math.max(0, (t.$b_tw||0)-$vborder);
             if(null!==ww){
                 ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
-                bw1=(commandbtn?commandbtn.offsetWidth:0);
-                bw2=(functionbtn?functionbtn.offsetWidth:0);
+                bw1=(commandbtn?16:0);
+                bw2=(functionbtn?16:0);
+//                bw1=(commandbtn?commandbtn.offsetWidth:0);
+//                bw2=(functionbtn?functionbtn.offsetWidth:0);
                 ww -= (bw1+bw2);
                 /*for ie6 bug*/
                 /*for example, if single number, 100% width will add 1*/

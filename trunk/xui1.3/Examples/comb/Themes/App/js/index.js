@@ -474,7 +474,7 @@ Class('App', 'xui.Com',{
             .setTop(400)
             .setWidth(356)
             .setHeight(116)
-            .setCmds([{"id":"cmd_1", "caption":"cmd 1"}, {"id":"cmd_2", "caption":"cmd 2"}])
+            .setTagCmds([{"id":"cmd_1", "caption":"cmd 1"}, {"id":"cmd_2", "caption":"cmd 2"}])
             , "5");
             
             host.tabs2.append((new xui.UI.Poll())
@@ -485,7 +485,7 @@ Class('App', 'xui.Com',{
             .setWidth(310)
             .setHeight(210)
             .setSelMode("multi")
-            .setCmds([{"id":"cmd_1", "caption":"cmd 1"}, {"id":"cmd_2", "caption":"cmd 2"}])
+            .setTagCmds([{"id":"cmd_1", "caption":"cmd 1"}, {"id":"cmd_2", "caption":"cmd 2"}])
             .setValue("")
             , "5");
             
@@ -526,7 +526,7 @@ Class('App', 'xui.Com',{
             .setLeft(0)
             .setTop(10)
             .setWidth(276)
-            .setCmds([{"id":"Refresh", "caption":"Refresh"}, {"id":"Remove", "caption":"Remove"}])
+            .setTagCmds([{"id":"Refresh", "caption":"Refresh"}, {"id":"Remove", "caption":"Remove"}])
             );
             
             host.tabs2.append((new xui.UI.Pane())
@@ -541,7 +541,7 @@ Class('App', 'xui.Com',{
             .setHost(host,"ctl_poll41")
             .setItems([{"id":"1", "caption":"option 1", "percent":0.2}, {"id":"2", "caption":"option 2", "toggle":true, "percent":0.5, "text":"detail 1"}, {"id":"3", "caption":"option 3", "toggle":true, "percent":0.8, "text":"detail 2"}, {"id":"4", "caption":"option 4", "percent":0.4}, {"id":"5", "caption":"option 5", "percent":0.9}])
             .setDock("fill")
-            .setCmds([{"id":"Refresh", "caption":"Refresh"}, {"id":"Remove", "caption":"Remove"}])
+            .setTagCmds([{"id":"Refresh", "caption":"Refresh"}, {"id":"Remove", "caption":"Remove"}])
             );
             
             host.tabs2.append((new xui.UI.Pane())

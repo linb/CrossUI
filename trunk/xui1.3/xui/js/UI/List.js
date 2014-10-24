@@ -137,9 +137,52 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             text : '{ext}',
                             $order:30
                         },
+                        TAGCMDS:{
+                            $order:40,
+                            tagName:'span',
+                            text:"{tagCmds}"
+                        },
                         OPT:{
-                            $order:40
+                            $order:50
                         }
+                    }
+                },
+                'items.tagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                },
+                'items.tagCmds.text':{
+                    CMD:{
+                        tagName:"a",
+                        title:"{tips}",
+                        href:xui.$DEFAULTHREF,
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.button':{
+                    CMD:{
+                        _NativeElement:true,
+                        tagName:"button",
+                        title:"{tips}",
+                        style:'{_style}{itemStyle}',
+                        className:'xui-list-cmd {itemClass}',
+                        tabindex: '{_tabindex}',
+                        text:"{caption}"
+                    }
+                },
+                'items.tagCmds.image':{
+                    CMD:{
+                        tagName:"image",
+                        title:"{tips}",
+                        src:"{image}",
+                        border:"0",
+                        style:'{_style}{itemStyle}',
+                        className:'{itemClass}',
+                        tabindex: '{_tabindex}',
+                        alt:"{caption}"
                     }
                 }
             }
@@ -228,6 +271,19 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             'OPT-mousedown':{
                 $order:30,
                 'background-position':'-130px -264px'
+            },
+            TAGCMDS:{
+                position:'relative',
+                "padding-right":'4px',
+                'vertical-align':'middle',
+                zoom:xui.browser.ie?1:null,
+                "float":"right"
+            },
+            CMD:{
+                "margin-left":'2px',
+                padding:'0 2px',
+                'vertical-align':'middle',
+                cursor:'pointer'
             }
         },
         Behaviors:{
@@ -386,6 +442,20 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 onDblclick:function(profile, e, src){
                     return false;
                 }
+            },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var prop=profile.properties,
+                        item=profile.getItemByDom(xui.use(src).parent().get(0));
+                    if(!item)return false;
+
+                    if(prop.disabled|| item.disabled)return false;
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
+                    return false;
+                },
+                beforeMousedown:function(){return false;},
+                beforeMouseup:function(){return false;}
             }
         },
         DataModel:{
@@ -425,10 +495,17 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
             },
-            optBtn:false
+            optBtn:false,
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            }
         },
         EventHandlers:{
             onClick:function(profile, item, e, src){},
+            onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
             onDblclick:function(profile, item, e, src){},
@@ -487,6 +564,29 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _prepareItem:function(profile, item){
             item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
+            this._prepareCmds(profile, item);
+        },
+        _prepareCmds:function(profile, item){
+            var p=profile.properties,
+                cmds = item.tagCmds || _.clone(p.tagCmds,true);
+            if(cmds && cmds.length){
+                var sid=xui.UI.$tag_subId,
+                    a=[],c;
+                for(var i=0,t=cmds,l=t.length;i<l;i++){
+                    if(typeof t[i]=='string')t[i]={id:t[i]};
+                    c=t[i];
+                    if(!c.caption)c.caption=c.id;
+                    c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
+                    if(!c.type)c.type="button";
+                    if(c.image)c.image=xui.adjustRes(c.image);
+                    c._style="";
+                    if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";
+                    if('height' in c)c._style+=c.height + (_.isFinite(c.height) &&"px")+ ";";
+                    a.push(c);
+                    c[sid]=(item[sid]?( item[sid] + '_'):"") + c.id;
+                }
+                item.tagCmds=a;
+            }
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;

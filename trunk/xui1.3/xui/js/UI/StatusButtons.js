@@ -121,6 +121,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         },
         DataModel:({
             maxHeight:null,
+            tagCmds:null,
             
             itemMargin:{
                 ini:"",
@@ -157,6 +158,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             DroppableKeys:["ITEMS"]
         },
         EventHandlers:{
+            onCmd:null
         },
         _prepareItem:function(profile, item){
             var p = profile.properties, t;

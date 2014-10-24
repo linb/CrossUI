@@ -94,10 +94,10 @@ Class('App.xui_UI_Poll', 'xui.Com',{
                 .setPosition("relative")
                 .setSelMode("multi")
                 .setTitle("4. multi select + new option")
-                .setCmds([{"id":"cast", "caption":"cast"}, {"id":"refuse", "caption":"refuse"}])
+                .setTagCmds([{"id":"cast", "caption":"cast"}, {"id":"refuse", "caption":"refuse"}])
                 .setNewOption("new option")
                 .setValue("")
-                .onClickButton("_poll04_oncommand")
+                .onCmd("_poll04_oncommand")
             );
             
             return children;

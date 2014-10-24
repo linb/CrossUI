@@ -64,6 +64,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             }
         },
         DataModel:{
+            tagCmds:null,
             borderType:{
                 ini:'none'
             },
@@ -77,6 +78,9 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         Behaviors:{
             HoverEffected:{ITEM:null,MARK:'MARK'},
             ClickEffected:{ITEM:null,MARK:'MARK'}
+        },
+        EventHandlers:{
+            onCmd:null
         },
         _prepareItem:function(profile, item){
             item._markcls = profile.properties.checkBox?'xui-uicmd-check':'xui-uicmd-radio';

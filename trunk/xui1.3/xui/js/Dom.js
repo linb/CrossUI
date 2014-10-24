@@ -1759,7 +1759,7 @@ type:4
                         if(!(v=arr[i].target))b=false;
                         else
                             v.each(function(o){
-                                if(!xui.Dom.byId(o.id))
+                                if(o!==window&&o!==document&&!xui.Dom.byId(o.id))
                                     return b=false;
                             });
                         if(!b){
@@ -1828,6 +1828,7 @@ type:4
                         target=xui();
                         target._nodes=group;
                     }
+                    target.merge(ns);
                 }else{
                     target=ns;
                 }

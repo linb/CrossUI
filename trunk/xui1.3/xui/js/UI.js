@@ -3533,8 +3533,8 @@ Class("xui.UI",  "xui.absObj", {
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
                     hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1) : xui.adjustRes(o,true) : o;
             }
-            if('hidden' in dm)
-                hashOut._itemDisplay=dm.hidden?'display:none;':'';
+            if('hidden' in hashIn)
+                hashOut._itemDisplay=hashIn.hidden?'display:none;':'';
             if('disabled' in dm)
                 hashOut.disabled= (_.isSet(hashOut.disabled) && hashOut.disabled) ?'xui-ui-itemdisabled':'';
             if('readonly' in dm)
@@ -4309,12 +4309,21 @@ Class("xui.UI",  "xui.absObj", {
                     return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined;
                 });
             }
+            if(p.tagCmds && p.tagCmds.length){
+                t=xui.absObj.$specialChars;
+                p.tagCmds = _.clone(p.tagCmds,function(o,i,d){
+                    return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined;
+                });
+            }
+            
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;
             if(_.isEmpty(p.resizerProp))
                 delete p.resizerProp;
             if(p.items&&(p.items.length==0||p.listKey))
                 delete p.items;
+            if(p.tagCmds&&(p.tagCmds.length==0||p.listKey))
+                delete p.tagCmds;
 
             return o;
         },

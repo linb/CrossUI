@@ -12155,6 +12155,18 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
+            getTagCmds:{
+                $desc:"Gets command buttons",
+                $rtn:"Array",
+            },
+            setTagCmds:{
+                $desc:"Sets command buttons",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Array, the items.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getOptBtn:{
                 $desc:"To determine whether this control has an option button",
                 $rtn:"Boolean"
@@ -12232,6 +12244,29 @@ _.set(xui.Locale,["en","app"], {
                     "item: list item Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
+                ]
+            },
+            onCmd:{
+                $desc:"Fired when an inner command is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, list item Object.",
+                    "cmdKey: String, the command key.",
+                    "src : String, the event source DOM element's xid."
+                ],
+                $snippet:[
+                    "var id='xui.temp.fl10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "xui(id).prepend(o);"+
+                    "o.onCmd(function(p,item,cmdKey){alert(item.id +':'+cmdKey)});"+
+                    "}",
+                    "var id='xui.temp.pool31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', position:'relative',toggle:true,items:[{id:'Button',caption:'option 1',percent:0.5,message:'50%'},{id:'CheckBox',caption:'option 2',percent:0.8,message:'80%'}]});"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "xui(id).prepend(o);"+
+                    "o.onCmd(function(p,cmdKey){alert(cmdKey)});"+
+                    "}"
                 ]
             }
         }
@@ -15385,35 +15420,6 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
-            getCmds:{
-                $desc:"Gets the cmds property value on the first UIProfile",
-                $rtn:"Array",
-                $snippet:[
-                    "var id='xui.temp.fl1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ]
-            },
-            setCmds:{
-                $desc:"Sets the cmds property value on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Array.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.fl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ],
-                $memo:"You have to use this function before the UIProfile is rendered."
-            },
             getActiveLast :{
                 $desc:"Gets the ActiveLast property value on the first UIProfile",
                 $rtn:"Boolean",
@@ -15487,25 +15493,6 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
-            onClickButton:{
-                $desc:"Fired when an inner command is clicked.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "item: Object, list item Object.",
-                    "cmdKey: String, the command key.",
-                    "src : String, the event source DOM element's xid."
-                ],
-                $snippet:[
-                    "var id='xui.temp.fl10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "o.onClickButton(function(p,item,cmdKey){alert(item.id +':'+cmdKey)});"+
-                    "}"
-                ]
-            },
-
             onGetContent:{
                 $desc:"Fired when the UI need to build inner content.",
                 $paras:[
@@ -15516,7 +15503,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fl11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'Button',title:'a1',tips:'a1 tips'},{id:'CheckBox',title:'a2',tips:'a2 tips'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui(id).prepend(o);"+
                     "o.onGetContent(function(p,item){return new xui.UI[item.id]({position:'relative'})});"+
                     "}"
@@ -15534,36 +15521,6 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
-            getCmds:{
-                $desc:"Gets the cmds property value on the first UIProfile",
-                $rtn:"Array",
-                $snippet:[
-                    "var id='xui.temp.pool1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey',selMode:'multi', toggle:true, position:'relative',items:[{id:'a',caption:'option 1',percent:0.5,message:'50%'},{id:'b',caption:'option 2',percent:0.8,message:'80%',editable:true}]});"+
-                    "o.setCmds([{id:'new', caption:'new'}, {id:'edit', caption:'edit'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ]
-            },
-            setCmds:{
-                $desc:"Sets the cmds property value on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Array.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.pool2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', toggle:true, position:'relative',items:[{id:'a',caption:'option 1',percent:0.5,message:'50%',editable:true},{id:'b',caption:'option 2',percent:0.8,message:'80%'}]});"+
-                    "o.setCmds([{id:'new', caption:'new'}, {id:'edit', caption:'edit'}]);"+
-                    "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(_.serialize(o.getCmds()))},1000)"+
-                    "}"
-                ],
-                $memo:"You have to use this function before the UIProfile is rendered."
-            },
-
             fillContent:{
                 $desc:"Fills the specified item content according to the given item id.",
                 $rtn:"[self]",
@@ -15796,29 +15753,12 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pool30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', position:'relative',toggle:true,items:[{id:'Button',caption:'option 1',percent:0.5,message:'50%'},{id:'CheckBox',caption:'option 2',percent:0.8,message:'80%'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
+                    "o.setTagCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui(id).prepend(o);"+
                     "o.onGetContent(function(p,item){return new xui.UI[item.id]({position:'relative'})});"+
                     "}"
                 ]
             },
-            onClickButton:{
-                $desc:"Fired when an inner command is clicked.",
-                $paras:[
-                    "profile : xui.UIProfile.",
-                    "key: String, the command key.",
-                    "src : String, the event source DOM element's xid."
-                ],
-                $snippet:[
-                    "var id='xui.temp.pool31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o=new xui.UI.Poll({width:'auto',height:'auto',title:'a survey', position:'relative',toggle:true,items:[{id:'Button',caption:'option 1',percent:0.5,message:'50%'},{id:'CheckBox',caption:'option 2',percent:0.8,message:'80%'}]});"+
-                    "o.setCmds([{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
-                    "xui(id).prepend(o);"+
-                    "o.onClickButton(function(p,cmdKey){alert(cmdKey)});"+
-                    "}"
-                ]
-            },
-
             beforeOptionAdded:{
                 $desc:"Fired wbefore a new item will be added.",
                 $paras:[
@@ -15969,6 +15909,18 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getTagCmds:{
+                $desc:"Gets command buttons",
+                $rtn:"Array",
+            },
+            setTagCmds:{
+                $desc:"Sets command buttons",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Array, the items.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
@@ -16224,6 +16176,15 @@ _.set(xui.Locale,["en","app"], {
                     "src : String, the event source DOM element's xid."
                 ]
             },
+            onDblclick:{
+                $desc:"Fired when list item was dblclicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: list item Object.",
+                    "e: Event, the DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
             afterClick:{
                 $desc:"Fired after a list item was clicked.",
                 $paras:[
@@ -16259,6 +16220,15 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile.",
                     "item: list item Object.",
                     "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onCmd:{
+                $desc:"Fired when an inner command is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, list item Object.",
+                    "cmdKey: String, the command key.",
                     "src : String, the event source DOM element's xid."
                 ]
             }
@@ -17175,6 +17145,18 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getTagCmds:{
+                $desc:"Gets command buttons",
+                $rtn:"Array",
+            },
+            setTagCmds:{
+                $desc:"Sets command buttons",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Array, the items.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             setGrpCols :{
                 $desc:"Set the column group array, and refresh UI.",
                 $rtn:"[self]",
@@ -17917,6 +17899,15 @@ _.set(xui.Locale,["en","app"], {
                     "src : String, command button's xid."
                 ]
             },
+            onEditorClick:{
+                $desc:"Fired when a cell's editor is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell: Object.",
+                    "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
+                    "src : String, command button's xid."
+                ]
+            },
             onClickGridHandler:{
                 $desc:"Fired when the left/top cell is clicked.",
                 $paras:[
@@ -17942,6 +17933,15 @@ _.set(xui.Locale,["en","app"], {
                     "col: Object,  column Object.",
                     "e : Event, the DOM event Object.",
                     "src: String, the event source DOM element's xid."
+                ]
+            },
+            onCmd:{
+                $desc:"Fired when an inner command is clicked.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item: Object, list item Object.",
+                    "cmdKey: String, the command key.",
+                    "src : String, the event source DOM element's xid."
                 ]
             },
             onClickRow:{

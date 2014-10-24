@@ -110,6 +110,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             }
         },
         DataModel:({
+            tagCmds:null,
             autoItemSize:{
                 ini:false,
                 action:function(){
@@ -151,6 +152,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
             width:200,
             height:200
         }),
+        EventHandlers:{
+            onCmd:null
+        },
         _prepareItem:function(profile, item){
             var p = profile.properties;
             _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){

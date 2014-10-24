@@ -1611,6 +1611,10 @@ new function(){
                     switch(_.str.trim(s)){
                         case '=':
                             return x==y;
+                        case 'empty':
+                            return x=='';
+                        case 'non-empty':
+                            return x!='';
                         case '!=':
                             return parseFloat(x)!=parseFloat(y);
                         case '>':

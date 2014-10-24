@@ -12,7 +12,6 @@ Class('App.xui_UI_FoldingList', 'xui.Com',{
                 .setTop(40)
                 .setWidth(280)
                 .setHeight(110)
-                .setCmds([])
             );
             
             append((new xui.UI.FoldingList)
@@ -22,9 +21,9 @@ Class('App.xui_UI_FoldingList', 'xui.Com',{
                 .setTop(40)
                 .setWidth(280)
                 .setHeight(110)
-                .setCmds([{"id":"reply", "caption":"reply"}, {"id":"remove", "caption":"remove"}])
+                .setTagCmds([{"id":"reply", "caption":"reply"}, {"id":"remove", "caption":"remove"}])
                 .setActiveLast(true)
-                .onClickButton("_foldinglist2_oncommand")
+                .onCmd("_foldinglist2_oncommand")
                 .onShowOptions("_foldinglist2_onshowoptions")
             );
             
