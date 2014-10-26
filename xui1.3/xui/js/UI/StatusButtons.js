@@ -51,13 +51,15 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat',
                 'background-position':'left -130px',
-                'border-right':'solid 1px #7C9CBC'
+                'border-right':'solid 1px #7C9CBC',
+                padding:'4px 4px 2px 12px'
             },
             "ITEM-right":{
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat',
                 'background-position':'right -130px',
-                'border-left':'solid 1px #7C9CBC'
+                'border-left':'solid 1px #7C9CBC',
+                padding:'4px 12px 2px 2px'
             },
             // ignore xui.UI.List setting
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
@@ -111,13 +113,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             },
             "ITEM-none CAPTION":{
                 padding:'1px 4px'
-            },
-            "ITEM-left":{
-                padding:'4px 4px 2px 12px'
-            },
-            "ITEM-right":{
-                padding:'4px 12px 2px 2px'
-            }
+            } 
         },
         DataModel:({
             maxHeight:null,

@@ -41,9 +41,7 @@ Class("xui.UI.Shadow","xui.UI",{
         _.each({
             _shadow:function(key){
                 return this.each(function(o){
-                    var node = o.getSubNode('BORDER'),
-                        d = o.properties,
-                        size;
+                    var d=o.properties,node = o.getSubNode(d._customShadow||'BORDER'),size;
                     if(xui.Dom.css3Support("boxShadow")){
                         size=parseInt(d._shadowSize*3/4,10);
                         node.css("boxShadow",size+"px "+size+"px "+size+"px #9f9f9f");

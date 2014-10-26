@@ -520,7 +520,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 targetLeft:pos.left+12,
                 targetTop:pos.top+12,
                 dragCursor:'pointer',
-                dragDefer:1,
+                dragDefer:2,
                 dragKey: profile.box.getDragKey(profile, src),
                 dragData: profile.box.getDragData(profile, e, src)
             });

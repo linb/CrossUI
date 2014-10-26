@@ -6,29 +6,39 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         _setCtrlValue:function(value){
             if(!_.isSet(value))value='';
             return this.each(function(profile){
-                var doc=profile.$doc, body=doc && (doc.body||doc.documentElement);
-                if(body){
-                    var sp=window['/'];
-                    if(sp && sp.indexOf(':/')!=-1)
-                        value=value.replace(/{\/}/g,sp);
-                    body.innerHTML=xui.adjustRes(value,0,1);
+                var sp=window['/'];
+                if(sp && sp.indexOf(':/')!=-1)
+                    value=value.replace(/{\/}/g,sp);
+                var html=xui.adjustRes(value,0,1);
+                if(!profile.$inDesign){
+                    var doc=profile.$doc, body=doc && (doc.body||doc.documentElement);
+                    if(body){
+                        body.innerHTML=html;
+                        return;
+                    }
                 }
+                 profile.getSubNode("EDITOR").html(html);
             });
         },
         _getCtrlValue:function(){
-            var profile=this.get(0),
-                doc=profile.$doc,
-                body=doc && (doc.body||doc.documentElement);
-             if(body){
-                var v=body.innerHTML,sp=window['/'];
-                if(sp && sp.indexOf(':/')!=-1)
-                    v=v.replace(new RegExp(sp,'g'), '{/}');
-                return v;
+            var profile=this.get(0);
+            if(!profile.$inDesign){
+                var doc=profile.$doc,
+                    body=doc && (doc.body||doc.documentElement);
+                 if(body){
+                    var v=body.innerHTML,sp=window['/'];
+                    if(sp && sp.indexOf(':/')!=-1)
+                        v=v.replace(new RegExp(sp,'g'), '{/}');
+                    return v;
+                }else
+                    return '';
+            }else{
+                return profile.getSubNode("EDITOR").html();
             }
-             return '';
         }
     },
     Static:{
+        _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',
@@ -40,7 +50,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         },
         DataModel:{
             selectable:true,
-            value:'',
+            value:{
+                ini:'',
+                html:1
+            },
             width:400,
             height:300,
             frameTemplate:{
@@ -431,6 +444,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         iframe.onload=checkF;
                     }
                 }
+            }else{
+                 self.boxing()._setCtrlValue(self.properties.value||"");
             }
         },
         _checkc:function(profile){

@@ -184,8 +184,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
             afterExpand:function(profile){}
         },
         _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile),
-                nodisplay='display:none';
+            var data={};
+            if(!profile.properties.toggle)data.height="auto";
+            data=arguments.callee.upper.call(this, profile, data);
+            var nodisplay='display:none';
 
             data.toggleDispplay=data.toggleBtn?'':nodisplay;
 
@@ -198,9 +200,11 @@ Class("xui.UI.Group", "xui.UI.Div",{
             return data;
         },
         _onresize:function(profile,width,height){
-            if(height && height!='auto'){
-                profile.getSubNode('FIELDSET').height(height);
-                profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
+            if(profile._toggle){
+                if(height && height!='auto'){
+                    profile.getSubNode('FIELDSET').height(height);
+                    profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
+                }
             }
             if(width && width!='auto')
                 profile.getSubNode('PANEL').width(width-2);

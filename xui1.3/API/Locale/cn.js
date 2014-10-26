@@ -8420,7 +8420,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.a5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "btn.setCustomFunction('showTips', function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return true;});"+
+                    "btn.setCustomFunction('showTips', function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return false;});"+
                     "btn.setCustomFunction('a', function(){var a;});"+
                     "alert(btn.serialize(btn))"+
                     "}"
@@ -8661,7 +8661,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowTips:{
-                $desc:"当控件显示tips时调用.",
+                $desc:"当控件显示tips时调用. 如返回false将会组织系统默认的工具信息显示",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -8670,7 +8670,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.b5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "btn.onShowTips(function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return true;});"+
+                    "btn.onShowTips(function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return false;});"+
                     "}"
                 ]
             }
@@ -12172,6 +12172,7 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, 项对象.",
                     "cmdKey: String, 命令的键值.",
+                    "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
                 $snippet:[
@@ -16159,6 +16160,7 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, 项对象.",
                     "cmdKey: String, 命令的键值.",
+                    "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
             }
@@ -17853,6 +17855,7 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, 项对象.",
                     "cmdKey: String, 命令的键值.",
+                    "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
             },
@@ -19975,6 +19978,9 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onClick:"鼠标点击"
         },
         'xui_UI_SLabel' : {
+            onClick:"鼠标点击"
+        },
+        'xui_UI_Label' : {
             onClick:"鼠标点击"
         },
         'xui_UI_SButton' : {

@@ -1035,7 +1035,7 @@ _.merge(xui,{
     _langscMark:/[$@{][\S]+/,
      // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)
      // variable pattern: @a.b.c@  @a@  {!}  {a.b.c}
-    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w][\w\.]*[\w]+)(\}))/g,
+    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w]+(\(\))?(\.[\w]+(\(\))?)*)(\}))/g,
     _escapeMap:{
         "$":"\x01",
         ".":"\x02",
@@ -1616,7 +1616,7 @@ new function(){
                         case 'non-empty':
                             return x!='';
                         case '!=':
-                            return parseFloat(x)!=parseFloat(y);
+                            return (x+"")!=(y+"");
                         case '>':
                             return parseFloat(x)>parseFloat(y);
                         case '<':
@@ -1646,21 +1646,20 @@ new function(){
                 },
                 target=conf.target,
                 method=conf.method+"",
-                params=conf.params||[],
+                iparams=_.clone(conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=conf.adjust||null,
-                iparams=[],iconditions=[],
+                iconditions=[],
                 timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
-            if(target && method && target!="none"&&method!="none"){
-                // handle conditions
-                // currently, support and only
-                // TODO: complex conditions
-                for(var i=0,l=conditions.length;i<l;i++)
-                    if(!compare(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
-                        return conf["return"];
-   
+            // handle conditions
+            // currently, support and only
+            // TODO: complex conditions
+            for(var i=0,l=conditions.length;i<l;i++)
+                if(!compare(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
+                    return;
+            if(target && method && target!="none"&&method!="none"){   
                 //adjust params
-                _.arr.each(params,function(o){
+                _.arr.each(iparams,function(o,i){
                     var f=function(o){
                         if(typeof(o)=="string"){
                             var rpc;
@@ -1681,8 +1680,7 @@ new function(){
                         }
                         return o;
                     };
-                    o=f(o);
-                    iparams.push(o);
+                    iparams[i]=f(o);
                 });
                 // cover with inline params
                 if(method.indexOf("-")){
@@ -1741,6 +1739,18 @@ new function(){
                             }
                             break;
                         case 'control':
+                                if(method=="setProperties"){
+                                    if(m=iparams[0]){
+                                        if(m.CC){
+                                            if(_.isFun(t=_.get(scope,[target,"setCustomClass"])))t.apply(scope[target],[m.CC]);
+                                            delete m.CC;
+                                        }
+                                        if(m.CS){
+                                            if(_.isFun(t=_.get(scope,[target,"setCustomStyle"])))t.apply(scope[target],[m.CS]);
+                                            delete m.CS;
+                                        }
+                                    }
+                                }
                                 if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],iparams);
                             break;
                         case 'other':
@@ -1790,7 +1800,6 @@ new function(){
                 if(timeout!==null)_.asyRun(fun,timeout);
                 else fun();
             }
-
             return conf["return"];
         }/*,
         toCode:function(conf, args, scope,temp){
@@ -3599,7 +3608,7 @@ Class('xui.absObj',"xui.absBox",{
                     //custom set
                     var $set = o.set;
                     m = ps[n];
-                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force,tag){
+                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force,tag,tag2){
                         return this.each(function(v){
                             if(!v.properties)return;
                             //if same return
@@ -3610,11 +3619,11 @@ Class('xui.absObj',"xui.absBox",{
                                 return;
 
                             if(typeof $set=='function'){
-                                $set.call(v,value,force,tag);
+                                $set.call(v,value,force,tag,tag2);
                             }else{
                                 var m = _.get(v.box.$DataModel, [i, 'action']);
                                 v.properties[i] = value;
-                                if(typeof m == 'function' && v._applySetAction(m, value, ovalue) === false)
+                                if(typeof m == 'function' && v._applySetAction(m, value, ovalue, force, tag, tag2) === false)
                                     v.properties[i] = ovalue;
                             }
 

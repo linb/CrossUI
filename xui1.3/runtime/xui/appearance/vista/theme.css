@@ -600,14 +600,14 @@ html, .xui-uibg-base{
     color:#fff;
 }
 .xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
-    background: #fff url(TreeGrid/head.gif) repeat-x left bottom;
+    background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
 }
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     border-right:solid 1px #d4d4d4;
     border-bottom:solid 1px #d4d4d4;
 }
-.xui-treegrid-hcell-mouseover {
-    background: #F2F9FC url(TreeGrid/head_mouseover.gif) repeat-x left bottom;
+.xui-treegrid-hcell-mouseover{
+    background: #CFE4FE url(TreeGrid/head_mouseover.gif) repeat-x left top;
 }
 
 /**

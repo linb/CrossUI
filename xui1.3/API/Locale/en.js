@@ -8397,7 +8397,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.a5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "btn.setCustomFunction('showTips', function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return true;});"+
+                    "btn.setCustomFunction('showTips', function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return false;});"+
                     "btn.setCustomFunction('a', function(){var a;});"+
                     "alert(btn.serialize(btn))"+
                     "}"
@@ -8632,7 +8632,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             onShowTips:{
-                $desc:"Fired when xui.Tips shows tips.",
+                $desc:"Fired when xui.Tips shows tips. If it returns false, will stop the system default tips.",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "src : String, the event source DOM element's xid.",
@@ -8641,7 +8641,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.b5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "btn.onShowTips(function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return true;});"+
+                    "btn.onShowTips(function(profile, node, pos){xui.Tips.show(pos, 'hi tips');return false;});"+
                     "}"
                 ]
             }
@@ -12252,6 +12252,7 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, list item Object.",
                     "cmdKey: String, the command key.",
+                    "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ],
                 $snippet:[
@@ -16229,6 +16230,7 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, list item Object.",
                     "cmdKey: String, the command key.",
+                    "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
             }
@@ -17941,6 +17943,7 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile.",
                     "item: Object, list item Object.",
                     "cmdKey: String, the command key.",
+                    "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
             },

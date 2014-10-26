@@ -262,23 +262,23 @@ Class("xui.Tips", null,{
                 node=xui.Dom.byId(self._enode),
                 pos=self._pos,
                 id,
-                o,t,b=false;
+                o,t,b=true;
 
             self._from=self._enode=null;
 
             if(!node || !_from || !pos || !(o=_from.box))return;
 
             //1.CF.showTips
-            b=((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
+            b=false!==((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
             //2._showTips / onShowTips
             //check if showTips works
-            if(!b)b=(o._showTips && o._showTips(_from, node, pos));
+            if(b!==false)b=false!==(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
-            if(!b){
+            if(b!==false){
                 if(((t=_from) && t.tips)||(t && (t=t.properties) && t.tips)){
                     self.show(pos, t);
-                    b=true;
+                    b=false;
                 }
                 else if((t=_from) && (t=t.properties) && t.autoTips && ('caption' in t)
                     // if tips is default value, try to show caption
@@ -287,13 +287,13 @@ Class("xui.Tips", null,{
                     ){
                     if(t.caption){
                         self.show(pos, {tips:t.caption});
-                        b=true;
+                        b=false;
                     }
                 }
             }
 
             //no work hide it
-            if(!b){
+            if(b!==false){
                 self.hide();
             }else {
                 if(!self.MOVABLE)
