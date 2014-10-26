@@ -526,7 +526,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
 
                     profile.__actives=1;
                     o.startDrag(e, {
-                        dragDefer:1,
+                        dragDefer:2,
                         dragType:'none'
                      });
                 },
@@ -743,7 +743,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         return;
                     if(ps.readonly||item.readonly)return;
                     xui.use(src).parent().startDrag(e, {
-                        dragDefer:1,
+                        dragDefer:2,
                         dragType:'none'
                     });
                 },
@@ -758,7 +758,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     if(ps.disabled || ps.readonly || item.readonly || item.disabled)return;
                     profile.$dd_type='left';
                     xui.use(src).parent(3).startDrag(e, {
-                        dragDefer:1,
+                        dragDefer:2,
                         dragType:'none'
                     });
                 }
@@ -770,7 +770,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     if(ps.disabled || ps.readonly || item.readonly || item.disabled)return;
                     profile.$dd_type='right';
                     xui.use(src).parent(3).startDrag(e, {
-                        dragDefer:1,
+                        dragDefer:2,
                         dragType:'none'
                     });
                 }
@@ -1913,9 +1913,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             if(item){
                 item.tips = '<p style="font-weight:bold">'+item.caption +'</p>'+ date.getText(new Date(item.from),format)+" - "+date.getText(new Date(item.to),format);
                 xui.Tips.show(pos, item);
-                return true;
-            }else
                 return false;
+            }
         },
         _beforeSerialized:function(profile){
             var w=profile.properties.width,

@@ -1173,8 +1173,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     rtn=upper.apply(this,_.toArr(arguments));
                 upper=null;
                 return rtn;
-            }else
-                return false;
+            }
         },
         //for tabs only
         _onresize:function(profile,width,height,force,key){

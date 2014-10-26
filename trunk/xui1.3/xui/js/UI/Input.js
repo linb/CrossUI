@@ -502,7 +502,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         DataModel:{
             selectable:true,
-            _customBorder:'BOX',
+           // _customShadow:'BOX',
             border:false,
 
             tipsErr:'',
@@ -936,7 +936,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         v="";
                     }
                     // dont trigger _setContrlValue
-                    profile.boxing().setUIValue(v,undefined,true,null,'asycheck');
+                    profile.boxing().setUIValue(v,false,true,null,'asycheck');
                 }
             });
         },

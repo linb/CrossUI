@@ -435,7 +435,7 @@ if(xui.browser.ie){
                     if(profile.properties.movable && !profile._locked){
                         profile.box._active(profile);
                         profile.getRoot().startDrag(e, {
-                            dragDefer:1,
+                            dragDefer:2,
                             maxTopOffset:profile.getRoot().top(),
                             maxLeftOffset:profile.getRoot().left(),
                             targetOffsetParent:profile.getRoot().parent()
@@ -709,7 +709,7 @@ if(xui.browser.ie){
             var self=this, t=self.properties;
             // ensure modal
             if(t.modal){
-                var p=self.$modalDiv&&self.$modalDiv.parent();
+                var p=self.$modalDiv&&self.$modalDiv.parent(),b=self.box;
                 if(p&&p.get(0)&&p.get(0)!==self.getRootNode()){
                     b._unModal(self);
                 }
@@ -1062,6 +1062,8 @@ if(xui.browser.ie){
             n2.width('auto').height('auto');
             n2.html(content,false);
             var size = n2.cssSize();
+            size.width+=10;
+            size.height+=10;
 
             node.html(content);
 
@@ -1079,8 +1081,8 @@ if(xui.browser.ie){
 
             node.cssSize(size).css('overflow','auto').show();
 
-            w=size.width + 40;
-            h=size.height + 90;
+            w=size.width + 20;
+            h=size.height + 60;
             dialog.setCaption(caption).setWidth(w).setHeight(h);
             return {width:w, height:h};
         },
@@ -1110,7 +1112,8 @@ if(xui.browser.ie){
 
                 var cmd = dialog.$cmd = new xui.UI.Div({
                     height:26,
-                    dock:'bottom'
+                    dock:'bottom',
+                    zIndex:10
                 },null,null,null,{KEY:"text-align:center;"}),
 
                 btn = dialog.$btn = new xui.UI.SButton({
@@ -1182,7 +1185,8 @@ if(xui.browser.ie){
 
                 var cmd = dialog.$cmd=new xui.UI.Div({
                     height:26,
-                    dock:'bottom'
+                    dock:'bottom',
+                    zIndex:10
                 },null,null,null,{KEY:"text-align:center;"}),
                 btn = dialog.$btn1 = new xui.UI.SButton({
                     tabindex:1,
@@ -1251,7 +1255,8 @@ if(xui.browser.ie){
 
             cmd = dialog.$cmd = new xui.UI.Div({
                     height:26,
-                    dock:'bottom'
+                    dock:'bottom',
+                    zIndex:10
                 },null,null,null,{KEY:"text-align:center;"})
             .append( dialog.$btn = new xui.UI.SButton({
                 caption: "&nbsp;&nbsp;"+(btnCap || '$inline.ok')+"&nbsp;&nbsp;",
@@ -1326,7 +1331,8 @@ if(xui.browser.ie){
                 }),
                 cmd = new xui.UI.Div({
                     height:26,
-                    dock:'bottom'
+                    dock:'bottom',
+                    zIndex:10
                 },null,null,null,{KEY:"text-align:center;"})
                 .append(dialog.$btn1 = new xui.UI.SButton({
                     position:'relative',

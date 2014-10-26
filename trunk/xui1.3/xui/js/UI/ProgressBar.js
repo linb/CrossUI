@@ -3,7 +3,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _setCtrlValue:function(value){
             return this.each(function(profile){
                 profile.getSubNode('FILL').width(value+"%");
-                profile.getSubNode('CAP').text(profile.properties.captionTpl.replace(/\{value\}/g,value));
+                profile.getSubNode('CAP').text(profile.properties.captionTpl.replace(/\{value\}|\*/g,value));
             });
         }
     },
@@ -71,13 +71,14 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             width:300,
             height:22,
             captionTpl:{
-                ini:'{value}%',
+                ini:'* %',
                 action:function(){
                     this.boxing()._setCtrlValue(this.properties.$UIvalue);
                 }
             },
             fillBG:{
                 ini:'',
+                format:'color',
                 action:function(v){
                     this.getSubNode('FILL').css('background',v);
                 }
