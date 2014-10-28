@@ -362,12 +362,13 @@ Class('xui.Com',null,{
             var hash={};
             this.getAllComponents().each(function(prf){
                 var prop=prf.properties,
+                    ins=prf.boxing(),
                     ih=hash[prf.alias]={};
                 _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","value",'labelCaption'],function(k){
                     if(k in prop)ih[k]=prop[k];
                 });
                 if('caption' in prop && _.isSet(prop.caption))
-                    ih.caption=prop.caption;
+                    ih.caption=typeof(ins.getCaption)=="function"?ins.getCaption():prop.caption;
             });
             return hash;
         },

@@ -1537,7 +1537,7 @@ new function(){
         img_busy: ini.path+'busy.gif',
         img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
-    });
+    },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
     if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
 
@@ -3556,6 +3556,32 @@ Class('xui.absObj',"xui.absBox",{
             desc:'',
             tagVar:{
                 ini:{}
+            },
+            dataBinder:{
+                ini:'',
+                set:function(value,ovalue){
+                    var profile=this,
+                        p=profile.properties;
+                    if(ovalue)
+                        xui.DataBinder._unBind(ovalue, profile);
+                    p.dataBinder=value;
+                    xui.DataBinder._bind(value, profile);
+                }
+            },
+            dataField:{
+                ini:'',
+                set:function(value,ovalue){
+                    var profile=this,t,
+                        p=profile.properties;
+                    p.dataField=value;
+
+                    if(!p.dataBinder)return;
+                    // set control value 2
+                    var db=xui.DataBinder.getFromName(p.dataBinder);
+                    if(db && (t=db.get(0)) && (t=t.properties.data) && _.isSet(t=t[value]))
+                        //p.value=t;
+                        profile.boxing().setValue(t,true,'datafield');
+                }
             }
         },
         getAll:function(){
@@ -3866,5 +3892,87 @@ Class('xui.absObj',"xui.absBox",{
         //1. destroy:function(){delete this.box._namePool[this.alias];this.get(0).__gc();}
         //2. _ini(properties, events, host, .....){/*set _nodes with profile*/return this;}
         //3. render(){return this}
+    }
+});
+
+Class("xui.Timer","xui.absObj",{
+    Instance:{
+        _ini:function(properties, events, host){
+            var self=this,
+                c=self.constructor,
+                profile,
+                options,
+                alias,temp;
+            if(properties && properties['xui.Profile']){
+                profile=properties;
+                alias = profile.alias || c.pickAlias();
+            }else{
+                if(properties && properties.key && xui.absBox.$type[properties.key]){
+                    options=properties;
+                    properties=null;
+                    alias = options.alias;
+                    alias = c.pickAlias();
+                }else
+                    alias = c.pickAlias();
+                profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
+            }
+            profile._n=profile._n||[];
+
+            for(var i in (temp=c.$DataStruct))
+                if(!(i in profile.properties))
+                    profile.properties[i]=typeof temp[i]=='object'?_.copy(temp[i]):temp[i];
+
+            //set anti-links
+            profile.link(c._cache,'self').link(xui._pool,'xui');
+
+            self._nodes.push(profile);
+            profile._cacheInstance=self;
+            self.n0=profile;
+
+            _.asyRun(function(){
+                if(profile&&profile.box)profile.boxing().start();
+            });
+            return self;
+        },
+        destroy:function(){
+            this.each(function(profile){
+                if(profile._threadid)xui.Thread(profile._threadid).abort();
+                //free profile
+                profile.__gc();
+            });
+        },
+        start:function(){
+            return this.each(function(profile){
+                if(!profile.$inDesign)return;
+
+                var p=profile.properties,box=profile.boxing(),
+                t=xui.Thread.repeat(function(threadId){
+                    if(profile.onTime && false===box.onTime(profile,threadId))return false;
+                }, p.interval, function(threadId){
+                    profile.onStart && box.onStart(profile,threadId);
+                }, function(threadId){
+                    profile.onEnd && box.onEnd(profile,threadId);
+                });
+                profile._threadid = t.id;
+            });
+        },
+        suspend:function(){
+            return this.each(function(profile){
+                if(profile._threadid)xui.Thread(profile._threadid).suspend();
+                profile.onSuspend && box.onSuspend(profile,threadId);
+            });
+        }
+    },
+    Static:{
+        DataModel:{
+            "interval":1000
+        },
+        EventHandlers:{
+            // return false will stop the Timer
+            onTime:function(profile, threadId){},
+            onStart:function(profile, threadId){},
+            onSuspend:function(profile, threadId){},
+            onEnd:function(profile, threadId){}
+        }
     }
 });

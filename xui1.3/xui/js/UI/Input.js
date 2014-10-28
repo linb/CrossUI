@@ -127,6 +127,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         this.setTemplate(t)
     },
     Static:{
+        _syncResize:true,
         _maskMap:{
             '~':'[+-]',
     		'1':'[0-9]',

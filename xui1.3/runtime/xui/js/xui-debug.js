@@ -1537,7 +1537,7 @@ new function(){
         img_busy: ini.path+'busy.gif',
         img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
-    });
+    },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
     if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
 
@@ -3556,6 +3556,32 @@ Class('xui.absObj',"xui.absBox",{
             desc:'',
             tagVar:{
                 ini:{}
+            },
+            dataBinder:{
+                ini:'',
+                set:function(value,ovalue){
+                    var profile=this,
+                        p=profile.properties;
+                    if(ovalue)
+                        xui.DataBinder._unBind(ovalue, profile);
+                    p.dataBinder=value;
+                    xui.DataBinder._bind(value, profile);
+                }
+            },
+            dataField:{
+                ini:'',
+                set:function(value,ovalue){
+                    var profile=this,t,
+                        p=profile.properties;
+                    p.dataField=value;
+
+                    if(!p.dataBinder)return;
+                    // set control value 2
+                    var db=xui.DataBinder.getFromName(p.dataBinder);
+                    if(db && (t=db.get(0)) && (t=t.properties.data) && _.isSet(t=t[value]))
+                        //p.value=t;
+                        profile.boxing().setValue(t,true,'datafield');
+                }
             }
         },
         getAll:function(){
@@ -3867,6 +3893,88 @@ Class('xui.absObj',"xui.absBox",{
         //2. _ini(properties, events, host, .....){/*set _nodes with profile*/return this;}
         //3. render(){return this}
     }
+});
+
+Class("xui.Timer","xui.absObj",{
+    Instance:{
+        _ini:function(properties, events, host){
+            var self=this,
+                c=self.constructor,
+                profile,
+                options,
+                alias,temp;
+            if(properties && properties['xui.Profile']){
+                profile=properties;
+                alias = profile.alias || c.pickAlias();
+            }else{
+                if(properties && properties.key && xui.absBox.$type[properties.key]){
+                    options=properties;
+                    properties=null;
+                    alias = options.alias;
+                    alias = c.pickAlias();
+                }else
+                    alias = c.pickAlias();
+                profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
+            }
+            profile._n=profile._n||[];
+
+            for(var i in (temp=c.$DataStruct))
+                if(!(i in profile.properties))
+                    profile.properties[i]=typeof temp[i]=='object'?_.copy(temp[i]):temp[i];
+
+            //set anti-links
+            profile.link(c._cache,'self').link(xui._pool,'xui');
+
+            self._nodes.push(profile);
+            profile._cacheInstance=self;
+            self.n0=profile;
+
+            _.asyRun(function(){
+                if(profile&&profile.box)profile.boxing().start();
+            });
+            return self;
+        },
+        destroy:function(){
+            this.each(function(profile){
+                if(profile._threadid)xui.Thread(profile._threadid).abort();
+                //free profile
+                profile.__gc();
+            });
+        },
+        start:function(){
+            return this.each(function(profile){
+                if(!profile.$inDesign)return;
+
+                var p=profile.properties,box=profile.boxing(),
+                t=xui.Thread.repeat(function(threadId){
+                    if(profile.onTime && false===box.onTime(profile,threadId))return false;
+                }, p.interval, function(threadId){
+                    profile.onStart && box.onStart(profile,threadId);
+                }, function(threadId){
+                    profile.onEnd && box.onEnd(profile,threadId);
+                });
+                profile._threadid = t.id;
+            });
+        },
+        suspend:function(){
+            return this.each(function(profile){
+                if(profile._threadid)xui.Thread(profile._threadid).suspend();
+                profile.onSuspend && box.onSuspend(profile,threadId);
+            });
+        }
+    },
+    Static:{
+        DataModel:{
+            "interval":1000
+        },
+        EventHandlers:{
+            // return false will stop the Timer
+            onTime:function(profile, threadId){},
+            onStart:function(profile, threadId){},
+            onSuspend:function(profile, threadId){},
+            onEnd:function(profile, threadId){}
+        }
+    }
 });Class("xui.DataBinder","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
@@ -3941,6 +4049,7 @@ Class('xui.absObj',"xui.absBox",{
                 prf=ns.get(0),
                 hash={};
             _.arr.each(prf._n,function(profile){
+                if(!profile.box["xui.absValue"])return;
                 var p=profile.properties,
                     b = profile.boxing(),
                     // maybe return array
@@ -3959,10 +4068,12 @@ Class('xui.absObj',"xui.absBox",{
         isDirtied:function(){
             var prf=this.get(0);
             for(var i=0,l=prf._n.length;i<l;i++){
-                var profile=prf._n[i],
+                var profile=prf._n[i],ins;
+                if(profile.box["xui.absValue"]){
                     ins = profile.boxing();
-                if((ins.getUIValue()+" ")!==(ins.getValue()+" ")){
-                    return true;
+                    if((ins.getUIValue()+" ")!==(ins.getValue()+" ")){
+                        return true;
+                    }
                 }
             }
             return false;
@@ -3975,49 +4086,96 @@ Class('xui.absObj',"xui.absBox",{
             xui.absValue.pack(this.get(0)._n,false).updateValue();
             return this;
         },
-        updateDataFromUI:function(updateUIValue,withCaption,returnArr,adjustData){
+        updateDataFromUI:function(updateUIValue,withCaption,returnArr,adjustData,dataKeys){
             var ns=this,
                 prf=ns.get(0),
-                hash={},mapb;
+                prop=prf.properties,
+                map={},
+                mapb;
+            _.merge(map,prop.data,function(v,t){
+                return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
+            });
             _.arr.each(prf._n,function(profile){
                 var p=profile.properties,
-                    b = profile.boxing(),
-                    // maybe return array
-                    v = b.getValue(_.isBool(returnArr)?returnArr:profile.__returnArray),
-                    uv = b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray);
-                // v and uv can be object(Date,Number)
-                if(withCaption && b.getCaption){
-                    hash[p.dataField]={value:uv,caption:b.getCaption()};
-                }else{
-                    hash[p.dataField]=uv;
-                }
-                if(updateUIValue!==false && profile.renderId){
-                    b.updateValue();
+                      eh=profile.box.$EventHandlers,
+                      t=p.dataField;
+                if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
+                    var b = profile.boxing(),
+                        // for absValue, maybe return array
+                        uv = profile.box['xui.absValue']?b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray):null;
+                    // v and uv can be object(Date,Number)
+                    if(_.isHash(map[t])){
+                        var pp=map[t].properties,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS,events=map[t].events;
+
+                        if(pp)delete map[t].properties;
+                        if(ca)delete map[t].CA;
+                        if(cc)delete map[t].CC;
+                        if(cs)delete map[t].CS;
+                        if(events)delete map[t].events;
+                        // remove non-properties
+                        _.filter(map[t],function(o,i){
+                            return !!(i in p);
+                        });
+                        // reset
+                        if(!_.isEmpty(map[t])){
+                            _.each(map[t],function(o,i){
+                                if(i in p)map[t][i]=p[i];
+                            });
+                        }
+                        // reset pp
+                        if(_.isHash(pp)){
+                            _.filter(pp,function(o,i){
+                                return i in p && !(i in map[t]);
+                            });
+                            if(!_.isEmpty(pp)){
+                                _.each(pp,function(o,i){
+                                    if(i in p)pp[i]=p[i];
+                                });                         
+                                map[t].properties=pp
+                            }
+                        }
+                        if(ca){map[t].CA=_.clone(profile.CA,true);}
+                        if(cc){map[t].CC=_.clone(profile.CC,true);}
+                        if(cs){map[t].CS=_.clone(profile.CS,true);}
+                        // databinder dont output events, but can input
+
+                        if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
+                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
+                        if(_.isSet(uv) && 'value' in p)
+                            if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
+                    }else{
+                        if(withCaption && 'caption' in p){
+                            map[t]={value:uv, caption:typeof(b.getCaption)=="function"?b.getCaption():p.caption};
+                        }else{
+                            map[t]=uv;
+                        }
+                    }
+                    // for absValue
+                    if(updateUIValue!==false && profile.renderId && profile.box['xui.absValue'])
+                        b.updateValue();
                 }
             });
 
             // adjust UI data
             if(adjustData)
-                hash = _.tryF(adjustData,[hash, prf],this);
+                map = _.tryF(adjustData,[map, prf],this);
 
             if(prf.afterUpdateDataFromUI){
-                mapb = this.afterUpdateDataFromUI(prf, hash);
-                if(_.isHash(mapb))hash=mapb;
+                mapb = this.afterUpdateDataFromUI(prf, map);
+                if(_.isHash(mapb))map=mapb;
                 mapb=null;
             }
 
-
-            _.merge(prf.properties.data,hash,'all');
+            _.merge(prf.properties.data,map,'all');
 
             return ns;
         },
         updateDataToUI:function(adjustData, dataKeys){
-            var t,p,v,c,b,
+            var t,p,v,c,b,pp,uv,eh,
                 ns=this,
                 prf=ns.get(0),
                 prop=prf.properties,
-                map={},mapb,
-                vs={};
+                map={},mapb;
 
             _.merge(map,prop.data,function(v,t){
                 return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
@@ -4034,41 +4192,74 @@ Class('xui.absObj',"xui.absBox",{
 
             _.arr.each(prf._n,function(profile){
                 p=profile.properties;
+                eh=profile.box.$EventHandlers;
                 t=p.dataField;
                 if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
                     // need reset?
-                    // #45
-                    v=(map && t in map)?map[t]:'';
-                    // collect real values for UI controls
-                    vs[t]=v;
-                    c=null;
-                    b=profile.boxing();
-                    if(_.isHash(v)){
-                        // catch caption at first
-                        c=_.isSet(v.caption)?v.caption:null;
-                        // reset v at last
-                        v=v.value;
+                    if(map && t in map){
+                        v=_.clone(map[t],null,2);
+                        uv=c=null;
+                        b=profile.boxing();
+                        if(_.isHash(v)){
+                            if(pp=v.properties){
+                                _.filter(pp,function(o,i){
+                                    return i in p;
+                                });
+                                // keep value and caption at first
+                                c=_.isSet(pp.caption)?pp.caption:null;
+                                uv=_.isSet(pp.value)?pp.value:null;
+                                delete pp.caption;delete pp.value;
+                                if(!_.isEmpty(pp))
+                                    b.setProperties(pp);
+                                delete v.properties;
+                            }
+                            if(pp=v.events){
+                                _.filter(pp,function(o,i){
+                                    return i in ev;
+                                });
+                                if(!_.isEmpty(pp))
+                                    b.setEvents(pp);
+                                delete v.events;
+                            }
+                            if(pp=v.CS){if(!_.isEmpty(pp))b.setCustomStyle(pp);delete v.CS}
+                            if(pp=v.CC){if(!_.isEmpty(pp))b.setCustomClass(pp);delete v.CC}
+                            if(pp=v.CA){if(!_.isEmpty(pp))b.setCustomAttr(pp);delete v.CA}
+
+                            if(!_.isEmpty(v)){
+                                _.filter(v,function(o,i){
+                                    return i in p || i in ev;
+                                });
+                                if(!_.isEmpty(v)){
+                                    // keep value and caption at first
+                                    // value and caption in properties have high priority
+                                    c=_.isSet(c)?c:_.isSet(v.caption)?v.caption:null;
+                                    uv=_.isSet(uv)?uv:_.isSet(v.value)?v.value:null;
+                                    delete v.caption;delete v.value;
+                                    
+                                    if(!_.isEmpty(v))
+                                        b.setProperties(v);
+                                }
+                            }
+                        }else uv=v;
+                        // set value and caption at last
+                        if(_.isSet(uv) && _.isFun(b.resetValue)){
+                            b.resetValue(uv);
+                            profile.__returnArray=_.isArr(uv);
+                        }
+                        // set caption
+                        if(_.isSet(c) && _.isFun(b.setCaption))
+                            _.tryF(b.setCaption,[c,true],b);
                     }
-                    // set value
-                    b.resetValue(v);
-                    profile.__returnArray=_.isArr(v);
-                    // set caption
-                    if(_.isSet(c) && _.isFun(b.setCaption))
-                        _.tryF(b.setCaption,[c,true],b);
                 }
             });
-            _.merge(prop.data,vs,'all');
-
             return ns;
         },
-
         setHost:function(value, alias){
             var self=this;
             if(value && alias)
                 self.setName(alias);
             return arguments.callee.upper.apply(self,arguments);
         },
-
         invoke:function(onSuccess, onFail, onStart, onEnd, mode, threadid, options){
             var ns=this,
                 con=ns.constructor,
@@ -4339,37 +4530,24 @@ Class('xui.absObj',"xui.absBox",{
             return arr.join('');
         },
         _bind:function(name, profile){
-            var t,v,o=this._pool[name];
+            var t,v,b,o=this._pool[name];
             if(!o){
-                o=new xui.DataBinder();
-                o.setName(name);
-                o=o.get(0);
+                b=new xui.DataBinder();
+                b.setName(name);
+                o=b.get(0);
+            }else{
+                b=o.boxing();
             }
             var map=o.properties.data;
             if(profile){
                 if(_.arr.indexOf(o._n,profile)==-1)
                     //use link for 'destroy UIProfile' trigger 'auto unbind function '
                     profile.link(o._n, 'databinder.'+name);
-                var p=profile.properties,c,b;
-                // set control value 1
-                if(t=p.dataField){
-                    // #45
-                    v=(map && t in map)?map[t]:(p.value||'');
-                    // reset real value
-                    map[t]=v;
-                    c=null;
-                    b=profile.boxing();
-                    if(_.isHash(v)){
-                        // catch caption at first
-                        c=_.isSet(v.caption)?v.caption:null;
-                        // reset v at last
-                        v=v.value;
-                    }
-                    // set value
-                    b.resetValue(v);
-                    // set caption
-                    if(!_.isSet(p.caption) && b.setCaption)
-                        _.tryF(b.setCaption,[c,true],b);
+                if(t=profile.properties.dataField){
+                    if(map && t in map)
+                        b.updateDataToUI(null, t);
+                    else
+                        b.updateDataFromUI(false,true,false,null,t);
                 }
             }
         },
@@ -4391,6 +4569,7 @@ Class('xui.absObj',"xui.absBox",{
                 delete p.queryModel;
                 delete p.queryArgs;
                 delete p.queryOptions;
+                delete p.tokenParams;
                 delete p.proxyType;
                 delete p.queryAsync;
                 delete p.queryMethod;
@@ -4401,11 +4580,15 @@ Class('xui.absObj',"xui.absBox",{
                 delete p.data;
             if(p.queryArgs && _.isEmpty(p.queryArgs))
                 delete p.queryArgs;
+            if(p.tokenParams && _.isEmpty(p.tokenParams))
+                delete p.tokenParams;
             if(p.queryOptions && _.isEmpty(p.queryOptions))
                 delete p.queryOptions;
             return o;
         },
         DataModel:{
+            dataBinder:null,
+            dataField:null,
             "data":{
                 ini:{}
             },
@@ -4479,7 +4662,7 @@ Class('xui.absObj',"xui.absBox",{
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
-                    this.invoke(function(d){
+                    this.read(function(d){
                         xui.alert("onData",_.stringify(d));
                     },function(e){
                         xui.alert("onError",_.stringify(e));
@@ -11732,12 +11915,13 @@ Class('xui.Com',null,{
             var hash={};
             this.getAllComponents().each(function(prf){
                 var prop=prf.properties,
+                    ins=prf.boxing(),
                     ih=hash[prf.alias]={};
                 _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","value",'labelCaption'],function(k){
                     if(k in prop)ih[k]=prop[k];
                 });
                 if('caption' in prop && _.isSet(prop.caption))
-                    ih.caption=prop.caption;
+                    ih.caption=typeof(ins.getCaption)=="function"?ins.getCaption():prop.caption;
             });
             return hash;
         },
@@ -15802,23 +15986,22 @@ Class("xui.UI",  "xui.absObj", {
                         });
                 }));
             return this.each(function(o){
-                var bak = _.copy(o.CC);
+                var bak = _.copy(o.CC),t;
 
                 //set key and value
                 if(typeof key=='string'){
-                    if(o.renderId)
-                        if(key in bak)
-                            fun(o, key, bak, true);
-
-                    if(!value)
-                        delete o.CC[key];
-                    else{
-                        o.CC[key]=value;
-                        if(o.renderId)
-                            fun(o, key, o.CC);
+                    t=key;
+                    key={};
+                    key[t]=value;
+                }
+                _.filter(key,function(o,i){
+                    if(!/^[A-Z][A-Z0-9]*$/.test(i)){
+                        t=key.KEY=key.KEY||{};
+                        if(!(i in t))t[i]=o;
+                        return false;
                     }
-                //set hash dir
-                }else if(!!key && typeof key=='object'){
+                });
+                if(key && typeof key=='object'){
                     if(o.renderId){
                         for(var i in bak)
                             fun(o, i, bak, true);
@@ -15858,7 +16041,19 @@ Class("xui.UI",  "xui.absObj", {
                     }
                 }));
             return this.each(function(o){
-                var bak = _.copy(o.CA);
+                var bak = _.copy(o.CA),t;
+                if(typeof key=='string'){
+                    t=key;
+                    key={};
+                    key[t]=value;
+                }
+                _.filter(key,function(o,i){
+                    if(!/^[A-Z][A-Z0-9]*$/.test(i)){
+                        t=key.KEY=key.KEY||{};
+                        if(!(i in t))t[i]=o;
+                        return false;
+                    }
+                });
                 //set key and value
                 if(!!key && typeof key=='object'){
                     if(key){
@@ -15930,23 +16125,22 @@ Class("xui.UI",  "xui.absObj", {
                     }
                 }));
             return this.each(function(o){
-                var bak = _.copy(o.CS);
+                var bak = _.copy(o.CS),t;
 
-                //set key and value
                 if(typeof key=='string'){
-                    if(o.renderId)
-                        if(key in bak)
-                            fun(o, key, bak, true, nodes);
-
-                    if(!value)
-                        delete o.CS[key];
-                    else{
-                        o.CS[key]=value;
-                        if(o.renderId)
-                            fun(o, key, o.CS, false,nodes);
+                    t=key;
+                    key={};
+                    key[t]=value;
+                }
+                _.filter(key,function(o,i){
+                    if(!/^[A-Z][A-Z0-9]*$/.test(i)){
+                        t=key.KEY=key.KEY||{};
+                        if(!(i in t))t[i]=o;
+                        return false;
                     }
+                });
                 //set hash dir
-                }else if(!!key && typeof key=='object'){
+                if(!!key && typeof key=='object'){
                     if(o.renderId){
                         for(var i in bak)
                             fun(o, i, bak, true, nodes);
@@ -18196,9 +18390,8 @@ Class("xui.UI",  "xui.absObj", {
         RenderTrigger:function(){
             var prf=this, b=prf.boxing(),p=prf.properties,t;
             if(prf.box._onresize){
-                //avoid the resize blazzing
-                //_asyncResize is used by RichEditor..
-                if(prf.box._asyncResize){
+                //avoid UI blazzing
+                if(!prf._syncResize && !prf.box._syncResize){
                     var style=prf.getRootNode().style,t
                     if((t=style.visibility)!='hidden'){
                        prf._$visibility=t;
@@ -19603,32 +19796,6 @@ Class("xui.absValue", "xui.absObj",{
     Static:{
         $abstract:true,
         DataModel:{
-            dataBinder:{
-                ini:'',
-                set:function(value,ovalue){
-                    var profile=this,
-                        p=profile.properties;
-                    if(ovalue)
-                        xui.DataBinder._unBind(ovalue, profile);
-                    p.dataBinder=value;
-                    xui.DataBinder._bind(value, profile);
-                }
-            },
-            dataField:{
-                ini:'',
-                set:function(value,ovalue){
-                    var profile=this,t,
-                        p=profile.properties;
-                    p.dataField=value;
-
-                    if(!p.dataBinder)return;
-                    // set control value 2
-                    var db=xui.DataBinder.getFromName(p.dataBinder);
-                    if(db && (t=db.get(0)) && (t=t.properties.data) && _.isSet(t=t[value]))
-                        //p.value=t;
-                        profile.boxing().setValue(t,true,'datafield');
-                }
-            },
             readonly:{
                 ini:false,
                 action: function(v){
@@ -23888,6 +24055,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         this.setTemplate(t)
     },
     Static:{
+        _syncResize:true,
         _maskMap:{
             '~':'[+-]',
     		'1':'[0-9]',
@@ -24798,7 +24966,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         }
     },
     Static:{
-        _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',
@@ -37008,7 +37175,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         }
     },
     Static:{
-       // _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',

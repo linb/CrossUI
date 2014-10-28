@@ -4437,6 +4437,54 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getDataBinder:{
+                $desc:"获取绑定的数据绑定器名称",
+                $rtn:"String",
+                $snippet:[
+                    "var id='xui.temp.absv1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
+                    "_.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
+                    "}"
+                ]
+            },
+            setDataBinder:{
+                $desc:"设置数据绑定器名称.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.absv2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
+                    "_.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
+                    "}"
+                ]
+            },
+            getDataField:{
+                $desc:"获取数据字段名称",
+                $rtn:"String",
+                $snippet:[
+                    "var id='xui.temp.absv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
+                    "_.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
+                    "}"
+                ]
+            },
+            setDataField:{
+                $desc:"设置数据字段名称.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ],
+                $snippet:[
+                    "var id='xui.temp.absv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
+                    "_.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
+                    "}"
+                ]
+            },
             serialize:{
                 $desc:"将当前对象序列化为JSON字符串.",
                 $rtn:"String",
@@ -5678,7 +5726,62 @@ _.set(xui.Locale,["cn","app"], {
     _.set(xui.Locale,["cn","doc","xui","DomProfile"], {
         KEY:{$desc:"本类名"}
     });
-
+    
+    _.set(xui.Locale,["cn","doc","xui","Timer"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.Timer 类",
+        constructor:{
+            $desc:"生成一个Timer对象."
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            destroy:{
+                $desc:"销毁该对象.",
+                $memo:"一般情况下,程序员无需直接调用该函数."
+            },
+            getInteval:{
+                $desc:"获取定时器间隔.",
+                $rtn:"Number"
+            },
+            setInteval:{
+                $desc:"设置定时器间隔.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            onTime:{
+                $desc:"定时器到期触发. 如返回[false]将终止定时器.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            },
+            onStart:{
+                $desc:"当定时器开始运行.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            },
+            onSuspend:{
+                $desc:"当定时器挂起.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            },
+            onEnd:{
+                $desc:"当定时器结束.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            }
+        }
+    });
+    
     _.set(xui.Locale,["cn","doc","xui","DataBinder"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.DataBinder 类",
@@ -5970,7 +6073,8 @@ _.set(xui.Locale,["cn","app"], {
                     "updateUIValue [可选参数] : Boolean, 立即重新设置界面数据和清理脏数据标识, 默认为true",
                     "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false",
                     "returnArr [可选参数] : Boolean, 是否得到数组格式(只针对可多选择absList控件), 默认为false",
-                    "adjustData [可选参数] : Function, 对从UI获取到的数据做调整的函数(在设置到内部data之前)"
+                    "adjustData [可选参数] : Function, 对从UI获取到的数据做调整的函数(在设置到内部data之前)",
+                    "dataKeys [可选参数] : String/Array, 获取的数据项."
                 ]
             },
             invoke:{
@@ -5996,8 +6100,7 @@ _.set(xui.Locale,["cn","app"], {
                     "onEnd [可选参数] : Function, ajax结束时的回调函数.",
                     "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为norma.",
                     "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                    "options [可选参数]: Object, 一组配置数据.",
-                    "adjustData [可选参数] : Function, 对读取到的数据做调整的函数(在设置到内部data之前)"
+                    "options [可选参数]: Object, 一组配置数据."
                 ]
             },
             'write':{
@@ -6040,7 +6143,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             onData:{
                 $desc:"在得到数据之后调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, 从远程调用返回的数据",
@@ -6049,7 +6151,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             onError:{
                 $desc:"在出现错误后调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, 从远程调用返回的数据",
@@ -6058,7 +6159,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             afterInvoke:{
                 $desc:"在invoke之后调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, 从远程调用返回的数据",
@@ -6067,7 +6167,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             beforeRead:{
                 $desc:"在read之前调用.  返回false可以阻止远程调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "requestId : String"
@@ -6075,7 +6174,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             afterRead:{
                 $desc:"在read之后调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, 从远程调用返回的数据",
@@ -6084,7 +6182,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             beforeWrite:{
                 $desc:"在write之前调用.  返回false可以阻止远程调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "requestId : String"
@@ -6092,7 +6189,6 @@ _.set(xui.Locale,["cn","app"], {
             },
             afterWrite:{
                 $desc:"在write之后调用.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, 从远程调用返回的数据",
@@ -6483,55 +6579,6 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $memo:"如果 dirtyMark和showDirtyMark 都为 [true], 控件值改变的时候可能会在界面出现脏标识"
             },
-            getDataBinder:{
-                $desc:"获取绑定的数据绑定器名称",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.absv1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
-                    "}"
-                ]
-            },
-            setDataBinder:{
-                $desc:"设置数据绑定器名称.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.absv2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
-                    "}"
-                ]
-            },
-            getDataField:{
-                $desc:"获取数据字段名称",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.absv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
-                    "}"
-                ]
-            },
-            setDataField:{
-                $desc:"设置数据字段名称.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.absv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
-                    "}"
-                ]
-            },
-
             getUIValue:{
                 $desc:"获取用户界面值",
                 $rtn:"Object",
@@ -19291,7 +19338,9 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_absObj' : {
             'tag':'附加值',
             'tagVar':'附加对象',
-            desc:'组件描述'
+            'dataBinder':'控件值绑定器',
+            'dataField':'控件值绑定键',
+            'desc':'组件描述'
         },
        'xui_absComposed' : {
             'dragKey':'拖拽标识',
@@ -19308,12 +19357,13 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'valueSeparator':'值分隔符'
         },
         'xui_absValue' : {
-            'dataBinder':'控件值绑定器',
-            'dataField':'控件值绑定键',
             'readonly':'控件只读',
             'value':'控件值',
             'dirtyMark':'控件脏功能',
             'showDirtyMark':'显示脏标识'
+        },
+        xui_Timer:{
+            interval:"定时间隔(ms)"
         },
         'xui_DataBinder' : {
             'data':'内部数据',
@@ -19331,7 +19381,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'queryOptions':'自定义调用选项',
             'proxyType':'代理种类',
             'name':'绑定器唯一名',
-            "proxyInvoker":"数据触发器",
+            "proxyInvoker":"调用触发",
             "requestId":"数据请求ID"
         },
         'xui_UI_CSSBox':{
@@ -19730,7 +19780,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'colMovable':'可移动列',
             'header':'表头对象',
             'grpCols':'表头分组对象',
-            'rows':'表格行对象',
+            'rows':'表格内容',
             'tagCmds':"命令按钮集",
             'activeMode':'焦点活动模式',
             'rowOptions':'行自定义参数',
@@ -19892,6 +19942,12 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             afterUIValueSet:"界面值设置后",
             afterValueSet:"控件值设置后",
             onValueChange:"内部值改变"
+        },
+        xui_Timer:{
+            onTime:"当定期触发",
+            onStart:"当定时开始",
+            onSuspend:"当定时挂起",
+            onEnd:"当定时结束"
         },
         'xui_DataBinder' : {
             onData:"数据获得成功",

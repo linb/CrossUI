@@ -185,7 +185,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         }
     },
     Static:{
-       // _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',
