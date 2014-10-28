@@ -38,7 +38,6 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         }
     },
     Static:{
-        _asyncResize:true,
         Templates:{
             tagName:'div',
             style:'{_style}',

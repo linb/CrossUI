@@ -5652,7 +5652,7 @@ _.set(xui.Locale,["en","app"], {
         storeCom:{
             $desc:"Stores a specified Com UI. (Detaches it from its parent Node, and saves it to a hidden div.)",
             $paras:[
-                "id [Require] : the Com id in xui.ComFactory profile."
+                "id [Required] : the Com id in xui.ComFactory profile."
             ],
             $snippet:[
                 "xui.ComFactory.destroyAll();"+
@@ -5666,6 +5666,60 @@ _.set(xui.Locale,["en","app"], {
         KEY:{$desc:"Class Name"}
     });
 
+    _.set(xui.Locale,["cn","doc","xui","Timer"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.Timer Class",
+        constructor:{
+            $desc:"Creates a timer Object."
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            destroy:{
+                $desc:"To destroy the current Object.",
+                $memo:"Usually, we do not need to call this function manually."
+            },
+            getInteval:{
+                $desc:"Gets the timer's inteval.",
+                $rtn:"Number"
+            },
+            setInteval:{
+                $desc:"Sets the timer's inteval.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Number.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            onTime:{
+                $desc:"When the timer is triggered regularly. If returns [false], the timer will end.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            },
+            onStart:{
+                $desc:"When the timer start to run.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            },
+            onSuspend:{
+                $desc:"When the timer was suspended.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            },
+            onEnd:{
+                $desc:"When the timer ends.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "threadId : String"
+                ]
+            }
+        }
+    });
     _.set(xui.Locale,["en","doc","xui","DataBinder"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.DataBinder Class",
@@ -5958,7 +6012,8 @@ _.set(xui.Locale,["en","app"], {
                     "updateUIValue [Optional] : Boolean, to determine whether to reset all controls' value and clear the diry mark immediately or not, Default is [true]",
                     "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]",
                     "returnArr [Optional] : Boolean, to determine whether return array object(for those multi selection absList only),Default is [false]",
-                    "adjustData [Optional] : Function, the adjust function for data( before data is set to the innder data property)."
+                    "adjustData [Optional] : Function, the adjust function for data( before data is set to the innder data property).",
+                    "dataKeys [Optional] : String/Array, keys will to be get."
                 ]
             },
             invoke:{
@@ -5984,8 +6039,7 @@ _.set(xui.Locale,["en","app"], {
                     "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
                     "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
-                    "options [Optional]: Object, a set of key/value pairs that configure the request.",
-                    "adjustData [Optional] : Function, the adjust function for data( before data is set to the innder data property)."
+                    "options [Optional]: Object, a set of key/value pairs that configure the request."
                 ]
             },
             'write':{
@@ -6028,7 +6082,6 @@ _.set(xui.Locale,["en","app"], {
             },
             onData:{
                 $desc:"Fired when data returns.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, the data from remoting call",
@@ -6037,7 +6090,6 @@ _.set(xui.Locale,["en","app"], {
             },
             onError:{
                 $desc:"Fired when error raises.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, the data from remoting call",
@@ -6046,7 +6098,6 @@ _.set(xui.Locale,["en","app"], {
             },
             afterInvoke:{
                 $desc:"Fired after invoke function is called.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, the data from remoting call",
@@ -6055,7 +6106,6 @@ _.set(xui.Locale,["en","app"], {
             },
             beforeRead:{
                 $desc:"Fired before read function is called. If returns false, read function will be ignored.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "requestId : String"
@@ -6063,7 +6113,6 @@ _.set(xui.Locale,["en","app"], {
             },
             afterRead:{
                 $desc:"Fired after read function is called.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, the data from remoting call",
@@ -6072,7 +6121,6 @@ _.set(xui.Locale,["en","app"], {
             },
             beforeWrite:{
                 $desc:"Fired before write function is called. If returns false, write function will be ignored.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "requestId : String"
@@ -6080,7 +6128,6 @@ _.set(xui.Locale,["en","app"], {
             },
             afterWrite:{
                 $desc:"Fired after write function is called.",
-                $rtn:"Object",
                 $paras:[
                     "profile : xui.Profile.",
                     "rspData : Object, the data from remoting call",

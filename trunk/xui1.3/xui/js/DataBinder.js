@@ -72,6 +72,7 @@ Class("xui.DataBinder","xui.absObj",{
                 prf=ns.get(0),
                 hash={};
             _.arr.each(prf._n,function(profile){
+                if(!profile.box["xui.absValue"])return;
                 var p=profile.properties,
                     b = profile.boxing(),
                     // maybe return array
@@ -90,10 +91,12 @@ Class("xui.DataBinder","xui.absObj",{
         isDirtied:function(){
             var prf=this.get(0);
             for(var i=0,l=prf._n.length;i<l;i++){
-                var profile=prf._n[i],
+                var profile=prf._n[i],ins;
+                if(profile.box["xui.absValue"]){
                     ins = profile.boxing();
-                if((ins.getUIValue()+" ")!==(ins.getValue()+" ")){
-                    return true;
+                    if((ins.getUIValue()+" ")!==(ins.getValue()+" ")){
+                        return true;
+                    }
                 }
             }
             return false;
@@ -106,49 +109,96 @@ Class("xui.DataBinder","xui.absObj",{
             xui.absValue.pack(this.get(0)._n,false).updateValue();
             return this;
         },
-        updateDataFromUI:function(updateUIValue,withCaption,returnArr,adjustData){
+        updateDataFromUI:function(updateUIValue,withCaption,returnArr,adjustData,dataKeys){
             var ns=this,
                 prf=ns.get(0),
-                hash={},mapb;
+                prop=prf.properties,
+                map={},
+                mapb;
+            _.merge(map,prop.data,function(v,t){
+                return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
+            });
             _.arr.each(prf._n,function(profile){
                 var p=profile.properties,
-                    b = profile.boxing(),
-                    // maybe return array
-                    v = b.getValue(_.isBool(returnArr)?returnArr:profile.__returnArray),
-                    uv = b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray);
-                // v and uv can be object(Date,Number)
-                if(withCaption && b.getCaption){
-                    hash[p.dataField]={value:uv,caption:b.getCaption()};
-                }else{
-                    hash[p.dataField]=uv;
-                }
-                if(updateUIValue!==false && profile.renderId){
-                    b.updateValue();
+                      eh=profile.box.$EventHandlers,
+                      t=p.dataField;
+                if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
+                    var b = profile.boxing(),
+                        // for absValue, maybe return array
+                        uv = profile.box['xui.absValue']?b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray):null;
+                    // v and uv can be object(Date,Number)
+                    if(_.isHash(map[t])){
+                        var pp=map[t].properties,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS,events=map[t].events;
+
+                        if(pp)delete map[t].properties;
+                        if(ca)delete map[t].CA;
+                        if(cc)delete map[t].CC;
+                        if(cs)delete map[t].CS;
+                        if(events)delete map[t].events;
+                        // remove non-properties
+                        _.filter(map[t],function(o,i){
+                            return !!(i in p);
+                        });
+                        // reset
+                        if(!_.isEmpty(map[t])){
+                            _.each(map[t],function(o,i){
+                                if(i in p)map[t][i]=p[i];
+                            });
+                        }
+                        // reset pp
+                        if(_.isHash(pp)){
+                            _.filter(pp,function(o,i){
+                                return i in p && !(i in map[t]);
+                            });
+                            if(!_.isEmpty(pp)){
+                                _.each(pp,function(o,i){
+                                    if(i in p)pp[i]=p[i];
+                                });                         
+                                map[t].properties=pp
+                            }
+                        }
+                        if(ca){map[t].CA=_.clone(profile.CA,true);}
+                        if(cc){map[t].CC=_.clone(profile.CC,true);}
+                        if(cs){map[t].CS=_.clone(profile.CS,true);}
+                        // databinder dont output events, but can input
+
+                        if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
+                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
+                        if(_.isSet(uv) && 'value' in p)
+                            if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
+                    }else{
+                        if(withCaption && 'caption' in p){
+                            map[t]={value:uv, caption:typeof(b.getCaption)=="function"?b.getCaption():p.caption};
+                        }else{
+                            map[t]=uv;
+                        }
+                    }
+                    // for absValue
+                    if(updateUIValue!==false && profile.renderId && profile.box['xui.absValue'])
+                        b.updateValue();
                 }
             });
 
             // adjust UI data
             if(adjustData)
-                hash = _.tryF(adjustData,[hash, prf],this);
+                map = _.tryF(adjustData,[map, prf],this);
 
             if(prf.afterUpdateDataFromUI){
-                mapb = this.afterUpdateDataFromUI(prf, hash);
-                if(_.isHash(mapb))hash=mapb;
+                mapb = this.afterUpdateDataFromUI(prf, map);
+                if(_.isHash(mapb))map=mapb;
                 mapb=null;
             }
 
-
-            _.merge(prf.properties.data,hash,'all');
+            _.merge(prf.properties.data,map,'all');
 
             return ns;
         },
         updateDataToUI:function(adjustData, dataKeys){
-            var t,p,v,c,b,
+            var t,p,v,c,b,pp,uv,eh,
                 ns=this,
                 prf=ns.get(0),
                 prop=prf.properties,
-                map={},mapb,
-                vs={};
+                map={},mapb;
 
             _.merge(map,prop.data,function(v,t){
                 return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
@@ -165,41 +215,74 @@ Class("xui.DataBinder","xui.absObj",{
 
             _.arr.each(prf._n,function(profile){
                 p=profile.properties;
+                eh=profile.box.$EventHandlers;
                 t=p.dataField;
                 if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
                     // need reset?
-                    // #45
-                    v=(map && t in map)?map[t]:'';
-                    // collect real values for UI controls
-                    vs[t]=v;
-                    c=null;
-                    b=profile.boxing();
-                    if(_.isHash(v)){
-                        // catch caption at first
-                        c=_.isSet(v.caption)?v.caption:null;
-                        // reset v at last
-                        v=v.value;
+                    if(map && t in map){
+                        v=_.clone(map[t],null,2);
+                        uv=c=null;
+                        b=profile.boxing();
+                        if(_.isHash(v)){
+                            if(pp=v.properties){
+                                _.filter(pp,function(o,i){
+                                    return i in p;
+                                });
+                                // keep value and caption at first
+                                c=_.isSet(pp.caption)?pp.caption:null;
+                                uv=_.isSet(pp.value)?pp.value:null;
+                                delete pp.caption;delete pp.value;
+                                if(!_.isEmpty(pp))
+                                    b.setProperties(pp);
+                                delete v.properties;
+                            }
+                            if(pp=v.events){
+                                _.filter(pp,function(o,i){
+                                    return i in ev;
+                                });
+                                if(!_.isEmpty(pp))
+                                    b.setEvents(pp);
+                                delete v.events;
+                            }
+                            if(pp=v.CS){if(!_.isEmpty(pp))b.setCustomStyle(pp);delete v.CS}
+                            if(pp=v.CC){if(!_.isEmpty(pp))b.setCustomClass(pp);delete v.CC}
+                            if(pp=v.CA){if(!_.isEmpty(pp))b.setCustomAttr(pp);delete v.CA}
+
+                            if(!_.isEmpty(v)){
+                                _.filter(v,function(o,i){
+                                    return i in p || i in ev;
+                                });
+                                if(!_.isEmpty(v)){
+                                    // keep value and caption at first
+                                    // value and caption in properties have high priority
+                                    c=_.isSet(c)?c:_.isSet(v.caption)?v.caption:null;
+                                    uv=_.isSet(uv)?uv:_.isSet(v.value)?v.value:null;
+                                    delete v.caption;delete v.value;
+                                    
+                                    if(!_.isEmpty(v))
+                                        b.setProperties(v);
+                                }
+                            }
+                        }else uv=v;
+                        // set value and caption at last
+                        if(_.isSet(uv) && _.isFun(b.resetValue)){
+                            b.resetValue(uv);
+                            profile.__returnArray=_.isArr(uv);
+                        }
+                        // set caption
+                        if(_.isSet(c) && _.isFun(b.setCaption))
+                            _.tryF(b.setCaption,[c,true],b);
                     }
-                    // set value
-                    b.resetValue(v);
-                    profile.__returnArray=_.isArr(v);
-                    // set caption
-                    if(_.isSet(c) && _.isFun(b.setCaption))
-                        _.tryF(b.setCaption,[c,true],b);
                 }
             });
-            _.merge(prop.data,vs,'all');
-
             return ns;
         },
-
         setHost:function(value, alias){
             var self=this;
             if(value && alias)
                 self.setName(alias);
             return arguments.callee.upper.apply(self,arguments);
         },
-
         invoke:function(onSuccess, onFail, onStart, onEnd, mode, threadid, options){
             var ns=this,
                 con=ns.constructor,
@@ -470,37 +553,24 @@ Class("xui.DataBinder","xui.absObj",{
             return arr.join('');
         },
         _bind:function(name, profile){
-            var t,v,o=this._pool[name];
+            var t,v,b,o=this._pool[name];
             if(!o){
-                o=new xui.DataBinder();
-                o.setName(name);
-                o=o.get(0);
+                b=new xui.DataBinder();
+                b.setName(name);
+                o=b.get(0);
+            }else{
+                b=o.boxing();
             }
             var map=o.properties.data;
             if(profile){
                 if(_.arr.indexOf(o._n,profile)==-1)
                     //use link for 'destroy UIProfile' trigger 'auto unbind function '
                     profile.link(o._n, 'databinder.'+name);
-                var p=profile.properties,c,b;
-                // set control value 1
-                if(t=p.dataField){
-                    // #45
-                    v=(map && t in map)?map[t]:(p.value||'');
-                    // reset real value
-                    map[t]=v;
-                    c=null;
-                    b=profile.boxing();
-                    if(_.isHash(v)){
-                        // catch caption at first
-                        c=_.isSet(v.caption)?v.caption:null;
-                        // reset v at last
-                        v=v.value;
-                    }
-                    // set value
-                    b.resetValue(v);
-                    // set caption
-                    if(!_.isSet(p.caption) && b.setCaption)
-                        _.tryF(b.setCaption,[c,true],b);
+                if(t=profile.properties.dataField){
+                    if(map && t in map)
+                        b.updateDataToUI(null, t);
+                    else
+                        b.updateDataFromUI(false,true,false,null,t);
                 }
             }
         },
@@ -522,6 +592,7 @@ Class("xui.DataBinder","xui.absObj",{
                 delete p.queryModel;
                 delete p.queryArgs;
                 delete p.queryOptions;
+                delete p.tokenParams;
                 delete p.proxyType;
                 delete p.queryAsync;
                 delete p.queryMethod;
@@ -532,11 +603,15 @@ Class("xui.DataBinder","xui.absObj",{
                 delete p.data;
             if(p.queryArgs && _.isEmpty(p.queryArgs))
                 delete p.queryArgs;
+            if(p.tokenParams && _.isEmpty(p.tokenParams))
+                delete p.tokenParams;
             if(p.queryOptions && _.isEmpty(p.queryOptions))
                 delete p.queryOptions;
             return o;
         },
         DataModel:{
+            dataBinder:null,
+            dataField:null,
             "data":{
                 ini:{}
             },
@@ -610,7 +685,7 @@ Class("xui.DataBinder","xui.absObj",{
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
-                    this.invoke(function(d){
+                    this.read(function(d){
                         xui.alert("onData",_.stringify(d));
                     },function(e){
                         xui.alert("onError",_.stringify(e));
