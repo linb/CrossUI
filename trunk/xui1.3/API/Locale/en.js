@@ -6470,6 +6470,31 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
+            },
+            onBeginEdit:{
+                $desc:"Fired when the item's editor is showed.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item : Object. item object.",
+                    "editor: Object, the editor object."
+                ]
+            },
+            beforeEditApply:{
+                $desc:"Fired before the item's editor apply changed. If returns false, the activation will be ignored.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item : Object. item object.",
+                    "caption: String. updated content",
+                    "editor: Object, the editor object."
+                ],            
+            },
+            onEndEdit:{
+                $desc:"Fired when the item's editor is hidden.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item : Object. item object.",
+                    "editor: Object, the editor object."
+                ]
             }
         }
     });
@@ -17658,6 +17683,15 @@ _.set(xui.Locale,["en","app"], {
                     "cell : Object. cell object.",
                     "editor: Object, the editor object."
                 ]
+            },
+            beforeEditApply:{
+                $desc:"Fired before the cell's editor apply changed. If returns false, the activation will be ignored.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell : Object. cell object.",
+                    "options: Object. updated content",
+                    "editor: Object, the editor object."
+                ],            
             },
             onEndEdit:{
                 $desc:"Fired when the cell's editor is hidden.",

@@ -6541,6 +6541,31 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
+            },
+            onBeginEdit:{
+                $desc:"在编辑器显示前调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item : Object, 子项对象.",
+                    "editor: Object, 编辑器对象."
+                ]
+            },
+            beforeEditApply:{
+                $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item : Object, 子项对象.",
+                    "caption: String. 要更新的内容",
+                    "editor: Object, 编辑器对象."
+                ],            
+            },
+            onEndEdit:{
+                $desc:"在编辑器消失前调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "item : Object, 子项对象.",
+                    "editor: Object, 编辑器对象."
+                ]
             }
         }
     });
@@ -8708,7 +8733,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowTips:{
-                $desc:"当控件显示tips时调用. 如返回false将会组织系统默认的工具信息显示",
+                $desc:"当控件显示tips时调用. 如返回false将会阻止系统默认的工具信息显示",
                 $paras:[
                     "profile : xui.UIProfile.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -17580,6 +17605,31 @@ _.set(xui.Locale,["cn","app"], {
                     "row : Object, 单元格的行对象"
                 ]
             },
+            onBeginEdit:{
+                $desc:"在编辑器显示前调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell : Object, 单元格对象.",
+                    "editor: Object, 编辑器对象."
+                ]
+            },
+            beforeEditApply:{
+                $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell : Object, 单元格对象.",
+                    "options: Object. 要更新的内容",
+                    "editor: Object, 编辑器对象."
+                ],            
+            },
+            onEndEdit:{
+                $desc:"在编辑器消失前调用.",
+                $paras:[
+                    "profile : xui.UIProfile.",
+                    "cell : Object, 单元格对象.",
+                    "editor: Object, 编辑器对象."
+                ]
+            },
             beforeIniEditor:{
                 $desc:"在单元格编辑之前调用. 如果返回false,默认的功能会被禁止.",
                 $paras:[
@@ -19665,7 +19715,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'imgWidth':'画廊图片宽度',
             'imgHeight':'画廊图片高度',
             'autoItemSize':'画廊项自动尺寸',
-            'loadingImg':'加载中图片'
+            'loadingImg':'加载中图片',
+            'errImg':'加载失败图片'
         },
         'xui_UI_IconList' : {
             'itemMargin':'图标项外补丁',
@@ -19681,7 +19732,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_StatusButtons' : {
             'itemMargin':'按钮外补丁',
             'itemWidth':'按钮宽度',
-            'itemAlign':'按钮对齐方式',
+            'itemAlign':'文字对齐方式',
             'itemLinker':'链接样式'
         },
         'xui_UI_Poll' : {
@@ -19710,8 +19761,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'noPanel':'无容器面板',
             'overflow':'容器溢出属性',
             'itemWidth':'固定按钮宽度',
-            'itemAlign':'按钮对齐方式',
-            'HAlign':'水平对齐方式',
+            'itemAlign':'文字对齐方式',
+            'HAlign':'按钮排列方式',
             'dropKeysPanel':'可丢下位置',
             'selMode':'点选模式',
             'noHandler':'无控制面版'
@@ -19723,6 +19774,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'barLocation':'按钮条位置',
             'barHAlign':'按钮水平对齐',
             'barVAlign':'按钮垂直对齐',
+            'overflow':'容器溢出属性',
             'barSize':'按钮条大小'
         },
         'xui_UI_FoldingTabs' : {
@@ -19933,6 +19985,9 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onDragStop:"拖拽停止"
         },
         'xui_absList' : {
+            onBeginEdit:"开始编辑",
+            beforeEditApply:"编辑生效前",
+            onEndEdit:"结束编辑"
         },
         'xui_absValue' : {
             beforeDirtyMark:"显示脏标识",
@@ -20223,7 +20278,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onGetContent:"尝试得到子行",
 
             beforeIniEditor:"初始化编辑器前",
-            onBeginEdit:"编辑单元格",
+            onBeginEdit:"开始编辑",
+            beforeEditApply:'编辑生效前',
             onEndEdit:"结束编辑",
             onEditorClick:"当点击编辑框",
             onCommand:"点击命令按钮",

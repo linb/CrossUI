@@ -17057,6 +17057,7 @@ Class("xui.UI",  "xui.absObj", {
         $evtsindesign:{
             "onload":1,
             "onerror":1,
+            "onscroll":1,
             "onunload":1,
             "onsize":1,
             "onmousedown":1,
@@ -18292,9 +18293,9 @@ Class("xui.UI",  "xui.absObj", {
                             b.hoverPop(t,null);
                          if(v && (t=ns.host[v]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
                             b.hoverPop(t, p.hoverPopType, function(){
-                                p.tagVar.hoverFrom=arguments;
+                                t.properties.tagVar.hoverFrom=arguments;
                             },function(){
-                                delete p.tagVar.hoverFrom;
+                                delete t.properties.tagVar.hoverFrom;
                             });
                      }
                 }
@@ -19431,16 +19432,41 @@ Class("xui.absList", "xui.absObj",{
             subId+="";
             this.getSubNodeByItemId(this.constructor._focusNodeKey, subId).onClick();
             return this;
-        }
-    },
-    Static:{
-        getDropKeys:function(profile,node){
-            var item=profile.getSubItemByDom(node);
-            return (item&&item.dropKeys) ||profile.properties.dropKeys;
         },
-        getDragKey:function(profile,node){
-            var item=profile.getSubItemByDom(node);
-            return (item&&item.dragKey) ||profile.properties.dragKey;
+        editItem:function(itemId){
+            var profile=this.get(0),item,source;
+            if(profile&&profile.renderId&&!profile.destroyed){
+                if(item=profile.getItemByItemId(itemId)){
+                    source = profile.getSubNodeByItemId('ITEMCAPTION',itemId);
+                    if(source.isEmpty())source = profile.getSubNodeByItemId('CAPTION',itemId);
+                    if(!source.isEmpty()){
+                        var pos = source.offset(),
+                        size = source.cssSize();
+        
+                        var editor=new xui.UI.Input();
+                        editor.setWidth(Math.min(size.width+20,100)).setHeight(Math.min(size.height+4,20)).setValue(item.caption||"");
+                        if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+
+                        editor.beforeUIValueSet(function(prf, ov, nv){
+                            if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
+                                profile.boxing().updateItem(item.id, {caption:nv});
+                                if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                root.setBlurTrigger("absList_editor",null);
+                                editor.destroy();
+                                editor=null;
+                            }
+                        });
+                        xui('body').append(editor);
+                        var root=editor.getRoot();
+                        root.popToTop(pos);
+                        root.setBlurTrigger("absList_editor",function(){
+                            editor.setUIValue(editor.getUIValue(),true);
+                        });
+                        editor.activate();
+                    }
+                }
+            }
+            return this;
         }
     },
     Initialize:function(){
@@ -19564,6 +19590,19 @@ Class("xui.absList", "xui.absObj",{
                 });
                 this.properties.items.length=0;
             };
+        },
+        EventHandlers:{
+            onBeginEdit:function(profile, item, editor){},
+            beforeEditApply:function(profile, item, caption, editor){},
+            onEndEdit:function(profile, item, editor){}
+        },
+        getDropKeys:function(profile,node){
+            var item=profile.getItemByDom(node);
+            return (item&&item.dropKeys) ||profile.properties.dropKeys;
+        },
+        getDragKey:function(profile,node){
+            var item=profile.getItemByDom(node);
+            return (item&&item.dragKey) ||profile.properties.dragKey;
         },
         _adjustItems:function(arr){
             if(!arr)arr=[];
@@ -38052,6 +38091,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //add sub
             _.arr.each(arr,function(o){
                 o.open=false;
+                if(false===box.getCellOption(profile, o, "iniFold"))
+                    profile.boxing()._toggleRows([o],true);
             });
 
             //clear rows cache
@@ -38449,8 +38490,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
                 //3
                 if(profile.renderId){
-                    if(!pro.iniFold)
-                        profile.boxing()._toggleRows(rows,true);
                     profile.box._asy(profile);
                 }
 
@@ -41266,6 +41305,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeIniEditor:function(profile, cell, cellNode, pNode){},
             onBeginEdit:function(profile, cell, editor){},
+            beforeEditApply:function(profile, cell, options, editor){},
             onEndEdit:function(profile, cell, editor){},
 
             beforeCellUpdated:function(profile, cell, options, isHotRow){},
@@ -41319,6 +41359,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             _.arr.each(pro.rows,function(o){
                 if(_.isFun(o.rowRenderer||pro.rowOptions.rowRenderer))
                     (o.rowRenderer||pro.rowOptions.rowRenderer).call(null,ns,o);
+                    if(false===box.getCellOption(ns, o, "iniFold"))
+                        ins._toggleRows([o],true);
             });
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
@@ -42513,9 +42555,9 @@ editorEvents
         getCellOption:function(profile, cell, key){
             var t=cell,p=profile.properties;
             return (t && t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
-                    :((t=cell._row)&&t.hasOwnProperty(key)&&_.isSet(t[key]))? t[key]
+                    :(cell&&(t=cell._row)&&t.hasOwnProperty(key)&&_.isSet(t[key]))? t[key]
                     :((t=p.rowOptions)&&t.hasOwnProperty(key)&&_.isSet(t[key]))? t[key]
-                    :((t=cell._col)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
+                    :(cell&&(t=cell._col)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
                     :((t=p.colOptions)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
                     :((t=p)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]:null;
         },
@@ -42931,11 +42973,14 @@ editorEvents
 
                         if(pro.properties.hasOwnProperty("tagVar"))
                             options.tagVar=pro.properties.tagVar;
+                    
+                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor))){
 
-                        grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
-
-                        if(editMode=="sharp")
-                            _.tryF(editor.undo,[true],editor);
+                            grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
+    
+                            if(editMode=="sharp")
+                                _.tryF(editor.undo,[true],editor);
+                        }
                     })
                     .beforeNextFocus(function(pro, e){
                         if(editor.undo)
