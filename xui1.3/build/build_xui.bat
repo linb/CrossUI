@@ -53,7 +53,7 @@ copy xui.js  %outPath%xui\js%debugPath%
 rem ==================
 rem for adv code
 rem ==================
-copy %relPath%xui\js\UI\TextEditor.js /b + %relPath%xui\js\UI\FoldingTabs.js /b + %relPath%xui\js\UI\ColLayout.js /b + %relPath%xui\js\UI\TimeLine.js /b +  %relPath%xui\js\UI\TagEditor.js /b + %relPath%xui\js\UI\Poll.js /b + %relPath%xui\js\UI\FoldingList.js /b + %relPath%xui\js\UI\Range.js /b  + %relPath%xui\js\UI\Calendar.js /b + %relPath%xui\js\ThirdParty\raphael.js /b + %relPath%xui\js\svg.js /b + %relPath%xui\js\UI\SVGPaper.js /b + %relPath%xui\js\ThirdParty\jquery.min.js /b + %relPath%xui\js\ThirdParty\FusionCharts.js /b + %relPath%xui\js\ThirdParty\FusionCharts.HC.js /b + %relPath%xui\js\ThirdParty\FusionCharts.HC.Charts.js /b + %relPath%xui\js\UI\FusionChartsXT.js /b adv.js
+copy %relPath%xui\js\UI\TextEditor.js /b + %relPath%xui\js\UI\FoldingTabs.js /b + %relPath%xui\js\UI\ColLayout.js /b + %relPath%xui\js\UI\TimeLine.js /b +  %relPath%xui\js\UI\TagEditor.js /b + %relPath%xui\js\UI\Poll.js /b + %relPath%xui\js\UI\FoldingList.js /b + %relPath%xui\js\UI\Range.js /b  + %relPath%xui\js\UI\Calendar.js /b + %relPath%xui\js\ThirdParty\raphael.js /b + %relPath%xui\js\svg.js /b + %relPath%xui\js\UI\SVGPaper.js /b + %relPath%xui\js\ThirdParty\fusioncharts.js /b + %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b + %relPath%xui\js\UI\FusionChartsXT.js /b adv.js
 
 java -jar %compressTool% -o  %outPath%xui\js%advAllPath% adv.js
 java -jar %compressTool% -o  %advRawPath%   --nomunge  adv.js

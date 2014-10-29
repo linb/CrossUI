@@ -131,6 +131,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //add sub
             _.arr.each(arr,function(o){
                 o.open=false;
+                if(false===box.getCellOption(profile, o, "iniFold"))
+                    profile.boxing()._toggleRows([o],true);
             });
 
             //clear rows cache
@@ -528,8 +530,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
                 //3
                 if(profile.renderId){
-                    if(!pro.iniFold)
-                        profile.boxing()._toggleRows(rows,true);
                     profile.box._asy(profile);
                 }
 
@@ -3345,6 +3345,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeIniEditor:function(profile, cell, cellNode, pNode){},
             onBeginEdit:function(profile, cell, editor){},
+            beforeEditApply:function(profile, cell, options, editor){},
             onEndEdit:function(profile, cell, editor){},
 
             beforeCellUpdated:function(profile, cell, options, isHotRow){},
@@ -3398,6 +3399,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             _.arr.each(pro.rows,function(o){
                 if(_.isFun(o.rowRenderer||pro.rowOptions.rowRenderer))
                     (o.rowRenderer||pro.rowOptions.rowRenderer).call(null,ns,o);
+                    if(false===box.getCellOption(ns, o, "iniFold"))
+                        ins._toggleRows([o],true);
             });
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
@@ -4592,9 +4595,9 @@ editorEvents
         getCellOption:function(profile, cell, key){
             var t=cell,p=profile.properties;
             return (t && t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
-                    :((t=cell._row)&&t.hasOwnProperty(key)&&_.isSet(t[key]))? t[key]
+                    :(cell&&(t=cell._row)&&t.hasOwnProperty(key)&&_.isSet(t[key]))? t[key]
                     :((t=p.rowOptions)&&t.hasOwnProperty(key)&&_.isSet(t[key]))? t[key]
-                    :((t=cell._col)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
+                    :(cell&&(t=cell._col)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
                     :((t=p.colOptions)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]
                     :((t=p)&&t.hasOwnProperty(key)&&_.isSet(t[key]))?t[key]:null;
         },
@@ -5010,11 +5013,14 @@ editorEvents
 
                         if(pro.properties.hasOwnProperty("tagVar"))
                             options.tagVar=pro.properties.tagVar;
+                    
+                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor))){
 
-                        grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
-
-                        if(editMode=="sharp")
-                            _.tryF(editor.undo,[true],editor);
+                            grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
+    
+                            if(editMode=="sharp")
+                                _.tryF(editor.undo,[true],editor);
+                        }
                     })
                     .beforeNextFocus(function(pro, e){
                         if(editor.undo)
