@@ -234,40 +234,41 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             $order:0,
                             tabindex: '{_tabindex}',
                             className:'{cls_group} {cls_fold} {disabled} {readonly}',
+                            TAGCMDS:{
+                                // for IE<8 float bug 
+                                $order:1,
+                                tagName:'span',
+                                text:"{tagCmds}"
+                            },
                             RULER:{
-                                $order:0,
+                                $order:2,
                                 style:'{rulerStyle}',
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
-                                $order:1,
+                                $order:3,
                                 className:'{togglemark}'
                             },
                             MARK:{
-                                $order:2,
+                                $order:4,
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
-                                $order:3,
+                                $order:5,
                                 className:'xui-ui-icon {imageClass}',
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
                                 className:"{disabled}  {readonly}",
-                                $order:4
+                                $order:6
                             },
                             EXTRA:{
                                 text : '{ext}',
-                                $order:5
-                            },
-                            TAGCMDS:{
-                                $order:6,
-                                tagName:'span',
-                                text:"{tagCmds}"
+                                $order:7
                             },
                             OPT:{
-                                $order:7
+                                $order:8
                             }
                         },
                         SUB:{

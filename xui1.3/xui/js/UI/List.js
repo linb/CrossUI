@@ -120,6 +120,12 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         className:'{_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
+                        TAGCMDS:{
+                            // for IE<8 float bug 
+                            $order:1,
+                            tagName:'span',
+                            text:"{tagCmds}"
+                        },
                         MARK:{
                             $order:5,
                             style:"{_cbDisplay}"
@@ -136,11 +142,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         EXTRA:{
                             text : '{ext}',
                             $order:30
-                        },
-                        TAGCMDS:{
-                            $order:40,
-                            tagName:'span',
-                            text:"{tagCmds}"
                         },
                         OPT:{
                             $order:50

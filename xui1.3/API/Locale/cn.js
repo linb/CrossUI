@@ -6557,7 +6557,7 @@ _.set(xui.Locale,["cn","app"], {
                     "item : Object, 子项对象.",
                     "caption: String. 要更新的内容",
                     "editor: Object, 编辑器对象."
-                ],            
+                ]
             },
             onEndEdit:{
                 $desc:"在编辑器消失前调用.",
@@ -12149,7 +12149,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getTagCmds:{
                 $desc:"得到命令按钮集",
-                $rtn:"Array",
+                $rtn:"Array"
             },
             setTagCmds:{
                 $desc:"设置命令按钮集",
@@ -15916,7 +15916,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getTagCmds:{
                 $desc:"得到命令按钮集",
-                $rtn:"Array",
+                $rtn:"Array"
             },
             setTagCmds:{
                 $desc:"设置命令按钮集",
@@ -17149,7 +17149,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getTagCmds:{
                 $desc:"得到命令按钮集",
-                $rtn:"Array",
+                $rtn:"Array"
             },
             setTagCmds:{
                 $desc:"设置命令按钮集",
@@ -17620,7 +17620,7 @@ _.set(xui.Locale,["cn","app"], {
                     "cell : Object, 单元格对象.",
                     "options: Object. 要更新的内容",
                     "editor: Object, 编辑器对象."
-                ],            
+                ]
             },
             onEndEdit:{
                 $desc:"在编辑器消失前调用.",
