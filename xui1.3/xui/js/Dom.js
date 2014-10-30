@@ -1448,7 +1448,7 @@ Class('xui.Dom','xui.absBox',{
             else
                 duration = duration||200;
 
-            type = tween[type]!==undefined?type:'circIn';
+            type = (type in tween)?type:'circIn';
 
             var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
@@ -1469,6 +1469,7 @@ Class('xui.Dom','xui.absBox',{
                             curvalue = (s + (e-s)*curvalue).toFixed(5);
                         }
                         curvalue+=u||unit||'';
+console.log(i, curvalue);
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
                     }
                 });

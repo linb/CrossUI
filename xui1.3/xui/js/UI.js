@@ -5183,10 +5183,9 @@ Class("xui.absValue", "xui.absObj",{
             // setValue and getValue
             value:{
                 ini:null,
-                set:function(value,force, tag, triggerEventOnly){
+                set:function(value,ovalue,force, tag, triggerEventOnly){
                     var profile=this,
                         p=profile.properties,r,
-                        ovalue=p.value,
                         box=profile.boxing();
 
                     //check format
