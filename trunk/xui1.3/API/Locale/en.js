@@ -6486,7 +6486,7 @@ _.set(xui.Locale,["en","app"], {
                     "item : Object. item object.",
                     "caption: String. updated content",
                     "editor: Object, the editor object."
-                ],            
+                ]
             },
             onEndEdit:{
                 $desc:"Fired when the item's editor is hidden.",
@@ -12229,7 +12229,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getTagCmds:{
                 $desc:"Gets command buttons",
-                $rtn:"Array",
+                $rtn:"Array"
             },
             setTagCmds:{
                 $desc:"Sets command buttons",
@@ -15987,7 +15987,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getTagCmds:{
                 $desc:"Gets command buttons",
-                $rtn:"Array",
+                $rtn:"Array"
             },
             setTagCmds:{
                 $desc:"Sets command buttons",
@@ -17221,7 +17221,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getTagCmds:{
                 $desc:"Gets command buttons",
-                $rtn:"Array",
+                $rtn:"Array"
             },
             setTagCmds:{
                 $desc:"Sets command buttons",
@@ -17691,7 +17691,7 @@ _.set(xui.Locale,["en","app"], {
                     "cell : Object. cell object.",
                     "options: Object. updated content",
                     "editor: Object, the editor object."
-                ],            
+                ]
             },
             onEndEdit:{
                 $desc:"Fired when the cell's editor is hidden.",

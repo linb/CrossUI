@@ -1540,6 +1540,8 @@ new function(){
     },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
     if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
+    ini.releasePath=ini.appPath;
+    if(ini.verPath)ini.releasePath+=(ini.verPath?(ini.verPath+"/"):"")+(ini.ver?(ini.ver+"/"):"");
 
     //for dom ready
     var f = xui._domReadyFuns= function(){

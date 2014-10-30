@@ -1540,6 +1540,8 @@ new function(){
     },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
     if(!ini.basePath)ini.basePath=ini.path.replace(/xui\/$/,"").replace(/runtime\/$/,"");
+    ini.releasePath=ini.appPath;
+    if(ini.verPath)ini.releasePath+=(ini.verPath?(ini.verPath+"/"):"")+(ini.ver?(ini.ver+"/"):"");
 
     //for dom ready
     var f = xui._domReadyFuns= function(){
@@ -7615,7 +7617,7 @@ Class('xui.Event',null,{
         var b=xui.browser,
 // cross browser reset 
             css=".xui-node{margin:0;padding:0;line-height:1.22em;}"+
-            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;vertical-align:middle;}"+
+            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;font-size:12px;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
@@ -30254,6 +30256,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'{_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
+                        TAGCMDS:{
+                            // for IE<8 float bug 
+                            $order:1,
+                            tagName:'span',
+                            text:"{tagCmds}"
+                        },
                         MARK:{
                             $order:5,
                             style:"{_cbDisplay}"
@@ -30270,11 +30278,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         EXTRA:{
                             text : '{ext}',
                             $order:30
-                        },
-                        TAGCMDS:{
-                            $order:40,
-                            tagName:'span',
-                            text:"{tagCmds}"
                         },
                         OPT:{
                             $order:50
@@ -34241,40 +34244,41 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             $order:0,
                             tabindex: '{_tabindex}',
                             className:'{cls_group} {cls_fold} {disabled} {readonly}',
+                            TAGCMDS:{
+                                // for IE<8 float bug 
+                                $order:1,
+                                tagName:'span',
+                                text:"{tagCmds}"
+                            },
                             RULER:{
-                                $order:0,
+                                $order:2,
                                 style:'{rulerStyle}',
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
-                                $order:1,
+                                $order:3,
                                 className:'{togglemark}'
                             },
                             MARK:{
-                                $order:2,
+                                $order:4,
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
-                                $order:3,
+                                $order:5,
                                 className:'xui-ui-icon {imageClass}',
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
                                 className:"{disabled}  {readonly}",
-                                $order:4
+                                $order:6
                             },
                             EXTRA:{
                                 text : '{ext}',
-                                $order:5
-                            },
-                            TAGCMDS:{
-                                $order:6,
-                                tagName:'span',
-                                text:"{tagCmds}"
+                                $order:7
                             },
                             OPT:{
-                                $order:7
+                                $order:8
                             }
                         },
                         SUB:{
