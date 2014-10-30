@@ -599,6 +599,8 @@ Class("xui.DataBinder","xui.absObj",{
                 delete p.requestType;
                 delete p.responseType;
             }
+            if(p.tagVar && _.isEmpty(p.tagVar))
+                delete p.tagVar;
             if(p.data && _.isEmpty(p.data))
                 delete p.data;
             if(p.queryArgs && _.isEmpty(p.queryArgs))
@@ -671,11 +673,10 @@ Class("xui.DataBinder","xui.absObj",{
 
                     _p[o.properties.name=value]=o;
                     //modify name
-                    if(_old && !_new && o._n.length){
-                        ui=xui.absValue.pack(_.copy(o._n));
-                        _.arr.each(o._n, function(v){c._unBind(ovalue,v)});
-                        ui.setDataBinder(value);
-                    }
+                    if(_old && !_new && o._n.length)
+                        for(var i=0,l=o._n.length;i<l;i++)
+                            _.set(o._n[i], ["properties","dataBinder"], value);
+
                     //pointer _old the old one
                     if(_new && !_old) o._n=_new._n;
                     //delete the old name from pool

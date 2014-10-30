@@ -1255,7 +1255,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // caption is for readonly comboinput(listbox/cmdbox are readonly)
             caption:{
                 ini:null,
-                set:function(v,force){
+                set:function(v){
                     var p=this.properties;
                     p.caption=v;
                     

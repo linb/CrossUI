@@ -3647,7 +3647,7 @@ Class('xui.absObj',"xui.absBox",{
                                 return;
 
                             if(typeof $set=='function'){
-                                $set.call(v,value,force,tag,tag2);
+                                $set.call(v,value,ovalue,force,tag,tag2);
                             }else{
                                 var m = _.get(v.box.$DataModel, [i, 'action']);
                                 v.properties[i] = value;
@@ -4578,6 +4578,8 @@ Class("xui.Timer","xui.absObj",{
                 delete p.requestType;
                 delete p.responseType;
             }
+            if(p.tagVar && _.isEmpty(p.tagVar))
+                delete p.tagVar;
             if(p.data && _.isEmpty(p.data))
                 delete p.data;
             if(p.queryArgs && _.isEmpty(p.queryArgs))
@@ -4650,11 +4652,10 @@ Class("xui.Timer","xui.absObj",{
 
                     _p[o.properties.name=value]=o;
                     //modify name
-                    if(_old && !_new && o._n.length){
-                        ui=xui.absValue.pack(_.copy(o._n));
-                        _.arr.each(o._n, function(v){c._unBind(ovalue,v)});
-                        ui.setDataBinder(value);
-                    }
+                    if(_old && !_new && o._n.length)
+                        for(var i=0,l=o._n.length;i<l;i++)
+                            _.set(o._n[i], ["properties","dataBinder"], value);
+
                     //pointer _old the old one
                     if(_new && !_old) o._n=_new._n;
                     //delete the old name from pool
@@ -9122,7 +9123,7 @@ Class('xui.Dom','xui.absBox',{
             else
                 duration = duration||200;
 
-            type = tween[type]!==undefined?type:'circIn';
+            type = (type in tween)?type:'circIn';
 
             var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
@@ -9143,6 +9144,7 @@ Class('xui.Dom','xui.absBox',{
                             curvalue = (s + (e-s)*curvalue).toFixed(5);
                         }
                         curvalue+=u||unit||'';
+console.log(i, curvalue);
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
                     }
                 });
@@ -19850,10 +19852,9 @@ Class("xui.absValue", "xui.absObj",{
             // setValue and getValue
             value:{
                 ini:null,
-                set:function(value,force, tag, triggerEventOnly){
+                set:function(value,ovalue,force, tag, triggerEventOnly){
                     var profile=this,
                         p=profile.properties,r,
-                        ovalue=p.value,
                         box=profile.boxing();
 
                     //check format
@@ -27046,7 +27047,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // caption is for readonly comboinput(listbox/cmdbox are readonly)
             caption:{
                 ini:null,
-                set:function(v,force){
+                set:function(v){
                     var p=this.properties;
                     p.caption=v;
                     
