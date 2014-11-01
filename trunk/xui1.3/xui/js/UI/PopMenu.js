@@ -3,6 +3,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         adjustSize:function(){
             this.each(function(profile){
                 if(profile.renderId){
+                    var root=profile.getRoot();
+                    if(root.css('display')=='none'){
+                        profile._needadjust=1;
+                        return;
+                    }
                     var border = profile.getSubNode('BORDER'),
                         items = profile.getSubNode('ITEMS').cssSize({width:'auto',height:'auto'}),
                         itemNs = profile.getSubNode('ITEM',true),
@@ -131,6 +136,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             profile._conainer=parent;
 
             root.popToTop(obj, type, parent);
+
+            if(profile._needadjust){
+                delete profile._needadjust;
+                profile.boxing().adjustSize();
+            };
 
             var f=function(){
                 var p=arguments.callee.profile;

@@ -128,13 +128,13 @@ Class("xui.DataBinder","xui.absObj",{
                         uv = profile.box['xui.absValue']?b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray):null;
                     // v and uv can be object(Date,Number)
                     if(_.isHash(map[t])){
-                        var pp=map[t].properties,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS,events=map[t].events;
+                        var pp=map[t].properties,theme=map[t].theme,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS;
 
                         if(pp)delete map[t].properties;
+                        if(theme)delete map[t].theme;
                         if(ca)delete map[t].CA;
                         if(cc)delete map[t].CC;
                         if(cs)delete map[t].CS;
-                        if(events)delete map[t].events;
                         // remove non-properties
                         _.filter(map[t],function(o,i){
                             return !!(i in p);
@@ -157,11 +157,10 @@ Class("xui.DataBinder","xui.absObj",{
                                 map[t].properties=pp
                             }
                         }
-                        if(ca){map[t].CA=_.clone(profile.CA,true);}
-                        if(cc){map[t].CC=_.clone(profile.CC,true);}
-                        if(cs){map[t].CS=_.clone(profile.CS,true);}
-                        // databinder dont output events, but can input
-
+                         if(theme)map[t].theme=profile.theme;
+                        if(ca)map[t].CA=_.clone(profile.CA,true);
+                        if(cc)map[t].CC=_.clone(profile.CC,true);
+                        if(cs)map[t].CS=_.clone(profile.CS,true);
                         if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
                             if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
                         if(_.isSet(uv) && 'value' in p)
@@ -236,14 +235,7 @@ Class("xui.DataBinder","xui.absObj",{
                                     b.setProperties(pp);
                                 delete v.properties;
                             }
-                            if(pp=v.events){
-                                _.filter(pp,function(o,i){
-                                    return i in ev;
-                                });
-                                if(!_.isEmpty(pp))
-                                    b.setEvents(pp);
-                                delete v.events;
-                            }
+                            if(pp=v.theme){if(typeof(b.setTheme)=="function")b.setTheme(pp);delete v.theme}
                             if(pp=v.CS){if(!_.isEmpty(pp))b.setCustomStyle(pp);delete v.CS}
                             if(pp=v.CC){if(!_.isEmpty(pp))b.setCustomClass(pp);delete v.CC}
                             if(pp=v.CA){if(!_.isEmpty(pp))b.setCustomAttr(pp);delete v.CA}

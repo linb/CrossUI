@@ -200,7 +200,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         fireItemClickEvent:function(subId){
             var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
             if(ev.__realtouch)ev.__simulatedMousedown=1;
-            node.onMousedown(true);
+            node.onMousedown(true).onMouseup(true);
             if(ev.__realtouch)ev.__simulatedMousedown=0;
             return this;
         },
@@ -230,14 +230,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         */
         removeItems:function(arr){
             var self=this,
-                obj,serialId;
-            if(!_.isArr(arr))arr=[arr];
-            _.arr.each(arr,function(o,i){arr[i]=''+o});
+                p,obj,serialId;
             self.each(function(profile){
+                var p=profile.properties;
+                arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     _.arr.each(arr,function(o){
                         // get ui serial id
-                        serialId=profile.getSubIdByItemId(o);
+                        serialId=profile.getSubIdByItemId(o+"");
                         if(serialId && !(obj = profile.getSubNode('PANEL', serialId) ).isEmpty() ){
                             // remove ui
                             obj.remove();

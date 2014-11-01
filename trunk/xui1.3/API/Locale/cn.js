@@ -5217,10 +5217,16 @@ _.set(xui.Locale,["cn","app"], {
                 "xui.Com.load('App.Test1',function(com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
-        getClsFromDom:{
-            $desc:"从一个指定的DOM元素的id上获取 xui.Com 实例.",
+        getFromDom:{
+            $desc:"从一个指定的DOM元素获取 xui.Com 实例.",
             $paras:[
-                "id [必需参数] : String, DOM元素或id."
+                "id [必需参数] : String, DOM元素或xid."
+            ]
+        },
+        getClsFromDom:{
+            $desc:"从一个指定的DOM元素获取 xui.Com 类名.",
+            $paras:[
+                "id [必需参数] : String, DOM元素或xid."
             ]
         },
         getAllInstance:{
@@ -6378,6 +6384,20 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
                     "_.asyRun(function(){o.fireItemClickEvent('b')},1000);"+
                     "}"
+                ]
+            },
+            hideItems:{
+                $desc:"隐藏一个或多个项.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [必需参数] : String/Array, 项的标识号,可以是多个."
+                ]
+            },
+            hideItems:{
+                $desc:"显示一个或多个项.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [必需参数] : String/Array, 项的标识号,可以是多个."
                 ]
             },
             updateItem:{

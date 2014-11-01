@@ -251,7 +251,7 @@ Class("xui.Tips", null,{
     Static:{
         _reg:/-[\w]+:/,
         TIPSKEY:'tips',
-        MAXWIDTH:300,
+        MAXWIDTH:600,
         MOVABLE:true,
         DELAYTIME:400,
         AUTOHIDETIME:5000,

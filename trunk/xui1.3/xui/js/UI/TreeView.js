@@ -184,10 +184,11 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         _buildIcon:function(cls, type){
             return "<span class='"+cls+type+"'></span>";
         },
-        _getType:function(sub, type){
-            return sub
+        _getType:function(sub, type, cls, checked){
+            var r=sub
                 ? type=='last' ? '-fold-3': type=='first'? '-fold-1' : '-fold-2'
                 : type=='last' ? '-path-3': type=='first'? '-path-1' : '-path-2';
+            return checked?(cls+r+" "+cls+r+"-checked xui-treebar-toggle-checked"):(cls+r);
         },
         _prepareItem:function(profile, item, oitem, pid, index,len){
             var p=profile.properties,
@@ -219,7 +220,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     item.innerIcons=html;
 
                     // for the last one
-                    item.togglemark = item.sub?(cls+getType(item.sub, arr[ll])):'xui-uicmd-none';
+                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):'xui-uicmd-none';
                 }
             }else{
                 oitem._deep=0;
@@ -227,7 +228,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.rulerStyle='';
                 item.innerIcons='';
 
-                item.togglemark = item.sub?(cls+getType(item.sub, oitem._icons[0])):'xui-uicmd-none';
+                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):'xui-uicmd-none';
             }
             // show image
             item.imageDisplay=p.noIcons?"display:none;":"";
@@ -291,7 +292,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                             profile.getSubNodeByItemId('TOGGLE', aitem.id)
                                 // "xui-treeview-image-fold-2 xui-treeview-image--fold-2-checked"
                                 // "xui-treeview-image-path-2"
-                                .replaceClass(new RegExp("\\b"+cls+"-[\\w]+-[\\w]+((-[\\w]+)*)\\b", "g"), cls + getType(aitem.sub, nv) + '$1');
+                                .replaceClass(new RegExp("\\b"+cls+"-[\\w]+-[\\w]+((-[\\w]+)*)\\b", "g"), getType(aitem.sub, nv, cls) + '$1');
                         }
                         // parent's images
                         if(ns.length){

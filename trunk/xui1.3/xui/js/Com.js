@@ -213,6 +213,7 @@ Class('xui.Com',null,{
                     self.renderId='ok';
                     _.tryF(onEnd,[null, self, threadid],self.host);
                 }
+                self._showed=1;
             };
             self.threadid=threadid;
             if(self.created) f();
@@ -221,6 +222,7 @@ Class('xui.Com',null,{
         },
         hide:function(){
             this.getUIComponents(true).hide();
+            this._showed=0;
         },
         render:function(triggerLayout){
             var self=this;
@@ -358,6 +360,29 @@ Class('xui.Com',null,{
             });
             return xui.absObj.pack(arr,false);
         },
+        getProfiles:function(){
+            var hash={};
+            this.getAllComponents().each(function(prf){
+                hash[prf.alias]=prf.serialize(false,false,false);
+                delete hash[prf.alias].key;
+                delete hash[prf.alias].alias;
+                delete hash[prf.alias].events;
+            });
+            return hash;
+        },
+        setProfiles:function(profiles){
+            this.getAllComponents().each(function(prf,i){
+                if(i=profiles[prf.alias]){
+                    prf=prf.boxing();
+                    if(i.theme&&typeof(prf.setTheme)=="function")prf.setTheme(i.theme);
+                    if(i.properties &&!_.isEmpty(i.properties))prf.setProperties(i.properties);
+                    if(i.CA&&!_.isEmpty(i.CA))prf.setCustomAttr(i.CA);
+                    if(i.CC&&!_.isEmpty(i.CC))prf.setCustomClass(i.CC);
+                    if(i.CS&&!_.isEmpty(i.CS))prf.setCustomStyle(i.CS);
+                }
+            });
+            return this;
+        },
         getData:function(){
             var hash={};
             this.getAllComponents().each(function(prf){
@@ -493,11 +518,14 @@ Class('xui.Com',null,{
     },
     Static:{
         _ctrlId : new _.id(),
-        getClsFromDom:function(id){
+        getFromDom:function(id){
             var prf=xui.UIProfile.getFromDom(id);
             if(prf&&(prf=prf.host)){
-                return prf.KEY;
+                return (!prf.destroyed) &&prf;
             }
+        },
+        getClsFromDom:function(id){
+            return _.get(this.getFromDom(id),["KEY"]);
         },
         getAllInstance:function(){
             return this._pool;
@@ -531,6 +559,9 @@ Class('xui.Com',null,{
                             var o=new a();
                             // record it
                             a._callfrom=cls;
+
+                            _.set(xui.ComFactory,["_cache",cls],o);
+
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[null,o],o);
                         };

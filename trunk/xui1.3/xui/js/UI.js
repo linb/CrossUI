@@ -1,4 +1,3 @@
-
 Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
@@ -363,7 +362,7 @@ Class('xui.UIProfile','xui.Profile', {
             }
             return nodes;
         },
-        serialize:function(rtnString, keepHost){
+        serialize:function(rtnString, keepHost, children){
             var t,m,
                 self=this,
                 o=(t=self.box._beforeSerialized)?t(self):self,
@@ -408,7 +407,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(typeof o.theme == "string") r.theme=o.theme;
 
             //children
-            if(o.children && o.children.length){
+            if(false!==children && o.children && o.children.length){
                 if(o.box.KEY!="xui.UI.SVGPaper"){
                     _.arr.stableSort(o.children,function(x,y){
                         x=(x[0].properties.tabindex||0);y=(y[0].properties.tabindex||0);
@@ -422,7 +421,7 @@ Class('xui.UIProfile','xui.Profile', {
                     t[t.length]=m
                 });
             }
-            if(o.exchildren && o.exchildren.length){
+            if(false!==children && o.exchildren && o.exchildren.length){
                 r.exchildren=o.exchildren;
             }
             return rtnString===false?r:_.serialize(r);
@@ -4602,7 +4601,7 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
-                if(!_.isArr(arr))arr=arr.split(p.valueSeparator);
+                 arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
                 _.arr.each(arr,function(o,i){arr[i]=''+o});
                 // clear properties
                 remove(profile, p.items, arr, data);
@@ -4712,8 +4711,12 @@ Class("xui.absList", "xui.absObj",{
                             if(nid){
                                 _.arr.removeValue(arr,subId);
                                 arr.push(item.id);
+                                // id changed
+                                self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
+                            }else{
+                                // id didn't change, but item refreshed
+                                self._setCtrlValue(uiv)
                             }
-                            self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
                         }
                     }
                 }
@@ -4749,6 +4752,22 @@ Class("xui.absList", "xui.absObj",{
                 }
             }
             return self;
+        },
+        hideItems:function(subId){
+            return this.each(function(profile){
+                _.arr.each(_.isArr(subId)?subId:(subId+"").split(profile.properties.valueSeparator),function(i){
+                    if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
+                        i.css('display','none');
+                });
+            });
+        },
+        showItems:function(subId){
+            return this.each(function(profile){
+                _.arr.each(_.isArr(subId)?subId:(subId+"").split(profile.properties.valueSeparator),function(i){
+                    if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
+                        i.css('display','');
+                });
+            });
         },
         getItems:function(type){
             var v=this.get(0).properties.items;

@@ -234,12 +234,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             $order:0,
                             tabindex: '{_tabindex}',
                             className:'{cls_group} {cls_fold} {disabled} {readonly}',
-                            TAGCMDS:{
-                                // for IE<8 float bug 
-                                $order:1,
-                                tagName:'span',
-                                text:"{tagCmds}"
-                            },
                             RULER:{
                                 $order:2,
                                 style:'{rulerStyle}',
@@ -269,6 +263,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             OPT:{
                                 $order:8
+                            },
+                            TAGCMDS:{
+                                $order:9,
+                                tagName:'span',
+                                text:"{tagCmds}"
                             }
                         },
                         SUB:{
@@ -434,11 +433,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 'background-position':'-130px -264px'
             },
             TAGCMDS:{
-                position:'relative',
                 "padding-right":'4px',
                 'vertical-align':'middle',
+                position:(xui.browser.ie&&xui.browser.ver<8)?'absolute':'relative',
+                left:(xui.browser.ie&&xui.browser.ver<8)?'auto':null,
+                right:(xui.browser.ie&&xui.browser.ver<8)?'2px':null,
                 zoom:xui.browser.ie?1:null,
-                "float":"right"
+                "float":(xui.browser.ie&&xui.browser.ver<8)?null:'right'
             },
             CMD:{
                 "margin-left":'2px',
@@ -823,7 +824,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem._pid=pid;
 
             // set 'visible' will show when parent call .height()
-            item.togglemark = item.sub?'xui-uicmd-toggle':'xui-uicmd-none';
+            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):'xui-uicmd-none';
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item._itemDisplay=item.hidden?'display:none;':'';
