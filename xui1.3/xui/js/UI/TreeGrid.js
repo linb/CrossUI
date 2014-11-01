@@ -554,7 +554,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 nodes=[],v,count=0;
 
             //get array
-            ids = _.isArr(ids)?ids:[ids];
+            ids = _.isArr(ids)?ids:(ids+"").split(p.valueSeparator);
             _.arr.each(ids,function(o,i){ids[i]=''+o});
             _.arr.each(ids,function(id){
                 //get item id
@@ -740,29 +740,29 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 self=this,
                 profile=self.get(0),
                 box=profile.box,
-                prop=profile.properties,
+                p=profile.properties,
                 cell=profile.cellMap,
                 SubID=xui.UI.$tag_subId,
                 nodes=[],count=0;
 
             //get array
-            ids = _.isArr(ids)?ids:[ids];
+            ids = _.isArr(ids)?ids:(ids+"").split(p.valueSeparator);
             _.arr.each(ids,function(o,i){ids[i]=''+o});
             if(ids&&ids.length>1){
                 ids.sort(function(x,y){
-                    var xx=_.arr.indexOf(prop.header, x);
-                    if(xx==-1)xx=_.arr.subIndexOf(prop.header, "id", x);
-                    var yy=_.arr.indexOf(prop.header, y);
-                    if(yy==-1)yy=_.arr.subIndexOf(prop.header, "id", y);
+                    var xx=_.arr.indexOf(p.header, x);
+                    if(xx==-1)xx=_.arr.subIndexOf(p.header, "id", x);
+                    var yy=_.arr.indexOf(p.header, y);
+                    if(yy==-1)yy=_.arr.subIndexOf(p.header, "id", y);
                     return xx>yy?1:xx===yy?0:-1;
                 });
             }
 
-            var arr=prop.grpCols;
+            var arr=p.grpCols;
             if(arr && _.isArr(arr)&& arr.length){
                 _.arr.each(ids,function(id){
-                    var pos=_.arr.indexOf(prop.header, id);
-                    if(pos==-1)pos=_.arr.subIndexOf(prop.header, "id", id);
+                    var pos=_.arr.indexOf(p.header, id);
+                    if(pos==-1)pos=_.arr.subIndexOf(p.header, "id", id);
                     if(pos==-1)return;
                     for(var j=0,m=arr.length,grp;j<m;j++){
                         grp=arr[j];
@@ -787,8 +787,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             _.arr.each(ids,function(id){
-                var index=_.arr.indexOf(prop.header, id);
-                if(index==-1)index=_.arr.subIndexOf(prop.header, "id", id);
+                var index=_.arr.indexOf(p.header, id);
+                if(index==-1)index=_.arr.subIndexOf(p.header, "id", id);
                 if(index==-1)return;
 
                 // clear UI and links
@@ -831,9 +831,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     });
                 };
-                applaycell(prop.rows);
+                applaycell(p.rows);
 
-                _.arr.removeFrom(prop.header,index);
+                _.arr.removeFrom(p.header,index);
             },null,true);
             if(count>0){
                 xui(nodes).remove();
@@ -842,7 +842,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.$activeCell && !xui.Dom.byId(profile.$activeCell))
                     delete profile.$activeCell;
 
-                prop.grpCols=box._adjustGrpColsData(profile,arr);
+                p.grpCols=box._adjustGrpColsData(profile,arr);
                 box._adjustColsH(profile);
                 box._adjustColsV(profile);
                 box._adjustBody(profile,'delcol');

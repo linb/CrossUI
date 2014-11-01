@@ -5154,8 +5154,14 @@ _.set(xui.Locale,["en","app"], {
                 "xui.Com.load('App.Test1',function(err,com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
+        getFromDom:{
+            $desc:"Gets xui.Com instance from a DOM node or xid.",
+            $paras:[
+                "id [Required] : String, DOM node or id."
+            ]
+        },
         getClsFromDom:{
-            $desc:"Gets xui.Com instance from a DOM node or id.",
+            $desc:"Gets xui.Com class name from a DOM node or xid.",
             $paras:[
                 "id [Required] : String, DOM node or id."
             ]
@@ -6324,7 +6330,20 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
+            hideItems:{
+                $desc:"To hide an or more item.",
+                $rtn:"[self]",
+                $paras:[
+                     "subId [Required] : String/Array, id array of target items."
+                ]
+            },
+            hideItems:{
+                $desc:"To  show an or more item.",
+                $rtn:"[self]",
+                $paras:[
+                     "subId [Required] : String/Array, id array of target items."
+                ]
+            },
             getItems:{
                 $desc:"Gets the items proerpy from the current UI Object.",
                 $rtn:"Array",

@@ -1610,13 +1610,15 @@ new function(){
         exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
                 compare=function(x,y,s){
+                    x=_.isSet(x)?x:"";
+                    y=_.isSet(y)?y:"";
                     switch(_.str.trim(s)){
                         case '=':
-                            return x==y;
+                            return (x+"")==(y+"");
                         case 'empty':
-                            return x=='';
+                            return !x;
                         case 'non-empty':
-                            return x!='';
+                            return x===0||!!x;
                         case '!=':
                             return (x+"")!=(y+"");
                         case '>':
@@ -1635,8 +1637,20 @@ new function(){
                             return (x+"").indexOf(y+"")===0;
                         case 'end':
                             return (x+"").indexOf(y+"")===(x+"").length-(y+"").length;
+                        case "objhaskey":
+                            return typeof(x)=="object"?(y in x):false;
+                        case "objnokey":
+                            return typeof(x)=="object"?!(y in x):false;
+                        case "arrhasvalue":
+                            return _.isArr(x)?_.arr.indexOf(x,y)!==-1:false;
+                        case "arrnovalue":
+                            return _.isArr(x)?_.arr.indexOf(x,y)==-1:false;
+                        case "objarrhaskey":
+                            return _.isArr(x)?_.arr.subIndexOf(x,'id',y)!==-1:false;                        
+                        case "objarrnokey":
+                            return _.isArr(x)?_.arr.subIndexOf(x,'id',y)==-1:false;                        
                         default:
-                            return true;
+                            return false;
                     }
                 },
                 _ns={
@@ -1704,19 +1718,19 @@ new function(){
                                             ar.xuicom="App";
                                             ar.cache=true;
                                         }
-                                        if(!ar.cache){
-                                            xui.Com.destroyAll();
-                                        }else{
-                                            _.each(xui.Com.getAllInstance(),function(o){
-                                                o.hide();
-                                            });
-                                        }
+                                        // get root only
+                                        xui('body').children().each(function(xid){
+                                            var com=xui.Com.getFromDom(xid);
+                                            if(com && com._showed){
+                                                if(ar.cache)com.hide();else com.destroy();
+                                            }
+                                        });   
                                         xui.showCom(ar.xuicom);
                                     });
                                 }
                                 
                                 var fi="xuicom="+target;
-                                if(iparams[0])fi+="&cache="+(iparams[0]?"1":"0")
+                                if(iparams[0])fi+="&cache="+(iparams[0]?true:false);
                                 xui.History.setFI(fi);
                                 return;
                             }
@@ -3279,15 +3293,18 @@ Class('xui.absBox',null, {
             return o;
         },
         _unique:function(arr){
-            var h={},a=[],i=0,t,k;
-            for(;t=arr[i++];){
+            var h={},a=[],i=0,l=arr.length,t,k;
+            for(;i<l;i++)a[i]=arr[i];
+            arr.length=0;
+            i=0;
+            for(;t=a[i++];){
                 k=typeof t=='string'? t : t.$xid;
                 if(!h[k]){
                     h[k]=1;
-                    a[a.length]=t;
+                    arr.push(t);
                 }
             }
-            return a;
+            return arr;
         },
         plugIn:function(name, fun){
             this.prototype[name]=fun;
@@ -3966,6 +3983,14 @@ Class("xui.Timer","xui.absObj",{
         }
     },
     Static:{
+        _beforeSerialized:function(profile){
+            var o={};
+            _.merge(o, profile, 'all');
+            var p = o.properties = _.clone(profile.properties,true);
+            if(p.tagVar && _.isEmpty(p.tagVar))
+                delete p.tagVar;
+            return o;
+        },
         DataModel:{
             "interval":1000
         },
@@ -4107,13 +4132,13 @@ Class("xui.Timer","xui.absObj",{
                         uv = profile.box['xui.absValue']?b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray):null;
                     // v and uv can be object(Date,Number)
                     if(_.isHash(map[t])){
-                        var pp=map[t].properties,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS,events=map[t].events;
+                        var pp=map[t].properties,theme=map[t].theme,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS;
 
                         if(pp)delete map[t].properties;
+                        if(theme)delete map[t].theme;
                         if(ca)delete map[t].CA;
                         if(cc)delete map[t].CC;
                         if(cs)delete map[t].CS;
-                        if(events)delete map[t].events;
                         // remove non-properties
                         _.filter(map[t],function(o,i){
                             return !!(i in p);
@@ -4136,11 +4161,10 @@ Class("xui.Timer","xui.absObj",{
                                 map[t].properties=pp
                             }
                         }
-                        if(ca){map[t].CA=_.clone(profile.CA,true);}
-                        if(cc){map[t].CC=_.clone(profile.CC,true);}
-                        if(cs){map[t].CS=_.clone(profile.CS,true);}
-                        // databinder dont output events, but can input
-
+                         if(theme)map[t].theme=profile.theme;
+                        if(ca)map[t].CA=_.clone(profile.CA,true);
+                        if(cc)map[t].CC=_.clone(profile.CC,true);
+                        if(cs)map[t].CS=_.clone(profile.CS,true);
                         if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
                             if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
                         if(_.isSet(uv) && 'value' in p)
@@ -4215,14 +4239,7 @@ Class("xui.Timer","xui.absObj",{
                                     b.setProperties(pp);
                                 delete v.properties;
                             }
-                            if(pp=v.events){
-                                _.filter(pp,function(o,i){
-                                    return i in ev;
-                                });
-                                if(!_.isEmpty(pp))
-                                    b.setEvents(pp);
-                                delete v.events;
-                            }
+                            if(pp=v.theme){if(typeof(b.setTheme)=="function")b.setTheme(pp);delete v.theme}
                             if(pp=v.CS){if(!_.isEmpty(pp))b.setCustomStyle(pp);delete v.CS}
                             if(pp=v.CC){if(!_.isEmpty(pp))b.setCustomClass(pp);delete v.CC}
                             if(pp=v.CA){if(!_.isEmpty(pp))b.setCustomAttr(pp);delete v.CA}
@@ -9144,7 +9161,6 @@ Class('xui.Dom','xui.absBox',{
                             curvalue = (s + (e-s)*curvalue).toFixed(5);
                         }
                         curvalue+=u||unit||'';
-console.log(i, curvalue);
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
                     }
                 });
@@ -11770,6 +11786,7 @@ Class('xui.Com',null,{
                     self.renderId='ok';
                     _.tryF(onEnd,[null, self, threadid],self.host);
                 }
+                self._showed=1;
             };
             self.threadid=threadid;
             if(self.created) f();
@@ -11778,6 +11795,7 @@ Class('xui.Com',null,{
         },
         hide:function(){
             this.getUIComponents(true).hide();
+            this._showed=0;
         },
         render:function(triggerLayout){
             var self=this;
@@ -11915,6 +11933,29 @@ Class('xui.Com',null,{
             });
             return xui.absObj.pack(arr,false);
         },
+        getProfiles:function(){
+            var hash={};
+            this.getAllComponents().each(function(prf){
+                hash[prf.alias]=prf.serialize(false,false,false);
+                delete hash[prf.alias].key;
+                delete hash[prf.alias].alias;
+                delete hash[prf.alias].events;
+            });
+            return hash;
+        },
+        setProfiles:function(profiles){
+            this.getAllComponents().each(function(prf,i){
+                if(i=profiles[prf.alias]){
+                    prf=prf.boxing();
+                    if(i.theme&&typeof(prf.setTheme)=="function")prf.setTheme(i.theme);
+                    if(i.properties &&!_.isEmpty(i.properties))prf.setProperties(i.properties);
+                    if(i.CA&&!_.isEmpty(i.CA))prf.setCustomAttr(i.CA);
+                    if(i.CC&&!_.isEmpty(i.CC))prf.setCustomClass(i.CC);
+                    if(i.CS&&!_.isEmpty(i.CS))prf.setCustomStyle(i.CS);
+                }
+            });
+            return this;
+        },
         getData:function(){
             var hash={};
             this.getAllComponents().each(function(prf){
@@ -12050,11 +12091,14 @@ Class('xui.Com',null,{
     },
     Static:{
         _ctrlId : new _.id(),
-        getClsFromDom:function(id){
+        getFromDom:function(id){
             var prf=xui.UIProfile.getFromDom(id);
             if(prf&&(prf=prf.host)){
-                return prf.KEY;
+                return (!prf.destroyed) &&prf;
             }
+        },
+        getClsFromDom:function(id){
+            return _.get(this.getFromDom(id),["KEY"]);
         },
         getAllInstance:function(){
             return this._pool;
@@ -12088,6 +12132,9 @@ Class('xui.Com',null,{
                             var o=new a();
                             // record it
                             a._callfrom=cls;
+
+                            _.set(xui.ComFactory,["_cache",cls],o);
+
                             if(showUI!==false)o.show(onEnd);
                             else _.tryF(onEnd,[null,o],o);
                         };
@@ -14030,7 +14077,7 @@ Class("xui.Tips", null,{
     Static:{
         _reg:/-[\w]+:/,
         TIPSKEY:'tips',
-        MAXWIDTH:300,
+        MAXWIDTH:600,
         MOVABLE:true,
         DELAYTIME:400,
         AUTOHIDETIME:5000,
@@ -14574,7 +14621,7 @@ Class("xui.Tips", null,{
             xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
         };
         xui.message = function(body, head, width, duration){
-           width = width || 200;
+           width = width || 300;
            if(xui.browser.ie)width=width+(width%2);
            var div, h, me=arguments.callee,
            stack=me.stack||(me.stack=[]),
@@ -14667,8 +14714,7 @@ Class("xui.Tips", null,{
             window.onerror=this.err;
         }
     }
-});
-Class('xui.UIProfile','xui.Profile', {
+});Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
         renderId:null,
@@ -15032,7 +15078,7 @@ Class('xui.UIProfile','xui.Profile', {
             }
             return nodes;
         },
-        serialize:function(rtnString, keepHost){
+        serialize:function(rtnString, keepHost, children){
             var t,m,
                 self=this,
                 o=(t=self.box._beforeSerialized)?t(self):self,
@@ -15077,7 +15123,7 @@ Class('xui.UIProfile','xui.Profile', {
             if(typeof o.theme == "string") r.theme=o.theme;
 
             //children
-            if(o.children && o.children.length){
+            if(false!==children && o.children && o.children.length){
                 if(o.box.KEY!="xui.UI.SVGPaper"){
                     _.arr.stableSort(o.children,function(x,y){
                         x=(x[0].properties.tabindex||0);y=(y[0].properties.tabindex||0);
@@ -15091,7 +15137,7 @@ Class('xui.UIProfile','xui.Profile', {
                     t[t.length]=m
                 });
             }
-            if(o.exchildren && o.exchildren.length){
+            if(false!==children && o.exchildren && o.exchildren.length){
                 r.exchildren=o.exchildren;
             }
             return rtnString===false?r:_.serialize(r);
@@ -19271,7 +19317,7 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
-                if(!_.isArr(arr))arr=arr.split(p.valueSeparator);
+                 arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
                 _.arr.each(arr,function(o,i){arr[i]=''+o});
                 // clear properties
                 remove(profile, p.items, arr, data);
@@ -19381,8 +19427,12 @@ Class("xui.absList", "xui.absObj",{
                             if(nid){
                                 _.arr.removeValue(arr,subId);
                                 arr.push(item.id);
+                                // id changed
+                                self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
+                            }else{
+                                // id didn't change, but item refreshed
+                                self._setCtrlValue(uiv)
                             }
-                            self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
                         }
                     }
                 }
@@ -19418,6 +19468,22 @@ Class("xui.absList", "xui.absObj",{
                 }
             }
             return self;
+        },
+        hideItems:function(subId){
+            return this.each(function(profile){
+                _.arr.each(_.isArr(subId)?subId:(subId+"").split(profile.properties.valueSeparator),function(i){
+                    if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
+                        i.css('display','none');
+                });
+            });
+        },
+        showItems:function(subId){
+            return this.each(function(profile){
+                _.arr.each(_.isArr(subId)?subId:(subId+"").split(profile.properties.valueSeparator),function(i){
+                    if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
+                        i.css('display','');
+                });
+            });
         },
         getItems:function(type){
             var v=this.get(0).properties.items;
@@ -30257,12 +30323,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'{_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
-                        TAGCMDS:{
-                            // for IE<8 float bug 
-                            $order:1,
-                            tagName:'span',
-                            text:"{tagCmds}"
-                        },
                         MARK:{
                             $order:5,
                             style:"{_cbDisplay}"
@@ -30282,6 +30342,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         OPT:{
                             $order:50
+                        },
+                        TAGCMDS:{
+                            $order:60,
+                            tagName:'span',
+                            text:"{tagCmds}"
                         }
                     }
                 },
@@ -30411,11 +30476,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'background-position':'-130px -264px'
             },
             TAGCMDS:{
-                position:'relative',
                 "padding-right":'4px',
                 'vertical-align':'middle',
+                position:(xui.browser.ie&&xui.browser.ver<8)?'absolute':'relative',
+                left:(xui.browser.ie&&xui.browser.ver<8)?'auto':null,
+                right:(xui.browser.ie&&xui.browser.ver<8)?'2px':null,
                 zoom:xui.browser.ie?1:null,
-                "float":"right"
+                "float":(xui.browser.ie&&xui.browser.ver<8)?null:'right'
             },
             CMD:{
                 "margin-left":'2px',
@@ -32298,7 +32365,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         fireItemClickEvent:function(subId){
             var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
             if(ev.__realtouch)ev.__simulatedMousedown=1;
-            node.onMousedown(true);
+            node.onMousedown(true).onMouseup(true);
             if(ev.__realtouch)ev.__simulatedMousedown=0;
             return this;
         },
@@ -32328,14 +32395,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         */
         removeItems:function(arr){
             var self=this,
-                obj,serialId;
-            if(!_.isArr(arr))arr=[arr];
-            _.arr.each(arr,function(o,i){arr[i]=''+o});
+                p,obj,serialId;
             self.each(function(profile){
+                var p=profile.properties;
+                arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     _.arr.each(arr,function(o){
                         // get ui serial id
-                        serialId=profile.getSubIdByItemId(o);
+                        serialId=profile.getSubIdByItemId(o+"");
                         if(serialId && !(obj = profile.getSubNode('PANEL', serialId) ).isEmpty() ){
                             // remove ui
                             obj.remove();
@@ -34245,12 +34312,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             $order:0,
                             tabindex: '{_tabindex}',
                             className:'{cls_group} {cls_fold} {disabled} {readonly}',
-                            TAGCMDS:{
-                                // for IE<8 float bug 
-                                $order:1,
-                                tagName:'span',
-                                text:"{tagCmds}"
-                            },
                             RULER:{
                                 $order:2,
                                 style:'{rulerStyle}',
@@ -34280,6 +34341,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             OPT:{
                                 $order:8
+                            },
+                            TAGCMDS:{
+                                $order:9,
+                                tagName:'span',
+                                text:"{tagCmds}"
                             }
                         },
                         SUB:{
@@ -34445,11 +34511,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 'background-position':'-130px -264px'
             },
             TAGCMDS:{
-                position:'relative',
                 "padding-right":'4px',
                 'vertical-align':'middle',
+                position:(xui.browser.ie&&xui.browser.ver<8)?'absolute':'relative',
+                left:(xui.browser.ie&&xui.browser.ver<8)?'auto':null,
+                right:(xui.browser.ie&&xui.browser.ver<8)?'2px':null,
                 zoom:xui.browser.ie?1:null,
-                "float":"right"
+                "float":(xui.browser.ie&&xui.browser.ver<8)?null:'right'
             },
             CMD:{
                 "margin-left":'2px',
@@ -34834,7 +34902,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem._pid=pid;
 
             // set 'visible' will show when parent call .height()
-            item.togglemark = item.sub?'xui-uicmd-toggle':'xui-uicmd-none';
+            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):'xui-uicmd-none';
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item._itemDisplay=item.hidden?'display:none;':'';
@@ -35186,10 +35254,11 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         _buildIcon:function(cls, type){
             return "<span class='"+cls+type+"'></span>";
         },
-        _getType:function(sub, type){
-            return sub
+        _getType:function(sub, type, cls, checked){
+            var r=sub
                 ? type=='last' ? '-fold-3': type=='first'? '-fold-1' : '-fold-2'
                 : type=='last' ? '-path-3': type=='first'? '-path-1' : '-path-2';
+            return checked?(cls+r+" "+cls+r+"-checked xui-treebar-toggle-checked"):(cls+r);
         },
         _prepareItem:function(profile, item, oitem, pid, index,len){
             var p=profile.properties,
@@ -35221,7 +35290,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     item.innerIcons=html;
 
                     // for the last one
-                    item.togglemark = item.sub?(cls+getType(item.sub, arr[ll])):'xui-uicmd-none';
+                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):'xui-uicmd-none';
                 }
             }else{
                 oitem._deep=0;
@@ -35229,7 +35298,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.rulerStyle='';
                 item.innerIcons='';
 
-                item.togglemark = item.sub?(cls+getType(item.sub, oitem._icons[0])):'xui-uicmd-none';
+                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):'xui-uicmd-none';
             }
             // show image
             item.imageDisplay=p.noIcons?"display:none;":"";
@@ -35293,7 +35362,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                             profile.getSubNodeByItemId('TOGGLE', aitem.id)
                                 // "xui-treeview-image-fold-2 xui-treeview-image--fold-2-checked"
                                 // "xui-treeview-image-path-2"
-                                .replaceClass(new RegExp("\\b"+cls+"-[\\w]+-[\\w]+((-[\\w]+)*)\\b", "g"), cls + getType(aitem.sub, nv) + '$1');
+                                .replaceClass(new RegExp("\\b"+cls+"-[\\w]+-[\\w]+((-[\\w]+)*)\\b", "g"), getType(aitem.sub, nv, cls) + '$1');
                         }
                         // parent's images
                         if(ns.length){
@@ -35325,6 +35394,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         adjustSize:function(){
             this.each(function(profile){
                 if(profile.renderId){
+                    var root=profile.getRoot();
+                    if(root.css('display')=='none'){
+                        profile._needadjust=1;
+                        return;
+                    }
                     var border = profile.getSubNode('BORDER'),
                         items = profile.getSubNode('ITEMS').cssSize({width:'auto',height:'auto'}),
                         itemNs = profile.getSubNode('ITEM',true),
@@ -35453,6 +35527,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             profile._conainer=parent;
 
             root.popToTop(obj, type, parent);
+
+            if(profile._needadjust){
+                delete profile._needadjust;
+                profile.boxing().adjustSize();
+            };
 
             var f=function(){
                 var p=arguments.callee.profile;
@@ -38519,7 +38598,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 nodes=[],v,count=0;
 
             //get array
-            ids = _.isArr(ids)?ids:[ids];
+            ids = _.isArr(ids)?ids:(ids+"").split(p.valueSeparator);
             _.arr.each(ids,function(o,i){ids[i]=''+o});
             _.arr.each(ids,function(id){
                 //get item id
@@ -38705,29 +38784,29 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 self=this,
                 profile=self.get(0),
                 box=profile.box,
-                prop=profile.properties,
+                p=profile.properties,
                 cell=profile.cellMap,
                 SubID=xui.UI.$tag_subId,
                 nodes=[],count=0;
 
             //get array
-            ids = _.isArr(ids)?ids:[ids];
+            ids = _.isArr(ids)?ids:(ids+"").split(p.valueSeparator);
             _.arr.each(ids,function(o,i){ids[i]=''+o});
             if(ids&&ids.length>1){
                 ids.sort(function(x,y){
-                    var xx=_.arr.indexOf(prop.header, x);
-                    if(xx==-1)xx=_.arr.subIndexOf(prop.header, "id", x);
-                    var yy=_.arr.indexOf(prop.header, y);
-                    if(yy==-1)yy=_.arr.subIndexOf(prop.header, "id", y);
+                    var xx=_.arr.indexOf(p.header, x);
+                    if(xx==-1)xx=_.arr.subIndexOf(p.header, "id", x);
+                    var yy=_.arr.indexOf(p.header, y);
+                    if(yy==-1)yy=_.arr.subIndexOf(p.header, "id", y);
                     return xx>yy?1:xx===yy?0:-1;
                 });
             }
 
-            var arr=prop.grpCols;
+            var arr=p.grpCols;
             if(arr && _.isArr(arr)&& arr.length){
                 _.arr.each(ids,function(id){
-                    var pos=_.arr.indexOf(prop.header, id);
-                    if(pos==-1)pos=_.arr.subIndexOf(prop.header, "id", id);
+                    var pos=_.arr.indexOf(p.header, id);
+                    if(pos==-1)pos=_.arr.subIndexOf(p.header, "id", id);
                     if(pos==-1)return;
                     for(var j=0,m=arr.length,grp;j<m;j++){
                         grp=arr[j];
@@ -38752,8 +38831,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             _.arr.each(ids,function(id){
-                var index=_.arr.indexOf(prop.header, id);
-                if(index==-1)index=_.arr.subIndexOf(prop.header, "id", id);
+                var index=_.arr.indexOf(p.header, id);
+                if(index==-1)index=_.arr.subIndexOf(p.header, "id", id);
                 if(index==-1)return;
 
                 // clear UI and links
@@ -38796,9 +38875,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     });
                 };
-                applaycell(prop.rows);
+                applaycell(p.rows);
 
-                _.arr.removeFrom(prop.header,index);
+                _.arr.removeFrom(p.header,index);
             },null,true);
             if(count>0){
                 xui(nodes).remove();
@@ -38807,7 +38886,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.$activeCell && !xui.Dom.byId(profile.$activeCell))
                     delete profile.$activeCell;
 
-                prop.grpCols=box._adjustGrpColsData(profile,arr);
+                p.grpCols=box._adjustGrpColsData(profile,arr);
                 box._adjustColsH(profile);
                 box._adjustColsV(profile);
                 box._adjustBody(profile,'delcol');

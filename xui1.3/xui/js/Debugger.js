@@ -130,7 +130,7 @@ Class('xui.Debugger', null, {
             xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
         };
         xui.message = function(body, head, width, duration){
-           width = width || 200;
+           width = width || 300;
            if(xui.browser.ie)width=width+(width%2);
            var div, h, me=arguments.callee,
            stack=me.stack||(me.stack=[]),

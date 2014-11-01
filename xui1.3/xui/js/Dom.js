@@ -1469,7 +1469,6 @@ Class('xui.Dom','xui.absBox',{
                             curvalue = (s + (e-s)*curvalue).toFixed(5);
                         }
                         curvalue+=u||unit||'';
-console.log(i, curvalue);
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
                     }
                 });

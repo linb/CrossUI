@@ -1610,13 +1610,15 @@ new function(){
         exec:function(conf, args, scope, temp){
            var  t,m,n,p,type=conf.type||"other",
                 compare=function(x,y,s){
+                    x=_.isSet(x)?x:"";
+                    y=_.isSet(y)?y:"";
                     switch(_.str.trim(s)){
                         case '=':
-                            return x==y;
+                            return (x+"")==(y+"");
                         case 'empty':
-                            return x=='';
+                            return !x;
                         case 'non-empty':
-                            return x!='';
+                            return x===0||!!x;
                         case '!=':
                             return (x+"")!=(y+"");
                         case '>':
@@ -1635,8 +1637,20 @@ new function(){
                             return (x+"").indexOf(y+"")===0;
                         case 'end':
                             return (x+"").indexOf(y+"")===(x+"").length-(y+"").length;
+                        case "objhaskey":
+                            return typeof(x)=="object"?(y in x):false;
+                        case "objnokey":
+                            return typeof(x)=="object"?!(y in x):false;
+                        case "arrhasvalue":
+                            return _.isArr(x)?_.arr.indexOf(x,y)!==-1:false;
+                        case "arrnovalue":
+                            return _.isArr(x)?_.arr.indexOf(x,y)==-1:false;
+                        case "objarrhaskey":
+                            return _.isArr(x)?_.arr.subIndexOf(x,'id',y)!==-1:false;                        
+                        case "objarrnokey":
+                            return _.isArr(x)?_.arr.subIndexOf(x,'id',y)==-1:false;                        
                         default:
-                            return true;
+                            return false;
                     }
                 },
                 _ns={
@@ -1704,19 +1718,19 @@ new function(){
                                             ar.xuicom="App";
                                             ar.cache=true;
                                         }
-                                        if(!ar.cache){
-                                            xui.Com.destroyAll();
-                                        }else{
-                                            _.each(xui.Com.getAllInstance(),function(o){
-                                                o.hide();
-                                            });
-                                        }
+                                        // get root only
+                                        xui('body').children().each(function(xid){
+                                            var com=xui.Com.getFromDom(xid);
+                                            if(com && com._showed){
+                                                if(ar.cache)com.hide();else com.destroy();
+                                            }
+                                        });   
                                         xui.showCom(ar.xuicom);
                                     });
                                 }
                                 
                                 var fi="xuicom="+target;
-                                if(iparams[0])fi+="&cache="+(iparams[0]?"1":"0")
+                                if(iparams[0])fi+="&cache="+(iparams[0]?true:false);
                                 xui.History.setFI(fi);
                                 return;
                             }
@@ -3279,15 +3293,18 @@ Class('xui.absBox',null, {
             return o;
         },
         _unique:function(arr){
-            var h={},a=[],i=0,t,k;
-            for(;t=arr[i++];){
+            var h={},a=[],i=0,l=arr.length,t,k;
+            for(;i<l;i++)a[i]=arr[i];
+            arr.length=0;
+            i=0;
+            for(;t=a[i++];){
                 k=typeof t=='string'? t : t.$xid;
                 if(!h[k]){
                     h[k]=1;
-                    a[a.length]=t;
+                    arr.push(t);
                 }
             }
-            return a;
+            return arr;
         },
         plugIn:function(name, fun){
             this.prototype[name]=fun;
@@ -3966,6 +3983,14 @@ Class("xui.Timer","xui.absObj",{
         }
     },
     Static:{
+        _beforeSerialized:function(profile){
+            var o={};
+            _.merge(o, profile, 'all');
+            var p = o.properties = _.clone(profile.properties,true);
+            if(p.tagVar && _.isEmpty(p.tagVar))
+                delete p.tagVar;
+            return o;
+        },
         DataModel:{
             "interval":1000
         },

@@ -120,12 +120,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         className:'{_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
-                        TAGCMDS:{
-                            // for IE<8 float bug 
-                            $order:1,
-                            tagName:'span',
-                            text:"{tagCmds}"
-                        },
                         MARK:{
                             $order:5,
                             style:"{_cbDisplay}"
@@ -145,6 +139,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         },
                         OPT:{
                             $order:50
+                        },
+                        TAGCMDS:{
+                            $order:60,
+                            tagName:'span',
+                            text:"{tagCmds}"
                         }
                     }
                 },
@@ -274,11 +273,13 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 'background-position':'-130px -264px'
             },
             TAGCMDS:{
-                position:'relative',
                 "padding-right":'4px',
                 'vertical-align':'middle',
+                position:(xui.browser.ie&&xui.browser.ver<8)?'absolute':'relative',
+                left:(xui.browser.ie&&xui.browser.ver<8)?'auto':null,
+                right:(xui.browser.ie&&xui.browser.ver<8)?'2px':null,
                 zoom:xui.browser.ie?1:null,
-                "float":"right"
+                "float":(xui.browser.ie&&xui.browser.ver<8)?null:'right'
             },
             CMD:{
                 "margin-left":'2px',
