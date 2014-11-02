@@ -320,7 +320,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getRowbyCell:function(cell, type){
             return this.constructor._getRow(this.get(0), cell._row, type);
         },
-
         toggleRow:function(id, expand){
             var profile = this.get(0),
             row = profile.rowMap[profile.rowMap2[id]];
@@ -923,7 +922,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(prop.dirtyMark && prop.showDirtyMark)
                 xui(arr).removeClass('xui-ui-dirty');
         },
-        getActiveRow:function(){
+        getActiveRow:function(type){
             var ar,profile=this.get(0);
             if(profile.properties.activeMode!='row')return;
             if(!(ar=profile.$activeRow))return;
@@ -931,7 +930,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(ar && ar.id && ar.id==profile.box._temprowid){
                 ar=null;
             }
-            return ar;
+            return profile.box._getRow(profile, ar, type);
         },
         setActiveRow:function(rowId){
             var dr, row, profile=this.get(0);
@@ -1081,7 +1080,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         /*cell realted*/
         getCell:function(cellId, type){
-            var self=this,profile=this.get(0),v;
+            var self=this,profile=this.get(0),v,m;
             _.each(profile.cellMap,function(o){
                 if(o.id && o.id===cellId){
                     cellId=o._serialId;
@@ -1092,10 +1091,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return !v?null:
                     type=='data'? _.merge({rowId:v._row.id, colId:v._col.id},_.clone(v,true)):
                     type=='min'? v.value:
+                    type=='map'?( (m={})&&((m[v._col.id]=v.value)||1)&&m):
                     v;
         },
         getCellbyRowCol:function(rowId, colId, type){
-            var profile=this.get(0),v;
+            var profile=this.get(0),v,m;
             if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
             if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
             v=_.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
@@ -1103,6 +1103,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return !v?null:
                     type=='data'? _.merge({rowId:v._row.id, colId:v._col.id},_.clone(v,true)):
                     type=='min'? v.value:
+                    type=='map'?( (m={})&&((m[v._col.id]=v.value)||1)&&m):
                     v;
         },
         getCells:function(rowId, colId, type){
@@ -1162,11 +1163,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this.get(0).getSubNode('CELLA', cellId).focus(true);
             return this;
         },
-        getActiveCell:function(){
-            var ar,profile=this.get(0);
+        getActiveCell:function(type){
+            var ar,profile=this.get(0),m,v;
             if(profile.properties.activeMode!='cell')return;
             if(!(ar=profile.$activeCell))return;
-            return profile.cellMap[profile.getSubId(ar)];
+            v=profile.cellMap[profile.getSubId(ar)];
+            return !v?null:
+                    type=='data'? _.merge({rowId:v._row.id, colId:v._col.id},_.clone(v,true)):
+                    type=='min'? v.value:
+                    type=='map'?( (m={})&&((m[v._col.id]=v.value)||1)&&m):
+                    v;
         },
         setActiveCell:function(rowId, colId){
             var dr, cell, profile=this.get(0);
@@ -3047,6 +3053,49 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             currencyTpl:"$ *",
             numberTpl:"",
             valueSeparator:";",
+            activeRow:{
+                ini:null
+            },
+            activeCell:{
+                ini:null
+            },
+            valueMap:{
+                ini:null,
+                get:function(){
+                    if(!this.renderId||this.destroyed)return;
+                    var prf=this,ins=prf.boxing(),p=prf.properties,t,hash;
+                    if(p.activeMode="row"){
+                        if(t=ins.getActiveRow()){
+                            hash={};
+                            _.arr.each(t.cells,function(t){
+                                hash[t._col.id]=t.value;
+                            });
+                        }
+                    }else if(p.activeMode="cell"){
+                        if(t=ins.getActiveCell()){
+                            hash={};
+                            hash[t._col.id]=t.value;
+                        }
+                    }
+                    return hash;
+                },
+                set:function(hash){
+                    if(!this.renderId||this.destroyed||!_.isHash(hash))return;
+                    var prf=this,ins=prf.boxing(),p=prf.properties,t;
+                    if(p.activeMode="row"){
+                        if(t=ins.getActiveRow()){
+                            _.arr.each(t.cells,function(t){
+                                ins.updateCell(t,{value:hash[t._col.id]},p.dirtyMark,true);
+                            });
+                        }
+                    }else if(p.activeMode="cell"){
+                        if(t=ins.getActiveCell())
+                            ins.updateCell(t,{value:hash[t._col.id]},p.dirtyMark,true);
+                    }
+                    p.valueValue=hash;
+                    return hash;
+                }
+            },
             selMode:{
                 ini:'none',
                 listbox:['single','none','multi','multibycheckbox'],
@@ -3743,19 +3792,23 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var o=arguments.callee.upper.call(this, profile),
                 pp=profile.properties,
                 map=xui.absObj.$specialChars,
+                op=o.properties,
                 t;
-            o.properties.header = _.clone(pp.header, function(o,i,d){
+            op.header = _.clone(pp.header, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
-            o.properties.grpCols = _.clone(pp.grpCols, function(o,i,d){
+            op.grpCols = _.clone(pp.grpCols, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
-            o.properties.rows = _.clone(pp.rows, function(o,i,d){
+            op.rows = _.clone(pp.rows, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && ((i=="id"&&typeof(o)=="string")?o.charAt(0)!="-":true);
             });
-            if(o.properties.header.length===0)delete o.properties.header;
-            if(o.properties.grpCols.length===0)delete o.properties.grpCols;
-            if(o.properties.rows.length===0)delete o.properties.rows;
+            if(op.header.length===0)delete op.header;
+            if(op.grpCols.length===0)delete op.grpCols;
+            if(op.rows.length===0)delete op.rows;
+            delete op.valueMap;
+            delete op.activeRow;
+            delete op.activeCell;
             return o;
         },
         _clsCache:{},

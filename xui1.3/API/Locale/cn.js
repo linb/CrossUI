@@ -5350,23 +5350,34 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"得到所有的内部组件.",
                 $rtn:"xui.absObj"
             },
+            getProfile:{
+                $desc:"获取所有内部控件的侧写.",
+                $rtn:"Object, 键值对"
+            },
+            setProfile:{
+                $desc:"设置内部控件的侧写.",
+                $rtn:"[self]",
+                 $paras:[
+                    "profiles [必需参数] : Object, 键值对"
+                ]
+            },
             getData:{
-                $desc:"获取Com对象上的所有界面控件的数据.",
+                $desc:"获取所有内部控件的数据.",
                 $rtn:"Object, 键值对"
             },
             setData:{
-                $desc:"设置Com对象上的所有界面控件的数据.",
+                $desc:"设置数据到内部控件.",
                 $rtn:"[self]",
                  $paras:[
                     "data [必需参数] : Object, 键值对"
                 ]
             },
             getValue:{
-                $desc:"获取Com对象上的所有界面值控件的真实值.",
+                $desc:"获取所有内部值控件的真实值.",
                 $rtn:"Object, 键值对"
             },
            setValue:{
-                $desc:"设置Com对象上的所有界面值控件的真实值.",
+                $desc:"设置值到内部的值控件.",
                 $rtn:"[self]",
                  $paras:[
                     "values [必需参数] : Object, 键值对"
@@ -17318,6 +17329,18 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"得到当前正在编辑的单元格.",
                 $rtn:"Object"
             },
+            getValueMap:{
+                $desc:"得到当前选中行或单元格的键值对值",
+                $rtn:"Object"                
+            },
+            setValueMap :{
+                $desc:"设置当前选中行或单元格的键值对值",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object. 键值对",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getRowNumbered :{
                 $desc:"判断是否在行前显示行号",
                 $rtn:"Boolean",
@@ -19828,6 +19851,9 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'overflow':'容器溢出属性'
         },
         'xui_UI_TreeGrid' : {
+            activeRow:"活动行",
+            activeCell:"活动单元格",
+            'valueMap':"活动行键值对",
             'directInput':'直接编辑状态',
             'currencyTpl':'货币显示模板',
             'numberTpl':'数字显示模板',

@@ -5288,6 +5288,17 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Gets all Components in a specified xui.Com Object.",
                 $rtn:"xui.absObj"
             },
+            getProfile:{
+                $desc:"Collects and gets the profile structure map of all UI components.",
+                $rtn:"Object, key/value pairs "
+            },
+            setProfile:{
+                $desc:"Sets profile structure map of all UI components.",
+                $rtn:"[self]",
+                 $paras:[
+                    "profiles [Required] : Object, key/value pairs "
+                ]
+            },
             getData:{
                 $desc:"Collects and gets the data struct map of all UI components.",
                 $rtn:"Object, key/value pairs "
@@ -17388,6 +17399,18 @@ _.set(xui.Locale,["en","app"], {
             getEditCell:{
                 $desc:"Gets the editing cell object.",
                 $rtn:"Object"
+            },
+            getValueMap:{
+                $desc:"Gets the selected row or cell's map value",
+                $rtn:"Object"                
+            },
+            setValueMap :{
+                $desc:"Sets the selected row or cell's map value",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object.  key/value paires",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
             },
             getRowNumbered :{
                 $desc:"Gets the RowNumbered property value on the first UIProfile",

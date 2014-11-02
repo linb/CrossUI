@@ -289,7 +289,9 @@ _.merge(_,{
         })();
     },
     isEmpty:function(hash){
-        if(hash==null)return true;
+        if (hash==null) return true;
+        if (_.isNumb(hash)) return false;
+        if (_.isArr(hash) || _.isStr(hash) || _.isArguments(hash)) return hash.length === 0;
         for(var i in hash)if(_._has.call(hash, i))return false;
         return true;
     },
@@ -549,8 +551,8 @@ _.merge(_,{
     isReg:function(target)   {return _._to.call(target)==='[object RegExp]'},
     isStr:function(target)   {return _._to.call(target)==='[object String]'},
     isArguments:function(target)   {return _._to.call(target)==='[object Arguments]' || _._has.call(target,"callee")},
-    isElem:function(target) {!!(target && target.nodeType === 1)},
-    isNaN:function(target) {_.isNumb(target) && target != +target;},
+    isElem:function(target) {return !!(target && target.nodeType === 1)},
+    isNaN:function(target) {return typeof target == 'number' && target != +target;},
     //for handling String
     str:{
         startWith:function(str,sStr){
@@ -868,6 +870,7 @@ _.merge(xui,{
         //ghost divs
         ghostDiv:[],
         data:{},
+        callback:{},
         //cache purge map for dom element
         domPurgeData:{},
         //cache DomProfile or UIProfile
@@ -1114,6 +1117,16 @@ _.merge(xui,{
     adjustVar:function(obj,scope){
         var t;
         return typeof(obj)=="string" ?
+                    obj=="{[]}"?[]:
+                    obj=="{{}}"?{}:
+                    obj=="{}"?"":
+                    obj=="{true}"?true:
+                    obj=="{false}"?false:
+                    obj=="{NaN}"?NaN:
+                    obj=="{null}"?null:
+                    obj=="{undefined}"?undefined:
+                    obj=="{now}"?new Date():
+                    (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
                    : xui.adjustRes(obj, false, true, true, null, scope)
@@ -1608,19 +1621,24 @@ new function(){
 new function(){
     xui.pseudocode={
         exec:function(conf, args, scope, temp){
-           var  t,m,n,p,type=conf.type||"other",
-                compare=function(x,y,s){
-                    x=_.isSet(x)?x:"";
-                    y=_.isSet(y)?y:"";
+           var  t,m,n,p,k,type=conf.type||"other",
+                _ns={
+                    "temp":temp,
+                    "page":scope,
+                    "args":args,
+                    "global":xui.$cache.data
+                },
+                comparevars=function(x,y,s){
                     switch(_.str.trim(s)){
                         case '=':
-                            return (x+"")==(y+"");
-                        case 'empty':
-                            return !x;
-                        case 'non-empty':
-                            return x===0||!!x;
+                            return x===y;
+                        case '<>':
                         case '!=':
-                            return (x+"")!=(y+"");
+                            return x!==y;
+                        case 'empty':
+                            return _.isEmpty(x);
+                        case 'non-empty':
+                            return !_.isEmpty(x);
                         case '>':
                             return parseFloat(x)>parseFloat(y);
                         case '<':
@@ -1653,12 +1671,25 @@ new function(){
                             return false;
                     }
                 },
-                _ns={
-                    "temp":temp,
-                    "page":scope,
-                    "prop":scope.properties,
-                    "args":args,
-                    "global":xui.$cache.data
+               adjustparam=function(o){
+                    if(typeof(o)=="string"){
+                        var rpc;
+                        if(_.str.startWith(o,"[data]")){
+                            o=o.replace("[data]","");
+                            rpc=1;
+                        }
+                        o=xui.adjustVar(o, _ns);
+                        // for file
+                        if(rpc && typeof(o)=="string")
+                            o=_.unserialize(xui.getFileSync(o));
+                    }else if(_.isHash(o)){
+                        // one layer
+                        for(var i in o)o[i]=adjustparam(o[i]);
+                    }else if(_.isArr(o)){
+                        // one layer
+                        for(var i=0,l=o.length;i<l;i++)o[i]=adjustparam(o[i]);
+                    }
+                    return o;
                 },
                 target=conf.target,
                 method=conf.method+"",
@@ -1671,35 +1702,14 @@ new function(){
             // currently, support and only
             // TODO: complex conditions
             for(var i=0,l=conditions.length;i<l;i++)
-                if(!compare(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
+                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
                     return;
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
-                _.arr.each(iparams,function(o,i){
-                    var f=function(o){
-                        if(typeof(o)=="string"){
-                            var rpc;
-                            if(_.str.startWith(o,"[data]")){
-                                o=o.replace("[data]","");
-                                rpc=1;
-                            }
-                            o=xui.adjustVar(o, _ns);
-                            // for file
-                            if(rpc && typeof(o)=="string")
-                                o=_.unserialize(xui.getFileSync(o));
-                        }else if(_.isHash(o)){
-                            // one layer
-                            for(var i in o)o[i]=f(o[i]);
-                        }else if(_.isArr(o)){
-                            // one layer
-                            for(var i=0,l=o.length;i<l;i++)o[i]=f(o[i]);
-                        }
-                        return o;
-                    };
-                    iparams[i]=f(o);
-                });
+                for(var i=(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
+                    iparams[i]=adjustparam(iparams[i]);
                 // cover with inline params
-                if(method.indexOf("-")){
+                if(method.indexOf("-")!=-1){
                     t=method.split("-");
                     method=t[0];
                     for(var i=1,l=t.length;i<l;i++)
@@ -1773,6 +1783,9 @@ new function(){
                             switch(target){
                                 case 'url':
                                     switch(method){
+                                        case "close":
+                                            window.close();
+                                            break;
                                         case "open":
                                             window.open(iparams[0],iparams[1],iparams[2],iparams[3]);
                                             break;
@@ -1807,6 +1820,38 @@ new function(){
                                         }
                                         _.set(_ns, (method+"."+_.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
                                     }
+                                break;
+                                case "callback":
+                                    switch(method){
+                                        case "set":
+                                            t=iparams[1];
+                                            if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
+                                                t=t.split(/\s*\.\s*/);
+                                                m=t.pop().replace(/[()}\s]/g,'');
+                                                t=xui.adjustVar(t.join(".")+"}", _ns);
+                                                if(t && _.isFun(t[m]))
+                                                    xui.$cache.callback[iparams[0]]=[t,m];
+                                            }
+                                            break;
+                                        case "call":
+                                            var args=[iparams[3],iparams[4],iparams[5]], doit;
+                                            t=iparams[0];
+                                            if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
+                                                t=t.split(/\s*\.\s*/);
+                                                m=t.pop().replace(/[()}\s]/g,'');
+                                                t=xui.adjustVar(t.join(".")+"}", _ns);
+                                                if(t && _.isFun(t[m])){
+                                                    doit=1;
+                                                }
+                                            }else if(_.isStr(t=iparams[0])&&_.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
+                                                doit=1;
+                                            }
+                                            if(doit){
+                                                t=t[m].apply(t,args);
+                                                if(iparams[1]&&iparams[2]&&_.get(_ns,iparams[1].split(/\s*\.\s*/)))_.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
+                                           }
+                                           break;
+                                     }
                                 break;
                             }
                             break;
@@ -3085,10 +3130,14 @@ new function(){
                 l = x.length;
                 for(i=0;i<l;++i){
                     if(typeof filter=='function' && false==filter.call(x,x[i],i))continue;
-
-                    if(f=T[typeof (v=x[i])])
+                    
+                    if(_.isNaN(v=x[i]))b[b.length]="NaN";
+                    else if(_.isNull(v))b[b.length]="null";
+                    else if(!_.isDefined(v))b[b.length]="undefined";
+                    else if(f=T[typeof v]){
                         if(typeof (v=f(v,filter,dateformat,deep+1,max))==S)
                             b[b.length]=v;
+                    }
                 }
                 a[2]=']';
             }else if(_.isDate(x)){
@@ -3126,9 +3175,13 @@ new function(){
                             if(map[i] ||
                                 (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i):0))
                                 continue;
-                            if (f=T[typeof (v=x[i])])
+                            if(_.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
+                            else if(_.isNull(v))b[b.length]=T.string(i) + ':' + "null";
+                            else if(!_.isDefined(v))b[b.length]=T.string(i) + ':' + "undefined";
+                            else if (f=T[typeof v]){
                                 if (typeof (v=f(v,filter,dateformat,deep+1,max))==S)
                                     b[b.length] = T.string(i) + ':' + v;
+                            }
                         }
                         a[2]='}';
                     }
@@ -3143,7 +3196,10 @@ new function(){
 
     //serialize object to string (bool/string/number/array/hash/simple function)
     _.serialize = function (obj,filter,dateformat){
-        return T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat))||'';
+        return _.isNaN(obj) ? "NaN" : 
+                    _.isNull(obj) ? "null" : 
+                    !_.isDefined(obj) ? "undefined" :
+                    T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat))||'';
     };
     _.stringify = function(obj,filter,dateformat){
         return _.fromUTF8(_.serialize(obj,filter,dateformat));
@@ -3649,7 +3705,7 @@ Class('xui.absObj',"xui.absBox",{
                 r=_.str.initial(i);
                 n = 'set'+r;
                 //readonly properties
-                if(!(o && (o.readonly || o.inner))){
+                if(o.set!==null && !(o && (o.readonly || o.inner))){
                     //custom set
                     var $set = o.set;
                     m = ps[n];
