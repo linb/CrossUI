@@ -360,7 +360,7 @@ Class('xui.Com',null,{
             });
             return xui.absObj.pack(arr,false);
         },
-        getProfiles:function(){
+        getProfile:function(){
             var hash={};
             this.getAllComponents().each(function(prf){
                 hash[prf.alias]=prf.serialize(false,false,false);
@@ -370,7 +370,7 @@ Class('xui.Com',null,{
             });
             return hash;
         },
-        setProfiles:function(profiles){
+        setProfile:function(profiles){
             this.getAllComponents().each(function(prf,i){
                 if(i=profiles[prf.alias]){
                     prf=prf.boxing();
