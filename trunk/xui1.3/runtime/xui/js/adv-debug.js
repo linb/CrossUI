@@ -15850,6 +15850,7 @@ Class("xui.svg.image", "xui.svg",{
         }
     },
     Static:{
+        IMGNODE:1,
         DataModel:{
             attr:{
                 ini:{src:"",x:0,y:0,width:20,height:20}
@@ -16152,6 +16153,7 @@ Class("xui.svg.pathComb", "xui.svg.absComb",{
 });
 Class("xui.svg.imageComb", "xui.svg.absComb",{
     Static:{
+        IMGNODE:1,
         _type:'image',
         Templates:{
             tagName:'image',

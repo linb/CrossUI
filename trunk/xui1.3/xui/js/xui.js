@@ -3770,7 +3770,6 @@ Class('xui.absObj',"xui.absBox",{
                                     v.clearCache();
                                 if(v.box._addEventHanlder)v.box._addEventHanlder(v,i,fun);
                                 v[i] =fun;
-                                fun=null;
                             });
                         else if(l==1 && null===fun)
                             return this.each(function(v){

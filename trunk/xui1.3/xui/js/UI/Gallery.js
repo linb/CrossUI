@@ -60,6 +60,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         this.setTemplate(t);
     },
     Static:{
+        IMGNODE:1,
         Appearances:{
             FLAG:{
                 position:'absolute',

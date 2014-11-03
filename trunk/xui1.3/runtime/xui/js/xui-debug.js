@@ -3770,7 +3770,6 @@ Class('xui.absObj',"xui.absBox",{
                                     v.clearCache();
                                 if(v.box._addEventHanlder)v.box._addEventHanlder(v,i,fun);
                                 v[i] =fun;
-                                fun=null;
                             });
                         else if(l==1 && null===fun)
                             return this.each(function(v){
@@ -18309,10 +18308,10 @@ Class("xui.UI",  "xui.absObj", {
         exception: key start with $
         value(start with $) get a change to get value from lang setting
         */
-        adjustData:function(profile, hashIn, hashOut){
+        adjustData:function(profile, hashIn, hashOut, type){
             if(!hashOut)hashOut={};
 
-            var dm = profile.box.$DataModel,i,o;
+            var box=profile.box, dm = box.$DataModel,i,o;
             
             for(i in hashIn){
                 if(i.charAt(0)=='$')continue;
@@ -18341,8 +18340,8 @@ Class("xui.UI",  "xui.absObj", {
                 hashOut.backgroundRepeat='background-repeat:no-repeat;';
             //must be here
             //Avoid Empty Image src
-            if(!hashOut.image)hashOut.image=xui.ini.img_bg;
-            
+            if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_bg;
+
             if((typeof (o=hashOut.renderer)=='function') || (typeof (o=hashIn.renderer)=='function'))
                 hashOut.caption=xui.adjustRes(o.call(profile,hashIn,hashOut));
 
@@ -20988,6 +20987,7 @@ Class("xui.UI.Image", "xui.UI",{
         }
     },
     Static:{
+        IMGNODE:1,
         Templates:{
             tagName:'image',
             style:'cursor:{cursor};{_style}',
@@ -30839,7 +30839,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(!c.caption)c.caption=c.id;
                     c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
                     if(!c.type)c.type="button";
-                    if(c.image)c.image=xui.adjustRes(c.image);
+                    if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
                     c._style="";
                     if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";
                     if('height' in c)c._style+=c.height + (_.isFinite(c.height) &&"px")+ ";";
@@ -30935,6 +30935,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         this.setTemplate(t);
     },
     Static:{
+        IMGNODE:1,
         Appearances:{
             FLAG:{
                 position:'absolute',
@@ -38201,11 +38202,34 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //build dom
             var nodes = profile._buildItems('rows', arr);
             if(temp&&temp.length){
+                var needshowinput=[],arr=[];
                 _.arr.each(temp,function(o){
                        if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
-                            box._editCell(profile,o);
+                            needshowinput.push(o);
                 });
                 temp.length=0;
+                // for performance 25
+                if(needshowinput.length){
+                    for(var i=0,l=needshowinput.length,t;i<l;i++){
+                        t=parseInt(i/25,10);
+                        if(!arr[t])arr[t]=[];
+                        arr[t].push(needshowinput[i]);
+                    }
+                    needshowinput.length=0;
+                    var fun=function(){
+                        if(arr.length){
+                            var a=arr.shift();
+                            if(a&&a.length){
+                                for(var i=0,l=a.length;i<l;i++){
+                                    if(profile&&profile.box&&!profile.destroyed&&a[i]&&a[i]._row)
+                                        profile.box._editCell(profile,a[i]);
+                                }
+                                _.asyRun(fun);
+                            }
+                        }
+                    };
+                    fun();
+                }
             }
             //get base dom
             if(!base){
@@ -38411,11 +38435,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return v;
         },
         getRowbyRowId:function(rowId, type){
-            var profile=this.get(0),v=profile.rowMap2;
+            var profile=this.get(0),v=profile.rowMap2,t;
             if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
-            if(v&&v[rowId]){
+            if(v&&v[rowId])
                 return profile.box._getRow(profile, profile.rowMap[v[rowId]], type);
-            }else return;
+            if((v=profile.queryItems(profile.properties.rows, function(v,k){
+                return v.id==rowId;
+            }, 1,1))&&v.length)
+                return profile.box._getRow(profile, v[0], type);
         },
         getRowbyCell:function(cell, type){
             return this.constructor._getRow(this.get(0), cell._row, type);
@@ -38594,7 +38621,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     t=profile.rowMap[base];
                     if(t)pid=t._pid;
                 }
-                arr=c._adjustRows(arr);
+                arr=c._adjustRows(profile, arr);
                 if(!pid)
                     tar = _.isArr(pro.rows)?pro.rows:(pro.rows=[]);
                 else{
@@ -39195,16 +39222,23 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     v;
         },
         getCellbyRowCol:function(rowId, colId, type){
-            var profile=this.get(0),v,m;
+            var self=this,profile=self.get(0),v,m;
             if(_.isNumb(rowId))rowId=_.get(profile.properties.rows,[rowId,"id"]);
             if(_.isNumb(colId))colId=_.get(profile.properties.header,[colId,"id"]);
             v=_.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
             v=v && profile.cellMap[v];
+            if(!v){
+                var row=self.getRowbyRowId(rowId),header=self.getHeader('min'),col;
+                if(row&&row.cells){
+                    col=_.arr.indexOf(header,colId);
+                    if(col!=-1)v=row.cells[col];
+                }
+            }
             return !v?null:
-                    type=='data'? _.merge({rowId:v._row.id, colId:v._col.id},_.clone(v,true)):
-                    type=='min'? v.value:
-                    type=='map'?( (m={})&&((m[v._col.id]=v.value)||1)&&m):
-                    v;
+                type=='data'? _.merge({rowId:rowId, colId:colId},_.clone(v,true)):
+                type=='min'? v.value:
+                type=='map'?( (m={})&&((m[colId]=v.value)||1)&&m):
+                v;
         },
         getCells:function(rowId, colId, type){
             var map={};
@@ -39223,6 +39257,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var t,self=this,con=self.constructor;
             if(t=con._getCellId(self.get(0), rowId, colId))
                 con._updCell(self.get(0), t, options, dirtyMark, triggerEvent);
+            else{
+                var row=self.getRowbyRowId(rowId),header=self.getHeader('min'),col;
+                if(row&&row.cells){
+                    col=_.arr.indexOf(header,colId);
+                    if(col!=-1){
+                        if(!_.isHash(row.cells[col]))row.cells[col]={value:row.cells[col]};
+                        _.merge(row.cells[col],options);
+                    }
+                }
+            }
             return self;
         },
         updateCellByRowCol2:function(mixedId, options, dirtyMark, triggerEvent){
@@ -41159,41 +41203,37 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             activeCell:{
                 ini:null
             },
-            valueMap:{
+            rowMap:{
                 ini:null,
-                get:function(){
-                    if(!this.renderId||this.destroyed)return;
+                get:function(rowId){
                     var prf=this,ins=prf.boxing(),p=prf.properties,t,hash;
-                    if(p.activeMode="row"){
-                        if(t=ins.getActiveRow()){
-                            hash={};
-                            _.arr.each(t.cells,function(t){
-                                hash[t._col.id]=t.value;
-                            });
-                        }
-                    }else if(p.activeMode="cell"){
-                        if(t=ins.getActiveCell()){
-                            hash={};
-                            hash[t._col.id]=t.value;
+                    if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                        if(p.activeMode="row"){
+                            if(t=ins.getActiveRow())rowId=t.id;
+                        }else if(p.activeMode="cell"){
+                            if(t=ins.getActiveCell())rowId=t._row.id;
                         }
                     }
-                    return hash;
+                    return ins.getRowbyRowId(rowId, "map");
                 },
-                set:function(hash){
-                    if(!this.renderId||this.destroyed||!_.isHash(hash))return;
+                set:function(hash, rowId){
                     var prf=this,ins=prf.boxing(),p=prf.properties,t;
-                    if(p.activeMode="row"){
-                        if(t=ins.getActiveRow()){
-                            _.arr.each(t.cells,function(t){
-                                ins.updateCell(t,{value:hash[t._col.id]},p.dirtyMark,true);
-                            });
+                    if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                        if(p.activeMode="row"){
+                            if(t=ins.getActiveRow())rowId=t.id;
+                        }else if(p.activeMode="cell"){
+                            if(t=ins.getActiveCell())rowId=t._row.id;
                         }
-                    }else if(p.activeMode="cell"){
-                        if(t=ins.getActiveCell())
-                            ins.updateCell(t,{value:hash[t._col.id]},p.dirtyMark,true);
                     }
-                    p.valueValue=hash;
-                    return hash;
+                    if(rowId){
+                        var row=ins.getRowbyRowId(rowId, "map"),
+                            rowId=row.id,
+                            header=ins.getHeader('min');
+                        _.arr.each(row.cells,function(t,j){
+                            updateCellByRowCol(rowId, header[j],p.dirtyMark,true);
+                        });
+                    }
+                    return p.rowMap=hash;
                 }
             },
             selMode:{
@@ -41955,7 +41995,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             arguments.callee.upper.call(this, profile);
 
-            pro.rows=this._adjustRows(pro.rows);
+            pro.rows=this._adjustRows(profile, pro.rows);
             data.rows = this._prepareItems(profile, pro.rows);
             return data;
         },
@@ -43438,18 +43478,31 @@ editorEvents
             profile._headerLayers = layer;
             return a;
         },
-        _adjustRows:function(arr){
-            var a,m;
+        _adjustRows:function(profile, arr){
+            var a,m,h={};
+            _.arr.each(profile.properties.header,function(c,i){
+                h[c.id||c]=i;
+            });
+
             if(_.isArr(arr) && arr.length && typeof arr[0] !='object')a=[arr];
             else a=_.copy(arr);
 
             _.arr.each(a,function(o,i){
                 //id will be adjusted in _prepareItems
-                if(_.isArr(o))
-                    a[i]={cells:o};
+                if(_.isArr(o))a[i]={cells:o};
                 else a[i]=_.copy(o);
 
                 m=a[i].cells=_.copy(a[i].cells);
+                // check if it's a map row data
+                if(!m || _.isHash(m)){
+                    var cells=[],b=0;
+                    _.each(m||a[i],function(v,i){
+                        if(i in h)cells[h[i]]=_.isHash(v)?v:{value:v};
+                        else{b=1; return false;}
+                    });
+                    if(!b)m=a[i]={cells:cells}
+                }
+
                 _.arr.each(m,function(o,i){
                     //It's a hash
                     if(!!o && _.isHash(o))
@@ -43713,17 +43766,17 @@ editorEvents
                 if(type=='data')
                     return _.clone(row,true);
                 else if(type=='min'){
-                    var a=_.clone(row,true),b;
-                    _.each(b=a=a.cells,function(row,j){
-                        b[j] = row.value;
+                    var a=[];
+                    _.each(row.cells||row,function(cell,j){
+                        a[j]=('value' in cell)?cell.value:cell;
                     });
                     return a;
                 }else if(type=='map'){
-                    var hash={},header=profile.properties.header;
-                    _.each(b=a=a.cells,function(row,j){
-                        hash[header[j].id]=row;
+                    var header=profile.properties.header,h={};
+                    _.each(row.cells||row,function(cell,j){
+                        h[header[j].id]=('value' in cell)?cell.value:cell;
                     });
-                    return hash;
+                    return h;
                 }else
                     return row;
             }
