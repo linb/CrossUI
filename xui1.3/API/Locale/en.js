@@ -17400,12 +17400,12 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Gets the editing cell object.",
                 $rtn:"Object"
             },
-            getValueMap:{
-                $desc:"Gets the selected row or cell's map value",
-                $rtn:"Object"                
+            getRowMap:{
+                $desc:"Gets the active or specified  row/cell's map",
+                $rtn:"Object"
             },
-            setValueMap :{
-                $desc:"Sets the selected row or cell's map value",
+            setRowMap :{
+                $desc:"Uses map to set the active or specified row/cell",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.  key/value paires",

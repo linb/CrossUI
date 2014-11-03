@@ -3537,10 +3537,10 @@ Class("xui.UI",  "xui.absObj", {
         exception: key start with $
         value(start with $) get a change to get value from lang setting
         */
-        adjustData:function(profile, hashIn, hashOut){
+        adjustData:function(profile, hashIn, hashOut, type){
             if(!hashOut)hashOut={};
 
-            var dm = profile.box.$DataModel,i,o;
+            var box=profile.box, dm = box.$DataModel,i,o;
             
             for(i in hashIn){
                 if(i.charAt(0)=='$')continue;
@@ -3569,8 +3569,8 @@ Class("xui.UI",  "xui.absObj", {
                 hashOut.backgroundRepeat='background-repeat:no-repeat;';
             //must be here
             //Avoid Empty Image src
-            if(!hashOut.image)hashOut.image=xui.ini.img_bg;
-            
+            if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_bg;
+
             if((typeof (o=hashOut.renderer)=='function') || (typeof (o=hashIn.renderer)=='function'))
                 hashOut.caption=xui.adjustRes(o.call(profile,hashIn,hashOut));
 

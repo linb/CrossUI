@@ -5,6 +5,7 @@ Class("xui.UI.Image", "xui.UI",{
         }
     },
     Static:{
+        IMGNODE:1,
         Templates:{
             tagName:'image',
             style:'cursor:{cursor};{_style}',

@@ -580,7 +580,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(!c.caption)c.caption=c.id;
                     c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
                     if(!c.type)c.type="button";
-                    if(c.image)c.image=xui.adjustRes(c.image);
+                    if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
                     c._style="";
                     if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";
                     if('height' in c)c._style+=c.height + (_.isFinite(c.height) &&"px")+ ";";

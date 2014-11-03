@@ -17329,12 +17329,12 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"得到当前正在编辑的单元格.",
                 $rtn:"Object"
             },
-            getValueMap:{
-                $desc:"得到当前选中行或单元格的键值对值",
+            getRowMap:{
+                $desc:"得到当前活动或给定行/单元格的键值对格式",
                 $rtn:"Object"                
             },
-            setValueMap :{
-                $desc:"设置当前选中行或单元格的键值对值",
+            setRowMap :{
+                $desc:"以键值对的格式设置当前活动或给定行/单元格",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. 键值对",
