@@ -574,10 +574,7 @@ Class("xui.DataBinder","xui.absObj",{
             var o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
-            if(p.dataSourceType!='memory'){
-                delete p.data;
-            }
-            if(p.dataSourceType=='none' && p.dataSourceType=='memory'){
+            if(p.dataSourceType=='none' || p.dataSourceType=='memory'){
                 delete p.queryURL;
                 delete p.queryUserName;
                 delete p.queryPassword;
@@ -590,6 +587,8 @@ Class("xui.DataBinder","xui.absObj",{
                 delete p.queryMethod;
                 delete p.requestType;
                 delete p.responseType;
+            }else{
+                delete p.data;
             }
             if(p.tagVar && _.isEmpty(p.tagVar))
                 delete p.tagVar;

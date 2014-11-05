@@ -1351,7 +1351,7 @@ _.set(xui.Locale,["cn","app"], {
 
     _.set(xui.Locale,["cn","doc","xui","Thread"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.Thread类.用函数调用的方式（不要使用 new xui.Thread ）来创造xui.Thread<br />函数调用：直接获取或生成一个异步线程对象. <br /> xui.Thread 的运行模式: <strong>[onStart function]--delay 1-->[task function 1][回调函数 1]--delay 2-->[task function 2][回调函数 2]--delay 3-->[task function ...n][回调函数 ...n][onEnd function]</strong>",
+        $desc:"xui.Thread类. 运行模式: <strong>[onStart function]--delay 1-->[task function 1][回调函数 1]--delay 2-->[task function 2][回调函数 2]--delay 3-->[task function ...n][回调函数 ...n][onEnd function]</strong>",
         $rtn:"xui.Thread",
         $paras:[
             "id [必需参数]: String, 线程的识别号. 如果已经存在这个识别号,该函数将返回对应的线程对象; 如果不存在,或函数没有指定, 系统将产生一个新的xui.Thread对象, 并给它分配一个唯一的id. 如果程序员不想指定它,可以用null.",
@@ -1791,7 +1791,7 @@ _.set(xui.Locale,["cn","app"], {
 
     _.set(xui.Locale,["cn","doc","xui","Ajax"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.Ajax类.用函数调用的方式（不要使用 new xui.Ajax ）来创造xui.Ajax对象.<br />函数调用：生成一个xui.Ajax对象. <strong>xui.Ajax对象可以处理当前域的GET/POST请求; xui.Ajax 也是唯一一个能够处理同步请求的Ajax类.</strong>",
+        $desc:"xui.Ajax类. 可处理同域 GET/POST 请求, 可以是同步请求.",
         $rtn:"xui.Ajax",
         $paras:[
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
@@ -1840,6 +1840,30 @@ _.set(xui.Locale,["cn","app"], {
              "   }]);*/"
         ],
         $memo:"通常建议程序员使用 [xui.request] 来处理一般的请求, 该函数可以自动的判断是否跨域,method的类型,然后选择ajax/sajax/iajax之一.",
+        "get":{
+            $desc:"用GET方法调用Ajax.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [必需参数]: String, 请求服务的 URL 地址.",
+                "query [可选参数]:  Object/String, 要请求的数据.",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+                "threadid [可选参数]: String,  绑定的线程ID.",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+            ]
+        },
+        "post":{
+            $desc:"用POST方法调用Ajax.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [必需参数]: String, 请求服务的 URL 地址.",
+                "query [可选参数]:  Object/String, 要请求的数据.",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+                "threadid [可选参数]: String,  绑定的线程ID.",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+            ]
+        },
         callback:{
             $desc:"String, 默认的回调函数名称. <strong>服务器需要在返回结构中匹配它.</strong>.",
             $snippet:["alert(xui.Ajax.callback)"]
@@ -1888,7 +1912,7 @@ _.set(xui.Locale,["cn","app"], {
 
     _.set(xui.Locale,["cn","doc","xui","SAjax"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.SAjax类.用函数调用的方式（不要使用 new xui.SAjax ）来创造xui.SAjax对象.<br />函数调用：生成一个 xui.SAjax 对象. <strong>xui.SAjax 用来处理跨域的 GET 数据请求.</strong>.",
+        $desc:"xui.SAjax类. 可处理跨域的 GET 数据请求.",
         $rtn:"xui.SAjax",
         $paras:[
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
@@ -1934,6 +1958,18 @@ _.set(xui.Locale,["cn","app"], {
              "   }]);*/"
         ],
         $memo:"<br />1.使用[xui.include]来包含一个.js文件.<br />2.使用[xui.request]处理一般的请求, 它可以根据url来来自动判断使用ajax或是sajax.",
+        "get":{
+            $desc:"用GET方法调用SAjax.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [必需参数]: String, 请求服务的 URL 地址.",
+                "query [可选参数]:  Object/String, 要请求的数据.",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+                "threadid [可选参数]: String,  绑定的线程ID.",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+            ]
+        },
         callback:{
             $desc:"String, 默认的回调函数名关键字. <strong>服务器需要在返回的内容中用相同的关键字.</strong>",
             $snippet:["alert(xui.SAjax.callback)"]
@@ -1969,7 +2005,6 @@ _.set(xui.Locale,["cn","app"], {
                 "obj [必需参数]: Object, original Object."
             ]
         },
-
         prototype:{
             KEY:{$desc:"本类名"},
             start:{
@@ -1984,7 +2019,7 @@ _.set(xui.Locale,["cn","app"], {
 
     _.set(xui.Locale,["cn","doc","xui","IAjax"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.IAjax类.用函数调用的方式（不要使用 new xui.IAjax ）来创造xui.IAjax对象.<br />函数调用：生成一个xui.IAjax对象. <strong>xui.IAjax 可以处理跨域的GET/POST请求, 而且可以向服务器提交文件(上传内容).</strong>",
+        $desc:"xui.IAjax类. 可处理跨域的 GET/POST 请求, 可与远程服务器交流文件.",
         $rtn:"xui.IAjax",
         $paras:[
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
@@ -2039,7 +2074,30 @@ _.set(xui.Locale,["cn","app"], {
              "   },{method:'GET'}]);*/"
         ],
         $memo:"程序员只能使用xui.IAjax向跨域的服务器post数据, 或上传upload文件等等.",
-
+        "get":{
+            $desc:"用GET方法调用IAjax.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [必需参数]: String, 请求服务的 URL 地址.",
+                "query [可选参数]:  Object/String, 要请求的数据.",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+                "threadid [可选参数]: String,  绑定的线程ID.",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+            ]
+        },
+        "post":{
+            $desc:"用POST方法调用IAjax.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [必需参数]: String, 请求服务的 URL 地址.",
+                "query [可选参数]:  Object/String, 要请求的数据.",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+                "threadid [可选参数]: String,  绑定的线程ID.",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+            ]
+        },
         callback:{
             $desc:"String, 默认的回调函数名关键字. <strong>服务器需要在返回的内容中用相同的关键字.</strong>",
             $snippet:["alert(xui.IAjax.callback)"]
@@ -2411,7 +2469,7 @@ _.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Dom 类",
         constructor:{
-            $desc:"一般情况下, 不要使用[new xui.Dom()]创造一个新实例, 而是使用[xui(nodes, flag)]一个新xui.Dom实例对象."
+            $desc:"用[xui(nodes, flag)]得到一个新xui.Dom实例对象."
         },
         Events:{
             $desc:  "<strong>Description</strong>: 添加、删除或者触发特定事件.每个事件可以有三组事件函数：[before开头], [on开头] 和 [after开头].每组是一个函数数组."+
@@ -3949,7 +4007,7 @@ _.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Cookies 类(静态类)",
         get:{
-            $desc:"获取指定名字的cookie值.",
+            $desc:"获取全部或指定名字的cookie值.",
             $rtn:"String",
             $paras:[
                 "name [必需参数] : String, cookie名字."

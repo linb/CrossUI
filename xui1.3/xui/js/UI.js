@@ -4794,11 +4794,16 @@ Class("xui.absList", "xui.absObj",{
                     source = profile.getSubNodeByItemId('ITEMCAPTION',itemId);
                     if(source.isEmpty())source = profile.getSubNodeByItemId('CAPTION',itemId);
                     if(!source.isEmpty()){
-                        var pos = source.offset(),
-                        size = source.cssSize();
-        
+                        var pp=source.parent(),
+                        pos = source.offset(null,pp.get(0)),
+                        size = source.cssSize(),
+                        pos2 = pp.offset(),
+                        size2 = pp.cssSize();
+
                         var editor=new xui.UI.Input();
-                        editor.setWidth(Math.min(size.width+20,100)).setHeight(Math.min(size.height+4,20)).setValue(item.caption||"");
+                        editor.setWidth(Math.max(size2.width-pos.left,40)).setHeight(Math.max(size2.height, 20))
+                            .setResizer(true)
+                            .setValue(item.caption||"");
                         if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
 
                         editor.beforeUIValueSet(function(prf, ov, nv){
@@ -4806,15 +4811,22 @@ Class("xui.absList", "xui.absObj",{
                                 profile.boxing().updateItem(item.id, {caption:nv});
                                 if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
                                 root.setBlurTrigger("absList_editor",null);
-                                editor.destroy();
-                                editor=null;
+                                // it's a must
+                                _.asyRun(function(){
+                                    editor.destroy();
+                                    editor=null;
+                                });
                             }
                         });
                         xui('body').append(editor);
                         var root=editor.getRoot();
-                        root.popToTop(pos);
+
+                        root.popToTop({
+                            left:pos.left+pos2.left,
+                            top:pos2.top
+                        });
                         root.setBlurTrigger("absList_editor",function(){
-                            editor.setUIValue(editor.getUIValue(),true);
+                                if(editor)editor.setUIValue(editor.getUIValue(),true);
                         });
                         editor.activate();
                     }

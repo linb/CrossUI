@@ -429,6 +429,11 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         }
                         delete profile._justFocus;
                     }
+                    if(profile._activedonmousedown){
+                        delete profile._activedonmousedown;
+                        var node=xui.use(src).get(0);
+                         try{node.select()}catch(e){}
+                    }
                 },
                 onFocus:function(profile, e, src){
                     var p=profile.properties,b=profile.box;

@@ -13,10 +13,11 @@ Namespace=function(key){
 };
 //global: class
 Class=function(key, pkey, obj){
-    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all;
+    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
+        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});}
     obj=obj||{};
     //exists?
-    if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xui$)return self._last=t;
+    if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
 
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
@@ -51,14 +52,14 @@ Class=function(key, pkey, obj){
     var cf=function(){if(typeof this.initialize=='function')this.initialize()};
     if(typeof obj.Constructor == 'function'){
         _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
-        _this.Constructor = String(obj.Constructor);
+        _this.Constructor = _funadj(obj.Constructor);
     }else{
         if(parent0){
             // Constructor is for opera, in opear fun.toString can't get arguments sometime
             var f=cf,str = parent0.Constructor;
             if(str)f=new Function(str.slice(str.indexOf("(") + 1, str.indexOf(")")).split(','), str.slice(str.indexOf("{") + 1, str.lastIndexOf("}")));
             _this = env(f, 'Constructor', key, parent0.upper,'constructor');
-            _this.Constructor = str;
+            _this.Constructor = _funadj(str);
         }else
             _this = cf;
     }
@@ -98,7 +99,7 @@ Class=function(key, pkey, obj){
     }
 
     //set symbol
-    _this.$xui$ = 1;
+    _this.$xui$ = _this.$xuiclass$ = 1;
     _this.$children = [];
     _this.$parent = _parent;
 
@@ -218,7 +219,7 @@ _.merge(_,{
         else if(typeof path=='string') return hash[path];
         else{
             for(var i=0,l=path.length,t;i<l;)
-                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? typeof(hash[t])=="function" ? hash[t]() : undefined : hash[t])===undefined )return;
+                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && !hash[t].length)? hash[t]() : undefined : hash[t])===undefined )return;
             return hash;
         }
     },
@@ -735,10 +736,15 @@ _.merge(_,{
 });
 _.merge(_.fun,{
     body:function(fun){
-        with(""+fun)return slice(indexOf("{") + 1, lastIndexOf("}"));
+        var s=""+fun;
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});        
+        return s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
     },
     args:function(fun){
-        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(/\s*,\s*/);
+        var s=""+fun;
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});
+        s=s.slice(s.indexOf("(") + 1, s.indexOf(")")).split(/\s*,\s*/);
+        return s[0]&&s;
     },
     clone:function(fun){
         return new Function(_.fun.args(fun),_.fun.body(fun));
@@ -2332,6 +2338,16 @@ Class('xui.absIO',null,{
     },
     Static:{
         $abstract:true,
+        get:function(uri, query, onSuccess, onFail, threadid, options){
+            options=options||{};
+            options.mothod="GET";
+            return this.apply(this, arguments).start();
+        },
+        post:function(uri, query, onSuccess, onFail, threadid, options){
+            options=options||{};
+            options.mothod="POST";
+            return this.apply(this, arguments).start();
+        },
         _id:1,
         uid:1,
         method:'GET',
@@ -2668,6 +2684,7 @@ Class('xui.SAjax','xui.absIO',{
             }else
                 self._onError(new Error("SAjax return value formatting error--"+obj));
         },
+        post:null,
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
             if(typeof obj=='string')

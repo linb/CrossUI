@@ -4263,6 +4263,8 @@ editorReadonly
 editorDropListWidth
 editorDropListHeight
 editorProperties
+editorCC
+editorCS
 editorEvents
 
 */
@@ -4542,6 +4544,8 @@ editorEvents
                 }
                 box._renderCell(profile, cell, null, node, options);
 
+                var editor=cell._editor;
+
                 //if update value
                 if('value' in options){
                     if(!pdm || dirtyMark===false)
@@ -4557,7 +4561,10 @@ editorEvents
                             cell.dirty=true;
                         }
                     }
+                    if(editor)editor.setValue(cell.value,true,'editorini');
                 }
+                if(('caption' in options) && editor.setCaption)
+                    editor.setCaption(options.caption,true);
             }
             if(triggerEvent){
                 if(profile.afterCellUpdated)
@@ -4714,13 +4721,15 @@ editorEvents
             },100);
         },
         _adjusteditorW:function(profile, nodes,width){
-            nodes.each(function(n,i){
-                if(!(i=n.id))return;
-                i=i.split(":")[2];
-                if(i=profile.cellMap[i])
-                       if(i._editor)
-                            i._editor.setWidth(width+2);
-            });
+            if(nodes){
+                nodes.each(function(n,i){
+                    if(!(i=n.id))return;
+                    i=i.split(":")[2];
+                    if(i=profile.cellMap[i])
+                           if(i._editor)
+                                i._editor.setWidth(width+2);
+                });
+            }
         },
         _adjusteditorH:function(profile, nodes,height){
             nodes.each(function(n,i){
@@ -4786,6 +4795,8 @@ editorEvents
                         editorAutoPop= getPro('editorAutoPop'),
                         editorCacheKey = getPro('editorCacheKey'),
                         editorProperties = getPro('editorProperties'),
+                        editorCC= getPro('editorCC'),
+                        editorCS= getPro('editorCS'),
                         editorEvents = getPro('editorEvents'),
                         editorFormat = getPro('editorFormat'),
                         editorMask = getPro('editorMask'),
@@ -4962,6 +4973,10 @@ editorEvents
                         });
                         editor.setProperties(editorProperties);
                     }
+                    if(editorCC)
+                        editor.setCustomClass(_.clone(editorCC,2));
+                    if(editorCS)
+                        editor.setCustomStyle(_.clone(editorCS,2));
                     if(editorEvents)
                         editor.setEvents(editorEvents);
                     if(!inline){
@@ -5169,15 +5184,20 @@ editorEvents
                             expand=1;
                             editor.expand();
                          }
-                        //activate editor
+                        if(!inline)
+                            editor.setVisibility(issharp ? "hidden" : "visible");
+                       //activate editor
                         if(editMode!="hover" || !byhover){
                             _.asyRun(function(){
                                 // destroyed
                                 if(!profile.box)return;
                                 var target=editor;
-                                if(expand && editor.getPopWnd)
-                                    target = editor.getPopWnd();
-                                _.tryF(target&&target.activate,[],target);
+                                if(target.get(0)&&target.get(0).box){
+                                    if(expand && editor.getPopWnd)
+                                        target = editor.getPopWnd();
+                                    _.tryF(target&&target.activate,[],target);
+                                    target.get(0)._stopmouseupcaret=1;
+                                }
                             });
                         }else{
                             var bfun=function(){
@@ -5199,10 +5219,7 @@ editorEvents
                                 cfun();
                                 editor.onBlur(dfun);
                             }).onBlur(dfun);
-
                         }
-                        if(!inline)
-                            editor.setVisibility(issharp ? "hidden" : "visible");
                     }
                     if(profile.onBeginEdit)
                         profile.boxing().onBeginEdit(profile, cell, editor);
@@ -5564,8 +5581,9 @@ editorEvents
 
             if(item){
                 xui.Tips.show(pos, ('tips' in item)?item.tips:(item._$tips||item.caption));
+                return false;
             }else
-                xui.Tips.hide();
+                return true;
         },
         _adjustRelWith:function(profile){
             var prop=profile.properties,
