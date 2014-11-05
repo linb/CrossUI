@@ -1815,6 +1815,10 @@ type:4
 
             // remove this trigger first
             if(arr[id]){
+                if(trigger===true){
+                    _.tryF(arr[id].trigger);
+                    trigger=false;
+                }
                 _.arr.removeValue(arr,id);
                 delete arr[id];
             }

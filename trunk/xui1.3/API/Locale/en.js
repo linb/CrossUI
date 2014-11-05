@@ -1353,7 +1353,7 @@ _.set(xui.Locale,["en","app"], {
 
     _.set(xui.Locale,["en","doc","xui","Thread"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.Thread Class. Dont use 'new' but 'function call' to create an instance. <br />Call function: to Get/Create a xui.Thread Object. <br /> xui.Thread model: <strong>[onStart function]--delay 1-->[task function 1][callback function 1]--delay 2-->[task function 2][callback function 2]--delay 3-->[task function ...n][callback function ...n][onEnd function]</strong>",
+        $desc:"xui.Thread Class.  Execution model: <strong>[onStart function]--delay 1-->[task function 1][callback function 1]--delay 2-->[task function 2][callback function 2]--delay 3-->[task function ...n][callback function ...n][onEnd function]</strong>",
         $rtn:"xui.Thread",
         $paras:[
             "id [Required]: String, for identify a thead. If system finds an existing xui.Thread Object with this id, this function will return that Object ; If system does not find it, or this function doesn't specify id, system will create a new xui.Thread Object, assign an unique id to it, and return it. Uses null if you don't want to specify it.",
@@ -1779,7 +1779,7 @@ _.set(xui.Locale,["en","app"], {
 
     _.set(xui.Locale,["en","doc","xui","Ajax"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.Ajax Class. Dont use 'new' but 'function call' to create an instance. <br />Call function : to Create a xui.Ajax Object. <strong>xui.Ajax can handle GET/POST request in the current domain; xui.Ajax is the only one can handle the synchronous request.</strong>",
+        $desc:"xui.Ajax Class. It can handle same domain GET/POST request, and it can handle synchronous request.</strong>",
         $rtn:"xui.Ajax",
         $paras:[
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
@@ -1828,6 +1828,30 @@ _.set(xui.Locale,["en","app"], {
              "   });*/"
         ],
         $memo:"Uses [xui.request] to handle simple request, it can switch ajax/sajax/iajax automatically according to url and request method.",
+        "get":{
+            $desc:"Calls Ajax with GET method.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [Required]: String, The request target URI.",
+                "query [Optional]:  Object[Key/value pairs], request data.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
+                "threadid [Optional]: String, the thread id to be bound to the current request. ",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+             ]
+        },
+        "post":{
+            $desc:"Calls Ajax with POST method.",
+            $rtn:"xui.Ajax",
+            $paras:[
+                "uri [Required]: String, The request target URI.",
+                "query [Optional]:  Object[Key/value pairs], request data.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
+                "threadid [Optional]: String, the thread id to be bound to the current request. ",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+             ]
+        },
         callback:{
             $desc:"String, default callback function name. <strong>Server needs to match it in the response struct.</strong>.",
             $snippet:["alert(xui.Ajax.callback)"]
@@ -1876,7 +1900,7 @@ _.set(xui.Locale,["en","app"], {
 
     _.set(xui.Locale,["en","doc","xui","SAjax"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.SAjax Class. Dont use 'new' but 'function call' to create an instance. <br />Call function : to Create a xui.SAjax Object. <strong>xui.SAjax can handle GET request cross domain, but cant POST data.</strong>.",
+        $desc:"xui.SAjax Class. It can handle cross domain GET request.</strong>.",
         $rtn:"xui.SAjax",
         $paras:[
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
@@ -1922,6 +1946,18 @@ _.set(xui.Locale,["en","app"], {
              "   });*/"
         ],
         $memo:"<br />1.Uses [xui.include] to include a .js file.<br />2.Uses [xui.request] to handle simple request, it can switch ajax/sajax automatically according to url.",
+        "get":{
+            $desc:"Calls SAjax with GET method.",
+            $rtn:"xui.SAjax",
+            $paras:[
+                "uri [Required]: String, The request target URI.",
+                "query [Optional]:  Object[Key/value pairs], request data.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
+                "threadid [Optional]: String, the thread id to be bound to the current request. ",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+             ]
+        },
         callback:{
             $desc:"String, default callback function name. <strong>Server needs to match it in the response struct.</strong>.",
             $snippet:["alert(xui.SAjax.callback)"]
@@ -1972,7 +2008,7 @@ _.set(xui.Locale,["en","app"], {
 
     _.set(xui.Locale,["en","doc","xui","IAjax"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.IAjax Class. Dont use 'new' but 'function call' to create an instance. <br />Call function : to Create a xui.IAjax Object. <strong>xui.IAjax can handle GET/POST request cross domain, and can post binary file to server too.</strong>",
+        $desc:"xui.IAjax Class. It can handle cross domain GET/POST request, and can upload/download file.",
         $rtn:"xui.IAjax",
         $paras:[
             "uri [Required]: String/Object. String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
@@ -2027,7 +2063,30 @@ _.set(xui.Locale,["en","app"], {
              "   },{method:'GET'});*/"
         ],
         $memo:"You have to use xui.IAjax to post cross domain data, or to upload an iamge file.",
-
+        "get":{
+            $desc:"Calls IAjax with GET method.",
+            $rtn:"xui.IAjax",
+            $paras:[
+                "uri [Required]: String, The request target URI.",
+                "query [Optional]:  Object[Key/value pairs], request data.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
+                "threadid [Optional]: String, the thread id to be bound to the current request. ",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+             ]
+        },
+        "post":{
+            $desc:"Calls IAjax with POST method.",
+            $rtn:"xui.IAjax",
+            $paras:[
+                "uri [Required]: String, The request target URI.",
+                "query [Optional]:  Object[Key/value pairs], request data.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails.",
+                "threadid [Optional]: String, the thread id to be bound to the current request. ",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+             ]
+        },
         callback:{
             $desc:"String, default callback function name. <strong>Server needs to match it in the response struct.</strong>.",
             $snippet:["alert(xui.IAjax.callback)"]
@@ -2400,7 +2459,7 @@ _.set(xui.Locale,["en","app"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Dom Class",
         constructor:{
-            $desc:"Generally, don't use [new xui.Dom()], but [xui(nodes, flag)] to create a xui.Dom Object."
+            $desc:"Use [xui(nodes, flag)] to create a xui.Dom Object."
         },
         Events:{
             $desc:  "<strong>Description</strong>: to add, remove or fire the specified event? There are three group of event functions are designed for a DOM event: [before-], [on-] and [after-]" +
@@ -3935,7 +3994,7 @@ _.set(xui.Locale,["en","app"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Cookies Class(static)",
         get:{
-            $desc:"Gets a cookie with the given name.",
+            $desc:"Gets all cookies or a cookie with the given name.",
             $rtn:"String",
             $paras:[
                 "name [Required] : String, the name of cookie."

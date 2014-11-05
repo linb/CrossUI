@@ -13,10 +13,11 @@ Namespace=function(key){
 };
 //global: class
 Class=function(key, pkey, obj){
-    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all;
+    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
+        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});}
     obj=obj||{};
     //exists?
-    if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xui$)return self._last=t;
+    if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
 
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
@@ -51,14 +52,14 @@ Class=function(key, pkey, obj){
     var cf=function(){if(typeof this.initialize=='function')this.initialize()};
     if(typeof obj.Constructor == 'function'){
         _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
-        _this.Constructor = String(obj.Constructor);
+        _this.Constructor = _funadj(obj.Constructor);
     }else{
         if(parent0){
             // Constructor is for opera, in opear fun.toString can't get arguments sometime
             var f=cf,str = parent0.Constructor;
             if(str)f=new Function(str.slice(str.indexOf("(") + 1, str.indexOf(")")).split(','), str.slice(str.indexOf("{") + 1, str.lastIndexOf("}")));
             _this = env(f, 'Constructor', key, parent0.upper,'constructor');
-            _this.Constructor = str;
+            _this.Constructor = _funadj(str);
         }else
             _this = cf;
     }
@@ -98,7 +99,7 @@ Class=function(key, pkey, obj){
     }
 
     //set symbol
-    _this.$xui$ = 1;
+    _this.$xui$ = _this.$xuiclass$ = 1;
     _this.$children = [];
     _this.$parent = _parent;
 
@@ -218,7 +219,7 @@ _.merge(_,{
         else if(typeof path=='string') return hash[path];
         else{
             for(var i=0,l=path.length,t;i<l;)
-                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? typeof(hash[t])=="function" ? hash[t]() : undefined : hash[t])===undefined )return;
+                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && !hash[t].length)? hash[t]() : undefined : hash[t])===undefined )return;
             return hash;
         }
     },
@@ -735,10 +736,15 @@ _.merge(_,{
 });
 _.merge(_.fun,{
     body:function(fun){
-        with(""+fun)return slice(indexOf("{") + 1, lastIndexOf("}"));
+        var s=""+fun;
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});        
+        return s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
     },
     args:function(fun){
-        with(""+fun)return slice(indexOf("(") + 1, indexOf(")")).split(/\s*,\s*/);
+        var s=""+fun;
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});
+        s=s.slice(s.indexOf("(") + 1, s.indexOf(")")).split(/\s*,\s*/);
+        return s[0]&&s;
     },
     clone:function(fun){
         return new Function(_.fun.args(fun),_.fun.body(fun));
@@ -2332,6 +2338,16 @@ Class('xui.absIO',null,{
     },
     Static:{
         $abstract:true,
+        get:function(uri, query, onSuccess, onFail, threadid, options){
+            options=options||{};
+            options.mothod="GET";
+            return this.apply(this, arguments).start();
+        },
+        post:function(uri, query, onSuccess, onFail, threadid, options){
+            options=options||{};
+            options.mothod="POST";
+            return this.apply(this, arguments).start();
+        },
         _id:1,
         uid:1,
         method:'GET',
@@ -2668,6 +2684,7 @@ Class('xui.SAjax','xui.absIO',{
             }else
                 self._onError(new Error("SAjax return value formatting error--"+obj));
         },
+        post:null,
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
             if(typeof obj=='string')
@@ -4633,10 +4650,7 @@ Class("xui.Timer","xui.absObj",{
             var o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
-            if(p.dataSourceType!='memory'){
-                delete p.data;
-            }
-            if(p.dataSourceType=='none' && p.dataSourceType=='memory'){
+            if(p.dataSourceType=='none' || p.dataSourceType=='memory'){
                 delete p.queryURL;
                 delete p.queryUserName;
                 delete p.queryPassword;
@@ -4649,6 +4663,8 @@ Class("xui.Timer","xui.absObj",{
                 delete p.queryMethod;
                 delete p.requestType;
                 delete p.responseType;
+            }else{
+                delete p.data;
             }
             if(p.tagVar && _.isEmpty(p.tagVar))
                 delete p.tagVar;
@@ -9562,6 +9578,10 @@ type:4
 
             // remove this trigger first
             if(arr[id]){
+                if(trigger===true){
+                    _.tryF(arr[id].trigger);
+                    trigger=false;
+                }
                 _.arr.removeValue(arr,id);
                 delete arr[id];
             }
@@ -19565,11 +19585,16 @@ Class("xui.absList", "xui.absObj",{
                     source = profile.getSubNodeByItemId('ITEMCAPTION',itemId);
                     if(source.isEmpty())source = profile.getSubNodeByItemId('CAPTION',itemId);
                     if(!source.isEmpty()){
-                        var pos = source.offset(),
-                        size = source.cssSize();
-        
+                        var pp=source.parent(),
+                        pos = source.offset(null,pp.get(0)),
+                        size = source.cssSize(),
+                        pos2 = pp.offset(),
+                        size2 = pp.cssSize();
+
                         var editor=new xui.UI.Input();
-                        editor.setWidth(Math.min(size.width+20,100)).setHeight(Math.min(size.height+4,20)).setValue(item.caption||"");
+                        editor.setWidth(Math.max(size2.width-pos.left,40)).setHeight(Math.max(size2.height, 20))
+                            .setResizer(true)
+                            .setValue(item.caption||"");
                         if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
 
                         editor.beforeUIValueSet(function(prf, ov, nv){
@@ -19577,15 +19602,22 @@ Class("xui.absList", "xui.absObj",{
                                 profile.boxing().updateItem(item.id, {caption:nv});
                                 if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
                                 root.setBlurTrigger("absList_editor",null);
-                                editor.destroy();
-                                editor=null;
+                                // it's a must
+                                _.asyRun(function(){
+                                    editor.destroy();
+                                    editor=null;
+                                });
                             }
                         });
                         xui('body').append(editor);
                         var root=editor.getRoot();
-                        root.popToTop(pos);
+
+                        root.popToTop({
+                            left:pos.left+pos2.left,
+                            top:pos2.top
+                        });
                         root.setBlurTrigger("absList_editor",function(){
-                            editor.setUIValue(editor.getUIValue(),true);
+                                if(editor)editor.setUIValue(editor.getUIValue(),true);
                         });
                         editor.activate();
                     }
@@ -24520,6 +24552,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             })
                         }
                         delete profile._justFocus;
+                    }
+                    if(profile._activedonmousedown){
+                        delete profile._activedonmousedown;
+                        var node=xui.use(src).get(0);
+                         try{node.select()}catch(e){}
                     }
                 },
                 onFocus:function(profile, e, src){
@@ -42364,6 +42401,8 @@ editorReadonly
 editorDropListWidth
 editorDropListHeight
 editorProperties
+editorCC
+editorCS
 editorEvents
 
 */
@@ -42643,6 +42682,8 @@ editorEvents
                 }
                 box._renderCell(profile, cell, null, node, options);
 
+                var editor=cell._editor;
+
                 //if update value
                 if('value' in options){
                     if(!pdm || dirtyMark===false)
@@ -42658,7 +42699,10 @@ editorEvents
                             cell.dirty=true;
                         }
                     }
+                    if(editor)editor.setValue(cell.value,true,'editorini');
                 }
+                if(('caption' in options) && editor.setCaption)
+                    editor.setCaption(options.caption,true);
             }
             if(triggerEvent){
                 if(profile.afterCellUpdated)
@@ -42815,13 +42859,15 @@ editorEvents
             },100);
         },
         _adjusteditorW:function(profile, nodes,width){
-            nodes.each(function(n,i){
-                if(!(i=n.id))return;
-                i=i.split(":")[2];
-                if(i=profile.cellMap[i])
-                       if(i._editor)
-                            i._editor.setWidth(width+2);
-            });
+            if(nodes){
+                nodes.each(function(n,i){
+                    if(!(i=n.id))return;
+                    i=i.split(":")[2];
+                    if(i=profile.cellMap[i])
+                           if(i._editor)
+                                i._editor.setWidth(width+2);
+                });
+            }
         },
         _adjusteditorH:function(profile, nodes,height){
             nodes.each(function(n,i){
@@ -42887,6 +42933,8 @@ editorEvents
                         editorAutoPop= getPro('editorAutoPop'),
                         editorCacheKey = getPro('editorCacheKey'),
                         editorProperties = getPro('editorProperties'),
+                        editorCC= getPro('editorCC'),
+                        editorCS= getPro('editorCS'),
                         editorEvents = getPro('editorEvents'),
                         editorFormat = getPro('editorFormat'),
                         editorMask = getPro('editorMask'),
@@ -43063,6 +43111,10 @@ editorEvents
                         });
                         editor.setProperties(editorProperties);
                     }
+                    if(editorCC)
+                        editor.setCustomClass(_.clone(editorCC,2));
+                    if(editorCS)
+                        editor.setCustomStyle(_.clone(editorCS,2));
                     if(editorEvents)
                         editor.setEvents(editorEvents);
                     if(!inline){
@@ -43270,15 +43322,20 @@ editorEvents
                             expand=1;
                             editor.expand();
                          }
-                        //activate editor
+                        if(!inline)
+                            editor.setVisibility(issharp ? "hidden" : "visible");
+                       //activate editor
                         if(editMode!="hover" || !byhover){
                             _.asyRun(function(){
                                 // destroyed
                                 if(!profile.box)return;
                                 var target=editor;
-                                if(expand && editor.getPopWnd)
-                                    target = editor.getPopWnd();
-                                _.tryF(target&&target.activate,[],target);
+                                if(target.get(0)&&target.get(0).box){
+                                    if(expand && editor.getPopWnd)
+                                        target = editor.getPopWnd();
+                                    _.tryF(target&&target.activate,[],target);
+                                    target.get(0)._stopmouseupcaret=1;
+                                }
                             });
                         }else{
                             var bfun=function(){
@@ -43300,10 +43357,7 @@ editorEvents
                                 cfun();
                                 editor.onBlur(dfun);
                             }).onBlur(dfun);
-
                         }
-                        if(!inline)
-                            editor.setVisibility(issharp ? "hidden" : "visible");
                     }
                     if(profile.onBeginEdit)
                         profile.boxing().onBeginEdit(profile, cell, editor);
@@ -43665,8 +43719,9 @@ editorEvents
 
             if(item){
                 xui.Tips.show(pos, ('tips' in item)?item.tips:(item._$tips||item.caption));
+                return false;
             }else
-                xui.Tips.hide();
+                return true;
         },
         _adjustRelWith:function(profile){
             var prop=profile.properties,
