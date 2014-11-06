@@ -14,7 +14,7 @@ Namespace=function(key){
 //global: class
 Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
-        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});}
+        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
     obj=obj||{};
     //exists?
     if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
@@ -737,12 +737,12 @@ _.merge(_,{
 _.merge(_.fun,{
     body:function(fun){
         var s=""+fun;
-        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});        
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});        
         return s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
     },
     args:function(fun){
         var s=""+fun;
-        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});
         s=s.slice(s.indexOf("(") + 1, s.indexOf(")")).split(/\s*,\s*/);
         return s[0]&&s;
     },
@@ -2363,6 +2363,7 @@ Class('xui.absIO',null,{
         callback:'callback',
 
         _buildQS:function(hash, flag, post){
+            hash=_.clone(hash,function(o,i){return !(_.isNaN(o)||!_.isDefined(o))});
             return flag?((flag=_.serialize(hash))&&(post?flag:encodeURIComponent(flag))):_.urlEncode(hash);
         },
         customQS:function(obj){
