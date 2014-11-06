@@ -4563,7 +4563,7 @@ editorEvents
                     }
                     if(editor)editor.setValue(cell.value,true,'editorini');
                 }
-                if(('caption' in options) && editor.setCaption)
+                if(('caption' in options) && editor && editor.setCaption)
                     editor.setCaption(options.caption,true);
             }
             if(triggerEvent){

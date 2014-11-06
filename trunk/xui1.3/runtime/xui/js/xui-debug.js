@@ -14,7 +14,7 @@ Namespace=function(key){
 //global: class
 Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
-        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});}
+        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
     obj=obj||{};
     //exists?
     if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
@@ -737,12 +737,12 @@ _.merge(_,{
 _.merge(_.fun,{
     body:function(fun){
         var s=""+fun;
-        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});        
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});        
         return s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
     },
     args:function(fun){
         var s=""+fun;
-        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\).*)/g,function(a){return a.charAt(0)!=")"?"":a});
+        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});
         s=s.slice(s.indexOf("(") + 1, s.indexOf(")")).split(/\s*,\s*/);
         return s[0]&&s;
     },
@@ -2363,6 +2363,7 @@ Class('xui.absIO',null,{
         callback:'callback',
 
         _buildQS:function(hash, flag, post){
+            hash=_.clone(hash,function(o,i){return !(_.isNaN(o)||!_.isDefined(o))});
             return flag?((flag=_.serialize(hash))&&(post?flag:encodeURIComponent(flag))):_.urlEncode(hash);
         },
         customQS:function(obj){
@@ -15815,8 +15816,8 @@ Class("xui.UI",  "xui.absObj", {
             return arguments.callee.upper.apply(this,["domId"]);
         },
         refresh:function(remedy){
-            var paras,node,b,p,s,$xid,serialId,fun,box,children,uiv;
-            return this.each(function(o){
+            var paras,node,b,p,s,$xid,serialId,fun,box,children,uiv,ns=this;
+            return ns.each(function(o,i){
                 if(!o.renderId)return;
 
                 box=o.box;
@@ -15883,48 +15884,49 @@ Class("xui.UI",  "xui.absObj", {
                 o.serialId=serialId;
 
                 //create
-                o=new box(o).render();
+                var n=new box(o).render();
                 
                 // set cache refrence
                 if(_c){
-                    _.merge(_c,o,'all');
-                    o.get(0)._cacheInstance=_c;
-                    _c.n0=o.get(0);
+                    _.merge(_c,n,'all');
+                    n.get(0)._cacheInstance=_c;
+                    // must reset it to keep memory pointer
+                    n=_c;
                 }
+                ns[i]=n.get(0);
 
                 //for functions like: UI refresh itself
                 if(fun)
-                    fun.call(fun.target,o.get(0));
-
+                    fun.call(fun.target,n.get(0));
 
                 //add to parent, and trigger RenderTrigger
                 if(b)
-                    p.append(o,paras);
+                    p.append(n,paras);
                 else
-                    p.append(o);
+                    p.append(n);
 
-                if(host)o.setHost(host,alias);
+                if(host)n.setHost(host,alias);
 
                 //restore children
                 _.arr.each(children,function(v){
                     delete v[0].$dockParent;
-                    o.append.apply(o,v);
+                    n.append.apply(n,v);
                 });
 
                 //back to original position
-                replace.replace(o.get(0).getRoot());
+                replace.replace(n.get(0).getRoot());
                 replace.remove();
                 replace=null;
 
                 if(uiv)
-                    o.setUIValue(uiv,true,null,'refresh');
+                    n.setUIValue(uiv,true,null,'refresh');
                     
                 if(ar){
-                    o.get(0).$afterRefresh=ar;
-                    ar(o.get(0));
+                    n.get(0).$afterRefresh=ar;
+                    ar(n.get(0));
                 }
-                if(_.isSet(autoDestroy&&o.host&&o.host['xui.Com'])){
-                    o.host.autoDestroy=autoDestroy;
+                if(_.isSet(autoDestroy&&n.host&&n.host['xui.Com'])){
+                    n.host.autoDestroy=autoDestroy;
                 }
             });
         },
@@ -42701,7 +42703,7 @@ editorEvents
                     }
                     if(editor)editor.setValue(cell.value,true,'editorini');
                 }
-                if(('caption' in options) && editor.setCaption)
+                if(('caption' in options) && editor && editor.setCaption)
                     editor.setCaption(options.caption,true);
             }
             if(triggerEvent){
