@@ -1194,7 +1194,7 @@ if(xui.browser.ie){
                 },
                 {
                     onClick:function(){
-                        _.tryF(dialog._$onYes);
+                        _.tryF(dialog._$onYes,['yes']);
                         dialog._$_clicked=1;
                         dialog.close();
                     }
@@ -1312,7 +1312,7 @@ if(xui.browser.ie){
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
-                        _.tryF(dialog._$onNo);
+                        _.tryF(dialog._$onNo,["no"]);
                         else
                             delete dialog._$_clickYes;
 

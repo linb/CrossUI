@@ -219,7 +219,7 @@ _.merge(_,{
         else if(typeof path=='string') return hash[path];
         else{
             for(var i=0,l=path.length,t;i<l;)
-                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && !hash[t].length)? hash[t]() : undefined : hash[t])===undefined )return;
+                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
             return hash;
         }
     },
@@ -1626,7 +1626,7 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope, temp){
+        exec:function(conf, args, scope, temp, resume){
            var  t,m,n,p,k,type=conf.type||"other",
                 _ns={
                     "temp":temp,
@@ -1677,7 +1677,7 @@ new function(){
                             return false;
                     }
                 },
-               adjustparam=function(o){
+                adjustparam=function(o){
                     if(typeof(o)=="string"){
                         var rpc;
                         if(_.str.startWith(o,"[data]")){
@@ -1707,9 +1707,12 @@ new function(){
             // handle conditions
             // currently, support and only
             // TODO: complex conditions
-            for(var i=0,l=conditions.length;i<l;i++)
-                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
+            for(var i=0,l=conditions.length;i<l;i++){
+                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol)){
+                    if(typeof resume=="function")resume();
                     return;
+                }
+            }
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
                 for(var i=(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
@@ -1803,9 +1806,8 @@ new function(){
                                 case 'msg':
                                     if(method=="busy"||method=="free"){
                                         if(_.isFun(t=_.get(xui.Dom,[method])))t.apply(xui.Dom,iparams);
-                                    }else{
-                                        if(_.isFun(t=_.get(xui,[method])))t.apply(xui,iparams);
-                                    }
+                                    }else if(method=="console" && _.isDefined(window.console) && (typeof console.log=="function"))console.log.apply(console,iparams);
+                                     else if(_.isFun(t=_.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
                                 case "var":
                                     if(method=="cookie"){
@@ -1840,7 +1842,7 @@ new function(){
                                             }
                                             break;
                                         case "call":
-                                            var args=[iparams[3],iparams[4],iparams[5]], doit;
+                                            var args=iparams.slice(3), doit;
                                             t=iparams[0];
                                             if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
@@ -3817,14 +3819,17 @@ Class('xui.absObj',"xui.absBox",{
                                         if(typeof o=='function')r=_.tryF(o, args, host);
                                         else if(_.isHash(o)){
                                             if('onOK' in o ||'onKO' in o){
+                                                var resume=function(key,args){
+                                                    if(fun)fun.apply(key,args);
+                                                };
                                                 // onOK
-                                                if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
-                                                    if(fun)fun.apply("okData",arguments);
+                                                if('onOK' in o)onOK=(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                                   resume("okData",arguments);
                                                 };
                                                 if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
-                                                    if(fun)fun.apply("koData",arguments);
+                                                    resume("koData",arguments);
                                                 };
-                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp,resume))){
                                                     n=temp=fun=null;
                                                 }
                                                 break;

@@ -505,7 +505,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var affectUI=arguments[4],
                 c=this.constructor,
                 profile=this.get(0);
-
+            if(_.isHash(arr))arr=[arr];
             if(arr && _.isArr(arr) && arr.length>0){
                 var pro=profile.properties,
                     row_m=profile.rowMap2,
@@ -969,7 +969,38 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile.box._activeRow(profile, dr.get(0).id);
             return this;
         },
-
+        getRowMap:function(rowId){
+            var prf=this.get(0),ins=prf.boxing(),p=prf.properties,t,hash;
+            if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                if(p.activeMode="row"){
+                    if(t=ins.getActiveRow())rowId=t.id;
+                }else if(p.activeMode="cell"){
+                    if(t=ins.getActiveCell())rowId=t._row.id;
+                }
+            }
+            return ins.getRowbyRowId(rowId, "map");
+        },
+        setRowMap:function(hash, rowId, dirtyMark, triggerEvent){
+            return this.each(function(prf){
+                var ins=prf.boxing(),p=prf.properties,t;
+                if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                    if(p.activeMode="row"){
+                        if(t=ins.getActiveRow())rowId=t.id;
+                    }else if(p.activeMode="cell"){
+                        if(t=ins.getActiveCell())rowId=t._row.id;
+                    }
+                }
+                if(rowId){
+                    var row=ins.getRowbyRowId(rowId),
+                        rowId=row.id,
+                        header=ins.getHeader('min');
+                    _.arr.each(row.cells,function(t,j){
+                        ins.updateCellByRowCol(rowId, header[j], hash[header[j]], dirtyMark, triggerEvent);
+                    });
+                }
+                p.rowMap=hash;
+            });
+        },
         /*column and header related*/
         //type: 'original', 'data', 'min'
         getHeader:function(type){
@@ -3103,37 +3134,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ini:null
             },
             rowMap:{
-                ini:null,
-                get:function(rowId){
-                    var prf=this,ins=prf.boxing(),p=prf.properties,t,hash;
-                    if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
-                        if(p.activeMode="row"){
-                            if(t=ins.getActiveRow())rowId=t.id;
-                        }else if(p.activeMode="cell"){
-                            if(t=ins.getActiveCell())rowId=t._row.id;
-                        }
-                    }
-                    return ins.getRowbyRowId(rowId, "map");
-                },
-                set:function(hash, rowId){
-                    var prf=this,ins=prf.boxing(),p=prf.properties,t;
-                    if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
-                        if(p.activeMode="row"){
-                            if(t=ins.getActiveRow())rowId=t.id;
-                        }else if(p.activeMode="cell"){
-                            if(t=ins.getActiveCell())rowId=t._row.id;
-                        }
-                    }
-                    if(rowId){
-                        var row=ins.getRowbyRowId(rowId, "map"),
-                            rowId=row.id,
-                            header=ins.getHeader('min');
-                        _.arr.each(row.cells,function(t,j){
-                            updateCellByRowCol(rowId, header[j],p.dirtyMark,true);
-                        });
-                    }
-                    return p.rowMap=hash;
-                }
+                ini:null
             },
             selMode:{
                 ini:'none',
@@ -5408,16 +5409,16 @@ editorEvents
                 if(_.isArr(o))a[i]={cells:o};
                 else a[i]=_.copy(o);
 
-                m=a[i].cells=_.copy(a[i].cells);
                 // check if it's a map row data
-                if(!m || _.isHash(m)){
+                if(!a[i].cells || !_.isArr(a[i].cells)){
                     var cells=[],b=0;
-                    _.each(m||a[i],function(v,i){
+                    _.each(a[i],function(v,i){
                         if(i in h)cells[h[i]]=_.isHash(v)?v:{value:v};
                         else{b=1; return false;}
                     });
-                    if(!b)m=a[i]={cells:cells}
+                    if(!b)a[i]={cells:cells}
                 }
+                m=a[i].cells=_.copy(a[i].cells);
 
                 _.arr.each(m,function(o,i){
                     //It's a hash

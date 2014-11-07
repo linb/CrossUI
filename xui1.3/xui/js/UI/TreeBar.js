@@ -164,7 +164,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         /*
         *open to deep node
         */
-        openToNode:function(id){
+        openToNode:function(id, triggerEvent){
             return this.each(function(profile){
                 var res=false, a=[],
                     fun=function(arr, catId, layer){
@@ -193,10 +193,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         if(o.sub){
                             profile.boxing().toggleNode(o.id,true);
                             // for the last one, trigger its onclick event
-                            if(i==a.length-1 && !(o.hasOwnProperty('group')?o.group:profile.properties.group))
+                            if(triggerEvent!==false &&  i==a.length-1 && !(o.hasOwnProperty('group')?o.group:profile.properties.group))
                                 profile.boxing().fireItemClickEvent(o.id);
-                        }else
+                        }else if(triggerEvent!==false){
                             profile.boxing().fireItemClickEvent(o.id);
+                        }
                     });
                 }
             });
