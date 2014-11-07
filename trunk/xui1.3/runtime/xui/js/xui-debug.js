@@ -219,7 +219,7 @@ _.merge(_,{
         else if(typeof path=='string') return hash[path];
         else{
             for(var i=0,l=path.length,t;i<l;)
-                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && !hash[t].length)? hash[t]() : undefined : hash[t])===undefined )return;
+                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
             return hash;
         }
     },
@@ -1626,7 +1626,7 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope, temp){
+        exec:function(conf, args, scope, temp, resume){
            var  t,m,n,p,k,type=conf.type||"other",
                 _ns={
                     "temp":temp,
@@ -1677,7 +1677,7 @@ new function(){
                             return false;
                     }
                 },
-               adjustparam=function(o){
+                adjustparam=function(o){
                     if(typeof(o)=="string"){
                         var rpc;
                         if(_.str.startWith(o,"[data]")){
@@ -1707,9 +1707,12 @@ new function(){
             // handle conditions
             // currently, support and only
             // TODO: complex conditions
-            for(var i=0,l=conditions.length;i<l;i++)
-                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol))
+            for(var i=0,l=conditions.length;i<l;i++){
+                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol)){
+                    if(typeof resume=="function")resume();
                     return;
+                }
+            }
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
                 for(var i=(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
@@ -1803,9 +1806,8 @@ new function(){
                                 case 'msg':
                                     if(method=="busy"||method=="free"){
                                         if(_.isFun(t=_.get(xui.Dom,[method])))t.apply(xui.Dom,iparams);
-                                    }else{
-                                        if(_.isFun(t=_.get(xui,[method])))t.apply(xui,iparams);
-                                    }
+                                    }else if(method=="console" && _.isDefined(window.console) && (typeof console.log=="function"))console.log.apply(console,iparams);
+                                     else if(_.isFun(t=_.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
                                 case "var":
                                     if(method=="cookie"){
@@ -1840,7 +1842,7 @@ new function(){
                                             }
                                             break;
                                         case "call":
-                                            var args=[iparams[3],iparams[4],iparams[5]], doit;
+                                            var args=iparams.slice(3), doit;
                                             t=iparams[0];
                                             if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
@@ -3817,14 +3819,17 @@ Class('xui.absObj',"xui.absBox",{
                                         if(typeof o=='function')r=_.tryF(o, args, host);
                                         else if(_.isHash(o)){
                                             if('onOK' in o ||'onKO' in o){
+                                                var resume=function(key,args){
+                                                    if(fun)fun.apply(key,args);
+                                                };
                                                 // onOK
-                                                if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
-                                                    if(fun)fun.apply("okData",arguments);
+                                                if('onOK' in o)onOK=(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                                   resume("okData",arguments);
                                                 };
                                                 if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
-                                                    if(fun)fun.apply("koData",arguments);
+                                                    resume("koData",arguments);
                                                 };
-                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp,resume))){
                                                     n=temp=fun=null;
                                                 }
                                                 break;
@@ -34338,7 +34343,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         /*
         *open to deep node
         */
-        openToNode:function(id){
+        openToNode:function(id, triggerEvent){
             return this.each(function(profile){
                 var res=false, a=[],
                     fun=function(arr, catId, layer){
@@ -34367,10 +34372,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         if(o.sub){
                             profile.boxing().toggleNode(o.id,true);
                             // for the last one, trigger its onclick event
-                            if(i==a.length-1 && !(o.hasOwnProperty('group')?o.group:profile.properties.group))
+                            if(triggerEvent!==false &&  i==a.length-1 && !(o.hasOwnProperty('group')?o.group:profile.properties.group))
                                 profile.boxing().fireItemClickEvent(o.id);
-                        }else
+                        }else if(triggerEvent!==false){
                             profile.boxing().fireItemClickEvent(o.id);
+                        }
                     });
                 }
             });
@@ -38645,7 +38651,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var affectUI=arguments[4],
                 c=this.constructor,
                 profile=this.get(0);
-
+            if(_.isHash(arr))arr=[arr];
             if(arr && _.isArr(arr) && arr.length>0){
                 var pro=profile.properties,
                     row_m=profile.rowMap2,
@@ -39109,7 +39115,38 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile.box._activeRow(profile, dr.get(0).id);
             return this;
         },
-
+        getRowMap:function(rowId){
+            var prf=this.get(0),ins=prf.boxing(),p=prf.properties,t,hash;
+            if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                if(p.activeMode="row"){
+                    if(t=ins.getActiveRow())rowId=t.id;
+                }else if(p.activeMode="cell"){
+                    if(t=ins.getActiveCell())rowId=t._row.id;
+                }
+            }
+            return ins.getRowbyRowId(rowId, "map");
+        },
+        setRowMap:function(hash, rowId, dirtyMark, triggerEvent){
+            return this.each(function(prf){
+                var ins=prf.boxing(),p=prf.properties,t;
+                if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                    if(p.activeMode="row"){
+                        if(t=ins.getActiveRow())rowId=t.id;
+                    }else if(p.activeMode="cell"){
+                        if(t=ins.getActiveCell())rowId=t._row.id;
+                    }
+                }
+                if(rowId){
+                    var row=ins.getRowbyRowId(rowId),
+                        rowId=row.id,
+                        header=ins.getHeader('min');
+                    _.arr.each(row.cells,function(t,j){
+                        ins.updateCellByRowCol(rowId, header[j], hash[header[j]], dirtyMark, triggerEvent);
+                    });
+                }
+                p.rowMap=hash;
+            });
+        },
         /*column and header related*/
         //type: 'original', 'data', 'min'
         getHeader:function(type){
@@ -41243,37 +41280,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ini:null
             },
             rowMap:{
-                ini:null,
-                get:function(rowId){
-                    var prf=this,ins=prf.boxing(),p=prf.properties,t,hash;
-                    if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
-                        if(p.activeMode="row"){
-                            if(t=ins.getActiveRow())rowId=t.id;
-                        }else if(p.activeMode="cell"){
-                            if(t=ins.getActiveCell())rowId=t._row.id;
-                        }
-                    }
-                    return ins.getRowbyRowId(rowId, "map");
-                },
-                set:function(hash, rowId){
-                    var prf=this,ins=prf.boxing(),p=prf.properties,t;
-                    if(!_.isSet(rowId)&&prf.renderId&&!prf.destroyed){
-                        if(p.activeMode="row"){
-                            if(t=ins.getActiveRow())rowId=t.id;
-                        }else if(p.activeMode="cell"){
-                            if(t=ins.getActiveCell())rowId=t._row.id;
-                        }
-                    }
-                    if(rowId){
-                        var row=ins.getRowbyRowId(rowId, "map"),
-                            rowId=row.id,
-                            header=ins.getHeader('min');
-                        _.arr.each(row.cells,function(t,j){
-                            updateCellByRowCol(rowId, header[j],p.dirtyMark,true);
-                        });
-                    }
-                    return p.rowMap=hash;
-                }
+                ini:null
             },
             selMode:{
                 ini:'none',
@@ -43548,16 +43555,16 @@ editorEvents
                 if(_.isArr(o))a[i]={cells:o};
                 else a[i]=_.copy(o);
 
-                m=a[i].cells=_.copy(a[i].cells);
                 // check if it's a map row data
-                if(!m || _.isHash(m)){
+                if(!a[i].cells || !_.isArr(a[i].cells)){
                     var cells=[],b=0;
-                    _.each(m||a[i],function(v,i){
+                    _.each(a[i],function(v,i){
                         if(i in h)cells[h[i]]=_.isHash(v)?v:{value:v};
                         else{b=1; return false;}
                     });
-                    if(!b)m=a[i]={cells:cells}
+                    if(!b)a[i]={cells:cells}
                 }
+                m=a[i].cells=_.copy(a[i].cells);
 
                 _.arr.each(m,function(o,i){
                     //It's a hash
@@ -45057,7 +45064,7 @@ if(xui.browser.ie){
                 },
                 {
                     onClick:function(){
-                        _.tryF(dialog._$onYes);
+                        _.tryF(dialog._$onYes,['yes']);
                         dialog._$_clicked=1;
                         dialog.close();
                     }
@@ -45175,7 +45182,7 @@ if(xui.browser.ie){
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
-                        _.tryF(dialog._$onNo);
+                        _.tryF(dialog._$onNo,["no"]);
                         else
                             delete dialog._$_clickYes;
 
