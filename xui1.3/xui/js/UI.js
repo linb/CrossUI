@@ -1335,6 +1335,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(!(i in t))t[i]=o;
                         return false;
                     }
+                    if(!o)return false;
                 });
                 if(key && typeof key=='object'){
                     if(o.renderId){
@@ -1388,6 +1389,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(!(i in t))t[i]=o;
                         return false;
                     }
+                    if(!o)return false;
                 });
                 //set key and value
                 if(!!key && typeof key=='object'){
@@ -1473,6 +1475,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(!(i in t))t[i]=o;
                         return false;
                     }
+                    if(!o)return false;
                 });
                 //set hash dir
                 if(!!key && typeof key=='object'){

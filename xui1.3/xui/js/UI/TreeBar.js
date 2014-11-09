@@ -490,19 +490,21 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
                 },
                 onMouseover:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
+                    var item = profile.getItemByDom(src);
+                    if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
+                    var item = profile.getItemByDom(src);
+                    if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
             },
             OPT:{
                 onClick:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
                     if(profile.onShowOptions){
                         var item = profile.getItemByDom(src);
+                        if(!profile.properties.optBtn && !item.optBtn)return;
                         profile.boxing().onShowOptions(profile, item, e, src);
                     }
                     return false;

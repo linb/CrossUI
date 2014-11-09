@@ -1044,7 +1044,7 @@ _.merge(xui,{
     _langscMark:/[$@{][\S]+/,
      // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)
      // variable pattern: @a.b.c@  @a@  {!}  {a.b.c}
-    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w]+(\(\))?(\.[\w]+(\(\))?)*)(\}))/g,
+    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w\[\]]*|[\w\[\]]+(\(\))?(\.[\w\[\]]+(\(\))?)*)(\}))/g,
     _escapeMap:{
         "$":"\x01",
         ".":"\x02",
@@ -2687,7 +2687,6 @@ Class('xui.SAjax','xui.absIO',{
             }else
                 self._onError(new Error("SAjax return value formatting error--"+obj));
         },
-        post:null,
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
             if(typeof obj=='string')
@@ -2922,7 +2921,7 @@ Class('xui.SC',null,{
 
         //get object from obj string
         get : function (path, obj){
-            return _.get(obj||window,(path||'').split('.'));
+            return _.get(obj||window,(path||'').split(/[\[\]\.]+/));
         },
         /* function for "Straight Call"
         *   asy     loadSnips use
