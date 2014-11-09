@@ -490,7 +490,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             delete profile.$fromEditor;
             delete profile.$typeOK;
 
-            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox')
+            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox'||type=='cmd')
                 profile.$inputReadonly=true;
 
             if(type!='listbox' && type!='combobox' && type!='helpinput')
@@ -655,13 +655,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 'text-align':'right'
             },
-            'KEY-type-file INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
+            'KEY-type-file INPUT, KEY-type-cmd INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
                 $order:4,
                 cursor:'pointer',
                 'text-align':'left',
                 overflow:'hidden'
             },
-            'KEY-type-file BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
+            'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
                 'background-image':xui.UI.$bg('inputbgb.gif', '',"Input"),
                 'background-repeat':'repeat-x',
@@ -845,7 +845,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             BOX:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
-                    if(prop.type=='cmdbox'){
+                    if(prop.type=='cmdbox'||prop.type=='cmd'){
                         if(profile.onClick)
                             profile.boxing().onClick(profile, e, src, prop.$UIvalue);
                     //DOM node's readOnly
@@ -1190,7 +1190,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             type:{
                 ini:'combobox',
-                listbox:_.toArr('none,input,password,combobox,listbox,file,getter,helpinput,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
+                listbox:_.toArr('none,input,password,combobox,listbox,file,getter,helpinput,cmd,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
                 set:function(value){
                     var pro=this;
                     pro.properties.type=value;
@@ -1217,7 +1217,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         i.addClass('xui-ui-inputdisabled');
                     else
                         i.removeClass('xui-ui-inputdisabled');
-                    if((""+i.get(0).type).toLowerCase()!='button'){
+                    if((""+i.get(0).type).toLowerCase()!='cmd'){
                         if(!v && (this.properties.readonly||this.$inputReadonly))
                             v=true;
                         // use 'readonly'(not 'disabled') for selection
@@ -1315,15 +1315,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 template = _.clone(profile.box.getTemplate());
                 var t=template.FRAME.BORDER;
 
+                t.BOX.WRAP.INPUT.tagName='input';
+                t.BOX.WRAP.INPUT.type='text';
                 switch(properties.type){
-                case 'none':
-                case 'input':
-                case 'currency':
-                case 'number':
-                    t.BOX.WRAP.INPUT.tagName='input';
+                case 'cmd':
+                    t.BOX.WRAP.INPUT.type='button';
                 break;
                 case 'password':
-                    t.BOX.WRAP.INPUT.tagName='input';
                     t.BOX.WRAP.INPUT.type='password';
                 break;
                 case 'spin':
@@ -1353,7 +1351,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     };
                 case 'listbox':
                 case 'cmdbox':
-                    t.BOX.WRAP.INPUT.tagName='input';
                     t.BOX.WRAP.INPUT.type='button';
                 default:
                     t.BTN={

@@ -1044,7 +1044,7 @@ _.merge(xui,{
     _langscMark:/[$@{][\S]+/,
      // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)
      // variable pattern: @a.b.c@  @a@  {!}  {a.b.c}
-    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w]*|[\w]+(\(\))?(\.[\w]+(\(\))?)*)(\}))/g,
+    _langReg:/((\$)([^\w\(]))|((\$)([\w][\w\.-]*[\w]+))|((\$)\(([\w][\w\.]*[^)\n\r]+))\)|((\$)([^\s]))|((\@)([\w][\w\.]*[\w]+)(\@?))|((\@)([^\s])(\@?))|((\{)([~!@#$%^&*+-\/?.|:][\w\[\]]*|[\w\[\]]+(\(\))?(\.[\w\[\]]+(\(\))?)*)(\}))/g,
     _escapeMap:{
         "$":"\x01",
         ".":"\x02",
@@ -2687,7 +2687,6 @@ Class('xui.SAjax','xui.absIO',{
             }else
                 self._onError(new Error("SAjax return value formatting error--"+obj));
         },
-        post:null,
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
             if(typeof obj=='string')
@@ -2922,7 +2921,7 @@ Class('xui.SC',null,{
 
         //get object from obj string
         get : function (path, obj){
-            return _.get(obj||window,(path||'').split('.'));
+            return _.get(obj||window,(path||'').split(/[\[\]\.]+/));
         },
         /* function for "Straight Call"
         *   asy     loadSnips use
@@ -16132,6 +16131,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(!(i in t))t[i]=o;
                         return false;
                     }
+                    if(!o)return false;
                 });
                 if(key && typeof key=='object'){
                     if(o.renderId){
@@ -16185,6 +16185,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(!(i in t))t[i]=o;
                         return false;
                     }
+                    if(!o)return false;
                 });
                 //set key and value
                 if(!!key && typeof key=='object'){
@@ -16270,6 +16271,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(!(i in t))t[i]=o;
                         return false;
                     }
+                    if(!o)return false;
                 });
                 //set hash dir
                 if(!!key && typeof key=='object'){
@@ -26448,7 +26450,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             delete profile.$fromEditor;
             delete profile.$typeOK;
 
-            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox')
+            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox'||type=='cmd')
                 profile.$inputReadonly=true;
 
             if(type!='listbox' && type!='combobox' && type!='helpinput')
@@ -26613,13 +26615,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 'text-align':'right'
             },
-            'KEY-type-file INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
+            'KEY-type-file INPUT, KEY-type-cmd INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
                 $order:4,
                 cursor:'pointer',
                 'text-align':'left',
                 overflow:'hidden'
             },
-            'KEY-type-file BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
+            'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
                 'background-image':xui.UI.$bg('inputbgb.gif', '',"Input"),
                 'background-repeat':'repeat-x',
@@ -26803,7 +26805,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             BOX:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
-                    if(prop.type=='cmdbox'){
+                    if(prop.type=='cmdbox'||prop.type=='cmd'){
                         if(profile.onClick)
                             profile.boxing().onClick(profile, e, src, prop.$UIvalue);
                     //DOM node's readOnly
@@ -27148,7 +27150,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             type:{
                 ini:'combobox',
-                listbox:_.toArr('none,input,password,combobox,listbox,file,getter,helpinput,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
+                listbox:_.toArr('none,input,password,combobox,listbox,file,getter,helpinput,cmd,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
                 set:function(value){
                     var pro=this;
                     pro.properties.type=value;
@@ -27175,7 +27177,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         i.addClass('xui-ui-inputdisabled');
                     else
                         i.removeClass('xui-ui-inputdisabled');
-                    if((""+i.get(0).type).toLowerCase()!='button'){
+                    if((""+i.get(0).type).toLowerCase()!='cmd'){
                         if(!v && (this.properties.readonly||this.$inputReadonly))
                             v=true;
                         // use 'readonly'(not 'disabled') for selection
@@ -27273,15 +27275,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 template = _.clone(profile.box.getTemplate());
                 var t=template.FRAME.BORDER;
 
+                t.BOX.WRAP.INPUT.tagName='input';
+                t.BOX.WRAP.INPUT.type='text';
                 switch(properties.type){
-                case 'none':
-                case 'input':
-                case 'currency':
-                case 'number':
-                    t.BOX.WRAP.INPUT.tagName='input';
+                case 'cmd':
+                    t.BOX.WRAP.INPUT.type='button';
                 break;
                 case 'password':
-                    t.BOX.WRAP.INPUT.tagName='input';
                     t.BOX.WRAP.INPUT.type='password';
                 break;
                 case 'spin':
@@ -27311,7 +27311,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     };
                 case 'listbox':
                 case 'cmdbox':
-                    t.BOX.WRAP.INPUT.tagName='input';
                     t.BOX.WRAP.INPUT.type='button';
                 default:
                     t.BTN={
@@ -30727,19 +30726,21 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
                 },
                 onMouseover:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
+                    var item = profile.getItemByDom(src);
+                    if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
+                    var item = profile.getItemByDom(src);
+                    if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
             },
             OPT:{
                 onClick:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
                     if(profile.onShowOptions){
                         var item = profile.getItemByDom(src);
+                        if(!profile.properties.optBtn && !item.optBtn)return;
                         profile.boxing().onShowOptions(profile, item, e, src);
                     }
                     return false;
@@ -34669,19 +34670,21 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
                 },
                 onMouseover:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
+                    var item = profile.getItemByDom(src);
+                    if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
+                    var item = profile.getItemByDom(src);
+                    if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
             },
             OPT:{
                 onClick:function(profile, e, src){
-                    if(!profile.properties.optBtn)return;
                     if(profile.onShowOptions){
                         var item = profile.getItemByDom(src);
+                        if(!profile.properties.optBtn && !item.optBtn)return;
                         profile.boxing().onShowOptions(profile, item, e, src);
                     }
                     return false;
@@ -38165,6 +38168,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var box = profile.boxing(),
                     uiv = box.getUIValue(),
                     p = profile.properties,
+                    rowMap=profile.rowMap,
                     k = p.activeMode=='row'?'CELLS':'CELL',
                     getN = function(k,i){return profile.getSubNode(k,i)},
                     getI = function(i){
@@ -38205,11 +38209,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     uiv = uiv?(''+uiv).split(p.valueSeparator):[];
                     value = value?(''+value).split(p.valueSeparator):[];
                     //check all
-                    _.arr.each(uiv,function(o){
-                        getN(k, getI(o)).tagClass('-checked',false)
+                    _.arr.each(uiv,function(o,i){
+                        o=getI(o);
+                        if(i=rowMap[o])delete i._selected;
+                        getN(k, o).tagClass('-checked',false)
                     });
                     _.arr.each(value,function(o){
-                        getN(k, getI(o)).tagClass('-checked')
+                        o=getI(o);
+                        if(i=rowMap[o])i._selected=1;
+                        getN(k, o).tagClass('-checked')
                     });
                     // clear the header's row handler checkbox
                     if(value.length===0){
@@ -42720,7 +42728,7 @@ editorEvents
         },
         _ensureValue:function(profile,value){
             if(profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox'){
-                var arr = _.isArr(value) ? vaue : (value ? (''+value) : '').split(profile.properties.valueSeparator);
+                var arr = _.isArr(value) ? value : (value ? (''+value) : '').split(profile.properties.valueSeparator);
                 // ignore hot row
                 _.arr.removeValue(arr,this._temprowid);
                 arr.sort();
@@ -43054,6 +43062,7 @@ editorEvents
                         case 'colorpicker':
                         case 'getter':
                         case 'popbox':
+                        case 'cmd':
                         case 'cmdbox':
                         case 'droplist':
                             editor.setType(type);
@@ -43154,7 +43163,7 @@ editorEvents
                     if(editor.setCaption){
                         if(editorProperties&&('caption' in editorProperties)){
                             editor.setCaption(editorProperties.caption,true);
-                        }else  if(type=="cmdbox"||type=="popbox"){
+                        }else  if(type=="cmdbox"||type=="cmd"||type=="popbox"){
                             editor.setCaption(cell.caption||"",true);
                         }
                     }
@@ -43253,6 +43262,7 @@ editorEvents
                                 nV=(nV||nV===0)?nV:null;
                                 break;
                             case 'cmdbox':
+                            case 'cmd':
                             case 'popbox':
                             case 'combobox':
                             case 'listbox':
@@ -43317,7 +43327,7 @@ editorEvents
 
                         var expand,
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
-                            issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='file'||type=='upload'));
+                        issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='cmd'||type=='file'||type=='upload'));
 
                         if( _.isFun(editor.expand) &&
                             editorAutoPop!==false &&

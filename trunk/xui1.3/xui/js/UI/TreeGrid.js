@@ -19,6 +19,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var box = profile.boxing(),
                     uiv = box.getUIValue(),
                     p = profile.properties,
+                    rowMap=profile.rowMap,
                     k = p.activeMode=='row'?'CELLS':'CELL',
                     getN = function(k,i){return profile.getSubNode(k,i)},
                     getI = function(i){
@@ -59,11 +60,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     uiv = uiv?(''+uiv).split(p.valueSeparator):[];
                     value = value?(''+value).split(p.valueSeparator):[];
                     //check all
-                    _.arr.each(uiv,function(o){
-                        getN(k, getI(o)).tagClass('-checked',false)
+                    _.arr.each(uiv,function(o,i){
+                        o=getI(o);
+                        if(i=rowMap[o])delete i._selected;
+                        getN(k, o).tagClass('-checked',false)
                     });
                     _.arr.each(value,function(o){
-                        getN(k, getI(o)).tagClass('-checked')
+                        o=getI(o);
+                        if(i=rowMap[o])i._selected=1;
+                        getN(k, o).tagClass('-checked')
                     });
                     // clear the header's row handler checkbox
                     if(value.length===0){
@@ -4574,7 +4579,7 @@ editorEvents
         },
         _ensureValue:function(profile,value){
             if(profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox'){
-                var arr = _.isArr(value) ? vaue : (value ? (''+value) : '').split(profile.properties.valueSeparator);
+                var arr = _.isArr(value) ? value : (value ? (''+value) : '').split(profile.properties.valueSeparator);
                 // ignore hot row
                 _.arr.removeValue(arr,this._temprowid);
                 arr.sort();
@@ -4908,6 +4913,7 @@ editorEvents
                         case 'colorpicker':
                         case 'getter':
                         case 'popbox':
+                        case 'cmd':
                         case 'cmdbox':
                         case 'droplist':
                             editor.setType(type);
@@ -5008,7 +5014,7 @@ editorEvents
                     if(editor.setCaption){
                         if(editorProperties&&('caption' in editorProperties)){
                             editor.setCaption(editorProperties.caption,true);
-                        }else  if(type=="cmdbox"||type=="popbox"){
+                        }else  if(type=="cmdbox"||type=="cmd"||type=="popbox"){
                             editor.setCaption(cell.caption||"",true);
                         }
                     }
@@ -5107,6 +5113,7 @@ editorEvents
                                 nV=(nV||nV===0)?nV:null;
                                 break;
                             case 'cmdbox':
+                            case 'cmd':
                             case 'popbox':
                             case 'combobox':
                             case 'listbox':
@@ -5171,7 +5178,7 @@ editorEvents
 
                         var expand,
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
-                            issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='file'||type=='upload'));
+                        issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='cmd'||type=='file'||type=='upload'));
 
                         if( _.isFun(editor.expand) &&
                             editorAutoPop!==false &&
