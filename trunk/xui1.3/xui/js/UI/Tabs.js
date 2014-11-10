@@ -1112,8 +1112,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(!item)return;
             var prop=profile.properties,box=profile.boxing();
             if(!item._$ini){
-                if(box.onIniPanelView(profile,item)!==false)
-                    item._$ini=true;
+                item._$ini=true;
+                if(profile.onIniPanelView)box.onIniPanelView(profile,item);
                 if(item.iframeAutoLoad){
                     box.getPanel(item.id).css('overflow','hidden');
                     var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:_.clone(item.iframeAutoLoad,true),

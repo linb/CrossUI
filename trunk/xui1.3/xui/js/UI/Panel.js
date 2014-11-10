@@ -31,10 +31,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         iniPanelView:function(){
             return this.each(function(profile){
-                var ins=profile.boxing();
-                if(ins.onIniPanelView && ins.onIniPanelView(profile)!==false){
-                    profile.$ini=true;
-                }                
+                profile.$ini=true;
+                if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
             });
         }
     },
@@ -438,15 +436,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             var p=profile.properties, ins=profile.boxing();
 
             //event
-            if(value &&!profile.$ini){
-                if(ins.onIniPanelView){
-                    if(ins.onIniPanelView(profile)!==false){
-                        profile.$ini=true;
-                    }
-                    
-                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                        xui.UI.Div._applyAutoLoad(profile);
-                }
+            if(_.isSet(value) &&!profile.$ini){
+                profile.$ini=true;
+                if(ins.onIniPanelView)ins.onIniPanelView(profile);
+                if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                    xui.UI.Div._applyAutoLoad(profile);
             }
 
             if(profile._toggle !== !!value){

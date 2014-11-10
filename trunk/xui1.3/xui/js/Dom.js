@@ -1496,6 +1496,14 @@ Class('xui.Dom','xui.absBox',{
                     xui.setNodeData(node,'_inthread',null);
             },true);
         },
+        pop : function(pos, type, parent, trigger, group){
+            var ns=this,id=_()+":"+ns.xid();
+            ns.popToTop(pos, type||"outer",parent).setBlurTrigger(id, function(){
+                if(typeof(trigger)=="function")_.tryF(trigger);
+                else ns.hide();
+            });
+            return id;
+        },
         /*
         pos: {left:,top:} or dom element
         parent:parent node
@@ -1743,7 +1751,7 @@ type:4
         },
         //for remove obj when blur
         setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/, 
-                                  /*next params are inner*/ checkChild, triggerNext){
+                                  /*two inner params */ checkChild, triggerNext){
             var ns=this,
                 doc=document,
                 sid='$blur_triggers$',
@@ -1799,9 +1807,10 @@ type:4
                             return false;
 
                         if(b){
-                            _.tryF(v.trigger,[p,e],v.target);
                             _.arr.removeValue(arr,i);
                             delete arr[i];
+                            _.tryF(v.trigger,[p,e],v.target);
+                            v=null;
                         }else if(v.stopNext){
                             //if the top layer popwnd cant be triggerred, prevent the other layer popwnd trigger
                             return false;
