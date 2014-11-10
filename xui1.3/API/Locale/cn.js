@@ -3582,6 +3582,17 @@ _.set(xui.Locale,["cn","app"], {
                     "hideEffects[Optional] : Object, 隐去动画的配置"
                 ]
             },
+            pop:{
+                $desc:"将第一个元素显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用.",
+                $rtn:"String, 区域外点击隐藏的唯一标示",
+                $paras:[
+                    "pos [必需参数] : Object/xui.Dom/Element.",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body].",
+                    "trigger [必需参数] : Function or [null] :  隐藏触发函数.",
+                    "group [可选参数] : xui.Dom, 触发函数的组对象."
+                ]
+            },
             popToTop:{
                 $desc:"将第一个元素显示成父元素的顶层.",
                 $rtn:"[self]",
@@ -3600,11 +3611,11 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBlurTrigger:{
-                $desc:"设置或取消设置一个触发函数, 该函数将在用户单击第一个元素之外的区域时被调用.",
+                $desc:"设置或取消设置一个区域外点击触发函数, 该函数将在用户单击第一个元素之外的区域时被调用.",
                 $rtn:"[self]",
                 $paras:[
                     "id [必需参数] : String, 触发函数的标志符.",
-                    "trigger [必需参数] : Function or [null] :  触发函数.",
+                    "trigger [必需参数] : Function or [null] :  隐藏触发函数.",
                     "group [可选参数] : xui.Dom, 触发函数的组对象."
                 ],
                 $snippet:[
@@ -4421,7 +4432,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTag:{
-                $desc:"获取控件的tag值",
+                $desc:"获取控件的附加值",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4431,7 +4442,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTag:{
-                $desc:"设置控件的tag值.",
+                $desc:"设置控件的附加值.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
@@ -4445,7 +4456,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTagVar:{
-                $desc:"获取控件的tag变量",
+                $desc:"获取控件的附加对象",
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4455,7 +4466,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTagVar:{
-                $desc:"设置控件的tag变量.",
+                $desc:"设置控件的附加对象.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
@@ -17361,11 +17372,11 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Object"
             },
             getRowMap:{
-                $desc:"得到当前活动或给定行/单元格的键值对格式",
+                $desc:"得到当前活动行或指定行的键值对",
                 $rtn:"Object"                
             },
             setRowMap :{
-                $desc:"以键值对的格式设置当前活动或给定行/单元格",
+                $desc:"以键值对的格式设置当前活动或给定行",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. 键值对",

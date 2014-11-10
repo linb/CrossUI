@@ -218,8 +218,10 @@ _.merge(_,{
         if(!_.isSet(hash))return undefined;
         else if(typeof path=='string') return hash[path];
         else{
-            for(var i=0,l=path.length,t;i<l;)
-                if(!hash || (hash = (t=path[i++]+"")!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
+            for(var i=0,l=path.length,t;i<l;){
+                if(!(t=path[i++]+''))continue;
+                if(!hash || (hash=t!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
+            }
             return hash;
         }
     },
@@ -1759,13 +1761,19 @@ new function(){
                             if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
 
                             // handle hide / destroy
-                            if(method=="show"){
+                            if(method=="show"||method=="pop"){
+                                // special for xui.Com.show
+                                iparams.unshift(function(err,com){
+                                    if(method=="pop" && !err){
+                                        t=com.getUIComponents(true);
+                                        if((t=t.getRoot())&&(t=t.get(0)))
+                                            xui(t).pop(iparams[1]||_ns.args[0]);
+                                    }
+                                });
                                 // handle other methods
                                 var ff=function(err,ins){
                                     if(err)return;
-                                    // special for xui.Com.show
-                                    iparams.unshift(null);
-                                    if(_.isFun(t=_.get(ins,[method])))t.apply(ins,iparams);
+                                    if(_.isFun(t=ins.show))t.apply(ins, iparams);
                                 };
                                 if(!ins)xui.getCom(target,ff);  else ff(null, ins);
                             }else{
@@ -1774,6 +1782,11 @@ new function(){
                             }
                             break;
                         case 'control':
+                            if(method=="pop"){
+                                 t=_.get(scope,[target]);
+                                 if((t=t.getRoot())&&(t=t.get(0)))
+                                    xui(t).pop(iparams[1]||_ns.args[0]);
+                            }else{
                                 if(method=="setProperties"){
                                     if(m=iparams[0]){
                                         if(m.CC){
@@ -1787,6 +1800,7 @@ new function(){
                                     }
                                 }
                                 if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],iparams);
+                            }
                             break;
                         case 'other':
                             switch(target){
@@ -3653,9 +3667,10 @@ Class('xui.absObj',"xui.absBox",{
             },
             dataBinder:{
                 ini:'',
-                set:function(value,ovalue){
+                set:function(value){
                     var profile=this,
-                        p=profile.properties;
+                        p=profile.properties,
+                        ovalue=p.dataBinder;
                     if(ovalue)
                         xui.DataBinder._unBind(ovalue, profile);
                     p.dataBinder=value;
@@ -3664,9 +3679,10 @@ Class('xui.absObj',"xui.absBox",{
             },
             dataField:{
                 ini:'',
-                set:function(value,ovalue){
+                set:function(value){
                     var profile=this,t,
-                        p=profile.properties;
+                        p=profile.properties,
+                        ovalue=p.dataField;
                     p.dataField=value;
 
                     if(!p.dataBinder)return;
@@ -3739,7 +3755,7 @@ Class('xui.absObj',"xui.absBox",{
                                 return;
 
                             if(typeof $set=='function'){
-                                $set.call(v,value,ovalue,force,tag,tag2);
+                                $set.call(v,value,force,tag,tag2);
                             }else{
                                 var m = _.get(v.box.$DataModel, [i, 'action']);
                                 v.properties[i] = value;

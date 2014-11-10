@@ -3570,6 +3570,17 @@ _.set(xui.Locale,["en","app"], {
                     "hideEffects[Optional] : Object, hide effects config object"
                 ]
             },
+            pop:{
+                $desc:"Pops the first element onto the top, and sets a trigger function to allow user click out of the first element's region to hide it.",
+                $rtn:"String, the blur trigger id",
+                $paras:[
+                    "pos [Reqired] : {left:Number,top:Number} Object(The css left and top value) or xui.Dom Object(for getting position).",
+                    "type [Optional] : String. one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'.Default is 'outer'.",
+                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body].",
+                    "trigger [Required] : Function or [null] : the hidden trigger function.",
+                    "group [Optional] : xui.Dom Object. this trigger's group Object."
+                ]
+            },
             popToTop:{
                 $desc:"Pops the first element to the top zIndex into the specified parent element.",
                 $rtn:"[self]",
@@ -3588,11 +3599,11 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setBlurTrigger:{
-                $desc:"Sets or unsets a special function that will be triggered once when [click event] is fired out of the first element's region.",
+                $desc:"Sets or unsets a outside click trigger function that will be triggered once when [click event] is fired out of the first element's region.",
                 $rtn:"[self]",
                 $paras:[
                     "id [Required] : String, this trigger's id value.",
-                    "trigger [Required] : Function or [null] : trigger function.",
+                    "trigger [Required] : Function or [null] : the hidden trigger function.",
                     "group [Optional] : xui.Dom Object. this trigger's group Object."
                 ],
                 $snippet:[
@@ -17433,11 +17444,11 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Object"
             },
             getRowMap:{
-                $desc:"Gets the active or specified  row/cell's map",
+                $desc:"Gets the active or specified  row's map",
                 $rtn:"Object"
             },
             setRowMap :{
-                $desc:"Uses map to set the active or specified row/cell",
+                $desc:"Uses map to set the active or specified row",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.  key/value paires",

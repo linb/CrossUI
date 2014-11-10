@@ -372,13 +372,18 @@ Class('xui.Com',null,{
         },
         setProfile:function(profiles){
             this.getAllComponents().each(function(prf,i){
-                if(i=profiles[prf.alias]){
+                if(prf.alias in profiles){
                     prf=prf.boxing();
-                    if(i.theme&&typeof(prf.setTheme)=="function")prf.setTheme(i.theme);
-                    if(i.properties &&!_.isEmpty(i.properties))prf.setProperties(i.properties);
-                    if(i.CA&&!_.isEmpty(i.CA))prf.setCustomAttr(i.CA);
-                    if(i.CC&&!_.isEmpty(i.CC))prf.setCustomClass(i.CC);
-                    if(i.CS&&!_.isEmpty(i.CS))prf.setCustomStyle(i.CS);
+                    i=profiles[prf.alias];
+                    if(i && _.isHash(i) && !_.isEmpty(i)){
+                        if(i.theme&&typeof(prf.setTheme)=="function")prf.setTheme(i.theme);
+                        if(i.properties &&!_.isEmpty(i.properties))prf.setProperties(i.properties);
+                        if(i.CA&&!_.isEmpty(i.CA))prf.setCustomAttr(i.CA);
+                        if(i.CC&&!_.isEmpty(i.CC))prf.setCustomClass(i.CC);
+                        if(i.CS&&!_.isEmpty(i.CS))prf.setCustomStyle(i.CS);
+                    }else{
+                        ins.setValue(i);
+                    }
                 }
             });
             return this;
@@ -400,12 +405,15 @@ Class('xui.Com',null,{
         setData:function(data){
             this.getAllComponents().each(function(prf){
                 var prop=prf.properties,
-                    ins=prf.boxing(),
+                    ins=prf.boxing(),ih;
+               if(prf.alias in data){
                     ih=data[prf.alias];
-                if(ih && _.isHash(ih) && !_.isEmpty(ih)){
-                    _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","value",'labelCaption',"caption"],function(k){
-                        if(k in prop && k in ih)ins['set'+_.str.initial(k)](ih[k]);
-                    });
+                    if(ih && _.isHash(ih) && !_.isEmpty(ih)){
+                        _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","value",'labelCaption',"caption"],function(k){
+                            if(k in prop && k in ih)ins['set'+_.str.initial(k)](ih[k]);
+                        });
+                    }else
+                        ins.setValue(ih);
                 }
             });
             return this;
@@ -413,16 +421,27 @@ Class('xui.Com',null,{
         getValue:function(){
             var hash={};
             this.getAllComponents().each(function(prf){
-                if('value' in prf.properties)
-                    hash[prf.alias]=prf.properties.value;
+                if('value' in prf.properties){
+                    if(_.isSet(prf.properties.caption))
+                        hash[prf.alias]={
+                            caption:prf.properties.caption,
+                            value:prf.properties.value
+                        };
+                    else
+                        hash[prf.alias]=prf.properties.value;
+                }
             });
             return hash;
         },
         setValue:function(values){
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
-                    if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setValue(values[prf.alias],null,'com')
+                    if('value' in prf.properties && prf.alias in values){
+                        var v=values[prf.alias],b=_.isHash(v) ;
+                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, null, true,'com');
+                        if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
+                            prf.boxing().setCaption(v.caption, null, true,'com');
+                    }
                 });
             }
             return this;
@@ -438,8 +457,12 @@ Class('xui.Com',null,{
         setUIValue:function(values){
             if(!_.isEmpty(values)){
                 this.getAllComponents().each(function(prf){
-                    if('value' in prf.properties && prf.alias in values)
-                        prf.boxing().setUIValue(values[prf.alias],null,null,'com')
+                    if('value' in prf.properties && prf.alias in values){
+                        var v=values[prf.alias],b=_.isHash(v) ;
+                        prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,'com');
+                        if(typeof(prf.boxing().setCaption)=="function" && b &&  'caption' in v)
+                            prf.boxing().setCaption(v.caption, null, true,'com');
+                    }
                 });
             }
             return this;
@@ -548,11 +571,17 @@ Class('xui.Com',null,{
                 var ifun=function(path){
                     //if successes
                     if(path){
-                        try{
-                            _.each(this.viewStyles,function(v,k){
-                                xui('html').css(k, xui.adjustRes(v));
-                            });
-                        }catch(e){}
+                        if(this.viewStyles && _.isHash(this.viewStyles)){
+                            try{
+                                if(this.viewStyles.theme){
+                                    theme=this.viewStyles.theme;
+                                    delete this.viewStyles.theme;
+                                }
+                                _.each(this.viewStyles,function(v,k){
+                                    xui('html').css(k, xui.adjustRes(v));
+                                });
+                            }catch(e){}
+                        }
                         var a=this,f=function(){
                             if(!_.isFun(a))
                                 throw "'"+cls+"' is not a constructor";

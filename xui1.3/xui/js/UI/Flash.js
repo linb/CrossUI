@@ -63,19 +63,19 @@ Class("xui.UI.Flash", "xui.UI",{
             src:{
                 format:'flash',
                 ini:'',
-                action:function(v,o){
+                action:function(v){
                     this.boxing().refreshFlash();
                 }
             },
             parameters:{
                 ini:{},
-                action:function(v,o){
+                action:function(v){
                     this.boxing().refreshFlash();
                 }
             },
             flashvars:{
                 ini:{},
-                action:function(v,o){
+                action:function(v){
                     this.boxing().refreshFlash();
                 }
             }

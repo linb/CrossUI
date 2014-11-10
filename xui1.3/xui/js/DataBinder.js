@@ -650,9 +650,10 @@ Class("xui.DataBinder","xui.absObj",{
                 listbox:["auto","Ajax","SAjax","IAjax"]
             },
             "name":{
-                set:function(value,ovalue){
+                set:function(value){
                     var o=this,
-                        c=xui.DataBinder,
+                        ovalue=o.properties.name,
+                         c=xui.DataBinder,
                         _p=c._pool,
                         _old=_p[ovalue],
                         _new=_p[value],

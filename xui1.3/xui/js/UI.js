@@ -5141,7 +5141,11 @@ Class("xui.absValue", "xui.absObj",{
                     }
 
                     //before value copy
-                    if(profile.renderId && !triggerEventOnly)box._setCtrlValue(value);
+                    var cv;
+                    if(profile.renderId && !triggerEventOnly){
+                        cv=1;
+                        box._setCtrlValue(value);
+                    }
         
                     //value copy
                     prop.$UIvalue = value;
@@ -5152,7 +5156,7 @@ Class("xui.absValue", "xui.absObj",{
                     if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
 
                     if(!prop.dirtyMark)
-                        box.setValue(value,null,'uiv',triggerEventOnly);
+                        box.setValue(value,null,'uiv',cv || triggerEventOnly);
                 }
             });
             return this;
@@ -5218,9 +5222,10 @@ Class("xui.absValue", "xui.absObj",{
             // setValue and getValue
             value:{
                 ini:null,
-                set:function(value,ovalue,force, tag, triggerEventOnly){
+                set:function(value, force, tag, triggerEventOnly){
                     var profile=this,
                         p=profile.properties,r,
+                        ovalue=p.value,
                         box=profile.boxing();
 
                     //check format

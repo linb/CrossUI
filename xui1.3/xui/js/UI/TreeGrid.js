@@ -3312,7 +3312,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             header:{
                 ini:{},
-                set:function(value,ov){
+                set:function(value){
                     var o=this;
                     if(o.renderId){
                         o.boxing()._refreshHeader(value);
@@ -3323,7 +3323,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             grpCols:{
                 //for default merge
                 ini:{},
-                set:function(value,ov){
+                set:function(value){
                     var o=this;
                     o.properties.grpCols = _.copy(value);
                     if(o.renderId){
@@ -3884,11 +3884,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             data.headerHeight=data.headerHeight?('height:'+data.headerHeight+'px;'):'';
             data._rowMarkDisplay=(pro.selMode=="multi"||pro.selMode=="multibycheckbox")?"":"display:none;";
 
-            if(pro.header && !_.isArr(pro.header))
+            if(!pro.header || !_.isArr(pro.header))
                 pro.header = [];
-            if(pro.grpCols && !_.isArr(pro.grpCols))
+            if(!pro.grpCols || !_.isArr(pro.grpCols))
                 pro.grpCols = [];
-            if(pro.rows && !_.isArr(pro.rows))
+            if(!pro.rows || !_.isArr(pro.rows))
                 pro.rows = [];
 
             pro.header=this._adjustHeader(pro.header);
@@ -4173,7 +4173,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
-                    cell.cellClass = "xui-cls-wordwrap "+cell.cellClass;
+                    cell.cellClass = "xui-cls-wordwrap "+(cell.cellClass||"").replace(/(xui-cls-wordwrap\s+)|(\s+xui-cls-wordwrap)/g,"");
                     caption= capOut ||ren(profile,cell,uicell,f2);
                     if(node)
                         node.html(caption,false);
@@ -5417,13 +5417,12 @@ editorEvents
                 else a[i]=_.copy(o);
 
                 // check if it's a map row data
-                if(!a[i].cells || !_.isArr(a[i].cells)){
-                    var cells=[],b=0;
+                if(!o.group && (!a[i].cells || !_.isArr(a[i].cells))){
+                    var cells=[];
                     _.each(a[i],function(v,i){
                         if(i in h)cells[h[i]]=_.isHash(v)?v:{value:v};
-                        else{b=1; return false;}
                     });
-                    if(!b)a[i]={cells:cells}
+                    a[i]={cells:cells}
                 }
                 m=a[i].cells=_.copy(a[i].cells);
 
@@ -5699,7 +5698,10 @@ editorEvents
                 }else if(type=='map'){
                     var header=profile.properties.header,h={};
                     _.each(row.cells||row,function(cell,j){
-                        h[header[j].id]=('value' in cell)?cell.value:cell;
+                        h[header[j].id]=('caption' in cell)?{
+                                caption:cell.caption,
+                                value:('value' in cell)?cell.value:cell
+                            }:('value' in cell)?cell.value:cell;
                     });
                     return h;
                 }else
