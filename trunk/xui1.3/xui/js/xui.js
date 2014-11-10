@@ -2934,8 +2934,9 @@ Class('xui.SC',null,{
         },
 
         //get object from obj string
-        get : function (path, obj){
-            return _.get(obj||window,(path||'').split(/[\[\]\.]+/));
+        get:function (path, obj){
+            // a[1][2].b[3] => a,1,2,b,3
+            return _.get(obj||window,(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/));
         },
         /* function for "Straight Call"
         *   asy     loadSnips use
