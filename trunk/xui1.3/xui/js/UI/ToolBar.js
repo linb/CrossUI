@@ -247,7 +247,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEM:{
                 'vertical-align':'middle',
-                padding:'0px'
+                padding:'0px 1px'
             },
             'BTNC a':{
                 padding:0
