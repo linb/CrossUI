@@ -32785,7 +32785,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'background-position':'-80px top'
             },
             ITEMS:{
-                padding:'0 0 2px 0',
+                padding:'1px 0 2px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -35919,7 +35919,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 color:'#000',
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
-                padding:'2px 20px 2px 2px'
+                padding:'2px 20px 2px 2px',
+                outline:0
             },
             ITEMSPLIT:{
                 display:'block',
@@ -37051,7 +37052,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEM:{
                 'vertical-align':'middle',
-                padding:'0px'
+                padding:'0px 1px'
             },
             'BTNC a':{
                 padding:0

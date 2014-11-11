@@ -806,20 +806,12 @@ html, .xui-uibg-base{
 .xui-timeline-mainc{
     border:solid 1px #292D34;
 }
-.xui-timeline-biglabel{
-    background-color:#48525F;
-    border-bottom:solid 1px #626F82;
-}
-.xui-timeline-smalllabel{
+.xui-timeline-biglabel, .xui-timeline-smalllabel{
     background-color:#48525F;
     border-bottom:solid 1px #626F82;
 }
 .xui-timeline-biglabel div, .xui-timeline-smalllabel div{
     border-left:solid 1px #BECFD9;
-}
-.xui-timeline-normal{
-    background-color:#B0D9EE;
-    border:1px solid #3C5064;
 }
 .xui-timeline-items, .xui-timeline-item{
     background-color:#292D34;

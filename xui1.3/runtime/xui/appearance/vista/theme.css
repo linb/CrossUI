@@ -390,9 +390,7 @@ html, .xui-uibg-base{
 .xui-treebar-bar-mouseover{
     background-color:#;
 }
-.xui-treebar-bar-checked{
-    background-color:#;
-}
+
 /*xui.UI.Tabs*/
 .xui-tabs-items{
     padding:0 0 3px 0;
@@ -516,6 +514,9 @@ html, .xui-uibg-base{
 .xui-toolbar-handler, .xui-menubar-handler{
     background-image: url(Public/handler.gif);
     width:4px;
+}
+.xui-toolbar-item{
+    padding:'0px'
 }
 .xui-toolbar-split{
     background-image: url(Public/split_vertical.gif);
@@ -702,30 +703,20 @@ html, .xui-uibg-base{
 .xui-timeline-head{
     background-image: url(Public/handler.gif);
 }
-.xui-timeline-biglabel, .xui-timeline-smalllabel {
-    background-color:#C6E0EF;
-}
 .xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-pre, .xui-timeline-next, .xui-timeline-min{
     background-image: url(Public/icons.gif);
 }
 .xui-timeline-mainc{
     border:solid 1px #3C5064;
 }
-.xui-timeline-biglabel{
+.xui-timeline-biglabel, .xui-timeline-smalllabel {
     background-color:#DCE9F0;
     border-bottom:solid 1px #BECFD9;
-}
-.xui-timeline-smalllabel{
-    background-color:#DCE9F0;
-    border-bottom:solid 1px #3C5064;
 }
 .xui-timeline-biglabel div, .xui-timeline-smalllabel div{
     border-left:solid 1px #BECFD9;
 }
-.xui-timeline-normal{
-    background-color:#B0D9EE;
-    border:1px solid #3C5064;
-}
+
 /*xui.UI.Range*/
 .xui-range-ruler{
     background-image: url(Range/bg.gif);

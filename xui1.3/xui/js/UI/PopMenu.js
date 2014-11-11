@@ -373,7 +373,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 color:'#000',
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
-                padding:'2px 20px 2px 2px'
+                padding:'2px 20px 2px 2px',
+                outline:0
             },
             ITEMSPLIT:{
                 display:'block',

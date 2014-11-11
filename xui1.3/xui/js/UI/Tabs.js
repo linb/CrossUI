@@ -468,7 +468,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'background-position':'-80px top'
             },
             ITEMS:{
-                padding:'0 0 2px 0',
+                padding:'1px 0 2px 0',
                 position:'relative',
                 left:0,
                 top:0,
