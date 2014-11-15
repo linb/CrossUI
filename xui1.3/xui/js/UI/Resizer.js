@@ -51,7 +51,7 @@ Class("xui.UI.Resizer","xui.UI",{
             removeResizer:function(){
                 var s = this.id();
                 _.arr.each(xui.UI.Resizer._cache,function(o){
-                    if(o.$resizeId==s)
+                    if(o && o.$resizeId==s)
                         o.boxing().destroy(true);
                 });
                 return this;
@@ -59,7 +59,7 @@ Class("xui.UI.Resizer","xui.UI",{
             $getResizer:function(){
                 var s = this.id(), b;
                 _.arr.each(xui.UI.Resizer._cache,function(o){
-                    if(o.$resizeId==s){b=o;return false;}
+                    if(o && o.$resizeId==s){b=o;return false;}
                 });
                 return b && b.boxing();
             }

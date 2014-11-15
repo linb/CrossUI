@@ -468,7 +468,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 listbox:['single','none','multi','multibycheckbox'],
                 action:function(value){
                     if(!this.box._ITEMMARKED)
-                        this.getSubNode('MARK',true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');
+                        this.getSubNode('MARK',true).css('display',(value=='multibycheckbox')?'':'none');
                 }  
             },
             borderType:{
@@ -566,7 +566,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             return data;
         },
         _prepareItem:function(profile, item){
-            item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
+            item._cbDisplay = (profile.properties.selMode=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
         },

@@ -7771,8 +7771,6 @@ Class('xui.Event',null,{
             
             // some cross browser css solution
             ".xui-nooutline:focus{outline:0;}"+
-            ".xui-busy{background-image:url(data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7);background-repeat:no-repeat;background-position:center center;}"+
-            ".xui-err{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC);background-repeat:no-repeat;background-position:center center;}"+
             ".xui-cls-wordwrap{"+
                 "white-space: pre-wrap;" + // css-3
                 (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999
@@ -8416,7 +8414,7 @@ Class('xui.Dom','xui.absBox',{
                 this.each(function(o){
                         xui.Dom.setStyle(o,name,value)
                 });
-                
+
                 if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
                     if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
                         if(value=='auto'||value=='scroll')
@@ -8541,7 +8539,7 @@ Class('xui.Dom','xui.absBox',{
         *in IE: '/r/n'.lenght is 2, but range.moveEnd/moveStart will take '/r/n' as 1.
         */
         caret:function(begin,end){
-            var input =this.get(0), tn=input.tagName.toLowerCase(), type=typeof begin,ie=xui.browser.ie, pos;
+            var input =this.get(0), tn=input.nodeName.toLowerCase(), type=typeof begin,ie=xui.browser.ie, pos;
             if(!/^(input|textarea)$/i.test(tn))return;
             if(tn=="input" && input.type.toLowerCase()!='text'&& input.type.toLowerCase()!='password')return;
             input.focus();
@@ -8663,7 +8661,7 @@ Class('xui.Dom','xui.absBox',{
                     if(style.position!='absolute')style.position = 'absolute';
                     style.visibility="hidden";
                     style.top = style.left = xui.Dom.HIDE_VALUE;
-                    
+
                     if(callback)callback();
                 };
                 hideEffects=ignoreEffects?null:hideEffects?hideEffects:_.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
@@ -8789,17 +8787,17 @@ Class('xui.Dom','xui.absBox',{
                     //get offset, stop by boundary or boundary.offsetParent
                     while(op && op!=boundary && op!=boundary.offsetParent){
                         add(pos, op.offsetLeft, op.offsetTop);
-                        if(browser.kde || (browser.gek && !TTAG[op.tagName]))
+                        if(browser.kde || (browser.gek && !TTAG[op.nodeName]))
                             border(op, pos);
                         if ( !fixed && getStyle(op,"position")== "fixed")
                             fixed = true;
-                        if(op.tagName!='BODY')
-                            keepNode=op.tagName=='BODY'?keepNode:op;
+                        if(op.nodeName!='BODY')
+                            keepNode=op.nodeName=='BODY'?keepNode:op;
                         op = op.offsetParent;
                     }
 
                     //get scroll offset, stop by boundary
-                    while (parent && parent.tagName && parent!=boundary && !HTAG[parent.tagName]){
+                    while (parent && parent.nodeName && parent!=boundary && !HTAG[parent.nodeName]){
                         if(!_d.test(getStyle(parent, "display")) )
                             add(pos, -parent.scrollLeft, -parent.scrollTop );
                         if(browser.gek && getStyle(parent,"overflow")!= "visible" )
@@ -9076,7 +9074,7 @@ Class('xui.Dom','xui.absBox',{
                 node.focus &&
                 //IE bug: It can't be focused with 'default tabIndex 0'; but if you set it to 0, it can be focused.
                 //So, for cross browser, don't set tabIndex to 0
-                (((t=map[node.tagName.toLowerCase()]) && !(parseInt(node.tabIndex,10)<=-1)) || (!t && parseInt(node.tabIndex,10)>=(xui.browser.ie?1:0))) &&
+                (((t=map[node.nodeName.toLowerCase()]) && !(parseInt(node.tabIndex,10)<=-1)) || (!t && parseInt(node.tabIndex,10)>=(xui.browser.ie?1:0))) &&
                 getStyle(node,'display')!='none' &&
                 getStyle(node,'visibility')!='hidden' &&
                 node.offsetWidth>0 &&
@@ -9114,7 +9112,7 @@ Class('xui.Dom','xui.absBox',{
         topZindex:function(flag){
             //set the minimum to 1000
             var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o;
-            if(xui.browser.ie && (!p||(p.tagName+"").toUpperCase()=="HTML")){
+            if(xui.browser.ie && (!p||(p.nodeName+"").toUpperCase()=="HTML")){
                 p=xui("body").get(0);
             }
             if(node.nodeType !=1 || !p)return 1;
@@ -9166,49 +9164,49 @@ Class('xui.Dom','xui.absBox',{
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
             var me=arguments.callee,
                 tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
-			linear:function(s,c) {return (1/s)*c;},
-			sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
-			sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
-			sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
-			quadIn:function(s,c) {return (c/=s)*c;},
-			quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
-			quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
-			cubicIn:function(s,c) {return (c/=s)*c*c;},
-			cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
-			cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
-			quartIn:function(s,c) {return (c/=s)*c*c*c;},
-			quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
-			quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
-			quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
-			quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
-			quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
-			expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
-			expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
-			expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
-			circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
-			circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
-			circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
-			bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
-			bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
-			bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
-			backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
-			backOut:function(s,c) {var k=1.70158;	return ((c=c/s-1)*c*((k+1)*c+k)+1);},
-			backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
-			elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
-			elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
-			elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
+            linear:function(s,c) {return (1/s)*c;},
+            sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
+            sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
+            sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
+            quadIn:function(s,c) {return (c/=s)*c;},
+            quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
+            quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
+            cubicIn:function(s,c) {return (c/=s)*c*c;},
+            cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
+            cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
+            quartIn:function(s,c) {return (c/=s)*c*c*c;},
+            quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
+            quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
+            quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
+            quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
+            quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
+            expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
+            expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
+            expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
+            circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
+            circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
+            circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
+            bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
+            bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
+            bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
+            backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
+            backOut:function(s,c) {var k=1.70158;   return ((c=c/s-1)*c*((k+1)*c+k)+1);},
+            backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
+            elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
+            elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
+            elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
                 }),
                 color = me.color || (me.color = function(from,to,curvalue){
                     if(typeof from !='string' || typeof to != 'string')return '#fff';
                     if(curvalue<0)return from;
                     if(curvalue>1) return to;
-    
+
                     var f,f1,f2,f3;
                     f=function(str){
                         return (str.charAt(0)!='#')?('#'+str):str;
                     };
                     from=f(from);to=f(to);
-    
+
                     f1=function(str, i, j){
                         return parseInt(str.slice(i,j),16)||0;
                     };
@@ -9217,7 +9215,7 @@ Class('xui.Dom','xui.absBox',{
                     };
                     from = f2(from);
                     to = f2(to);
-    
+
                     f3=function(from, to, value,c){
                         var r= from[c]+Math.round(value*(to[c]-from[c]));
                         return (r < 16 ? '0' : '') + r.toString(16)
@@ -9385,7 +9383,7 @@ type:4
                 pos=type(region, box, target, t);
             }else{
                 //target size
-                var w = target.offsetWidth(), 
+                var w = target.offsetWidth(),
                     h = target.offsetHeight(),
                     arr=type.split(/-/g);
                 if(arr.length==2){
@@ -9418,7 +9416,7 @@ type:4
                     }
                 }else{
                     if(type=="outer")type="12";
-                    else if(type=="inner")type="4"; 
+                    else if(type=="inner")type="4";
 
                     var adjust=function(type){
                         var hi,wi;
@@ -9436,7 +9434,7 @@ type:4
                             //case '1':
                                 hi=false;wi=true;
                         }
-            
+
                         if(hi){
                             if(region.top + h < box.height)
                                 pos.top=region.top;
@@ -9468,7 +9466,7 @@ type:4
                         //over top
                         if(pos.top < box.top)pos.top = box.top;
                     };
-    
+
                     if(type=='12'){
                         adjust('1');
                         if(pos.top < region.top+region.height && pos.top+h > region.top)adjust('2');
@@ -9536,7 +9534,7 @@ type:4
             return this;
         },
         //for remove obj when blur
-        setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/, 
+        setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,
                                   /*two inner params */ checkChild, triggerNext){
             var ns=this,
                 doc=document,
@@ -9569,7 +9567,7 @@ type:4
                         b=true;
                         var isChild=function(){
                             var nds=v.target.get();
-                            while (srcN && srcN.tagName && srcN.tagName!="BODY" && srcN.tagName!="HTML"){
+                            while (srcN && srcN.nodeName && srcN.nodeName!="BODY" && srcN.nodeName!="HTML"){
                                 if(_.arr.indexOf(nds,srcN)!=-1)
                                     return true;
                                 srcN = srcN.parentNode;
@@ -9633,7 +9631,7 @@ type:4
                 }
 
                 target.each(function(o){if(!o.id)o.id=xui.Dom._pickDomId()});
-                
+
                 //double link
                 arr[id]={
                     trigger:trigger,
@@ -9642,7 +9640,7 @@ type:4
                     stopNext:!triggerNext
                 };
                 arr.push(id);
-                
+
                 if(!doc.onmousedown)doc.onmousedown=xui.Event.$eventhandler;
                 doc=fun=null;
             }
@@ -9658,45 +9656,37 @@ type:4
         },
         //IE not trigger dimension change, when change height only in overflow=visible.
         ieRemedy:function(){
-            if(xui.browser.ie){
-                var a1=this.get(),a2=[],l=a1.length;
-                _.asyRun(function(){
+            if(xui.browser.ie6){
+                var a1=this.get(),a2=[],a3=[],l=a1.length;
+                //_.asyRun(function(){                    
                     for(var i=0;i<l;i++){
-                        if((a2[i]=a1[i].style.WordWrap)=='break-word')
+                        // allow once
+                        if(!_.isSet(a1[i].$ieRemedy)){
+                            if(_.isSet(a1[i].style.width)){
+                                a1[i].$ieRemedy=a1[i].style.width;
+                                a1[i].style.width=((parseFloat(a1[i].$xuirem)||0)+1)+"px";
+                            }
+                        }
+                        /*
+                        if((a3[i]=a1[i].style.WordWrap)=='break-word')
                             a1[i].style.WordWrap='normal';
                         else
                             a1[i].style.WordWrap='break-word';
+                        */
                     }
-                });
-                _.asyRun(function(){
-                    for(var i=0;i<l;i++)
-                        a1[i].style.WordWrap=a2[i];
-                    a1.length=a2.length=0;
-                });
+                    _.asyRun(function(){
+                        for(var i=0;i<l;i++){
+                            if(_.isSet(a1[i].$ieRemedy)){
+                                a1[i].style.width=a1[i].$ieRemedy;
+                                a1[i].removeAttribute('$ieRemedy');
+                            }
+                            //a1[i].style.WordWrap=a3[i];
+                        }
+                        a1.length=a2.length=a3.length=0;
+                    });                    
+               // });
             }
             return this;
-        },
-        //for ie6
-        fixPng:function(type){
-            if(xui.browser.ie6){
-                type=type||"crop";
-                return this.each(function(n){
-                    if(n.tagName=='IMG' && /\.png$/i.test(n.src)){
-                        n.style.height = n.height;
-                        n.style.width = n.width;
-                        n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + ", sizingMethod="+type+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if('msfilter' in n.style)n.style.msfilter = n.style.filter;
-                        n.src = xui.ini.img_bg;
-                    }
-                    var bgimg = n.currentStyle.backgroundImage || n.style.backgroundImage,
-                        bgmatch = bgimg.match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
-                    if(bgmatch){
-                        n.style.backgroundImage = 'url(' + xui.ini.img_bg + ')';
-                        n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + ", sizingMethod="+type+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if('msfilter' in n.style)n.style.msfilter = n.style.filter;
-                    }
-                });
-            }
         }
         /*,
         gekRemedy:function(){
@@ -9726,6 +9716,26 @@ type:4
             'html':1,
             'head':1,
             'body':1
+        },
+        //for ie6
+        fixPng:function(n){
+            if(xui.browser.ie6){
+                if(n.nodeName=='IMG' && n.src.toLowerCase().search(/\.png$/) != -1){
+                    n.style.height = n.height;
+                    n.style.width = n.width;
+                    n.style.backgroundImage ="none";
+                    n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if('msfilter' in n.style)n.style.msfilter = n.style.filter;
+                    n.src = xui.ini.img_bg;
+                }
+                var bgimg = n.currentStyle.backgroundImage || n.style.backgroundImage,
+                    bgmatch = (bgimg||"").toLowerCase().match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
+                if(bgmatch){
+                    n.style.backgroundImage ="none";
+                    n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if('msfilter' in n.style)n.style.msfilter = n.style.filter;
+                }
+            }
         },
         _getTag:function(n){ return n ? n.$xid ? n.$xid : n.nodeType==1 ? xui.$registerNode(n).$xid : 0 : 0},
         _ensureValues:function(obj){
@@ -9764,9 +9774,9 @@ type:4
         },
         _scrollBarSize:0,
         _getClass:function(o){
-            return (typeof o.className=="string"&&o.className) 
-            || (typeof o.className.baseVal=="string"&&o.className.baseVal) 
-            || (typeof o.getAttribute!=="undefined" && o.getAttribute("class")) 
+            return (typeof o.className=="string"&&o.className)
+            || (typeof o.className.baseVal=="string"&&o.className.baseVal)
+            || (typeof o.getAttribute!=="undefined" && o.getAttribute("class"))
             || "";
         },
         _setClass:function(o,v){
@@ -9879,26 +9889,26 @@ type:4
                 skewY=parseFloat(skewY)||0;
                 transX=parseFloat(transX)||0;
                 transY=parseFloat(transY)||0;
-            
+
                 node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 node.style.marginTop=node.style.marginLeft="";
                 var ow=node.offsetWidth,oh=node.offsetHeight;
-            
+
                 var m11=1,m21=0,m12=0,m22=1;
                 if(angle){
                     var rad = toD(angle);
                     m11 = Math.cos(rad);
-                    m21 = Math.sin(rad); 
-                    m12 = -1 * Math.sin(rad); 
+                    m21 = Math.sin(rad);
+                    m12 = -1 * Math.sin(rad);
                     m22 = Math.cos(rad);
                 }
                 if(scaleX!=1){
                     m11 *= scaleX;
-                    m21 *= scaleX; 
+                    m21 *= scaleX;
                 }
                 if(scaleY!=1){
-                    m12 *= scaleY; 
+                    m12 *= scaleY;
                     m22 *= scaleY;
                 }
                 if(skewX){
@@ -9907,7 +9917,7 @@ type:4
                 if(skewY){
                     m21 += Math.tan(toD(skewY));
                 }
-                
+
                 node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 var w=node.offsetWidth,h=node.offsetHeight;
@@ -9927,7 +9937,7 @@ type:4
                     return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                 },
                 s1=node.style.filter;
-                
+
                 if(s1)node.style.filter=f(s1);
                 if('msfilter' in node.style)node.style.msfilter=f(s1);
                 if(!box)
@@ -9970,7 +9980,7 @@ type:4
                     return c16.indexOf(s[0].toUpperCase())*16 + c16.indexOf(s[1].toUpperCase());
                 };
             if(!window.btoa){
-                
+
                 window.btoa=function (text){
                     if(/([^\u0000-\u00ff])/.test(text))return ;
                     var table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",i=0,cur,prev,byteNum,result=[];
@@ -10026,77 +10036,77 @@ type:4
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
 
-                	var ew=node.offsetWidth||0,
-                	eh=node.offsetHeight||0,
-                	aw=ew*rate*2,
-                	ah=eh*rate*2;
+                    var ew=node.offsetWidth||0,
+                    eh=node.offsetHeight||0,
+                    aw=ew*rate*2,
+                    ah=eh*rate*2;
 
                     if(shape=='circle')
                         aw=ah=Math.min(aw,ah);
 
-                	var l=-aw/2,t=-ah/2,w=aw,h=ah;
+                    var l=-aw/2,t=-ah/2,w=aw,h=ah;
                     if(_.isObj(orient)){
                         l=orient.left||(l+'px');
                         t=orient.top||(t+'px');
                     }else{
-                    	switch(orient){
-                    	    case 'LT':
-                    	        l=-aw/2;t=-ah/2;
-                    	    break;
-                        	case 'T':
-                    	        l=(ew-aw)/2;t=-ah/2;
-                    	    break;
-                        	case 'RT':
-                    	        l=ew-aw/2;t=-ah/2;
-                    	    break;
-                        	case 'L':
-                    	        l=-aw/2;t=(eh-ah)/2;
-                    	    break;
-                        	case 'C':
-                    	        l=(ew-aw)/2;t=(eh-ah)/2;
-                    	    break;
-                        	case 'R':
-                    	        l=ew-aw/2;t=(eh-ah)/2;
-                    	    break;
-                        	case 'LB':
-                    	        l=-aw/2;t=eh-ah/2;
-                    	    break;
-                        	case 'B':
-                    	        l=(ew-aw)/2;t=eh-ah/2;
-                    	    break;
-                        	case 'RB':
-                    	        l=ew-aw/2;t=eh-ah/2;
-                    	    break;
-                    	}
-                    	l+='px';
-                    	t+='px';
+                        switch(orient){
+                            case 'LT':
+                                l=-aw/2;t=-ah/2;
+                            break;
+                            case 'T':
+                                l=(ew-aw)/2;t=-ah/2;
+                            break;
+                            case 'RT':
+                                l=ew-aw/2;t=-ah/2;
+                            break;
+                            case 'L':
+                                l=-aw/2;t=(eh-ah)/2;
+                            break;
+                            case 'C':
+                                l=(ew-aw)/2;t=(eh-ah)/2;
+                            break;
+                            case 'R':
+                                l=ew-aw/2;t=(eh-ah)/2;
+                            break;
+                            case 'LB':
+                                l=-aw/2;t=eh-ah/2;
+                            break;
+                            case 'B':
+                                l=(ew-aw)/2;t=eh-ah/2;
+                            break;
+                            case 'RB':
+                                l=ew-aw/2;t=eh-ah/2;
+                            break;
+                        }
+                        l+='px';
+                        t+='px';
                     }
 
-                	var at = document.createElement('div'),
-                	    s=at.style;
-                	at.id=id;
-                	s.position = 'absolute';
-                	s.zIndex = '0';
-                	s.top = t; 
-                	s.left = l;
-                	s.width = w+'px';
-                	s.height = h+'px';
-                	s.backgroundColor=innerColor;
-                	
-                	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s.filter = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                	if('msfilter' in s)s.msfilter = s.filter;
-                    
+                    var at = document.createElement('div'),
+                        s=at.style;
+                    at.id=id;
+                    s.position = 'absolute';
+                    s.zIndex = '0';
+                    s.top = t;
+                    s.left = l;
+                    s.width = w+'px';
+                    s.height = h+'px';
+                    s.backgroundColor=innerColor;
+
+                    var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
+                    s.filter = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if('msfilter' in s)s.msfilter = s.filter;
+
                     // the first node
                     if(node.firstChild)
                         node.insertBefore(at, node.firstChild);
                     else
                         node.appendChild(at);
-                	node.style.backgroundColor = outerColor;
-                	if(stops[stops.length-1].opacity){
-                	    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                	}
+                    node.style.backgroundColor = outerColor;
+                    if(stops[stops.length-1].opacity){
+                        node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    }
                 }
             },
             iecracker21=function(node, orient, stops){
@@ -10126,63 +10136,63 @@ type:4
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
 
-                	var ew=node.offsetWidth||0 ,
-                	eh=node.offsetHeight||0,
-                	size=Math.min(ew,eh),
-                	xs=0,xe=size,ys=0,ye=size;
+                    var ew=node.offsetWidth||0 ,
+                    eh=node.offsetHeight||0,
+                    size=Math.min(ew,eh),
+                    xs=0,xe=size,ys=0,ye=size;
 
-                	switch(orient){
-                	    case 'LT':
-                	    xs=0;ys=0;xe=size;ye=size;
-                	    break;
-//                    	case 'T':
-//                	    xs=0;ys=0;xe=0;ye=size;
-//                	    break;
-                    	case 'RT':
-                	    xs=size;ys=0;xe=0;ye=size;
-                	    break;
-//                    	case 'L':
-//                	    xs=0;ys=0;xe=0;ye=size;
-//                	    break;
-//                    	case 'R':
-//                	    xs=size;ys=0;xe=0;ye=0;
-//                	    break;
-                    	case 'LB':
-                	    xs=0;ys=size;xe=size;ye=0;
-                	    break;
-//                    	case 'B':
-//                	    xs=0;ys=size;xe=0;ye=0;
-//                	    break;
-                    	case 'RB':
-                	    xs=size;ys=size;xe=0;ye=0;
-                	    break;
-                	}
+                    switch(orient){
+                        case 'LT':
+                        xs=0;ys=0;xe=size;ye=size;
+                        break;
+//                      case 'T':
+//                      xs=0;ys=0;xe=0;ye=size;
+//                      break;
+                        case 'RT':
+                        xs=size;ys=0;xe=0;ye=size;
+                        break;
+//                      case 'L':
+//                      xs=0;ys=0;xe=0;ye=size;
+//                      break;
+//                      case 'R':
+//                      xs=size;ys=0;xe=0;ye=0;
+//                      break;
+                        case 'LB':
+                        xs=0;ys=size;xe=size;ye=0;
+                        break;
+//                      case 'B':
+//                      xs=0;ys=size;xe=0;ye=0;
+//                      break;
+                        case 'RB':
+                        xs=size;ys=size;xe=0;ye=0;
+                        break;
+                    }
 
-                	var at = document.createElement('div'),
-                	    s=at.style;
-                	at.id=id;
-                	s.position = 'absolute';
-                	s.zIndex = '0';
-                	s.top = 0; 
-                	s.left = 0;
-                	s.width = ew;
-                	s.height = eh;
-                	s.backgroundColor=innerColor;
-                	
-                	var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                	s.filter =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                	if('msfilter' in s)s.msfilter = s.filter;
-                    
+                    var at = document.createElement('div'),
+                        s=at.style;
+                    at.id=id;
+                    s.position = 'absolute';
+                    s.zIndex = '0';
+                    s.top = 0;
+                    s.left = 0;
+                    s.width = ew;
+                    s.height = eh;
+                    s.backgroundColor=innerColor;
+
+                    var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
+                    s.filter =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if('msfilter' in s)s.msfilter = s.filter;
+
                     // the first node
                     if(node.firstChild)
                         node.insertBefore(at, node.firstChild);
                     else
                         node.appendChild(at);
-                	node.style.backgroundColor = outerColor;
-                	if(stops[stops.length-1].opacity){
-                	    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                	    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                	}
+                    node.style.backgroundColor = outerColor;
+                    if(stops[stops.length-1].opacity){
+                        node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    }
                 }
             },
             iecracker2=function(node,orient,stops){
@@ -10204,39 +10214,39 @@ type:4
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr,
-                	    ori=1,t;
-                	if(stops[0].opacity)
-                	    innerColor = innerColor.replace('#','#'+_toFF(stops[0].opacity,255));
-                	if(stops[stops.length-1].opacity)
-                	    outerColor = outerColor.replace('#','#'+_toFF(stops[stops.length-1].opacity,255));
-                	switch(orient){
-                    	case 'LT':
-                    	case 'RT':
-                    	case 'LB':
-                    	case 'RB':
-                    	   iecracker21(node, orient, stops);
+                        ori=1,t;
+                    if(stops[0].opacity)
+                        innerColor = innerColor.replace('#','#'+_toFF(stops[0].opacity,255));
+                    if(stops[stops.length-1].opacity)
+                        outerColor = outerColor.replace('#','#'+_toFF(stops[stops.length-1].opacity,255));
+                    switch(orient){
+                        case 'LT':
+                        case 'RT':
+                        case 'LB':
+                        case 'RB':
+                           iecracker21(node, orient, stops);
                         return;
-                	    case "L":
-                	        ori=1;
-                	    break;
-                	    case "R":
-                	        ori=1;
-                	        t=innerColor;
-                	        innerColor=outerColor;
-                	        outerColor=t;
-                	    break;
-                	    case "T":
-                	        ori=0;
-                	    break;
-                	    case "B":
-                	        ori=0;
-                	        t=innerColor;
-                	        innerColor=outerColor;
-                	        outerColor=t;
-                    	break;
-                	}
-                	node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                	if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                        case "L":
+                            ori=1;
+                        break;
+                        case "R":
+                            ori=1;
+                            t=innerColor;
+                            innerColor=outerColor;
+                            outerColor=t;
+                        break;
+                        case "T":
+                            ori=0;
+                        break;
+                        case "B":
+                            ori=0;
+                            t=innerColor;
+                            innerColor=outerColor;
+                            outerColor=t;
+                        break;
+                    }
+                    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
                 }
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
@@ -10244,42 +10254,42 @@ type:4
                     node.style.backgroundImage="";
                 }else{
                     rate=rate||1;
-                	var id='svg:'+_.id(),
-                	    cx='0%',cy='0%',
-                	    r=rate*100+"%";
-                	if(_.isObj(orient)){
+                    var id='svg:'+_.id(),
+                        cx='0%',cy='0%',
+                        r=rate*100+"%";
+                    if(_.isObj(orient)){
                         cx=orient.left||cx;
                         cy=orient.left||cy;
                     }else{
                         switch(orient){
-                    	    case "T":
-                        	    cx='50%';cy='0%';
-                    	    break;
-                    	    case "B":
-                        	    cx='50%';cy='100%';
-                    	    break;
-                    	    case "L":
-                        	    cx='0%';cy='50%';
-                    	    break;
-                    	    case "R":
-                        	    cx='100%';cy='50%';
-                    	    break;
-                    	    case "LT":
-                        	    cx='0%';cy='0%';
-                    	    break;
-                    	    case "RT":
-                        	    cx='100%';cy='0%';
-                    	    break;
-                    	    case "RB":
-                        	    cx='100%';cy='100%';
-                    	    break;
-                    	    case "LB":
-                        	    cx='0%';cy='100%';
-                    	    break;
-                    	    case "C":
-                    	        cx='50%';cy='50%';
-                    	    break;
-                    	}
+                            case "T":
+                                cx='50%';cy='0%';
+                            break;
+                            case "B":
+                                cx='50%';cy='100%';
+                            break;
+                            case "L":
+                                cx='0%';cy='50%';
+                            break;
+                            case "R":
+                                cx='100%';cy='50%';
+                            break;
+                            case "LT":
+                                cx='0%';cy='0%';
+                            break;
+                            case "RT":
+                                cx='100%';cy='0%';
+                            break;
+                            case "RB":
+                                cx='100%';cy='100%';
+                            break;
+                            case "LB":
+                                cx='0%';cy='100%';
+                            break;
+                            case "C":
+                                cx='50%';cy='50%';
+                            break;
+                        }
                     }
 /*                    var rectw=1,recth=1;
                     if(shape=='circle'){
@@ -10291,75 +10301,75 @@ type:4
                         }
                     }
 */
-                	var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
-                	+'<radialGradient id="'+id+'" gradientUnits="userSpaceOnUse" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';
-    
+                    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
+                    +'<radialGradient id="'+id+'" gradientUnits="userSpaceOnUse" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';
+
                     for(var i=0,l=stops.length;i<l;i++){
                         svg += '<stop stop-color="'+stops[i].clr+'" offset="'+stops[i].pos+'" '+(_.isSet(stops[i].opacity)?(' stop-opacity="'+stops[i].opacity+'"'):'')+' />';
                     }
-    
-                	svg += '</radialGradient>'
+
+                    svg += '</radialGradient>'
                     +'<rect x="-50" y="-50" width="101" height="101" fill="url(#'+id+')" />'
                     +'</svg>';
 
-                	node.style.backgroundImage = 'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
+                    node.style.backgroundImage = 'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
                 }
             },
-            svgcracker2=function(node,orient,stops){   
+            svgcracker2=function(node,orient,stops){
                 if(!orient){
                     node.style.backgroundImage='';
                 }else{
-                	var id='svg'+_.id(),x1='0%',y1='0%',x2='0%',y2='100%';
-                	
-                    switch(orient){
-                	    case "T":
-                    	    x1='50%'; y1='0%';
-                    	    x2='50%'; y2='100%';
-                	    break;
-                	    case "B":
-                    	    x1='50%'; y1='100%';
-                    	    x2='50%'; y2='0%';
-                	    break;
-                	    case "L":
-                    	    x1='0%'; y1='50%';
-                    	    x2='100%'; y2='50%';
-                	    break;
-                	    case "R":
-                    	    x1='100%'; y1='50%';
-                    	    x2='0%'; y2='50%';
-                	    break;
-                	    case "LT":
-                    	    x1='0%'; y1='0%';
-                    	    x2='100%'; y2='100%';
-                	    break;
-                	    case "RT":
-                    	    x1='100%'; y1='0%';
-                    	    x2='0%'; y2='100%';
-                	    break;
-                	    case "RB":
-                    	    x2='0%'; y2='0%';
-                    	    x1='100%'; y1='100%';
-                	    break;
-                	    case "LB":
-                    	    x1='0%'; y1='100%';
-                    	    x2='100%'; y2='0%';
-                	    break;
-                	    default:
-                	    /*To caculate x1/x2/y1/y2 from orient*/
-                	}
+                    var id='svg'+_.id(),x1='0%',y1='0%',x2='0%',y2='100%';
 
-                	var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
-                	+'<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'">';
-    
+                    switch(orient){
+                        case "T":
+                            x1='50%'; y1='0%';
+                            x2='50%'; y2='100%';
+                        break;
+                        case "B":
+                            x1='50%'; y1='100%';
+                            x2='50%'; y2='0%';
+                        break;
+                        case "L":
+                            x1='0%'; y1='50%';
+                            x2='100%'; y2='50%';
+                        break;
+                        case "R":
+                            x1='100%'; y1='50%';
+                            x2='0%'; y2='50%';
+                        break;
+                        case "LT":
+                            x1='0%'; y1='0%';
+                            x2='100%'; y2='100%';
+                        break;
+                        case "RT":
+                            x1='100%'; y1='0%';
+                            x2='0%'; y2='100%';
+                        break;
+                        case "RB":
+                            x2='0%'; y2='0%';
+                            x1='100%'; y1='100%';
+                        break;
+                        case "LB":
+                            x1='0%'; y1='100%';
+                            x2='100%'; y2='0%';
+                        break;
+                        default:
+                        /*To caculate x1/x2/y1/y2 from orient*/
+                    }
+
+                    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
+                    +'<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'">';
+
                     for(var i=0,l=stops.length;i<l;i++){
                         svg += '<stop stop-color="'+stops[i].clr+'" offset="'+stops[i].pos+'" '+(_.isSet(stops[i].opacity)?(' stop-opacity="'+stops[i].opacity+'"'):'')+'/>';
                     }
-    
-                	svg += '</linearGradient>'
+
+                    svg += '</linearGradient>'
                     +'<rect x="0" y="0" width="1" height="1" fill="url(#'+id+')" />'
                     +'</svg>';
-    
-                	node.style.backgroundImage = 'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
+
+                    node.style.backgroundImage = 'url("data:image/svg+xml;base64,'+window.btoa(svg)+'")';
                 }
             },
             css1=function(node,orient,stops, shape, size, rate){
@@ -10376,32 +10386,32 @@ type:4
                     }
                 });
 
-            	if(!orient){
+                if(!orient){
                     style.backgroundImage="";
                 }else{
                     var position;
-                	if(_.isObj(orient)){
-                	    position = orient.left + " " + orient.top;
+                    if(_.isObj(orient)){
+                        position = orient.left + " " + orient.top;
                     }else{
                         switch(orient){
-                        	case 'LT':position = 'left top';break;
-                        	case 'T':position = 'center top';break;
-                        	case 'RT':position = 'right top';break;
-                        	case 'L':position = 'left center';break;
-                        	case 'C':position = 'center center';break;
-                        	case 'R':position = 'right center';break;
-                        	case 'LB':position = 'left bottom';break;
-                        	case 'B':position = 'center bottom';break;
-                        	case 'RB':position = 'right bottom';break;
-                        	default:
-                        	    position = 'left top';
+                            case 'LT':position = 'left top';break;
+                            case 'T':position = 'center top';break;
+                            case 'RT':position = 'right top';break;
+                            case 'L':position = 'left center';break;
+                            case 'C':position = 'center center';break;
+                            case 'R':position = 'right center';break;
+                            case 'LB':position = 'left bottom';break;
+                            case 'B':position = 'center bottom';break;
+                            case 'RB':position = 'right bottom';break;
+                            default:
+                                position = 'left top';
                         }
                     }
 
                     if(xb.isWebKit){
                         style.backgroundImage = "-webkit-gradient(radial,"+position+", 0px, "+position+", 100%," + arr2.join(",") + ")";
                     }
-    
+
                     var v1="radial-gradient("+ position +"," + shape + " "+ size +"," + arr1.join(",") + ")";
                     if(xb.cssTag1){
                         style.backgroundImage = xb.cssTag1+v1;
@@ -10423,61 +10433,61 @@ type:4
                     }
                 });
 
-            	if(!orient){
+                if(!orient){
                     style.backgroundImage="";
                 }else{
-                	var direction = 'to bottom';
-                	var directionmoz="top";
-                	var directionwebkit = 'left top, left bottom';
-                	switch(orient){
-                    	case 'LT':
-                    	    direction="135deg";
-                    	    directionmoz="-45deg";
-                    	    directionwebkit = 'left top, right bottom';
-                    	break;
-                    	case 'T':
-                    	    directionmoz="top";
-                    	    direction="to bottom";
-                    	    directionwebkit = 'left top, left bottom';
-                    	break;
-                    	case 'RT':
-                    	    direction=directionmoz="-135deg";
-                    	    directionwebkit = 'right top, left bottom';
-                    	break;
-                    	case 'L':
-                    	    directionmoz="left";
-                    	    direction="to right";
-                    	    directionwebkit = 'left top, right top';
-                    	break;
-                    	case 'R':
-                    	    directionmoz="right";
-                    	    direction="to left";
-                    	    directionwebkit = 'right top, left top';
-                    	break;
-                    	case 'LB':
-                    	    direction=directionmoz="45deg";
-                    	    directionwebkit = 'left bottom, right top';
-                    	break;
-                    	case 'B':
-                    	    directionmoz="bottom";
-                    	    direction="to top";
-                    	    directionwebkit = 'left bottom, left top';
-                    	break;
-                    	case 'RB':
-                    	    direction="-45deg";
-                    	    directionmoz="135deg";
-                    	    directionwebkit = 'right bottom, left top';
-                    	break;
-                    	default:
-                    	    direction=orient;
-                    	    directionmoz=orient;
-                    	    directionwebkit = 'left top, right bottom';
+                    var direction = 'to bottom';
+                    var directionmoz="top";
+                    var directionwebkit = 'left top, left bottom';
+                    switch(orient){
+                        case 'LT':
+                            direction="135deg";
+                            directionmoz="-45deg";
+                            directionwebkit = 'left top, right bottom';
+                        break;
+                        case 'T':
+                            directionmoz="top";
+                            direction="to bottom";
+                            directionwebkit = 'left top, left bottom';
+                        break;
+                        case 'RT':
+                            direction=directionmoz="-135deg";
+                            directionwebkit = 'right top, left bottom';
+                        break;
+                        case 'L':
+                            directionmoz="left";
+                            direction="to right";
+                            directionwebkit = 'left top, right top';
+                        break;
+                        case 'R':
+                            directionmoz="right";
+                            direction="to left";
+                            directionwebkit = 'right top, left top';
+                        break;
+                        case 'LB':
+                            direction=directionmoz="45deg";
+                            directionwebkit = 'left bottom, right top';
+                        break;
+                        case 'B':
+                            directionmoz="bottom";
+                            direction="to top";
+                            directionwebkit = 'left bottom, left top';
+                        break;
+                        case 'RB':
+                            direction="-45deg";
+                            directionmoz="135deg";
+                            directionwebkit = 'right bottom, left top';
+                        break;
+                        default:
+                            direction=orient;
+                            directionmoz=orient;
+                            directionwebkit = 'left top, right bottom';
                     }
 
                     if(xb.isWebKit){
                         style.backgroundImage = "-webkit-gradient(linear,"+directionwebkit+", " + arr2.join(",") + ")";
                     }
-                
+
                     var v1="linear-gradient({#}," + arr1.join(",") + ")";
                     if(xb.cssTag1){
                         style.backgroundImage = xb.cssTag1+v1.replace("{#}",directionmoz);
@@ -10495,7 +10505,7 @@ type:4
 
             if(type!='linear')
                 type='radial';
-            
+
             if(stops){
                 if(stops.length>1){
                     _.arr.stableSort(stops,function(x,y){
@@ -10581,12 +10591,12 @@ type:4
                     map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1});
                     var name2,name3,name4;
                     name = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()}));
-    
+
                     var n1=name;
                     if(n1.indexOf("border")===0){
                         n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
                     }
-    
+
                     if(name=="$gradient"){
                         return ns.$setGradients(node,value);
                     }else if(name=='opacity'){
@@ -10635,7 +10645,7 @@ type:4
                     }else if(map[name]){
                         name = xb.ie?"styleFloat":"cssFloat";
                     }
-    
+
                     if(name=="filter"){
                         value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
                     }
@@ -10643,7 +10653,7 @@ type:4
                     if(name2)node.style[name2]=value;
                     if(name3)node.style[name3]=value;
                     if(name4)node.style[name4]=value;
-                    
+
                 }
             }else
                 for(var i in name)
@@ -10653,9 +10663,9 @@ type:4
         css3Support:function(key){
             var self=arguments.callee,
                 _c=self._c||(self._c={});
-            
+
             key=key.replace("$","").replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
-            
+
             if(key in _c)return _c[key];
 
             var n = document.createElement("div"),
@@ -10702,7 +10712,7 @@ type:4
                             s=linb.CSS.addStyleSheet(css,id),
                             sh=s.sheet || s.styleSheet,
                             ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'';
-                            
+
                         rt=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
                         linb.CSS.remove("id",id);
                     }
@@ -10773,7 +10783,7 @@ type:4
                 }
                 if(key &&xui.browser.ie&&xui.browser.ver<=8){
                     _.filter(key,function(o,i){
-                        return !xui.Dom._cssfake[i];
+                        return !!xui.Dom._cssfake[i];
                     });
                 }
                 return key;
@@ -10835,7 +10845,7 @@ type:4
             if(xui.Dom.byId(id2)){
                 o2=xui(id2);
             }
-             
+
             //clear
             if(!visible){
                 if(typeof me._label =='string' && me._label!==label)
@@ -11270,7 +11280,7 @@ type:4
                 var o=xui.Event.getSrc(e),
                     i=0,b,href;
                 do{
-                    if(o.tagName == 'A'){
+                    if(o.nodeName == 'A'){
                         b=true;
                         break;
                     }
@@ -11293,11 +11303,11 @@ type:4
         if(xui.browser.ie && xui.browser.ver<10 && d.body)
             d.body.onselectstart=function(n,v){
                 n=event.srcElement;
-                while(n&&n.tagName&&n.tagName!="BODY"&&n.tagName!="HTML"){
+                while(n&&n.nodeName&&n.nodeName!="BODY"&&n.nodeName!="HTML"){
                     if(v=xui.getNodeData(n,"_onxuisel"))
                         return v!='false';
                     // check self only
-                    if(n.tagName=="INPUT"||n.tagName=="TEXTAREA")
+                    if(n.nodeName=="INPUT"||n.nodeName=="TEXTAREA")
                         break;
                     n=n.parentNode;
                 }
@@ -11338,7 +11348,7 @@ type:4
                 d.body.onselectstart=null;
 
             if("onhashchange" in w)w.onhashchange=null;
-            
+
             xui('body').empty();
             xui([w, d]).$clearEvent();
             //unlink link 'App'
@@ -17176,6 +17186,16 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image': 'url('+xui.ini.img_busy+')',
                 'background-repeat':'no-repeat', 
                 'background-position': 'center center'
+            },
+            ".xui-busy":{
+                "background-image":"url(data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7)",
+                "background-repeat":"no-repeat",
+                "background-position":"center center"
+            },
+            ".xui-err":{
+                "background-image":"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)",
+                "background-repeat":"no-repeat",
+                "background-position":"center center"
             }
         });
     },
@@ -20590,7 +20610,7 @@ new function(){
             },
             DataModel:{
                 width:'100',
-                height:'30',
+                height:'22',
                 nodeName:{
                     ini:"xui",
                     action:function(v){
@@ -21091,7 +21111,7 @@ Class("xui.UI.Image", "xui.UI",{
     Static:{
         IMGNODE:1,
         Templates:{
-            tagName:'image',
+            tagName:'img',
             style:'cursor:{cursor};{_style}',
             className:'{_className}',
             border:"0",
@@ -21106,19 +21126,23 @@ Class("xui.UI.Image", "xui.UI",{
                 profile.boxing().onError(profile);
             },
             onLoad:function(profile, e, src){
-                var i=new Image(), path=xui.use(src).get(0).src;
-                i.onload=function(){
-                    if(!profile||profile.isDestroyed)return;
-                    var prop=profile.properties,
-                        size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
-                    if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
-                    profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
-                    if(prop.dock!='none')
-                        profile.boxing().adjustDock();
-                   i.onload=null;
-                };
-                // must after onload for IE<8 fix
-                i.src=path;
+                var img=xui.use(src).get(0),path=img.src;
+                if(path!=xui.ini.img_bg2){
+                    var i=new Image();
+                    i.onload=function(){
+                        if(!profile||profile.isDestroyed)return;
+                        var prop=profile.properties,
+                            size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
+                        if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
+                        profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
+                        if(prop.dock!='none')
+                            profile.boxing().adjustDock();
+                       i.onload=null;                       
+                    }
+                    // must after onload for IE<8 fix
+                    i.src=path;
+                   xui.Dom.fixPng(img);
+                }
             },
             onClick:function(profile, e, src){
                 var p=profile.properties;
@@ -21900,7 +21924,7 @@ Class("xui.UI.Resizer","xui.UI",{
             removeResizer:function(){
                 var s = this.id();
                 _.arr.each(xui.UI.Resizer._cache,function(o){
-                    if(o.$resizeId==s)
+                    if(o && o.$resizeId==s)
                         o.boxing().destroy(true);
                 });
                 return this;
@@ -21908,7 +21932,7 @@ Class("xui.UI.Resizer","xui.UI",{
             $getResizer:function(){
                 var s = this.id(), b;
                 _.arr.each(xui.UI.Resizer._cache,function(o){
-                    if(o.$resizeId==s){b=o;return false;}
+                    if(o && o.$resizeId==s){b=o;return false;}
                 });
                 return b && b.boxing();
             }
@@ -27763,7 +27787,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
             data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked'):'';
-            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle2-checked':'';
+            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd xui-uicmd-toggle2-checked':'';
             
             profile._toggle = !!data.toggle;
             
@@ -30826,7 +30850,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 listbox:['single','none','multi','multibycheckbox'],
                 action:function(value){
                     if(!this.box._ITEMMARKED)
-                        this.getSubNode('MARK',true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');
+                        this.getSubNode('MARK',true).css('display',(value=='multibycheckbox')?'':'none');
                 }  
             },
             borderType:{
@@ -30924,7 +30948,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return data;
         },
         _prepareItem:function(profile, item){
-            item._cbDisplay = (profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox')?'':'display:none;';
+            item._cbDisplay = (profile.properties.selMode=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
         },
@@ -44242,6 +44266,8 @@ editorEvents
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,
+                'font-size':0,
+                'line-height':0,
                 width:"16px",
                 display:'inline',
                 position:'absolute'
@@ -44386,7 +44412,7 @@ if(xui.browser.ie){
             },
             PIN:{
                 onClick:function(profile, e, src){
-                    var key=profile.keys.PIN, t=profile.properties;
+                    var key=profile.keys.PIN, t=profile.properties,ins=profile.boxing();
                     if( profile.beforePin && false === profile.boxing().beforePin(profile, t.pinned))
                         return;
 
@@ -44401,12 +44427,12 @@ if(xui.browser.ie){
                     if(t.resizer){
                         if(!t.pinned){
                             // if not in min mode
-                            if(t.status != 'min' && profile.$resizer)
-                                profile.$resizer.show();
+                            if(t.status != 'min')
+                                ins._resizer();
                         }else
                             if(profile.$resizer)
                                 //profile.boxing().setResizer(false);
-                                profile.$resizer.hide();
+                                ins._unResizer();
                     }
                 }
             },
@@ -44675,7 +44701,9 @@ if(xui.browser.ie){
             var o=profile.getRoot(),
                 box=profile.box,
                 p=o.parent(),
-                t=profile.properties;
+                ins=profile.boxing(),
+                t=profile.properties,
+                a=xui.Dom._getEffects(t.showEffects,1);
 
             if(!status)status=t.status;
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
@@ -44701,10 +44729,10 @@ if(xui.browser.ie){
 
             // lockResize function
             if(t.resizer && profile.$resizer)
-                profile.$resizer.hide();
+                ins._unResizer();
 
             if(t.shadow)
-                profile.boxing()._unShadow(false);
+                ins._unShadow(false);
 
             //set it before resize
             t.status='min';
@@ -44718,7 +44746,7 @@ if(xui.browser.ie){
             
             if(a&&xui.browser.ie&&xui.browser.ver<=8)
                 _.filter(a.params,function(o,i){
-                    return !xui.Dom._cssfake[i];
+                    return !!xui.Dom._cssfake[i];
                 });
             o.show(null,null,effectcallback,null,ignoreEffects);
         },
@@ -44757,7 +44785,7 @@ if(xui.browser.ie){
             t.movable=false;
 
             if(t.resizer && profile.$resizer)
-                profile.$resizer.hide();
+                ins._unResizer();
 
             if(t.shadow && (parseInt(t.dockMargin.right,10)<xui.UI.Shadow.SIZE||parseInt(t.dockMargin.bottom)<xui.UI.Shadow.SIZE))
                 //ins.setShadow(false);
@@ -44770,7 +44798,7 @@ if(xui.browser.ie){
 
                 if(a&&xui.browser.ie&&xui.browser.ver<=8)
                     _.filter(a.params,function(o,i){
-                        return !xui.Dom._cssfake[i];
+                        return !!xui.Dom._cssfake[i];
                     });
                 o.show(null,null,effectcallback,null,ignoreEffects);
         },
@@ -44788,6 +44816,8 @@ if(xui.browser.ie){
             if(status=='max')box._unMax(profile);
             if(status=='min')box._unMin(profile);
 
+            profile.getSubNode('BORDER').ieRemedy();
+
             // hide restore button
             profile.getSubNode('RESTORE').css('display','none');
         },
@@ -44804,9 +44834,6 @@ if(xui.browser.ie){
                 ins._shadow();
 
             if(t.resizer && !t.pinned){
-                if(profile.$resizer)
-                    profile.$resizer.show();
-                else
                     ins._resizer();
             }
 
@@ -44826,9 +44853,6 @@ if(xui.browser.ie){
                 ins._shadow();
 
             if(t.resizer && !t.pinned){
-                if(profile.$resizer)
-                    profile.$resizer.show();
-                else
                     ins._resizer();
             }
 
