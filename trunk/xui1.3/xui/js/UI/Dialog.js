@@ -309,6 +309,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,
+                'font-size':0,
+                'line-height':0,
                 width:"16px",
                 display:'inline',
                 position:'absolute'
@@ -453,7 +455,7 @@ if(xui.browser.ie){
             },
             PIN:{
                 onClick:function(profile, e, src){
-                    var key=profile.keys.PIN, t=profile.properties;
+                    var key=profile.keys.PIN, t=profile.properties,ins=profile.boxing();
                     if( profile.beforePin && false === profile.boxing().beforePin(profile, t.pinned))
                         return;
 
@@ -468,12 +470,12 @@ if(xui.browser.ie){
                     if(t.resizer){
                         if(!t.pinned){
                             // if not in min mode
-                            if(t.status != 'min' && profile.$resizer)
-                                profile.$resizer.show();
+                            if(t.status != 'min')
+                                ins._resizer();
                         }else
                             if(profile.$resizer)
                                 //profile.boxing().setResizer(false);
-                                profile.$resizer.hide();
+                                ins._unResizer();
                     }
                 }
             },
@@ -742,7 +744,9 @@ if(xui.browser.ie){
             var o=profile.getRoot(),
                 box=profile.box,
                 p=o.parent(),
-                t=profile.properties;
+                ins=profile.boxing(),
+                t=profile.properties,
+                a=xui.Dom._getEffects(t.showEffects,1);
 
             if(!status)status=t.status;
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
@@ -768,10 +772,10 @@ if(xui.browser.ie){
 
             // lockResize function
             if(t.resizer && profile.$resizer)
-                profile.$resizer.hide();
+                ins._unResizer();
 
             if(t.shadow)
-                profile.boxing()._unShadow(false);
+                ins._unShadow(false);
 
             //set it before resize
             t.status='min';
@@ -785,7 +789,7 @@ if(xui.browser.ie){
             
             if(a&&xui.browser.ie&&xui.browser.ver<=8)
                 _.filter(a.params,function(o,i){
-                    return !xui.Dom._cssfake[i];
+                    return !!xui.Dom._cssfake[i];
                 });
             o.show(null,null,effectcallback,null,ignoreEffects);
         },
@@ -824,7 +828,7 @@ if(xui.browser.ie){
             t.movable=false;
 
             if(t.resizer && profile.$resizer)
-                profile.$resizer.hide();
+                ins._unResizer();
 
             if(t.shadow && (parseInt(t.dockMargin.right,10)<xui.UI.Shadow.SIZE||parseInt(t.dockMargin.bottom)<xui.UI.Shadow.SIZE))
                 //ins.setShadow(false);
@@ -837,7 +841,7 @@ if(xui.browser.ie){
 
                 if(a&&xui.browser.ie&&xui.browser.ver<=8)
                     _.filter(a.params,function(o,i){
-                        return !xui.Dom._cssfake[i];
+                        return !!xui.Dom._cssfake[i];
                     });
                 o.show(null,null,effectcallback,null,ignoreEffects);
         },
@@ -855,6 +859,8 @@ if(xui.browser.ie){
             if(status=='max')box._unMax(profile);
             if(status=='min')box._unMin(profile);
 
+            profile.getSubNode('BORDER').ieRemedy();
+
             // hide restore button
             profile.getSubNode('RESTORE').css('display','none');
         },
@@ -871,9 +877,6 @@ if(xui.browser.ie){
                 ins._shadow();
 
             if(t.resizer && !t.pinned){
-                if(profile.$resizer)
-                    profile.$resizer.show();
-                else
                     ins._resizer();
             }
 
@@ -893,9 +896,6 @@ if(xui.browser.ie){
                 ins._shadow();
 
             if(t.resizer && !t.pinned){
-                if(profile.$resizer)
-                    profile.$resizer.show();
-                else
                     ins._resizer();
             }
 

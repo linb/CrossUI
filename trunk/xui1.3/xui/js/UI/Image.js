@@ -7,7 +7,7 @@ Class("xui.UI.Image", "xui.UI",{
     Static:{
         IMGNODE:1,
         Templates:{
-            tagName:'image',
+            tagName:'img',
             style:'cursor:{cursor};{_style}',
             className:'{_className}',
             border:"0",
@@ -22,19 +22,23 @@ Class("xui.UI.Image", "xui.UI",{
                 profile.boxing().onError(profile);
             },
             onLoad:function(profile, e, src){
-                var i=new Image(), path=xui.use(src).get(0).src;
-                i.onload=function(){
-                    if(!profile||profile.isDestroyed)return;
-                    var prop=profile.properties,
-                        size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
-                    if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
-                    profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
-                    if(prop.dock!='none')
-                        profile.boxing().adjustDock();
-                   i.onload=null;
-                };
-                // must after onload for IE<8 fix
-                i.src=path;
+                var img=xui.use(src).get(0),path=img.src;
+                if(path!=xui.ini.img_bg2){
+                    var i=new Image();
+                    i.onload=function(){
+                        if(!profile||profile.isDestroyed)return;
+                        var prop=profile.properties,
+                            size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
+                        if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
+                        profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
+                        if(prop.dock!='none')
+                            profile.boxing().adjustDock();
+                       i.onload=null;                       
+                    }
+                    // must after onload for IE<8 fix
+                    i.src=path;
+                   xui.Dom.fixPng(img);
+                }
             },
             onClick:function(profile, e, src){
                 var p=profile.properties;

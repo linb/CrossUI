@@ -5748,7 +5748,7 @@ new function(){
             },
             DataModel:{
                 width:'100',
-                height:'30',
+                height:'22',
                 nodeName:{
                     ini:"xui",
                     action:function(v){
