@@ -19817,17 +19817,24 @@ Class("xui.absList", "xui.absObj",{
                                 .setResizer(true)
                                 .setValue(item.caption||"");
                             if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
-                            editor.beforeUIValueSet(function(prf, ov, nv){
-                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
-                                    profile.boxing().updateItem(item.id, {caption:nv});
-                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                    root.setBlurTrigger("absList_editor",null);
-                                    // it's a must
-                                    _.asyRun(function(){
+                            var undo=function(){
+                                // ays is a must
+                                _.resetRun('absList_editor_reset', function(){
+                                    if(editor&&!editor.isDestroyed()){
+                                        editor.getRoot().setBlurTrigger("absList_editor_blur",null);
                                         editor.destroy();
                                         editor=null;
-                                    });
+                                    }
+                                });
+                            };
+                            editor.beforeUIValueSet(function(prf, ov, nv, force, tag){
+                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
+                                    profile.boxing().updateItem(item.id, {caption:nv});
+                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                    undo();
                                 }
+                            }).onCancel(function(){
+                                undo();
                             });
                             xui('body').append(editor);
                             var root=editor.getRoot();
@@ -19836,9 +19843,10 @@ Class("xui.absList", "xui.absObj",{
                                 left:pos.left+pos2.left,
                                 top:pos2.top
                             });
-                            root.setBlurTrigger("absList_editor",function(){
-                                    if(editor)editor.setUIValue(editor.getUIValue(),true);
-                            });
+                            // For scroll to undo
+                            root.setBlurTrigger("absList_editor_blur",function(){
+                                undo();
+                            }); 
                             editor.activate();
                         }
                     }
@@ -19972,7 +19980,7 @@ Class("xui.absList", "xui.absObj",{
         EventHandlers:{
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
-            beforeEditApply:function(profile, item, caption, editor){},
+            beforeEditApply:function(profile, item, caption, editor, tag){},
             onEndEdit:function(profile, item, editor){}
         },
         getDropKeys:function(profile,node){
@@ -24681,7 +24689,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             INPUT:{
                 onChange:function(profile, e, src){
-                    if(profile.$_onedit||profile.$_inner)return;
+                    if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var p=profile.properties,b=profile.box,
                         o=profile._inValid,
                         value=xui.use(src).get(0).value;
@@ -24755,7 +24763,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
-                        profile.boxing().setUIValue(p.value,true,null,'esc');
+                        profile.$_inner=true;
+                        profile.boxing()._setCtrlValue(p.$UIvalue);
+                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -27074,9 +27084,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             return;
                         }
                         
-                        profile.$_onedit=true;
-                        profile.boxing().setUIValue(p.value,true,null,'esc');
-                        profile.$_onedit=false;
+                        profile.$_inner=true;
+                        profile.boxing()._setCtrlValue(p.$UIvalue);
+                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -41801,7 +41811,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeIniEditor:function(profile, cell, cellNode, pNode){},
             onBeginEdit:function(profile, cell, editor){},
-            beforeEditApply:function(profile, cell, options, editor){},
+            beforeEditApply:function(profile, cell, options, editor, tag){},
             onEndEdit:function(profile, cell, editor){},
 
             beforeCellUpdated:function(profile, cell, options, isHotRow){},
@@ -43461,7 +43471,7 @@ editorEvents
 
                     //editor change value, update cell value
                     editor
-                    .afterUIValueSet(function(pro,oV,nV){
+                    .afterUIValueSet(function(pro,oV,nV,force,tag){
                         var type=getPro('type'),_$caption;
                         switch(type){
                             case 'number':
@@ -43491,7 +43501,7 @@ editorEvents
                         if(pro.properties.hasOwnProperty("tagVar"))
                             options.tagVar=pro.properties.tagVar;
                     
-                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor))){
+                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor, tag))){
 
                             grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
     

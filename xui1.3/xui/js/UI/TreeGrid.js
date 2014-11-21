@@ -3439,7 +3439,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeIniEditor:function(profile, cell, cellNode, pNode){},
             onBeginEdit:function(profile, cell, editor){},
-            beforeEditApply:function(profile, cell, options, editor){},
+            beforeEditApply:function(profile, cell, options, editor, tag){},
             onEndEdit:function(profile, cell, editor){},
 
             beforeCellUpdated:function(profile, cell, options, isHotRow){},
@@ -5099,7 +5099,7 @@ editorEvents
 
                     //editor change value, update cell value
                     editor
-                    .afterUIValueSet(function(pro,oV,nV){
+                    .afterUIValueSet(function(pro,oV,nV,force,tag){
                         var type=getPro('type'),_$caption;
                         switch(type){
                             case 'number':
@@ -5129,7 +5129,7 @@ editorEvents
                         if(pro.properties.hasOwnProperty("tagVar"))
                             options.tagVar=pro.properties.tagVar;
                     
-                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor))){
+                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor, tag))){
 
                             grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
     

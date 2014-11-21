@@ -326,7 +326,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             INPUT:{
                 onChange:function(profile, e, src){
-                    if(profile.$_onedit||profile.$_inner)return;
+                    if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var p=profile.properties,b=profile.box,
                         o=profile._inValid,
                         value=xui.use(src).get(0).value;
@@ -400,7 +400,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
-                        profile.boxing().setUIValue(p.value,true,null,'esc');
+                        profile.$_inner=true;
+                        profile.boxing()._setCtrlValue(p.$UIvalue);
+                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }

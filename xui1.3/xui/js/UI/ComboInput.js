@@ -892,9 +892,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             return;
                         }
                         
-                        profile.$_onedit=true;
-                        profile.boxing().setUIValue(p.value,true,null,'esc');
-                        profile.$_onedit=false;
+                        profile.$_inner=true;
+                        profile.boxing()._setCtrlValue(p.$UIvalue);
+                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
