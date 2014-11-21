@@ -4571,7 +4571,6 @@ Class("xui.absList", "xui.absObj",{
                 }else
                     _.arr.insertAny(items,arr2, before?index:index+1);
 
-
                 if(b)
                     profile.boxing()._afterInsertItems(profile, data, base, before);
             });
@@ -4635,7 +4634,7 @@ Class("xui.absList", "xui.absObj",{
                     profile.boxing()._afterRemoveItems(profile, data);
             });
         },
-        clearItems:function(key){
+        clearItems:function(){
             return this.each(function(profile){
                 if(profile.SubSerialIdMapItem){
                     //empty dom
@@ -4665,7 +4664,7 @@ Class("xui.absList", "xui.absObj",{
                 box=profile.box,
                 items=profile.properties.items,
                 rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
-                nid,item,serialId,arr,node,sub,t;
+                nid,item,serialId,arr,node,oldsub,t;
             if(!_.isHash(options))options={caption:options+''};
 
             if(rst && rst.length){
@@ -4695,29 +4694,41 @@ Class("xui.absList", "xui.absObj",{
                 if(_.isEmpty(options))
                     return self;
                 //]]
-
-                //merge options
-                _.merge(item, options, 'all');
                 
                 //in dom already?
                 node=profile.getSubNodeByItemId('ITEM',nid || subId);
                 if(!node.isEmpty()){
+                    //for the sub node
+                    if('sub' in options){
+                        delete item._created;
+                        delete item._checked;
+                        delete item._inited;
+
+                        // destroy all sub dom
+                        if(item.sub){
+                            var sub=[];
+                            _.arr.each(item.sub,function(o){
+                                sub.push(o.id);
+                            });
+                            self.removeItems(sub);
+                        }
+                    }
+                    // keep sub nodes
+                    else if(item.sub){
+                        oldsub=profile.getSubNodeByItemId('SUB',nid || subId);
+                    }
+                    
+                    //merge options
+                    _.merge(item, options, 'all');
                     //prepared already?
                     serialId=_.get(profile,['ItemIdMapSubSerialId',nid || subId]);
                     arr=box._prepareItems(profile, [item],item._pid,false, serialId);
+                    node.replace(profile._buildItems(arguments[2]||'items', arr),false);
 
-                    //for the sub node
-                    if(options.sub){
-                        delete item._created;
-                        delete item._checked;
-                    }else if(item.sub){
-                        sub=profile.getSubNodeByItemId('SUB',nid || subId);
-                    }
-                    node.replace(profile._buildItems(arguments[2]||'items',arr),false);
-                    //keep sub
-                    if(sub && !sub.isEmpty()){
+                    // restore sub nodes
+                    if(oldsub && !oldsub.isEmpty()){
                         if(!(t=profile.getSubNodeByItemId('SUB',nid || subId)).isEmpty())
-                            t.replace(sub);
+                            t.replace(oldsub);
                     }
                     if(typeof self.setUIValue=='function'){
                         var uiv=profile.properties.$UIvalue||"", arr=(''+uiv).split(profile.properties.valueSeparator);
@@ -4733,6 +4744,9 @@ Class("xui.absList", "xui.absObj",{
                             }
                         }
                     }
+                }else{
+                    //merge options
+                    _.merge(item, options, 'all');
                 }
 
                 if(box.$Behaviors.PanelKeys){
@@ -4814,35 +4828,44 @@ Class("xui.absList", "xui.absObj",{
                         pos2 = pp.offset(),
                         size2 = pp.cssSize();
 
-                        var editor=new xui.UI.Input();
-                        editor.setWidth(Math.max(size2.width-pos.left,40)).setHeight(Math.max(size2.height, 20))
-                            .setResizer(true)
-                            .setValue(item.caption||"");
-                        if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+                        var editor;
+                        if(profile.beforeIniEditor){
+                            editor=profile.boxing().beforeIniEditor(profile, item, source);
+                            if(editor===false)
+                                return;
+                        }
 
-                        editor.beforeUIValueSet(function(prf, ov, nv){
-                            if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
-                                profile.boxing().updateItem(item.id, {caption:nv});
-                                if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                root.setBlurTrigger("absList_editor",null);
-                                // it's a must
-                                _.asyRun(function(){
-                                    editor.destroy();
-                                    editor=null;
-                                });
-                            }
-                        });
-                        xui('body').append(editor);
-                        var root=editor.getRoot();
-
-                        root.popToTop({
-                            left:pos.left+pos2.left,
-                            top:pos2.top
-                        });
-                        root.setBlurTrigger("absList_editor",function(){
-                                if(editor)editor.setUIValue(editor.getUIValue(),true);
-                        });
-                        editor.activate();
+                        if(!editor || !editor['xui.UI']){
+                            var editor=new xui.UI.ComboInput({type:"input"});
+                            editor.setWidth(Math.max(size2.width-pos.left,40))
+                                .setHeight(Math.max(size2.height, 20))
+                                .setResizer(true)
+                                .setValue(item.caption||"");
+                            if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+                            editor.beforeUIValueSet(function(prf, ov, nv){
+                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
+                                    profile.boxing().updateItem(item.id, {caption:nv});
+                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                    root.setBlurTrigger("absList_editor",null);
+                                    // it's a must
+                                    _.asyRun(function(){
+                                        editor.destroy();
+                                        editor=null;
+                                    });
+                                }
+                            });
+                            xui('body').append(editor);
+                            var root=editor.getRoot();
+    
+                            root.popToTop({
+                                left:pos.left+pos2.left,
+                                top:pos2.top
+                            });
+                            root.setBlurTrigger("absList_editor",function(){
+                                    if(editor)editor.setUIValue(editor.getUIValue(),true);
+                            });
+                            editor.activate();
+                        }
                     }
                 }
             }
@@ -4972,6 +4995,7 @@ Class("xui.absList", "xui.absObj",{
             };
         },
         EventHandlers:{
+            beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
             beforeEditApply:function(profile, item, caption, editor){},
             onEndEdit:function(profile, item, editor){}

@@ -592,6 +592,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             dynDestory:false,
             position:'absolute',
             optBtn:false,
+            togglePlaceholder:false,
             tagCmds:{
                 ini:[],
                 action:function(){
@@ -827,7 +828,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem._pid=pid;
 
             // set 'visible' will show when parent call .height()
-            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):'xui-uicmd-none';
+            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item._itemDisplay=item.hidden?'display:none;':'';
@@ -907,7 +908,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
                         var b=profile.boxing(),
                             p=profile.properties,
-                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
+                            empty = sub===false;
                         //created
                         if(!empty&& !item._inited){
                             delete item.sub;
@@ -985,7 +986,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         _tofold:function(profile,item,pid){
             profile.getSubNodeByItemId('BAR', pid).addClass(profile.getClass('BAR','-fold'));
-            profile.getSubNodeByItemId('TOGGLE', pid).replaceClass(new RegExp("\\buicmd-none\\b"), "xui-uicmd-toggle");
+            profile.getSubNodeByItemId('TOGGLE', pid).replaceClass(new RegExp("\\buicmd-(none|empty)\\b"), "xui-uicmd-toggle");
         },
         _onresize:function(profile,width,height){
             profile.getSubNode('BORDER').cssSize({ width :width?width:null, height :height?height:null});

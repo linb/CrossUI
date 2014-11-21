@@ -1940,16 +1940,18 @@ type:4
                     n.style.height = n.height;
                     n.style.width = n.width;
                     n.style.backgroundImage ="none";
-                    n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
-                    if('msfilter' in n.style)n.style.msfilter = n.style.filter;
+                    var t= ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if(xui.browser.ie8)n.style.msfilter = t;
+                    n.style.filter = t;
                     n.src = xui.ini.img_bg;
                 }
                 var bgimg = n.currentStyle.backgroundImage || n.style.backgroundImage,
                     bgmatch = (bgimg||"").toLowerCase().match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
                 if(bgmatch){
                     n.style.backgroundImage ="none";
-                    n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
-                    if('msfilter' in n.style)n.style.msfilter = n.style.filter;
+                    var t = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if(xui.browser.ie8)n.style.msfilter = t;
+                    n.style.filter=t;
                 }
             }
         },
@@ -2071,78 +2073,178 @@ type:4
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
         $transformIE:function(node, value) {
-            var r,angle, scaleX, scaleY, skewX, skewY, transX,transY, toD=function(d){
-                return d*(Math.PI/180);
-            };
-            if(!value){
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                node.style.marginTop=node.style.marginLeft="";
-            }else{
-                r=value.match(/(rotate)\(\s*([\d.-]+)deg\s*\)/);
-                if(r&&r.length==3){
-                    angle=r[2];
-                }
-                r=value.match(/(scale)\(\s*([\d.-]+)\s*,\s*([\d.-]+)\)/);
-                if(r&&r.length==4){
-                    scaleX=r[2];
-                    scaleY=r[3];
-                }
-                r=value.match(/(skew)\(\s*([\d.-]+)deg\s*,\s*([\d.-]+)deg\s*\)/);
-                if(r&&r.length==4){
-                    skewX=r[2];
-                    skewY=r[3];
-                }
-                r=value.match(/(translate)\(\s*([\d.-]+)px\s*,\s*([\d.-]+)px\s*\)/);
-                if(r&&r.length==4){
-                    transX=r[2];
-                    transY=r[3];
-                }
-                angle=parseFloat(angle)||0;
-                scaleX=parseFloat(scaleX)||1;
-                scaleY=parseFloat(scaleY)||1;
-                skewX=parseFloat(skewX)||0;
-                skewY=parseFloat(skewY)||0;
-                transX=parseFloat(transX)||0;
-                transY=parseFloat(transY)||0;
+            var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+            if(xui.browser.ie8)node.style.msfilter = t;
+            node.style.filter = t;
+            node.style.marginTop=node.style.marginLeft="";
+            if(value){
+                var tmatrix = function(){
+                    var current,
+                        degRat = Math.PI/180,
+                        //create new matrix
+                        matrix = function(m11, m12, m21, m22, dx, dy){
+                            var m = {};
+                            m.m11 = _.isSet(m11)?parseFloat(m11):1;
+                            m.m12 = _.isSet(m12)?parseFloat(m12):0;
+                            m.m21 = _.isSet(m21)?parseFloat(m21):0;
+                            m.m22 = _.isSet(m22)?parseFloat(m22):1;
+                            m.dx = _.isSet(dx)?parseFloat(dx):0;
+                            m.dy = _.isSet(dy)?parseFloat(dy):0;
+                            return m;
+                        },
+                        //multiply matrices
+                        multiply = function(newMatrix, currentMatrix){
+                            //modify transformation matrix
+                            var m ={};
+                            m.m11 = roundNumber(newMatrix.m11*currentMatrix.m11 + newMatrix.m21*currentMatrix.m12, 10);
+                            m.m12 = roundNumber(newMatrix.m12*currentMatrix.m11 + newMatrix.m22*currentMatrix.m12, 10);
+                            m.m21 = roundNumber(newMatrix.m11*currentMatrix.m21 + newMatrix.m21*currentMatrix.m22, 10);
+                            m.m22 = roundNumber(newMatrix.m12*currentMatrix.m21 + newMatrix.m22*currentMatrix.m22, 10);
+                            m.dx = roundNumber(currentMatrix.dx + newMatrix.dx, 10);
+                            m.dy = roundNumber(currentMatrix.dy + newMatrix.dy, 10);
+                            //return new transformation matrix
+                            return m;
+                        },
+                        //convert degrees to radians
+                        deg2rad = function(deg){
+                            return degRat*deg;
+                        },
+                        //format number
+                        roundNumber = function(num, dec) {
+                            var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+                            return result;
+                        };
 
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                node.style.marginTop=node.style.marginLeft="";
+                    //rotate transformation
+                    this.rotate = function(deg){
+                        var rad = _.isSet(deg)?parseFloat(deg2rad(parseFloat(deg))):0;
+                        var m = matrix(Math.cos(rad), -Math.sin(rad), Math.sin(rad), Math.cos(rad), 0, 0);
+                        current = multiply(m, current);
+                    };
+                    //translate transformations
+                    this.translate = function(x, y){
+                        var m = matrix(1, 0, 0, 1, parseFloat(x), parseFloat(y));
+                        current = multiply(m, current);
+                    };
+                    this.translateX = function(x){
+                        this.translate(x,0);
+                    };
+                    this.translateY = function(y){
+                        this.translate(0,y);
+                    };
+                    //scaling transformations
+                    this.scale = function(x,y){
+                        var m = matrix(_.isSet(x)?parseFloat(x):1, 0, 0, _.isSet(y)?parseFloat(y):1, 0, 0);
+                        current = multiply(m, current);
+                    };
+                    this.scaleX = function(x){
+                        this.scale(x,1);
+                    };
+                    this.scaleY = function(y){
+                        this.scale(1,y);
+                    };
+                    //skew transformations
+                    this.skew = function(xAng, yAng){
+                        xAng = _.isSet(xAng)?parseFloat(deg2rad(parseFloat(xAng))):0;
+                        yAng = _.isSet(yAng)?parseFloat(deg2rad(parseFloat(yAng))):0;
+                        var m = matrix(1, Math.tan(xAng), Math.tan(yAng), 1, 0, 0);
+                        current = multiply(m, current);
+                    };
+                    this.skewX = function(xAng){
+                        this.skew(xAng, 0);
+                    };
+                    this.skewY = function(yAng){
+                        this.skew(0, yAng);
+                    };
+                    //transformation matrix
+                    this.matrix = function(m11,m12,m21,m22,dx,dy){
+                        current = multiply(matrix(m11,m12,m21,m22,dx,dy), current);
+                    };
+                    //return matrix
+                    this.getMatrix = function(){
+                        return current;
+                    };
+                    //return IE CSS matrix
+                    this.getFilter = function(){
+                        return "progid:DXImageTransform.Microsoft.Matrix(M11=" + current.m11 + ", M12=" + current.m12 + ", M21=" + current.m21 + ", M22=" + current.m22 + ", Dx=" + current.dx + ", Dy=" + current.dy + ", SizingMethod='auto expand')";
+                    };
+                    this.getX=function(){
+                        return current.dx;
+                    };
+                    this.getY=function(){
+                        return current.dy;
+                    };
+                    this.reset=function(){
+                        current = matrix(1,0,0,1,0,0);
+                    };
+                    this.reset();
+                };
+                var computeMatrix = function(transform) {
+                    var m=new tmatrix();
+                    //Split the webkit functions and loop through them
+                    var functions = transform.match(/[A-z]+\([^\)]+/g) || [];
+                    for (var k=0; k < functions.length; k++) {
+                        //Prepare the function name and its value
+                        var arr=functions[k].split('('),
+                            func=arr[0],
+                            value=arr[1],
+                            values;
+                        //Now we rotate through the functions and add it to our matrix
+                        switch(func) {
+                            case 'rotate':
+                                m.rotate(value);
+                                break;
+                            case 'scale':
+                                values = value.split(',');
+                                m.scale(values[0],values[1]);
+                                break;
+                            case 'scaleX':
+                                m.scaleX(value);
+                                break;
+                            case 'scaleY':
+                                m.scaleY(value);
+                                break;
+                            case 'skew':
+                                values = value.split(',');
+                                 m.skew(values[0],values[1]);
+                                break;
+                            case 'skewX':
+                                 m.skewX(value);
+                                break;
+                            case 'skewY':
+                                 m.skewY(value);
+                                break;
+                            case 'translate':
+                                values = value.split(',');
+                                 m.translate(values[0],values[1]);
+                                break;
+                            case 'translateX':
+                                 m.translateX(value);
+                                break;
+                            case 'translateY':
+                                 m.translateY(value);
+                                break;
+                            }
+                    }
+                    return m;
+                };
+                var matrix=computeMatrix(value);
                 var ow=node.offsetWidth,oh=node.offsetHeight;
+                var filter=matrix.getFilter();
 
-                var m11=1,m21=0,m12=0,m22=1;
-                if(angle){
-                    var rad = toD(angle);
-                    m11 = Math.cos(rad);
-                    m21 = Math.sin(rad);
-                    m12 = -1 * Math.sin(rad);
-                    m22 = Math.cos(rad);
-                }
-                if(scaleX!=1){
-                    m11 *= scaleX;
-                    m21 *= scaleX;
-                }
-                if(scaleY!=1){
-                    m12 *= scaleY;
-                    m22 *= scaleY;
-                }
-                if(skewX){
-                    m12 += Math.tan(toD(skewX));
-                }
-                if(skewY){
-                    m21 += Math.tan(toD(skewY));
-                }
+                var t=((node.style.filter?(node.style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                if(xui.browser.ie8)node.style.msfilter = t;
+                node.style.filter=t;
 
-                node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                var w=node.offsetWidth,h=node.offsetHeight;
-                if(w!=ow || transX){
-                    node.style.marginLeft = -(w-ow)/2 + transX + 'px';
-                }
-                if(h!=oh || transY){
-                    node.style.marginTop=-(h-oh)/2 + transY +  'px';
-                }
+                var transX=matrix.getX(), 
+                    transY=matrix.getY(),
+                    rect = node.getBoundingClientRect(),
+                    w=rect.right - rect.left, 
+                    h=rect.bottom-rect.top;
+ 
+                node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
+                node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+
                 // fake
                 node.style.transform=value;
             }
@@ -2150,12 +2252,13 @@ type:4
         $textShadowIE:function(node, value, box){
             if(!value){
                 var f=function(s){
-                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 },
                 s1=node.style.filter;
-
-                if(s1)node.style.filter=f(s1);
-                if('msfilter' in node.style)node.style.msfilter=f(s1);
+                if(s1){
+                    if(xui.browser.ie8)node.style.msfilter=f(s1);
+                    node.style.filter=f(s1);
+                }
                 if(!box)
                     node.style.backgroundColor="";
             }else{
@@ -2166,8 +2269,9 @@ type:4
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
-                    node.style.filter=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter=t;
+                    node.style.filter=t;
                     if(!box)
                         node.style.backgroundColor="#cccccc";
                 }
@@ -2244,8 +2348,9 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter=t;
                 }else{
                     rate=rate||1;
 
@@ -2310,8 +2415,9 @@ type:4
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                    s.filter = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in s)s.msfilter = s.filter;
+                    var t = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)s.msfilter = t;
+                    s.filter=t;
 
                     // the first node
                     if(node.firstChild)
@@ -2320,8 +2426,9 @@ type:4
                         node.appendChild(at);
                     node.style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                        var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if(xui.browser.ie8)node.style.msfilter = t;
+                        node.style.filter=t;
                     }
                 }
             },
@@ -2346,8 +2453,9 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter=t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
@@ -2396,8 +2504,9 @@ type:4
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                    s.filter =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in s)s.msfilter = s.filter;
+                    var t =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)s.msfilter = t;
+                    s.filter=t;
 
                     // the first node
                     if(node.firstChild)
@@ -2406,8 +2515,9 @@ type:4
                         node.appendChild(at);
                     node.style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                        var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if(xui.browser.ie8)node.style.msfilter = t;
+                        node.style.filter=t;
                     }
                 }
             },
@@ -2415,8 +2525,9 @@ type:4
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
                 if(!orient){
-                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter=t;
                     var i,a=node.childNodes,l=a.length;
                     for(i=0;i<l;i++){
                         if(a[i].nodeType==1 && a[i].id==id){
@@ -2425,8 +2536,9 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter = t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr,
@@ -2461,8 +2573,9 @@ type:4
                             outerColor=t;
                         break;
                     }
-                    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter =t;
                 }
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
@@ -2863,7 +2976,7 @@ type:4
                     }
 
                     if(name=="filter"){
-                        value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     }
                     node.style[name]=value;
                     if(name2)node.style[name2]=value;

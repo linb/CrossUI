@@ -621,7 +621,7 @@ html, .xui-uibg-base{
     background: #48525f;
 }
 
-.xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
+.xui-datepicker-today, .xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
 .xui-timepicker-pre, .xui-timepicker-next, .xui-timepicker-pre2, .xui-timepicker-next2,
 .xui-colorpicker-toggle{
     background-image: url(Public/icons.gif);
@@ -661,7 +661,6 @@ html, .xui-uibg-base{
 .xui-treegrid-summary{
     border-bottom:1px solid #292F37;
 }
-
 .xui-treegrid-cell-mouseover{
     background-color: #38404C;
 }
@@ -791,13 +790,14 @@ html, .xui-uibg-base{
  
 
 /*xui.UI.TimeLine*/
-.xui-timeline-handler{
+.xui-timeline-head, .xui-timeline-handler{
     background-image: url(Public/handler.gif);
 }
 .xui-timeline-biglabel, .xui-timeline-smalllabel , .xui-timeline-body, .xui-uicon-maini {
     background-color:#48525F;
 }
-.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-pre, .xui-timeline-next, .xui-timeline-min{
+.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-min, 
+.xui-timeline-pre, .xui-timeline-next{
     background-image: url(Public/icons.gif);
 }
 .xui-timeline-maini{

@@ -126,7 +126,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(options.hasOwnProperty('locked')){
                         options.locked = !!options.locked;
                         if(options.locked !== item.locked){
-                            profile.getSubNodeByItemId('MOVE',subId).css('display',options.locked?'none':'');
+                           // profile.getSubNodeByItemId('MOVE',subId).css('display',options.locked?'none':'');
+                            profile.getSubNodeByItemId('MOVE',subId).css('cursor',options.locked?'default':vertical?'n-resize':'w-resize');
                             bResize=true;
                         }
                     }
@@ -199,14 +200,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         MOVE:{
                             $order:0,
                             tagName:'div',
-                            className:'xui-uibg-bar {cls2} ',
-                            style:'{moveDisplay}'
+                            className:'xui-ui-unselectable xui-uibg-bar {cls2} ',
+                            style:'cursor:{_cursor}'
                         },
                         CMD:{
                             $order:1,
                             tagName:'div',
                             style:'{cmdDisplay}',
-                            className:'{cls3} '
+                            className:'xui-ui-unselectable {cls3} '
                         },
                         PANEL:{
                             tagName:'div',
@@ -233,6 +234,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             MOVE:{
                 $order:0,
                 position:'absolute',
+                
                 'z-index':'10',
                 'font-size':xui.browser.ie?0:null,
                 'line-height':xui.browser.ie?0:null
@@ -259,7 +261,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             PANEL:{
                 position:'absolute',
                 overflow:'auto',
-                /*for opera, opera defalut set border to 3 ;( */
+                /*for opera, opera default set border to 3 ;( */
                 'border-width':xui.browser.opr?'0px':null,
                 'font-size':xui.browser.ie?0:null,
                 'line-height':xui.browser.ie?0:null
@@ -381,6 +383,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     var itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src);
                     if(item.folded)return;
+                    if(item.locked)return;
 
                     var main = profile.getItemByItemId('main'),
                         o=profile.getSubNode('ITEM', itemId),
@@ -759,7 +762,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data.cls2  = profile.getClass('MOVE', '-' + pos );
                 data.cls3  = profile.getClass('CMD', '-' + pos );
                 data.display = data.hidden?'display:none':'';
-                data.moveDisplay = data.locked?'display:none':'';
+                data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';
                 data.cmdDisplay = data.cmd?'':'display:none';
             }
             data._bginfo="";
@@ -829,15 +832,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 m=o.min;
                             }
                             m-=forceoffset;
-                            m=Math.max(m,(o.locked?0:_handlerSize));
+                            m=Math.max(m,_handlerSize);
                         }
                         obj2[itemId][left]=temp1;
                         temp1 +=m;
                         obj[itemId][left]=0;
-                        obj[itemId][width] = m - (o.locked?0:_handlerSize);
+                        obj[itemId][width] = m - _handlerSize;
                         obj2[itemId][right]=obj[itemId][right]='auto';
                         obj2[itemId][width] = m;
-                        if(!o.locked)mainmin+=_handlerSize;
+                        mainmin+=_handlerSize;
                     }
                 });
                 _.arr.each(prop.items,function(o){
@@ -859,15 +862,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 m=o.min;
                             }
                             m-=forceoffset;
-                            m=Math.max(m,(o.locked?0:_handlerSize));
+                            m=Math.max(m,_handlerSize);
                         }
                         obj2[itemId][right]=temp2;
                         temp2 +=m;
                         obj[itemId][right]=0;
-                        obj[itemId][width] = m-(o.locked?0:_handlerSize);
+                        obj[itemId][width] = m-_handlerSize;
                         obj2[itemId][left]=obj[itemId][left]='auto';
                         obj2[itemId][width] = m;
-                        if(!o.locked)mainmin+=_handlerSize;
+                        mainmin+=_handlerSize;
                     }
                 },null,true);
                 temp = temp1+temp2;
