@@ -6566,7 +6566,8 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile. The current control's profile object",
                     "item : Object. item object.",
                     "caption: String. updated content",
-                    "editor: Object, the editor object."
+                    "editor: Object, the editor object.",
+                    "tag: String,  action source"
                 ]
             },
             onEndEdit:{
@@ -17795,7 +17796,8 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile. The current control's profile object",
                     "cell : Object. cell object.",
                     "options: Object. updated content",
-                    "editor: Object, the editor object."
+                    "editor: Object, the editor object.",
+                    "tag: String,  action source"
                 ]
             },
             onEndEdit:{

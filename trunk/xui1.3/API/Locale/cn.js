@@ -6637,7 +6637,8 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile, 当前控件的配置.",
                     "item : Object, 子项对象.",
                     "caption: String. 要更新的内容",
-                    "editor: Object, 编辑器对象."
+                    "editor: Object, 编辑器对象.",
+                    "tag: String, 动作来源"
                 ]
             },
             onEndEdit:{
@@ -17724,7 +17725,8 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.UIProfile, 当前控件的配置.",
                     "cell : Object, 单元格对象.",
                     "options: Object. 要更新的内容",
-                    "editor: Object, 编辑器对象."
+                    "editor: Object, 编辑器对象.",
+                    "tag: String, 动作来源"
                 ]
             },
             onEndEdit:{

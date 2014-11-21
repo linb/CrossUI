@@ -4842,17 +4842,24 @@ Class("xui.absList", "xui.absObj",{
                                 .setResizer(true)
                                 .setValue(item.caption||"");
                             if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
-                            editor.beforeUIValueSet(function(prf, ov, nv){
-                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
-                                    profile.boxing().updateItem(item.id, {caption:nv});
-                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                    root.setBlurTrigger("absList_editor",null);
-                                    // it's a must
-                                    _.asyRun(function(){
+                            var undo=function(){
+                                // ays is a must
+                                _.resetRun('absList_editor_reset', function(){
+                                    if(editor&&!editor.isDestroyed()){
+                                        editor.getRoot().setBlurTrigger("absList_editor_blur",null);
                                         editor.destroy();
                                         editor=null;
-                                    });
+                                    }
+                                });
+                            };
+                            editor.beforeUIValueSet(function(prf, ov, nv, force, tag){
+                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
+                                    profile.boxing().updateItem(item.id, {caption:nv});
+                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                    undo();
                                 }
+                            }).onCancel(function(){
+                                undo();
                             });
                             xui('body').append(editor);
                             var root=editor.getRoot();
@@ -4861,9 +4868,10 @@ Class("xui.absList", "xui.absObj",{
                                 left:pos.left+pos2.left,
                                 top:pos2.top
                             });
-                            root.setBlurTrigger("absList_editor",function(){
-                                    if(editor)editor.setUIValue(editor.getUIValue(),true);
-                            });
+                            // For scroll to undo
+                            root.setBlurTrigger("absList_editor_blur",function(){
+                                undo();
+                            }); 
                             editor.activate();
                         }
                     }
@@ -4997,7 +5005,7 @@ Class("xui.absList", "xui.absObj",{
         EventHandlers:{
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
-            beforeEditApply:function(profile, item, caption, editor){},
+            beforeEditApply:function(profile, item, caption, editor, tag){},
             onEndEdit:function(profile, item, editor){}
         },
         getDropKeys:function(profile,node){
