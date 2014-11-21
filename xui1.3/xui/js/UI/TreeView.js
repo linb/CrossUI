@@ -215,12 +215,12 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     ll=arr.length-1;
                     _.arr.each(arr,function(o,i){
                         if(i!==ll)
-                            html+=buildIcon(cls, o=='last'?'-none':'-vertical');
+                            html+=buildIcon(cls, o=='last'?(p.togglePlaceholder?'-empty':'-none'):'-vertical');
                     });
                     item.innerIcons=html;
 
                     // for the last one
-                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):'xui-uicmd-none';
+                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
             }else{
                 oitem._deep=0;
@@ -228,7 +228,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.rulerStyle='';
                 item.innerIcons='';
 
-                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):'xui-uicmd-none';
+                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
             item.imageDisplay=p.noIcons?"display:none;":"";
@@ -305,7 +305,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                             if(deep)
                                 ns=ns.next(deep);
                             ns.removeClass(new RegExp("\\b"+cls+"[-\\w]+\\b"))
-                              .addClass(cls+(nv=='last'?'-none':'-vertical'));
+                              .addClass(cls+(nv=='last'?(p.togglePlaceholder?'-empty':'-none'):'-vertical'));
                         }
                     }
                 }

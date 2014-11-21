@@ -399,13 +399,6 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 'border-bottom':'solid 1px #648CB4',
                 'font-size': '12px'
             },
-            TH:{
-                $order:1,
-                border:0,
-                'border-right':'solid 1px #648CB4',
-                'border-bottom':'solid 1px #648CB4',
-                'font-size': '12px'
-            },
             'TD-free':{
                 $order:1,
                 'text-align':'center',
@@ -426,7 +419,11 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 'color':'#333333',
                 'background-color':'#E8EEF7',
                 'vertical-align':'middle',
-                'text-align':'center'
+                'text-align':'center',
+                 border:0,
+                'border-right':'solid 1px #648CB4',
+                'border-bottom':'solid 1px #648CB4',
+                'font-size': '12px'
             }
         },
         Behaviors:{

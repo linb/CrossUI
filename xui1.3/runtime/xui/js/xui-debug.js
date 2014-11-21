@@ -9724,16 +9724,18 @@ type:4
                     n.style.height = n.height;
                     n.style.width = n.width;
                     n.style.backgroundImage ="none";
-                    n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
-                    if('msfilter' in n.style)n.style.msfilter = n.style.filter;
+                    var t= ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if(xui.browser.ie8)n.style.msfilter = t;
+                    n.style.filter = t;
                     n.src = xui.ini.img_bg;
                 }
                 var bgimg = n.currentStyle.backgroundImage || n.style.backgroundImage,
                     bgmatch = (bgimg||"").toLowerCase().match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
                 if(bgmatch){
                     n.style.backgroundImage ="none";
-                    n.style.filter = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
-                    if('msfilter' in n.style)n.style.msfilter = n.style.filter;
+                    var t = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if(xui.browser.ie8)n.style.msfilter = t;
+                    n.style.filter=t;
                 }
             }
         },
@@ -9855,78 +9857,178 @@ type:4
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
         $transformIE:function(node, value) {
-            var r,angle, scaleX, scaleY, skewX, skewY, transX,transY, toD=function(d){
-                return d*(Math.PI/180);
-            };
-            if(!value){
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                node.style.marginTop=node.style.marginLeft="";
-            }else{
-                r=value.match(/(rotate)\(\s*([\d.-]+)deg\s*\)/);
-                if(r&&r.length==3){
-                    angle=r[2];
-                }
-                r=value.match(/(scale)\(\s*([\d.-]+)\s*,\s*([\d.-]+)\)/);
-                if(r&&r.length==4){
-                    scaleX=r[2];
-                    scaleY=r[3];
-                }
-                r=value.match(/(skew)\(\s*([\d.-]+)deg\s*,\s*([\d.-]+)deg\s*\)/);
-                if(r&&r.length==4){
-                    skewX=r[2];
-                    skewY=r[3];
-                }
-                r=value.match(/(translate)\(\s*([\d.-]+)px\s*,\s*([\d.-]+)px\s*\)/);
-                if(r&&r.length==4){
-                    transX=r[2];
-                    transY=r[3];
-                }
-                angle=parseFloat(angle)||0;
-                scaleX=parseFloat(scaleX)||1;
-                scaleY=parseFloat(scaleY)||1;
-                skewX=parseFloat(skewX)||0;
-                skewY=parseFloat(skewY)||0;
-                transX=parseFloat(transX)||0;
-                transY=parseFloat(transY)||0;
+            var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+            if(xui.browser.ie8)node.style.msfilter = t;
+            node.style.filter = t;
+            node.style.marginTop=node.style.marginLeft="";
+            if(value){
+                var tmatrix = function(){
+                    var current,
+                        degRat = Math.PI/180,
+                        //create new matrix
+                        matrix = function(m11, m12, m21, m22, dx, dy){
+                            var m = {};
+                            m.m11 = _.isSet(m11)?parseFloat(m11):1;
+                            m.m12 = _.isSet(m12)?parseFloat(m12):0;
+                            m.m21 = _.isSet(m21)?parseFloat(m21):0;
+                            m.m22 = _.isSet(m22)?parseFloat(m22):1;
+                            m.dx = _.isSet(dx)?parseFloat(dx):0;
+                            m.dy = _.isSet(dy)?parseFloat(dy):0;
+                            return m;
+                        },
+                        //multiply matrices
+                        multiply = function(newMatrix, currentMatrix){
+                            //modify transformation matrix
+                            var m ={};
+                            m.m11 = roundNumber(newMatrix.m11*currentMatrix.m11 + newMatrix.m21*currentMatrix.m12, 10);
+                            m.m12 = roundNumber(newMatrix.m12*currentMatrix.m11 + newMatrix.m22*currentMatrix.m12, 10);
+                            m.m21 = roundNumber(newMatrix.m11*currentMatrix.m21 + newMatrix.m21*currentMatrix.m22, 10);
+                            m.m22 = roundNumber(newMatrix.m12*currentMatrix.m21 + newMatrix.m22*currentMatrix.m22, 10);
+                            m.dx = roundNumber(currentMatrix.dx + newMatrix.dx, 10);
+                            m.dy = roundNumber(currentMatrix.dy + newMatrix.dy, 10);
+                            //return new transformation matrix
+                            return m;
+                        },
+                        //convert degrees to radians
+                        deg2rad = function(deg){
+                            return degRat*deg;
+                        },
+                        //format number
+                        roundNumber = function(num, dec) {
+                            var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+                            return result;
+                        };
 
-                node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                node.style.marginTop=node.style.marginLeft="";
+                    //rotate transformation
+                    this.rotate = function(deg){
+                        var rad = _.isSet(deg)?parseFloat(deg2rad(parseFloat(deg))):0;
+                        var m = matrix(Math.cos(rad), -Math.sin(rad), Math.sin(rad), Math.cos(rad), 0, 0);
+                        current = multiply(m, current);
+                    };
+                    //translate transformations
+                    this.translate = function(x, y){
+                        var m = matrix(1, 0, 0, 1, parseFloat(x), parseFloat(y));
+                        current = multiply(m, current);
+                    };
+                    this.translateX = function(x){
+                        this.translate(x,0);
+                    };
+                    this.translateY = function(y){
+                        this.translate(0,y);
+                    };
+                    //scaling transformations
+                    this.scale = function(x,y){
+                        var m = matrix(_.isSet(x)?parseFloat(x):1, 0, 0, _.isSet(y)?parseFloat(y):1, 0, 0);
+                        current = multiply(m, current);
+                    };
+                    this.scaleX = function(x){
+                        this.scale(x,1);
+                    };
+                    this.scaleY = function(y){
+                        this.scale(1,y);
+                    };
+                    //skew transformations
+                    this.skew = function(xAng, yAng){
+                        xAng = _.isSet(xAng)?parseFloat(deg2rad(parseFloat(xAng))):0;
+                        yAng = _.isSet(yAng)?parseFloat(deg2rad(parseFloat(yAng))):0;
+                        var m = matrix(1, Math.tan(xAng), Math.tan(yAng), 1, 0, 0);
+                        current = multiply(m, current);
+                    };
+                    this.skewX = function(xAng){
+                        this.skew(xAng, 0);
+                    };
+                    this.skewY = function(yAng){
+                        this.skew(0, yAng);
+                    };
+                    //transformation matrix
+                    this.matrix = function(m11,m12,m21,m22,dx,dy){
+                        current = multiply(matrix(m11,m12,m21,m22,dx,dy), current);
+                    };
+                    //return matrix
+                    this.getMatrix = function(){
+                        return current;
+                    };
+                    //return IE CSS matrix
+                    this.getFilter = function(){
+                        return "progid:DXImageTransform.Microsoft.Matrix(M11=" + current.m11 + ", M12=" + current.m12 + ", M21=" + current.m21 + ", M22=" + current.m22 + ", Dx=" + current.dx + ", Dy=" + current.dy + ", SizingMethod='auto expand')";
+                    };
+                    this.getX=function(){
+                        return current.dx;
+                    };
+                    this.getY=function(){
+                        return current.dy;
+                    };
+                    this.reset=function(){
+                        current = matrix(1,0,0,1,0,0);
+                    };
+                    this.reset();
+                };
+                var computeMatrix = function(transform) {
+                    var m=new tmatrix();
+                    //Split the webkit functions and loop through them
+                    var functions = transform.match(/[A-z]+\([^\)]+/g) || [];
+                    for (var k=0; k < functions.length; k++) {
+                        //Prepare the function name and its value
+                        var arr=functions[k].split('('),
+                            func=arr[0],
+                            value=arr[1],
+                            values;
+                        //Now we rotate through the functions and add it to our matrix
+                        switch(func) {
+                            case 'rotate':
+                                m.rotate(value);
+                                break;
+                            case 'scale':
+                                values = value.split(',');
+                                m.scale(values[0],values[1]);
+                                break;
+                            case 'scaleX':
+                                m.scaleX(value);
+                                break;
+                            case 'scaleY':
+                                m.scaleY(value);
+                                break;
+                            case 'skew':
+                                values = value.split(',');
+                                 m.skew(values[0],values[1]);
+                                break;
+                            case 'skewX':
+                                 m.skewX(value);
+                                break;
+                            case 'skewY':
+                                 m.skewY(value);
+                                break;
+                            case 'translate':
+                                values = value.split(',');
+                                 m.translate(values[0],values[1]);
+                                break;
+                            case 'translateX':
+                                 m.translateX(value);
+                                break;
+                            case 'translateY':
+                                 m.translateY(value);
+                                break;
+                            }
+                    }
+                    return m;
+                };
+                var matrix=computeMatrix(value);
                 var ow=node.offsetWidth,oh=node.offsetHeight;
+                var filter=matrix.getFilter();
 
-                var m11=1,m21=0,m12=0,m22=1;
-                if(angle){
-                    var rad = toD(angle);
-                    m11 = Math.cos(rad);
-                    m21 = Math.sin(rad);
-                    m12 = -1 * Math.sin(rad);
-                    m22 = Math.cos(rad);
-                }
-                if(scaleX!=1){
-                    m11 *= scaleX;
-                    m21 *= scaleX;
-                }
-                if(scaleY!=1){
-                    m12 *= scaleY;
-                    m22 *= scaleY;
-                }
-                if(skewX){
-                    m12 += Math.tan(toD(skewX));
-                }
-                if(skewY){
-                    m21 += Math.tan(toD(skewY));
-                }
+                var t=((node.style.filter?(node.style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                if(xui.browser.ie8)node.style.msfilter = t;
+                node.style.filter=t;
 
-                node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Matrix(M11="+ m11 +",M12="+ m12 +",M21="+ m21 +",M22="+ m22 +",SizingMethod='auto expand')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if('msfilter' in node.style)node.style.msfilter = node.style.filter;
-                var w=node.offsetWidth,h=node.offsetHeight;
-                if(w!=ow || transX){
-                    node.style.marginLeft = -(w-ow)/2 + transX + 'px';
-                }
-                if(h!=oh || transY){
-                    node.style.marginTop=-(h-oh)/2 + transY +  'px';
-                }
+                var transX=matrix.getX(), 
+                    transY=matrix.getY(),
+                    rect = node.getBoundingClientRect(),
+                    w=rect.right - rect.left, 
+                    h=rect.bottom-rect.top;
+ 
+                node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
+                node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+
                 // fake
                 node.style.transform=value;
             }
@@ -9934,12 +10036,13 @@ type:4
         $textShadowIE:function(node, value, box){
             if(!value){
                 var f=function(s){
-                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 },
                 s1=node.style.filter;
-
-                if(s1)node.style.filter=f(s1);
-                if('msfilter' in node.style)node.style.msfilter=f(s1);
+                if(s1){
+                    if(xui.browser.ie8)node.style.msfilter=f(s1);
+                    node.style.filter=f(s1);
+                }
                 if(!box)
                     node.style.backgroundColor="";
             }else{
@@ -9950,8 +10053,9 @@ type:4
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
-                    node.style.filter=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter=t;
+                    node.style.filter=t;
                     if(!box)
                         node.style.backgroundColor="#cccccc";
                 }
@@ -10028,8 +10132,9 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter=t;
                 }else{
                     rate=rate||1;
 
@@ -10094,8 +10199,9 @@ type:4
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                    s.filter = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in s)s.msfilter = s.filter;
+                    var t = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)s.msfilter = t;
+                    s.filter=t;
 
                     // the first node
                     if(node.firstChild)
@@ -10104,8 +10210,9 @@ type:4
                         node.appendChild(at);
                     node.style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                        var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if(xui.browser.ie8)node.style.msfilter = t;
+                        node.style.filter=t;
                     }
                 }
             },
@@ -10130,8 +10237,9 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter=t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
@@ -10180,8 +10288,9 @@ type:4
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                    s.filter =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in s)s.msfilter = s.filter;
+                    var t =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)s.msfilter = t;
+                    s.filter=t;
 
                     // the first node
                     if(node.firstChild)
@@ -10190,8 +10299,9 @@ type:4
                         node.appendChild(at);
                     node.style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                        var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if(xui.browser.ie8)node.style.msfilter = t;
+                        node.style.filter=t;
                     }
                 }
             },
@@ -10199,8 +10309,9 @@ type:4
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
                 if(!orient){
-                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter=t;
                     var i,a=node.childNodes,l=a.length;
                     for(i=0;i<l;i++){
                         if(a[i].nodeType==1 && a[i].id==id){
@@ -10209,8 +10320,9 @@ type:4
                         }
                     }
                     node.style.backgroundColor='';
-                    node.style.filter = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter = t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr,
@@ -10245,8 +10357,9 @@ type:4
                             outerColor=t;
                         break;
                     }
-                    node.style.filter = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if('msfilter' in node.style)node.style.msfilter = node.style.filter;
+                    var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)node.style.msfilter = t;
+                    node.style.filter =t;
                 }
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
@@ -10647,7 +10760,7 @@ type:4
                     }
 
                     if(name=="filter"){
-                        value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     }
                     node.style[name]=value;
                     if(name2)node.style[name2]=value;
@@ -19433,7 +19546,6 @@ Class("xui.absList", "xui.absObj",{
                 }else
                     _.arr.insertAny(items,arr2, before?index:index+1);
 
-
                 if(b)
                     profile.boxing()._afterInsertItems(profile, data, base, before);
             });
@@ -19497,7 +19609,7 @@ Class("xui.absList", "xui.absObj",{
                     profile.boxing()._afterRemoveItems(profile, data);
             });
         },
-        clearItems:function(key){
+        clearItems:function(){
             return this.each(function(profile){
                 if(profile.SubSerialIdMapItem){
                     //empty dom
@@ -19527,7 +19639,7 @@ Class("xui.absList", "xui.absObj",{
                 box=profile.box,
                 items=profile.properties.items,
                 rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
-                nid,item,serialId,arr,node,sub,t;
+                nid,item,serialId,arr,node,oldsub,t;
             if(!_.isHash(options))options={caption:options+''};
 
             if(rst && rst.length){
@@ -19557,29 +19669,41 @@ Class("xui.absList", "xui.absObj",{
                 if(_.isEmpty(options))
                     return self;
                 //]]
-
-                //merge options
-                _.merge(item, options, 'all');
                 
                 //in dom already?
                 node=profile.getSubNodeByItemId('ITEM',nid || subId);
                 if(!node.isEmpty()){
+                    //for the sub node
+                    if('sub' in options){
+                        delete item._created;
+                        delete item._checked;
+                        delete item._inited;
+
+                        // destroy all sub dom
+                        if(item.sub){
+                            var sub=[];
+                            _.arr.each(item.sub,function(o){
+                                sub.push(o.id);
+                            });
+                            self.removeItems(sub);
+                        }
+                    }
+                    // keep sub nodes
+                    else if(item.sub){
+                        oldsub=profile.getSubNodeByItemId('SUB',nid || subId);
+                    }
+                    
+                    //merge options
+                    _.merge(item, options, 'all');
                     //prepared already?
                     serialId=_.get(profile,['ItemIdMapSubSerialId',nid || subId]);
                     arr=box._prepareItems(profile, [item],item._pid,false, serialId);
+                    node.replace(profile._buildItems(arguments[2]||'items', arr),false);
 
-                    //for the sub node
-                    if(options.sub){
-                        delete item._created;
-                        delete item._checked;
-                    }else if(item.sub){
-                        sub=profile.getSubNodeByItemId('SUB',nid || subId);
-                    }
-                    node.replace(profile._buildItems(arguments[2]||'items',arr),false);
-                    //keep sub
-                    if(sub && !sub.isEmpty()){
+                    // restore sub nodes
+                    if(oldsub && !oldsub.isEmpty()){
                         if(!(t=profile.getSubNodeByItemId('SUB',nid || subId)).isEmpty())
-                            t.replace(sub);
+                            t.replace(oldsub);
                     }
                     if(typeof self.setUIValue=='function'){
                         var uiv=profile.properties.$UIvalue||"", arr=(''+uiv).split(profile.properties.valueSeparator);
@@ -19595,6 +19719,9 @@ Class("xui.absList", "xui.absObj",{
                             }
                         }
                     }
+                }else{
+                    //merge options
+                    _.merge(item, options, 'all');
                 }
 
                 if(box.$Behaviors.PanelKeys){
@@ -19676,35 +19803,44 @@ Class("xui.absList", "xui.absObj",{
                         pos2 = pp.offset(),
                         size2 = pp.cssSize();
 
-                        var editor=new xui.UI.Input();
-                        editor.setWidth(Math.max(size2.width-pos.left,40)).setHeight(Math.max(size2.height, 20))
-                            .setResizer(true)
-                            .setValue(item.caption||"");
-                        if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+                        var editor;
+                        if(profile.beforeIniEditor){
+                            editor=profile.boxing().beforeIniEditor(profile, item, source);
+                            if(editor===false)
+                                return;
+                        }
 
-                        editor.beforeUIValueSet(function(prf, ov, nv){
-                            if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
-                                profile.boxing().updateItem(item.id, {caption:nv});
-                                if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                root.setBlurTrigger("absList_editor",null);
-                                // it's a must
-                                _.asyRun(function(){
-                                    editor.destroy();
-                                    editor=null;
-                                });
-                            }
-                        });
-                        xui('body').append(editor);
-                        var root=editor.getRoot();
-
-                        root.popToTop({
-                            left:pos.left+pos2.left,
-                            top:pos2.top
-                        });
-                        root.setBlurTrigger("absList_editor",function(){
-                                if(editor)editor.setUIValue(editor.getUIValue(),true);
-                        });
-                        editor.activate();
+                        if(!editor || !editor['xui.UI']){
+                            var editor=new xui.UI.ComboInput({type:"input"});
+                            editor.setWidth(Math.max(size2.width-pos.left,40))
+                                .setHeight(Math.max(size2.height, 20))
+                                .setResizer(true)
+                                .setValue(item.caption||"");
+                            if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+                            editor.beforeUIValueSet(function(prf, ov, nv){
+                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor))){
+                                    profile.boxing().updateItem(item.id, {caption:nv});
+                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                    root.setBlurTrigger("absList_editor",null);
+                                    // it's a must
+                                    _.asyRun(function(){
+                                        editor.destroy();
+                                        editor=null;
+                                    });
+                                }
+                            });
+                            xui('body').append(editor);
+                            var root=editor.getRoot();
+    
+                            root.popToTop({
+                                left:pos.left+pos2.left,
+                                top:pos2.top
+                            });
+                            root.setBlurTrigger("absList_editor",function(){
+                                    if(editor)editor.setUIValue(editor.getUIValue(),true);
+                            });
+                            editor.activate();
+                        }
                     }
                 }
             }
@@ -19834,6 +19970,7 @@ Class("xui.absList", "xui.absObj",{
             };
         },
         EventHandlers:{
+            beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
             beforeEditApply:function(profile, item, caption, editor){},
             onEndEdit:function(profile, item, editor){}
@@ -27787,7 +27924,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
             data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked'):'';
-            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd xui-uicmd-toggle2-checked':'';
+            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle2-checked':'';
             
             profile._toggle = !!data.toggle;
             
@@ -29280,13 +29417,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'border-bottom':'solid 1px #648CB4',
                 'font-size': '12px'
             },
-            TH:{
-                $order:1,
-                border:0,
-                'border-right':'solid 1px #648CB4',
-                'border-bottom':'solid 1px #648CB4',
-                'font-size': '12px'
-            },
             'TD-free':{
                 $order:1,
                 'text-align':'center',
@@ -29307,7 +29437,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'color':'#333333',
                 'background-color':'#E8EEF7',
                 'vertical-align':'middle',
-                'text-align':'center'
+                'text-align':'center',
+                 border:0,
+                'border-right':'solid 1px #648CB4',
+                'border-bottom':'solid 1px #648CB4',
+                'font-size': '12px'
             }
         },
         Behaviors:{
@@ -34846,6 +34980,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             dynDestory:false,
             position:'absolute',
             optBtn:false,
+            togglePlaceholder:false,
             tagCmds:{
                 ini:[],
                 action:function(){
@@ -35081,7 +35216,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem._pid=pid;
 
             // set 'visible' will show when parent call .height()
-            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):'xui-uicmd-none';
+            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
 
             item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
             item._itemDisplay=item.hidden?'display:none;':'';
@@ -35161,7 +35296,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
                         var b=profile.boxing(),
                             p=profile.properties,
-                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
+                            empty = sub===false;
                         //created
                         if(!empty&& !item._inited){
                             delete item.sub;
@@ -35239,7 +35374,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         _tofold:function(profile,item,pid){
             profile.getSubNodeByItemId('BAR', pid).addClass(profile.getClass('BAR','-fold'));
-            profile.getSubNodeByItemId('TOGGLE', pid).replaceClass(new RegExp("\\buicmd-none\\b"), "xui-uicmd-toggle");
+            profile.getSubNodeByItemId('TOGGLE', pid).replaceClass(new RegExp("\\buicmd-(none|empty)\\b"), "xui-uicmd-toggle");
         },
         _onresize:function(profile,width,height){
             profile.getSubNode('BORDER').cssSize({ width :width?width:null, height :height?height:null});
@@ -35464,12 +35599,12 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     ll=arr.length-1;
                     _.arr.each(arr,function(o,i){
                         if(i!==ll)
-                            html+=buildIcon(cls, o=='last'?'-none':'-vertical');
+                            html+=buildIcon(cls, o=='last'?(p.togglePlaceholder?'-empty':'-none'):'-vertical');
                     });
                     item.innerIcons=html;
 
                     // for the last one
-                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):'xui-uicmd-none';
+                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
             }else{
                 oitem._deep=0;
@@ -35477,7 +35612,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.rulerStyle='';
                 item.innerIcons='';
 
-                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):'xui-uicmd-none';
+                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
             item.imageDisplay=p.noIcons?"display:none;":"";
@@ -35554,7 +35689,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                             if(deep)
                                 ns=ns.next(deep);
                             ns.removeClass(new RegExp("\\b"+cls+"[-\\w]+\\b"))
-                              .addClass(cls+(nv=='last'?'-none':'-vertical'));
+                              .addClass(cls+(nv=='last'?(p.togglePlaceholder?'-empty':'-none'):'-vertical'));
                         }
                     }
                 }
@@ -37419,7 +37554,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(options.hasOwnProperty('locked')){
                         options.locked = !!options.locked;
                         if(options.locked !== item.locked){
-                            profile.getSubNodeByItemId('MOVE',subId).css('display',options.locked?'none':'');
+                           // profile.getSubNodeByItemId('MOVE',subId).css('display',options.locked?'none':'');
+                            profile.getSubNodeByItemId('MOVE',subId).css('cursor',options.locked?'default':vertical?'n-resize':'w-resize');
                             bResize=true;
                         }
                     }
@@ -37492,14 +37628,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         MOVE:{
                             $order:0,
                             tagName:'div',
-                            className:'xui-uibg-bar {cls2} ',
-                            style:'{moveDisplay}'
+                            className:'xui-ui-unselectable xui-uibg-bar {cls2} ',
+                            style:'cursor:{_cursor}'
                         },
                         CMD:{
                             $order:1,
                             tagName:'div',
                             style:'{cmdDisplay}',
-                            className:'{cls3} '
+                            className:'xui-ui-unselectable {cls3} '
                         },
                         PANEL:{
                             tagName:'div',
@@ -37526,6 +37662,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             MOVE:{
                 $order:0,
                 position:'absolute',
+                
                 'z-index':'10',
                 'font-size':xui.browser.ie?0:null,
                 'line-height':xui.browser.ie?0:null
@@ -37552,7 +37689,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             PANEL:{
                 position:'absolute',
                 overflow:'auto',
-                /*for opera, opera defalut set border to 3 ;( */
+                /*for opera, opera default set border to 3 ;( */
                 'border-width':xui.browser.opr?'0px':null,
                 'font-size':xui.browser.ie?0:null,
                 'line-height':xui.browser.ie?0:null
@@ -37674,6 +37811,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     var itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src);
                     if(item.folded)return;
+                    if(item.locked)return;
 
                     var main = profile.getItemByItemId('main'),
                         o=profile.getSubNode('ITEM', itemId),
@@ -38052,7 +38190,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data.cls2  = profile.getClass('MOVE', '-' + pos );
                 data.cls3  = profile.getClass('CMD', '-' + pos );
                 data.display = data.hidden?'display:none':'';
-                data.moveDisplay = data.locked?'display:none':'';
+                data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';
                 data.cmdDisplay = data.cmd?'':'display:none';
             }
             data._bginfo="";
@@ -38122,15 +38260,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 m=o.min;
                             }
                             m-=forceoffset;
-                            m=Math.max(m,(o.locked?0:_handlerSize));
+                            m=Math.max(m,_handlerSize);
                         }
                         obj2[itemId][left]=temp1;
                         temp1 +=m;
                         obj[itemId][left]=0;
-                        obj[itemId][width] = m - (o.locked?0:_handlerSize);
+                        obj[itemId][width] = m - _handlerSize;
                         obj2[itemId][right]=obj[itemId][right]='auto';
                         obj2[itemId][width] = m;
-                        if(!o.locked)mainmin+=_handlerSize;
+                        mainmin+=_handlerSize;
                     }
                 });
                 _.arr.each(prop.items,function(o){
@@ -38152,15 +38290,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 m=o.min;
                             }
                             m-=forceoffset;
-                            m=Math.max(m,(o.locked?0:_handlerSize));
+                            m=Math.max(m,_handlerSize);
                         }
                         obj2[itemId][right]=temp2;
                         temp2 +=m;
                         obj[itemId][right]=0;
-                        obj[itemId][width] = m-(o.locked?0:_handlerSize);
+                        obj[itemId][width] = m-_handlerSize;
                         obj2[itemId][left]=obj[itemId][left]='auto';
                         obj2[itemId][width] = m;
-                        if(!o.locked)mainmin+=_handlerSize;
+                        mainmin+=_handlerSize;
                     }
                 },null,true);
                 temp = temp1+temp2;
@@ -42667,7 +42805,7 @@ editorEvents
                     var openSub = function(profile, item, id, markNode, subNs, sub){
                         var b=profile.boxing(),
                             p = profile.properties,
-                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
+                            empty = sub===false;
                         //created
                         if(!empty && !item._inited){
                             delete item.sub;

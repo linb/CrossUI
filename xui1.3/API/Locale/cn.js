@@ -6615,6 +6615,14 @@ _.set(xui.Locale,["cn","app"], {
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
             },
+            beforeIniEditor:{
+                $desc:"在子项编辑之前调用. 如果返回false,默认的功能会被禁止.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "item : Object, 子项对象.",
+                    "captionNode : xui.Dom, 子项标题的Dom对象"
+                ]
+            },
             onBeginEdit:{
                 $desc:"在编辑器显示前调用.",
                 $paras:[
@@ -16053,8 +16061,20 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getTogglePlaceholder:{
+                $desc:"判断没有子节点的条目是否有切换按钮占位",
+                $rtn:"Boolean"
+            },
+            setTogglePlaceholder:{
+                $desc:"设置没有子节点的条目是否有切换按钮占位",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
             getIniFold :{
-                $desc:"判断表格在初始化是打开或收缩子行（用于带有子行的树形表格）",
+                $desc:"判断树在初始化是打开或收缩子行",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.tb7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16065,7 +16085,7 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）.",
+                $desc:"设置树在初始化是打开或收缩子行.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
@@ -20073,6 +20093,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onDragStop:"拖拽停止"
         },
         'xui_absList' : {
+            beforeIniEditor:"初始化编辑器前",
             onBeginEdit:"开始编辑",
             beforeEditApply:"编辑生效前",
             onEndEdit:"结束编辑"

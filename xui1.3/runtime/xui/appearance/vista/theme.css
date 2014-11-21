@@ -350,9 +350,6 @@ html, .xui-uibg-base{
 .xui-treebar-checked{
     background-image: url(Public/icons.gif);
 }
-.xui-treegrid-mark{
-    background-image: url(Public/icons.gif);
-}
 .xui-treebar-opt{
     background-image: url(Public/icons.gif);
 }
@@ -554,14 +551,16 @@ html, .xui-uibg-base{
     border-left:solid 1px #777778;
     border-top:solid 1px #777778;
 }
-.xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2{
-    background-image: url(Public/icons.gif);
-}
-.xui-timepicker-pre, .xui-timepicker-next{
+.xui-datepicker-today, .xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
+.xui-timepicker-pre, .xui-timepicker-next, .xui-timepicker-pre2, .xui-timepicker-next2,
+.xui-colorpicker-toggle{
     background-image: url(Public/icons.gif);
 }
 
 /*xui.UI.TreeGrid*/
+.xui-treegrid-mark, .xui-treegrid-arrow{
+    background-image: url(Public/icons.gif);
+}
 .xui-treegrid-collist {
     background: #F2F9FC url(TreeGrid/collist.gif) no-repeat center bottom;
     border-right:solid 1px #d4d4d4;
@@ -586,7 +585,6 @@ html, .xui-uibg-base{
 .xui-treegrid-summary{
     border-bottom:1px solid #f1f1f1;
 }
-
 .xui-treegrid-cell-mouseover{
     background-color: #D9E8FB;
 }
@@ -700,10 +698,11 @@ html, .xui-uibg-base{
 .xui-timeline-items{
     background-image: url(TimeLine/bars.gif);
 }
-.xui-timeline-head{
+.xui-timeline-head, .xui-timeline-handler{
     background-image: url(Public/handler.gif);
 }
-.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-pre, .xui-timeline-next, .xui-timeline-min{
+.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-min, 
+.xui-timeline-pre, .xui-timeline-next{
     background-image: url(Public/icons.gif);
 }
 .xui-timeline-mainc{

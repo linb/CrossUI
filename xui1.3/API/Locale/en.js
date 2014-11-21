@@ -6544,6 +6544,14 @@ _.set(xui.Locale,["en","app"], {
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
             },
+            beforeIniEditor:{
+                $desc:"Fired before the cell switch to edit mode. If returns false, the default edit action will be ignored.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "item : Object. item object.",
+                    "captionNode : xui.Dom, caption's dom object."
+                ]
+            },
             onBeginEdit:{
                 $desc:"Fired when the item's editor is showed.",
                 $paras:[
@@ -16122,6 +16130,18 @@ _.set(xui.Locale,["en","app"], {
                     "o.onGetContent(function(profile,item){var id=item.id;return [{id: id+'a',caption:'caption'},{id:id+'b',caption:'caption'}]});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            getTogglePlaceholder:{
+                $desc:"To determine whether the toggle button's placeholder shows or not",
+                $rtn:"Boolean"
+            },
+            setTogglePlaceholder:{
+                $desc:"Specifys whether the toggle button's placeholder shows or not ",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getIniFold :{

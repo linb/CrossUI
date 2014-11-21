@@ -4443,7 +4443,7 @@ editorEvents
                     var openSub = function(profile, item, id, markNode, subNs, sub){
                         var b=profile.boxing(),
                             p = profile.properties,
-                            empty = sub===false ||  (_.isArr(sub) && sub.length===0);
+                            empty = sub===false;
                         //created
                         if(!empty && !item._inited){
                             delete item.sub;

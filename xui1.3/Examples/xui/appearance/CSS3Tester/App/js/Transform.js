@@ -3,7 +3,7 @@ Class('App.Transform', 'xui.Com',{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Tools
             var host=this, children=[], append=function(child){children.push(child.get(0))};
-            
+
             append(
                 (new xui.UI.Group)
                 .setHost(host,"ctl_group1")
@@ -14,7 +14,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Transform   Test")
                 .setToggleBtn(false)
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Div)
                 .setHost(host,"div1")
@@ -26,7 +26,7 @@ Class('App.Transform', 'xui.Com',{
                 .onRender("_div1_onrender")
                 .setCustomStyle({"KEY":"background-color:#B0C4DE"})
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel3")
@@ -36,7 +36,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Rotate")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel4")
@@ -46,7 +46,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Scale X")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel5")
@@ -56,7 +56,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Skew X")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel6")
@@ -66,7 +66,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Translate X")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_Rotate")
@@ -80,7 +80,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("0")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_ScaleY")
@@ -94,7 +94,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("0")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Block)
                 .setHost(host,"ctl_block8")
@@ -104,7 +104,7 @@ Class('App.Transform', 'xui.Com',{
                 .setHeight(110)
                 .setBorderType("none")
             );
-            
+
             host.ctl_block8.append(
                 (new xui.UI.Input)
                 .setHost(host,"i_cssStyle")
@@ -113,7 +113,7 @@ Class('App.Transform', 'xui.Com',{
                 .setDock("fill")
                 .setMultiLines(true)
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_ScaleX")
@@ -127,7 +127,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("0")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel63")
@@ -137,7 +137,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Scale Y")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel64")
@@ -147,7 +147,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Skew Y")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.SLabel)
                 .setHost(host,"ctl_slabel65")
@@ -157,7 +157,7 @@ Class('App.Transform', 'xui.Com',{
                 .setCaption("Translate Y")
                 .setHAlign("left")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_SkewX")
@@ -171,7 +171,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("0")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_SkewY")
@@ -185,7 +185,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("104")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_TransY")
@@ -199,7 +199,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("49")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             host.ctl_group1.append(
                 (new xui.UI.Slider)
                 .setHost(host,"t_TransX")
@@ -213,7 +213,7 @@ Class('App.Transform', 'xui.Com',{
                 .setValue("4")
                 .afterUIValueSet("_t_cs_afteruivalueset")
             );
-            
+
             return children;
             // ]]Code created by CrossUI RAD Tools
         },
@@ -232,9 +232,9 @@ Class('App.Transform', 'xui.Com',{
         setTF:function(){
             var values = this._getValues(),
                 node=this.div1.getRoot();
-            
-            node.css('transform', "rotate("+values.rotate+"deg) " +  "scale("+values.scale.join(',')+") " +  "skew("+values.skew.join('deg,')+"deg) " +  "translate("+values.translate.join('px,')+"px) " );
-                                      
+
+            node.css('transform', "translate("+values.translate.join('px,')+"px) " + "rotate("+values.rotate+"deg) " +  "scale("+values.scale.join(',')+") " +  "skew("+values.skew.join('deg,')+"deg) " );
+
             this.i_cssStyle.setValue("transform : "+node.css("transform"));
         },
         _div1_onrender : function (profile){
@@ -246,7 +246,7 @@ Class('App.Transform', 'xui.Com',{
             ns.t_SkewY.setValue(180);
             ns.t_TransX.setValue(100);
             ns.t_TransY.setValue(100);
-            
+
             ns.setTF();
         }
     }

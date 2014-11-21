@@ -593,14 +593,16 @@ html, .xui-uibg-base{
     border-left:solid 1px #777778;
     border-top:solid 1px #777778;
 }
-.xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2{
-    background-image: url(Public/icons.gif);
-}
-.xui-timepicker-pre, .xui-timepicker-next{
+.xui-datepicker-today, .xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
+.xui-timepicker-pre, .xui-timepicker-next, .xui-timepicker-pre2, .xui-timepicker-next2,
+.xui-colorpicker-toggle{
     background-image: url(Public/icons.gif);
 }
 
 /*xui.UI.TreeGrid*/
+.xui-treegrid-mark, .xui-treegrid-arrow{
+    background-image: url(Public/icons.gif);
+}
 .xui-treegrid-fhcell, .xui-treegrid-hcell {
     border:1px solid #929292;
     border-left:none;
@@ -644,11 +646,9 @@ html, .xui-uibg-base{
     border-right:solid 1px #929292;
     border-bottom:1px solid #929292;
 }
-
 .xui-treegrid-cell-mouseover{
     background: #B6D2EE;
 }
-
 .xui-treegrid-cells-mouseover{
     background-color: #B6D2EE;
 }
@@ -757,10 +757,11 @@ html, .xui-uibg-base{
 .xui-timeline-items{
     background-image: url(TimeLine/bars.gif);
 }
-.xui-timeline-head{
+.xui-timeline-head, .xui-timeline-handler{
     background-image: url(Public/handler.gif);
 }
-.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-pre, .xui-timeline-next, .xui-timeline-min{
+.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-min, 
+.xui-timeline-pre, .xui-timeline-next{
     background-image: url(Public/icons.gif);
 }
 .xui-timeline-mainc{
