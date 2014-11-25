@@ -61,6 +61,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();
+         t.ITEMS.className='{_bordertype}';
         t.$submap.items={
             ITEM:{
                 tagName : 'div',

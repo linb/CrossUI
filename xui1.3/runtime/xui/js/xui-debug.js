@@ -20410,7 +20410,7 @@ Class("xui.absValue", "xui.absObj",{
                     if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
 
                     if(!prop.dirtyMark)
-                        box.setValue(value,null,'uiv',cv || triggerEventOnly);
+                        box.setValue(value,false,'uiv',cv || triggerEventOnly);
                 }
             });
             return this;
@@ -32313,7 +32313,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 var v=o.properties.value,
                     a=v.split(':');
                 a[1]=parseInt(value,10)||a[0];
-                o.boxing().setValue(a.join(':'),null,'page');
+                o.boxing().setValue(a.join(':'),false,'page');
             });
         }
     },
@@ -34384,6 +34384,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         //modify default template fro shell
         var t = this.getTemplate();
         t.className='{_className}';
+        t.ITEMS.className='{_bordertype}';
         t.$submap={
             items:{
                 ITEM:{
@@ -45526,7 +45527,7 @@ if(xui.browser.ie){
                         else
                             delete dialog._$_clickYes;
 
-                        dialog._$inp.setValue('',null,'prompt');
+                        dialog._$inp.setValue('',false,'prompt');
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();

@@ -3853,6 +3853,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
         self.addTemplateKeys(['EDIT']);
         //modify default template fro shell
         var t = self.getTemplate();
+        t.ITEMS.className='{_bordertype}';
         t.TITLE={
             $order:2,
             tagName : 'DIV',
@@ -4401,6 +4402,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();
+         t.ITEMS.className='{_bordertype}';
         t.$submap.items={
             ITEM:{
                 tagName : 'div',
@@ -4992,7 +4994,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t,null,'min');
+                        b.setValue(t,false,'min');
                 }
             },
             max:{
@@ -5001,7 +5003,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t,null,'max');
+                        b.setValue(t,false,'max');
                 }
             },
             unit:{
