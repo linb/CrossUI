@@ -12,7 +12,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy {itemClass} {disabled}  {readonly}',
+                    className:'xui-busy xui-uibarbg2 {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -48,7 +48,6 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null,
                 position:'relative',
                 cursor:'pointer',
-                border:'solid 1px #C2E4FC',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
                 'background-position':'center center'
@@ -62,21 +61,15 @@ Class("xui.UI.IconList", "xui.UI.List",{
             },
              'ITEM-mouseover':{
                 $order:1,
-                padding:0,
-                border:'solid 1px #a0c8f0',
-                'background-color':'#e1f0ff'
+                padding:0
             },
             'ITEM-mousedown':{
                 $order:2,
-                padding:0,
-                border:'solid 1px #dcdcdc',
-                'background-color':'#bbcef1'
+                padding:0
              },
             'ITEM-checked':{
                 $order:2,
-                padding:0,
-                border:'solid 1px #bbcef1',
-                'background-color':'#bbcef1'
+                padding:0
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
             }

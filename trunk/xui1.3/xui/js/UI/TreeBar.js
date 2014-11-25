@@ -203,9 +203,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             });
         }
     },
-    Initialize:function(){
-        this.addTemplateKeys(['DISABLED']);
-    },
     Static:{
         _focusNodeKey:'BAR',
         Templates:{
@@ -216,6 +213,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
+                className:"xui-uibg-content",
                 BOX:{
                     tagName : 'div',
                     onselectstart:'return false',
@@ -228,13 +226,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'{itemClass}',
-                        style:'{itemStyle}{_itemDisplay}',
+                        className:'',
+                        style:'{_itemDisplay}',
                         tagName : 'div',
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'{cls_group} {cls_fold} {disabled} {readonly}',
+                            className:'xui-uibarbg  xui-uiborder-tb {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
+                            style:'{itemStyle}',
                             RULER:{
                                 $order:2,
                                 style:'{rulerStyle}',
@@ -348,22 +347,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                overflow: 'hidden',
                'font-size':'12px',
                padding:'1px 4px',
-               border: '1px solid',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
-               'border-color':'#EDF4FC #698AB3 #698AB3 #EDF4FC',
-               'background-color':'#CCE4FC'
-            },
-            DISABLED:{
-                color:'#808080'
-            },
-            'BAR-mouseover':{
-                $order:1,
-               'background-color': '#fffa9f'
-            },
-            'BAR-mousedown, BAR-checked':{
-                $order:2,
-               'background-color': '#fffa9f'
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'BAR-GROUP':{
                 $order:2,
@@ -830,7 +815,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             // set 'visible' will show when parent call .height()
             item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
 
-            item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
+            item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = (p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;

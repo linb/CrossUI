@@ -4419,7 +4419,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"String"
             },
             setDesc:{
-                $desc:"Sets the desc message on the each Profile.",
+                $desc:"Sets the desc message to the each Profile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -4437,7 +4437,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setTag:{
-                $desc:"Sets the tag value on the each Profile.",
+                $desc:"Sets the tag value to the each Profile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
@@ -4448,6 +4448,25 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
                     "}"
+                ]
+            },
+            getPropBinder:{
+                $desc:"Gets the properties binder setting on the first Profile",
+                $rtn:"Object",
+            },
+            setPropBinder:{
+                $desc:"Sets the properties binder setting to the each Profile.",
+                 $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            reBindProp:{
+                $desc:"To rebind prop with specified data map",
+                 $rtn:"[self]",
+                $paras:[
+                    "dataMap [Optional] : Object.  the rebinder map"
                 ]
             },
             getTagVar:{
@@ -4461,7 +4480,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             setTagVar:{
-                $desc:"Sets the tagVar property value on the each Profile.",
+                $desc:"Sets the tagVar property value to the each Profile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
@@ -5373,6 +5392,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self] ",
                  $paras:[
                     "values [Required] : Object, key/value pairs "
+                ]
+            },
+            reBindProp:{
+                $desc:"To rebind each control's prop with specified data map",
+                 $rtn:"[self]",
+                $paras:[
+                    "dataMap [Optional] : Object.  the rebinder map"
                 ]
             },
             getEvents:{

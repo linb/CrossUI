@@ -28,15 +28,15 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
         var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-uith xui-uiborder-rb xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
-            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
+            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-uith xui-uiborder-rb xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
             tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'" >',
             tbody2 = '</tbody>',
             tr1='<tr>',
             tr2='</tr>',
-            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
-            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
+            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-uith xui-uiborder-rb xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
+            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-uitd xui-uiborder-rb xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
                 '</td>',
             body,i,j,k,l,a=[],b=[];
         for(i=0;i<7;i++)
@@ -101,16 +101,17 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         },
                         YEAR:{
                             $order:2,
-                            className:'xui-ui-draggable'
+                            className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                         },
                         YTXT:{$order:3,text:'-'},
                         MONTH:{
                             $order:4,
-                            className:'xui-ui-draggable'
+                            className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                         },
                         MTXT:{$order:5,text:'-'},
                         DAY:{
-                            $order:6
+                            $order:6,
+                            className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                         },
                         NEXT:{
                             $order:7,
@@ -136,9 +137,10 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uicon-main',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         CON:{
                             tagName:'div',
+                            className:'xui-uiborder-inset',
                             BODY:{
                                 tagName:'table',
                                 cellpadding:"0",
@@ -155,7 +157,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uicon-main',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         CAPTION:{
                             tagName:'div',
                             style:'{_nocap}',
@@ -175,12 +177,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                             },
                             HOUR:{
                                 $order:2,
-                                className:'xui-ui-draggable'
+                                className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                             },
                             MTXT:{$order:3,text:':'},
                             MINUTE:{
                                 $order:4,
-                                className:'xui-ui-draggable'
+                                className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                             },
                             TNEXT:{
                                 $order:6,
@@ -359,8 +361,6 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 height:'15px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
-                border:'1px solid #779EBF',
-                'background-color':'#F8FBFF',
                 'padding-left':'2px',
                 cursor:'e-resize'
             },
@@ -380,49 +380,22 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 'padding-top':'4px',
                 'padding-bottom':'4px'
             },
-            CON:{
-                'border-left':'solid 1px #648CB4',
-                'border-top':'solid 1px #648CB4'
-            },
             BODY:{
                 overflow: 'visible'
-            },
-            'TD .exday':{
-                color:'#C1C1C1'
             },
             TD:{
                 $order:1,
                 'text-align':'center',
-                'background-color': '#EFF8FF',
-                border:0,
-                'border-right':'solid 1px #648CB4',
-                'border-bottom':'solid 1px #648CB4',
                 'font-size': '12px'
-            },
-            'TD-free':{
-                $order:1,
-                'text-align':'center',
-                'background-color': '#F9F7D1'
-            },
-            'TD-mouseover':{
-                $order:3,
-                'background-color': '#d9e8fb'
             },
             'TD-checked':{
                 $order:4,
-                'background-color':'#316AC5',
-                'font-weight':'bold',
-                color:'#fff'
+                'font-weight':'bold'
             },
             'W,H':{
                 $order:3,
-                'color':'#333333',
-                'background-color':'#E8EEF7',
                 'vertical-align':'middle',
                 'text-align':'center',
-                 border:0,
-                'border-right':'solid 1px #648CB4',
-                'border-bottom':'solid 1px #648CB4',
                 'font-size': '12px'
             }
         },
@@ -756,7 +729,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             }
 
             // for free days            
-            var cls2=profile.getClass('TD','-free'),
+            var cls2="xui-uitd-alt",
                 fdmap={};
             if(p.offDays){
                 _.arr.each(p.offDays.split(""),function(i){
@@ -766,8 +739,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 });
                 profile.box._getTDNodes(profile).each(function(node,i){
                     i = ((i+fw) - 7*parseInt((i+fw)/7,10)) ;
-                    if(fdmap[i])
-                        node.className=node.className + " " +cls2;
+                    if(fdmap[i])node.className=node.className + " " +cls2;
+                    else node.className=node.className.replace(cls2,"");
                 });
             }
             
@@ -780,7 +753,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             profile.box._getLabelNodes(profile).each(function(node,i){
                 n=date.add(v,'d',i);
                 daymap[i]=n;
-                t=date.get(n,'m')==m?'#':'<p class="xui-node xui-node-p exday xui-custom {comcls}">#</p>';
+                t=date.get(n,'m')==m?'#':'<p class="xui-node xui-node-p xui-ui-readonly xui-custom {comcls}">#</p>';
                 n=date.get(n,'d');
                 node.innerHTML = t.replace('#',n);
             });

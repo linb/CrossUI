@@ -42,7 +42,7 @@ Class('xui.Debugger', null, {
 
             t1 = document.createElement("div");
             t2 = document.createElement("div");
-            t2.className='xui-dbg-con1';
+            t2.className='xui-uibg-content xui-dbg-con1';
             time=_();
             t2.appendChild(document.createTextNode('Time stamp : '+time +'('+(time-self.$time)+')' ));
             self.$time=time;
@@ -50,13 +50,13 @@ Class('xui.Debugger', null, {
             for(var i=0,l=arr.length;i<l;i++){
                 str=arr[i];
                 t2 = document.createElement("div");
-                t2.className='xui-dbg-con2';
+                t2.className='xui-uibg-content xui-dbg-con2';
                 t2.appendChild(document.createTextNode(" "+_.stringify(_.isArguments(str)?_.toArr(str):str)));
                 t1.appendChild(t2);
             }
 
             if(!xui.Dom.byId(self._id2)){
-                var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm xui-custom"><div class="xui-node xui-node-div xui-dbg-box xui-custom"><div id='+self._id4+' class="xui-node xui-node-div xui-dbg-header xui-custom">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds xui-custom"><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();"> &Chi; </a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-dbg-content xui-custom"></div><div class="xui-node xui-node-div xui-dbg-tail xui-custom"><table class="xui-node xui-node-table xui-custom"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input xui-custom" id='+self._id3+' /></td></tr></table></div></div></div>');
+                var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm xui-custom"><div class="xui-node xui-node-div xui-dbg-box xui-custom"><div id='+self._id4+' class="xui-node xui-node-div xui-uibg-bar xui-dbg-header xui-custom">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds xui-custom"><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();"> &Chi; </a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-uibg-content xui-dbg-content xui-custom"></div><div class="xui-node xui-node-div xui-uibg-content xui-dbg-tail xui-custom"><table class="xui-node xui-node-table xui-custom"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input xui-custom" id='+self._id3+' /></td></tr></table></div></div></div>');
                 xui('body').append(ns);
                 self.$con=xui(self._id2);
                 xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
@@ -80,7 +80,7 @@ Class('xui.Debugger', null, {
                         switch(s.value){
                             case '?':
                             case 'help':
-                                self.$con.append(xui.create("<div class='xui-node xui-node-div xui-dbg-con3 xui-custom'><p class='xui-node xui-node-p xui-custom'><strong  class='xui-node xui-node-strong xui-custom'>vailable commands:</strong></p><ul  class='xui-node xui-node-ul xui-custom'><li  class='xui-node xui-node-li xui-custom'> -- <strong  class='xui-node xui-node-strong xui-custom'>[clr]</strong> or <strong>[clear]</strong> : clears the message</li><li  class='xui-node xui-node-li xui-custom'> -- <strong  class='xui-node xui-node-strong xui-custom'>[?]</strong> or <strong  class='xui-node xui-node-strong xui-custom'>[help]</strong> : shows this message</li><li  class='xui-node xui-node-li xui-custom'> -- <strong class='xui-node xui-node-strong xui-custom'>any other</strong>: shows its string representation</li></ul></div>"));
+                                self.$con.append(xui.create("<div class='xui-node xui-node-div xui-uibg-content xui-dbg-con3 xui-custom'><p class='xui-node xui-node-p xui-custom'><strong  class='xui-node xui-node-strong xui-custom'>vailable commands:</strong></p><ul  class='xui-node xui-node-ul xui-custom'><li  class='xui-node xui-node-li xui-custom'> -- <strong  class='xui-node xui-node-strong xui-custom'>[clr]</strong> or <strong>[clear]</strong> : clears the message</li><li  class='xui-node xui-node-li xui-custom'> -- <strong  class='xui-node xui-node-strong xui-custom'>[?]</strong> or <strong  class='xui-node xui-node-strong xui-custom'>[help]</strong> : shows this message</li><li  class='xui-node xui-node-li xui-custom'> -- <strong class='xui-node xui-node-strong xui-custom'>any other</strong>: shows its string representation</li></ul></div>"));
                                 break;
                             case 'clr':
                             case 'clear':
@@ -91,7 +91,7 @@ Class('xui.Debugger', null, {
                                     temp=s.value;
                                     if(/^\s*\x7b/.test(temp))temp='('+temp+')';
                                     self.log(eval(temp));
-                                }catch(e){self.$con.append(xui.create("<div  class='xui-node xui-node-div xui-dbg-con4 xui-custom'>"+String(e)+"</div>"));return;}
+                                }catch(e){self.$con.append(xui.create("<div  class='xui-node xui-node-div xui-uibg-content xui-dbg-con4 xui-custom'>"+String(e)+"</div>"));return;}
                         }
                         bak=s.value;
                         s.value='';
@@ -114,7 +114,7 @@ Class('xui.Debugger', null, {
             '.xui-dbg-cmds{position:absolute;right:2px;top:2px;}'+
             '.xui-dbg-cmds a{margin:2px;}'+
             '.xui-dbg-box{position:relative;overflow:hidden;border:solid 1px #AAA;}'+
-            '.xui-dbg-content{position:relative;width:100%;overflow:auto;height:300px;background:#fff;}'+
+            '.xui-dbg-content{position:relative;width:100%;overflow:auto;height:300px;}'+
             '.xui-dbg-con1{background-color:#CCC;width:298px;}'+
             '.xui-dbg-con2{padding-left:6px;border-bottom:dashed 1px #CCC;width:292px;}'+
             '.xui-dbg-con3{padding-left:6px;border-bottom:dashed 1px #CCC;background:#EEE;color:#0000ff;width:292px;}'+

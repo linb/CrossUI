@@ -73,7 +73,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     h=items.offsetHeight();
                     if(h>pp.maxHeight){
                         items.height(pp.maxHeight);
-                        profile.getRoot().height(pp.maxHeight);                        
+                        profile.getRoot().height(pp.maxHeight);
                     }
                 }
                 if(flag){
@@ -107,17 +107,17 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         Templates:{
             tagName : 'div',
             style:'{_style}',
-            className:'xui-uibg-base {_className}',
+            className:'{_className}',
             ITEMS:{
                $order:10,
                tagName:'div',
-               className:'{_bordertype}',
+               className:'xui-uibg-content {_bordertype}',
                text:"{items}"
             },
             $submap:{
                 items:{
                     ITEM:{
-                        className:'{_itemRow} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg {_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         MARK:{
@@ -204,33 +204,28 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 display:'block',
                 zoom:xui.browser.ie?1:null,
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
-                border:0,
                 cursor:'pointer',
                 'font-size':'12px',
-                padding:"2px",
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
                'background-image':xui.UI.$bg('item.gif', ''),
-               'background-repeat':'repeat-x',
-               'border-radius':'3px',
-               padding:'1px',
-               border:'solid 1px #D9D9D9'
+               'background-repeat':'repeat-x'
             },
             'ITEM-mouseover':{
                 $order:1,
-                'background-color':'#FAD200',
-                'background-position': 'left -51px'
+                'background-position': 'left -51px',
+                'background-color':'#FAD200'
             },
             'ITEM-mousedown':{
                 $order:2,
-                'background-color':'#F5D22D',
-                'background-position': 'left -101px'
+                'background-position': 'left -101px',
+                'background-color':'#F5D22D'
             },
             'ITEM-checked':{
                 $order:2,
-                'background-color':'#AAD2FA',
-                'background-position': 'left top'
+                'background-position': 'left top',
+                'background-color':'#AAD2FA'
             },
             MARK:{
                $order:1,
@@ -306,9 +301,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         itemId =profile.getSubId(src),
                         box = profile.boxing(),
                         ks=xui.Event.getKey(e);
-                        
+
                     if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
-                        
+
                     if(properties.disabled|| item.disabled)return false;
 
                     if(profile.onClick)
@@ -469,7 +464,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 action:function(value){
                     if(!this.box._ITEMMARKED)
                         this.getSubNode('MARK',true).css('display',(value=='multibycheckbox')?'':'none');
-                }  
+                }
             },
             borderType:{
                 ini:'flat',

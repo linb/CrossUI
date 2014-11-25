@@ -12,6 +12,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             t = self.getTemplate();
         //modify
         _.merge(t.FRAME.BORDER,{
+            className:"xui-uiborder-flat xui-uibg-base",
             FILL:{
                 tagName:'div',
                 style:'width:{value}%;{fillBG}',
@@ -33,9 +34,9 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         //modify
         _.merge(t,{
             BORDER:{
-                border:'1px solid #95B611',
                 'font-size':0,
-                'line-height':0
+                'line-height':0,
+                overflow:'hidden'
             },
             INN:{
                 display:'table',
@@ -49,8 +50,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 'text-align':'center'
             },
             FILL:{
-                position:'absolute',
-
+                position:'relative',
                 width:'1px',
                 left:0,
                 top:0,

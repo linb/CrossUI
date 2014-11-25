@@ -3,6 +3,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         //modify default template for shell
         var t = this.getTemplate();
         t.className='{_className}';
+        t.ITEMS.className='{_bordertype}';
         t.$submap={
             items:{
                 ITEM:{

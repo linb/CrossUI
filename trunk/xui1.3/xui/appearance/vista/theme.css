@@ -1,29 +1,109 @@
-/*background here*/
+/*background [[[colors]]]*/
 html, .xui-uibg-base{
-    background-color:#F5F5F5;
+    background-color:#FCFCFC;
+}
+.xui-uibg-content{
+    background-color:#fff;
 }
 .xui-uibg-bar{
-    background:#C6E0EF;
+    background-color:#C6E0EF;
 }
+.xui-uibg-bar-mouseover{
+    background-color:#C5E5F6;
+}
+.xui-uiborder-linkbottombar{
+   border-bottom-color:#C6E0EF;
+}
+/*border  [[[colors]]]*/
 .xui-uiborder-flat{
     border-color:#7ba3cb;
 }
-.xui-uiborder-inset{
-    border-color:#7ba3cb #F1FAFF #F1FAFF #7ba3cb;
+.xui-uiborder-l{
+    border-left-color:#F1FAFF;
+}
+.xui-uiborder-t{
+    border-top-color:#F1FAFF;
+}
+.xui-uiborder-r{
+    border-right-color:#7ba3cb;
+}
+.xui-uiborder-b{
+    border-bottom-color:#7ba3cb;
+}
+.xui-uiborder-lr{
+    border-left-color:#F1FAFF;
+    border-right-color:#7ba3cb;
+}
+.xui-uiborder-tb{
+    border-top-color:#F1FAFF;
+    border-bottom-color:#7ba3cb;
+}
+.xui-uiborder-lt{
+    border-left-color:#F1FAFF;
+    border-top-color:#F1FAFF;
+}
+.xui-uiborder-rb{
+    border-right-color:#7ba3cb;
+    border-bottom-color:#7ba3cb;
 }
 .xui-uiborder-outset{
     border-color:#F1FAFF #7ba3cb #7ba3cb #F1FAFF;
 }
+.xui-uiborder-inset{
+    border-color:#7ba3cb #F1FAFF #F1FAFF #7ba3cb;
+}
+.xui-uiborder-r2{
+    border-right-color:#f1f1f1;
+}
+.xui-uiborder-b2{
+    border-bottom-color:#f1f1f1;
+}
+.xui-uiborder-rb2{
+    border-right-color:#f1f1f1;
+    border-bottom-color:#f1f1f1;
+}
+/*item [[[colors]]]*/
+.xui-uitembg{
+    background-color:#FFF;
+}
+.xui-uitembg-mouseover{
+    background-color:#EBF3FD;
+    border-color:#c9c9c9;
+}
+.xui-uitembg-mousedown{
+    background-color:#C1DBFC;
+    border-color:#c9c9c9;
+}
+.xui-uitembg-checked{
+    background-color:#D3E6FE;
+    border-color:#c9c9c9;
+}
+.xui-uibarbg, .xui-uipicbg-mouseover, .xui-uipicbg-checked{
+    background-color:#E1F5FE;
+}
+.xui-uibarbg-mouseover, .xui-uibarbg2-mouseover{
+    background-color:#C5E5F6;
+}
+.xui-uibarbg-mousedown, .xui-uibarbg2-mousedown{
+    background-color:#B9D8EB;
+}
+.xui-uibarbg-checked, .xui-uibarbg2-checked{
+    background-color:#C6E0EF;
+}
 
-
+/*common*/
+.xui-ui-inputdisabled, .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
+   background-color:#eee;
+}
 /*
+.xui-tips-c {}
+
 .xui-ui-draggable{}
 .xui-uiw-shell{}
 .xui-uiw-frame{}
 .xui-uiw-border{}
-.xui-ui-disabled, .xui-ui-disabled *{}
 .xui-ui-invalid, .xui-ui-invalid *{}
-.xui-ui-ctr{}
+.xui-ui-ctrl{}
 .xui-cover{}
 .xui-coverlabel{}
 */
@@ -79,19 +159,14 @@ html, .xui-uibg-base{
     height:5px;
     background-image: url('Border/corner.gif')
 }
-
-
 .xui-ui-btn, .xui-ui-btni, .xui-ui-btnc{
     background-image:url(Public/button.gif);
 }
-
 .xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
 .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore,
 .xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add{
     background-image: url(Public/icons.gif);
 }
-
-
 .xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
 .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore{
     width:28px;
@@ -100,7 +175,6 @@ html, .xui-uibg-base{
 .xui-uicmd-toggle, .xui-uicmd-toggle2{
     background-image: url(Public/icons.gif);
 }
-
 .xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td{
     background-image: url(Public/bar_vertical.gif);
 }
@@ -121,10 +195,11 @@ html, .xui-uibg-base{
 }
 .xui-uicon-maini{
     background-image: url(Public/container_right.gif);
-    background-color: #C6E0EF;
 }
 
-/*xui.UI.Button*/
+/** widgets **/
+
+/*xui.UI.Button [[[colors]]]*/
 .xui-button-border{
     background-color:#DDDDDD;
 }
@@ -198,43 +273,27 @@ html, .xui-uibg-base{
     bottom:-1px;
 }
 
-/*xui.UI.Input*/
+/*xui.UI.Input [[[colors]]]*/
 /*xui.UI.ComboInput*/
-/*.xui-input-readonly .xui-input-border, .xui-comboinput-readonly .xui-comboinput-border{
-    background-image: url(Input/inputbgb.gif);
-}*/
 .xui-input-box, .xui-comboinput-box{
     background-image: url(Input/inputbg.gif);
     border: solid 1px #C6C9CF;
 }
-.xui-input-readonly .xui-input-box,
-.xui-comboinput-readonly .xui-comboinput-box, 
-.xui-comboinput-inputreadonly .xui-comboinput-box{
-   background:#eee;
-}
-
 .xui-input-box-focus, .xui-input-box-mouseover, .xui-comboinput-box-focus, .xui-comboinput-box-mouseover{
     border-color:#5C93BC;
 }
-/* to cover ui-dirty */
-.xui-comboinput-input {
-    background:transparent none;
-}
-.xui-comboinput-r1, .xui-comboinput-r2, .xui-comboinput-btn, .xui-comboinput-sbtn, .xui-comboinput-stop, .xui-comboinput-top,.xui-comboinput-r1t, .xui-comboinput-r2t, .xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid
-{
+.xui-comboinput-r1, .xui-comboinput-r2, .xui-comboinput-btn, .xui-comboinput-sbtn, .xui-comboinput-stop, .xui-comboinput-top,.xui-comboinput-r1t, .xui-comboinput-r2t, .xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid{
     background-image: url(ComboInput/bg.gif);
 }
 .xui-input-b-t, .xui-input-b-b,
-.xui-comboinput-b-t, .xui-comboinput-b-b
-{
+.xui-comboinput-b-t, .xui-comboinput-b-b{
     height:2px;
     background-image: url(Input/vertical.gif);
 }
 .xui-input-box-mouseover .xui-input-b-t, .xui-input-box-mouseover .xui-input-b-b,
 .xui-input-box-focus .xui-input-b-t, .xui-input-box-focus .xui-input-b-b,
 .xui-comboinput-box-mouseover .xui-comboinput-b-t, .xui-comboinput-box-mouseover .xui-comboinput-b-b,
-.xui-comboinput-box-focus .xui-comboinput-b-t, .xui-comboinput-box-focus .xui-comboinput-b-b
-{
+.xui-comboinput-box-focus .xui-comboinput-b-t, .xui-comboinput-box-focus .xui-comboinput-b-b{
     background-image: url(Input/vertical_mouseover.gif);
 }
 .xui-input-b-l, .xui-input-b-r,
@@ -297,28 +356,11 @@ html, .xui-uibg-base{
 .xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{
     background-image: url(List/item.gif);
 }
-.xui-list-item-mouseover{
-    background-color:#EBF3FD;
-}
-.xui-list-item-mousedown{
-    background-color:#C1DBFC;
-}
-.xui-list-item-checked{
-    background-color:#CFE4FE;
-}
 .xui-list-mark{
     background-image: url(Public/icons.gif);
 }
 .xui-list-opt{
     background-image: url(Public/icons.gif);
-}
-
-/*xui.UI.Gallery*/
-.xui-iconlist-item-mousedown, .xui-iconlist-item-checked{
-    background-color:#CFD0D0
-}
-.xui-gallery-item-mousedown, .xui-gallery-item-checked{
-    background-color:#CFD0D0
 }
 
 /*xui.UI.Slider*/
@@ -334,14 +376,10 @@ html, .xui-uibg-base{
 
 /*xui.UI.TreeBar*/
 .xui-treebar-bar{
-    border-color:#F2F2F2 #3C5064 #3C5064 #F2F2F2;
-    background-color:#E1F5FE;
 }
 .xui-treebar-bar-mouseover{
-    background-color:#C5E5F6;
 }
 .xui-treebar-bar-checked{
-    background-color:#C5E5F6;
 }
 .xui-treebar-bar-group{
     background-image: url(Public/bar_vertical.gif);
@@ -373,19 +411,10 @@ html, .xui-uibg-base{
     background-image: url(List/item.gif);
 }
 .xui-treeview-bar-mouseover{
-    background-color:#EBF3FD;
-    border:solid 1px #B8D6FB;
 }
 .xui-treeview-bar-mousedown{
-    background-color:#DEEDFE;
-     border:solid 1px #D9D9D9;
 }
 .xui-treeview-bar-checked{
-    background-color:#CFE4FE;
-     border:solid 1px #D9D9D9;
-}
-.xui-treebar-bar-mouseover{
-    background-color:#;
 }
 
 /*xui.UI.Tabs*/
@@ -394,9 +423,6 @@ html, .xui-uibg-base{
 }
 .xui-tabs-list{
     background-image: url(Tabs/line.gif);
-}
-.xui-tabs-item-checked{
-    border-bottom-color:#C6E0EF;
 }
 .xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
     background-image: url(ToolBar/button.png);
@@ -425,21 +451,11 @@ html, .xui-uibg-base{
 
 /*xui.UI.Panel*/
 .xui-panel-panel{
-    background-color:#C6E0EF;
 }
 
 /*xui.UI.PopMenu*/
 .xui-popmenu-items{
     background-image:url(PopMenu/bg.gif);
-}
-.xui-popmenu-border {
-    border: 1px solid #aca899;
-}
-.xui-popmenu-box{
-    background-color:#F4FCFF;
-}
-.xui-popmenu-item-mouseover{
-    background-color:#C5E5F6;
 }
 .xui-popmenu-itemsplit{
     background-image:url(Public/split_horizontal.gif);
@@ -453,17 +469,12 @@ html, .xui-uibg-base{
 /*xui.UI.Layout*/
 .xui-layout-move-top, .xui-layout-move-bottom{
     height:6px;
-    border-top:solid 1px #7ba3cb;
-    border-bottom:solid 1px #7ba3cb;
 }
 .xui-layout-move-left, .xui-layout-move-right{
     width:6px;
-    border-left:solid 1px #7ba3cb;
-    border-right:solid 1px #7ba3cb;
 }
 .xui-layout-move-top-mouseover, .xui-layout-move-bottom-mouseover,
 .xui-layout-move-left-mouseover, .xui-layout-move-right-mouseover{
-    background-color:#C5E5F6;
 }
 
 .xui-layout-cmd-top, .xui-layout-cmd-bottom, .xui-layout-cmd-left, .xui-layout-cmd-right{
@@ -538,7 +549,6 @@ html, .xui-uibg-base{
 
 /*xui.UI.ProgressBar*/
 .xui-progressbar-border{
-    border-color:#00B414;
 }
 .xui-progressbar-fill{
     background: #02BB14 url(ProgressBar/bar.gif) repeat-x scroll 0 0;
@@ -547,43 +557,37 @@ html, .xui-uibg-base{
 /*xui.UI.DatePicker*/
 /*xui.UI.TimePicker*/
 /*xui.UI.ColorPicker*/
-.xui-datepicker-con, .xui-timepicker-con, .xui-colorpicker-con {
-    border-left:solid 1px #777778;
-    border-top:solid 1px #777778;
-}
-.xui-datepicker-today, .xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
+/*.xui-datepicker-today, */
+.xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
 .xui-timepicker-pre, .xui-timepicker-next, .xui-timepicker-pre2, .xui-timepicker-next2,
 .xui-colorpicker-toggle{
     background-image: url(Public/icons.gif);
 }
 
-/*xui.UI.TreeGrid*/
+/*xui.UI.TreeGrid [[[colors]]]*/
 .xui-treegrid-mark, .xui-treegrid-arrow{
     background-image: url(Public/icons.gif);
 }
 .xui-treegrid-collist {
-    background: #F2F9FC url(TreeGrid/collist.gif) no-repeat center bottom;
-    border-right:solid 1px #d4d4d4;
-    border-bottom:solid 1px #d4d4d4;
+    background-image: url(TreeGrid/collist.gif);
 }
 .xui-treegrid-sort, .xui-treegrid-checkbox, .xui-treegrid-checkbox-checked{
     background-image: url(Public/icons.gif);
 }
-.xui-treegrid-hcell-mouseover{
-    background: none;
+
+.xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
+    background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
+}
+.xui-treegrid-fhcell, .xui-treegrid-hcell{
+    border-right:solid 1px #d4d4d4;
+    border-bottom:solid 1px #d4d4d4;
+}
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
+    background: #CFE4FE url(TreeGrid/head_mouseover.gif) repeat-x left top;
 }
 
 .xui-treegrid-fcell,.xui-treegrid-cell, .xui-treegrid-cells-group, .xui-treegrid-preview, .xui-treegrid-summary{
     border-right:solid 1px #f1f1f1;
-}
-.xui-treegrid-cells{
-    border-bottom:1px solid #f1f1f1;
-}
-.xui-treegrid-preview{
-    border-bottom:1px solid #f1f1f1;
-}
-.xui-treegrid-summary{
-    border-bottom:1px solid #f1f1f1;
 }
 .xui-treegrid-cell-mouseover{
     background-color: #D9E8FB;
@@ -595,19 +599,11 @@ html, .xui-uibg-base{
     background-color: #B0EAFA;
 }
 .xui-treegrid-cells-checked, .xui-treegrid-cells-checked .xui-treegrid-cella, .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background-color: #3C7FB1;
+    background-color: #7ba3cb;
     color:#fff;
 }
-.xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
-    background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
-}
-.xui-treegrid-fhcell, .xui-treegrid-hcell{
-    border-right:solid 1px #d4d4d4;
-    border-bottom:solid 1px #d4d4d4;
-}
-.xui-treegrid-hcell-mouseover{
-    background: #CFE4FE url(TreeGrid/head_mouseover.gif) repeat-x left top;
-}
+
+
 
 /**
 *
@@ -618,51 +614,14 @@ html, .xui-uibg-base{
 /*xui.UI.StatusButtons*/
 .xui-statusbuttons-item-none{
     background-image: url(Public/icons.gif);
-    background-repeat: no-repeat;
-    background-position: -12px -130px;
-    border-left:solid 1px #7C9CBC;
-    border-right:solid 1px #7C9CBC;
 }
 .xui-statusbuttons-item-left{
     background-image: url(Public/icons.gif);
-    background-repeat: no-repeat;
-    background-position: left -130px;
-    border-right:solid 1px #7C9CBC;
 }
 .xui-statusbuttons-item-right{
     background-image: url(Public/icons.gif);
-    background-repeat: no-repeat;
-    background-position: right -130px;
-    border-left:solid 1px #7C9CBC;
 }
-.xui-statusbuttons-item-left-mouseover{
-    background-position: left -153px;
-}
-.xui-statusbuttons-item-left-mousedown{
-    background-position: left -176px;
-}
-.xui-statusbuttons-item-left-checked{
-    background-position: left -176px;
-}
-.xui-statusbuttons-item-none-mouseover{
-    background-position: -20px -153px;
-}
-.xui-statusbuttons-item-none-mousedown{
-    background-position: -20px -176px;
-}
-.xui-statusbuttons-item-none-checked{
-    background-position: -20px -176px;
-}
-.xui-statusbuttons-item-right-mouseover{
-    background-position: right -153px;
-}
-.xui-statusbuttons-item-right-mousedown{
-    background-position: right -176px;
-}
-.xui-statusbuttons-item-right-checked{
-    background-position: right -176px;
-}
-
+ 
 /*xui.UI.Poll*/
 .xui-poll-progress, .xui-poll-progressi{
     background-image: url(Public/icons.gif);
@@ -699,21 +658,16 @@ html, .xui-uibg-base{
     background-image: url(TimeLine/bars.gif);
 }
 .xui-timeline-head, .xui-timeline-handler{
-    background-image: url(Public/handler.gif);
 }
 .xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-min, 
 .xui-timeline-pre, .xui-timeline-next{
     background-image: url(Public/icons.gif);
 }
 .xui-timeline-mainc{
-    border:solid 1px #3C5064;
 }
 .xui-timeline-biglabel, .xui-timeline-smalllabel {
-    background-color:#DCE9F0;
-    border-bottom:solid 1px #BECFD9;
 }
 .xui-timeline-biglabel div, .xui-timeline-smalllabel div{
-    border-left:solid 1px #BECFD9;
 }
 
 /*xui.UI.Range*/
@@ -732,18 +686,6 @@ html, .xui-uibg-base{
 .xui-range-ind1, .xui-range-ind2{
     background-image: url(Public/icons.gif);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

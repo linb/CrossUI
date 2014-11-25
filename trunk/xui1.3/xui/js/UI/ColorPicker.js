@@ -72,10 +72,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+'>'+list[i]+'</span>');
 
         //data
-        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-ui-draggable '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-ui-draggable '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-ui-draggable '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-ui-draggable '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-ui-draggable '+tag+'DD2_CC'+tag+'" '+evs+'>B</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-ui-draggable '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-ui-draggable '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-ui-draggable '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd1 xui-ui-draggable '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
+        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span></div>' +
+               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span></div>' +
+               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
+               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd1 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
         ns.setTemplate({
             style:'{_style};height:auto;width:{_width}px;',
             tagName : 'div',
@@ -130,10 +130,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uicon-main',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         CON:{
                             $order:1,
                             tagName:'div',
+                            className:'xui-uiborder-inset',
                             SIMPLE:{
                                 tagName:'div',
                                 TOP:{
@@ -161,8 +162,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
+                                            className:'xui-uiborder-outset xui-uibg-bar',
                                         EXAMI:{
-                                            tagName:'div'
+                                            tagName:'div',
+                                            className:'xui-uiborder-inset'
                                         }
                                     }
                                 },
@@ -202,7 +205,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uicon-main',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -313,8 +316,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             CON:{
                 height:'198px',
                 padding:'3px',
-                position:'relative',
-                border:'solid 1px #648CB4'
+                position:'relative'
             },
             DATA:{
                 'float':'left',
@@ -338,16 +340,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             EXAM:{
                 'float':'left',
                 'margin-top':'24px',
-                padding:'3px',
-                border:'solid 1px #648CB4',
-                'background-color':'#E5EBFB'
+                padding:'3px'
             },
             EXAMI:{
                 height:'50px',
                 width:'70px',
                 'white-space':'normal',
-                'text-align':'center',
-                border:'solid 1px #648CB4'
+                'text-align':'center'
             },
             'DD1, DD2, DD3':{
                 display:'block',

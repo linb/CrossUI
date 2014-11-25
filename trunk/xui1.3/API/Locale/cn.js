@@ -4455,6 +4455,25 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getPropBinder:{
+                $desc:"获取控件的附属性绑定配置",
+                $rtn:"Object",
+            },
+            setPropBinder:{
+                $desc:"设置控件的附属性绑定配置",
+                 $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
+            reBindProp:{
+                $desc:"重新绑定属性",
+                 $rtn:"[self]",
+                $paras:[
+                    "dataMap [必需参数] : Object. 重新绑定的对象"
+                ]
+            },
             getTagVar:{
                 $desc:"获取控件的附加对象",
                 $rtn:"Object",
@@ -5434,6 +5453,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "values [必需参数] : Object, 键值对"
+                ]
+            },
+            reBindProp:{
+                $desc:"给每个控件重新绑定属性",
+                 $rtn:"[self]",
+                $paras:[
+                    "dataMap [必需参数] : Object. 重新绑定的对象"
                 ]
             },
             getEvents:{
@@ -19495,8 +19521,9 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_absObj' : {
             'tag':'附加值',
             'tagVar':'附加对象',
-            'dataBinder':'控件值绑定器',
-            'dataField':'控件值绑定键',
+            'dataBinder':'组件值绑定器',
+            'dataField':'组件值绑定键',
+            "propBinder":"属性绑定",
             'desc':'组件描述'
         },
        'xui_absComposed' : {

@@ -1789,6 +1789,10 @@ new function(){
                             }else{
                                 if(method=="setProperties"){
                                     if(m=iparams[0]){
+                                        if(m.CA){
+                                            if(_.isFun(t=_.get(scope,[target,"setCustomAttr"])))t.apply(scope[target],[m.CA]);
+                                            delete m.CA;
+                                        }
                                         if(m.CC){
                                             if(_.isFun(t=_.get(scope,[target,"setCustomClass"])))t.apply(scope[target],[m.CC]);
                                             delete m.CC;
@@ -3659,11 +3663,15 @@ Class('xui.absObj',"xui.absBox",{
     Static:{
         $abstract:true,
         $specialChars:{_:1,$:1},
-        _objectProp:{tagVar:1},
+        _objectProp:{tagVar:1,propBinder:1},
         DataModel:{
             tag:'',
             desc:'',
             tagVar:{
+                ini:{}
+            },
+            propBinder:{
+                hidden:1,
                 ini:{}
             },
             dataBinder:{
@@ -4000,6 +4008,39 @@ Class('xui.absObj',"xui.absBox",{
         },
         getHost:function(){
             return this.get(0).host;
+        },
+        reBindProp:function(dataMap, inner){
+            var ns=this,prop,ins,fn,r,
+                fun=function(){
+                    ns.each(function(prf){
+                        prop=prf.properties;
+                        if(prop.propBinder && !_.isEmpty(prop.propBinder)){
+                            ins=prf.boxing();
+                            _.each(prop.propBinder, function(fun,key){
+                                if(_.isFun(fun)){
+                                    r=fun(prf);
+                                    if(key=="CA")
+                                        ins.setCustomAttr(r);
+                                    else if(key=="CC")
+                                        ins.setCustomClass(r);
+                                    else if(key=="CS")
+                                        ins.setCustomStyle(r);
+                                    else if(_.isFun(ins[fn='set'+_.str.initial(key)]))
+                                        ins[fn](r,true);
+                                }
+                            });
+                        }
+                    });
+            };
+
+            if(!inner){
+                var bak;
+                if(window.get)bak=get;
+                window.get=function(k){return xui.SC.get(k,dataMap)};
+                try{fun();}catch(e){window.get=bak}
+            }else fun();
+
+            return this;
         }
         /*non-abstract inheritance must have those functions:*/
         //1. destroy:function(){delete this.box._namePool[this.alias];this.get(0).__gc();}
@@ -4082,6 +4123,8 @@ Class("xui.Timer","xui.absObj",{
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
             if(p.tagVar && _.isEmpty(p.tagVar))
+                delete p.tagVar;
+            if(p.propBinder && _.isEmpty(p.propBinder))
                 delete p.tagVar;
             return o;
         },
