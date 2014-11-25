@@ -130,7 +130,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         style:"{_rightp}",
                         PANEL:{
                             tagName:'div',

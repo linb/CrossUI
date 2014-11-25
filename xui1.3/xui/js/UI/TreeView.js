@@ -11,6 +11,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
     },
     Initialize:function(){
         this.addTemplateKeys(['IMAGE']);
+         var t = this.getTemplate();
+         t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
+         this.setTemplate(t);
     },
     Static:{
         Appearances:{
@@ -28,31 +31,23 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'font-size':'12px',
-               padding:'1px',
-               border: '0',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'BAR-mouseover, BAR-mousedown, BAR-checked':{
                'background-image':xui.UI.$bg('item.gif','','List'),
-               'background-repeat':'repeat-x',
-               'border-radius':'3px',
-               padding:'0',
-               border:'solid 1px #ccc'
+               'background-repeat':'repeat-x'
             },
             'BAR-mouseover':{
                 $order:1,
-                'background-color':'#FAD200',
                 'background-position': 'left -51px'
             },
             'BAR-mousedown':{
                 $order:2,
-                'background-color':'#F5D22D',
                 'background-position': 'left -101px'
             },
             'BAR-checked':{
                 $order:2,
-                'background-color':'#AAD2FA',
                 'background-position': 'left top'
             },
             SUB:{
@@ -67,8 +62,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             BOX:{
                 left:0,
                 overflow: 'auto',
-                position:'relative',
-                'background-color':'#FFF'
+                position:'relative'
             },
             'BAR ITEMICON':{
                 'background-image': xui.UI.$bg('icons.gif', '', true),
@@ -237,7 +231,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
 
             item._noicon=p.onIcons?"":"";
 
-            item.disabled = item.disabled?profile.getClass('KEY', '-disabled'):'';
+            item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = p.selMode=='multibycheckbox'?'':'display:none;';
             item._tabindex = p.tabindex;

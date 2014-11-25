@@ -14,7 +14,7 @@ Class("xui.Tips", null,{
             ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;} "+
             ".xui-tips-i{font-size:12px;overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
-            ".xui-tips-c {border:solid gray 1px;background-color:#FFF8DC;padding:1px 2px 2px 2px;}"
+            ".xui-tips-c {padding:1px 2px 2px 2px;}"
         , this.KEY);
 
         xui.doc
@@ -184,7 +184,7 @@ Class("xui.Tips", null,{
                         s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div xui-tips-c xui-custom">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-uitd-alt xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 

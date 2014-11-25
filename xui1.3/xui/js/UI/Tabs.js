@@ -78,10 +78,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         _.tryF(profile.box._adjustScroll,[profile,value],profile.box);
                 }
 
-                if(arr1.length)
-                    profile.getSubNodes('ITEM',arr1).tagClass('-checked',false);
+                if(arr1.length){
+                    profile.getSubNodes('ITEM',arr1).tagClass('-checked',false).removeClass("xui-uiborder-linkbottombar");
+                }
                 if(arr2.length){
-                    profile.getSubNodes('ITEM',arr2).tagClass('-checked');
+                    profile.getSubNodes('ITEM',arr2).tagClass('-checked').addClass("xui-uiborder-linkbottombar");
                 }
 
             });
@@ -490,8 +491,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             'ITEM-mousedown, ITEM-checked':{
                 $order:2,
-                'background-position' : 'right -840px',
-                'border-bottom':'solid 1px #FAD600;'
+                'background-position' : 'right -840px'
             },
             ITEMI:{
                 $order:0,

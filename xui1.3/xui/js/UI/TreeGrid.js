@@ -1420,9 +1420,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     SCROLL:{
                         $order:1,
                         tagName:'div',
-                        className:'xui-uibg-base ',
+                        className:'xui-uibg-content ',
                         BODY:{
                             tagName:'div',
+                            className:"xui-uibg-content",
                             FROW:{
                                 $order:0,
                                 tagName:'div'
@@ -1442,7 +1443,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         $order:2
                     },
                     COLLIST:{
-                        tagName:'div'
+                        tagName:'div',
+                        className:"xui-uiborder-rb"
                     },
                     ARROW:{}
                 }
@@ -1497,13 +1499,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         PREVIEW:{
                             $order:1,
                             tagName:'div',
+                            className:'xui-uiborder-rb2',
                             style:'{previewDisplay}',
                             text:'{preview}'
                         },
                         CELLS:{
                             $order:2,
                             tagName:'div',
-                            className:'{rowCls} {rowClass}',
+                            className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
                             style:'height:{rowHeight}px;{rowStyle}',
                             FCELL:{
                                 $order:0,
@@ -1558,6 +1561,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         SUMMARY:{
                             $order:4,
                             tagName:'div',
+                            className:'xui-uiborder-rb2',
                             style:'{summaryDisplay}',
                             text:'{summary}'
                         }
@@ -1725,16 +1729,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 visibility:'hidden',
                 'background-image': xui.UI.$bg('collist.gif', ''),
                 'background-repeat':'no-repeat',
-                'background-position':'center bottom',
-                'background-color':'#FFF1A0',
-
-                border:'1px solid',
-                'border-color':  '#fff #ACA899 #ACA899 #fff'
+                'background-position':'center bottom'
             },
             BODY:{
                 overflow:'visible',
                 position:'absolute',
-                'background-color':'#fff',
                 'padding-bottom':'1px',
                 left:0,
                 top:'0',
@@ -1799,12 +1798,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'visible'
             },
             CELLS:{
-                'border-bottom': '1px solid #A2BBD9',
                 overflow:'visible'
-            },
-            'CELLS-group':{
-                $order:1,
-                'border-right': '1px solid #A2BBD9'
             },
             'CELLS-group FCELL':{
                 'border-right':0,
@@ -1819,16 +1813,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'PREVIEW,SUMMARY':{
                 position:'relative',
                 display:'none',
-                'padding-left':'16px',
-                'border-right': '1px solid #A2BBD9'
-            },
-            PREVIEW:{
-                $order:4,
-                'border-bottom': '1px solid #A2BBD9'
-            },
-            SUMMARY:{
-                $order:4,
-                'border-bottom': '1px solid #A2BBD9'
+                'padding-left':'16px'
             },
            'CELLS-mouseover':{
                 $order:4,
@@ -2059,7 +2044,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{tagVar:1,dockMargin:1,rowOptions:1,colOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1},
         Behaviors:{
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', HCELL:'HCELL', FHCELL:'FHCELL'},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL'},
@@ -4341,7 +4326,7 @@ editorEvents
                 if(row.readonly)
                     t.rowCls += profile.getClass('CELLS', '-readonly');
                 if(row.group)
-                    t.rowCls += profile.getClass('CELLS','-group');
+                    t.rowCls += profile.getClass('CELLS','-group') + " xui-uiborder-r";
 
                 if(row.summary)
                     t.summaryDisplay='display:block;';

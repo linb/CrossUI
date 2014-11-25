@@ -266,7 +266,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t,null,'min');
+                        b.setValue(t,false,'min');
                 }
             },
             max:{
@@ -275,7 +275,7 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                     var self=this,t,pro=self.properties,b=self.boxing();
                     b.refresh();
                     if(pro.$UIvalue!=(t=this.box._ensureValue(self,pro.$UIvalue)))
-                        b.setValue(t,null,'max');
+                        b.setValue(t,false,'max');
                 }
             },
             unit:{

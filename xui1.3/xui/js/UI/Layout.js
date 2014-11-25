@@ -200,7 +200,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         MOVE:{
                             $order:0,
                             tagName:'div',
-                            className:'xui-ui-unselectable xui-uibg-bar {cls2} ',
+                            className:'xui-ui-unselectable xui-uibg-bar {clsmovebg} {cls2} ',
                             style:'cursor:{_cursor}'
                         },
                         CMD:{
@@ -234,14 +234,10 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             MOVE:{
                 $order:0,
                 position:'absolute',
-                
+
                 'z-index':'10',
                 'font-size':xui.browser.ie?0:null,
                 'line-height':xui.browser.ie?0:null
-            },
-            'MOVE-mouseover':{
-                $order:1,
-                'background-color':'#C8E1FA'
             },
             CMD:{
                 position:'absolute',
@@ -283,16 +279,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             'MOVE-TOP, MOVE-BOTTOM':{
                 width:'100%',
                 height:'7px',
-                cursor:'n-resize',
-                'border-top':'solid 1px #c8e1fa',
-                'border-bottom':'solid 1px #648cb4'
+                cursor:'n-resize'
             },
             'MOVE-LEFT, MOVE-RIGHT':{
                 height:'100%',
                 width:'7px',
-                cursor:'w-resize',
-                'border-left':'solid 1px #c8e1fa',
-                'border-right':'solid 1px #648cb4'
+                cursor:'w-resize'
             },
             'MOVE-TOP':{
                 bottom:0
@@ -744,23 +736,26 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     data.size = 'height:'+data.size+'px';
                 else
                     data.size = 'width:'+data.size+'px';
-    
+
                 var pos;
                 if(p.type=='vertical'){
+                    data.clsmovebg = "xui-uiborder-tb";
                     if(data.pos=='before')
                         pos='top';
                     else
                         pos='bottom';
                 }else{
+                    data.clsmovebg = "xui-uiborder-lr";
                     if(data.pos=='before')
                         pos='left';
                     else
                         pos='right';
                 }
-    
+
                 data.cls1  = profile.getClass('ITEM', '-' + pos );
                 data.cls2  = profile.getClass('MOVE', '-' + pos );
                 data.cls3  = profile.getClass('CMD', '-' + pos );
+
                 data.display = data.hidden?'display:none':'';
                 data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';
                 data.cmdDisplay = data.cmd?'':'display:none';
@@ -807,7 +802,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             _.arr.each(t.items,function(o){
                 itemId = profile.getSubIdByItemId(o.id);
                 obj[itemId] = {};
-                obj2[itemId] = {};             
+                obj2[itemId] = {};
 //                obj3[itemId] = o;
             });
 

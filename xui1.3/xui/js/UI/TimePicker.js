@@ -100,12 +100,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         },
                         HOUR:{
                             $order:2,
-                            className:'xui-ui-draggable'
+                            className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                         },
                         MTXT:{$order:3,text:':'},
                         MINUTE:{
                                 $order:4,
-                                className:'xui-ui-draggable'
+                                className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
                             },
                         NEXT:{
                             $order:6,
@@ -131,7 +131,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uicon-main',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         CONH:{
                             tagName:'div',
                             className:'xui-uiborder-inset',
@@ -151,7 +151,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uicon-main',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini',
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -206,15 +206,15 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
     },
     Static:{
         _shadowRB:"BBARTDR",
-        _excls:'xuiex-timepicker',
-        _excls2:'xuiex-timepicker2',
-        _excls3:'xuiex-timepicker3',
-        _excls4:'xuiex-timepicker4',
+        _excls:'xuiex-timepicker xui-uitd',
+        _excls2:'xuiex-timepicker xui-uitd xui-uitd-alt ',
+        _excls3:'xuiex-timepicker3 xui-uitd',
+        _excls4:'xuiex-timepicker xui-uitd xui-uitd-alt',
 
-        _excls_mo:'xuiex-timepicker-mouseover',
-        _excls_c:'xuiex-timepicker-checked',
-        _excls_mo3:'xuiex-timepicker3-mouseover',
-        _excls_c3:'xuiex-timepicker3-checked',
+        _excls_mo:'xui-uitd-mouseover',
+        _excls_c:'xui-uitd-checked',
+        _excls_mo3:'xui-uitd-mouseover',
+        _excls_c3:'xui-uitd-checked',
         _mover:function(src, type){
             var b=this,cn=src.className;
             if(type==2){
@@ -319,8 +319,6 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 width:'16px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
-                border:'1px solid #779EBF',
-                'background-color':'#F8FBFF',
                 cursor:'e-resize',
                 'padding-left':'2px'
             },
@@ -341,33 +339,18 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'font-size':'12px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
-            '.xuiex-timepicker2, .xuiex-timepicker4':{
-                $order:1,
-                'background-color':'#FDF8D2'
-            },
             '.xuiex-timepicker':{
                 'font-size':"12px",
                 width:'24px',
                 height:'16px',
-                'text-align':'center',
-                'background-color': '#F9F9FB'
+                'text-align':'center'
             },
             '.xuiex-timepicker3':{
                 'font-size':"12px",
                 width:'20px',
                 height:'16px',
                 'text-align':'center',
-                'background-color': '#F9F9FB',
                 'font-weight':'bold'
-            },
-            '.xuiex-timepicker-mouseover, .xuiex-timepicker3-mouseover':{
-                $order:2,
-                'background-color': '#d9e8fb'
-            },
-            '.xuiex-timepicker-checked, .xuiex-timepicker3-checked':{
-                $order:2,
-                'background-color':'#316AC5',
-                color:'#fff'
             }
         },
         Behaviors:{

@@ -12,7 +12,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'{itemClass} {disabled} {readonly}',
+                    className:'xui-uibarbg2 {itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
                     ITEMFRAME:{
                         style:'{_itemSize};',
@@ -89,10 +89,16 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 position:'relative',
                 cursor:'pointer',
                 'vertical-align':'top',
-                /*opera must be 0 not 'none'*/
-                border:xui.browser.ie6?'solid 1px #fefefe':'solid 1px transparent',
-                _filter:'chroma(color=#FEFEFE)',
-                margin:0
+                margin:0,
+                'border-radius':'4px'
+            },
+            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+            },
+            'ITEM-mouseover':{
+            },
+            'ITEM-mousedown':{
+            },
+            'ITEM-checked':{
             },
             ITEMFRAME:{
                 display:xui.browser.ie?'inline-block':'block',
@@ -108,26 +114,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             IBWRAP:{
                 'font-size':0,
                 'line-height':0
-            },
-            'ITEM-mouseover':{
-                $order:1,
-                padding:0,
-                border:'solid 1px #a0c8f0',
-                'background-color':'#e1f0ff'
-            },
-            'ITEM-mousedown':{
-                $order:2,
-                padding:0,
-                border:'solid 1px #dcdcdc',
-                'background-color':'#bbcef1'
-             },
-            'ITEM-checked':{
-                $order:2,
-                padding:0,
-                border:'solid 1px #bbcef1',
-                'background-color':'#bbcef1'
-            },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
             },
             IMAGE:{
                 display:xui.$inlineBlock,

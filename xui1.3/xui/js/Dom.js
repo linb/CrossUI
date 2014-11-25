@@ -1049,7 +1049,7 @@ Class('xui.Dom','xui.absBox',{
                 l=arr.length;
                 a=[];
                 for(i=0;t=arr[i];i++)
-                    if(bs?(t!=name):(!name.test(String(t))))
+                    if(bs?(t!=name):(!name.test(""+t)))
                         a[a.length]=t;
                 if(l!=a.length)xui.Dom._setClass(o,a.join(' '));
             });
@@ -3686,7 +3686,7 @@ type:4
             Class.__gc();
             _.breakO(xui.$cache,2);
             _.breakO([xui,Class,_],3);
-            w.Namespace=w.Class=w.xui=w.linb=w._=undefined;
+            w.Namespace=w.Class=w.xui=w.xui_ini=w.linb=w._=undefined;
         },"window",-1);
 
     }

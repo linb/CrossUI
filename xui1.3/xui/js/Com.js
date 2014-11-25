@@ -373,20 +373,52 @@ Class('xui.Com',null,{
         setProfile:function(profiles){
             this.getAllComponents().each(function(prf,i){
                 if(prf.alias in profiles){
-                    prf=prf.boxing();
                     i=profiles[prf.alias];
+                    var ins=prf.boxing();
                     if(i && _.isHash(i) && !_.isEmpty(i)){
-                        if(i.theme&&typeof(prf.setTheme)=="function")prf.setTheme(i.theme);
-                        if(i.properties &&!_.isEmpty(i.properties))prf.setProperties(i.properties);
-                        if(i.CA&&!_.isEmpty(i.CA))prf.setCustomAttr(i.CA);
-                        if(i.CC&&!_.isEmpty(i.CC))prf.setCustomClass(i.CC);
-                        if(i.CS&&!_.isEmpty(i.CS))prf.setCustomStyle(i.CS);
+                        if(i.theme&&typeof(ins.setTheme)=="function")ins.setTheme(i.theme);
+                        if(i.properties &&!_.isEmpty(i.properties))ins.setProperties(i.properties);
+                        if(i.CA&&!_.isEmpty(i.CA))ins.setCustomAttr(i.CA);
+                        if(i.CC&&!_.isEmpty(i.CC))ins.setCustomClass(i.CC);
+                        if(i.CS&&!_.isEmpty(i.CS))ins.setCustomStyle(i.CS);
                     }else{
                         ins.setValue(i);
                     }
                 }
             });
             return this;
+        },
+        _getPropBinderKeys:function(){
+            var bak;
+            if(window.get)bak=get;
+            // collect keys
+            var hash={};
+            window.get=function(k){
+                if(k){
+                    var arr=k.split(".");
+                    if(arr.length)hash[arr.shift()]=1;
+                }
+           };
+            try{
+                this.getAllComponents().each(function(prf){
+                    var prop=prf.properties;
+                    if(prop.propBinder)
+                        _.each(prop.propBinder,function(fun,key){
+                            if((key in prop) && _.isFun(fun))fun();
+                        });
+                });
+            }catch(e){window.get=bak}
+            return _.toArr(hash,true);
+        },
+        reBindProp:function(dataMap){
+            var bak;
+            if(window.get)bak=get;
+            window.get=function(k){return xui.SC.get(k,dataMap)};
+            try{
+                this.getAllComponents().each(function(prf){
+                    prf.boxing().reBindProp(dataMap,true);
+                });
+            }catch(e){window.get=bak}
         },
         getData:function(){
             var hash={};
@@ -438,7 +470,7 @@ Class('xui.Com',null,{
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values){
                         var v=values[prf.alias],b=_.isHash(v) ;
-                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, null, true,'com');
+                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'com');
                         if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
                             prf.boxing().setCaption(v.caption, null, true,'com');
                     }
@@ -459,7 +491,7 @@ Class('xui.Com',null,{
                 this.getAllComponents().each(function(prf){
                     if('value' in prf.properties && prf.alias in values){
                         var v=values[prf.alias],b=_.isHash(v) ;
-                        prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,'com');
+                        prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'com');
                         if(typeof(prf.boxing().setCaption)=="function" && b &&  'caption' in v)
                             prf.boxing().setCaption(v.caption, null, true,'com');
                     }

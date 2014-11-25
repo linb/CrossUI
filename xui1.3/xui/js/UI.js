@@ -1326,7 +1326,7 @@ Class("xui.UI",  "xui.absObj", {
                 //set key and value
                 if(typeof key=='string'){
                     t=key;
-                    key={};
+                    key=_.copy(o.CC);
                     key[t]=value;
                 }
                 _.filter(key,function(o,i){
@@ -1380,7 +1380,7 @@ Class("xui.UI",  "xui.absObj", {
                 var bak = _.copy(o.CA),t;
                 if(typeof key=='string'){
                     t=key;
-                    key={};
+                    key=_.copy(o.CA);
                     key[t]=value;
                 }
                 _.filter(key,function(o,i){
@@ -1466,7 +1466,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 if(typeof key=='string'){
                     t=key;
-                    key={};
+                    key=_.copy(o.CS);
                     key[t]=value;
                 }
                 _.filter(key,function(o,i){
@@ -2031,7 +2031,95 @@ Class("xui.UI",  "xui.absObj", {
                 background:'none'
             },
 
+            ".xui-uitembg":{
+                "background-color":"#FFF",
+                 "padding":"1px"
+            },
+            ".xui-uitembg-mouseover":{
+                $order:2,
+                "padding":"0px",
+               'border-radius':'3px',
+               "border":'solid 1px #FAD200'
+            },
+            ".xui-uitembg-mousedown":{
+                $order:3,
+                "padding":"0px",
+               'border-radius':'3px',
+               "border":'solid 1px #F5D22D'
+            },
+            ".xui-uitembg-checked":{
+                $order:4,
+                "padding":"0px",
+               'border-radius':'3px',
+               "border":'solid 1px #AAD2FA',
+                "color":"#000"
+            },
 
+            ".xui-uibarbg":{
+                "background-color":"#CCE4FC"
+            },
+            ".xui-uibarbg-mouseover, .xui-uibarbg2-mouseover":{
+                $order:2,
+                "background-color":"#FAD200"
+            },
+            ".xui-uibarbg-mousedown, .xui-uibarbg2-mousedown":{
+                $order:3,
+                 "background-color":"#F5D22D"
+            },
+            ".xui-uibarbg-checked,.xui-uibarbg2-checked":{
+                $order:4,
+                 "background-color":"#AAD2FA",
+                 "color":"#000"
+            },
+            ".xui-bginput":{
+                background: "#fff"
+            },
+            /*
+            ".xui-uirowbg":{
+                "background-color":"#FFF"
+            },
+            ".xui-uirowbg-mouseover":{
+                $order:2,
+                "background-color":"#FFF1A0"
+            },
+            ".xui-uirowbg-mousedown":{
+                $order:3,
+                 "background-color":"#7199E8"
+            },
+            ".xui-uirowbg-checked":{
+                $order:4,
+                 "background-color":"#7199E8",
+                 "color":"#fff"
+            },
+            ".xui-uirowbg-active":{
+                $order:5,
+                "background-color":"#A3BAE9"
+            },
+            ".xui-uirowbg-hot":{
+                $order:6,
+                "background-color":"#FFE97F"
+            },*/
+            ".xui-uitd":{
+                "background-color": "#F9F9FB"
+            },
+            ".xui-uitd-mouseover":{
+                 $order:2,
+                "background-color": "#d9e8fb"
+            },
+            ".xui-uitd-checked, .xui-uitd-checked .xui-node":{
+                 $order:3,
+                "background-color":"#316AC5",
+                color:"#fff"
+            },
+            ".xui-uitd-alt":{
+                 $order:1,
+                "background-color":"#FDF8D2"
+            },
+            ".xui-uith":{
+                 $order:1,
+                color:"#333333",
+                "background-color":"#E8EEF7"
+            },
             '.xui-uibar-top, .xui-uibar-bottom, .xui-uibar-top-s, .xui-uibar-bottom-s':{
                 position:'relative',
                 //for avoiding extra space after table in IE
@@ -2115,7 +2203,6 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0,
                 'background-image': xui.UI.$bg('container_right.gif', '', true),
                 'background-repeat':'repeat-y', 
-                'background-color':'#AAD2FA', 
                 'background-position': 'right top'
             },
 //uibar-bottom
@@ -2257,19 +2344,90 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibg-base':{
                 'background-color':'#fff'
             },
+            '.xui-uibg-content':{
+                'background-color':'#fff'
+            },
             '.xui-uibg-bar':{
                 'background-color':'#aad2fa'
+            },
+            '.xui-uiborder-linkbottombar':{
+                'border-bottom':'solid 1px #FAD600'
+            },
+            '.xui-uibg-bar-mouseover':{
+                'background-color':'#C8E1FA'
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4'
             },
-            '.xui-uiborder-inset':{
-                border:'solid 1px',
-                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4'
+            '.xui-uiborder-l':{
+                'border-left-style':'solid',
+                'border-left-width':'1px',
+                'border-left-color':'#c8e1fa'
+            },
+            '.xui-uiborder-t':{
+                'border-top-style':'solid',
+                'border-top-width':'1px',
+                'border-top-color':'#c8e1fa'
+            },
+            '.xui-uiborder-r':{
+                'border-right-style':'solid',
+                'border-right-width':'1px',
+                'border-right-color':'#648cb4'
+            },
+            '.xui-uiborder-b':{
+                'border-bottom-style':'solid',
+                'border-bottom-width':'1px',
+                'border-bottom-color':'#648cb4'
+            },
+            '.xui-uiborder-r2':{
+                'border-right-style':'solid',
+                'border-right-width':'1px',
+                'border-right-color':'#A2BBD9'
+            },
+            '.xui-uiborder-b2':{
+                'border-bottom-style':'solid',
+                'border-bottom-width':'1px',
+                'border-bottom-color':'#A2BBD9'
+            },
+            '.xui-uiborder-tb':{
+                'border-style':'solid',
+                'border-width':'1px 0 1px 0 ',
+                'border-top-color':'#c8e1fa',
+                'border-bottom-color':'#648cb4'
+            },
+            '.xui-uiborder-lr':{
+                'border-style':'solid',
+                'border-width':'0 1px 0 1px',
+                'border-left-color':'#c8e1fa',
+                'border-right-color':'#648cb4'
+            },
+            '.xui-uiborder-lt':{
+                'border-style':'solid',
+                'border-width':'1px 0 0 1px',
+                'border-left-color':'#c8e1fa',
+                'border-top-color':'#c8e1fa'
+            },
+            '.xui-uiborder-rb':{
+                'border-style':'solid',
+                'border-width':'0 1px 1px 0',
+                'border-right-color':'#648cb4',
+                'border-bottom-color':'#648cb4'
+            },
+            '.xui-uiborder-rb2':{
+                'border-style':'solid',
+                'border-width':'0 1px 1px 0',
+                'border-right-color':'#A2BBD9',
+                'border-bottom-color':'#A2BBD9'
             },
             '.xui-uiborder-outset':{
+                $order:8,
                 border:'solid 1px',
                 'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa'
+            },
+            '.xui-uiborder-inset':{
+                $order:9,
+                border:'solid 1px',
+                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -2289,15 +2447,19 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
                 $order:2,
-                color: '#808080'
+                color: '#808080',
+            },
+            '.xui-ui-itemreadonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly textarea':{
+                $order:3,
+                color: '#909090'
             },
             '.xui-ui-disabled, .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled, .xui-ui-itemdisabled *, .xui-ui-disabled *':{
                 $order:2,
                 cursor:'not-allowed',
                 color: '#808080'
             },
-            '.xui-ui-inputdisabled, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
-                $order:2,
+            '.xui-ui-inputdisabled, .xui-ui-disabled, .xui-ui-itemdisabled , .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
+                $order:3,
                 'background-color':'#eee'
             },
             '.xui-ui-invalid, .xui-ui-invalid *':{
@@ -2384,7 +2546,7 @@ Class("xui.UI",  "xui.absObj", {
             style=null;
         },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
-        _objectProp:{tagVar:1,dockMargin:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1},
         $toDom:function(profile, str, addEventHandler){
             if(addEventHandler===false)
                 return _.str.toDom(str);
@@ -5198,7 +5360,7 @@ Class("xui.absValue", "xui.absObj",{
                     if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
 
                     if(!prop.dirtyMark)
-                        box.setValue(value,null,'uiv',cv || triggerEventOnly);
+                        box.setValue(value,false,'uiv',cv || triggerEventOnly);
                 }
             });
             return this;
@@ -5767,7 +5929,7 @@ new function(){
     
     Class(u+".Element", u,{
         Static:{
-            _objectProp:{tagVar:1,dockMargin:1,attributes:1},
+            _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attributes:1},
             Templates:{
                 _NativeElement:true,
                 tagName:'{nodeName}',
@@ -5942,7 +6104,7 @@ new function(){
         },
         Static:{
             $initRootHidden:true,
-            _objectProp:{tagVar:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
+            _objectProp:{tagVar:1,propBinder:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
                 className:'{_className}',

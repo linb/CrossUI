@@ -170,15 +170,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 'border':'solid 1px #B5B8C8',
                 'z-index':10
             },
-            "KEY-readonly input":{
-                $order:2,
-                color:'#909090',
-                cursor:'pointer'
-            },
-            "KEY-readonly BOX, KEY-inputreadonly BOX":{
-                $order:2,
-                background:'#eee'
-            },
             'BOX-focus, BOX-mouseover':{
                 'border-color':'#7EADD9'
             },
@@ -612,11 +603,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             disabled:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT');
-                    if(v)
-                        i.addClass('xui-ui-inputdisabled');
-                    else
-                        i.removeClass('xui-ui-inputdisabled');
+                    var i=this.getSubNode('INPUT'),
+                        cls="xui-ui-disabled";
+                    
+                    if(v)this.getRoot().addClass(cls);
+                    else this.getRoot().removeClass(cls);
+                        
                     if((""+i.get(0).type).toLowerCase()!='button'){
                         if(!v && this.properties.readonly)
                             v=true;
@@ -636,7 +628,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:false,
                 action: function(v){
                     var i=this.getSubNode('INPUT'),
-                        cls=this.getClass('KEY','-readonly');
+                        cls="xui-ui-readonly";
                     
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);

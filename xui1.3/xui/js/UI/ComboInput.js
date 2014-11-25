@@ -807,7 +807,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
 
-        _objectProp:{tagVar:1,dockMargin:1,popCtrlProp:1,popCtrlEvents:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
             HoverEffected:{BOX:'BOX',BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
             ClickEffected:{BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
@@ -1212,11 +1212,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             disabled:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT');
-                    if(v)
-                        i.addClass('xui-ui-inputdisabled');
-                    else
-                        i.removeClass('xui-ui-inputdisabled');
+                    var i=this.getSubNode('INPUT'),
+                         cls="xui-ui-disabled";
+                    if(v)this.getRoot().addClass(cls);
+                    else this.getRoot().removeClass(cls);
+
                     if((""+i.get(0).type).toLowerCase()!='cmd'){
                         if(!v && (this.properties.readonly||this.$inputReadonly))
                             v=true;
@@ -1228,28 +1228,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             inputReadonly:{
                 ini:false,
                 action: function(v){
-                    var n=this.getSubNode('INPUT'),
-                        cls=this.getClass('KEY','-inputreadonly');
+                    var i=this.getSubNode('INPUT'),
+                         cls="xui-ui-readonly";
+                    if(!v && (this.properties.disabled||this.properties.readonly||this.$inputReadonly))
+                        v=true;
+
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
-                    if(!v && (this.properties.disabled||this.properties.readonly||this.$inputReadonly))
-                        v=true;
-                    n.attr('readonly',v).css('cursor',v?'pointer':'');
+                    i.attr('readonly',v).css('cursor',v?'pointer':'');
                 }
             },
             readonly:{
                 ini:false,
                 action: function(v){
-                    var n=this.getSubNode('INPUT'),
-                        cls=this.getClass('KEY','-readonly');                    
+                    var i=this.getSubNode('INPUT'),
+                        cls="xui-ui-readonly";
+                    if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
+                        v=true;
+
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
-                    if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
-                        v=true;
-                    n.attr('readonly',v).css('cursor',v?'pointer':'');
-                        
+                    i.attr('readonly',v).css('cursor',v?'pointer':'');   
                 }
             },
             // caption is for readonly comboinput(listbox/cmdbox are readonly)

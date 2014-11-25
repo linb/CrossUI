@@ -43,22 +43,18 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             "ITEM-none":{
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat',
-                'background-position':'-12px -130px',
-                'border-left':'solid 1px #7C9CBC',
-                'border-right':'solid 1px #7C9CBC'
+                'background-position':'-12px -130px'
             },
             "ITEM-left":{
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat',
                 'background-position':'left -130px',
-                'border-right':'solid 1px #7C9CBC',
                 padding:'4px 4px 2px 12px'
             },
             "ITEM-right":{
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat',
                 'background-position':'right -130px',
-                'border-left':'solid 1px #7C9CBC',
                 padding:'4px 12px 2px 2px'
             },
             // ignore xui.UI.List setting
@@ -146,7 +142,9 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     .tagClass('-none', false)
                     .tagClass('-left', false)
                     .tagClass('-right', false)
-                    .tagClass('-'+value, true);
+                    .tagClass('-'+value, true)
+                    .removeClass(/^xui-uiborder-[lr]/)
+                    .addClass(value=="left"?"xui-uiborder-r":value=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r")
                 }
             }
         }),
@@ -170,7 +168,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 item.itemAlign = "text-align:"+ t;
 
             if(t = item.itemLinker || p.itemLinker)
-               item._endsClass = profile.getClass('ITEM', '-'+t);
+               item._endsClass = profile.getClass('ITEM', '-'+t) +" "+ (t=="left"?"xui-uiborder-r":t=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r");
         }
     }
 });

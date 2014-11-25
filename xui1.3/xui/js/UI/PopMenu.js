@@ -9,33 +9,34 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         return;
                     }
                     var border = profile.getSubNode('BORDER'),
-                        items = profile.getSubNode('ITEMS').cssSize({width:'auto',height:'auto'}),
+                        box = profile.getSubNode('BOX'),
+                        items = profile.getSubNode('ITEMS'),
                         itemNs = profile.getSubNode('ITEM',true),
                         pro=profile.properties,
                         ww=0,hh=0;
-
+                       
+                       items.cssSize({width:'auto',height:'auto'});
+ 
                         hh = items.height();
-                        if(hh%2==0)hh+=2;else hh+=1;
-
+                        if(hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
                         itemNs.each(function(n){
                             ww=Math.max(ww, n.offsetWidth);
                         });
-                        if(ww%2==0)ww+=2;else ww+=1;
-                        
+                        if(ww%2==1)ww+=1;
                         items.removeClass(profile.getClass('ITEMS','-inline'));
 
                     // for IE7
                     items.cssSize({width:ww,height:hh});
 
-                    var h = Math.min(pro._maxHeight, hh) + border._borderW(),
-                        w = Math.min(pro._maxWidth, ww) + border._borderH();
+                    var h = Math.min(pro._maxHeight, hh),
+                        w = Math.min(pro._maxWidth, ww),
+                        size={width:w ,height:h};
                     pro.width=w;
                     pro.height=h;
-                    //set size first, for adding shadow later
-                    profile.getRoot().cssSize({width:w ,height:h});
-                    //avoid blazing(shadow elements) when resize the border
-                    xui.UI.$doResize(profile,w,h,true);
+                    root.cssSize(size);
+                    box.cssSize(size);
+                    border.cssSize(size);
                 }
             });
             return this._setScroll();
@@ -174,19 +175,19 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     if(false!==triggerEvent)
                         if(false===profile.boxing().beforeHide(profile, ignoreEffects, e))
                             return this;
-        
+
                     if(!root || root.css('display')=='none')return;
-        
+
                     //remove trigger
                     root.setBlurTrigger(profile.$xid,null);
                     if(profile.$hideMenuPool)
                         profile.$hideMenuPool.append(root);
                     else
                         root.css('display','none');
-        
+
                     if(t=profile[hl])
                        xui([t]).tagClass('-mouseover',false);
-        
+
                     //hide all parent pop
                     var p=profile[cm],q;
                     if(t=profile[sms])t.hide(triggerEvent, ignoreEffects);
@@ -197,10 +198,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     profile[cm]=profile[sms]=profile[hl]=null;
                     if(t=profile.$parentPopMenu)t[sms]=null;
-                    
+
                     if(profile.$popGrp)
                         _.arr.removeValue(profile.$popGrp,root._get(0));
-        
+
                     if(false!==triggerEvent)
                         profile.boxing().onHide(profile);
                 };
@@ -220,19 +221,18 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         //modify default template fro shell
         var t = this.getTemplate();
         _.merge(t.FRAME.BORDER,{
+            className:"xui-uiborder-outset",
              TOP:{},
              BOTTOM:{},
              BOX:{
                 tagName:'div',
+                className:"xui-uibg-base",
                  ITEMS:{
                     tagName:'div',
                     text:"{items}"
                  }
              },
-             POOL:{
-                tagName : 'div',
-                style:'display:none;'
-             }
+             POOL:{}
         },'all');
         t.$submap = {
             'items':function(profile,template,v,tag,result){
@@ -255,7 +255,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.button':{
                 ITEM:{
                     tabindex: -1,
-                    className: '{itemClass} {disabled}',
+                    className: ' xui-uibarbg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
@@ -339,21 +339,23 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'font-size':'12px',
                 visibility:'hidden'
             },
-            BORDER:{
-                border:'1px solid',
-                'border-color':'#FFF #ACA899 #ACA899 #FFF'
+            POOL:{
+                'font-size':'0',
+                'line-height':'0',
+                position:'absolute',
+                display:'none'
             },
             BOX:{
-                'background-color':'#EEF7FF',
                 overflow:'hidden',
-                position:'absolute',
-                left:0,
-                top:0,
+                position:'relative',
                 'font-size':'12px',
                 'z-index':'3'
             },
+            BORDER:{
+                position:'relative'
+            },
             ITEMS:{
-                position:'absolute',
+                position:'relative',
                 top:0,
                 left:0,
                 overflow:'hidden',
@@ -370,7 +372,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 overflow:'visible',
                 'white-space': 'nowrap',
-                color:'#000',
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 padding:'2px 20px 2px 2px',
@@ -388,14 +389,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                'background-image':xui.UI.$bg('split_horizontal.gif', '', true),
                'background-repeat':'repeat-x',
                'background-position':'left top'
-            },
-            'ITEM-mouseover':{
-                $order:1,
-                'background-color':'#FFFA9F'
-            },
-            'ITEM-checked':{
-                $order:2,
-                'background-color':'#FFFA9F'
             },
             ICON:{
                 margin:0
@@ -480,7 +473,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             SUB:{
                 position:'absolute',
                 top:'2px',
-                right:'2px',
+                right:'6px',
                 width:'8px',
                 height:'16px',
                 'background-image':xui.UI.$bg('icons.gif', '', true),
@@ -531,7 +524,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                 if(r && r['xui.UI'] && !r.isEmpty()){}
                                 else
                                     r=profile.boxing().onShowSubMenu(profile, item, src);
-                                
+
                                 // return UI control
                                 if(r && r['xui.UI'] && !r.isEmpty()){
                                     profile[sms] = r;
@@ -542,16 +535,16 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     profile[popgrp].push(r._get(0));
 
                                     r.popToTop(src,2,profile._conainer);
-                                    
+
                                     return;
                                 }
                                 // return items array
                                 else if(r && _.isArr(r) && r.length){
                                     item.sub=r;
                                 }
-                            }                            
+                            }
                         }
-                        
+
                         // show items
                         if(_.isArr(item.sub) && item.sub.length){
                             profile[all] = profile[all] || {};
@@ -784,12 +777,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             autoHide:false,
 
-            height:100,
+            height:'auto',
             //opera needs more space for initialize
-            width:300,
+            width:'auto',
             position:'absolute',
-            $hborder:1,
-            $vborder:1
+            $hborder:0,
+            $vborder:0
         }),
         EventHandlers:{
             onShowSubMenu:function(profile, item, src){},
@@ -832,10 +825,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             else if(item.type=='radiobox')
                 item.radioboxCls =profile.getClass('RADIOBOX', item.value?'-checked':'');
         },
-
-        _onresize:function(profile,width,height){
-            var size = arguments.callee.upper.apply(this,arguments);            
-            profile.getSubNode('BOX').cssSize(size);
-        }
+        _onresize:null
     }
 });

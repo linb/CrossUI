@@ -253,7 +253,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 className:'xui-uicon-main',
                 MAINI:{
                     tagName:'div',
-                    className:'xui-uicon-maini',
+                    className:'xui-uibg-bar xui-uicon-maini',
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
@@ -1316,7 +1316,7 @@ if(xui.browser.ie){
                         else
                             delete dialog._$_clickYes;
 
-                        dialog._$inp.setValue('',null,'prompt');
+                        dialog._$inp.setValue('',false,'prompt');
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
