@@ -3,6 +3,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         //modify default template fro shell
         var t = this.getTemplate();
         t.className='{_className}';
+        t.ITEMS.className='{_bordertype}';
         t.$submap={
             items:{
                 ITEM:{

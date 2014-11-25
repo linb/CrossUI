@@ -48,6 +48,7 @@ Class("xui.UI.Poll", "xui.UI.List",{
         self.addTemplateKeys(['EDIT']);
         //modify default template fro shell
         var t = self.getTemplate();
+        t.ITEMS.className='{_bordertype}';
         t.TITLE={
             $order:2,
             tagName : 'DIV',
