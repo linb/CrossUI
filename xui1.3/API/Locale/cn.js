@@ -4457,7 +4457,7 @@ _.set(xui.Locale,["cn","app"], {
             },
             getPropBinder:{
                 $desc:"获取控件的附属性绑定配置",
-                $rtn:"Object",
+                $rtn:"Object"
             },
             setPropBinder:{
                 $desc:"设置控件的附属性绑定配置",

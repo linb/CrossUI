@@ -4452,7 +4452,7 @@ _.set(xui.Locale,["en","app"], {
             },
             getPropBinder:{
                 $desc:"Gets the properties binder setting on the first Profile",
-                $rtn:"Object",
+                $rtn:"Object"
             },
             setPropBinder:{
                 $desc:"Sets the properties binder setting to the each Profile.",
