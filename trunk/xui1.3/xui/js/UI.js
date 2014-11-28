@@ -2447,7 +2447,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
                 $order:2,
-                color: '#808080',
+                color: '#808080'
             },
             '.xui-ui-itemreadonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly textarea':{
                 $order:3,

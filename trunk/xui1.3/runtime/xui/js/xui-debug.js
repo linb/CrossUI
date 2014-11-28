@@ -8823,7 +8823,7 @@ Class('xui.Dom','xui.absBox',{
                     if(boundary.nodeType==1 && boundary!==document.body)
                         add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
                     else
-                        add(pos, (_.isNumb(dd.scrollLeft)?dd.scrollLeft:db.scrollLeft)-dd.clientLeft, (_.isNumb(dd.scrollTop)?dd.scrollTop:db.scrollTop)-dd.clientTop);
+                        add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
                 }else{
                     pos = {left :0, top :0};
                     add(pos, node.offsetLeft, node.offsetTop );
@@ -8850,7 +8850,7 @@ Class('xui.Dom','xui.absBox',{
                     if((browser.gek && getStyle(keepNode,"position")!="absolute"))
                         add(pos, -db.offsetLeft, -db.offsetTop);
                     if(fixed)
-                        add(pos, _.isNumb(dd.scrollLeft)?dd.scrollLeft: db.scrollLeft, _.isNumb(dd.scrollTop)?dd.scrollTop:db.scrollTop);
+                        add(pos, dd.scrollLeft||db.scrollLeft||0, dd.scrollTop||db.scrollTop||0);
                 }
                 r=pos;
             }
@@ -11313,8 +11313,8 @@ type:4
                 else{
                     var v=this.get(0);
                     if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || (_.isNumb(a[o])?a[o]:b[o]);
-                        if("scrollLeft"==o)return window.pageXOffset || (_.isNumb(a[o])?a[o]:b[o]);
+                        if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
+                        if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
                     }
                     return v[o];
                 }
@@ -17497,7 +17497,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
                 $order:2,
-                color: '#808080',
+                color: '#808080'
             },
             '.xui-ui-itemreadonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly textarea':{
                 $order:3,
