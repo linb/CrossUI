@@ -983,59 +983,54 @@ _.merge(xui,{
         key=key||'default';
         var okey=xui.getTheme();
         if(key!=okey){
-            if(refresh!==false){
-                if(key!='default'){
-                    // test if it's included in html
-                    var s;
-                    try{
-                        s=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
-                    }catch(e){}finally{
-                        if(s==key || key=='default'){
-                            _.tryF(onSucess);
+            var onend=function(onSucess){
+                if(okey!='default'){
+                    var style;
+                    while(style=xui.CSS.$getCSSValue('.setting-uikey','fontFamily',okey)){
+                        style.disabled=true;
+                        style.parentNode.removeChild(style);
+                        style=null;
+                    }
+                }
+                if(refresh!==false){
+                    xui.$CSSCACHE={};
+                    if(xui.UI)xui.UI.getAll().reLayout(true);
+                 }
+                _.tryF(onSucess);
+            };
+            if(key=='default'){
+                onend(onSucess);
+            }else{
+                try{
+                    var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
+                }catch(e){}finally{
+                    if(tkey==key){
+                        _.tryF(onSucess);
+                        return;
+                    }else{
+                        xui.CSS.includeLink(xui.getPath('xui.appearance.'+key,'/theme.css'),'theme:'+key);
+                    }
+                    var count=0,fun=function(){
+                        // timeout: 21 seconds
+                        if(count++>20){
+                            fun=count=null;
+                            if(false!==_.tryF(onFail))
+                                throw 'errLoadTheme:'+key;
                             return;
                         }
-                    }
-                    xui.CSS.includeLink(xui.getPath('xui.appearance.'+key,'/theme.css'),'theme:'+key);
-                }
-                if(okey!=='default'){
-                    var o=xui.CSS.get('id','theme:'+okey);
-                    if(o){
-                        o.disabled=true;
-                        o.parentNode.removeChild(o);
-                    }
-                    var o=xui.CSS.$getCSSValue('.setting-uikey','fontFamily',okey);
-                    if(o){
-                        o.disabled=true;
-                        o.parentNode.removeChild(o);
-                    }
-                }
-            }
-            if(refresh!==false){
-                xui.$CSSCACHE={};
-                var count=0,fun=function(a){
-                    if(count>20){
-                        if(false!==_.tryF(onFail))
-                            throw 'errLoadTheme:'+key;
-                    }
-                    count++;
-                    var s;
-                    try{
-                        s=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
-                    }catch(e){}finally{
-                        if(s==key || key=='default'){
-                            if(xui.UI)
-                                xui.UI.getAll().reLayout(true);
-                            _.tryF(onSucess);
-                            fun=count=null;
-                        }else{
-                            _.asyRun(fun,100*count);
+                        //test
+                        try{
+                            var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
+                        }catch(e){}finally{
+                            if(tkey==key){
+                                onend(onSucess);
+                                fun=count=null;
+                            }else{
+                                _.asyRun(fun,100*count);
+                            }
                         }
-                    }
-                };
-                // try sync first
-                fun('l');
-            }else{
-                _.tryF(onSucess);
+                    };fun();
+                }
             }
         }else{
             _.tryF(onSucess);
