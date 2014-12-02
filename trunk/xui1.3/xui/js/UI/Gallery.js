@@ -12,7 +12,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-uibarbg2 {itemClass} {disabled} {readonly}',
+                    className:'xui-hiddenborder {itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
                     ITEMFRAME:{
                         style:'{_itemSize};',

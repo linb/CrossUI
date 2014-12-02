@@ -4218,8 +4218,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             cell._$tips=caption;
 
-            var t2=cell.disabled || cell._row.disabled || cell._col.disabled,
-                t3=cell.readonly || cell._row.readonly || cell._col.readonly;
+            var t2=getPro(profile, cell, 'disabled'),
+                t3=getPro(profile, cell, 'readonly');
             if(uicell){
 /*
 colRenderer

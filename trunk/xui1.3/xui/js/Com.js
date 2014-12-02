@@ -398,7 +398,7 @@ Class('xui.Com',null,{
                     var arr=k.split(".");
                     if(arr.length)hash[arr.shift()]=1;
                 }
-           };
+            };
             try{
                 this.getAllComponents().each(function(prf){
                     var prop=prf.properties;
@@ -407,7 +407,7 @@ Class('xui.Com',null,{
                             if((key in prop) && _.isFun(fun))fun();
                         });
                 });
-            }catch(e){window.get=bak}
+            }catch(e){}finally{window.get=bak}
             return _.toArr(hash,true);
         },
         reBindProp:function(dataMap){
