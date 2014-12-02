@@ -15,6 +15,15 @@ html, .xui-uibg-base{
     border-bottom-color:#D996BF;
  }
 /*border  [[[colors]]]*/
+.xui-hiddenborder{
+    border:solid 1px #FFFFFF;
+}
+.xui-hiddenborder-mouseover{
+    border:solid 1px #EEB2D9;
+}
+.xui-hiddenborder-mousedown,.xui-hiddenborder-checked{
+    border:solid 1px #EEB2D9;
+}
 .xui-uiborder-flat{
     border-color:#EEB2D9;
 }

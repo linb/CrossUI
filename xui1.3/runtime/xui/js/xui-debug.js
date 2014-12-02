@@ -4032,7 +4032,7 @@ Class('xui.absObj',"xui.absBox",{
                 var bak;
                 if(window.get)bak=get;
                 window.get=function(k){return xui.SC.get(k,dataMap)};
-                try{fun();}catch(e){window.get=bak}
+                try{fun();}catch(e){}finally{window.get=bak}
             }else fun();
 
             return this;
@@ -10058,14 +10058,17 @@ type:4
                 if(xui.browser.ie8)node.style.msfilter = t;
                 node.style.filter=t;
 
-                var transX=matrix.getX(), 
-                    transY=matrix.getY(),
-                    rect = node.getBoundingClientRect(),
-                    w=rect.right - rect.left, 
-                    h=rect.bottom-rect.top;
- 
-                node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
-                node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+                // for fake case
+                if(node.getBoundingClientRect){
+                    var transX=matrix.getX(), 
+                        transY=matrix.getY(),
+                        rect = node.getBoundingClientRect(),
+                        w=rect.right - rect.left, 
+                        h=rect.bottom-rect.top;
+     
+                    node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
+                    node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+                }
 
                 // fake
                 node.style.transform=value;
@@ -12239,7 +12242,7 @@ Class('xui.Com',null,{
                     var arr=k.split(".");
                     if(arr.length)hash[arr.shift()]=1;
                 }
-           };
+            };
             try{
                 this.getAllComponents().each(function(prf){
                     var prop=prf.properties;
@@ -12248,7 +12251,7 @@ Class('xui.Com',null,{
                             if((key in prop) && _.isFun(fun))fun();
                         });
                 });
-            }catch(e){window.get=bak}
+            }catch(e){}finally{window.get=bak}
             return _.toArr(hash,true);
         },
         reBindProp:function(dataMap){
@@ -17400,6 +17403,15 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibg-bar-mouseover':{
                 'background-color':'#C8E1FA'
+            },
+            '.xui-hiddenborder':{
+                border:'solid 1px #FFFFFF'
+            },
+            '.xui-hiddenborder-mouseover':{
+                border:'solid 1px #aad2fa'
+            },
+            '.xui-hiddenborder-mousedown,.xui-hiddenborder-checed':{
+                border:'solid 1px #648cb4'
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4'
@@ -31331,7 +31343,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-uibarbg2 {itemClass} {disabled} {readonly}',
+                    className:'xui-hiddenborder {itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
                     ITEMFRAME:{
                         style:'{_itemSize};',
@@ -31580,7 +31592,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy xui-uibarbg2 {itemClass} {disabled}  {readonly}',
+                    className:'xui-busy xui-hiddenborder {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -31618,7 +31630,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 cursor:'pointer',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
-                'background-position':'center center'
+                'background-position':'center center',
+                'border-radius':'3px'
             },
             IMAGE:{
                 visibility:'hidden'
@@ -42706,8 +42719,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             cell._$tips=caption;
 
-            var t2=cell.disabled || cell._row.disabled || cell._col.disabled,
-                t3=cell.readonly || cell._row.readonly || cell._col.readonly;
+            var t2=getPro(profile, cell, 'disabled'),
+                t3=getPro(profile, cell, 'readonly');
             if(uicell){
 /*
 colRenderer

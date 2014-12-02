@@ -12,7 +12,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy xui-uibarbg2 {itemClass} {disabled}  {readonly}',
+                    className:'xui-busy xui-hiddenborder {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -50,7 +50,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 cursor:'pointer',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
-                'background-position':'center center'
+                'background-position':'center center',
+                'border-radius':'3px'
             },
             IMAGE:{
                 visibility:'hidden'

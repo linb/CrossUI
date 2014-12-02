@@ -15,6 +15,15 @@ html, .xui-uibg-base{
    border-bottom-color:#DCB993;
 }
 /*border  [[[colors]]]*/
+.xui-uiborder-bg{
+    border:solid 1px #FFFFFF;
+}
+.xui-uiborder-light{
+    border:solid 1px #F1D0B0;
+}
+.xui-uiborder-dark{
+    border:solid 1px #F1D0B0;
+}
 .xui-uiborder-flat{
     border-color:#F1D0B0;
 }

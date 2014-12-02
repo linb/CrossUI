@@ -2356,6 +2356,15 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibg-bar-mouseover':{
                 'background-color':'#C8E1FA'
             },
+            '.xui-hiddenborder':{
+                border:'solid 1px #FFFFFF'
+            },
+            '.xui-hiddenborder-mouseover':{
+                border:'solid 1px #aad2fa'
+            },
+            '.xui-hiddenborder-mousedown,.xui-hiddenborder-checed':{
+                border:'solid 1px #648cb4'
+            },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4'
             },

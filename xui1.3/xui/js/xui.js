@@ -4032,7 +4032,7 @@ Class('xui.absObj',"xui.absBox",{
                 var bak;
                 if(window.get)bak=get;
                 window.get=function(k){return xui.SC.get(k,dataMap)};
-                try{fun();}catch(e){window.get=bak}
+                try{fun();}catch(e){}finally{window.get=bak}
             }else fun();
 
             return this;

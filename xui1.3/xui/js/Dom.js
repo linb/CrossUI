@@ -2236,14 +2236,17 @@ type:4
                 if(xui.browser.ie8)node.style.msfilter = t;
                 node.style.filter=t;
 
-                var transX=matrix.getX(), 
-                    transY=matrix.getY(),
-                    rect = node.getBoundingClientRect(),
-                    w=rect.right - rect.left, 
-                    h=rect.bottom-rect.top;
- 
-                node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
-                node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+                // for fake case
+                if(node.getBoundingClientRect){
+                    var transX=matrix.getX(), 
+                        transY=matrix.getY(),
+                        rect = node.getBoundingClientRect(),
+                        w=rect.right - rect.left, 
+                        h=rect.bottom-rect.top;
+     
+                    node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
+                    node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+                }
 
                 // fake
                 node.style.transform=value;
