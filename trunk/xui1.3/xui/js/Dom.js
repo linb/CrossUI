@@ -1154,7 +1154,7 @@ Class('xui.Dom','xui.absBox',{
             self.$addEventHandler(name).each(function(o){
                 if(o.nodeType==3)return;
 
-                if(!(id=event.getId(o)))
+                if(!(id=event.getId(o))&&o!==window&&o!==document)
                     id=o.id=xui.Dom._pickDomId();
 
                 if(!(c=xui.$cache.profileMap[id]))
@@ -1846,7 +1846,7 @@ type:4
                     target=ns;
                 }
 
-                target.each(function(o){if(!o.id)o.id=xui.Dom._pickDomId()});
+                target.each(function(o){if(!o.id&&o!==window&&o!==document)o.id=xui.Dom._pickDomId()});
 
                 //double link
                 arr[id]={

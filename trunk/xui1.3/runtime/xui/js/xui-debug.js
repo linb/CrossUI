@@ -8976,7 +8976,7 @@ Class('xui.Dom','xui.absBox',{
             self.$addEventHandler(name).each(function(o){
                 if(o.nodeType==3)return;
 
-                if(!(id=event.getId(o)))
+                if(!(id=event.getId(o))&&o!==window&&o!==document)
                     id=o.id=xui.Dom._pickDomId();
 
                 if(!(c=xui.$cache.profileMap[id]))
@@ -9668,7 +9668,7 @@ type:4
                     target=ns;
                 }
 
-                target.each(function(o){if(!o.id)o.id=xui.Dom._pickDomId()});
+                target.each(function(o){if(!o.id&&o!==window&&o!==document)o.id=xui.Dom._pickDomId()});
 
                 //double link
                 arr[id]={
@@ -35443,9 +35443,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     var onend=function(empty){
                         subNs.css({display:'',height:'auto'});
-                        markNode.removeClass('xui-ui-busy');
+                        markNode.css('background','');
                         if(empty){
-                            // markNode.css('background-image','none');
+                            // markNode.css('background','none');
                             // do nothing
                         }else{
                             markNode.tagClass('-checked');
@@ -35516,7 +35516,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.addClass('xui-ui-busy');
+                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: toggle icon will be checked
@@ -42954,10 +42954,9 @@ editorEvents
                             h+=o.offsetHeight;
                         });
                         var onend=function(){
-                            markNode.removeClass('xui-ui-busy');
-                            markNode.tagClass('-busy', false);
+                            markNode.css('background','');
                             if(empty){
-                                // markNode.css('background-image','none');
+                                // markNode.css('background','none');
                                 // do nothing
                             }else{
                                 subNs.css({display:'',height:'auto'});
@@ -42979,7 +42978,7 @@ editorEvents
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.addClass('xui-ui-busy');
+                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: continue UI changing
