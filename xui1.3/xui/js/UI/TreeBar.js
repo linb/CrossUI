@@ -878,9 +878,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     var onend=function(empty){
                         subNs.css({display:'',height:'auto'});
-                        markNode.removeClass('xui-ui-busy');
+                        markNode.css('background','');
                         if(empty){
-                            // markNode.css('background-image','none');
+                            // markNode.css('background','none');
                             // do nothing
                         }else{
                             markNode.tagClass('-checked');
@@ -951,7 +951,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.addClass('xui-ui-busy');
+                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: toggle icon will be checked

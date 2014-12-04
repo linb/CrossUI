@@ -4453,10 +4453,9 @@ editorEvents
                             h+=o.offsetHeight;
                         });
                         var onend=function(){
-                            markNode.removeClass('xui-ui-busy');
-                            markNode.tagClass('-busy', false);
+                            markNode.css('background','');
                             if(empty){
-                                // markNode.css('background-image','none');
+                                // markNode.css('background','none');
                                 // do nothing
                             }else{
                                 subNs.css({display:'',height:'auto'});
@@ -4478,7 +4477,7 @@ editorEvents
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.addClass('xui-ui-busy');
+                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: continue UI changing
