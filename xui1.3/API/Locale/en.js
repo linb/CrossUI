@@ -13424,6 +13424,14 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend((new xui.UI.PageBar({value:'1:3:300'})).onClick(function(profile,page){profile.boxing().setPage(page);}))"+
                     "}"
                 ]
+            },
+            onPageSet:{
+                $desc:"onPage changed event handler.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "page : Numer, the new page number.",
+                    "opage : Numer, the old page number."
+                ]
             }
         }
     });

@@ -32318,10 +32318,13 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         },
         setPage:function(value){
             return this.each(function(o){
-                var v=o.properties.value,
-                    a=v.split(':');
-                a[1]=parseInt(value,10)||a[0];
-                o.boxing().setValue(a.join(':'),false,'page');
+                var v=(o.properties.$UIvalue||""),
+                    a=v.split(':'),
+                    b=a[1]||a[0];
+                a[1]=parseInt(value,10)||b;
+                o.boxing().setUIValue(a.join(':'),false,false,'page');
+
+                if(o.onPageSet)o.boxing().onPageSet(o, a[1], b);
             });
         }
     },
@@ -32559,7 +32562,8 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             _moreStep:100
         },
         EventHandlers:{
-            onClick:function(profile, page){}
+            onClick:function(profile, page){},
+            onPageSet:function(profile, page, opage){}
         },
         _ensureValue:function(profile,value){
             value=value+'';
@@ -32590,10 +32594,17 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         _click:function(profile, src){
             if(profile.properties.disabled)return false;
             var b=profile.boxing(),
-                v=b.getValue(),
-                a=v.split(':');
+                a=(profile.properties.$UIValue||"").split(':'),
+                nv=parseInt(xui(src).first(3).attr('href').split('#')[1],10)||a[1]||a[0];
 
-            var r = b.onClick(profile, parseInt(xui(src).first(3).attr('href').split('#')[1],10)||a[0]);
+            var r = b.onClick(nv);
+
+            // if didn't call setPage  in onclick event, setPage here
+            a=(profile.$UIValue||"").split(':');
+            if(!a.length || (nv+"")!==(a[1]+"")){
+                b.setPage(nv);
+            }
+
             return typeof r=="boolean"?r:false;
         },
         _show:function(profile, e, src, flag){
@@ -35163,7 +35174,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 sk = profile.getKey(xui.Event.getSrc(e).id||""),
                 ignoreClick = sk==profile.keys.TOGGLE||sk==profile.keys.MARK;
 
-            if(!ignoreClick && profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
+            if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
                 
             if(properties.disabled|| item.disabled)return false;
 
