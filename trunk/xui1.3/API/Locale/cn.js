@@ -13344,6 +13344,14 @@ _.set(xui.Locale,["cn","app"], {
                     "xui(id).prepend((new xui.UI.PageBar({value:'1:3:300'})).onClick(function(profile,page){profile.boxing().setPage(page);}))"+
                     "}"
                 ]
+            },
+            onPageSet:{
+                $desc:"当调用 setPage 函数时触发.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "page : Number, 新页码.",
+                   "opage : Number, 旧页码."
+                ]
             }
         }
     });
@@ -20329,7 +20337,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onShowOptions:"点击选项按钮"
         },
         'xui_UI_PageBar' : {
-            onClick:"鼠标点击"
+            onClick:"鼠标点击",
+            onPageSet:"页码改变"
         },
         'xui_UI_Tabs' : {
             beforePagePop:"弹出页面前",
