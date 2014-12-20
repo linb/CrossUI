@@ -419,13 +419,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 'background-position':'-130px -264px'
             },
             TAGCMDS:{
-                "padding-right":'4px',
-                'vertical-align':'middle',
-                position:(xui.browser.ie&&xui.browser.ver<8)?'absolute':'relative',
-                left:(xui.browser.ie&&xui.browser.ver<8)?'auto':null,
-                right:(xui.browser.ie&&xui.browser.ver<8)?'2px':null,
-                zoom:xui.browser.ie?1:null,
-                "float":(xui.browser.ie&&xui.browser.ver<8)?null:'right'
+                "padding-left":'4px',
+                'vertical-align':'middle'
             },
             CMD:{
                 "margin-left":'2px',
@@ -435,8 +430,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
         },
         Behaviors:{
-            HoverEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT'},
-            ClickEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT'},
+            HoverEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT',CMD:'CMD'},
+            ClickEffected:{TOGGLE:'TOGGLE', BAR:'BAR',OPT:'OPT',CMD:'CMD'},
             DraggableKeys:["BAR"],
             NoDraggableKeys:['TOGGLE'],
             DroppableKeys:["BAR","TOGGLE","BOX"],
@@ -508,9 +503,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
-                },
-                beforeMousedown:function(){return false;},
-                beforeMouseup:function(){return false;}
+                }
             },
             BOX:{
                 onScroll:function(profile, e, src){
@@ -598,7 +591,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 sk = profile.getKey(xui.Event.getSrc(e).id||""),
                 ignoreClick = sk==profile.keys.TOGGLE||sk==profile.keys.MARK;
 
-            if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
+            if(!ignoreClick && profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
                 
             if(properties.disabled|| item.disabled)return false;
 

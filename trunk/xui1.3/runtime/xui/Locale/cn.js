@@ -1,12 +1,12 @@
 (xui.Locale.cn||(xui.Locale.cn={})).inline={
     $_$:1,
-    ok:'确 定',
-    cancel:'取 消',
+    ok:'确定',
+    cancel:'取消',
     set:'设置',
     today:'今天',
     now:'现在',
-    yes:'是 的',
-    no:'不 是',
+    yes:'是',
+    no:'否',
     noFlash:'需要Flash!',
     transparent:'透明'
 };

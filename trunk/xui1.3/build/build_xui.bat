@@ -30,6 +30,8 @@ xcopy %relPath%xui\Locale\*.* %outPath%xui\Locale\ /E /Y
 copy  %relPath%xui\ondrag.gif %outPath%xui\ondrag.gif
 copy  %relPath%xui\bg.gif %outPath%xui\bg.gif
 copy  %relPath%xui\busy.gif %outPath%xui\busy.gif
+copy  %relPath%xui\icon.png %outPath%xui\icon.png
+copy  %relPath%xui\picture.png %outPath%xui\picture.png
 
 rem ==================
 rem for mini xui code

@@ -2046,8 +2046,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1},
         Behaviors:{
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', HCELL:'HCELL', FHCELL:'FHCELL'},
-            ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL'},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', HCELL:'HCELL', FHCELL:'FHCELL',CMD:'CMD'},
+            ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
             DroppableKeys:['SCROLL','CELLS','ROWTOGGLE'],
             DraggableKeys:['FCELL'],
 
@@ -3106,9 +3106,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,row, cmdkey, e, src);
                     return false;
-                },
-                beforeMousedown:function(){return false;},
-                beforeMouseup:function(){return false;}
+                }
             }
         },
         DataModel:{
