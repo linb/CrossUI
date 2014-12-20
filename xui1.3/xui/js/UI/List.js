@@ -144,7 +144,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             $order:60,
                             tagName:'span',
                             text:"{tagCmds}"
-                        }
+                        }    
                     }
                 },
                 'items.tagCmds':function(profile,template,v,tag,result){
@@ -268,13 +268,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 'background-position':'-130px -264px'
             },
             TAGCMDS:{
-                "padding-right":'4px',
-                'vertical-align':'middle',
-                position:(xui.browser.ie&&xui.browser.ver<8)?'absolute':'relative',
-                left:(xui.browser.ie&&xui.browser.ver<8)?'auto':null,
-                right:(xui.browser.ie&&xui.browser.ver<8)?'2px':null,
-                zoom:xui.browser.ie?1:null,
-                "float":(xui.browser.ie&&xui.browser.ver<8)?null:'right'
+                "padding-left":'4px',
+                'vertical-align':'middle'
             },
             CMD:{
                 "margin-left":'2px',
@@ -284,8 +279,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:'ITEM', OPT:'OPT'},
-            ClickEffected:{ITEM:'ITEM', OPT:'OPT'},
+            HoverEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
+            ClickEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
             onSize:xui.UI.$onSize,
@@ -452,9 +447,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
-                },
-                beforeMousedown:function(){return false;},
-                beforeMouseup:function(){return false;}
+                }
             }
         },
         DataModel:{
@@ -574,9 +567,17 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 for(var i=0,t=cmds,l=t.length;i<l;i++){
                     if(typeof t[i]=='string')t[i]={id:t[i]};
                     c=t[i];
+
+                    if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
+
                     if(!c.caption)c.caption=c.id;
+                    if(!('tips' in c))c.tips=c.caption;
+
                     c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
                     if(!c.type)c.type="button";
+                    
+                    if(c.caption)c.caption=xui.adjustRes(c.caption);
+                    if(c.tips)c.tips=xui.adjustRes(c.tips);
                     if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
                     c._style="";
                     if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";

@@ -19931,7 +19931,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'singleOpen':'单节点打开',
             'dynDestory':'动态销毁子行',
             'tagCmds':"命令按钮集",
-            'optBtn':'显示选项按钮'
+            'optBtn':'显示选项按钮',
+            'togglePlaceholder':'切换按钮占位'
         },
         'xui_UI_TreeView' : {
             noIcons:"隐藏图标"

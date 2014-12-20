@@ -1335,7 +1335,7 @@ Class('xui.Dom','xui.absBox',{
 
             t=p.childNodes;
             for(k=0;o=t[k];k++){
-                if(o==node || o.nodeType !=1 || !o.$xid || o.style.display=='none' || o.style.visibility=='hidden' ||  xui.getNodeData(o,'zIndexIgnore') )continue;
+                if(o==node || o.nodeType !=1 || !o.$xid || o.style.display=='none' || o.style.visibility=='hidden' || o.zIndexIgnore ||  xui.getNodeData(o,'zIndexIgnore') )continue;
                 j = parseInt(o.style && o.style.zIndex,10) || 0 ;
                 i=i>j?i:j;
             }

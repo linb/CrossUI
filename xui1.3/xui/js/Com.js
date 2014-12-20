@@ -615,16 +615,20 @@ Class('xui.Com',null,{
                             }catch(e){}
                         }
                         var a=this,f=function(){
-                            if(!_.isFun(a))
-                                throw "'"+cls+"' is not a constructor";
-                            var o=new a();
-                            // record it
-                            a._callfrom=cls;
-
-                            _.set(xui.ComFactory,["_cache",cls],o);
-
-                            if(showUI!==false)o.show(onEnd);
-                            else _.tryF(onEnd,[null,o],o);
+                            if(!_.isFun(a)){
+                                var e=new Error( "'"+cls+"' is not a constructor");
+                                _.tryF(onEnd,[e,null]);
+                                throw e;
+                            }else{
+                                var o=new a();
+                                // record it
+                                a._callfrom=cls;
+    
+                                _.set(xui.ComFactory,["_cache",cls],o);
+    
+                                if(showUI!==false)o.show(onEnd);
+                                else _.tryF(onEnd,[null,o],o);
+                            }
                         };
                         if(theme&&theme!="default"){
                             xui.setTheme(theme,true,function(){
