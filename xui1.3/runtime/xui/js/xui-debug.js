@@ -10948,7 +10948,7 @@ type:4
             if(node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
-                value = ((''+parseFloat(value))==(''+value)) ? (parseInt(value,10)||0) + "px" : value +'';
+                value =_.isFinite(value) ? ((parseInt(value,10)||0) + "px") : (value +'');
                 if((key=='width'||key=='height') && value.charAt(0)=='-')value='0';
                 if(style[key]!=value){
                     style[key]=value;
@@ -20022,8 +20022,8 @@ Class("xui.absList", "xui.absObj",{
                 });
             });
         },
-        getItems:function(type){
-            var v=this.get(0).properties.items;
+        getItems:function(type, v){
+            v=v||this.get(0).properties.items;
             if(type=='data')
                 return _.clone(v,true);
             else if(type=='min'){
@@ -21498,6 +21498,11 @@ new function(){
     });
 };
 Class("xui.UI.Image", "xui.UI",{
+    Initialize:function(){
+        var ns=this;
+        ns._adjustItems = xui.absList._adjustItems;
+        ns.prototype._prepareItems  = function(a){return a;};
+    },
     Instance:{
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
@@ -21529,10 +21534,10 @@ Class("xui.UI.Image", "xui.UI",{
                         var prop=profile.properties,
                             size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
-                        profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
+                        profile.boxing().afterLoad(profile, path, size[0], size[1]);
                         if(prop.dock!='none')
                             profile.boxing().adjustDock();
-                       i.onload=null;                       
+                       i.onload=null;
                     }
                     // must after onload for IE<8 fix
                     i.src=path;
@@ -21553,10 +21558,11 @@ Class("xui.UI.Image", "xui.UI",{
             }
         },
         RenderTrigger:function(){
-            var self=this, pro=self.properties, v=pro.src;
-            if(v){
-                self.boxing().setSrc(v, v!=xui.ini.img_bg);
-            }
+            var self=this, pro=self.properties,
+                  v=pro.src, v2=pro.activeItem;
+            if(v2 && -1!=_.arr.subIndexOf(pro.items,"id",v2)){
+                self.boxing().setActiveItem(v2, true);
+            }else if(v)self.boxing().setSrc(v, v!=xui.ini.img_bg);
         },
         EventHandlers:{
             onClick:function(profile, e, src){},
@@ -21617,17 +21623,43 @@ Class("xui.UI.Image", "xui.UI",{
             src:{
                 format:'image',
                 ini:xui.ini.img_bg,
+                linkage:["activeItem"],
                 //use asyn mode
                 action:function(v){
                     var self=this;
                     if(false!==self.boxing().beforeLoad(this))
                         _.asyRun(function(){self.getRoot().attr({width:'0',height:'0',src:xui.adjustRes(v)})});
+                    if(!self.$inner)
+                        self.properties.activeItem="";
                 }
             },
             alt:{
                 ini:"",
                 action:function(v){
                     this.getRoot().attr('alt',v);
+                }
+            },
+            items:{
+                ini:[]
+            },
+            activeItem:{
+                ini:"",
+                linkage:["src","alt","tips"],
+                action:function(v){
+                    var items=this.properties.items,
+                        i=_.arr.subIndexOf(items,"id",v),
+                        item,ins=this.boxing(),
+                        src,alt,tips;
+                    if((i!=-1) && (item=items[i])){
+                        src=item.image||xui.ini.img_bg;
+                        alt=item.alt||"";
+                        tips=item.tips||"";
+                    }
+                    this.$inner=1;
+                    ins.setSrc(src||xui.ini.img_bg, true);
+                    delete this.$inner;
+                    ins.setAlt(alt||"");
+                    ins.setTips(tips||"");
                 }
             },
             cursor:{
@@ -24933,16 +24965,18 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var p=profile.properties,b=profile.box,
                         o=profile._inValid,
+                        instance=profile.boxing(),
                         value=xui.use(src).get(0).value;
                     
                     if(profile.$Mask && profile.$Mask==value){
                         value="";
                     }
+
                     // trigger events
-                    profile.boxing().setUIValue(value,null,null,'onchange');
+                    instance.setUIValue(value,null,null,'onchange');
                     // input/textarea is special, ctrl value will be set before the $UIvalue
-                    p.$UIvalue=value;
-                    if(o!==profile._inValid) if(profile.renderId)profile.boxing()._setDirtyMark();
+                    if(p.$UIvalue!==value)instance._setCtrlValue(p.$UIvalue);
+                    if(o!==profile._inValid) if(profile.renderId)instance._setDirtyMark();
 
                     b._asyCheck(profile);
                 },
@@ -25004,9 +25038,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
-                        profile.$_inner=true;
                         profile.boxing()._setCtrlValue(p.$UIvalue);
-                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -26908,6 +26940,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         this.setTemplate(t);
 
         this._adjustItems=xui.absList._adjustItems;
+        this.prototype.getItems=xui.absList.prototype.getItems;
     },
     Static:{
         _beforeResetValue:function(profile){
@@ -27293,14 +27326,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onChange:function(profile, e, src){
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var o=profile._inValid,
-                        b=profile.box,
+                        p=profile.properties,b=profile.box,
                         instance=profile.boxing(),
                         v = instance._fromEditor(xui.use(src).get(0).value),
-                        uiv=profile.properties.$UIvalue;
+                        uiv=p.$UIvalue;
                     if(!instance._compareValue(uiv,v)){
-                        profile.$_inner=1;
-                        delete profile.$_inner;
-
                         //give a invalid value in edit mode
                         if(v===null)
                             instance._setCtrlValue(uiv);
@@ -27308,7 +27338,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             // trigger events
                             instance.setUIValue(v,null,null,'onchange');
                             // input/textarea is special, ctrl value will be set before the $UIvalue
-                            profile.properties.$UIvalue=v;
+                            if(p.$UIvalue!==v)instance._setCtrlValue(p.$UIvalue);
                             if(o!==profile._inValid) if(profile.renderId)instance._setDirtyMark();
                         }
                     }
@@ -27326,9 +27356,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             return;
                         }
                         
-                        profile.$_inner=true;
                         profile.boxing()._setCtrlValue(p.$UIvalue);
-                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -27753,12 +27781,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 t.BOX.WRAP.INPUT.tagName='input';
                 t.BOX.WRAP.INPUT.type='text';
                 switch(properties.type){
+                case "none":
+                case "input":
+                case "number":
+                case "currency":
+                break;
                 case 'cmd':
                     t.BOX.WRAP.INPUT.type='button';
                 break;
                 case 'password':
                     t.BOX.WRAP.INPUT.type='password';
                 break;
+                // spin has spin buttons
                 case 'spin':
                     t.RBTN={
                         $order:20,
@@ -27774,6 +27808,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                     };
                 break;
+                // following have BTN button
                 case 'upload':
                 case 'file':
                     t.FILE={
@@ -27901,7 +27936,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelPos=t.labelPos || 'left',
                 px='px',
                 commandbtn=f(t.commandBtn!='none'?'SBTN':null),
-                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password')?null:'BTN'),
+                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='cmd')?null:'BTN'),
                 ww=width,
                 hh=height,
                 bw1=0,
@@ -42621,8 +42656,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var t=getPro(profile,cell,'editorListItems');
                     if(!t)
                         if(t=getPro(profile,cell,'editorListKey'))
-                           t=xui.UI.getCachedData(t);
-                    if(t && t.length)
+                           t=xui.UI.getCachedData(typeof(t)=="function"?t():t);
+                    if((typeof(t)=="function"?(t=t()):t) && t.length)
                         for(var i=0,l=t.length;i<l;i++)
                             if(t[i].id===v)
                                 return t[i].caption||v;
@@ -43492,10 +43527,10 @@ editorEvents
                             // set properties
                             if(t=getPro('editorListItems')){
                                 editor.setListKey(null);
-                                editor.setItems(t);
+                                editor.setItems(typeof(t)=="function"?t():t);
                             }else if(t=getPro('editorListKey')) {
                                 editor.setItems(null);
-                                editor.setListKey(t);
+                                editor.setListKey(typeof(t)=="function"?t():t);
                             }
                             break;
                     }

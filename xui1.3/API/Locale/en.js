@@ -15466,6 +15466,30 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getItems:{
+                $desc:"Gets the gallery items.",
+                $rtn:"Array"
+            },
+            setItems:{
+                $desc:"Sets the gallery items.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Array, the items.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
+            getActiveItem:{
+                $desc:"Gets the active item's key in gallery",
+                $rtn:"String"
+            },
+            setActiveItem:{
+                $desc:"Sets the active item's key in gallery",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getAlt:{
                 $desc:"Gets image alt value",
                 $rtn:"String",

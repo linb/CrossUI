@@ -4968,8 +4968,8 @@ Class("xui.absList", "xui.absObj",{
                 });
             });
         },
-        getItems:function(type){
-            var v=this.get(0).properties.items;
+        getItems:function(type, v){
+            v=v||this.get(0).properties.items;
             if(type=='data')
                 return _.clone(v,true);
             else if(type=='min'){
