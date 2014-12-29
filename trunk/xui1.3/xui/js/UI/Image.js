@@ -1,4 +1,9 @@
 Class("xui.UI.Image", "xui.UI",{
+    Initialize:function(){
+        var ns=this;
+        ns._adjustItems = xui.absList._adjustItems;
+        ns.prototype._prepareItems  = function(a){return a;};
+    },
     Instance:{
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
@@ -30,10 +35,10 @@ Class("xui.UI.Image", "xui.UI",{
                         var prop=profile.properties,
                             size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
-                        profile.boxing().afterLoad(profile, path, size[0], size[1]);                    
+                        profile.boxing().afterLoad(profile, path, size[0], size[1]);
                         if(prop.dock!='none')
                             profile.boxing().adjustDock();
-                       i.onload=null;                       
+                       i.onload=null;
                     }
                     // must after onload for IE<8 fix
                     i.src=path;
@@ -54,10 +59,11 @@ Class("xui.UI.Image", "xui.UI",{
             }
         },
         RenderTrigger:function(){
-            var self=this, pro=self.properties, v=pro.src;
-            if(v){
-                self.boxing().setSrc(v, v!=xui.ini.img_bg);
-            }
+            var self=this, pro=self.properties,
+                  v=pro.src, v2=pro.activeItem;
+            if(v2 && -1!=_.arr.subIndexOf(pro.items,"id",v2)){
+                self.boxing().setActiveItem(v2, true);
+            }else if(v)self.boxing().setSrc(v, v!=xui.ini.img_bg);
         },
         EventHandlers:{
             onClick:function(profile, e, src){},
@@ -118,17 +124,43 @@ Class("xui.UI.Image", "xui.UI",{
             src:{
                 format:'image',
                 ini:xui.ini.img_bg,
+                linkage:["activeItem"],
                 //use asyn mode
                 action:function(v){
                     var self=this;
                     if(false!==self.boxing().beforeLoad(this))
                         _.asyRun(function(){self.getRoot().attr({width:'0',height:'0',src:xui.adjustRes(v)})});
+                    if(!self.$inner)
+                        self.properties.activeItem="";
                 }
             },
             alt:{
                 ini:"",
                 action:function(v){
                     this.getRoot().attr('alt',v);
+                }
+            },
+            items:{
+                ini:[]
+            },
+            activeItem:{
+                ini:"",
+                linkage:["src","alt","tips"],
+                action:function(v){
+                    var items=this.properties.items,
+                        i=_.arr.subIndexOf(items,"id",v),
+                        item,ins=this.boxing(),
+                        src,alt,tips;
+                    if((i!=-1) && (item=items[i])){
+                        src=item.image||xui.ini.img_bg;
+                        alt=item.alt||"";
+                        tips=item.tips||"";
+                    }
+                    this.$inner=1;
+                    ins.setSrc(src||xui.ini.img_bg, true);
+                    delete this.$inner;
+                    ins.setAlt(alt||"");
+                    ins.setTips(tips||"");
                 }
             },
             cursor:{

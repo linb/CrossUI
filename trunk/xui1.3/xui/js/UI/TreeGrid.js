@@ -4109,8 +4109,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var t=getPro(profile,cell,'editorListItems');
                     if(!t)
                         if(t=getPro(profile,cell,'editorListKey'))
-                           t=xui.UI.getCachedData(t);
-                    if(t && t.length)
+                           t=xui.UI.getCachedData(typeof(t)=="function"?t():t);
+                    if((typeof(t)=="function"?(t=t()):t) && t.length)
                         for(var i=0,l=t.length;i<l;i++)
                             if(t[i].id===v)
                                 return t[i].caption||v;
@@ -4980,10 +4980,10 @@ editorEvents
                             // set properties
                             if(t=getPro('editorListItems')){
                                 editor.setListKey(null);
-                                editor.setItems(t);
+                                editor.setItems(typeof(t)=="function"?t():t);
                             }else if(t=getPro('editorListKey')) {
                                 editor.setItems(null);
-                                editor.setListKey(t);
+                                editor.setListKey(typeof(t)=="function"?t():t);
                             }
                             break;
                     }

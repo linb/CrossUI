@@ -3124,7 +3124,7 @@ type:4
             if(node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
-                value = ((''+parseFloat(value))==(''+value)) ? (parseInt(value,10)||0) + "px" : value +'';
+                value =_.isFinite(value) ? ((parseInt(value,10)||0) + "px") : (value +'');
                 if((key=='width'||key=='height') && value.charAt(0)=='-')value='0';
                 if(style[key]!=value){
                     style[key]=value;

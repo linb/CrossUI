@@ -474,6 +474,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         this.setTemplate(t);
 
         this._adjustItems=xui.absList._adjustItems;
+        this.prototype.getItems=xui.absList.prototype.getItems;
     },
     Static:{
         _beforeResetValue:function(profile){
@@ -859,14 +860,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onChange:function(profile, e, src){
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var o=profile._inValid,
-                        b=profile.box,
+                        p=profile.properties,b=profile.box,
                         instance=profile.boxing(),
                         v = instance._fromEditor(xui.use(src).get(0).value),
-                        uiv=profile.properties.$UIvalue;
+                        uiv=p.$UIvalue;
                     if(!instance._compareValue(uiv,v)){
-                        profile.$_inner=1;
-                        delete profile.$_inner;
-
                         //give a invalid value in edit mode
                         if(v===null)
                             instance._setCtrlValue(uiv);
@@ -874,7 +872,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             // trigger events
                             instance.setUIValue(v,null,null,'onchange');
                             // input/textarea is special, ctrl value will be set before the $UIvalue
-                            profile.properties.$UIvalue=v;
+                            if(p.$UIvalue!==v)instance._setCtrlValue(p.$UIvalue);
                             if(o!==profile._inValid) if(profile.renderId)instance._setDirtyMark();
                         }
                     }
@@ -892,9 +890,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             return;
                         }
                         
-                        profile.$_inner=true;
                         profile.boxing()._setCtrlValue(p.$UIvalue);
-                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
@@ -1319,12 +1315,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 t.BOX.WRAP.INPUT.tagName='input';
                 t.BOX.WRAP.INPUT.type='text';
                 switch(properties.type){
+                case "none":
+                case "input":
+                case "number":
+                case "currency":
+                break;
                 case 'cmd':
                     t.BOX.WRAP.INPUT.type='button';
                 break;
                 case 'password':
                     t.BOX.WRAP.INPUT.type='password';
                 break;
+                // spin has spin buttons
                 case 'spin':
                     t.RBTN={
                         $order:20,
@@ -1340,6 +1342,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                     };
                 break;
+                // following have BTN button
                 case 'upload':
                 case 'file':
                     t.FILE={
@@ -1467,7 +1470,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelPos=t.labelPos || 'left',
                 px='px',
                 commandbtn=f(t.commandBtn!='none'?'SBTN':null),
-                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password')?null:'BTN'),
+                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='cmd')?null:'BTN'),
                 ww=width,
                 hh=height,
                 bw1=0,

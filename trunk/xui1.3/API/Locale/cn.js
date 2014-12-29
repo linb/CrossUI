@@ -15392,6 +15392,30 @@ _.set(xui.Locale,["cn","app"], {
                     "alert(o.setMaxWidth(500).getMaxWidth());"+
                     "}"
                 ]
+           },
+            getItems:{
+                $desc:"得到图像字典项目列表.",
+                $rtn:"Array"
+            },
+            setItems:{
+                $desc:"设置图像字典项目列表.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
+            },
+            getActiveItem:{
+                $desc:"得到当前图像关键字（图像字典项目列表中）",
+                $rtn:"String"
+            },
+            setActiveItem:{
+                $desc:"设置当前图像关键字（图像字典项目列表中）",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                ]
             },
             getAlt:{
                 $desc:"获取图像的 Alt 值",
@@ -19633,8 +19657,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Label' : {
             'caption':'标题文字',
-            'image':'图标路径',
-            'imagePos':'图标背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
             'shadowText':'阴影文字',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
@@ -19647,8 +19671,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Button' : {
             'caption':'标题文字',
-            'image':'图标路径',
-            'imagePos':'图标背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
             'type':'按钮类型'
@@ -19691,8 +19715,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'dropListWidth':'弹出窗口宽',
             'dropListHeight':'弹出窗口高',
             'items':'下拉框项目',
-            'btnImage':'图标路径',
-            'btnImagePos':'图标背景偏移',
+            'btnImage':'图像路径',
+            'btnImagePos':'图像背景偏移',
             'increment':'增量值',
             'min':'最小值',
             'max':'最大值',
@@ -19711,8 +19735,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'html':'内部HTML文本',
             'overflow':'容器溢出属性',
             'caption':'对话框标题',
-            'image':'图标路径',
-            'imagePos':'图标背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
             'movable':'对话框可拖动',
             'minBtn':'显示最小按钮',
             'restoreBtn':'显示恢复按钮',
@@ -19742,14 +19766,14 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'hAlign':'水平对齐方式'
         },
         'xui_UI_SButton' : {
-            'image':'图标路径',
-            'imagePos':'图标背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
             'caption':'按钮标题文字',
             'hAlign':'水平对齐方式'
         },
         'xui_UI_SCheckBox' : {
-            'image':'图标路径',
-            'imagePos':'图标背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
             'caption':'按钮标题文字'
         },
         'xui_UI_Element' : {
@@ -19780,13 +19804,13 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'caption':'标题',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
-            'image':'图标路径',
-            'imagePos':'图标背景偏移'
+            'image':'图像路径',
+            'imagePos':'图像背景偏移'
         },
         'xui_UI_Panel' : {
             'caption':'标题文字',
-            'image':'图标路径',
-            'imagePos':'图标背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
             'infoBtn':'显示帮助按钮',
@@ -19801,7 +19825,9 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'maxWidth':'图像最大宽度',
             'maxHeight':'图像最大高度',
             'src':'图像文件路径',
-            'alt':'替代文字',
+            'alt':'图像替代文字',
+            "items":"图像字典",
+            "activeItem":"当前图像",
             'cursor':'鼠标样式'
         },
         'xui_UI_Flash' : {
@@ -19861,10 +19887,10 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'errImg':'加载失败图片'
         },
         'xui_UI_IconList' : {
-            'itemMargin':'图标项外补丁',
-            'itemPadding':'图标项内补丁',
-            'itemWidth':'图标项宽度',
-            'itemHeight':'图标项高度',
+            'itemMargin':'图像项外补丁',
+            'itemPadding':'图像项内补丁',
+            'itemWidth':'图像项宽度',
+            'itemHeight':'图像项高度',
             'autoItemSize':'画廊项自动尺寸',
             'loadingImg':'加载中图片'
         },
@@ -19935,7 +19961,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'togglePlaceholder':'切换按钮占位'
         },
         'xui_UI_TreeView' : {
-            noIcons:"隐藏图标"
+            noIcons:"隐藏图像"
         },
         'xui_UI_MenuBar' : {
             'parentID':'父对象标示',

@@ -320,16 +320,18 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var p=profile.properties,b=profile.box,
                         o=profile._inValid,
+                        instance=profile.boxing(),
                         value=xui.use(src).get(0).value;
                     
                     if(profile.$Mask && profile.$Mask==value){
                         value="";
                     }
+
                     // trigger events
-                    profile.boxing().setUIValue(value,null,null,'onchange');
+                    instance.setUIValue(value,null,null,'onchange');
                     // input/textarea is special, ctrl value will be set before the $UIvalue
-                    p.$UIvalue=value;
-                    if(o!==profile._inValid) if(profile.renderId)profile.boxing()._setDirtyMark();
+                    if(p.$UIvalue!==value)instance._setCtrlValue(p.$UIvalue);
+                    if(o!==profile._inValid) if(profile.renderId)instance._setDirtyMark();
 
                     b._asyCheck(profile);
                 },
@@ -391,9 +393,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
-                        profile.$_inner=true;
                         profile.boxing()._setCtrlValue(p.$UIvalue);
-                        profile.$_inner=false;
                         if(profile.onCancel)
                             profile.boxing().onCancel(profile);
                     }
