@@ -221,14 +221,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(profile.$poplink)return;
 
                 var o,v,
-                box = profile.boxing(),
-                main = profile.getRoot(),
-                pos = main.offset(),
-                size = main.cssSize()
-                ;
-                size.width += 2;
+                    box = profile.boxing(),
+                    main = profile.getRoot(),
+                    pos = main.offset(),
+                    size = main.cssSize();
                 pos.top += main.offsetHeight();
-
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
                 if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src))||type=='getter'||type=='cmdbox'||type=='popbox')
@@ -280,7 +277,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'helpinput':
                             o = xui.create('List');
                             o.setHost(profile).setDirtyMark(false).setItems(_.copy(pro.items)).setListKey(pro.listKey||'');
-                            o.setWidth(pro.dropListWidth || (pro.width-(pro.labelSize||0)));
+                            o.setWidth(pro.dropListWidth>=2?pro.dropListWidth:(size.width - (pro.labelSize||0) - (pro.borderType!='none'?2:0)));
                             if(pro.dropListHeight)
                                 o.setHeight(pro.dropListHeight);
                             else

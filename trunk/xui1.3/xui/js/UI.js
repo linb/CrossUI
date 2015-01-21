@@ -6266,14 +6266,14 @@ new function(){
                 iframeAutoLoad:{
                     ini:"",
                     action:function(){
-                        this.getSubNode("PANEL").html("",false);
+                        this.getRoot().html("",false);
                         this.box._applyAutoLoad(this);
                     }
                 },
                 ajaxAutoLoad:{
                     ini:"",
                     action:function(){
-                        this.getSubNode("PANEL").html("",false);
+                        this.getRoot().html("",false);
                         this.box._applyAutoLoad(this);
                     }
                 },
@@ -6335,7 +6335,7 @@ new function(){
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();                    
-                    ifr.src=_if.url;
+                    //ifr.src=_if.url;
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';

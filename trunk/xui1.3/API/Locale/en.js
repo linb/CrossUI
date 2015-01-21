@@ -19085,6 +19085,28 @@ _.set(xui.Locale,["en","app"], {
                     "JSON: Object, JSON Ojbect."
                 ]
             },
+            getPlotData:{
+                $desc:"Gets plot data.",
+                $rtn:"Object"
+            },
+            setPlotData:{
+                $desc:"Sets plot data.",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, data object."
+                ]
+            },
+            getFeedData:{
+                $desc:"Gets the last real-time data.",
+                $rtn:"Object"
+            },
+            setFeedData:{
+                $desc:"Feal-time feed data.",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, data object."
+                ]
+            },
             getJSONUrl:{
                 $desc:"Gets JSON URL.",
                 $rtn:"String"
@@ -19138,6 +19160,22 @@ _.set(xui.Locale,["en","app"], {
                     "isLineset: Boolean, to determine whether it sets lineset or not."
                 ]
             },
+            updateData:{
+                $desc:"This function feeds real-time data to real-time gauges. In single value gauges (LEDs, Bulb, Cylinder, Thermometer) The function takes a numeric value as the parameter. For Angular gauge and Horizontal Linear gauge, this function accepts two parameters - the dial number and the value to update.",
+                $rtn:"[self]",
+                $paras:[
+                    "index: Number, index or value",
+                    "value: Number, value"
+                ]
+            },
+            updateDataById:{
+                $desc:"This function feeds real-time data to Angular gauge or Linear gauge. This function is required when you have set IDs to dials or pointers in these gauges. The function takes the dial ID as the first parameter and a numeric value (the updated data) as the second parameter.",
+                $rtn:"[self]",
+                $paras:[
+                    "key: String, id",
+                    "value: Number, value"
+                ]
+            },
             getFCObject:{
                 $desc:"Gets FusionChartsXT object.",
                 $rtn:"Object"
@@ -19146,14 +19184,17 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Refresh FusionChart."
             },
             onDataClick:{
-                $desc:"Fired when FusionChart's link was clicked.",
+                $desc:"Fired when FusionChart's plot data was clicked.",
                 $paras:[
                     "prf : xui.UIProfile.",
-                    "value: Object, data value.",
-                    "category: Object, category data.",
-                    "series: Object, series data.",
-                    "catIndex: Number, category index.",
-                    "serIndex: Number, serIndex index."
+                    "argsMap: Object, events arguments map."
+                ]
+            },
+            onLabelClick:{
+                $desc:"Fired when FusionChart's the x-axis label was clicked.",
+                $paras:[
+                    "prf : xui.UIProfile.",
+                    "argsMap: Object, events arguments map."
                 ]
             },
             onFusionChartsEvent:{
