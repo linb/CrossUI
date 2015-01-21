@@ -19017,6 +19017,28 @@ _.set(xui.Locale,["cn","app"], {
                     "JSON: Object, JSON 对象."
                 ]
             },
+            getPlotData:{
+                $desc:"得到图块数据.",
+                $rtn:"Object"
+            },
+            setPlotData:{
+                $desc:"设置图块数据.",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, 数据对象."
+                ]
+            },
+            getFeedData:{
+                $desc:"得到实时数据.",
+                $rtn:"Object"
+            },
+            setFeedData:{
+                $desc:"设置实时数据.",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, 数据对象."
+                ]
+            },
             getJSONUrl:{
                 $desc:"得到JSON数据地址.",
                 $rtn:"String"
@@ -19070,6 +19092,22 @@ _.set(xui.Locale,["cn","app"], {
                     "isLineset: Boolean, 是否为lineset"
                 ]
             },
+            updateData:{
+                $desc:"为实时高斯图更新数据。如果是单高斯(LEDs, Bulb, Cylinder, Thermometer),第一个参数为刻度值; 如果是Angular gauge 或 Horizontal Linear gauge, 第一个参数是刻度索引, 第二个参数是刻度值.",
+                $rtn:"[self]",
+                $paras:[
+                    "index: Number, index or value",
+                    "value: Number, value"
+                ]
+            },
+            updateDataById:{
+                $desc:"为实时高斯或线性图更新数据（只对设置了id的图才有效）。",
+                $rtn:"[self]",
+                $paras:[
+                    "key: String, id",
+                    "value: Number, value"
+                ]
+            },
             getFCObject:{
                 $desc:"得到FusionChartsXT 对象.",
                 $rtn:"Object"
@@ -19078,14 +19116,17 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"刷新 FusionChart."
             },
             onDataClick:{
-                $desc:"在点击 FusionChart 数据链接的时候触发.",
+                $desc:"在点击 FusionChart 数据图形的时候触发.",
                 $paras:[
                     "prf : xui.UIProfile.",
-                    "value: Object, 点击链接的数据.",
-                    "category: Object, 点击链接所在的category数据.",
-                    "series: Object, 点击链接所在的series数据.",
-                    "catIndex: Number, 点击链接所在的category序号.",
-                    "serIndex: Number, 点击链接所在的serIndex序号."
+                    "argsMap: Object, 事件参数集合."
+                ]
+            },
+            onLabelClick:{
+                $desc:"在点击 FusionChart X轴标签的时候触发.",
+                $paras:[
+                    "prf : xui.UIProfile.",
+                    "argsMap: Object, 事件参数集合."
                 ]
             },
             onFusionChartsEvent:{
@@ -20120,7 +20161,9 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'JSONData':'JSON数据',
             'XMLUrl':'xml数据源',
             'XMLData':'xml数据',
-            'JSONUrl':'JSON数据源'
+            'JSONUrl':'JSON数据源',
+            plotData:"图块数据",
+            feedData:"实时数据"
         }
 });
 _.set(xui.Locale,["cn","doc","eventname"],{
@@ -20508,7 +20551,8 @@ _.set(xui.Locale,["cn","doc","eventname"],{
         'xui_svg_connector' : {
         },
         'xui_UI_FusionChartsXT' : {
-            onDataClick:"点击数据块",
+            onDataClick:"点击数据图块",
+            onLabelClick:"点击X轴标签",
             onFusionChartsEvent:"FC事件触发"
         }
 });
