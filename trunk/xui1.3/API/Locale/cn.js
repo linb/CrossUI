@@ -19129,6 +19129,13 @@ _.set(xui.Locale,["cn","app"], {
                     "argsMap: Object, 事件参数集合."
                 ]
             },
+            onAnnotationClick:{
+                $desc:"在点击 FusionChart 注释的时候触发.",
+                $paras:[
+                    "prf : xui.UIProfile.",
+                    "argsMap: Object, 事件参数集合."
+                ]
+            },
             onFusionChartsEvent:{
                 $desc:"所有 FusionChart 事件.",
                 $paras:[

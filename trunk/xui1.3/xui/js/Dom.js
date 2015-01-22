@@ -841,6 +841,9 @@ Class('xui.Dom','xui.absBox',{
                 }
                 if(_.isSet(left))style.left=left;
                 if(_.isSet(top))style.top=top;
+                //force to visible
+//                if(style.visibility!='visible')style.visibility='visible';
+//                if(style.display=='none')style.display='';
 
                 //ie6 bug
               /*  if(xui.browser.ie6){

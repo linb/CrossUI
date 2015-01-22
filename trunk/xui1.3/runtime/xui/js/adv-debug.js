@@ -18935,7 +18935,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                                 fc.setJSONData(prf.box._prepareFCData(prf,prop.JSONData));
                             }
                     }
-                    // ensure [link]
+                    // ensure cursor pointer
                     if(!flag){
                         fc.setJSONData(prf.box._prepareFCData(prf,fc.getJSONData()));
                     }
