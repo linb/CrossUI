@@ -19191,7 +19191,14 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             onLabelClick:{
-                $desc:"Fired when FusionChart's the x-axis label was clicked.",
+                $desc:"Fired when FusionChart's x-axis label was clicked.",
+                $paras:[
+                    "prf : xui.UIProfile.",
+                    "argsMap: Object, events arguments map."
+                ]
+            },
+            onAnnotationClick:{
+                $desc:"Fired when FusionChart's annotation was clicked.",
                 $paras:[
                     "prf : xui.UIProfile.",
                     "argsMap: Object, events arguments map."

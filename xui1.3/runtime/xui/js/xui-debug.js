@@ -8665,6 +8665,9 @@ Class('xui.Dom','xui.absBox',{
                 }
                 if(_.isSet(left))style.left=left;
                 if(_.isSet(top))style.top=top;
+                //force to visible
+//                if(style.visibility!='visible')style.visibility='visible';
+//                if(style.display=='none')style.display='';
 
                 //ie6 bug
               /*  if(xui.browser.ie6){
@@ -16048,7 +16051,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
-                var t=o.properties,b;
+                var t=o.properties,ins=o.boxing(),b;
                 left=(left||left===0)?(parseInt(left,10)||0):null;
                 top=(top||top===0)?(parseInt(top,10)||0):null;
                 if(left!==null)t.left=left;
@@ -16068,7 +16071,9 @@ Class("xui.UI",  "xui.absObj", {
                     else if(p['xui.UI'])n=(n=p.get(0))&&n.renderId;
                     else n=(p=xui(p))&&p._nodes[0];
                     if(n){
-                        p.append(o.boxing(),subId);
+                        p.append(ins,subId);
+//                        if(t.visibility=="hidden")ins.setVisibility("",true);
+//                        if(t.display=="none")ins.setDisplay("",true);
                         if(!b)o.getRoot().show(left&&(left+'px'), top&&(top+'px'));
                     }
                 }
