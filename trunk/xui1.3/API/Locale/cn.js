@@ -20560,6 +20560,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
         'xui_UI_FusionChartsXT' : {
             onDataClick:"点击数据图块",
             onLabelClick:"点击X轴标签",
+            onAnnotationClick:'点击注释',
             onFusionChartsEvent:"FC事件触发"
         }
 });

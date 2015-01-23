@@ -5190,12 +5190,11 @@ Class("xui.absList", "xui.absObj",{
             return (item&&item.dragKey) ||profile.properties.dragKey;
         },
         _adjustItems:function(arr){
-            if(!arr)arr=[];
-            if(_.isStr(arr))arr=[arr];
-
+            if(!_.isSet(arr))arr=[];
+            if(!_.isArr(arr))arr=[arr];
             var a=_.copy(arr),m;
             _.arr.each(a,function(o,i){
-                if(typeof o!= 'object')
+                if(!_.isHash(o))
                     a[i]={id:o+''};
                 else{
                     a[i]=_.copy(o);
