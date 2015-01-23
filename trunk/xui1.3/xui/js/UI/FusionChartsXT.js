@@ -427,7 +427,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
                 },f2=function(a,argsMap){
                     if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
-                },f2=function(a,argsMap){
+                },f3=function(a,argsMap){
                     if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
                 };
             t.addEventListener("dataplotClick",f1);
