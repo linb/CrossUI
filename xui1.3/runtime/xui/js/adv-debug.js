@@ -19308,19 +19308,22 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             var t=FusionCharts(prf._chartId),
                 f1=function(a,argsMap){
                     if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
-                },
-                f2=function(a,argsMap){
+                },f2=function(a,argsMap){
                     if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
+                },f3=function(a,argsMap){
+                    if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
                 };
             t.addEventListener("dataplotClick",f1);
             t.addEventListener("dataLabelClick",f2);
+            t.addEventListener("onAnnotationClick",f3);
             // set before destroy function
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
                 var t;
                 if(this._chartId && (t=FusionCharts(this._chartId))){
                     t.removeEventListener("dataplotClick",f1);
                     t.removeEventListener("dataLabelClick",f2);
-                    f1=f2=null;
+                    t.removeEventListener("onAnnotationClick",f3);
+                    f1=f2=f3=null;
                     t.dispose();
                 }
             }
@@ -19329,6 +19332,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             onFusionChartsEvent:function(prf, eventObject, argumentsObject){},
             onDataClick:function(prf, argsMap){},
             onLabelClick:function(prf, argsMap){},
+            onAnnotationClick:function(prf, argsMap){},
             onShowTips:null
         },
         _onresize:function(prf,width,height){
