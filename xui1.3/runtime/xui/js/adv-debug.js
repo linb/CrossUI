@@ -19315,14 +19315,14 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 };
             t.addEventListener("dataplotClick",f1);
             t.addEventListener("dataLabelClick",f2);
-            t.addEventListener("onAnnotationClick",f3);
+            t.addEventListener("annotationClick",f3);
             // set before destroy function
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
                 var t;
                 if(this._chartId && (t=FusionCharts(this._chartId))){
                     t.removeEventListener("dataplotClick",f1);
                     t.removeEventListener("dataLabelClick",f2);
-                    t.removeEventListener("onAnnotationClick",f3);
+                    t.removeEventListener("annotationClick",f3);
                     f1=f2=f3=null;
                     t.dispose();
                 }

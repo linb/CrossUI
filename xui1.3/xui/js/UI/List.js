@@ -297,7 +297,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         box = profile.boxing(),
                         ks=xui.Event.getKey(e);
 
-                    if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
+                    if(profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
 
                     if(properties.disabled|| item.disabled)return false;
 

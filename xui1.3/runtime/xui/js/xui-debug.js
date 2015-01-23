@@ -20247,12 +20247,11 @@ Class("xui.absList", "xui.absObj",{
             return (item&&item.dragKey) ||profile.properties.dragKey;
         },
         _adjustItems:function(arr){
-            if(!arr)arr=[];
-            if(_.isStr(arr))arr=[arr];
-
+            if(!_.isSet(arr))arr=[];
+            if(!_.isArr(arr))arr=[arr];
             var a=_.copy(arr),m;
             _.arr.each(a,function(o,i){
-                if(typeof o!= 'object')
+                if(!_.isHash(o))
                     a[i]={id:o+''};
                 else{
                     a[i]=_.copy(o);
@@ -31058,7 +31057,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         box = profile.boxing(),
                         ks=xui.Event.getKey(e);
 
-                    if(profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
+                    if(profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
 
                     if(properties.disabled|| item.disabled)return false;
 
@@ -34677,7 +34676,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             });
         },
         insertItems:function(arr, pid, base ,before, toggle){
-            if(!arr || !_.isArr(arr) || arr.length<1)return this;
             var node,data,
                 b=this._afterInsertItems;
 
@@ -35211,7 +35209,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 sk = profile.getKey(xui.Event.getSrc(e).id||""),
                 ignoreClick = sk==profile.keys.TOGGLE||sk==profile.keys.MARK;
 
-            if(!ignoreClick && profile.beforeClick && false===o.boxing().beforeClick(profile,item,e,src))return false;
+            if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
                 
             if(properties.disabled|| item.disabled)return false;
 
