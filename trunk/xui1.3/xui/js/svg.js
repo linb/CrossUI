@@ -17,7 +17,7 @@ Class("xui.svg", "xui.UI",{
                     o=ns.attr("opacity"),
                     fo=ns.attr("fill-opacity"),
                     tr=ns.attr("transform"),
-                    c = 6,
+                    c = 4,
                     r = ns.paper,
                     out = r.set(),
                     bbox = ns._getBBox(false),
@@ -541,10 +541,10 @@ Class("xui.svg", "xui.UI",{
             return this._getBBox('height');
         },
         setWidth:function(value){
-            return this._setBBox('width',value);
+            return this._setBBox('width',parseFloat(value));
         },
         setHeight:function(value){
-            return this._setBBox('height',value);
+            return this._setBBox('height',parseFloat(value));
         },
 
         _getBBox:function(key, withTransform){
