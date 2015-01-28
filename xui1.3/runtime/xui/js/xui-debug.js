@@ -3769,11 +3769,11 @@ Class('xui.absObj',"xui.absBox",{
                                     v.properties[i] = ovalue;
                             }
 
-                            if(v.afterPropertyChanged)
-                                v.boxing().afterPropertyChanged(v,i,value,ovalue);
+                            if(v.afterPropertyChanged)v.boxing().afterPropertyChanged(v,i,value,ovalue);
+                            if(v.$afterPropertyChanged) _.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
                         });
                     },n,self.KEY,null,'instance');
-                    delete o.set;
+                    //delete o.set;
                     if(ps[n]!==m)ps[n].$auto$=1;
                 }else
                     delete ps[n];
@@ -3788,7 +3788,7 @@ Class('xui.absObj',"xui.absBox",{
                         else
                             return this.get(0).properties[i];
                     },n,self.KEY,null,'instance');
-                    delete o.get;
+                    //delete o.get;
                     if(ps[n]!==m)ps[n].$auto$=1;
                 }else
                     delete ps[n];
@@ -18986,7 +18986,7 @@ Class("xui.UI",  "xui.absObj", {
                 _.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
                 });
-            }            
+            }
             prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){
@@ -21651,7 +21651,7 @@ Class("xui.UI.Image", "xui.UI",{
                 linkage:["src","alt","tips"],
                 action:function(v){
                     var items=this.properties.items,
-                        i=_.arr.subIndexOf(items,"id",v),
+                        i=_.arr.subIndexOf(items,"id",""+v),
                         item,ins=this.boxing(),
                         src,alt,tips;
                     if((i!=-1) && (item=items[i])){

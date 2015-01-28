@@ -328,15 +328,16 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     return data.dataset||data.data||{};
                 },
                 set:function(data){
-                    var JSONData=this.properties.JSONData,
-                        bak=JSONData.animation;
-                    JSONData.animation=0;
+                    var JSONData=this.properties.JSONData;
                     if(('dataset' in JSONData) || (_.isArr(data) && _.isArr(data[0])) )
                         JSONData.dataset=_.clone(data);
                     else
                         JSONData.data=_.clone(data);
+
+                    var bak=JSONData.chart.animation;
+                    JSONData.chart.animation='0';
                      this.boxing().refreshChart();
-                     if(bak)JSONData.animation=bak;else delete JSONData.animation;
+                     if(bak)JSONData.chart.animation=bak;else delete JSONData.chart.animation;
                      return this;
                 }
             },
@@ -345,6 +346,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 set:function(data){
                     var prf=this,t;
                      if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId)) && t.feedData){
+                        if(_.isFinite(data))data="value="+data;
                         t.feedData(data||"");
                     }
                 }

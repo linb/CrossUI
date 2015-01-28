@@ -3929,7 +3929,7 @@ Class("xui.UI",  "xui.absObj", {
                 _.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
                 });
-            }            
+            }
             prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){

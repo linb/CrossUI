@@ -13494,7 +13494,7 @@ Class("xui.svg", "xui.UI",{
                     o=ns.attr("opacity"),
                     fo=ns.attr("fill-opacity"),
                     tr=ns.attr("transform"),
-                    c = 6,
+                    c = 4,
                     r = ns.paper,
                     out = r.set(),
                     bbox = ns._getBBox(false),
@@ -14018,10 +14018,10 @@ Class("xui.svg", "xui.UI",{
             return this._getBBox('height');
         },
         setWidth:function(value){
-            return this._setBBox('width',value);
+            return this._setBBox('width',parseFloat(value));
         },
         setHeight:function(value){
-            return this._setBBox('height',value);
+            return this._setBBox('height',parseFloat(value));
         },
 
         _getBBox:function(key, withTransform){
@@ -19211,15 +19211,16 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     return data.dataset||data.data||{};
                 },
                 set:function(data){
-                    var JSONData=this.properties.JSONData,
-                        bak=JSONData.animation;
-                    JSONData.animation=0;
+                    var JSONData=this.properties.JSONData;
                     if(('dataset' in JSONData) || (_.isArr(data) && _.isArr(data[0])) )
                         JSONData.dataset=_.clone(data);
                     else
                         JSONData.data=_.clone(data);
+
+                    var bak=JSONData.chart.animation;
+                    JSONData.chart.animation='0';
                      this.boxing().refreshChart();
-                     if(bak)JSONData.animation=bak;else delete JSONData.animation;
+                     if(bak)JSONData.chart.animation=bak;else delete JSONData.chart.animation;
                      return this;
                 }
             },
@@ -19228,6 +19229,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 set:function(data){
                     var prf=this,t;
                      if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId)) && t.feedData){
+                        if(_.isFinite(data))data="value="+data;
                         t.feedData(data||"");
                     }
                 }

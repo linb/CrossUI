@@ -148,7 +148,7 @@ Class("xui.UI.Image", "xui.UI",{
                 linkage:["src","alt","tips"],
                 action:function(v){
                     var items=this.properties.items,
-                        i=_.arr.subIndexOf(items,"id",v),
+                        i=_.arr.subIndexOf(items,"id",""+v),
                         item,ins=this.boxing(),
                         src,alt,tips;
                     if((i!=-1) && (item=items[i])){
