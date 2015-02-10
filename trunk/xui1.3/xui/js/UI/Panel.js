@@ -32,7 +32,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         iniPanelView:function(){
             return this.each(function(profile){
                 profile.$ini=true;
+                var p=profile.properties;
                 if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
+                if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                    xui.UI.Div._applyAutoLoad(profile);
             });
         }
     },
@@ -171,7 +174,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             }
                         }
                     }
-                }                
+                }
             }
         },
         Appearances:{
@@ -252,7 +255,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
 
                     if(profile.beforePop && false==profile.boxing().beforePop(profile,options,e,src))
                         return false;
-                        
+
                     var pro = _.copy(xui.UI.Dialog.$DataStruct),
                         events={};
                     _.merge(pro, properties, 'with');
@@ -271,10 +274,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         _.merge(events, options.events, 'all');
 
                     var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
-                    
+
                     if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
                     }else{
-                        dialog.show(options.parent||xui('body'));    
+                        dialog.show(options.parent||xui('body'));
                         var arr=[];
                         _.arr.each(profile.children,function(o){
                             arr.push(o[0]);
@@ -406,8 +409,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         LayoutTrigger:function(){
             var self=this, t=self.properties, b=self.box;
-            if(t.toggle)
-                b._toggle(self,t.toggle);
+            if(!t.toggle)b._toggle(self,false,true);
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -422,9 +424,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             data.closeDisplay = data.closeBtn?'':nodisplay;
             data.popDisplay = data.popBtn?'':nodisplay;
             data.refreshDisplay= data.refreshBtn?'':nodisplay;
-            
+
             data._bordertype='xui-uiborder-'+data.borderType;
-            
+
             data._bbarDisplay=data.noFrame?nodisplay:"";
             data._leftp=data.noFrame?"padding-left:0;":"";
             data._rightp=data.noFrame?"padding-right:0;":"";
@@ -432,27 +434,24 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             profile._toggle = !!data.toggle;
             return data;
         },
-        _toggle:function(profile, value){
+        _toggle:function(profile, value, ignoreEvent){
             var p=profile.properties, ins=profile.boxing();
 
             //event
-            if(_.isSet(value) &&!profile.$ini){
-                profile.$ini=true;
-                if(ins.onIniPanelView)ins.onIniPanelView(profile);
-                if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                    xui.UI.Div._applyAutoLoad(profile);
+            if(value &&!profile.$ini){
+                ins.iniPanelView();
             }
 
-            if(profile._toggle !== !!value){
+            if(ignoreEvent || profile._toggle !== !!value){
                 //set toggle mark
                 profile._toggle = p.toggle = !!value;
-
-                if(value){
-                    if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
-                }else{
-                    if(ins.beforeFold && false===ins.beforeFold(profile))return;
+                if(!ignoreEvent){
+                    if(value){
+                        if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
+                    }else{
+                        if(ins.beforeFold && false===ins.beforeFold(profile))return;
+                    }
                 }
-
                 //show/hide/panel
                 profile.getSubNode('PANEL').css('display',value?'':'none');
                 //chang toggle button
@@ -464,12 +463,14 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
                 profile.getRoot().height(h?h:p.toggle?p.height:'auto');
 
-                if(value){
-                    if(ins.afterExpand)
-                        ins.afterExpand(profile);
-                }else{
-                    if(ins.afterFold)
-                        ins.afterFold(profile);
+                if(!ignoreEvent){
+                    if(value){
+                        if(ins.afterExpand)
+                            ins.afterExpand(profile);
+                    }else{
+                        if(ins.afterFold)
+                            ins.afterFold(profile);
+                    }
                 }
             }
         },
@@ -495,11 +496,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 }
             }
             if(width)
-                isize.width=width 
+                isize.width=width
                     -(noFrame?0:(parseInt(v6.css('paddingRight'),10)||0))
                     -(noFrame?0:(parseInt(v5.css('paddingLeft'),10)||0))
                     -v2._borderW();
             v2.cssSize(isize, true);
-        } 
+        }
     }
 });

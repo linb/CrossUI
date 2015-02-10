@@ -4094,7 +4094,7 @@ Class("xui.Timer","xui.absObj",{
         },
         start:function(){
             return this.each(function(profile){
-                if(!profile.$inDesign)return;
+                if(profile.$inDesign)return;
 
                 var p=profile.properties,box=profile.boxing(),
                 t=xui.Thread.repeat(function(threadId){
@@ -4119,10 +4119,8 @@ Class("xui.Timer","xui.absObj",{
             var o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
-            if(p.tagVar && _.isEmpty(p.tagVar))
-                delete p.tagVar;
-            if(p.propBinder && _.isEmpty(p.propBinder))
-                delete p.tagVar;
+            for(var i in profile.box._objectProp)
+                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
             return o;
         },
         DataModel:{
