@@ -24,7 +24,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
         iniPanelView:function(){
             return this.each(function(profile){
                 profile.$ini=true;
+                var p=profile.properties;
                 if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
+                if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                    xui.UI.Div._applyAutoLoad(profile);
             });
         }
     },
@@ -171,9 +174,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
         },
         LayoutTrigger:function(){
             var self=this, t=self.properties, b=self.box;
-            if(t.toggle)
-                b._toggle(self,t.toggle);
-        },        
+            if(!t.toggle)b._toggle(self,false,true);
+        },
         EventHandlers:{
             onIniPanelView:function(profile){},
             beforeFold:function(profile){},
@@ -192,9 +194,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
             data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked'):'';
             data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle2-checked':'';
-            
+
             profile._toggle = !!data.toggle;
-            
+
             return data;
         },
         _onresize:function(profile,width,height){
@@ -207,44 +209,44 @@ Class("xui.UI.Group", "xui.UI.Div",{
             if(width && width!='auto')
                 profile.getSubNode('PANEL').width(width-2);
         },
-        _toggle:function(profile, value){
+        _toggle:function(profile, value, ignoreEvent){
             var p=profile.properties, ins=profile.boxing();
 
             //event
-            if(_.isSet(value) &&!profile.$ini){
-                profile.$ini=true;
-                if(profile.onIniPanelView)ins.onIniPanelView(profile);
-                if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                    xui.UI.Div._applyAutoLoad(profile);
+            if(value && !profile.$ini){
+                ins.iniPanelView();
             }
-            if(profile._toggle !== !!value){
+            if(ignoreEvent || profile._toggle !== !!value){
                 //set toggle mark
                 profile._toggle = p.toggle = !!value;
-    
-                if(value){
-                    if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
-                }else{
-                    if(ins.beforeFold && false===ins.beforeFold(profile))return;
+
+                if(!ignoreEvent){
+                    if(value){
+                        if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
+                    }else{
+                        if(ins.beforeFold && false===ins.beforeFold(profile))return;
+                    }
                 }
-    
                 //show/hide/panel
                 profile.getSubNode('PANEL').css('display',value?'':'none');
                 //chang toggle button
                 if(p.toggleBtn)
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
-    
+
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
 
                 // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
                 profile.getRoot().height(p.toggle?p.height:'auto');
                 profile.getSubNode("FIELDSET").height(p.toggle?p.height:'auto');
-                
-                if(value){
-                    if(ins.afterExpand)
-                        ins.afterExpand(profile);
-                }else{
-                    if(ins.afterFold)
-                        ins.afterFold(profile);
+
+                if(!ignoreEvent){
+                    if(value){
+                        if(ins.afterExpand)
+                            ins.afterExpand(profile);
+                    }else{
+                        if(ins.afterFold)
+                            ins.afterFold(profile);
+                    }
                 }
             }
         }

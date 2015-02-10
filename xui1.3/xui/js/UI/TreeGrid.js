@@ -4916,20 +4916,23 @@ editorEvents
                                     editor.afterPopShow(function(pro, popCtl){
                                         return profile.boxing().afterPopShow(profile, pro.$cell, pro, popCt);
                                     });
-                                if(profile.onCommand)
-                                    editor.onCommand(function(pro, node){
-                                        return profile.boxing().onCommand(profile, pro.$cell, pro, node);
-                                    });
-                                if(profile.onEditorClick)
-                                    editor.onClick(function(pro, node){
-                                        return profile.boxing().onEditorClick(profile, pro.$cell, pro, node);
-                                    });
+                                if(type=="getter"||type=="popbox"){
+                                    if(profile.onEditorClick)
+                                        editor.onClick(function(pro, node){
+                                            return profile.boxing().onEditorClick(profile, pro.$cell, pro, node);
+                                        });
+                                }
                             }
                             break;
                         case 'file':
                             editor.setType(type);
                         break;
                     }
+                    if(profile.onCommand)
+                        editor.onCommand(function(pro, node){
+                            return profile.boxing().onCommand(profile, pro.$cell, pro, node);
+                        });
+
                     if(inline){
                        cellNode.append(editor);
                        cell._editor=editor;
