@@ -939,10 +939,10 @@ Class("xui.UI",  "xui.absObj", {
                     xui.UI.$toDom(ns.get(0)/*first represents all*/,a.join(''));
             }
 
-            //render UIProfiles
-            for(i=0;o=arr[i++];)
+            //render all UIProfiles
+            for(i=0;o=n[i++];)
                 o._render(triggerLayOut);
-
+                
             a.length=arr.length=0;
             return ns;
         },

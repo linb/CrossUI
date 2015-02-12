@@ -97,7 +97,7 @@ Class('App', 'xui.Com',{
             // clear data
             var dtbd=xui.DataBinder.getFromName(databinder);
             if(dtbd)dtbd.setData();
-            
+
             _.each(form.ctrls,function(o){
                 if(!o.id)o.id=idc.next();
 
