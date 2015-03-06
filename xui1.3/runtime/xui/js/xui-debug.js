@@ -11214,23 +11214,15 @@ type:4
                             r=parseInt(r,10)||0;
                             break;
                         case 2:
-                            r=node[o[6]]-t[o[3]]();
+                            r=node[o[6]];
+                            //get from css setting before css applied
+                            if(!r)r=me(node,1)+(contentBox?t[o[2]]():0);
+                            else r-=t[o[3]]();
                             break;
                         case 3:
-                            //for in firefox, offsetHeight/Width's bad performance
-                            //if(node._bp)
-                            //    r=node['_'+o[6]];
-                            //else{
-                            //    t1=_();
-                                r=node[o[6]];
-                            //    if(_()-t1>60){
-                            //        node['_'+o[6]]=r;
-                            //        node._bp=1;
-                            //    }
-                            //}
-                            if(!r)
-                                //get from css setting before css applied
-                                r=me(node,1)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            r=node[o[6]];
+                            //get from css setting before css applied
+                            if(!r)r=me(node,1)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
                             r=me(node,3);
