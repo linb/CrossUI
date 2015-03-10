@@ -23,7 +23,20 @@ Class('xui.Com',null,{
         };
     },
     After:function(){
-          this._pool={};
+        var self=this,
+            v='$EventHandlers',
+            k=self[v]||{}, e, t, b, i;
+        if((t=self.$parent) && (e=t.length)){
+            while(e--){
+                b=t[e][v];
+                for(i in b){
+                    if(!(i in k))k[i]=b[i];
+                }
+            }
+        }
+        self[v]=k;
+
+        self._pool={};
     },
     Constructor:function(properties, events, host){
         var self=this;
