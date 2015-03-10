@@ -3367,7 +3367,7 @@ type:4
 
         _.arr.each([['_W',w, '_'+p+'W', '_'+b+'W', '_'+m+'W', c+W, o+W],
         ['_H',h, '_'+p+'H', '_'+b+'H', '_'+m+'H', c+H, o+H]],function(o){
-            self.plugIn(o[0],function(node,index,value){
+            self.plugIn(o[0],function(node,index,value,_in){
                 var n,r,t,style=node.style,me=arguments.callee,contentBox=xui.browser.contentBox,
                 r1=me.r1 || (me.r1=/%$/),
                 getStyle=xui.Dom.getStyle,
@@ -3387,15 +3387,16 @@ type:4
                     switch(index){
                         case 1:
                             r=getStyle(node,o[1]);
-                            if(isNaN(parseInt(r,10)) || r1.test(r))
-                                r = me(node,2) - (contentBox?t[o[2]]():0);
+                            if((isNaN(parseInt(r,10)) || r1.test(r))&&!_in)
+                                r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
                             r=parseInt(r,10)||0;
                             break;
                         case 2:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=me(node,1)+(contentBox?t[o[2]]():0);
-                            else r-=t[o[3]]();
+                            if(!r){
+                                if(!_in)r=me(node,1,undefined,true)+(contentBox?t[o[2]]():0);
+                            }else r-=t[o[3]]();
                             break;
                         case 3:
                             r=node[o[6]];
