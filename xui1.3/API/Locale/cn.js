@@ -19687,7 +19687,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'position':'控件定位类型',
             'visibility':'控件可见属性',
             'display':'渲染盒类型',
-            'selectable':'文字可选择'
+            'selectable':'文字可选择',
+            "activeAnim":"当前动画"
         },
         'xui_UI_Widget' : {
             'border':'附加边框',

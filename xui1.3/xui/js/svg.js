@@ -79,7 +79,7 @@ Class("xui.svg", "xui.UI",{
                 reg: /\/svg>.*$/,
                 str: "/svg>"
             }, {
-                reg: /\<desc\>[^\<]*\<\/desc\>/,
+                reg: /\<desc[\s\>][^\<]*\<\/desc\>/,
                 str: ""
             }, {
                 reg: /zIndex="[^"]+"/g,
@@ -1767,7 +1767,7 @@ Class("xui.svg", "xui.UI",{
     },
     Static:{
         $abstract:true,
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attr:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attr:1,animConf:1},
         DataModel:{
             selectable:null,
             defaultFocus:null,

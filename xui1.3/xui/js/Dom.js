@@ -646,12 +646,21 @@ Class('xui.Dom','xui.absBox',{
         },
        rotate:function(v){
             if(_.isSet(v)){
-                if(_.isFinite(v))v+='deg';
+                v=parseInt(v,10);
+                v=v%360;
+                if(v<0)v=v+360;
                 return this.each(function(o){
-                    var transform=o.style.transform||"";
-                    if(/rotate\([^)]*\)/i.test(transform))transform=transform.replace(/(rotate\()([^)]+)/i, '$1'+v);
-                    else transform+=" rotate("+v+")";
-                    xui.Dom.setStyle(o,'transform',transform);
+                    if(o.raphael&&o.id){
+                        var prf=xui.Event._getProfile(o.id);
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid)))
+                            o.attr({transform:'r'+v});
+                    }else{
+                        v+='deg';
+                        var transform=o.style.transform||"";
+                        if(/rotate\([^)]*\)/i.test(transform))transform=transform.replace(/(rotate\()([^)]+)/i, '$1'+v);
+                        else transform+=" rotate("+v+")";
+                        xui.Dom.setStyle(o,'transform',transform);
+                    }
                 });
             }else{
                var arr=/rotate\(([-\d.]+)/i.exec(this.get(0).style.transform);
@@ -1380,7 +1389,7 @@ Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
+        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
             var me=arguments.callee,
                 tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
             linear:function(s,c) {return (1/s)*c;},
@@ -1445,15 +1454,19 @@ Class('xui.Dom','xui.absBox',{
                 if(onEnd)_.tryF(onEnd);
                 return;
             }
+            var parmsBak=params;
+            // clone it now
+            params=_.clone(params);
+            
             // Estimate duration by steps
             if((step||0)>0)
                 duration=step*16;
             else
                 duration = duration||200;
-
+            times=times||1;
             type = (type in tween)?type:'circIn';
 
-            var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
+            var starttime, node=this.get(0), self=xui(node), fun=function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){
@@ -1476,27 +1489,55 @@ Class('xui.Dom','xui.absBox',{
                     }
                 });
                 if(offtime==duration){
-                    xui.Thread(threadid).abort('normal');
+                    if(returned&&!_goback){
+                        starttime=_();
+                        _goback=1;
+                        _.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                    }else{
+                        if(times==-1||times>0){
+                            starttime=_();
+                            if(times>0)times-=1;
+                            if(_goback){
+                                _goback=0;
+                                _.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                            }
+                        }
+                    }
+                    if(!times){
+                        xui.Thread(threadid).abort('normal');
+                    }
                     return false;
                 }
-            }];
+            },funs=[fun];
 
             var tid=xui.getNodeData(node,'_inthread');
             if(tid && xui.Thread.isAlive(tid)){
                 xui.Thread(tid).abort('force');
                 xui.setNodeData(node,'_inthread',null);
             }
+            var reset=xui.getNodeData(node,'_animationreset');
+            if(typeof reset=="function"){                
+                reset();
+                xui.setNodeData(node,'_animationreset',null);
+            }
 
             return xui.Thread(threadid||_.id(), funs, 0, null, function(tid){
                 xui.setNodeData(node,'_inthread',tid);
                 starttime=_();
+                xui.setNodeData(node,'_animationreset',function(){
+                    _.merge(params,parmsBak,'all');
+                    starttime=_();
+                    fun();
+                });
                 return _.tryF(onStart,arguments,this);
             }, function(tid,flag){
                 if('force'!=flag)
                     _.tryF(onEnd,arguments,this);
                 //maybe destroyed
-                if(node&&node.$xid)
+                if(node&&node.$xid){
                     xui.setNodeData(node,'_inthread',null);
+                    xui.setNodeData(node,'_animationreset',null);
+                }
             },true);
         },
         pop : function(pos, type, parent, trigger, group){
@@ -3100,6 +3141,37 @@ type:4
             }
             return _c[key]=rt;
         },
+        $preDefinedAnims:{
+            blinkAlert:{
+                params:{opacity:[1,0]}, 
+                duration:200, 
+                returned: true, 
+                times:3
+            },
+            zoomAlert:{
+                params:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
+                duration:200, 
+                returned: true, 
+                times:3
+            },
+            translateXAlert:{
+                params:{translateX:[0,5]}, 
+                duration:100, 
+                returned: true, 
+                times:3
+            },
+            translateYAlert:{
+                params:{translateY:[0,5]}, 
+                duration:100, 
+                returned: true, 
+                times:3
+            },
+            rotateAlert:{
+                params:{rotate:[0,360]}, 
+                duration:400, 
+                returned: false
+            }
+        },
         $preDefinedEffects:{
            "Classic":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
            "Blur":[{type:"circOut",duration:200,params: {opacity:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0]}}],
@@ -3255,7 +3327,7 @@ type:4
         free:function(label){
            xui.Dom.setCover(false,label);
         },
-        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit){
+        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, returned,times){
             var node = document.createElement('div');
             _.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
@@ -3265,7 +3337,7 @@ type:4
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
-            }, duration, step, type, threadid, unit);
+            }, duration, step, type, threadid, unit, returned, times);
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){

@@ -2044,7 +2044,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1},
         Behaviors:{
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', HCELL:'HCELL', FHCELL:'FHCELL',CMD:'CMD'},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
@@ -4916,7 +4916,7 @@ editorEvents
                                     editor.afterPopShow(function(pro, popCtl){
                                         return profile.boxing().afterPopShow(profile, pro.$cell, pro, popCt);
                                     });
-                                if(type=="getter"||type=="popbox"){
+                                if(type=="getter"||type=="popbox"||type=='cmdbox'||type=='cmd'){
                                     if(profile.onEditorClick)
                                         editor.onClick(function(pro, node){
                                             return profile.boxing().onEditorClick(profile, pro.$cell, pro, node);
