@@ -8468,12 +8468,21 @@ Class('xui.Dom','xui.absBox',{
         },
        rotate:function(v){
             if(_.isSet(v)){
-                if(_.isFinite(v))v+='deg';
+                v=parseInt(v,10);
+                v=v%360;
+                if(v<0)v=v+360;
                 return this.each(function(o){
-                    var transform=o.style.transform||"";
-                    if(/rotate\([^)]*\)/i.test(transform))transform=transform.replace(/(rotate\()([^)]+)/i, '$1'+v);
-                    else transform+=" rotate("+v+")";
-                    xui.Dom.setStyle(o,'transform',transform);
+                    if(o.raphael&&o.id){
+                        var prf=xui.Event._getProfile(o.id);
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid)))
+                            o.attr({transform:'r'+v});
+                    }else{
+                        v+='deg';
+                        var transform=o.style.transform||"";
+                        if(/rotate\([^)]*\)/i.test(transform))transform=transform.replace(/(rotate\()([^)]+)/i, '$1'+v);
+                        else transform+=" rotate("+v+")";
+                        xui.Dom.setStyle(o,'transform',transform);
+                    }
                 });
             }else{
                var arr=/rotate\(([-\d.]+)/i.exec(this.get(0).style.transform);
@@ -9202,7 +9211,7 @@ Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit){
+        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
             var me=arguments.callee,
                 tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
             linear:function(s,c) {return (1/s)*c;},
@@ -9267,15 +9276,19 @@ Class('xui.Dom','xui.absBox',{
                 if(onEnd)_.tryF(onEnd);
                 return;
             }
+            var parmsBak=params;
+            // clone it now
+            params=_.clone(params);
+            
             // Estimate duration by steps
             if((step||0)>0)
                 duration=step*16;
             else
                 duration = duration||200;
-
+            times=times||1;
             type = (type in tween)?type:'circIn';
 
-            var starttime, node=this.get(0), self=xui(node),   funs=[function(threadid){
+            var starttime, node=this.get(0), self=xui(node), fun=function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){
@@ -9298,27 +9311,55 @@ Class('xui.Dom','xui.absBox',{
                     }
                 });
                 if(offtime==duration){
-                    xui.Thread(threadid).abort('normal');
+                    if(returned&&!_goback){
+                        starttime=_();
+                        _goback=1;
+                        _.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                    }else{
+                        if(times==-1||times>0){
+                            starttime=_();
+                            if(times>0)times-=1;
+                            if(_goback){
+                                _goback=0;
+                                _.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                            }
+                        }
+                    }
+                    if(!times){
+                        xui.Thread(threadid).abort('normal');
+                    }
                     return false;
                 }
-            }];
+            },funs=[fun];
 
             var tid=xui.getNodeData(node,'_inthread');
             if(tid && xui.Thread.isAlive(tid)){
                 xui.Thread(tid).abort('force');
                 xui.setNodeData(node,'_inthread',null);
             }
+            var reset=xui.getNodeData(node,'_animationreset');
+            if(typeof reset=="function"){                
+                reset();
+                xui.setNodeData(node,'_animationreset',null);
+            }
 
             return xui.Thread(threadid||_.id(), funs, 0, null, function(tid){
                 xui.setNodeData(node,'_inthread',tid);
                 starttime=_();
+                xui.setNodeData(node,'_animationreset',function(){
+                    _.merge(params,parmsBak,'all');
+                    starttime=_();
+                    fun();
+                });
                 return _.tryF(onStart,arguments,this);
             }, function(tid,flag){
                 if('force'!=flag)
                     _.tryF(onEnd,arguments,this);
                 //maybe destroyed
-                if(node&&node.$xid)
+                if(node&&node.$xid){
                     xui.setNodeData(node,'_inthread',null);
+                    xui.setNodeData(node,'_animationreset',null);
+                }
             },true);
         },
         pop : function(pos, type, parent, trigger, group){
@@ -10922,6 +10963,37 @@ type:4
             }
             return _c[key]=rt;
         },
+        $preDefinedAnims:{
+            blinkAlert:{
+                params:{opacity:[1,0]}, 
+                duration:200, 
+                returned: true, 
+                times:3
+            },
+            zoomAlert:{
+                params:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
+                duration:200, 
+                returned: true, 
+                times:3
+            },
+            translateXAlert:{
+                params:{translateX:[0,5]}, 
+                duration:100, 
+                returned: true, 
+                times:3
+            },
+            translateYAlert:{
+                params:{translateY:[0,5]}, 
+                duration:100, 
+                returned: true, 
+                times:3
+            },
+            rotateAlert:{
+                params:{rotate:[0,360]}, 
+                duration:400, 
+                returned: false
+            }
+        },
         $preDefinedEffects:{
            "Classic":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
            "Blur":[{type:"circOut",duration:200,params: {opacity:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0]}}],
@@ -11077,7 +11149,7 @@ type:4
         free:function(label){
            xui.Dom.setCover(false,label);
         },
-        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit){
+        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, returned,times){
             var node = document.createElement('div');
             _.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
@@ -11087,7 +11159,7 @@ type:4
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
-            }, duration, step, type, threadid, unit);
+            }, duration, step, type, threadid, unit, returned, times);
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){
@@ -17618,7 +17690,7 @@ Class("xui.UI",  "xui.absObj", {
             style=null;
         },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,animConf:1},
         $toDom:function(profile, str, addEventHandler){
             if(addEventHandler===false)
                 return _.str.toDom(str);
@@ -18946,10 +19018,37 @@ Class("xui.UI",  "xui.absObj", {
                     if(this.box['xui.svg']){
                             ins.setAttr("KEY", {transform:'r'+v}, false);
                     }else{
-                            root.css('transform', "rotate("+v+"deg)");
+                            root.rotate(v);
                     }
                 }
-            }
+            },
+            animConf:{
+                hidden:true,
+                ini:{}
+            },
+            activeAnim:{
+                ini:"",
+                action:function(v){
+                    // stop first
+                    var prf=this,
+                        node=prf.getRootNode(),
+                        tid=xui.getNodeData(node,'_inthread'),
+                         reset=xui.getNodeData(node,'_animationreset');
+                    if(tid && xui.Thread.isAlive(tid)){
+                        xui.Thread(tid).abort('force');
+                        xui.setNodeData(node,'_inthread',null);
+                    }
+                    if(typeof reset=="function"){
+                        reset();
+                        xui.setNodeData(node,'_animationreset',null);
+                    }
+                    if(v){
+                        var items=this.properties.animConf, item=items[v];
+                        if(!item)item=xui.Dom.$preDefinedAnims[v];
+                        if(item && item.params)prf.getRoot().animate(item.params, item.onStart, item.onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.returned, item.times).start();
+                    }
+                }
+            },
         },
         EventHandlers:{
             beforeRender:function(profile){},
@@ -18989,6 +19088,11 @@ Class("xui.UI",  "xui.absObj", {
              if(!prf.$inDesign && p.hoverPop){
                 _.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
+                });
+            }
+            if(p.activeAnim){
+                _.asyRun(function(){
+                    b.setActiveAnim(p.activeAnim, true);
                 });
             }
             prf._inValid=1;
@@ -21000,7 +21104,7 @@ new function(){
     
     Class(u+".Element", u,{
         Static:{
-            _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attributes:1},
+            _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attributes:1,animConf:1},
             Templates:{
                 _NativeElement:true,
                 tagName:'{nodeName}',
@@ -21175,7 +21279,7 @@ new function(){
         },
         Static:{
             $initRootHidden:true,
-            _objectProp:{tagVar:1,propBinder:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
+            _objectProp:{tagVar:1,propBinder:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1,animConf:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
                 className:'{_className}',
@@ -27279,7 +27383,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
 
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,popCtrlProp:1,popCtrlEvents:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,popCtrlProp:1,popCtrlEvents:1,animConf:1},
         Behaviors:{
             HoverEffected:{BOX:'BOX',BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
             ClickEffected:{BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
@@ -40598,7 +40702,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1},
         Behaviors:{
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', HCELL:'HCELL', FHCELL:'FHCELL',CMD:'CMD'},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
@@ -43470,7 +43574,7 @@ editorEvents
                                     editor.afterPopShow(function(pro, popCtl){
                                         return profile.boxing().afterPopShow(profile, pro.$cell, pro, popCt);
                                     });
-                                if(type=="getter"||type=="popbox"){
+                                if(type=="getter"||type=="popbox"||type=='cmdbox'||type=='cmd'){
                                     if(profile.onEditorClick)
                                         editor.onClick(function(pro, node){
                                             return profile.boxing().onEditorClick(profile, pro.$cell, pro, node);

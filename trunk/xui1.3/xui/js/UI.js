@@ -2557,7 +2557,7 @@ Class("xui.UI",  "xui.absObj", {
             style=null;
         },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,animConf:1},
         $toDom:function(profile, str, addEventHandler){
             if(addEventHandler===false)
                 return _.str.toDom(str);
@@ -3885,10 +3885,37 @@ Class("xui.UI",  "xui.absObj", {
                     if(this.box['xui.svg']){
                             ins.setAttr("KEY", {transform:'r'+v}, false);
                     }else{
-                            root.css('transform', "rotate("+v+"deg)");
+                            root.rotate(v);
                     }
                 }
-            }
+            },
+            animConf:{
+                hidden:true,
+                ini:{}
+            },
+            activeAnim:{
+                ini:"",
+                action:function(v){
+                    // stop first
+                    var prf=this,
+                        node=prf.getRootNode(),
+                        tid=xui.getNodeData(node,'_inthread'),
+                         reset=xui.getNodeData(node,'_animationreset');
+                    if(tid && xui.Thread.isAlive(tid)){
+                        xui.Thread(tid).abort('force');
+                        xui.setNodeData(node,'_inthread',null);
+                    }
+                    if(typeof reset=="function"){
+                        reset();
+                        xui.setNodeData(node,'_animationreset',null);
+                    }
+                    if(v){
+                        var items=this.properties.animConf, item=items[v];
+                        if(!item)item=xui.Dom.$preDefinedAnims[v];
+                        if(item && item.params)prf.getRoot().animate(item.params, item.onStart, item.onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.returned, item.times).start();
+                    }
+                }
+            },
         },
         EventHandlers:{
             beforeRender:function(profile){},
@@ -3928,6 +3955,11 @@ Class("xui.UI",  "xui.absObj", {
              if(!prf.$inDesign && p.hoverPop){
                 _.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
+                });
+            }
+            if(p.activeAnim){
+                _.asyRun(function(){
+                    b.setActiveAnim(p.activeAnim, true);
                 });
             }
             prf._inValid=1;
@@ -5939,7 +5971,7 @@ new function(){
     
     Class(u+".Element", u,{
         Static:{
-            _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attributes:1},
+            _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attributes:1,animConf:1},
             Templates:{
                 _NativeElement:true,
                 tagName:'{nodeName}',
@@ -6114,7 +6146,7 @@ new function(){
         },
         Static:{
             $initRootHidden:true,
-            _objectProp:{tagVar:1,propBinder:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
+            _objectProp:{tagVar:1,propBinder:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1,animConf:1},
             Templates:{
                 style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
                 className:'{_className}',

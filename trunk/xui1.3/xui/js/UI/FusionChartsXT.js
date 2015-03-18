@@ -171,7 +171,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         }
     },
     Static:{
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,JSONData:1,configure:1,plotData:1,feedData:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,JSONData:1,configure:1,plotData:1,feedData:1,animConf:1},
         Appearances:{
             KEY:{
                 'font-size':xui.browser.ie?0:null,
