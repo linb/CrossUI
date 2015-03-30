@@ -2,7 +2,13 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){
-                profile.getSubNode('FILL').width(value+"%");
+                var type=profile.properties.type,
+                    inn=profile.getSubNode('FILL');
+               if(type=="horizontal"){
+                    inn.width(value+"%");
+                }else{
+                    inn.top((100-value)+"%").height(value+"%");
+                }
                 profile.getSubNode('CAP').text(profile.properties.captionTpl.replace(/\{value\}|\*/g,value));
             });
         }
@@ -15,7 +21,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             className:"xui-uiborder-flat xui-uibg-base",
             FILL:{
                 tagName:'div',
-                style:'width:{value}%;{fillBG}',
+                style:'{fillBG}',
                 text:'{html}'+xui.UI.$childTag
             },
             INN:{
@@ -51,15 +57,14 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             },
             FILL:{
                 position:'relative',
-                width:'1px',
+                width:0,
+                height:0,
                 left:0,
                 top:0,
-                height:'100%',
                 'background-image':xui.UI.$bg('bar.gif', ''),
                 'background-repeat':'repeat-x',
                 'background-position':'left top',
-                'background-color':'#96E115',
-                width:0
+                'background-color':'#96E115'
             }
         });
         //set back
@@ -74,6 +79,15 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:'* %',
                 action:function(){
                     this.boxing()._setCtrlValue(this.properties.$UIvalue);
+                }
+            },
+            type:{
+                listbox:['vertical', 'horizontal'],
+                ini:'horizontal',
+                action:function(v){
+                    var w=this.properties.width,h=this.properties.height;
+                    this.properties.height=w;this.properties.width=h;
+                    this.boxing().refresh();
                 }
             },
             fillBG:{
@@ -95,10 +109,17 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             return parseInt(value,10)||0;
         },
         _onresize:function(profile,width,height){
-            var size = arguments.callee.upper.apply(this,arguments),h;
-            if(size.height){
-                h=size.height+'px';
-                profile.getSubNodes(['INN','CAP','FILL']).css({height:h,'line-height':h});
+            var size = arguments.callee.upper.apply(this,arguments),v,
+                type=profile.properties.type,
+                node=profile.getSubNodes(['INN','CAP','FILL']);
+            if(type=="horizontal"){
+                if(size.height){
+                    v=size.height+'px';
+                    node.css({height:v,'line-height':v});
+                }
+            }else{
+                if(size.width)node.css({width:size.width+'px'});                
+                if(size.height)node.css({'line-height':size.height+'px'});
             }
         }
     }
