@@ -9622,6 +9622,18 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            getType:{
+                $desc:"Gets bar type. 'vertical' or 'horizontal'.",
+                $rtn:"String"
+            },
+            setType:{
+                $desc:"Sets bar type.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'vertical' or 'horizontal'.",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                ]
+            },
             getCaptionTpl :{
                 $desc:"Gets the caption template string.",
                 $rtn:"String",

@@ -9555,6 +9555,18 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            getType:{
+                $desc:"获取显示类型. 可以是'vertical'(垂直) 或 'horizontal'(水平) ",
+                $rtn:"String"
+            },
+            setType:{
+                $desc:"设置显示类型.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                ]
+            },
             getCaptionTpl :{
                 $desc:"得到标题模板字符串.",
                 $rtn:"String",
@@ -19716,7 +19728,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_ProgressBar' : {
             'captionTpl':'标题模板',
-            'fillBG':'进度条颜色'
+            'fillBG':'进度条颜色',
+            'type':'类型'
         },
         'xui_UI_Button' : {
             'caption':'标题文字',
@@ -19886,8 +19899,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'flashvars':'Flash变量集'
         },
         'xui_UI_Slider' : {
-            'steps':'步长_',
-            'type':'类型_',
+            'steps':'步长',
+            'type':'类型',
             'isRange':'双滑块',
             'showIncreaseHandle':'显示增加按钮',
             'showDecreaseHandle':'显示减小按钮'
