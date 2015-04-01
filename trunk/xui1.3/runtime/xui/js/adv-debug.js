@@ -14178,7 +14178,8 @@ Class("xui.svg", "xui.UI",{
                 }
             });
         },
-        _addHandler:function(callback){
+        _addHandler:function(callback, type){
+            type=type||"adv";
             this._removeHandler();
             return this.each(function(prf){
                 if(!prf._elset || !prf._elset[0])return;
@@ -14980,9 +14981,11 @@ Class("xui.svg", "xui.UI",{
                                     // added
                                     break;
                                     case 2:
-                                        handlers[i-1].lineNextPath=[["M", x, y], ["L", ax, ay]],
-                                        handlers[i-1].lineNext=r.path(handlers[i-1].lineNextPath).attr(lineAttr);
-                                        handlers[i-1].dotNext=addBezierAnchor2DD(r,el,ax,ay,i-1,conType,prf);
+                                        if(type=="adv"){
+                                            handlers[i-1].lineNextPath=[["M", x, y], ["L", ax, ay]],
+                                            handlers[i-1].lineNext=r.path(handlers[i-1].lineNextPath).attr(lineAttr);
+                                            handlers[i-1].dotNext=addBezierAnchor2DD(r,el,ax,ay,i-1,conType,prf);
+                                        }
                                     break;
                                 }
 
@@ -15001,10 +15004,12 @@ Class("xui.svg", "xui.UI",{
                                     break;
                                     case 2:
                                         // 2 dots
-                                        handlers[i].linePrevPath=[["M", zx, zy], ["L", bx, by]],
-                                        handlers[i].linePrev=r.path(handlers[i].linePrevPath).attr(lineAttr);
                                         handlers[i].dot=addSegmentJunctionDD(r,el,zx,zy,i,null,conType,prf);
-                                        handlers[i].dotPrev=addBezierAnchor1DD(r,el,bx,by,i,conType,prf);
+                                        if(type=="adv"){
+                                            handlers[i].linePrevPath=[["M", zx, zy], ["L", bx, by]],
+                                            handlers[i].linePrev=r.path(handlers[i].linePrevPath).attr(lineAttr);
+                                            handlers[i].dotPrev=addBezierAnchor1DD(r,el,bx,by,i,conType,prf);
+                                        }
                                     break;
                                 }
                                 if(ox!=undefined)x=ox;
@@ -15395,6 +15400,63 @@ Class("xui.svg", "xui.UI",{
 
             return bb;
         },
+        $transform:function(opath,trans){
+            if(!_.isStr(opath))opath=opath.join('');
+            if(/[mlhvcsqtaz]/.test(opath)){
+                opath = Raphael._pathToAbsolute(opath);
+            }else{
+                opath=Raphael.parsePathString(opath);
+            }
+            var npath=Raphael.transformPath(opath,trans),
+                rotate=/[r]/.test(trans);
+            for(var i=0,l=npath.length,ll,t;i<l;i++){
+                if(npath[i][0]!=opath[i][0]){
+                    ll=npath[i].length;
+                    switch (t=opath[i][0]) {
+                    case "M":
+                        // keep "M"
+                        break;
+                    case "L":
+                        npath[i]=[t,npath[i][ll-2],npath[i][ll-1]];
+                        break;
+                    case "H":
+                        if(rotate)
+                            npath[i]=["L",npath[i][ll-2],npath[i][ll-1]];
+                        else
+                            npath[i]=[t,npath[i][ll-2]];
+                        break;
+                    case "V":
+                        if(rotate)
+                            npath[i]=["L",npath[i][ll-2],npath[i][ll-1]];
+                        else
+                            npath[i]=[t,npath[i][ll-1]];
+                        break;
+                    case "C":
+                        // keep "C"
+                        break;
+                    case "Q":
+                        npath[i]=[t,npath[i][ll-6],npath[i][ll-5],npath[i][ll-2],npath[i][ll-1]];
+                        break;
+                    case "S":
+                        npath[i]=[t,npath[i][ll-4],npath[i][ll-3],npath[i][ll-2],npath[i][ll-1]];
+                        break;
+                    case "T":
+                        npath[i]=[t,npath[i][ll-2],npath[i][ll-1]];
+                        break;
+                    case "A":
+                        // keep "C"
+                        break;
+                    //case "R":
+                    case "Z":
+                        npath[i]=[t];
+                        break;
+                    default:
+                        continue;
+                    }
+                }
+            }
+            return npath.join('');
+        },
         $setBB:function(prf,type,bbox,attr,el,notify){
             var h={},
                 // for IE9 cant set bbox prop
@@ -15607,51 +15669,8 @@ Class("xui.svg", "xui.UI",{
                         var ww=('width' in h)?h.width:null,
                             hh=('height' in h)?h.height:null,
                             opath= h.path ||attr.path,
-                            npath=Raphael.transformPath(opath, "s"+((_.isSet(ww)&&ww!==obbox2.width)?(obbox2.width===0?(ww>=0?1.1:0.9):ww/obbox2.width):"1")+","+((_.isSet(hh)&&hh!==obbox2.height)?(obbox2.height===0?(hh>=0?1.1:0.9):hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
-/*
-                        if(_.isStr(opath)){
-                            if(/[mlhvcsqtaz]/.test(opath)){
-                                opath = Raphael._pathToAbsolute(opath);
-                            }else{
-                                opath=Raphael.parsePathString(opath);
-                            }
-                        }
-                        for(var i=0,l=npath.length,ll,t;i<l;i++){
-                            if(npath[i][0]!=opath[i][0]){
-                                ll=npath[i].length;
-                                switch (t=opath[i][0]) {
-                                case "L":
-                                    npath[i]=[t,npath[i][ll-2],npath[i][ll-1]];
-                                    break;
-                                case "H":
-                                    npath[i]=[t,npath[i][ll-2]];
-                                    break;
-                                case "V":
-                                    npath[i]=[t,npath[i][ll-1]];
-                                    break;
-                                case "Q":
-                                    npath[i]=[t,npath[i][ll-6],npath[i][ll-5],npath[i][ll-2],npath[i][ll-1]];
-                                    break;
-                                case "S":
-                                    npath[i]=[t,npath[i][ll-4],npath[i][ll-3],npath[i][ll-2],npath[i][ll-1]];
-                                    break;
-                                case "T":
-                                    npath[i]=[t,npath[i][ll-2],npath[i][ll-1]];
-                                    break;
-                                case "Z":
-                                    npath[i]=[t];
-                                    break;
-                                //case "A":
-                                //case "C":
-                                //case "R":
-                                //case "M":
-                                default:
-                                    continue;
-                                }
-                            }
-                        }
-*/
-                        h.path=npath.join('');
+                            npath=xui.svg.$transform(opath, "s"+((_.isSet(ww)&&ww!==obbox2.width)?(obbox2.width===0?(ww>=0?1.1:0.9):ww/obbox2.width):"1")+","+((_.isSet(hh)&&hh!==obbox2.height)?(obbox2.height===0?(hh>=0?1.1:0.9):hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
+                        h.path=npath;
                     }
                 }break;
             }

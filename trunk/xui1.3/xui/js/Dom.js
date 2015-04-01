@@ -653,7 +653,7 @@ Class('xui.Dom','xui.absBox',{
                     if(o.raphael&&o.id){
                         var prf=xui.Event._getProfile(o.id);
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid)))
-                            o.attr({transform:'r'+v});
+                            o.transform('r'+v);
                     }else{
                         v+='deg';
                         var transform=o.style.transform||"";
@@ -663,72 +663,195 @@ Class('xui.Dom','xui.absBox',{
                     }
                 });
             }else{
-               var arr=/rotate\(([-\d.]+)/i.exec(this.get(0).style.transform);
-               return arr?parseFloat(arr[1]||0):0;
+                var o=this.get(0);
+                if(o.raphael&&o.id){
+                        var prf=xui.Event._getProfile(o.id);
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                            o=o.transform().join();
+                           var arr=/r,([-\d.]+)/i.exec(o);
+                           return arr?parseFloat(arr[1]||0):0;
+                        }
+                        return 0;
+                }else{
+                   var arr=/rotate\(([-\d.]+)/i.exec(o.style.transform);
+                   return arr?parseFloat(arr[1]||0):0;
+                }
             }
         },
-       scaleX:function(v){
+        scaleX:function(v){
             if(_.isSet(v)){
                 return this.each(function(o){
-                    var transform=o.style.transform||"";
-                    if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1'+v+',$3');
-                    else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale('+v+',1)');
-                    else transform+=" scale("+v+",1)";
-                    xui.Dom.setStyle(o,'transform',transform);
+                     if(o.raphael&&o.id){
+                        v=parseFloat(v);
+                        var prf=xui.Event._getProfile(o.id),t;
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                            t=_.clone(o.transform(),true);
+                            // only for the first
+                            if(t&&t[0]&&t[0][0]=="s"){
+                                t[0][1]=v;
+                            }else{
+                                t=t||[];
+                                t.unshift(['s',v,1]);
+                            }
+                            o.transform(t);
+                        }
+                    }else{
+                        var transform=o.style.transform||"";
+                        if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                        else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale('+v+',1)');
+                        else transform+=" scale("+v+",1)";
+                        xui.Dom.setStyle(o,'transform',transform);
+                    }
                 });
             }else{
-               var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
-               if(arr)return parseFloat(arr[2]||1);
-               else{
-                    arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
-                    return arr?arr[1]:1;
+                 var o=this.get(0);
+                if(o.raphael&&o.id){
+                    v=1;
+                    var prf=xui.Event._getProfile(o.id);
+                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                         _.arr.each(o.transform(),function(t){
+                            if(t[0]=="s")v*=t[1];
+                        });
+                    }
+                    return v;
+                }else{
+                   var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+                   if(arr)return parseFloat(arr[2]||1);
+                   else{
+                        arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
+                        return arr?arr[1]:1;
+                    }
                 }
             }
         },
         scaleY:function(v){
             if(_.isSet(v)){
                 return this.each(function(o){
-                    var transform=o.style.transform||"";
-                    if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1$2,'+v);
-                    else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale(1,'+v+')');
-                    else transform+=" scale(1,"+v+")";
-                    xui.Dom.setStyle(o,'transform',transform);
+                    if(o.raphael&&o.id){
+                        v=parseFloat(v);
+                        var prf=xui.Event._getProfile(o.id),t;
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                            t=_.clone(o.transform(),true);
+                            // only for the first
+                            if(t&&t[0]&&t[0][0]=="s"){
+                                t[0][2]=v;
+                            }else{
+                                t=t||[];
+                                t.unshift(['s',1,v]);
+                            }
+                            o.transform(t);
+                        }
+                    }else{
+                        var transform=o.style.transform||"";
+                        if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                        else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale(1,'+v+')');
+                        else transform+=" scale(1,"+v+")";
+                        xui.Dom.setStyle(o,'transform',transform);
+                    }
                 });
             }else{
-               var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
-               if(arr)return parseFloat(arr[3]||1);
-               else{
-                    arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
-                    return arr?arr[1]:1;
+                var o=this.get(0);
+                if(o.raphael&&o.id){
+                   v=1;
+                    var prf=xui.Event._getProfile(o.id);
+                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                         _.arr.each(o.transform(),function(t){
+                            if(t[0]=="s")v*=t[2];
+                        });
+                    }
+                    return v;
+                }else{
+                   var arr=/(scale\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+                   if(arr)return parseFloat(arr[3]||1);
+                   else{
+                        arr=/scale\(([-\d.]*)\)/i.exec(this.get(0).style.transform);
+                        return arr?arr[1]:1;
+                    }
                 }
             }
         },
         translateX:function(v){
             if(_.isSet(v)){
-                if(_.isFinite(v))v+='px';
                 return this.each(function(o){
-                    var transform=o.style.transform||"";
-                    if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1'+v+',$3');
-                    else transform+=" translate("+v+",0)";
-                    xui.Dom.setStyle(o,'transform',transform);
+                     if(o.raphael&&o.id){
+                        v=parseFloat(v);
+                        var prf=xui.Event._getProfile(o.id),t;
+                        // modify the last 't'
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                            t=_.clone(o.transform(),true);
+                            if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
+                                t[t.length-1][1]=v;
+                            }else{
+                                t=t||[];
+                                t.push(['t',v,0]);
+                            }
+                            o.transform(t);
+                        }
+                    }else{
+                        if(_.isFinite(v))v+='px';
+                        var transform=o.style.transform||"";
+                        if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                        else transform+=" translate("+v+",0)";
+                        xui.Dom.setStyle(o,'transform',transform);
+                    }
                 });
             }else{
-               var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
-               return arr?(arr[2]||"").replace(/\s/g,''):'';
+                var o=this.get(0);
+                if(o.raphael&&o.id){
+                    v=0;
+                    var prf=xui.Event._getProfile(o.id);
+                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                         _.arr.each(o.transform(),function(t){
+                            if(t[0]=="t")v+=t[1];
+                        });
+                    }
+                    return v;
+                }else{
+                   var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+                   return arr?(arr[2]||"").replace(/\s/g,''):'';
+                }
             }
         },
         translateY:function(v){
             if(_.isSet(v)){
-                if(_.isFinite(v))v+='px';
                 return this.each(function(o){
-                    var transform=o.style.transform||"";
-                    if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1$2,'+v);
-                    else transform+=" translate(0,"+v+")";
-                    xui.Dom.setStyle(o,'transform',transform);
+                     if(o.raphael&&o.id){
+                        v=parseFloat(v);
+                        var prf=xui.Event._getProfile(o.id);
+                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                            t=_.clone(o.transform(),true);
+                            // modify the last 't'
+                            if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
+                                t[t.length-1][2]=v;
+                            }else{
+                                t=t||[];
+                                t.push(['t',0,v]);
+                            }
+                            o.transform(t);
+                        }
+                    }else{
+                        if(_.isFinite(v))v+='px';
+                        var transform=o.style.transform||"";
+                        if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                        else transform+=" translate(0,"+v+")";
+                        xui.Dom.setStyle(o,'transform',transform);
+                    }
                 });
             }else{
-               var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
-               return arr?(arr[3]||"").replace(/\s/g,''):'';
+                var o=this.get(0);
+                if(o.raphael&&o.id){
+                    v=0;
+                    var prf=xui.Event._getProfile(o.id);
+                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                         _.arr.each(o.transform(),function(t){
+                            if(t[0]=="t")v+=t[2];
+                        });
+                    }
+                    return v;
+                }else{
+                   var arr=/(translate\()([^,]+),([^)]+)/i.exec(this.get(0).style.transform);
+                   return arr?(arr[3]||"").replace(/\s/g,''):'';
+                }
             }
         },
         skewX:function(v){
@@ -2275,10 +2398,11 @@ type:4
                 var matrix=computeMatrix(value);
                 var ow=node.offsetWidth,oh=node.offsetHeight;
                 var filter=matrix.getFilter();
-
+xui.echo(filter);
                 var t=((node.style.filter?(node.style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if(xui.browser.ie8)node.style.msfilter = t;
                 node.style.filter=t;
+xui.echo(t);
 
                 // for fake case
                 if(node.getBoundingClientRect){
@@ -3150,7 +3274,7 @@ type:4
             },
             zoomAlert:{
                 params:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
-                duration:200, 
+                duration:100, 
                 returned: true, 
                 times:3
             },

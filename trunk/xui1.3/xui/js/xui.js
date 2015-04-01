@@ -1697,7 +1697,7 @@ new function(){
                     return o;
                 },
                 target=conf.target,
-                method=conf.method+"",
+                method=(conf.method+"").split("-")[0],
                 iparams=_.clone(conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=conf.adjust||null,
@@ -1838,6 +1838,10 @@ new function(){
                                                 break;
                                                 case "stringify":
                                                     iparams[1]=_.stringify(iparams[1]);
+                                                break;
+                                                default:
+                                                    if(typeof(adjust=_.get(adjust))=="function")
+                                                        iparams[1]=adjust(iparams[1]);
                                                 break;
                                             }
                                         }
@@ -3660,7 +3664,8 @@ Class('xui.absObj',"xui.absBox",{
     Static:{
         $abstract:true,
         $specialChars:{_:1,$:1},
-        _objectProp:{tagVar:1,propBinder:1},
+        // *** non-abstract child must have this
+        //_objectProp:{tagVar:1,propBinder:1},
         DataModel:{
             tag:'',
             desc:'',
@@ -4119,8 +4124,10 @@ Class("xui.Timer","xui.absObj",{
             var o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
-            for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+            if(profile.box._objectProp){
+                for(var i in profile.box._objectProp)
+                    if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+            }
             return o;
         },
         DataModel:{

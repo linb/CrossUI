@@ -3080,6 +3080,7 @@ Class("xui.UI",  "xui.absObj", {
                         _e5:function(profile, e, src){}
                     },
                     Static:{
+                        $abstract:true,
                         DataModel:{
                             dragKey:'',
                             dropKeys:'',
@@ -3915,7 +3916,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(item && item.params)prf.getRoot().animate(item.params, item.onStart, item.onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.returned, item.times).start();
                     }
                 }
-            },
+            }
         },
         EventHandlers:{
             beforeRender:function(profile){},

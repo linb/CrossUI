@@ -517,6 +517,7 @@ Class("xui.DataBinder","xui.absObj",{
         WDSLCache:{},
         $nameTag:"databinder_",
         _pool:{},
+        _objectProp:{tagVar:1,propBinder:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
