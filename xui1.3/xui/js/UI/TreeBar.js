@@ -870,7 +870,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     var onend=function(empty){
                         subNs.css({display:'',height:'auto'});
-                        markNode.css('background','');
+                        //markNode.css('background','');
+                        // compitable with IE<8
+                        markNode.css({
+                            backgroundImage:'',
+                            backgroundRepeat:'',
+                            backgroundPositionX:'',
+                            backgroundPositionY:'',
+                            backgroundColor:'',
+                            backgroundAttachment:''
+                          });
                         if(empty){
                             // markNode.css('background','none');
                             // do nothing

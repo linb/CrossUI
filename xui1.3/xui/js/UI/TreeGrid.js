@@ -4451,7 +4451,16 @@ editorEvents
                             h+=o.offsetHeight;
                         });
                         var onend=function(){
-                            markNode.css('background','');
+                            //markNode.css('background','');
+                            // compitable with IE<8
+                            markNode.css({
+                                backgroundImage:'',
+                                backgroundRepeat:'',
+                                backgroundPositionX:'',
+                                backgroundPositionY:'',
+                                backgroundColor:'',
+                                backgroundAttachment:''
+                              });
                             if(empty){
                                 // markNode.css('background','none');
                                 // do nothing
