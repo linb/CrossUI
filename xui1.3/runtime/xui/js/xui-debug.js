@@ -1866,10 +1866,9 @@ new function(){
                                             if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
                                                 m=t.pop().replace(/[()}\s]/g,'');
-                                                t=xui.adjustVar(t.join(".")+"}", _ns);
-                                                if(t && _.isFun(t[m])){
-                                                    doit=1;
-                                                }
+                                                t=t.join(".")+"}";
+                                                t=xui.adjustVar(t, _ns) || xui.adjustVar(t);
+                                                doit=_.isFun(t[m]);
                                             }else if(_.isStr(t=iparams[0])&&_.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
                                                 doit=1;
                                             }
@@ -10228,10 +10227,11 @@ type:4
                 var matrix=computeMatrix(value);
                 var ow=node.offsetWidth,oh=node.offsetHeight;
                 var filter=matrix.getFilter();
-
+xui.echo(filter);
                 var t=((node.style.filter?(node.style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if(xui.browser.ie8)node.style.msfilter = t;
                 node.style.filter=t;
+xui.echo(t);
 
                 // for fake case
                 if(node.getBoundingClientRect){
@@ -19180,7 +19180,7 @@ Class("xui.UI",  "xui.absObj", {
                         if(item && item.params)prf.getRoot().animate(item.params, item.onStart, item.onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.returned, item.times).start();
                     }
                 }
-            },
+            }
         },
         EventHandlers:{
             beforeRender:function(profile){},
@@ -35753,7 +35753,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     var onend=function(empty){
                         subNs.css({display:'',height:'auto'});
-                        markNode.css('background','');
+                        //markNode.css('background','');
+                        // compitable with IE<8
+                        markNode.css({
+                            backgroundImage:'',
+                            backgroundRepeat:'',
+                            backgroundPositionX:'',
+                            backgroundPositionY:'',
+                            backgroundColor:'',
+                            backgroundAttachment:''
+                          });
                         if(empty){
                             // markNode.css('background','none');
                             // do nothing
@@ -43262,7 +43271,16 @@ editorEvents
                             h+=o.offsetHeight;
                         });
                         var onend=function(){
-                            markNode.css('background','');
+                            //markNode.css('background','');
+                            // compitable with IE<8
+                            markNode.css({
+                                backgroundImage:'',
+                                backgroundRepeat:'',
+                                backgroundPositionX:'',
+                                backgroundPositionY:'',
+                                backgroundColor:'',
+                                backgroundAttachment:''
+                              });
                             if(empty){
                                 // markNode.css('background','none');
                                 // do nothing
