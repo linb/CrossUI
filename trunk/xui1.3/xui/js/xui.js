@@ -1866,10 +1866,9 @@ new function(){
                                             if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
                                                 m=t.pop().replace(/[()}\s]/g,'');
-                                                t=xui.adjustVar(t.join(".")+"}", _ns);
-                                                if(t && _.isFun(t[m])){
-                                                    doit=1;
-                                                }
+                                                t=t.join(".")+"}";
+                                                t=xui.adjustVar(t, _ns) || xui.adjustVar(t);
+                                                doit=_.isFun(t[m]);
                                             }else if(_.isStr(t=iparams[0])&&_.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
                                                 doit=1;
                                             }
