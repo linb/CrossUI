@@ -13780,10 +13780,11 @@ Class("xui.svg", "xui.UI",{
                     attr=prf.box.ISCOMBO?prop.attr:{KEY:prop.attr},node;
 
                 if(prf._elset){
-                    _.each(prf.box.$tagName,function(key1,tag){
+                    prf._elset.forEach(function(el){
+                        var key1=el.type,tag=prf.getKey(el.node.id,true);
                         if(!key || key===tag){
-                            node=prf.getSubNode(tag);
-                            if(node&&(node=node.get(0))&&('raphaelid' in node)){
+                            node=el.node;
+                            if(node&&('raphaelid' in node)){
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
                                     var attf=node.attr();
@@ -13797,8 +13798,9 @@ Class("xui.svg", "xui.UI",{
                                         if(key1=='text'){
                                             if(i=='stroke') return o!="none";
                                             if(i=='fill') return o!="#000";
-                                            if(tag!="KEY" && (i=='x'||i=='y'||i=='transform'))return false;
+                                            if(tag!="KEY" && ('hAlign' in prf.box.$DataModel) && (i=='x'||i=='y'))return false;
                                         }
+                                        if(tag!="KEY" &&  i=='transform')return false;
                                         return o!=dftAttr[i];
                                     });
                                     // keep the  original src attr
@@ -13839,28 +13841,31 @@ Class("xui.svg", "xui.UI",{
                             if(!(i1 in attr2[i])){
                                 attr2[i][i1]=dftAttr[i1];
                                 // special for text
-                                if(prf.box.$tagName[i]=='text'){
+                                if((prf.box.$tagName[i]|| i.split("_")[0].toLowerCase())=='text'){
                                     if(i1=='stroke') attr2[i][i1]="none";
                                     if(i1=='fill') attr2[i][i1]="#000";
                                 }
                             }
                         });
                         // special for text
-                        if(prf.box.$tagName[i]=='text'){
-                            if(i!="KEY"){
+                        if((prf.box.$tagName[i]|| i.split("_")[0].toLowerCase())=='text'){
+                            if(i!="KEY" && ('hAlign' in prf.box.$DataModel) ){
                                 delete attr2[i].x;
                                 delete attr2[i].y;
-                                delete attr2[i].transform;
                             }
+                        }
+                        if(i!="KEY"){
+                            delete attr2[i].transform;
                         }
                     });
                 }
 
                 if(prf._elset){
-                    _.each(prf.box.$tagName,function(key1,tag){
+                    prf._elset.forEach(function(el){
+                        var key1=el.type,tag=prf.getKey(el.node.id,true);
                         if(_.isHash(key) || key===tag){
-                            node=prf.getSubNode(tag);
-                            if(node&&(node=node.get(0))&&('raphaelid' in node)){
+                            node=el.node;
+                            if(node&&('raphaelid' in node)){
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
                                     var rattr=_.copy(attr2[tag]);
@@ -13885,11 +13890,12 @@ Class("xui.svg", "xui.UI",{
                         || 'arrow-start' in ot
                         || 'arrow-end' in ot);
                     if(ot){
-                        if(prf._elset[1]){
+                        var ss=prf._elset;
+                        if(ss[1]){
                             // sync transform
                             if('transform' in ot){
-                                for(var i=1,l=prf._elset.length;i<l;i++)
-                                    prf._elset[i].attr('transform', ot.transform);
+                                for(var i=1,l=ss.length;i<l;i++)
+                                    ss[i].attr('transform', ot.transform);
                             }
                         }
                         if(notify!==false)
@@ -13915,11 +13921,12 @@ Class("xui.svg", "xui.UI",{
                         _.filter(o,function(o1,i1){
                             if(i1=='transform' && _.isArr(dftAttr[i1]) && dftAttr[i1].length===0)dftAttr[i1]="";
                             // special for text
-                            if(prf.box.$tagName[i]=='text'){
+                            if((prf.box.$tagName[i]|| i.split("_")[0].toLowerCase())=='text'){
                                 if(i1=='stroke') return o1!="none";
                                 if(i1=='fill') return o1!="#000";
-                                if(i!="KEY" && (i1=='x'||i1=='y'||i1=='transform'))return false;
+                                if(i!="KEY" && ('hAlign' in prf.box.$DataModel) && (i1=='x'||i1=='y'))return false;
                             }
+                            if(i!="KEY" && i1=='transform')return false;
                             return dftAttr[i1]!==o1;
                         });
                     });
@@ -13930,7 +13937,7 @@ Class("xui.svg", "xui.UI",{
                     _.filter(prop.attr,function(o1,i1){
                         if(i1=='transform' && _.isArr(dftAttr[i1]) && dftAttr[i1].length===0)dftAttr[i1]="";
                         // special for text
-                        if(prf.box.$tagName.KEY=='text'){
+                        if((prf.box.$tagName.KEY|| i.split("_")[0].toLowerCase())=='text'){
                             if(i1=='stroke') return o1!="none";
                             if(i1=='fill') return o1!="#000";
                         }
@@ -14031,19 +14038,19 @@ Class("xui.svg", "xui.UI",{
                 bbox={};
                 _.merge(bbox,el[0]._getBBox(withTransform!==false));
                 for(var i=1,l=el.length,t;i<l;i++){
-                    if(el[i].type!='text'){
+                   if(!(el[i].type=='text' && ('hAlign' in prf.box.$DataModel))){
                         el[i]._.dirty=1;
                         t=el[i]._getBBox(withTransform!==false);
                         bbox.x=Math.min(t.x,bbox.x);
                         bbox.y=Math.min(t.y,bbox.y);
-                        bbox.x2=Math.max(t.x2,bbox.x2);
-                        bbox.y2=Math.max(t.y2,bbox.y2);
+                        bbox.x2=Math.max(('x2' in t)?t.x2:(t.x+t.width), ('x2' in bbox)?bbox.x2:(bbox.x+bbox.width));
+                        bbox.y2=Math.max(('y2' in t)?t.y2:(t.y+t.height), ('y2' in bbox)?bbox.y2:(bbox.y+bbox.height));
                     }
                 }
-                if(!_.isNumb(bbox.width) && _.isNumb(bbox.x2)){
-                    bbox.width=bbox.x2-bbox.x;
-                    bbox.height=bbox.y2-bbox.y;
-                }
+
+                if('x2' in bbox)bbox.width=bbox.x2-bbox.x;
+                if('y2' in bbox)bbox.height=bbox.y2-bbox.y;
+
                 delete bbox.x2;
                 delete bbox.y2;
                 return key?bbox[key]:bbox;
@@ -14430,7 +14437,7 @@ Class("xui.svg", "xui.UI",{
                                             y=Y-oy;
                                         }
                                         // for connector
-                                        // find target connected obj, draw/undraw magnetic dots
+                                        // find target connected el, draw/undraw magnetic dots
                                         if(conType=='from'||conType=='to'){
                                             var d=el.node.ownerDocument||document;
 
@@ -15349,10 +15356,10 @@ Class("xui.svg", "xui.UI",{
                 attr3=xui.svg.$attr;
             // get valid attr
             _.each(attr,function(o,i){
-                if(/^[A-Z]+$/.test(i) && _.isHash(o) && ( i in ns.$tagName)){
+                if(/^[A-Z_]+(_[0-9]+)?$/.test(i) && _.isHash(o) && ((i.indexOf("_")!=-1)||( i in ns.$tagName))){
                     attr2[i]=attr2[i]||{};
                     _.each(o,function(o1,i1){
-                        if(attr3[ns.$tagName[i]][i1])
+                        if(attr3[ns.$tagName[i]|| i.split("_")[0].toLowerCase()][i1])
                             attr2[i][i1]=o1;
                     });
                 }else if(attr3[ns.$tagName.KEY][i]){
@@ -15509,74 +15516,84 @@ Class("xui.svg", "xui.UI",{
                        r.remove();
                        div.empty();
                     }
-
-                    var ha=attr.hAlign||'center',
-                        va=attr.vAlign||'middle',
-                        offsetx=obbox?(textAnchor=='start'?-obbox.width/2:textAnchor=='middle'?0:obbox.width/2):0;
-
-                    if(_.isNumb(bbox.x)){
-                        if(ha=='center'){
-                            if(_.isNumb(bbox.width)){
-                                h.x=bbox.x + bbox.width/2;
-                            }else{
+                    if('hAlign' in prf.box.$DataModel){
+                        var ha=attr.hAlign||'center',
+                            va=attr.vAlign||'middle',
+                            offsetx=obbox?(textAnchor=='start'?-obbox.width/2:textAnchor=='middle'?0:obbox.width/2):0;
+    
+                        if(_.isNumb(bbox.x)){
+                            if(ha=='center'){
+                                if(_.isNumb(bbox.width)){
+                                    h.x=bbox.x + bbox.width/2;
+                                }else{
+                                    h.x=bbox.x+(obbox?(obbox.width/2):0);
+                                }
+                            }else if(ha=='left'){
                                 h.x=bbox.x+(obbox?(obbox.width/2):0);
-                            }
-                        }else if(ha=='left'){
-                            h.x=bbox.x+(obbox?(obbox.width/2):0);
-                        }else if(ha=='outterleft'){
-                            h.x=bbox.x-(obbox?(obbox.width/2):0);
-                        }else if(ha=='right'){
-                            if(_.isNumb(bbox.width)){
-                                h.x=bbox.x+bbox.width-(obbox?(obbox.width/2):0);
+                            }else if(ha=='outterleft'){
+                                h.x=bbox.x-(obbox?(obbox.width/2):0);
+                            }else if(ha=='right'){
+                                if(_.isNumb(bbox.width)){
+                                    h.x=bbox.x+bbox.width-(obbox?(obbox.width/2):0);
+                                }else{
+                                    //
+                                }
+                            }else if(ha=='outterright'){
+                                if(_.isNumb(bbox.width)){
+                                    h.x=bbox.x+bbox.width+(obbox?(obbox.width/2):0);
+                                }else{
+                                    //
+                                }
                             }else{
-                                //
+                                if(_.isNumb(bbox.width)){
+                                    h.x=bbox.x+bbox.width*parseFloat(ha)/100;
+                                }else{
+                                    h.x=bbox.x+(obbox?(obbox.width*parseFloat(ha)/100):0);
+                                }
                             }
-                        }else if(ha=='outterright'){
-                            if(_.isNumb(bbox.width)){
-                                h.x=bbox.x+bbox.width+(obbox?(obbox.width/2):0);
-                            }else{
-                                //
-                            }
-                        }else{
-                            if(_.isNumb(bbox.width)){
-                                h.x=bbox.x+bbox.width*parseFloat(ha)/100;
-                            }else{
-                                h.x=bbox.x+(obbox?(obbox.width*parseFloat(ha)/100):0);
-                            }
+                            h.x += offsetx;
                         }
-                        h.x += offsetx;
-                    }
-
-                    if(_.isNumb(bbox.y)){
-                        if(va=='middle'){
-                            if(_.isNumb(bbox.height)){
-                                h.y=bbox.y+bbox.height/2;
-                            }else{
+    
+                        if(_.isNumb(bbox.y)){
+                            if(va=='middle'){
+                                if(_.isNumb(bbox.height)){
+                                    h.y=bbox.y+bbox.height/2;
+                                }else{
+                                    h.y=bbox.y+(obbox?(obbox.height/2):0);
+                                }
+                            }else if(va=='top'){
                                 h.y=bbox.y+(obbox?(obbox.height/2):0);
-                            }
-                        }else if(va=='top'){
-                            h.y=bbox.y+(obbox?(obbox.height/2):0);
-                        }else if(va=='outtertop'){
-                            h.y=bbox.y-(obbox?(obbox.height/2):0);
-                        }else if(va=='bottom'){
-                            if(_.isNumb(bbox.height)){
-                                h.y=bbox.y+bbox.height-(obbox?(obbox.height/2):0);
+                            }else if(va=='outtertop'){
+                                h.y=bbox.y-(obbox?(obbox.height/2):0);
+                            }else if(va=='bottom'){
+                                if(_.isNumb(bbox.height)){
+                                    h.y=bbox.y+bbox.height-(obbox?(obbox.height/2):0);
+                                }else{
+                                    //
+                                }
+                            }else if(va=='outterbottom'){
+                                if(_.isNumb(bbox.height)){
+                                    h.y=bbox.y+bbox.height+(obbox?(obbox.height/2):0);
+                                }else{
+                                    //
+                                }
                             }else{
-                                //
-                            }
-                        }else if(va=='outterbottom'){
-                            if(_.isNumb(bbox.height)){
-                                h.y=bbox.y+bbox.height+(obbox?(obbox.height/2):0);
-                            }else{
-                                //
-                            }
-                        }else{
-                            if(_.isNumb(bbox.height)){
-                                h.y=bbox.y+bbox.height*parseFloat(va)/100;
-                            }else{
-                                h.y=bbox.y+(obbox?(obbox.height*parseFloat(va)/100):0);
+                                if(_.isNumb(bbox.height)){
+                                    h.y=bbox.y+bbox.height*parseFloat(va)/100;
+                                }else{
+                                    h.y=bbox.y+(obbox?(obbox.height*parseFloat(va)/100):0);
+                                }
                             }
                         }
+                    }else{
+                        if(_.isNumb(obbox.x))
+                            h.x=obbox.x;
+                        if(_.isNumb(obbox.y))
+                            h.y=obbox.y;
+                        if(_.isNumb(obbox.width))
+                            h.width=obbox.width;
+                        if(_.isNumb(obbox.height))
+                            h.height=obbox.height;
                     }
                 }break;
                 case 'path':{
@@ -15782,9 +15799,9 @@ Class("xui.svg.circle", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.circle(prop.cx,prop.cy,prop.r);
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            return paper.set().push(obj);
+            var el = paper.circle(prop.cx,prop.cy,prop.r);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            return paper.set().push(el);
         }
     }
 });
@@ -15808,9 +15825,9 @@ Class("xui.svg.ellipse", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.ellipse(prop.cx,prop.cy,prop.rx,prop.ry);
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            return paper.set().push(obj);
+            var el = paper.ellipse(prop.cx,prop.cy,prop.rx,prop.ry);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            return paper.set().push(el);
         }
     }
 });
@@ -15834,9 +15851,9 @@ Class("xui.svg.rect", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.rect(prop.x,prop.y,prop.width,prop.height,prop.r);
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            return paper.set().push(obj);
+            var el = paper.rect(prop.x,prop.y,prop.width,prop.height,prop.r);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            return paper.set().push(el);
         }
     }
 });
@@ -15861,9 +15878,9 @@ Class("xui.svg.image", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.image(xui.adjustRes(prop.src),prop.x,prop.y,prop.width,prop.height);
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            return paper.set().push(obj);
+            var el = paper.image(xui.adjustRes(prop.src),prop.x,prop.y,prop.width,prop.height);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            return paper.set().push(el);
         }
     }
 });
@@ -15887,9 +15904,9 @@ Class("xui.svg.text", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.text(prop.x,prop.y,prop.text);
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            return paper.set().push(obj);
+            var el = paper.text(prop.x,prop.y,prop.text);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            return paper.set().push(el);
         }
     }
 });
@@ -15914,9 +15931,9 @@ Class("xui.svg.path", "xui.svg",{
         $abstract:true,
         _draw:function(paper, prf, prop){
             prop=prop.attr;
-            var obj = paper.path(prop.path);
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            return paper.set().push(obj);
+            var el = paper.path(prop.path);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            return paper.set().push(el);
         },
         DataModel:{
             attr:{
@@ -16064,8 +16081,10 @@ Class("xui.svg.absComb", "xui.svg",{
 
             // transform
             var ss=prf._elset;
-            if(ss){
-                ss[1].attr('transform',ss[0].attr('transform'));
+            if(ss&&ss[1]){
+                var tf=ss[0].attr('transform');
+                for(var i=1,l=ss.length;i<l;i++)
+                    ss[i].attr('transform', tf);
             }
         },
         _syncAttr:function(prf,options,shapeChanged){
@@ -16078,14 +16097,14 @@ Class("xui.svg.absComb", "xui.svg",{
         },
         _draw:function(paper, prf, prop){
             var s=paper.set(), attr=prop.attr.KEY,att2=prop.attr.TEXT,
-                obj = this._drawRoot(paper,attr);
+                el = this._drawRoot(paper,attr);
 
-            obj.node.id=prf.box.KEY+":"+prf.serialId+":";
-            s.push(obj);
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            s.push(el);
 
-            obj = paper.text(attr.x, attr.y, att2.text);
-            obj.node.id=prf.box.KEY+"-TEXT:"+prf.serialId+":";
-            s.push(obj);
+            el = paper.text(attr.x, attr.y, att2.text);
+            el.node.id=prf.box.KEY+"-TEXT:"+prf.serialId+":";
+            s.push(el);
 
             return s;
         }
@@ -16304,9 +16323,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
             };
 
 /*
-            obj = paper.text(attr.x, attr.y, att2.text);
-            obj.node.id=prf.box.KEY+"-TEXT:"+prf.serialId+":";
-            s.push(obj);
+            el = paper.text(attr.x, attr.y, att2.text);
+            el.node.id=prf.box.KEY+"-TEXT:"+prf.serialId+":";
+            s.push(el);
 */
             return s;
         },
@@ -16773,6 +16792,134 @@ Class("xui.svg.connector","xui.svg.absComb",{
             prf.boxing().setAttr('KEY',{path: paths[0].path},false);
 
             return paths[0].path;
+        }
+    }
+});
+
+Class("xui.svg.group", "xui.svg.absComb",{
+    Instance:{
+        _adjustText:function(){
+            return this;
+        },
+        _setBBox:function(key,value,notify){
+            var bb=xui.svg.$adjustBB(key,value);
+            return this.each(function(prf){
+                var prop=prf.properties, ss=prf._elset, attrs=prop.attr;
+                if(prf.renderId && ss&&ss[0]){
+                    var bbo=prf.boxing()._getBBox();
+                    ss.forEach(function(el){
+                        var attr=attrs[prf.getKey(el.node.id,true)], bbn={};
+                        if(el.type=="text"){
+                            bbn={x:attr.x, y:attr.y};
+                            if('x' in bb)bbn.x+=bb.x-bbo.x;
+                            if('y' in bb)bbn.y+=bb.y-bbo.y;
+                            attr.x=bbn.x;
+                            attr.y=bbn.y;
+                            el.attr(bbn);
+                        }else{
+                            _.merge(bbn, el._getBBox(true));
+                            if('x' in bb)bbn.x+=bb.x-bbo.x;
+                            if('y' in bb)bbn.y+=bb.y-bbo.y;
+                            if('width' in bb)bbn.width+=bb.width-bbo.width;
+                            if('height' in bb)bbn.height+=bb.height-bbo.height;
+                            xui.svg.$setBB(prf, el.type, bbn, attr, el, notify);
+                        }
+                    });
+                }else{
+                    if(!prf._init_bbox)prf._init_bbox={};
+                    _.merge(prf._init_bbox,bb,'all');
+                }
+            });
+        }
+    },
+    Static:{
+        ISCOMBO:1,
+        _beforeSerialized:function(profile){
+            var o = arguments.callee.upper.call(this,profile),prop=o.properties;
+            var attrs=prop.attr=_.clone(prop.attr,true);
+            
+            _.filter(attrs.KEY,function(o,i){
+                if(i=='transform'&&(!o||o.length<1))return false;
+                if(i=='href'||i=='target')return false;
+                if(i=='path' && _.isArr(prop.attr.KEY.path))prop.attr.KEY.path=o.join('');
+            });
+            // other elements
+            _.each(attrs,function(attr,key){
+                if(key=="KEY")return;
+                _.filter(attr,function(o,i){
+                    // transform is from KEY
+                    if(i=='transform')return false;
+                });
+                
+                var type=key.split("_")[0];
+                if(type=="path"){
+                    _.each(attr,function(o,i){
+                        if(i=='path' && _.isArr(o))attr.path=o.join('');
+                    });
+                }
+            });
+
+            return o;
+        },
+        _type:'path',
+        Templates:{
+            tagName:'path'
+        },
+        DataModel:{
+            attr:{
+                ini:{
+                    KEY:{
+                    }
+                }
+            },
+            hAlign:null,
+            vAlign:null,
+            shadow:false
+        },
+        RenderTrigger:function(){
+            var prf=this,bb;
+            if(bb=prf._init_bbox){
+                prf.boxing()._setBBox(bb);
+                delete prf._init_bbox;
+            }
+        },
+        _draw:function(paper, prf, prop){
+            var s=paper.set(), attrs=prop.attr, rootattr=attrs.KEY||{path:""},
+                el=paper.path(rootattr.path||"");
+            // root is a path
+            el.node.id=prf.box.KEY+":"+prf.serialId+":";
+            s.push(el);
+            // other elements
+            _.each(attrs,function(attr,key){
+                if(key=="KEY")return;
+                
+                var type=key.split("_")[0].toLowerCase();
+                switch(type){
+                    case "rect":
+                        el = paper.rect(attr.x,attr.y,attr.width,attr.height);
+                        break;
+                    case "circle":
+                        el = paper.circle(attr.cx,attr.cy,attr.r);
+                        break;
+                    case "ellipse":
+                        el = paper.ellipse(attr.cx,attr.cy,attr.rx,attr.ry);
+                        break;
+                    case "text":
+                        el = paper.text(attr.x, attr.y, attr.text);
+                        break;
+                    case "image":
+                        el =paper.image(attr.src,attr.x,attr.y,attr.width,attr.height);
+                        break;
+                    case "path":
+                        el =paper.path(attr.path);
+                        break;                    
+                    default:
+                        return;
+                }
+                el.node.id=prf.box.KEY+"-"+key+":"+prf.serialId+":";
+                s.push(el);
+            });
+            return s;
         }
     }
 });Class("xui.UI.SVGPaper", "xui.UI.Pane",{
