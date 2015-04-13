@@ -15694,11 +15694,15 @@ Class("xui.Tips", null,{
             if(this.renderId)
                 return fun.call(this, value, ovalue);
         },
-        getKey:function(id){
+        getKey:function(id,tagOnly){
             var t;
             if(id.charAt(0)=='!')id=xui.use(id).id();
             if(id.indexOf(':')==-1)id=(t=xui.$cache.profileMap[id])&&(t.$domId);
-            return id?id.split(":")[0]:"";
+            if(id){
+                id=id.split(":")[0];
+                if(tagOnly)id=id.split('-')[1]||"KEY";
+            }
+            return id||"";
         },
         getSubId:function(id){
             var t;
