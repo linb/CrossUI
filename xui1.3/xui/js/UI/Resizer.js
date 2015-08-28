@@ -31,7 +31,7 @@ Class("xui.UI.Resizer","xui.UI",{
         }
     },
     Initialize:function(){
-        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','L','R','T','B','LT','RT','LB','RB','REGION']);
+        this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','ROTATE','L','R','T','B','LT','RT','LB','RB','REGION']);
         _.each({
             // add resizer to xui.Dom plugin
             addResizer:function(properties, onUpdate, onChange){
@@ -194,7 +194,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 'font-size':0,
                 'line-height':0
             },
-            'CONF1, CONF2':{
+            'CONF1, CONF2, ROTATE':{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
@@ -213,6 +213,11 @@ Class("xui.UI.Resizer","xui.UI",{
                 $order:3,
                 'background-position':'-112px -284px'
              },
+            ROTATE:{
+                $order:4,
+                cursor: "crosshair",
+                'background-position':'-160px -280px'
+            },
              HANDLER:{
                 $order:0,
                 position:'absolute',
@@ -273,16 +278,16 @@ Class("xui.UI.Resizer","xui.UI",{
         },
         Behaviors:{
             beforeMousedown:function(profile, e, src){
-                profile.box._onMousedown(profile, e, src, {move:true});
+                profile.box._onMousedown(profile, e, src, "move");
             },
             onDragbegin:function(profile, e, src){
-                profile.box._onDragbegin(profile, e, src);
+                profile.box._onDragbegin(profile, e, src,"move");
             },
             onDrag:function(profile, e, src){
-                profile.box._onDrag(profile, e, src, {move:true});
+                profile.box._onDrag(profile, e, src, "move");
             },
             onDragstop:function(profile, e, src){
-                profile.box._onDragstop(profile, e, src, {move:true} );
+                profile.box._onDragstop(profile, e, src, "move");
             },
             onDblclick:function(profile, e, src){
                 if(profile.onDblclick)profile.boxing().onDblclick(profile, e, src);
@@ -321,124 +326,139 @@ Class("xui.UI.Resizer","xui.UI",{
                     return false;
                 }
             },
-            LT:{
+            ROTATE:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {left:true, top:true});
+                    profile.box._onMousedown(profile, e, src, "rotate");
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src, "rotate");
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {left:true, top:true});
+                    profile.box._onDrag(profile, e, src, "rotate");
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {left:true, top:true});
+                    profile.box._onDragstop(profile, e, src, "rotate");
+                } 
+            },
+            LT:{
+                beforeMousedown:function(profile, e, src){
+                    profile.box._onMousedown(profile, e, src,'nw');
+                    return false;
+                },
+                onDragbegin:function(profile, e, src){
+                    profile.box._onDragbegin(profile, e, src,'nw');
+                },
+                onDrag:function(profile, e, src){
+                    profile.box._onDrag(profile, e, src, 'nw');
+                },
+                onDragstop:function(profile, e, src){
+                    profile.box._onDragstop(profile, e, src, 'nw');
                 }
             },
             RT:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {right:true, top:true});
+                    profile.box._onMousedown(profile, e, src, 'ne');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src, 'ne');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {right:true, top:true});
+                    profile.box._onDrag(profile, e, src, 'ne');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {right:true, top:true});
+                    profile.box._onDragstop(profile, e, src, 'ne');
                 }
             },
             LB:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {left:true, bottom:true});
+                    profile.box._onMousedown(profile, e, src, 'sw');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src, 'sw');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {left:true, bottom:true});
+                    profile.box._onDrag(profile, e, src, 'sw');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {left:true, bottom:true});
+                    profile.box._onDragstop(profile, e, src, 'sw');
                 }
             },
             RB:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {right:true, bottom:true});
+                    profile.box._onMousedown(profile, e, src, 'se');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src,'se');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {right:true, bottom:true});
+                    profile.box._onDrag(profile, e, src, 'se');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {right:true, bottom:true});
+                    profile.box._onDragstop(profile, e, src, 'se');
                 }
             },
             L:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {left:true});
+                    profile.box._onMousedown(profile, e, src, 'w');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src,'w');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {left:true});
+                    profile.box._onDrag(profile, e, src,'w');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {left:true});
+                    profile.box._onDragstop(profile, e, src,'w');
                 }
             },
             T:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {top:true});
+                    profile.box._onMousedown(profile, e, src,'n');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src,'n');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {top:true});
+                    profile.box._onDrag(profile, e, src,'n');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {top:true});
+                    profile.box._onDragstop(profile, e, src,'n');
                 }
             },
             R:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {right:true});
+                    profile.box._onMousedown(profile, e, src,'e');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src,'e');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {right:true});
+                    profile.box._onDrag(profile, e, src,'e');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {right:true});
+                    profile.box._onDragstop(profile, e, src,'e');
                 }
             },
             B:{
                 beforeMousedown:function(profile, e, src){
-                    profile.box._onMousedown(profile, e, src, {bottom:true});
+                    profile.box._onMousedown(profile, e, src,'s');
                     return false;
                 },
                 onDragbegin:function(profile, e, src){
-                    profile.box._onDragbegin(profile, e, src);
+                    profile.box._onDragbegin(profile, e, src,'s');
                 },
                 onDrag:function(profile, e, src){
-                    profile.box._onDrag(profile, e, src, {bottom:true});
+                    profile.box._onDrag(profile, e, src,'s');
                 },
                 onDragstop:function(profile, e, src){
-                    profile.box._onDragstop(profile, e, src, {bottom:true});
+                    profile.box._onDragstop(profile, e, src,'s');
                 }
             }
         },
@@ -478,6 +498,14 @@ Class("xui.UI.Resizer","xui.UI",{
                     this.getSubNode('CONF2').css('display',v?'':'none');
                 }
             },
+            rotatable:{
+                ini:false,
+                action:function(v){
+                    if(v && xui.browser.ie&&xui.browser.ver<=8)
+                        v = false;
+                    this.getSubNode('ROTATE').css('display',v?'':'none');
+                }
+            },
 //>>
 
             left: 100,
@@ -489,7 +517,7 @@ Class("xui.UI.Resizer","xui.UI",{
         },
         EventHandlers:{
             onDblclick:function(profile, e, src){},
-            onUpdate:function(profile, target, size, cssPos){},
+            onUpdate:function(profile, target, size, cssPos, rotate){},
             onChange:function(profile, proxy){},
             onConfig:function(profile, e, src,pos,type){}
         },
@@ -510,6 +538,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 MOVE: {tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
                 CONF1:{tagName:'div', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
                 CONF2:{tagName:'div', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
+                ROTATE:{tagName:'div', style:'top:-18px;left:50%;margin-left:-8px;width:16px;height:16px;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
@@ -547,6 +576,7 @@ Class("xui.UI.Resizer","xui.UI",{
 
                 template.CONF1 = map.CONF1;
                 template.CONF2 = map.CONF2;
+                template.ROTATE = map.ROTATE;
 
                 // change height only
                 if(pro.vertical){
@@ -625,13 +655,19 @@ Class("xui.UI.Resizer","xui.UI",{
 
             t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
             t._rightCofigBtn = t.rightConfigBtn?'':'display:none';
+            
+            var r=t.rotatable;
+            if(r && xui.browser.ie&&xui.browser.ver<=8)
+                r=false;
+            t._rotateBtn = r?'':'display:none';
             return arguments.callee.upper.call(this, profile);
         },
         RenderTrigger:function(){
             var self=this;
-            xui.setNodeData(self.renderId,'zIndexIgnore',1)
+            xui.setNodeData(self.renderId,'zIndexIgnore',1);
+            self.box._tryCursors(self);
         },
-        _onUpdate:function(profile, target, size, cssPos){
+        _onUpdate:function(profile, target, size, cssPos, rotate){
             if(target){
                 if(size)target.widthBy(size.width,true).heightBy(size.height,true);
                 if(cssPos){
@@ -641,10 +677,65 @@ Class("xui.UI.Resizer","xui.UI",{
                     if(t.top=='auto'&&(parseInt(t.bottom,10)>=0)){}else
                     target.topBy(cssPos.top);
                 }
+                if(_.isDefined(rotate)){
+                    target.rotate(rotate);
+                }
             }
         },
         //
-        _onMousedown:function(profile, e, src, ddparas){
+        _switchAxis : function (axis, angle, dir4) {
+            var a = (angle + 360 ) % 360,
+                axisArray = ["n", "ne", "e", "se", "s", "sw", "w", "nw"],
+                // 0 .. 7
+                octant = Math.round(a /45),
+                oindex = _.arr.indexOf(axisArray, axis),
+                index = oindex + octant,
+                naxis = axisArray[index % 8];
+            if(dir4 && index%2 == 1){
+                if(a < octant*45){
+                    naxis = axisArray[(index-1) % 8];
+                }else{
+                    naxis = axisArray[(index+1) % 8];
+                }
+            }
+            return naxis;
+        },
+        _tryCursors : function(profile){
+               var a = (profile.getRoot().rotate() + 360 ) % 360,
+                    f = this._switchAxis,
+                    hash = {T:"n", RT:"ne", R:"e", RB:"se", B:"s", LB:"sw", L:"w", LT:"nw"},n;
+                _.each(hash,function(k,i){
+                    if((n=profile.getSubNode(i)).get(0)){
+                        n.css('cursor', f(k, a)+"-resize");
+                    }
+                });
+        },
+        _getDDParas:function(angle, axis, switched){
+            switch(axis){
+            case "move":
+                return {move:true};
+            case "rotate":
+                return {rotate:true};
+            case "nw":
+                return {left:true, top:true};
+            case "ne":
+                return {right:true, top:true};
+            case "sw":
+                return {left:true, bottom:true};
+            case "se":
+                return {right:true, bottom:true};
+            case "w":
+                return {left:true};
+            case "n":
+                return {top:true};
+            case "e":
+                return {right:true};
+            case "s":
+                return  {bottom:true};
+            }
+        },
+        _onMousedown:function(profile, e, src, axis){
+            var ddparas=this._getDDParas(0, axis);
             if(xui.Event.getBtn(e)!="left")return;
             var puip=profile.$parentUIProfile;
             if(puip && puip['xui.UIProfile'] && puip.beforeResizerDrag && false=== _.tryF(puip.beforeResizerDrag,[puip,profile,ddparas],puip.boxing()))
@@ -660,133 +751,306 @@ Class("xui.UI.Resizer","xui.UI",{
                 targetTop:pos.top
             });
         },
-        _onDragbegin:function(profile, e){
+        _onDragbegin:function(profile, e, src, axis){
             var prop=profile.properties,
-            //set target to specific target
-            //or, set target to resizer
-            o = profile.properties._attached?profile._target:xui([profile.renderId]),
-            w = o.width(),
-            h = o.height();
+                rotatable = prop.rotatable,
+                //set target to specific target
+                //or, set target to resizer
+                o = profile.properties._attached?profile._target:xui([profile.renderId]),
+                w = o.width(),
+                h = o.height(),
+                pos = o.offset(),
+                rotate;
+            if(rotatable){
+                rotate = o.rotate();
+                if(o.get(0).getBoundingClientRect){
+                    var rect = o.get(0).getBoundingClientRect();
+                    profile.o_center = {
+                        x : (rect.right + rect.left)/2,
+                        y : (rect.bottom + rect.top)/2
+                    };
+                }else{
+                    profile.o_center = {
+                        x : pos.left +  w/2,
+                        y : pos.top + w/2
+                    };
+                }
+            }
+
             if(profile.properties._attached){
-                var pos =o.offset();
                 //custom proxy
                 profile.proxy = xui.Dom.getEmptyDiv();
                 profile.proxy
-                .html(' ',false)
-                .css({border:'1px dashed',visibility:'visible'})
-                .offset(pos)
-                .width(w)
-                .height(h)
-                .css('zIndex',xui.Dom.TOP_ZINDEX+20);
+                    .html(' ',false)
+                    .css({border:'1px dashed',visibility:'visible'})
+                    .offset(pos)
+                    .width(w)
+                    .height(h)
+                    .css('zIndex',xui.Dom.TOP_ZINDEX+20);
+                if(rotate)
+                    profile.proxy.rotate(rotate);
             }else
                 //set proxy to itself
                 profile.proxy = o;
 
-            //get pos for target and proxy
-            profile.o_pos = profile.proxy.cssPos();
 
             //get current w h from target
             profile.o_w2 =profile.o_w =w;
             profile.o_h2 =profile.o_h = h;
+            //get pos for target and proxy
+            profile.o_pos = profile.proxy.cssPos();
+            profile.o_size = {width:w, height:h};
+            profile.o_rotate = rotate;
+            if(profile.regions){
+                profile.o_regions=[];
+                profile.regions.each(function(n){
+                    profile.o_regions.push(xui(n).cssSize());
+                });
+            }
 
             profile.$onDrag = true;
         },
-        _onDrag:function(profile, e,src, ddparas){
-            var o=ddparas;
+        _onDrag:function(profile, e, src, axis){
+            var args=this._getDDParas(profile.o_rotate, axis);
+
             //get dragdop off set
             profile.oos = profile.oos ||{};
-            var os = xui.DragDrop.getProfile().offset;
-            if(os.x == profile.oos.width && os.y == profile.oos.height)return;
-            profile.oos=os;
+            var dd = xui.DragDrop.getProfile(),
+                t=profile.properties,
+                elemAngle = profile.o_rotate,
+                cs = profile.o_size, 
+                sp = profile.o_pos,    
+                os = dd.offset,
+                dx = os.x,
+                dy = os.y,
+                x,y,w,h,rotate,
+                data={};
 
-            var x,y,w,h,t=profile.properties;
+            // no move
+            if(dx===0 && dy===0)return;
+            // for rotate
+            if(elemAngle && !(args.move || args.rotate)){
+                var adjustAngle = function(a){return (a + 360 ) % 360;},
+                    distance = Math.pow(Math.pow(dx, 2)+ Math.pow(dy,2),.5),
+                    mouseAngle = adjustAngle(Math.atan2(dx, -dy) * 180 /Math.PI),
+                    offAngle = elemAngle  + 90 - mouseAngle,
+                    flagX = (adjustAngle(mouseAngle - elemAngle) <  180) ? 1 : -1,
+                    flagY = (adjustAngle(mouseAngle - elemAngle) < 90 || adjustAngle(mouseAngle - elemAngle) > 270) ? -1 : 1;
 
-            if(o.left){
+                dx = distance * Math.abs(Math.cos(offAngle * Math.PI/180)) * flagX;
+                dy = distance * Math.abs(Math.sin(offAngle* Math.PI/180)) * flagY;
+            } 
+            // no data
+            if(dx == profile.oos.width && dy == profile.oos.height)return;
+            profile.oos={width:dx, height:dy};
+
+            // pos and size
+            if(args.left){
                 // width of proxy
-                w = profile.o_w - os.x;
+                w = profile.o_w - dx;
                 // left of proxy
-                x = profile.o_pos.left + os.x;
+                x = sp.left + dx;
                 if(w<t.minWidth){
                     w=t.minWidth;
-                    x = profile.o_w+profile.o_pos.left - w;
+                    x = profile.o_w+sp.left - w;
                 }else if(w>t.maxWidth){
                     w=t.maxWidth;
-                    x= profile.o_w+profile.o_pos.left - w;
+                    x= profile.o_w+sp.left - w;
                 }
-                profile.proxy.width(w).left(x);
-                if(profile.onChange)profile.boxing().onChange(profile,profile.proxy);
-            }else if(o.right){
-                w = profile.o_w + os.x;
+                _.merge(data,{width:w,left:x});
+            }else if(args.right){
+                w = profile.o_w + dx;
                 if(w<t.minWidth)w=t.minWidth;
                 else if(w>t.maxWidth)w=t.maxWidth;
-                profile.proxy.width(w);
-                if(profile.onChange)profile.boxing().onChange(profile,profile.proxy);
+                _.merge(data,{width:w});
             }
-            if(o.left || o.right){
-                //resize inner region block
-                var byw = w-profile.o_w2;
-                if(profile.regions && byw!==0){
-                    profile.regions.widthBy(byw);
-                    profile.o_w2=w;
-                }
-            }
-
-            if(o.top){
-                h = profile.o_h - os.y;
-                y = profile.o_pos.top + os.y;
+            if(args.top){
+                h = profile.o_h - dy;
+                y = sp.top + dy;
                 if(h<t.minHeight){
                     h=t.minHeight;
-                    y=profile.o_h+profile.o_pos.top - h;
+                    y=profile.o_h+sp.top - h;
                 }else if(h>t.maxHeight){
                     h=t.maxHeight;
-                    y=profile.o_h+profile.o_pos.top - h;
+                    y=profile.o_h+sp.top - h;
                 }
-                profile.proxy.height(h).top(y);
-                if(profile.onChange)profile.boxing().onChange(profile,profile.proxy);
-            }else if(o.bottom){
-                h= profile.o_h + os.y;
+                _.merge(data,{height:h,top:y});
+            }else if(args.bottom){
+                h= profile.o_h + dy;
                 if(h<t.minHeight)h=t.minHeight;
                 else if(h>t.maxHeight)h=t.maxHeight;
-                profile.proxy.height(h);
-                if(profile.onChange)profile.boxing().onChange(profile,profile.proxy);
+                _.merge(data,{height:h});
             }
-            if(o.top || o.bottom){
+
+            if(elemAngle && !(args.move || args.rotate)){
+                delete data.left;
+                delete data.top;
+
+               var xRate = Math.abs (Math.cos(elemAngle * Math.PI/180)),
+                    yRate = Math.abs(Math.sin(elemAngle * Math.PI/180)),
+                    // old bbox
+                    oldBBoxCX = sp.left + cs.width/2,
+                    oldBBoxCY = sp.top + cs.height/2,
+                    oldBboxW = cs.width * xRate + cs.height * yRate,
+                    oldBboxH = cs.width * yRate + cs.height * xRate,
+                    oldBboxL = oldBBoxCX - oldBboxW/2,
+                    oldBboxT = oldBBoxCY - oldBboxH/2,
+                    
+                    // new bbox
+                    newBboxCX = (data.left||sp.left) +  (data.width||cs.width)/2,
+                    newBboxCY = (data.top||sp.top) +  (data.height||cs.height)/2,
+                    newBboxW = (data.width||cs.width) * xRate + (data.height||cs.height) * yRate,
+                    newBboxH = (data.width||cs.width) * yRate + (data.height||cs.height) * xRate,
+                    newBboxL = newBboxCX - newBboxW/2,
+                    newBboxT = newBboxCY - newBboxH/2,
+                    offW = (newBboxW-oldBboxW)/2,
+                    offH =  (newBboxH-oldBboxH)/2,
+                    //two original points offset
+                    offCX =  newBboxCX - oldBBoxCX,
+                    offCY =  newBboxCY - oldBBoxCY;
+
+                //Alignment by origin point
+                data.left =  sp.left - offCX;
+                data.top =  sp.top - offCY;
+
+                // find the direction
+                var naxis = this._switchAxis (axis, elemAngle,true);
+
+                switch(naxis){
+                    case "e":
+                        if(elemAngle < 90 ){
+                            data.top -= ((data.height||cs.height)*xRate - newBboxH/2) - (cs.height* xRate - oldBboxH/2);
+                        }else if(elemAngle > 90 && (elemAngle < 180)){
+                            data.top -= ((data.width||cs.width)*yRate - newBboxH/2) - (cs.width* yRate - oldBboxH/2);
+                        }else if(elemAngle > 180 && (elemAngle < 270)){
+                            data.top += ((data.width||cs.width)*yRate - newBboxH/2) - (cs.width* yRate - oldBboxH/2);
+                        }else{
+                            data.top += ((data.height||cs.height)*xRate - newBboxH/2) - (cs.height* xRate - oldBboxH/2);
+                        }
+                        data.left += offW;
+                        break;
+                    case "s":
+                        if(elemAngle < 90 ){
+                            data.left -= ((data.height||cs.height)*yRate - newBboxW/2) - (cs.height* yRate - oldBboxW/2);
+                        }else if(elemAngle > 90 && (elemAngle < 180)){
+                            data.left -= ((data.width||cs.width)*xRate - newBboxW/2) - (cs.width* xRate - oldBboxW/2);
+                        }else if(elemAngle > 180 && (elemAngle < 270)){
+                            data.left += ((data.width||cs.width)*xRate - newBboxW/2) - (cs.width* xRate - oldBboxW/2);
+                        }else{
+                            data.left += ((data.height||cs.height)*yRate - newBboxW/2) - (cs.height* yRate - oldBboxW/2);
+                        }
+                        data.top += offH;
+                        break;
+                    case "w":
+                        if(elemAngle < 90 ){
+                            data.top += ((data.height||cs.height)*xRate - newBboxH/2) - (cs.height* xRate - oldBboxH/2);
+                        }else if(elemAngle > 90 && (elemAngle < 180)){
+                            data.top += ((data.width||cs.width)*yRate - newBboxH/2) - (cs.width* yRate - oldBboxH/2);
+                        }else if(elemAngle > 180 && (elemAngle < 270)){
+                            data.top -= ((data.width||cs.width)*yRate - newBboxH/2) - (cs.width* yRate - oldBboxH/2);
+                        }else{
+                            data.top -= ((data.height||cs.height)*xRate - newBboxH/2) - (cs.height* xRate - oldBboxH/2);
+                        }
+                        data.left -= offW;
+                        break;
+                    case "n":
+                        if(elemAngle < 90 ){
+                            data.left += ((data.height||cs.height)*yRate - newBboxW/2) - (cs.height* yRate - oldBboxW/2);
+                        }else if(elemAngle > 90 && (elemAngle < 180)){
+                            data.left += ((data.width||cs.width)*xRate - newBboxW/2) - (cs.width* xRate - oldBboxW/2);
+                        }else if(elemAngle > 180 && (elemAngle < 270)){
+                            data.left -= ((data.width||cs.width)*xRate - newBboxW/2) - (cs.width* xRate - oldBboxW/2);
+                        }else{
+                            data.left -= ((data.height||cs.height)*yRate - newBboxW/2) - (cs.height* yRate - oldBboxW/2);
+                        }
+                        data.top -= offH;
+                        break;
+                }
+            }
+            // for inner region
+            if(args.left || args.right){
                 //resize inner region block
-                var byh = h-profile.o_h2;
-                if(profile.regions && byh!==0){
-                    profile.regions.heightBy(byh);
-                    profile.o_h2=h;
+                if(profile.regions && "width" in data && data.width!==cs.width){
+                    var offw=data.width-cs.width;
+                    profile.regions.each(function(n,i){
+                        xui(n).width(profile.o_regions[i].width + offw);
+                    });
                 }
             }
 
-            if(o.move){
-                x = profile.o_pos.left + os.x;
-                y = profile.o_pos.top + os.y;
-                profile.proxy.top(y).left(x);
-                if(profile.onChange)profile.boxing().onChange(profile,profile.proxy);
+            if(args.top || args.bottom){
+                //resize inner region block
+                if(profile.regions && "height" in data && data.height!==cs.height){
+                    var offh=data.height-cs.height;
+                    profile.regions.each(function(n,i){
+                        xui(n).height(profile.o_regions[i].height + offh);
+                    });
+                }
+            }
+
+            if(args.move){
+                x = sp.left + dx;
+                y = sp.top + dy;
+                _.merge(data,{top:y,left:x});
+            }
+            if(args.rotate){
+                rotate =  (180 - Math.atan2( dd.x - profile.o_center.x, dd.y - profile.o_center.y ) * 180 / Math.PI );
+                if(rotate<0)rotate+=360;
+                _.merge(data,{rotate:rotate});
+            }
+            
+            if(!_.isEmpty(data)){
+                _.each(data,function(o,i){
+                    data[i]=o+"px";
+                });
+                profile.proxy.css(data);
+
+                if(profile.onChange)
+                    profile.boxing().onChange(profile,profile.proxy);
             }
         },
-        _onDragstop:function(profile, e, src, args){
-            var cssPos,size,pos,o=profile.proxy;
+        _onDragstop:function(profile, e, src, axis){
+            var cssSize, cssPos,
+                offsize, offpos,
+                rotate,
+                cs = profile.o_size, 
+                sp = profile.o_pos,    
+                o = profile.proxy,
+                args = this._getDDParas(profile.o_rotate, axis);
 
-            if(!args.move)
-                size = { width :o.width()-profile.o_w, height :o.height()-profile.o_h};
-
-            if(args.left || args.top || args.move){
-                cssPos = o.cssPos();
-                pos = {left :cssPos.left-profile.o_pos.left,  top :cssPos.top-profile.o_pos.top};
+            if(!args.move && !args.rotate){
+                cssSize = o.cssSize();
+                offsize = {
+                    width : cssSize.width - cs.width, 
+                    height : cssSize.height - cs.height
+                };
+               if(offsize.width===0 && offsize.height===0)offsize=null;
             }
-            if(profile.onUpdate && false===profile.boxing().onUpdate(profile, profile._target, size, pos)){}
+            
+            cssPos = o.cssPos();
+            offpos = {
+                left : cssPos.left - sp.left,  
+                top : cssPos.top - sp.top
+            };
+           if(offpos.left===0 && offpos.top===0)offpos=null;
+            
+            if(args.rotate)
+                rotate=o.rotate();
+
+            if(profile.onUpdate && false===profile.boxing().onUpdate(profile, profile._target, offsize, offpos, rotate)){}
             else{
-                profile.box._onUpdate(profile, profile._target, size, pos);
+                profile.box._onUpdate(profile, profile._target, offsize, offpos, rotate);
             }
 
             if(profile.properties._attached){
                 if(xui.browser.ie6)profile._target.ieRemedy();
-                profile.proxy.html('',false).css({visibility:'hidden',border:'none',zIndex:'0',width:'0',height:'0'});
+                profile.proxy.html('',false).css({visibility:'hidden',border:'none',zIndex:'0',width:'0',height:'0',rotate:0});
             }
             //profile.boxing().active();
             profile.$onDrag = false;
+            delete profile.o_rotate;
+            
+            profile.box._tryCursors(profile);
         }
     }
 });

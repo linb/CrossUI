@@ -19898,6 +19898,18 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'parameters':'Flash参数集',
             'flashvars':'Flash变量集'
         },
+        'xui_UI_Audio' : {
+            'src':'媒体路径',
+            "controls":"显示控制",
+            "preload":"预加载",
+            "loop":"循环播放",
+            "muted":"静音",
+            "autoplay":"自动播放",
+            "volume":"音量"
+        },
+        'xui_UI_Video' : {
+            "poster":"底图"
+        },
         'xui_UI_Slider' : {
             'steps':'步长',
             'type':'类型',
@@ -20381,6 +20393,9 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onError:"图片加载失败"
         },
         'xui_UI_Flash' : {
+        },
+        'xui_UI_Audio' : {
+            onMediaEvent:"媒体事件"
         },
         'xui_UI_Slider' : {
         },

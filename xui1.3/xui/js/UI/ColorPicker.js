@@ -418,10 +418,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             'ADVMARK1, ADVMARK2':{
                 background:xui.browser.ie6?null:xui.UI.$bg('picker.png', 'no-repeat left top'),
                 _filter: xui.UI.$ieBg('picker.png'),
-                height:'17px',
+                height:'16px',
                 margin:'-8px 0pt 0pt -8px',
                 overflow:'hidden',
-                width:'17px'
+                width:'16px'
             },
             'LIST span':{
                 height: '12px',
@@ -888,7 +888,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                   left: Math.round(Math.sin(angle)*cls._radius+cls._bigRadius),
                   top: Math.round(-Math.cos(angle)*cls._radius+cls._bigRadius)
                 });
-                h=Math.floor((angle/6.28)*360);
+                h=Math.floor((angle/Math.PI)*180);
                 if(h<0)h +=360;
                 hsv=[h, profile.$hsv[1], profile.$hsv[2]];
                 rgb = cls.hsv2rgb(hsv);

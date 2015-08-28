@@ -302,13 +302,13 @@ class IO{
 		unset($i, $j, $k, $l, $id, $td);
 		return $result;
 	}
-	function countFile($pattern=".*", $path=".", $type=1, $sub_dir_level=0) {
+	function countFile($pattern=".*", $path=".", $type=1, $sub_dir_level=0, &$sum) {
 		// check parameters
 		$is_error = $type!=1 && $type!=0 && $type!=-1;
 		$is_error = $is_error && (!is_int($sub_dir_level) || $sub_dir_level < 0);
-		if ($is_error) throw new LINB_E('Can\'t seek file.');
+		if ($is_error) throw new Exception('Can\'t seek file.');
 		unset($is_error);
-		$sum = 0;
+		if(!isset($sum))$sum = 0;
 		// === for  "rray() == FALSE"
 		if (FALSE===$i=$this->dirList($path)) return FALSE;
 		for ($j=0,$k=count($i);$j<$k;$j++) {
@@ -319,8 +319,7 @@ class IO{
 
 			// for sub
 			if ($i[$j]["type"]==0&&$sub_dir_level) {
-				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1))) return FALSE;
-				$sum += $l;
+				if (FALSE===$l=$this->countFile($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$sum)) return FALSE;
 			}
 		}
 		unset($i, $j, $k, $l);

@@ -171,7 +171,7 @@ new function(){
     if (!w.requestAnimationFrame)
         w.requestAnimationFrame=function(callback,element){
             var currTime=(new Date()).getTime(),
-                timeToCall=Math.max(0, 16-(currTime-lastTime)),
+                timeToCall=Math.max(0,   1000 / 60 - (currTime-lastTime)),
                 id=setTimeout(function(){callback(currTime + timeToCall)}, timeToCall);
             lastTime=currTime+timeToCall;
             return id;
@@ -181,7 +181,7 @@ new function(){
 };
 _.merge(_,{
     setTimeout:function(callback,delay){
-        return (delay||0)>16?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
+        return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
     },
     clearTimeout:function(id){
         if(id>=0)cancelAnimationFrame(id);

@@ -628,7 +628,7 @@ Class('xui.Dom','xui.absBox',{
         css:function(name, value){
             if(typeof name=='object' || value!==undefined){
                 this.each(function(o){
-                        xui.Dom.setStyle(o,name,value)
+                    xui.Dom.setStyle(o,name,value)
                 });
 
                 if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
@@ -644,9 +644,9 @@ Class('xui.Dom','xui.absBox',{
                 return xui.Dom.getStyle(this.get(0), name);
             };
         },
-       rotate:function(v){
+        rotate:function(v){
             if(_.isSet(v)){
-                v=parseInt(v,10);
+                v=parseInt(v,10)||0;
                 v=v%360;
                 if(v<0)v=v+360;
                 return this.each(function(o){
@@ -2185,6 +2185,9 @@ type:4
         },
         getStyle:function(node, name){
             if(!node || node.nodeType!=1)return '';
+            if(name=="rotate"){
+               return xui(node).rotate();
+            }
             var ns=xui.Dom,
                 css3prop=xui.Dom._css3prop;
 
@@ -2398,11 +2401,11 @@ type:4
                 var matrix=computeMatrix(value);
                 var ow=node.offsetWidth,oh=node.offsetHeight;
                 var filter=matrix.getFilter();
-xui.echo(filter);
+//xui.echo(filter);
                 var t=((node.style.filter?(node.style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if(xui.browser.ie8)node.style.msfilter = t;
                 node.style.filter=t;
-xui.echo(t);
+//xui.echo(t);
 
                 // for fake case
                 if(node.getBoundingClientRect){
@@ -3075,6 +3078,10 @@ xui.echo(t);
         },
         _cssfake:{rotate:1, scaleX:1,scaleY:1,translateX:1,translateY:1,skewX:1,skewY:1},
         setStyle:function(node, name , value){
+            if(name=="rotate"){
+               xui(node).rotate(value);
+               return this;
+            }
             var ns=xui.Dom,
                 css3prop=xui.Dom._css3prop,
                 xb=xui.browser,
@@ -3360,7 +3367,7 @@ xui.echo(t);
             }
             body=o=null;
         },
-        setCover:function(visible,label){
+        setCover:function(visible,label,cursor){
             // get or create first
             var me=arguments.callee,
                 id="xui.temp:cover:",
@@ -3383,7 +3390,7 @@ xui.echo(t);
                     return;
                 if(me._showed){
                     if(o2)o2.empty(false);
-                    o1.css({zIndex:0,cursor:'',display:'none'});
+                    o1.css({zIndex:0,cursor:'',display:'none',cursor:''});
                     me._showed=false;
                 }
                 delete me._label;
@@ -3391,7 +3398,7 @@ xui.echo(t);
                 if(typeof label=='string')me._label=label;
                 var t = xui.win;
                 if(!me._showed){
-                    o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:'progress'});
+                    o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:cursor||'progress'});
                     me._showed=true;
                 }
                 //show content

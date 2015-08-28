@@ -699,7 +699,7 @@ Class('xui.DragDrop',null,{
                 pos.left -=  d.$proxySize;
                 pos.top -= d.$proxySize;
                 if(!p.targetOffsetParent)
-                    dom.setCover(true);
+                    dom.setCover(true,null,p.dragCursor);
             }
             if(temp=p.targetOffsetParent)
                 xui(temp).append(t);

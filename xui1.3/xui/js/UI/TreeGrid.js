@@ -4451,16 +4451,19 @@ editorEvents
                             h+=o.offsetHeight;
                         });
                         var onend=function(){
-                            //markNode.css('background','');
                             // compitable with IE<8
-                            markNode.css({
-                                backgroundImage:'',
-                                backgroundRepeat:'',
-                                backgroundPositionX:'',
-                                backgroundPositionY:'',
-                                backgroundColor:'',
-                                backgroundAttachment:''
-                              });
+                            if(xui.browser.ie && xui.browser.ver<=8){
+                                markNode.css({
+                                    backgroundImage:'',
+                                    backgroundRepeat:'',
+                                    backgroundPositionX:'',
+                                    backgroundPositionY:'',
+                                    backgroundColor:'',
+                                    backgroundAttachment:''
+                                  });
+                            }else{
+                                markNode.css('background','');
+                            }
                             if(empty){
                                 // markNode.css('background','none');
                                 // do nothing

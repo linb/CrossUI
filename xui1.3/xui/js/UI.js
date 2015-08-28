@@ -3884,7 +3884,7 @@ Class("xui.UI",  "xui.absObj", {
                 ini:0,
                 action:function(v){
                     var root=this.getRoot(),ins=this.boxing();
-                    v=parseInt(v,10);
+                    v=parseInt(v,10)||0;
                     v=v%360;
                     if(v<0)v=v+360;
                     if(this.box['xui.svg']){
