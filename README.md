@@ -1,4 +1,4 @@
-# crossui
+# CrossUI
 
 CrossUI is a Cross-Browser Javascript framework with cutting-edge functionality for rich web application.
 
@@ -16,3 +16,4 @@ Features & Resources :
 
 
 Website: http://www.linb.net
+         http://www.crossui.com
