@@ -21,3 +21,7 @@ CrossUI is a Cross-Browser Javascript framework with cutting-edge functionality 
 Website: http://www.linb.net
 
 Examples: http://www.linb.net/Examples
+
+UI Builder: http://www.crossui.com/RAD/Builder.html
+
+RAD: http://crossui.com/RAD
