@@ -3879,7 +3879,17 @@ Class("xui.UI",  "xui.absObj", {
             },
             dockMinW:0,
             dockMinH:0,
-            tips:'',
+            tips:{
+                ini:'',
+                action:function(v){
+                    var t=xui.Tips;
+                    if(t&&t._showed){
+                        if(xui.UIProfile.getFromDom(t._markId)==this){
+                            t.setTips(v, true);
+                        }
+                    }
+                }
+            },
             rotate:{
                 ini:0,
                 action:function(v){

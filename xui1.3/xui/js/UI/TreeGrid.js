@@ -3834,7 +3834,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(op.header.length===0)delete op.header;
             if(op.grpCols.length===0)delete op.grpCols;
             if(op.rows.length===0)delete op.rows;
-            delete op.valueMap;
+
             delete op.activeRow;
             delete op.activeCell;
             return o;

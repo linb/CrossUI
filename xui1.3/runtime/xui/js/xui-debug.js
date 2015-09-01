@@ -19150,7 +19150,17 @@ Class("xui.UI",  "xui.absObj", {
             },
             dockMinW:0,
             dockMinH:0,
-            tips:'',
+            tips:{
+                ini:'',
+                action:function(v){
+                    var t=xui.Tips;
+                    if(t&&t._showed){
+                        if(xui.UIProfile.getFromDom(t._markId)==this){
+                            t.setTips(v, true);
+                        }
+                    }
+                }
+            },
             rotate:{
                 ini:0,
                 action:function(v){
@@ -22143,7 +22153,7 @@ Class("xui.UI.Image", "xui.UI",{
             }
         },
         Behaviors:{
-            HotKeyAllowed:true,
+            HotKeyAllowed:false,
             onSize:xui.UI.$onSize
         },
         DataModel:{
@@ -43107,7 +43117,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(op.header.length===0)delete op.header;
             if(op.grpCols.length===0)delete op.grpCols;
             if(op.rows.length===0)delete op.rows;
-            delete op.valueMap;
+
             delete op.activeRow;
             delete op.activeCell;
             return o;
