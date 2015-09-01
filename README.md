@@ -19,9 +19,9 @@ Website: http://www.linb.net   [![image]](http://www.linb.net/)
 
 Examples: http://www.linb.net/Examples
 
-### Related products
+### Related tools
 
-These tools can reduce development time significantly:
+These tools (commercial license) can reduce development time significantly:
 
  * CrossUI UI Builder: http://www.crossui.com/RAD/Builder.html
 
