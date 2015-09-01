@@ -2,9 +2,7 @@
 
 CrossUI is a Cross-Browser Javascript framework with cutting-edge functionality for rich web application.
 
----
-### Features & Resources :
----
+### Features & Resources
 
   1.  Rich client-side API, works with any backend or static HTML pages.
   2.  Web services (JSON/XML/SOAP) can be directly bound.
@@ -16,14 +14,12 @@ CrossUI is a Cross-Browser Javascript framework with cutting-edge functionality 
   8.  CrossUI Framework is Open Source under LGPL3 license.
 
 
-Website: http://www.linb.net [![image]](http://www.linb.net/)  
+Website: http://www.linb.net   [![image]](http://www.linb.net/)  
 [image]: https://github.com/linb/CrossUI/blob/master/xui1.3/img/logo.png "CrossUI"
 
 Examples: http://www.linb.net/Examples
 
----
 ### Related products
----
 
 These tools can reduce development time significantly:
 
