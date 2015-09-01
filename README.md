@@ -1,6 +1,6 @@
 ## CrossUI
 
-CrossUI is a Cross-Browser Javascript framework with cutting-edge functionality for rich web application.
+CrossUI is a free Cross-Browser Javascript framework with cutting-edge functionality for rich web application.
 
 ### Features & Resources
 
