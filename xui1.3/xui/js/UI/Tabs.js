@@ -946,6 +946,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
         },
         DataModel:{
+            rotate:null,
+
             selectable:true,
             dirtyMark:false,
 

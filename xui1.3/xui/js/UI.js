@@ -6487,6 +6487,9 @@ new function(){
                 if(ns.box.KEY=="xui.UI.Pane")
                     if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                         ns.box._applyAutoLoad(ns);
+            },
+            DataModel:{
+                rotate:null
             }
         }
     });

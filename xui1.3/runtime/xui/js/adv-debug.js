@@ -1204,6 +1204,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             }
         },
         DataModel:{
+            rotate:null,
             position:'absolute',
             dock:'fill',
             listKey:null,

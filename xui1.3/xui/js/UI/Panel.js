@@ -291,6 +291,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
         },
         DataModel:{
+            rotate:null,
             selectable:true,
             position:'absolute',
             zIndex:0,

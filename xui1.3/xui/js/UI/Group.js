@@ -131,6 +131,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
         },
 
         DataModel:{
+            rotate:null,
             selectable:true,
             caption:{
                 ini:undefined,

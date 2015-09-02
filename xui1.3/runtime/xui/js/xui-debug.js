@@ -21758,6 +21758,9 @@ new function(){
                 if(ns.box.KEY=="xui.UI.Pane")
                     if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                         ns.box._applyAutoLoad(ns);
+            },
+            DataModel:{
+                rotate:null
             }
         }
     });
@@ -23830,6 +23833,7 @@ Class("xui.UI.Resizer","xui.UI",{
             //delete those properties
             disabled:null,
             tips:null,
+            rotate:null,
             iframeAutoLoad:{
                 ini:"",
                 action:function(){
@@ -28873,6 +28877,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
 
         DataModel:{
+            rotate:null,
             selectable:true,
             caption:{
                 ini:undefined,
@@ -32797,6 +32802,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
         },
         DataModel:{
+            rotate:null,
             selectable:true,
             position:'absolute',
             zIndex:0,
@@ -34375,6 +34381,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
         },
         DataModel:{
+            rotate:null,
+
             selectable:true,
             dirtyMark:false,
 
@@ -38921,6 +38929,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
         },
         DataModel:{
+            rotate:null,
             selectable:true,
             disabled:null,
             position:'absolute',
@@ -45534,6 +45543,7 @@ if(xui.browser.ie){
             }
         },
         DataModel:{
+            rotate:null,
             selectable:true,
             tips:null,
             border:null,

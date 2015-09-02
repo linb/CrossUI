@@ -521,6 +521,7 @@ if(xui.browser.ie){
             }
         },
         DataModel:{
+            rotate:null,
             selectable:true,
             tips:null,
             border:null,

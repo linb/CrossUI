@@ -567,6 +567,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
         },
         DataModel:{
+            rotate:null,
             selectable:true,
             disabled:null,
             position:'absolute',
