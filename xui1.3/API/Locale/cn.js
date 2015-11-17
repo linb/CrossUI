@@ -562,7 +562,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "_.observableRun(_.fun());",
                     "//鼠标改变1秒钟后还原: \n"+
-                    "_.observableRun(function(threadid){xui.Thread(threadid).suspend(); _.asyRun(function(){xui.Thread(threadid).resume()},1000)});"
+                    "_.observableRun(function(threadid){xui.Thread(threadid).suspend(); _.asyRun(function(){xui.Thread(threadid).resume();},1000)});"
                 ]
             },
             stringify:{
@@ -1507,7 +1507,7 @@ _.set(xui.Locale,["cn","app"], {
             abort:{
                 $desc:"终止该线程.",
                 $snippet:[
-                    "xui.Thread('_id', [function(){xui.message(1);xui.Thread('_id').abort()},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_id', [function(){xui.message(1);xui.Thread('_id').abort();},function(){xui.message(2)}]).start();"
                 ]
             },
             suspend:{
@@ -1517,7 +1517,7 @@ _.set(xui.Locale,["cn","app"], {
                     "time [可选参数]: Number: 等待多少毫秒后继续。不输入表示只挂起，不继续。"
                 ],
                 $snippet:[
-                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume()},3000)},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
                 ]
             },
             resume:{
@@ -1531,7 +1531,7 @@ _.set(xui.Locale,["cn","app"], {
                         "undefined: 等待剩余时间后继续. <br> "
                 ],
                 $snippet:[
-                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume()},3000)},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
                 ]
             },
             start:{
@@ -2335,7 +2335,7 @@ _.set(xui.Locale,["cn","app"], {
             ],
             $snippet:[
                 "if(!xui.Dom.byId('xui.temp.out')){this.prepend(xui.create('<div><div id=\"xui.temp.out\" style=\"border:solid 1px;padding:10px;\">xui.temp.out<input id=\"xui.temp.out.first\"><input /><input /><input /><div id=\"xui.temp.in\"  style=\"border:solid 1px;padding:10px;\">xui.temp.in<input id=\"xui.temp.in.first\" /><input /><input /><input /><input /></div></div><div><button onclick=\"_.arr.each(xui.Event._tabHookStack,function(o){alert(o[0])})\">Click here to show inner stack content!</button><br /><br /><button onclick=\"xui.Event.popTabOutTrigger();\">popTabOutTrigger</button><br /><br /></div><div><button onclick=\"xui.Event.popTabOutTrigger(1);xui(this).parent(2).remove();\">remove this example</button></div></div>'));\n"+
-                "xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.out'),function(){document.getElementById('xui.temp.out.first').focus()});"+"xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.in'),function(){document.getElementById('xui.temp.in.first').focus()});}"
+                "xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.out'),function(){document.getElementById('xui.temp.out.first').focus();});"+"xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.in'),function(){document.getElementById('xui.temp.in.first').focus();});}"
             ]
         },
         stopBubble:{
@@ -2486,7 +2486,7 @@ _.set(xui.Locale,["cn","app"], {
                 "busyMsg [可选参数] : String, 指示忙的文字,如“正在处理中”. ",
             ],
             $snippet:[
-                "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy()},function(){xui.Dom.free()}).start()",
+                "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
                 "xui.Thread(null,[function(){xui.Dom.busy('b');xui.message('Changes [label] to \\\'b\\\' ')}, function(){xui.Dom.free();xui.message('Still busy')},function(){xui.Dom.free('a');xui.message('Still busy')},_.fun()],1000,null,function(){xui.Dom.busy('a')},function(){xui.Dom.free('b');xui.message('free now')}).start()"
             ]
         },
@@ -2631,8 +2631,8 @@ _.set(xui.Locale,["cn","app"], {
                     "properties [可选参数] : 键值对, 边框的属性. 一般的用法是: {borderActive: [Boolean]}."
                 ],
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder()},1000);_.asyRun(function(){div.removeBorder()},2000);_.asyRun(function(){div.remove()},3000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});_.asyRun(function(){div.remove()},5000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});_.asyRun(function(){div.remove();},5000);"
                 ],
                 $memo:"依赖: xui.UI.Border."
             },
@@ -2640,7 +2640,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"移除第一个元素的边框. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder()},1000);_.asyRun(function(){div.removeBorder()},2000);_.asyRun(function(){div.remove()},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"依赖: xui.UI.Border."
             },
@@ -2654,8 +2654,8 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();_.asyRun(function(){div.remove()},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});_.asyRun(function(){div.remove()},10000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();_.asyRun(function(){div.remove();},10000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});_.asyRun(function(){div.remove();},10000);"
                 ],
                 $memo:"依赖: xui.UI.Resizer."
             },
@@ -2663,7 +2663,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"移除第一个元素的大小调节器. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer()},2000);_.asyRun(function(){div.remove()},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependency: xui.UI.Resizer."
             },
@@ -2675,8 +2675,8 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove()},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove()},10000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove();},10000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove();},10000);"
                 ],
                 $memo:"Dependency: xui.UI.Shadow."
             },
@@ -2684,7 +2684,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"移除第一个元素的阴影. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow()},1000);_.asyRun(function(){div.removeShadow()},2000);_.asyRun(function(){div.remove()},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow();},1000);_.asyRun(function(){div.removeShadow();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependency: xui.UI.Shadow."
             },
@@ -2844,7 +2844,7 @@ _.set(xui.Locale,["cn","app"], {
                     "var fx1 = node.animate({opacity:[0,1]},null,null,1000,0,'sineIn');"+
                     "var fx2 = node.animate({left:[100,300],top:[100,300]},null,null,500,0,'sineOut');"+
                     "var fx3 = node.animate({left:[300,100],top:[300,100]});"+
-                    "var fx4 = node.animate({opacity:[1,0]},null,function(){node.remove()});"+
+                    "var fx4 = node.animate({opacity:[1,0]},null,function(){node.remove();});"+
                     "fx1.links(fx2.links(fx3.links(fx4))).start();"
                 ]
             },
@@ -3349,7 +3349,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"隐藏所有的元素.",
                 $rtn:"[self]",
                 $snippet:[
-                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show()},1000);"
+                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             show:{
@@ -3360,7 +3360,7 @@ _.set(xui.Locale,["cn","app"], {
                     "top [可选参数] : Number, top值."
                 ],
                 $snippet:[
-                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show()},1000);"
+                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             text:{
@@ -3550,7 +3550,7 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.nextFocus'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input value=upwards /><input id='+id+' /><button>downwards</button>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).nextFocus()},1000);_.asyRun(function(){xui(id).nextFocus(false)},2000);"+
+                    "_.asyRun(function(){xui(id).nextFocus();},1000);_.asyRun(function(){xui(id).nextFocus(false)},2000);"+
                     "}"
                 ]
             },
@@ -3803,7 +3803,7 @@ _.set(xui.Locale,["cn","app"], {
             ],
             $snippet:[
                 "var id='xui.temp.ddo42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">setDropFace</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                "var n=xui(id).first().onMouseover(function(p,e,xid){xui.DragDrop.setDropFace(xid,'copy')}).onMouseout(function(){xui.DragDrop.setDropFace()})"+
+                "var n=xui(id).first().onMouseover(function(p,e,xid){xui.DragDrop.setDropFace(xid,'copy')}).onMouseout(function(){xui.DragDrop.setDropFace();})"+
                 "}"
             ]
         },
@@ -4968,7 +4968,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                 "var id='xui.temp.0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var t=new xui.Template({'':'<div>{caption}</div>'},{id:'1',caption:'cap'}); t.setDomId('t_2'); xui(id).append(t); "+
-                    "_.asyRun(function(){t.setProperties({id:'2',caption:'cap2'});t.refresh()},1000);"+
+                    "_.asyRun(function(){t.setProperties({id:'2',caption:'cap2'});t.refresh();},1000);"+
                 "}"
                 ]
             },
@@ -6333,7 +6333,7 @@ _.set(xui.Locale,["cn","app"], {
         hide:{
             $desc:"隐藏提示信息.",
             $snippet:[
-                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide()},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide()},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide()},5000);"
+                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide();},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide();},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         },
         show:{
@@ -6344,7 +6344,7 @@ _.set(xui.Locale,["cn","app"], {
                 "key [可选参数] : String, 得到提示信息的键值. 默认为 'tips'."
             ],
             $snippet:[
-                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide()},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide()},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide()},5000);"
+                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide();},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide();},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         }
     });
@@ -6448,7 +6448,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.abs10-l2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.activate()});"+
+                    "_.asyRun(function(){o.activate();});"+
                     "}"
                 ]
             },
@@ -6560,7 +6560,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.absl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.clearItems()},1000);"+
+                    "_.asyRun(function(){o.clearItems();},1000);"+
                     "}"
                 ]
             },
@@ -6644,7 +6644,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeIniEditor:{
                 $desc:"在子项编辑之前调用. 如果返回false,默认的功能会被禁止.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 子项对象.",
                     "captionNode : xui.Dom, 子项标题的Dom对象"
                 ]
@@ -6652,7 +6652,7 @@ _.set(xui.Locale,["cn","app"], {
             onBeginEdit:{
                 $desc:"在编辑器显示前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 子项对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -6660,7 +6660,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeEditApply:{
                 $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 子项对象.",
                     "caption: String. 要更新的内容",
                     "editor: Object, 编辑器对象.",
@@ -6670,7 +6670,7 @@ _.set(xui.Locale,["cn","app"], {
             onEndEdit:{
                 $desc:"在编辑器消失前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 子项对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -6819,7 +6819,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeUIValueSet:{
                 $desc:"在setUIValue调用之前被调用. 返回false会阻止setUIValue被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldValue : String, 旧的界面值.",
                     "newValue : String, 新的界面值.",
                     "force : Boolean, 是否为强制调用",
@@ -6839,7 +6839,7 @@ _.set(xui.Locale,["cn","app"], {
             afterUIValueSet:{
                 $desc:"在setUIValue调用之后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldValue : String, 旧的界面值.",
                     "newValue : String, 新的界面值.",
                     "force : Boolean, 是否为强制调用",
@@ -6859,7 +6859,7 @@ _.set(xui.Locale,["cn","app"], {
             onChange:{
                 $desc:"当有值的控件在界面值改变时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldValue : String, 旧的界面值.",
                     "newValue : String, 新的界面值.",
                     "force : Boolean, 是否为强制调用",
@@ -6869,7 +6869,7 @@ _.set(xui.Locale,["cn","app"], {
             onValueChange:{
                 $desc:"当有值的控件在内部值改变时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldValue : String, 旧值.",
                     "newValue : String, 新值.",
                     "force : Boolean, 是否为强制调用",
@@ -6879,7 +6879,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeValueSet:{
                 $desc:"在setValue调用之前被调用. 返回false会阻止setValue被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldValue :String, 旧的内部值.",
                     "newValue : String, 新的内部值.",
                     "force : Boolean, 是否为强制调用",
@@ -6899,7 +6899,7 @@ _.set(xui.Locale,["cn","app"], {
             afterValueSet:{
                 $desc:"在setValue调用之后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldValue : String, 旧的内部值.",
                     "newValue : String, 新的内部值.",
                     "force : Boolean, 是否为强制调用",
@@ -6921,7 +6921,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDirtyMark:{
                 $desc:"在_setDirtyMark调用之前被调用. 返回false将阻止设置脏标志.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "dirty : Boolean, 脏标志."
                 ],
                 $snippet:[
@@ -7109,7 +7109,7 @@ _.set(xui.Locale,["cn","app"], {
             onHotKeydown:{
                 $desc:"当热键按下时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "keyboard : Object, keyboard 对象.",
                     "e : Event, DOM 事件.",
                     "src: String, 事件所属DOM元素的xid."
@@ -7127,7 +7127,7 @@ _.set(xui.Locale,["cn","app"], {
             onHotKeyup:{
                 $desc:"当热键弹起时被调用..",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "keyboard : Object, keyboard 对象.",
                     "e : Event, DOM 事件.",
                     "src: String, 事件所属DOM元素的xid."
@@ -7145,7 +7145,7 @@ _.set(xui.Locale,["cn","app"], {
             onHotKeypress:{
                 $desc:"当热键被按后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "keyboard : Object, keyboard 对象.",
                     "e : Event, DOM 事件.",
                     "src: String, 事件所属DOM元素的xid."
@@ -7163,7 +7163,7 @@ _.set(xui.Locale,["cn","app"], {
             onDragEnter:{
                 $desc:"当用户拖动某个对象到该对象上空时.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7188,7 +7188,7 @@ _.set(xui.Locale,["cn","app"], {
             onDragLeave:{
                 $desc:"当用户拖动某个对象离开该对象上空时.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7214,7 +7214,7 @@ _.set(xui.Locale,["cn","app"], {
             onDrop:{
                 $desc:"当用户拖动某个对象在该对象上空放下时.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7239,7 +7239,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDrop:{
                 $desc:"在用户拖动某个对象在该对象上空放下前调用,如返回 false,onDrop和afterDrop不会调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7250,7 +7250,7 @@ _.set(xui.Locale,["cn","app"], {
             afterDrop:{
                 $desc:"在用户拖动某个对象在该对象上空放下后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7261,7 +7261,7 @@ _.set(xui.Locale,["cn","app"], {
             onDropMarkClear:{
                 $desc:"当丢放标志被清除时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7286,7 +7286,7 @@ _.set(xui.Locale,["cn","app"], {
             onDropMarkShow:{
                 $desc:"当丢放标志被显示时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7311,7 +7311,7 @@ _.set(xui.Locale,["cn","app"], {
             onDropTest:{
                 $desc:"当判断该对象是否接受拖动时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7336,7 +7336,7 @@ _.set(xui.Locale,["cn","app"], {
             onStartDrag:{
                 $desc:"当用户开始拖动该对象时被触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7352,7 +7352,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetDragData:{
                 $desc:"当用户开始拖动该对象时(这时候会取得拖拽的数据)调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7367,7 +7367,7 @@ _.set(xui.Locale,["cn","app"], {
             onDragstop:{
                 $desc:"当用户结束拖动该对象时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7383,7 +7383,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClickEffect:{
                 $desc:"在用户单击控件的某一部分,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -7399,7 +7399,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeHoverEffect:{
                 $desc:"在鼠标悬停在控件的某一部分上,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -7415,7 +7415,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeNextFocus:{
                 $desc:"在下一个控件获取焦点时调用. 返回false可以阻止下一个控件获取焦点.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "k : Object, {key:按键字符, type:事件种类, ctrlKey: ctrl键状态, shiftKey: shift 键状态, altKey:alt 键状态}",
                     "shift: Boolean, 指示用户是否按下了Shift键.",
@@ -7645,7 +7645,7 @@ _.set(xui.Locale,["cn","app"], {
                     "var o=new xui.UI.TimeLine({position:'relative'});"+
                     "xui(id).prepend(o);"+
                     "o.busy('Loading message');"+
-                    "_.asyRun(function(){o.free()},1000);"+
+                    "_.asyRun(function(){o.free();},1000);"+
                     "}"
                 ]
             },
@@ -7657,7 +7657,7 @@ _.set(xui.Locale,["cn","app"], {
                     "var o=new xui.UI.TimeLine({position:'relative'});"+
                     "xui(id).prepend(o);"+
                     "o.busy('Loading message');"+
-                    "_.asyRun(function(){o.free()},1000);"+
+                    "_.asyRun(function(){o.free();},1000);"+
                     "}"
                 ]
             },
@@ -7793,7 +7793,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.ui4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block;xui(id).prepend(block=new xui.UI.Block({position:'relative',border:true}));"+
-                    "_.asyRun(function(){block.destroy()},1000);"+
+                    "_.asyRun(function(){block.destroy();},1000);"+
                     "}"
                 ]
             },
@@ -8476,7 +8476,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"隐藏该控件对象.",
                 $rtn:"[self]",
                 $snippet:[
-                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show()},1000);"
+                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show();},1000);"
                 ]
             },
             show:{
@@ -8489,7 +8489,7 @@ _.set(xui.Locale,["cn","app"], {
                     "top [可选参数] : Number, 显示的上边坐标."
                 ],
                 $snippet:[
-                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show()},1000);"
+                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show();},1000);"
                 ]
             },
             refresh:{
@@ -8499,7 +8499,7 @@ _.set(xui.Locale,["cn","app"], {
                     "var id='xui.temp.ui91'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'width'}));"+
                     "btn.get(0).properties.caption='new caption';"+
-                    "_.asyRun(function(){btn.refresh()},1000);"+
+                    "_.asyRun(function(){btn.refresh();},1000);"+
                     "}"
                 ]
             },
@@ -8609,39 +8609,39 @@ _.set(xui.Locale,["cn","app"], {
             beforeDestroy:{
                 $desc:"在控件被销毁前触发,如果返回false,控件销毁的动作将被取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.b1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "btn.beforeDestroy(function(profile){alert('cancelled');return false});"+
-                    "_.asyRun(function(){btn.destroy()},1000)"+
+                    "_.asyRun(function(){btn.destroy();},1000)"+
                     "}"
                 ]
             },
             afterDestroy:{
                 $desc:"在控件被销毁后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             onDestroy:{
                 $desc:"当控件被销毁时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.b1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "btn.onDestroy(function(profile){alert('onDestroy');});"+
-                    "_.asyRun(function(){btn.destroy()},1000)"+
+                    "_.asyRun(function(){btn.destroy();},1000)"+
                     "}"
                 ]
             },
             onContextmenu:{
                 $desc:"当根dom元素的 contextmenu 激活时会激活本事件. 如果返回 false, 系统默认的 contextmenu 会被屏蔽(opera下无效).",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "item: Object, 鼠标点击节点所对应的item对象."
@@ -8656,19 +8656,19 @@ _.set(xui.Locale,["cn","app"], {
             onCreated:{
                 $desc:'在控件生成的时候触发.',
                 $paras:[
-                   "profile : xui.UIProfile, 当前控件的配置."
+                   "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             beforeRender:{
                 $desc:"当控件被渲染前(生成DOM节点)调用. 如返回 false, 渲染事件取消.",
                 $paras:[
-                   "profile : xui.UIProfile, 当前控件的配置."
+                   "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             onRender:{
                 $desc:"当控件被渲染时(生成DOM节点)调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.b2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8681,7 +8681,7 @@ _.set(xui.Locale,["cn","app"], {
             onLayout:{
                 $desc:"当控件被重新布局的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.b3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\"><div id='+id+'1 style=\"height:20px;border:solid 1px;\"></div><div id='+id+'2 style=\"height:20px;border:solid 1px;\"></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8696,7 +8696,7 @@ _.set(xui.Locale,["cn","app"], {
             onResize:{
                 $desc:"控件被改变大小的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "width : Number, 目标宽",
                     "height : Number, 目标高"
                 ],
@@ -8712,7 +8712,7 @@ _.set(xui.Locale,["cn","app"], {
             onMove:{
                 $desc:"控件被改变位置的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "left : Number, 目标左边值",
                     "top : Number, 目标上边值",
                     "right : Number, 目标右边值",
@@ -8730,7 +8730,7 @@ _.set(xui.Locale,["cn","app"], {
             onDock:{
                 $desc:"控件被dock机制改变大小或位置的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "region : Object"
                 ],
                 $snippet:[
@@ -8745,7 +8745,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePropertyChanged:{
                 $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "name : String, 属性名",
                     "value : Object, 新属性值",
                     "ovalue : Objecgt, 原来的属性值"
@@ -8762,7 +8762,7 @@ _.set(xui.Locale,["cn","app"], {
             afterPropertyChanged:{
                 $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "name : String, 属性名",
                     "value : Object, 新属性值",
                     "ovalue : Objecgt, 原来的属性值"
@@ -8779,7 +8779,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeAppend:{
                 $desc:"当向控件添加子控件前触发,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "child : xui.UI, 添加的子控件."
                 ],
                 $snippet:[
@@ -8794,7 +8794,7 @@ _.set(xui.Locale,["cn","app"], {
             afterAppend:{
                 $desc:"当向控件添加子控件后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "child : xui.UI, 添加的子控件."
                 ],
                 $snippet:[
@@ -8809,7 +8809,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeRemove:{
                 $desc:"当从控件中移除子控件前触发,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "child : xui.UIProfile, 移除的子控件.",
                     "subId : String, 子控件在父控件的容器标识",
                     "bdestroy : Boolean, 是否在移除后被销毁"
@@ -8826,7 +8826,7 @@ _.set(xui.Locale,["cn","app"], {
             afterRemove:{
                 $desc:"当从控件中移除子控件后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "child : xui.UIProfile, 移除的子控件.",
                     "subId : String, 子控件在父控件的容器标识",
                     "bdestroy : Boolean, 是否在移除后被销毁"
@@ -8843,7 +8843,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowTips:{
                 $desc:"当控件显示tips时调用. 如返回false将会阻止系统默认的工具信息显示",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "src: String, 事件所属DOM元素的xid.",
                     "pos : Object, {left:Number, top:Number}"
                 ],
@@ -9078,6 +9078,14 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
+            },
+            onClick:{
+                $desc:"当鼠标单击时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
@@ -9213,7 +9221,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当用户单击超链接时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素."            ],
                 $snippet:[
                     "var id='xui.temp.link7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9332,6 +9340,14 @@ _.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('groove'));"+
                     "_.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
+                ]
+            },
+            onClickPanel:{
+                $desc:"当鼠标单击容器时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
@@ -9540,7 +9556,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -9681,7 +9697,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -9704,7 +9720,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.sbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.SButton);"+
-                    "_.asyRun(function(){btn.activate()},1000);"+
+                    "_.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -9783,7 +9799,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -9857,7 +9873,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.SCbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.SCheckBox);"+
-                    "_.asyRun(function(){btn.activate()},1000);"+
+                    "_.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -9912,7 +9928,7 @@ _.set(xui.Locale,["cn","app"], {
             onChecked:{
                 $desc:"Fired when SCheckBox is checked.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "value : String, 按下或弹起."
                 ],
@@ -9956,7 +9972,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.btn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.activate()},1000);"+
+                    "_.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -10108,7 +10124,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "value : Boolean, 值."
@@ -10122,7 +10138,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickDrop:{
                 $desc:"当鼠标单击drop按钮时调用（当按钮的 type 为'drop'时才有效）.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -10135,7 +10151,7 @@ _.set(xui.Locale,["cn","app"], {
             onChecked:{
                 $desc:"在按钮按下时触发（当按钮的 type 为'status'时才有效）.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "value : Boolean, 按下或弹起."
                 ],
@@ -10159,7 +10175,7 @@ _.set(xui.Locale,["cn","app"], {
             onChecked:{
                 $desc:"Fired when CheckBox is checked.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "value : Boolean, 按下或弹起."
                 ],
@@ -10186,7 +10202,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.input0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.activate()},1000)"+
+                    "_.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10530,7 +10546,7 @@ _.set(xui.Locale,["cn","app"], {
             onLabelClick:{
                 $desc:"在单击标签的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10538,7 +10554,7 @@ _.set(xui.Locale,["cn","app"], {
             onLabelDblClick:{
                 $desc:"在双击标签的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10546,7 +10562,7 @@ _.set(xui.Locale,["cn","app"], {
             onLabelActive:{
                 $desc:"当鼠标在标签上按下时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10554,7 +10570,7 @@ _.set(xui.Locale,["cn","app"], {
             onBlur:{
                 $desc:"当输入框失去焦点时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.input20-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10566,7 +10582,7 @@ _.set(xui.Locale,["cn","app"], {
             onFocus:{
                 $desc:"当输入框得到焦点时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.input20-3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10578,13 +10594,13 @@ _.set(xui.Locale,["cn","app"], {
             onCancel:{
                 $desc:"按ESC键触发本事件,表示本次编辑无效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             beforeFormatCheck:{
                 $desc:"在输入框做有效性检查时调用. 返回false可以阻止有效性的检查.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "value: String, 需要做有效性检查的值."
                 ],
                 $snippet:[
@@ -10597,7 +10613,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeFormatMark:{
                 $desc:"在设置有效的格式模式前调用. 如果返回false, 将阻止格式模式设置.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "formatErr: Boolean, 是否格式有错误."
                 ],
                 $snippet:[
@@ -10623,7 +10639,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.TextEditor0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "_.asyRun(function(){o.activate()},1000)"+
+                    "_.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10656,7 +10672,7 @@ _.set(xui.Locale,["cn","app"], {
             onChange:{
                 $desc:"当改变文字时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oV : String, 旧值.",
                     "nV : String, 新值."
                 ],
@@ -10695,7 +10711,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.grp0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.activate()},1000)"+
+                    "_.asyRun(function(){btn.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10824,7 +10840,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeExpand:{
                 $desc:"在编组框打开前调用.如返回 false, 编组框不会打开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.fs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10837,7 +10853,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeFold:{
                 $desc:"当编组框收缩前调用.如返回 false, 编组框不会收缩.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.fs6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10856,7 +10872,7 @@ _.set(xui.Locale,["cn","app"], {
             onIniPanelView:{
                 $desc:"当Panel初始化时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.fs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10864,6 +10880,14 @@ _.set(xui.Locale,["cn","app"], {
                     "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            onClickPanel:{
+                $desc:"当鼠标单击容器时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
@@ -11327,7 +11351,7 @@ _.set(xui.Locale,["cn","app"], {
             onFileDlgOpen:{
                 $desc:"当上载文件选择对话框打开时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "src : String, 事件源的 xid."
                 ],
                 $snippet:[
@@ -11340,7 +11364,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeComboPop:{
                 $desc:"当命令按钮按下时（弹出窗口弹出前）调用.如返false,系统默认的弹出窗口不会出现.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "pos : Object, 鼠标位置.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -11355,7 +11379,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePopShow:{
                 $desc:"在弹出窗口显示前调用.如返false,弹出窗口不会显示.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "popCtl : xui.UIProfile, 弹出窗口对象."
                 ]
             },
@@ -11376,7 +11400,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击控件pop按钮时调用(只对 'popbox' 或 'getter'类型的有效).",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "value: String, 控件的显示值."
@@ -11385,7 +11409,7 @@ _.set(xui.Locale,["cn","app"], {
             onCommand:{
                 $desc:"当command按钮按下时调用. 只对带有保存按钮的多选框有效",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "src : String, 按钮 DOM 元素的xid."
                 ],
                 $snippet:[
@@ -11682,7 +11706,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在颜色框关闭前调用. 返回false可以阻止颜色框关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.clr9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11800,7 +11824,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"当用户单击关闭或取消按钮时调用. 返回false可阻止日期选择器被关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.dp3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11847,7 +11871,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在关闭选择器前调用. 返回false将阻止选择器关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.tp3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12169,7 +12193,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.list0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.activate()},1000)"+
+                    "_.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -12179,7 +12203,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.list3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.adjustSize()},1000)"+
+                    "_.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12189,7 +12213,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.list4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize()},1000)"+
+                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12203,7 +12227,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.list5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize()},1000)"+
+                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12294,7 +12318,7 @@ _.set(xui.Locale,["cn","app"], {
             onItemSelected:{
                 $desc:"当列表项被选择时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -12310,7 +12334,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClick:{
                 $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12319,7 +12343,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在单击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12328,7 +12352,7 @@ _.set(xui.Locale,["cn","app"], {
             afterClick:{
                 $desc:"在单击条目后触发该事件",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12337,7 +12361,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12352,7 +12376,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当鼠标单击选项按钮的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12361,7 +12385,7 @@ _.set(xui.Locale,["cn","app"], {
             onCmd:{
                 $desc:"当用户单击内部按钮的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "cmdKey: String, 命令的键值.",
                     "e : Event, DOM事件元素.",
@@ -12456,7 +12480,7 @@ _.set(xui.Locale,["cn","app"], {
             onItemClick:{
                 $desc:"当某个超链接队列项被单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -13096,7 +13120,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeExpand:{
                 $desc:"在面板打开前调用.如返回 false, 面板不会打开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.panel9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13109,7 +13133,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeFold:{
                 $desc:"当面板收缩时调用.如返回 false, 面板不会打开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.panel10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13128,7 +13152,7 @@ _.set(xui.Locale,["cn","app"], {
             onIniPanelView:{
                 $desc:"当面板初始化时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.panel11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13141,7 +13165,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickBar:{
                 $desc:"当单击标题栏时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
                 $snippet:[
@@ -13154,7 +13178,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePop:{
                 $desc:"在面板被弹出前调用. 返回false可阻止面板被弹出.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -13163,7 +13187,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在面板被关闭前调用. 返回false可阻止面板被关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.panel13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13175,19 +13199,19 @@ _.set(xui.Locale,["cn","app"], {
             onShowInfo:{
                 $desc:"在用户单击帮助按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             onRefresh:{
                 $desc:"在用户单击刷新按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             onShowOptions :{
                 $desc:"当用户单击选项按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -13197,8 +13221,15 @@ _.set(xui.Locale,["cn","app"], {
                     "o.onShowOptions(function(){alert('onShowOptions');});"+
                     "}"
                 ]
+            },
+            onClickPanel:{
+                $desc:"当鼠标单击容器时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
-
         }
     });
 
@@ -13348,7 +13379,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击一个按钮时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "page : Number, 目标页码."
                 ],
                 $snippet:[
@@ -13360,7 +13391,7 @@ _.set(xui.Locale,["cn","app"], {
             onPageSet:{
                 $desc:"当调用 setPage 函数时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "page : Number, 新页码.",
                    "opage : Number, 旧页码."
                 ]
@@ -13490,6 +13521,15 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){o.fireCmdClickEvent('after'); },1000);"+
                     "}"
                 ]
+            },
+            onClickPanel:{
+                $desc:"当鼠标单击容器时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                     "item: Object, 当前容器对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
@@ -13542,7 +13582,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"行改变大小时触发.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "sizes: Array. 每行的大小.",
                 ]
             },
@@ -13550,7 +13590,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"内部子容器重新排列时触发.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "type : String.",
                     "panel : xui.UIProfile.",
                     "size : Number."
@@ -13654,7 +13694,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.clearItems()},1000);"+
+                    "_.asyRun(function(){o.clearItems();},1000);"+
                     "}"
                 ]
             },
@@ -13889,7 +13929,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePagePop:{
                 $desc:"当用户点击POP按钮前调用. 返回false可以阻止页面POP.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 当前标签项.",
                     "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
                     "e : Event, DOM事件元素.",
@@ -13899,7 +13939,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePageClose:{
                 $desc:"当用户关闭某个标签项之前调用. 返回false可以阻止标签项被关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 当前标签项.",
                     "src : String, 事件所在DOM的xid."
                 ],
@@ -13913,7 +13953,7 @@ _.set(xui.Locale,["cn","app"], {
             afterPageClose:{
                 $desc:"当用户关闭某个标签项之后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 当前标签项."
                 ],
                 $snippet:[
@@ -13926,7 +13966,7 @@ _.set(xui.Locale,["cn","app"], {
             onItemSelected:{
                 $desc:"当某个标签项被选择时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 被选择的标签项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -13941,7 +13981,7 @@ _.set(xui.Locale,["cn","app"], {
             onCaptionActive:{
                 $desc:"当用户单击当前标签项的标签头时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 当前标签项.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -13956,7 +13996,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当用户单击option按钮时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 当前标签项.",
                     "e: Event, 事件对象.",
                     "src: 事件发生的DOM元素的xid."
@@ -13971,7 +14011,7 @@ _.set(xui.Locale,["cn","app"], {
             onIniPanelView:{
                 $desc:"当每个页的容器面板初始化时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 当前标签项."
                 ],
                 $snippet:[
@@ -13980,6 +14020,15 @@ _.set(xui.Locale,["cn","app"], {
                     "o.onIniPanelView(function(p,item){xui.message(item.id);});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            onClickPanel:{
+                $desc:"当鼠标单击容器时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                     "item: Object, 当前容器对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
@@ -14181,7 +14230,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击Calendar的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "index: Nubmer, calendar天的序号.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -14293,7 +14342,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在工具栏按钮项被单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item : Object, 工具栏按钮子项对象.",
                     "group : Object, 工具栏按钮项所在组对象.",
                     "e : Event, DOM事件元素.",
@@ -14346,7 +14395,7 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.pm1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
-                    "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); _.asyRun(function(){o.hide()},3000);})"+
+                    "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); _.asyRun(function(){o.hide();},3000);})"+
                     "}"
                 ]
             },
@@ -14728,7 +14777,7 @@ _.set(xui.Locale,["cn","app"], {
                     "flag [可选参数] : Boolean, false表示去掉激活"
                 ],
                 $snippet:[
-                    "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate()},500); _.asyRun(function(){dlg2.activate()},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
+                    "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate();},500); _.asyRun(function(){dlg2.activate();},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
                 ]
             },
             isPinned:{
@@ -15166,7 +15215,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"当对话框关闭时调用. 返回false可以阻止对话框关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var dlg=new xui.UI.Dialog; "+
@@ -15178,19 +15227,19 @@ _.set(xui.Locale,["cn","app"], {
             onShowInfo:{
                 $desc:"在用户单击帮助按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             onRefresh:{
                 $desc:"在用户单击刷新按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             onShowOptions :{
                 $desc:"在用户单击选项按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -15203,7 +15252,7 @@ _.set(xui.Locale,["cn","app"], {
             onLand:{
                 $desc:"在用户单击LAND按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15211,13 +15260,13 @@ _.set(xui.Locale,["cn","app"], {
             onActivated:{
                 $desc:"在对话框被激活时(获得焦点)调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             beforeStatusChanged:{
                 $desc:"当对话框状态在最大、最小或普通状态之间改变前调用. 返回false可以阻止状态该变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldStatus: String, 改变之前的状态, min/max/normal",
                     "newStatus: String, 改变之后的状态, min/max/normal"
                 ]
@@ -15225,7 +15274,7 @@ _.set(xui.Locale,["cn","app"], {
             afterStatusChanged:{
                 $desc:"当对话框状态在最大、最小或普通状态之间改变后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "oldStatus: String, 改变之前的状态, min/max/normal",
                     "newStatus: String, 改变之后的状态, min/max/normal"
                 ]
@@ -15233,8 +15282,16 @@ _.set(xui.Locale,["cn","app"], {
             beforePin:{
                 $desc:"在顶针按钮点击之前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "value: Boolean, 顶针状态."
+                ]
+            },
+            onClickPanel:{
+                $desc:"当鼠标单击容器时调用.",
+                $paras:[
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    "e : Event, DOM事件元素.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
@@ -15287,7 +15344,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15341,7 +15398,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15505,7 +15562,7 @@ _.set(xui.Locale,["cn","app"], {
             onError:{
                 $desc:"当图像文件无法获取（文件地址不存在等情况）调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.img15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15518,7 +15575,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeLoad:{
                 $desc:"在图像装载前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.img16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15531,7 +15588,7 @@ _.set(xui.Locale,["cn","app"], {
             afterLoad:{
                 $desc:"当图像装载后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "path : String, 图片的文件路径.",
                     "width : Number, 图片宽",
                     "height : Number, 图片高"
@@ -15547,7 +15604,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在click图片的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15555,7 +15612,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击图片的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -15632,7 +15689,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当用户单击选项按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -15649,7 +15706,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"当某个文件夹项需要填充内容时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "callback : Function, 填充完成后的回调函数."
                 ],
@@ -15899,7 +15956,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"在需要内容填充的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "callback : Function, 回调函数."
                 ],
@@ -15915,7 +15972,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeOptionAdded:{
                 $desc:"在添加选项之前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "value: String."
                 ],
                 $snippet:[
@@ -15932,7 +15989,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeOptionChanged:{
                 $desc:"在更新选项前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "value: String."
                 ],
@@ -15951,7 +16008,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeOptionRemoved:{
                 $desc:"在移除选项前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ],
                 $snippet:[
                     "var id='xui.temp.pool43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15968,7 +16025,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeTitleChanged:{
                 $desc:"在更新标题前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "value: String."
                 ],
                 $snippet:[
@@ -15986,7 +16043,7 @@ _.set(xui.Locale,["cn","app"], {
             onCustomEdit:{
                 $desc:"在显示内部编辑器时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "node: Element, 相应的DOM元素.",
                     "flag: Number, 1:编辑; 2:添加; other:编辑标题.",
                     "value: String.",
@@ -16295,7 +16352,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"在父节点展开时,需要子节点数据时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "callback : Function, 回调函数."
                 ],
@@ -16311,7 +16368,7 @@ _.set(xui.Locale,["cn","app"], {
             onItemSelected:{
                 $desc:"在某个节点被单击时调用时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -16328,7 +16385,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClick:{
                 $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16337,7 +16394,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16346,7 +16403,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在单击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16355,7 +16412,7 @@ _.set(xui.Locale,["cn","app"], {
             afterClick:{
                 $desc:"在单击条目后触发该事件",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16364,14 +16421,14 @@ _.set(xui.Locale,["cn","app"], {
             beforeExpand:{
                 $desc:"在某个节点展开前调用. 如返回 false,节点将不会展开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象."
                 ]
             },
             beforeFold:{
                 $desc:"在某个节点折叠前调用. 如返回 false,节点将不会展开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象."
                 ]
             },
@@ -16384,7 +16441,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当鼠标单击选项按钮的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16393,7 +16450,7 @@ _.set(xui.Locale,["cn","app"], {
             onCmd:{
                 $desc:"当用户单击内部按钮的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "cmdKey: String, 命令的键值.",
                     "e : Event, DOM事件元素.",
@@ -17611,7 +17668,7 @@ _.set(xui.Locale,["cn","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "_.asyRun(function(){o.resetGridValue()},1000);"+
+                    "_.asyRun(function(){o.resetGridValue();},1000);"+
                     "}"
                 ]
             },
@@ -17673,7 +17730,7 @@ _.set(xui.Locale,["cn","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.removeAllRows()},1000);"+
+                    "_.asyRun(function(){o.removeAllRows();},1000);"+
                     "}"
                 ]
             },
@@ -17713,7 +17770,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeCellActive:{
                 $desc:"在单元格激活前被调用. 返回false将阻止单元格被激活.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : 单元格对象."
                 ],
                 $snippet:[
@@ -17729,14 +17786,14 @@ _.set(xui.Locale,["cn","app"], {
             onBodyLayout:{
                 $desc:"在表格主体界面布局完成后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "trigger : String, 触发事件类型."
                 ]
             },
             beforeRowActive:{
                 $desc:"在行激活前被调用. 返回false将阻止行被激活.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row : Object, 行对象."
                 ],
                 $snippet:[
@@ -17752,7 +17809,7 @@ _.set(xui.Locale,["cn","app"], {
             afterCellActive:{
                 $desc:"在单元格激活后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象."
                 ],
                 $snippet:[
@@ -17768,7 +17825,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeCellKeydown:{
                 $desc:"在单元格键盘事件前被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "keys : Object, 参见xui.Event.getKey函数"
                 ]
@@ -17776,7 +17833,7 @@ _.set(xui.Locale,["cn","app"], {
             afterCellFocused:{
                 $desc:"在单元格获得焦点后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "row : Object, 单元格的行对象"
                 ]
@@ -17784,7 +17841,7 @@ _.set(xui.Locale,["cn","app"], {
             onBeginEdit:{
                 $desc:"在编辑器显示前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -17792,7 +17849,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeEditApply:{
                 $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "options: Object. 要更新的内容",
                     "editor: Object, 编辑器对象.",
@@ -17802,7 +17859,7 @@ _.set(xui.Locale,["cn","app"], {
             onEndEdit:{
                 $desc:"在编辑器消失前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -17810,7 +17867,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeIniEditor:{
                 $desc:"在单元格编辑之前调用. 如果返回false,默认的功能会被禁止.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "cellNode : xui.Dom, 单元格的Dom对象"
                 ]
@@ -17818,7 +17875,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeInitHotRow:{
                 $desc:"在Hot Row初始化之前调用.[当hotRowMode不为'none'] 如果返回false,默认的功能会被禁止.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "row : Object, 单元格的行对象"
                 ]
@@ -17826,13 +17883,13 @@ _.set(xui.Locale,["cn","app"], {
             onInitHotRow:{
                 $desc:"当[热行]需要数据初始化时调用, 需要返回初始化的行数据.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置."
+                    "profile : xui.UIProfile, 当前控件的配置对象."
                 ]
             },
             beforeHotRowAdded:{
                 $desc:"在[热行]被加到Grid前调用. 如果返回[true], [热行]被加入; 如果返回[false],[热行]被删除; 如果返回cell，[热行]保留，并且cell获得焦点; 如果返回[null],没有影响.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row : Object. 行对象",
                     "leaveGrid : Booean. 是否触发事件的光标在Grid之外."
                 ]
@@ -17840,21 +17897,21 @@ _.set(xui.Locale,["cn","app"], {
             afterHotRowAdded:{
                 $desc:"在[热行]被加到Grid后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row : Object. 行对象"
                 ]
             },
             onRowDirtied:{
                 $desc:"当行被改变后调用，[异步调用].",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row : Object. 行对象"
                 ]
             },
             afterRowActive:{
                 $desc:"在行被激活后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row : Object, 行对象."
                 ],
                 $snippet:[
@@ -17870,7 +17927,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeColMoved:{
                 $desc:"在改变列位置前被调用. 返回false将阻止列位置被改变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "colId : String, 被移动的列id.",
                     "toId : String, 基准列id,移动的列将放在该列之前."
                 ],
@@ -17888,7 +17945,7 @@ _.set(xui.Locale,["cn","app"], {
             afterColMoved:{
                 $desc:"在改变列位置后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "colId : String, 被移动的列id.",
                     "toId : String, 基准列id,移动的列将放在该列之前."
                 ],
@@ -17906,21 +17963,21 @@ _.set(xui.Locale,["cn","app"], {
             beforeColSorted:{
                 $desc:"在对列排序前调用.返回false将阻止列排序.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "col : Object, 被排序的列."
                 ]
             },
             afterColSorted:{
                 $desc:"在对列排序后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "col : Object, 被排序的列."
                 ]
             },
             beforeColShowHide:{
                 $desc:"在显示或隐藏列前调用.返回false将阻止列显示或隐藏.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "colId : String, 被影响的列.",
                     "flag: Boolean, true->显示; false->隐藏"
                 ]
@@ -17928,7 +17985,7 @@ _.set(xui.Locale,["cn","app"], {
             afterColShowHide:{
                 $desc:"在显示或隐藏列后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "colId : String, 被影响的列.",
                     "flag: Boolean, true->显示; false->隐藏"
                 ]
@@ -17936,7 +17993,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeColResized:{
                 $desc:"在从界面改变列宽度前调用，返回false表示阻止改变列宽.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "colId : String, 所影响的列id.",
                     "width: Number, 列宽"
                 ]
@@ -17944,7 +18001,7 @@ _.set(xui.Locale,["cn","app"], {
             afterColResized:{
                 $desc:"在从界面改变列宽度后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "col : Object, 所影响的列id.",
                     "width: Number, 列宽"
                 ]
@@ -17952,7 +18009,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeRowResized:{
                 $desc:"在从界面改变行的高度前调用，返回false表示阻止改变行高.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "rowId : String, 所影响的行id.",
                     "height: Number, 高"
                 ]
@@ -17960,7 +18017,7 @@ _.set(xui.Locale,["cn","app"], {
             afterRowResized:{
                 $desc:"在从界面改变行的高度后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "rowId : String, 所影响的行id.",
                     "height: Number, 高"
                 ]
@@ -17968,7 +18025,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeColDrag:{
                 $desc:"在拖动列之前被调用. 返回false将阻止列拖动.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "colId : String, 列id."
                 ],
                 $snippet:[
@@ -17992,7 +18049,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"在父行被展开,需要子行数据是被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row : Object, 父行对象.",
                     "callback : Function, 回调函数."
                 ],
@@ -18008,7 +18065,7 @@ _.set(xui.Locale,["cn","app"], {
             onRowSelected:{
                 $desc:"在行被选择时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row: Object, 行对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -18026,7 +18083,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclickRow:{
                 $desc:"在行被双击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row: Object, 行对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18043,7 +18100,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeComboPop :{
                 $desc:"当单元格的编辑控件Pop按钮被单击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "pos: Object, 鼠标位置.",
@@ -18063,7 +18120,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePopShow :{
                 $desc:"在单元格的编辑控件的下拉框被显示前调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "popCtl : xui.UIProfile, 弹出窗口对象."
@@ -18072,7 +18129,7 @@ _.set(xui.Locale,["cn","app"], {
             afterPopShow :{
                 $desc:"在单元格的编辑控件的下拉框被显示后调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "popCtl : xui.UIProfile, 弹出窗口对象."
@@ -18081,7 +18138,7 @@ _.set(xui.Locale,["cn","app"], {
             onCommand :{
                 $desc:"在单元格的编辑控件的命令按钮被点击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "src : String, 按钮 DOM 元素的xid."
@@ -18090,7 +18147,7 @@ _.set(xui.Locale,["cn","app"], {
             onEditorclick :{
                 $desc:"在单元格的编辑控件被点击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "src : String, 按钮 DOM 元素的xid."
@@ -18099,7 +18156,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickGridHandler:{
                 $desc:"当点击列头和行头的共同区域时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -18107,7 +18164,7 @@ _.set(xui.Locale,["cn","app"], {
             onRowHover:{
                 $desc:"当鼠标经过某行的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row: Object,  row 对象.",
                     "hover : Boolean, 进入或离开",
                     "e : Event, DOM事件元素.",
@@ -18117,7 +18174,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickHeader:{
                 $desc:"当点击某列标题的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "col: Object,  列对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18126,7 +18183,7 @@ _.set(xui.Locale,["cn","app"], {
             onCmd:{
                 $desc:"当用户单击内部按钮的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "item: Object, 子项对象.",
                     "cmdKey: String, 命令的键值.",
                     "e : Event, DOM事件元素.",
@@ -18136,7 +18193,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickRow:{
                 $desc:"当点击某行的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row: Object,  row 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18145,7 +18202,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickRowHandler:{
                 $desc:"当点击某行手柄的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "row: Object,  row 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18154,7 +18211,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickCell:{
                 $desc:"当点击一个cell(当cell不在编辑状态时)的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object,  cell 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18171,7 +18228,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclickCell:{
                 $desc:"当双击一个cell(当cell不在编辑状态时)的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell: Object,  cell 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18188,7 +18245,7 @@ _.set(xui.Locale,["cn","app"], {
            beforeIniEditorr: {
                 $desc:"在单元格由展示状态变为编辑状态时调用(将编辑器附着在单元格上). 返回false或自定义编辑器会阻止默认的编辑器出现.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "cellNode: xui.Dom, 单元格节点",
                     "pNode: xui.Dom, 编辑器的容器节点"
@@ -18205,7 +18262,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeCellUpdated: {
                 $desc:"在单元格的值被更新前调用. 返回false将阻止单元格值被更新.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object,  cell 对象.",
                     "hash : Object, 将要更新的键值对."
                 ],
@@ -18222,7 +18279,7 @@ _.set(xui.Locale,["cn","app"], {
             afterCellUpdated: {
                 $desc:"在单元格的值被更新后调用",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "cell : Object, 单元格对象.",
                     "hash : Object, 更新的键值对."
                 ],
@@ -18772,7 +18829,7 @@ _.set(xui.Locale,["cn","app"], {
                     "var o=new xui.UI.TimeLine({position:'relative',multiTasks:true});"+
                     "xui(id).prepend(o);"+
                     "o.onGetContent(function(p,from,to,minMs,type){xui.message(from.getTime()+':'+to.getTime()+':'+minMs+':'+type);});"+
-                    "_.asyRun(function(){o.iniContent()},1000);"+
+                    "_.asyRun(function(){o.iniContent();},1000);"+
                     "}"
                 ]
             },
@@ -18780,7 +18837,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDragTask:{
                 $desc:"在用户拖动任务前触发. 返回false可以阻止用户拖动.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "task : Object, 任务对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18796,7 +18853,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在关闭本控件之前触发,如果返回false,关闭动作会被取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
                 $snippet:[
@@ -18810,7 +18867,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当鼠标单击选项按钮的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -18825,7 +18882,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickTask:{
                 $desc:"当鼠标单击任务的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "task : Object, the task Object.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18842,7 +18899,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclickTask:{
                 $desc:"当鼠标双击任务的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "task : Object, the task Object.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18851,7 +18908,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"当TimeLine需要加入内容的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "from : Date, 开始时间.",
                     "to : Date, 结束时间",
                     "minMs : Number, 显示任务的最小毫秒数（忽略低于这个数的任务）.",
@@ -18869,14 +18926,14 @@ _.set(xui.Locale,["cn","app"], {
             beforeNewTask:{
                 $desc:"在新加入任务之前触发. 如果返回false,任务不会被加入.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "task: Object, 任务对象."
                 ]
             },
             beforeTaskUpdated:{
                 $desc:"在任务更新之前触发. 如果返回false,任务不会被更新.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "task: Object, 任务对象.",
                     "from : Date, 任务开始时间.",
                     "to: Date, 任务结束时间."
@@ -18885,7 +18942,7 @@ _.set(xui.Locale,["cn","app"], {
             onStartDateChanged:{
                 $desc:"在开始时间改变的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "odate: Date, 改变之前的date.",
                     "date : Date, 改变之后的date."
                 ]
@@ -19319,7 +19376,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当单击控件时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -19442,7 +19499,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当单击控件时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -19450,7 +19507,7 @@ _.set(xui.Locale,["cn","app"], {
             onTextClick:{
                 $desc:"当单击控件文字时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置.",
+                    "profile : xui.UIProfile, 当前控件的配置对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -20007,6 +20064,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'HAlign':'按钮排列方式',
             'dropKeysPanel':'可丢下位置',
             'selMode':'点选模式',
+            'onClickPanel':"点击容器",
             'noHandler':'无控制面版'
         },
         'xui_UI_Stacks' : {
@@ -20329,6 +20387,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onRefresh:"点击刷新按钮",
             onShow:"窗口显示",
             onShowInfo:"点击信息按钮",
+            'onClickPanel':"点击容器",
             onShowOptions:"点击选项按钮"
         },
         'xui_UI_TextEditor' : {
@@ -20358,10 +20417,15 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onClick:"鼠标点击"
         },
         'xui_UI_Div' : {
+            onClick:"鼠标点击"
         },
         'xui_UI_Tag' : {
         },
         'xui_UI_Pane' : {
+            onClick:"鼠标点击"
+        },
+        'xui_UI_Block':{
+            onClick:"鼠标点击"
         },
         'xui_UI_SVGPaper' : {
         },
@@ -20370,6 +20434,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             afterExpand:"展开之后",
             beforeFold:"折叠之前",
             afterFold:"折叠之后",
+            'onClickPanel':"点击容器",
             onIniPanelView:"初始化容器"
         },
         'xui_UI_Panel' : {
@@ -20381,6 +20446,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforePop:"窗口弹出前",
             beforeClose:"窗口关闭前",
             onClickBar:"点击标题栏",
+            'onClickPanel':"点击容器",
             onRefresh:"点击刷新按钮",
             onShowInfo:"点击信息按钮",
             onShowOptions:"点击选项按钮"
@@ -20488,6 +20554,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onClick:"鼠标点击按钮"
         },
         'xui_UI_Layout' : {
+            'onClickPanel':"点击容器"
         },
         'xui_UI_TreeGrid' : {
             beforeCellActive:"单元格激活前",

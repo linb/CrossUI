@@ -30,7 +30,18 @@ Class("xui.UI.Block", "xui.UI.Widget",{
     Static:{
         Behaviors:{
             DroppableKeys:['PANEL'],
-            PanelKeys:['PANEL']
+            PanelKeys:['PANEL'],
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
+            }
+        },
+        EventHandlers:{
+            onClickPanel:function(profile, e, src){}
         },
         DataModel:{
             //delete those properties

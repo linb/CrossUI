@@ -943,6 +943,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 onClick:function(p, e, src){
                     xui(src).onMouseover(true);
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties,
+                        item = profile.getItemByDom(src);
+                    if(p.disabled || item.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, item, e, src);
+                }
             }
         },
         DataModel:{
@@ -1005,7 +1014,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             afterPageClose:function(profile, item){},
             onShowOptions:function(profile,item,e,src){},
             onItemSelected:function(profile, item,e,src,type){},
-            onCaptionActive:function(profile, item,e,src){}
+            onCaptionActive:function(profile, item,e,src){},
+            onClickPanel:function(profile, item, e, src){}
         },
         RenderTrigger:function(){
             var self=this,v,i,ins;

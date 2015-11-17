@@ -51,6 +51,14 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     if(xui.Event.getKey(e).key=='enter')
                         xui(src).onClick();
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
             }
         },
         Templates:{
@@ -182,7 +190,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
             beforeFold:function(profile){},
             beforeExpand:function(profile){},
             afterFold:function(profile){},
-            afterExpand:function(profile){}
+            afterExpand:function(profile){},
+            onClickPanel:function(profile, e, src){}
         },
         _prepareData:function(profile){
             var data={};

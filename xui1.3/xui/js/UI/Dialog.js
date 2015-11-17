@@ -518,6 +518,14 @@ if(xui.browser.ie){
                 onClick:function(profile, e, src){
                     profile.boxing().onLand(profile, e, src);
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
             }
         },
         DataModel:{
@@ -699,7 +707,8 @@ if(xui.browser.ie){
             onActivated:function(profile){},
             beforePin:function(profile, value){},
             beforeStatusChanged:function(profile, oldStatus, newStatus){},
-            afterStatusChanged:function(profile, oldStatus, newStatus){}
+            afterStatusChanged:function(profile, oldStatus, newStatus){},
+            onClickPanel:function(profile, e, src){}
         },
         RenderTrigger:function(){
             var ns=this;

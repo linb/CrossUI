@@ -56,7 +56,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     if(!flag){
                         fc.setJSONData(prf.box._prepareFCData(prf,fc.getJSONData()));
                     }
-
+                    fc.setTransparent(true);
                     fc.render(prf.getSubNode('BOX').id());
                 }
             });

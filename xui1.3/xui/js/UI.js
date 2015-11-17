@@ -855,7 +855,7 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             self._nodes.push(profile);
-            profile._cacheInstance=self;
+            profile.Instace=self;
             self.n0=profile;
 
             return self;
@@ -1087,7 +1087,7 @@ Class("xui.UI",  "xui.absObj", {
                 o.$noReclaim=1;
 
                 // keep cache refrence
-                var _c=o._cacheInstance;
+                var _c=o.Instace;
                 o.boxing().destroy(true);
 
                 //set back
@@ -1103,7 +1103,7 @@ Class("xui.UI",  "xui.absObj", {
                 // set cache refrence
                 if(_c){
                     _.merge(_c,n,'all');
-                    n.get(0)._cacheInstance=_c;
+                    n.get(0).Instace=_c;
                     // must reset it to keep memory pointer
                     n=_c;
                 }
@@ -6359,6 +6359,17 @@ new function(){
                 if(ns.box.KEY=="xui.UI.Div")
                     if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                         ns.box._applyAutoLoad(this);
+            },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, value){}
             },
             _prepareData:function(profile,data){
                 data=arguments.callee.upper.call(this, profile,data);

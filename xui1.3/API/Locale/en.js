@@ -565,7 +565,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "_.observableRun(_.fun());",
                     "//To keep the busy UI 1 second: \n"+
-                    "_.observableRun(function(threadid){xui.Thread(threadid).suspend(); _.asyRun(function(){xui.Thread(threadid).resume()},1000)});"
+                    "_.observableRun(function(threadid){xui.Thread(threadid).suspend(); _.asyRun(function(){xui.Thread(threadid).resume();},1000)});"
                 ]
             },
             stringify:{
@@ -1494,7 +1494,7 @@ _.set(xui.Locale,["en","app"], {
             abort:{
                 $desc:"To abort the thread.",
                 $snippet:[
-                    "xui.Thread('_id', [function(){xui.message(1);xui.Thread('_id').abort()},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_id', [function(){xui.message(1);xui.Thread('_id').abort();},function(){xui.message(2)}]).start();"
                 ]
             },
             suspend:{
@@ -1504,7 +1504,7 @@ _.set(xui.Locale,["en","app"], {
                     "time [Optional]: Number: Resumes to execute the next task after [time]ms. If it was not specified, suspend only, won't resume."
                 ],
                 $snippet:[
-                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume()},3000)},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
                 ]
             },
             resume:{
@@ -1518,7 +1518,7 @@ _.set(xui.Locale,["en","app"], {
                     "undefined: Resumes to execute the next task after [the remaining time]. <br> "
                 ],
                 $snippet:[
-                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume()},3000)},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
                 ]
             },
             start:{
@@ -2325,7 +2325,7 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "if(!xui.Dom.byId('xui.temp.out')){this.prepend(xui.create('<div><div id=\"xui.temp.out\" style=\"border:solid 1px;padding:10px;\">xui.temp.out<input id=\"xui.temp.out.first\"><input /><input /><input /><div id=\"xui.temp.in\"  style=\"border:solid 1px;padding:10px;\">xui.temp.in<input id=\"xui.temp.in.first\" /><input /><input /><input /><input /></div></div><div><button onclick=\"_.arr.each(xui.Event._tabHookStack,function(o){alert(o[0])})\">Click here to show inner stack content!</button><br /><br /><button onclick=\"xui.Event.popTabOutTrigger();\">popTabOutTrigger</button><br /><br /></div><div><button onclick=\"xui.Event.popTabOutTrigger(1);xui(this).parent(2).remove();\">remove this example</button></div></div>'));\n"+
-                "xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.out'),function(){document.getElementById('xui.temp.out.first').focus()});"+"xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.in'),function(){document.getElementById('xui.temp.in.first').focus()});}"
+                "xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.out'),function(){document.getElementById('xui.temp.out.first').focus();});"+"xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.in'),function(){document.getElementById('xui.temp.in.first').focus();});}"
             ]
         },
         stopBubble:{
@@ -2476,7 +2476,7 @@ _.set(xui.Locale,["en","app"], {
                 "busyMsg [Optional] : String, the busy message will be showed. "
             ],
             $snippet:[
-                "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy()},function(){xui.Dom.free()}).start()",
+                "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
                 "xui.Thread(null,[function(){xui.Dom.busy('b');xui.message('Changes [label] to \\\'b\\\' ')}, function(){xui.Dom.free();xui.message('Still busy')},function(){xui.Dom.free('a');xui.message('Still busy')},_.fun()],1000,null,function(){xui.Dom.busy('a')},function(){xui.Dom.free('b');xui.message('free now')}).start()"
             ]
         },
@@ -2621,8 +2621,8 @@ _.set(xui.Locale,["en","app"], {
                     "properties [Optional] : key/value pairs, the properties of border. The most common usage: {borderActive: [Boolean]}."
                 ],
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder()},1000);_.asyRun(function(){div.removeBorder()},2000);_.asyRun(function(){div.remove()},3000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});_.asyRun(function(){div.remove()},5000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});_.asyRun(function(){div.remove();},5000);"
                 ],
                 $memo:"Dependency: xui.UI.Border."
             },
@@ -2630,7 +2630,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To remove an existing border from the first element. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder()},1000);_.asyRun(function(){div.removeBorder()},2000);_.asyRun(function(){div.remove()},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependency: xui.UI.Border."
             },
@@ -2644,8 +2644,8 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();_.asyRun(function(){div.remove()},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});_.asyRun(function(){div.remove()},10000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();_.asyRun(function(){div.remove();},10000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});_.asyRun(function(){div.remove();},10000);"
                 ],
                 $memo:"Dependency: xui.UI.Resizer."
             },
@@ -2653,7 +2653,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To remove an existing resizer from the first element. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer()},2000);_.asyRun(function(){div.remove()},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependency: xui.UI.Resizer."
             },
@@ -2665,8 +2665,8 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove()},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove()},10000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove();},10000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove();},10000);"
                 ],
                 $memo:"Dependency: xui.UI.Shadow."
             },
@@ -2674,7 +2674,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To remove an existing shadow from the first element. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow()},1000);_.asyRun(function(){div.removeShadow()},2000);_.asyRun(function(){div.remove()},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow();},1000);_.asyRun(function(){div.removeShadow();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependency: xui.UI.Shadow."
             },
@@ -2834,7 +2834,7 @@ _.set(xui.Locale,["en","app"], {
                     "var fx1 = node.animate({opacity:[0,1]},null,null,1000,0,'sineIn');"+
                     "var fx2 = node.animate({left:[100,300],top:[100,300]},null,null,500,0,'sineOut');"+
                     "var fx3 = node.animate({left:[300,100],top:[300,100]});"+
-                    "var fx4 = node.animate({opacity:[1,0]},null,function(){node.remove()});"+
+                    "var fx4 = node.animate({opacity:[1,0]},null,function(){node.remove();});"+
                     "fx1.links(fx2.links(fx3.links(fx4))).start();"
                 ]
             },
@@ -3339,7 +3339,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To hide the set of elements.",
                 $rtn:"[self]",
                 $snippet:[
-                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show()},1000);"
+                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             show:{
@@ -3350,7 +3350,7 @@ _.set(xui.Locale,["en","app"], {
                     "top [Optional] : Number, the css top value."
                 ],
                 $snippet:[
-                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show()},1000);"
+                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             text:{
@@ -3538,7 +3538,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.nextFocus'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input value=upwards /><input id='+id+' /><button>downwards</button>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).nextFocus()},1000);_.asyRun(function(){xui(id).nextFocus(false)},2000);"+
+                    "_.asyRun(function(){xui(id).nextFocus();},1000);_.asyRun(function(){xui(id).nextFocus(false)},2000);"+
                     "}"
                 ]
             },
@@ -3790,7 +3790,7 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var id='xui.temp.ddo4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">setDropFace</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                "var n=xui(id).first().onMouseover(function(){xui.DragDrop.setDropFace(this,'copy')}).onMouseout(function(){xui.DragDrop.setDropFace()})"+
+                "var n=xui(id).first().onMouseover(function(){xui.DragDrop.setDropFace(this,'copy')}).onMouseout(function(){xui.DragDrop.setDropFace();})"+
                 "}"
             ]
         },
@@ -4916,7 +4916,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                 "var id='xui.temp.0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var t=new xui.Template({'':'<div>{caption}</div>'},{id:'1',caption:'cap'}); t.setDomId('t_2'); xui(id).append(t); "+
-                    "_.asyRun(function(){t.setProperties({id:'2',caption:'cap2'});t.refresh()},1000);"+
+                    "_.asyRun(function(){t.setProperties({id:'2',caption:'cap2'});t.refresh();},1000);"+
                 "}"
                 ]
             },
@@ -6272,7 +6272,7 @@ _.set(xui.Locale,["en","app"], {
         hide:{
             $desc:"To hide the tooltips.",
             $snippet:[
-                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide()},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide()},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide()},5000);"
+                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide();},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide();},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         },
         show:{
@@ -6283,7 +6283,7 @@ _.set(xui.Locale,["en","app"], {
                 "key [Optional] : String, the tips key. Default is 'tips'."
             ],
             $snippet:[
-                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide()},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide()},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide()},5000);"
+                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide();},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide();},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         }
     });
@@ -6489,7 +6489,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.clearItems()},1000);"+
+                    "_.asyRun(function(){o.clearItems();},1000);"+
                     "}"
                 ]
             },
@@ -7623,7 +7623,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TimeLine({position:'relative'});"+
                     "xui(id).prepend(o);"+
                     "o.busy('Loading message');"+
-                    "_.asyRun(function(){o.free()},1000);"+
+                    "_.asyRun(function(){o.free();},1000);"+
                     "}"
                 ]
             },
@@ -7635,7 +7635,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TimeLine({position:'relative'});"+
                     "xui(id).prepend(o);"+
                     "o.busy('Loading message');"+
-                    "_.asyRun(function(){o.free()},1000);"+
+                    "_.asyRun(function(){o.free();},1000);"+
                     "}"
                 ]
             },
@@ -7749,7 +7749,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block,btn1,btn2;xui(id).prepend(block=new xui.UI.Block({border:true}));"+
                     "block.append(btn1=new xui.UI.Button({position:'relative'})).append(btn2=new xui.UI.Button({position:'relative'}), false);"+
-                    "_.asyRun(function(){block.removeChildren()},1000)"+
+                    "_.asyRun(function(){block.removeChildren();},1000)"+
                     "}"
                 ]
             },
@@ -7770,7 +7770,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block;xui(id).prepend(block=new xui.UI.Block({position:'relative',border:true}));"+
-                    "_.asyRun(function(){block.destroy()},1000);"+
+                    "_.asyRun(function(){block.destroy();},1000);"+
                     "}"
                 ]
             },
@@ -8453,7 +8453,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To hide the set of UIProfile.",
                 $rtn:"[self]",
                 $snippet:[
-                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show()},1000);"
+                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show();},1000);"
                 ]
             },
             show:{
@@ -8466,7 +8466,7 @@ _.set(xui.Locale,["en","app"], {
                     "top [Optional] : Number, the css top value."
                 ],
                 $snippet:[
-                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show()},1000);"
+                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show();},1000);"
                 ]
             },
             refresh:{
@@ -8476,7 +8476,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.ui91'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'width'}));"+
                     "btn.get(0).properties.caption='new caption';"+
-                    "_.asyRun(function(){btn.refresh()},1000);"+
+                    "_.asyRun(function(){btn.refresh();},1000);"+
                     "}"
                 ]
             },
@@ -8592,7 +8592,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.b1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "btn.beforeDestroy(function(profile){alert('cancelled');return false});"+
-                    "_.asyRun(function(){btn.destroy()},1000)"+
+                    "_.asyRun(function(){btn.destroy();},1000)"+
                     "}"
                 ]
             },
@@ -8611,7 +8611,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.b2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "btn.onDestroy(function(profile){alert('onDestroy');});"+
-                    "_.asyRun(function(){btn.destroy()},1000)"+
+                    "_.asyRun(function(){btn.destroy();},1000)"+
                     "}"
                 ]
             },
@@ -9061,6 +9061,14 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : String, 'auto','hidden','visible','' ",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
+            },
+            onClick:{
+                $desc:"Fired when user click it.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
+                ]
             }
         }
     });
@@ -9194,7 +9202,7 @@ _.set(xui.Locale,["en","app"], {
 
 
             onClick:{
-                $desc:"onClick event handler.",
+                $desc:"Fired when user click it.",
                 $paras:[
                     "profile : xui.UIProfile. The current control's profile object",
                     "e : Event.Dom event object"
@@ -9399,6 +9407,14 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('groove'));"+
                     "_.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
+                ]
+            },
+            onClickPanel:{
+                $desc:"Fired when user click the panel.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
                 ]
             }
         }
@@ -9770,7 +9786,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.SButton);"+
-                    "_.asyRun(function(){btn.activate()},1000);"+
+                    "_.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -9924,7 +9940,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.scbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.SCheckBox);"+
-                    "_.asyRun(function(){btn.activate()},1000);"+
+                    "_.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -10021,7 +10037,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.activate()},1000);"+
+                    "_.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -10252,7 +10268,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.input0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.activate()},1000)"+
+                    "_.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10702,7 +10718,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.TextEditor0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "_.asyRun(function(){o.activate()},1000)"+
+                    "_.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10774,7 +10790,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.activate()},1000)"+
+                    "_.asyRun(function(){btn.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10943,6 +10959,14 @@ _.set(xui.Locale,["en","app"], {
                     "o.beforeExpand(function(){alert('beforeExpand')}).beforeFold(function(){alert('beforeFold')}).onIniPanelView(function(){alert('onIniPanelView')});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            onClickPanel:{
+                $desc:"Fired when user click the panel.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
                 ]
             }
         }
@@ -12249,7 +12273,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.activate()},1000)"+
+                    "_.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -12259,7 +12283,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.adjustSize()},1000)"+
+                    "_.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12269,7 +12293,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize()},1000)"+
+                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12283,7 +12307,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize()},1000)"+
+                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -13277,6 +13301,14 @@ _.set(xui.Locale,["en","app"], {
                     "o.onShowOptions(function(){alert('onShowOptions');});"+
                     "}"
                 ]
+            },
+            onClickPanel:{
+                $desc:"Fired when user click the panel.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
+                ]
             }
 
         }
@@ -13569,6 +13601,15 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){o.fireCmdClickEvent('after'); },1000);"+
                     "}"
                 ]
+            },
+            onClickPanel:{
+                $desc:"Fired when user click the panel.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "item: Object, item Object.",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
+                ]
             }
         }
     });
@@ -13733,7 +13774,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.clearItems()},1000);"+
+                    "_.asyRun(function(){o.clearItems();},1000);"+
                     "}"
                 ]
             },
@@ -14059,6 +14100,15 @@ _.set(xui.Locale,["en","app"], {
                     "o.onIniPanelView(function(p,item){xui.message(item.id);});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            onClickPanel:{
+                $desc:"Fired when user click the panel.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "item: Object, item Object.",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
                 ]
             }
         }
@@ -14424,7 +14474,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pm1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">Click blank to pop up menu.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
-                    "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); _.asyRun(function(){o.hide()},3000);})"+
+                    "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); _.asyRun(function(){o.hide();},3000);})"+
                     "}"
                 ]
             },
@@ -14805,7 +14855,7 @@ _.set(xui.Locale,["en","app"], {
                     "flag [Optional] : Boolean, false represents deactive."
                 ],
                 $snippet:[
-                    "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate()},500); _.asyRun(function(){dlg2.activate()},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
+                    "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate();},500); _.asyRun(function(){dlg2.activate();},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
                 ]
             },
             isPinned:{
@@ -15309,6 +15359,14 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.UIProfile. The current control's profile object",
                     "value: Boolean, pin status."
                 ]
+            },
+            onClickPanel:{
+                $desc:"Fired when user click the panel.",
+                $paras:[
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "e : Event.Dom event object",
+                    "src : Element.xui id or Dom Element"
+                ]
             }
         }
     });
@@ -15412,7 +15470,7 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             onClick:{
-                $desc:"Fired when an tool bar item is clicked.",
+                $desc:"Fired when clicked.",
                 $paras:[
                     "profile : xui.UIProfile. The current control's profile object",
                     "e : Event.Dom event object",
@@ -17683,7 +17741,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "_.asyRun(function(){o.resetGridValue()},1000);"+
+                    "_.asyRun(function(){o.resetGridValue();},1000);"+
                     "}"
                 ]
             },
@@ -17744,7 +17802,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.removeAllRows()},1000);"+
+                    "_.asyRun(function(){o.removeAllRows();},1000);"+
                     "}"
                 ]
             },
@@ -18845,7 +18903,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TimeLine({position:'relative',multiTasks:true});"+
                     "xui(id).prepend(o);"+
                     "o.onGetContent(function(p,from,to,minMs,type){xui.message(from.getTime()+':'+to.getTime()+':'+minMs+':'+type);});"+
-                    "_.asyRun(function(){o.iniContent()},1000);"+
+                    "_.asyRun(function(){o.iniContent();},1000);"+
                     "}"
                 ]
             },

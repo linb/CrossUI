@@ -1059,9 +1059,8 @@ _.merge(xui,{
     //test1: xui.getRes("start.a.b.c $0 $1 ($- $. $$) end-1-2")  => "c 1 2 (- . $) end"
     //tset2: xui.getRes( ["a","b","c $0 $1 ($- $. $$) end"],1,2) => "c 1 2 (- . $) end"
     getRes:function(path){
-        if(!_.isStr(path))return path;
         var arr,conf,tmp,params=arguments,rtn;
-        if(typeof path=='string'){
+        if(_.isStr(path)){
             path=path.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;});
             if(path.charAt(0)=='$')path=path.slice(1);
             if(path.indexOf('-')!=-1){
@@ -1074,8 +1073,10 @@ _.merge(xui,{
             }
             arr=path.split(".");
             arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
-        }else{
+        }else if(_.isArr(path)){
             arr=path;
+        }else{
+            return path;
         }
         conf=_.get(xui.Locale[xui.$localeKey], arr);
         if((tmp=typeof conf)=='function'){
@@ -3302,6 +3303,7 @@ Class('xui.absBox',null, {
         if(upper)upper.call(this);
         upper=null;
         this._nodes=[];
+        this.Class=this.constructor;
     },
     Before:function(key){
         var t=xui.absBox;
@@ -3485,7 +3487,7 @@ Class('xui.Profile','xui.absProfile',{
         self.properties=properties?_.copy(properties):(self.properties||{});
         self.events=events?_.copy(events):(self.events||{});
         self.host=host||self.host||self;
-        self.box=box||self.box||self.constructor;
+        self.Class=self.box=box||self.box||self.constructor;
         if(self.events){
             self.setEvents(self.events);
             delete self.events;
@@ -3568,8 +3570,8 @@ Class('xui.Profile','xui.absProfile',{
             var self=this, t;
             //for destroyed UIProfile
             if(!self.box)return null;
-            if(!((t=self._cacheInstance) && t.get(0)==self && t._nodes.length==1))
-                t = self._cacheInstance = self.box.pack([self],false);
+            if(!((t=self.Instace) && t.get(0)==self && t._nodes.length==1))
+                t = self.Instace = self.box.pack([self],false);
             return t;
         },
         serialize:function(rtnString, keepHost){
@@ -4081,7 +4083,7 @@ Class("xui.Timer","xui.absObj",{
             profile.link(c._cache,'self').link(xui._pool,'xui');
 
             self._nodes.push(profile);
-            profile._cacheInstance=self;
+            profile.Instace=self;
             self.n0=profile;
 
             _.asyRun(function(){
@@ -4173,7 +4175,7 @@ Class("xui.Timer","xui.absObj",{
             profile.link(c._cache,'self').link(xui._pool,'xui');
 
             self._nodes.push(profile);
-            profile._cacheInstance=self;
+            profile.Instace=self;
             self.n0=profile;
 
             if(!profile.name)self.setName(alias);
@@ -8759,7 +8761,7 @@ Class('xui.Dom','xui.absBox',{
                     return ret;
             //get caret
             }else{
-                if(ie){
+                if(ie && document.selection){
                     var r=document.selection.createRange(),
                         txt=r.text,
                         l=txt.length,
@@ -16126,7 +16128,7 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
             self._nodes.push(profile);
-            profile._cacheInstance=self;
+            profile.Instace=self;
             self.n0=profile;
 
             return self;
@@ -16358,7 +16360,7 @@ Class("xui.UI",  "xui.absObj", {
                 o.$noReclaim=1;
 
                 // keep cache refrence
-                var _c=o._cacheInstance;
+                var _c=o.Instace;
                 o.boxing().destroy(true);
 
                 //set back
@@ -16374,7 +16376,7 @@ Class("xui.UI",  "xui.absObj", {
                 // set cache refrence
                 if(_c){
                     _.merge(_c,n,'all');
-                    n.get(0)._cacheInstance=_c;
+                    n.get(0).Instace=_c;
                     // must reset it to keep memory pointer
                     n=_c;
                 }
@@ -21631,6 +21633,17 @@ new function(){
                     if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                         ns.box._applyAutoLoad(this);
             },
+            Behaviors:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClick)
+                        return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            EventHandlers:{
+                onClick:function(profile, e, value){}
+            },
             _prepareData:function(profile,data){
                 data=arguments.callee.upper.call(this, profile,data);
                 if(_.isStr(data.overflow))
@@ -23827,7 +23840,18 @@ Class("xui.UI.Resizer","xui.UI",{
     Static:{
         Behaviors:{
             DroppableKeys:['PANEL'],
-            PanelKeys:['PANEL']
+            PanelKeys:['PANEL'],
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
+            }
+        },
+        EventHandlers:{
+            onClickPanel:function(profile, e, src){}
         },
         DataModel:{
             //delete those properties
@@ -28797,6 +28821,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(xui.Event.getKey(e).key=='enter')
                         xui(src).onClick();
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
             }
         },
         Templates:{
@@ -28928,7 +28960,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             beforeFold:function(profile){},
             beforeExpand:function(profile){},
             afterFold:function(profile){},
-            afterExpand:function(profile){}
+            afterExpand:function(profile){},
+            onClickPanel:function(profile, e, src){}
         },
         _prepareData:function(profile){
             var data={};
@@ -32799,6 +32832,14 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         profile.boxing().removeChildren().destroy(true);
                     }
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
             }
         },
         DataModel:{
@@ -32917,7 +32958,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             afterExpand:function(profile){},
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
-            onClickBar:function(profile, src){}
+            onClickBar:function(profile, src){},
+            onClickPanel:function(profile, e, src){}
         },
         LayoutTrigger:function(){
             var self=this, t=self.properties, b=self.box;
@@ -34378,6 +34420,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 onClick:function(p, e, src){
                     xui(src).onMouseover(true);
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties,
+                        item = profile.getItemByDom(src);
+                    if(p.disabled || item.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, item, e, src);
+                }
             }
         },
         DataModel:{
@@ -34440,7 +34491,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             afterPageClose:function(profile, item){},
             onShowOptions:function(profile,item,e,src){},
             onItemSelected:function(profile, item,e,src,type){},
-            onCaptionActive:function(profile, item,e,src){}
+            onCaptionActive:function(profile, item,e,src){},
+            onClickPanel:function(profile, item, e, src){}
         },
         RenderTrigger:function(){
             var self=this,v,i,ins;
@@ -38926,6 +38978,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                     return false;
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties,
+                        item = profile.getItemByDom(src);
+                    if(p.disabled || item.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, item, e, src);
+                }
             }
         },
         DataModel:{
@@ -39018,6 +39079,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o.properties.items = _.copy(value);
                 }
             }
+        },
+        EventHandlers:{
+            onClickPanel:function(profile, item, e, src){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];
@@ -45540,6 +45604,14 @@ if(xui.browser.ie){
                 onClick:function(profile, e, src){
                     profile.boxing().onLand(profile, e, src);
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
             }
         },
         DataModel:{
@@ -45721,7 +45793,8 @@ if(xui.browser.ie){
             onActivated:function(profile){},
             beforePin:function(profile, value){},
             beforeStatusChanged:function(profile, oldStatus, newStatus){},
-            afterStatusChanged:function(profile, oldStatus, newStatus){}
+            afterStatusChanged:function(profile, oldStatus, newStatus){},
+            onClickPanel:function(profile, e, src){}
         },
         RenderTrigger:function(){
             var ns=this;

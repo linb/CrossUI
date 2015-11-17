@@ -930,7 +930,7 @@ Class('xui.Dom','xui.absBox',{
                     return ret;
             //get caret
             }else{
-                if(ie){
+                if(ie && document.selection){
                     var r=document.selection.createRange(),
                         txt=r.text,
                         l=txt.length,

@@ -31,7 +31,7 @@ Class("xui.DataBinder","xui.absObj",{
             profile.link(c._cache,'self').link(xui._pool,'xui');
 
             self._nodes.push(profile);
-            profile._cacheInstance=self;
+            profile.Instace=self;
             self.n0=profile;
 
             if(!profile.name)self.setName(alias);

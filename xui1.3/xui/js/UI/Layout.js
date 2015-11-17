@@ -564,6 +564,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                     return false;
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties,
+                        item = profile.getItemByDom(src);
+                    if(p.disabled || item.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, item, e, src);
+                }
             }
         },
         DataModel:{
@@ -656,6 +665,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o.properties.items = _.copy(value);
                 }
             }
+        },
+        EventHandlers:{
+            onClickPanel:function(profile, item, e, src){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];

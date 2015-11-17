@@ -1,4 +1,4 @@
-﻿(xui.Locale.tw||(xui.Locale.tw={})).inline={
+(xui.Locale.tw||(xui.Locale.tw={})).inline={
     $_$:1,
     ok:'確定',
     cancel:'取消',

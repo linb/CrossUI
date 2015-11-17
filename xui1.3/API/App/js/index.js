@@ -105,10 +105,12 @@ Class('App', 'xui.Com',{
                         SPA.objTree.openToNode(id1).setValue(id1);
                         var node=SPA.divHead.getRoot(),
                             ics=SPA._iconPosMap,
-                            f=SPA._clickForToggle
+                            f=SPA._clickForToggle,
+                            html =SPA._format( SPA._parse(id1) )
                             ;
+
                         //build html
-                        SPA.divHead.setHtml( SPA._format( SPA._parse(id1) ) );
+                        SPA.divHead.setHtml( html );
                         node.setSelectable(true);
                         //attach event
                         node.query('h2').css('cursor','pointer').onClick(f).first().css('backgroundPosition',ics.close);

@@ -15503,6 +15503,7 @@ Class("xui.svg", "xui.UI",{
                 }break;
                 case 'text':{
                     var obbox,textAnchor;
+                    // must get real size first
                     if(el){
                         el._.dirty=1;
                         obbox=copy(el._getBBox(true));
@@ -15517,7 +15518,13 @@ Class("xui.svg", "xui.UI",{
                        r.remove();
                        div.empty();
                     }
-                    if('hAlign' in prf.box.$DataModel){
+                    
+                    if(_.isNumb(bbox.x))
+                        obbox.x=bbox.x;
+                    if(_.isNumb(bbox.y))
+                        obbox.y=bbox.y;
+                        
+                    //if('hAlign' in prf.box.$DataModel){
                         var ha=attr.hAlign||'center',
                             va=attr.vAlign||'middle',
                             offsetx=obbox?(textAnchor=='start'?-obbox.width/2:textAnchor=='middle'?0:obbox.width/2):0;
@@ -15586,7 +15593,7 @@ Class("xui.svg", "xui.UI",{
                                 }
                             }
                         }
-                    }else{
+                    /*}else{
                         if(_.isNumb(obbox.x))
                             h.x=obbox.x;
                         if(_.isNumb(obbox.y))
@@ -15595,7 +15602,7 @@ Class("xui.svg", "xui.UI",{
                             h.width=obbox.width;
                         if(_.isNumb(obbox.height))
                             h.height=obbox.height;
-                    }
+                    }*/
                 }break;
                 case 'path':{
                     var obbox;
@@ -19106,7 +19113,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     if(!flag){
                         fc.setJSONData(prf.box._prepareFCData(prf,fc.getJSONData()));
                     }
-
+                    fc.setTransparent(true);
                     fc.render(prf.getSubNode('BOX').id());
                 }
             });

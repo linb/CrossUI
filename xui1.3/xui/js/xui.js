@@ -1059,9 +1059,8 @@ _.merge(xui,{
     //test1: xui.getRes("start.a.b.c $0 $1 ($- $. $$) end-1-2")  => "c 1 2 (- . $) end"
     //tset2: xui.getRes( ["a","b","c $0 $1 ($- $. $$) end"],1,2) => "c 1 2 (- . $) end"
     getRes:function(path){
-        if(!_.isStr(path))return path;
         var arr,conf,tmp,params=arguments,rtn;
-        if(typeof path=='string'){
+        if(_.isStr(path)){
             path=path.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;});
             if(path.charAt(0)=='$')path=path.slice(1);
             if(path.indexOf('-')!=-1){
@@ -1074,8 +1073,10 @@ _.merge(xui,{
             }
             arr=path.split(".");
             arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
-        }else{
+        }else if(_.isArr(path)){
             arr=path;
+        }else{
+            return path;
         }
         conf=_.get(xui.Locale[xui.$localeKey], arr);
         if((tmp=typeof conf)=='function'){
@@ -3302,6 +3303,7 @@ Class('xui.absBox',null, {
         if(upper)upper.call(this);
         upper=null;
         this._nodes=[];
+        this.Class=this.constructor;
     },
     Before:function(key){
         var t=xui.absBox;
@@ -3485,7 +3487,7 @@ Class('xui.Profile','xui.absProfile',{
         self.properties=properties?_.copy(properties):(self.properties||{});
         self.events=events?_.copy(events):(self.events||{});
         self.host=host||self.host||self;
-        self.box=box||self.box||self.constructor;
+        self.Class=self.box=box||self.box||self.constructor;
         if(self.events){
             self.setEvents(self.events);
             delete self.events;
@@ -3568,8 +3570,8 @@ Class('xui.Profile','xui.absProfile',{
             var self=this, t;
             //for destroyed UIProfile
             if(!self.box)return null;
-            if(!((t=self._cacheInstance) && t.get(0)==self && t._nodes.length==1))
-                t = self._cacheInstance = self.box.pack([self],false);
+            if(!((t=self.Instace) && t.get(0)==self && t._nodes.length==1))
+                t = self.Instace = self.box.pack([self],false);
             return t;
         },
         serialize:function(rtnString, keepHost){
@@ -4081,7 +4083,7 @@ Class("xui.Timer","xui.absObj",{
             profile.link(c._cache,'self').link(xui._pool,'xui');
 
             self._nodes.push(profile);
-            profile._cacheInstance=self;
+            profile.Instace=self;
             self.n0=profile;
 
             _.asyRun(function(){

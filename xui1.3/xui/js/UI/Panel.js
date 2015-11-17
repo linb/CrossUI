@@ -288,6 +288,14 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         profile.boxing().removeChildren().destroy(true);
                     }
                 }
+            },
+            PANEL:{
+                onClickPanel:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
             }
         },
         DataModel:{
@@ -406,7 +414,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             afterExpand:function(profile){},
             onShowInfo:function(profile, e, src){},
             onShowOptions:function(profile, e, src){},
-            onClickBar:function(profile, src){}
+            onClickBar:function(profile, src){},
+            onClickPanel:function(profile, e, src){}
         },
         LayoutTrigger:function(){
             var self=this, t=self.properties, b=self.box;
