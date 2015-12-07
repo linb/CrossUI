@@ -7639,6 +7639,7 @@ Class('xui.Dom','xui.absBox',{
                 if(!hash[type])type=null;
                 xui(nodes).onTouchstart(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
+                    if(e.touches.length>1)return true;
                     var s=e.touches[0],t=xui(src).get(0);
                     if(t){
                         if(type=='xy'||type=='x')
@@ -7650,6 +7651,7 @@ Class('xui.Dom','xui.absBox',{
                 }:null);
                 xui(nodes).onTouchmove(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
+                    if(e.touches.length>1)return true;
                     var s=e.touches[0],t=xui(src).get(0),x1,y1,first;
                     if(t){
                         x1=t.scrollLeft;y1=t.scrollTop;
@@ -7673,6 +7675,7 @@ Class('xui.Dom','xui.absBox',{
                 }:null);
                 xui(nodes).onTouchend(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
+                    if(e.touches.length>1)return true;
                     ox=oy=null;
                 }:null);
             }
