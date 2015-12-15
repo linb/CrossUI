@@ -1060,6 +1060,50 @@ _.set(xui.Locale,["cn","app"], {
             ],
             $memo:"请参考 <a href='#xui.Ajax'>xui.Ajax</a>, <a href='#xui.SAjax'>xui.SAjax</a>, <a href='#xui.IAjax'>xui.IAjax</a>!"
         },
+        restGet:{
+            $desc:"调用 RESTful GET 服务.",
+            $paras:[
+                "uri [必需参数]: String, 目标地址.",
+                "query [可选参数]:  Object/String, 请求的输入数据. ",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "options [可选参数]: Object, 一组配置数据."
+            ]
+        },
+        restPost:{
+            $desc:"调用 RESTful POST 服务 .",
+            $paras:[
+                "uri [必需参数]: String, 目标地址.",
+                "query [可选参数]:  Object/String, 请求的输入数据. ",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "options [可选参数]: Object, 一组配置数据."
+            ]
+        },
+        restPut:{
+            $desc:"调用 RESTful PUT 服务 .",
+            $paras:[
+                "uri [必需参数]: String, 目标地址.",
+                "query [可选参数]:  Object/String, 请求的输入数据. ",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "options [可选参数]: Object, 一组配置数据."
+            ]
+        },
+        restDelete:{
+            $desc:"调用 RESTful DELETE 服务 .",
+            $paras:[
+                "uri [必需参数]: String, 目标地址.",
+                "query [可选参数]:  Object/String, 请求的输入数据. ",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "options [可选参数]: Object, 一组配置数据."
+            ]
+        },
         log:{
             $desc:"记录信息到Debugger窗口,默认使用当前环境中有window.console.loge功能,否则会调用xui.echo.",
             $snippet:[

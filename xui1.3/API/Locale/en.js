@@ -1063,6 +1063,50 @@ _.set(xui.Locale,["en","app"], {
             ],
             $memo:"Sees <a href='#xui.Ajax'>xui.Ajax</a>, <a href='#xui.SAjax'>xui.SAjax</a> and <a href='#xui.IAjax'>xui.IAjax</a> please!"
         },
+        restGet:{
+            $desc:"To call RESTful GET service .",
+            $paras:[
+                "uri [Required]: String, The URL of the request target.",
+                "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+            ]
+        },
+        restPost:{
+            $desc:"To call RESTful POST service .",
+            $paras:[
+                "uri [Required]: String, The URL of the request target.",
+                "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+            ]
+        },
+        restPut:{
+            $desc:"To call RESTful PUT service .",
+            $paras:[
+                "uri [Required]: String, The URL of the request target.",
+                "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+            ]
+        },
+        restDelete:{
+            $desc:"To call RESTful DELETE service .",
+            $paras:[
+                "uri [Required]: String, The URL of the request target.",
+                "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}.",
+                "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
+                "options [Optional]: Object, a set of key/value pairs that configure the request."
+            ]
+        },
         log:{
             $desc:"Logs information to Debugger Window. Call window.console.log by default, or xui.echo.",
             $snippet:[

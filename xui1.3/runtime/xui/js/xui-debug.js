@@ -1,8 +1,11 @@
-/*
-CrossUI(xui) 1.3
-Copyright(c) 2014- CrossUI.com
-Open Source under LGPL 3 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html)
-*/
+/*!
+* CrossUI(xui) JavaScript Library v1.3
+* http://crossui.com
+* 
+ * Copyright ( 2004 ~ present) CrossUI.com
+ * Released under the MIT license
+ *
+ */
 //speed up references
 undefined;
 //global: time stamp
@@ -162,6 +165,7 @@ _.merge=function(target, source, type){
     }
     return target;
 };
+
 new function(){
     var lastTime=0,vendors=['ms','moz','webkit','o'],w=window,i=0,l=vendors.length,tag;
     for(;i<l && !w.requestAnimationFrame && (tag=vendors[i++]);) {
@@ -179,6 +183,7 @@ new function(){
     if (!w.cancelAnimationFrame)
         w.cancelAnimationFrame = function(id){clearTimeout(id)};
 };
+
 _.merge(_,{
     setTimeout:function(callback,delay){
         return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
@@ -580,12 +585,12 @@ _.merge(_,{
         rtrim:function(str){
             return str?str.replace(/(\s|\uFEFF|\xA0)+$/,''):str;
         },
-/*
+        /*
         blen : function(s){
             var _t=s.match(/[^\x00-\xff]/ig);
             return s.length+(null===_t?0:_t.length);
         },
-*/
+        */
         //Dependency: xui.Dom
         toDom:function(str){
             var p=xui.$getGhostDiv(), r=[];
@@ -736,6 +741,7 @@ _.merge(_,{
         }
     }
 });
+
 _.merge(_.fun,{
     body:function(fun){
         var s=""+fun;
@@ -1147,6 +1153,22 @@ _.merge(xui,{
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return xui._getrpc(uri, query, options).apply(null, arguments).start();
+    },
+    restGet:function(uri, query, onSuccess, onFail, threadid,options){
+        if(!options) options={};options.method="get";
+        return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
+    },
+    restPost:function(uri, query, onSuccess, onFail, threadid,options){
+        if(!options) options={};options.method="post";
+        return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
+    },
+    restPut:function(uri, query, onSuccess, onFail, threadid,options){
+        if(!options) options={};options.method="put";
+        return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
+    },
+    restDelete:function(uri, query, onSuccess, onFail, threadid,options){
+        if(!options) options={};options.method="delete";
+        return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, rspType, onSuccess, onFail, options){
         return xui.Ajax(uri,xui.Ajax.uid,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
@@ -1611,6 +1633,7 @@ new function(){
     // to ensure
     (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?_.setTimeout(arguments.callee,9):f()})();
 };
+
 // for loction url info
 new function(){
     xui._uriReg=/^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/;
@@ -1894,6 +1917,7 @@ new function(){
         }*/
     };
 };
+
 /*xui.Thread
 *  dependency: _ ; Class ; xui
 parameters:
@@ -2228,7 +2252,6 @@ Class('xui.Thread',null,{
     }
 });
 
-
 /*xui.absIO/ajax
 *  dependency: _ ; Class ; xui ; xui.Thread
 */
@@ -2272,9 +2295,11 @@ Class('xui.absIO',null,{
             contentType : options.contentType||'',
             Accept : options.Accept||'',
             header : options.header||null,
-            asy : options.asy!==false,
-            method : 'POST'==(options.method||con.method).toUpperCase()?'POST':'GET'
+            asy : options.asy!==false
         },'all');
+        var m=(options.method||con.method).toUpperCase();
+        options.method = 'POST'==m ? 'POST' : 'PUT'==m ? 'PUT' : 'DELETE'==m ? 'DELETE' : 'PATCH'==m ? 'PATCH' : 'GET';
+
         var a='retry,timeout,reqType,rspType,optimized,customQS'.split(',');
         for(var i=0,l=a.length;i<l;i++){
             options[a[i]] = (a[i] in options)?options[a[i]]:con[a[i]];
@@ -2433,6 +2458,7 @@ Class('xui.absIO',null,{
         }
     }
 });
+
 Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
@@ -2570,6 +2596,7 @@ Class('xui.Ajax','xui.absIO',{
         $asFunction:1
     }
 });
+
 Class('xui.SAjax','xui.absIO',{
     Instance:{
         start:function(){
@@ -2719,6 +2746,7 @@ Class('xui.SAjax','xui.absIO',{
         }
     }
 });
+
 Class('xui.IAjax','xui.absIO',{
     Instance:{
         _useForm:true,
@@ -3260,40 +3288,42 @@ new function(){
 
 /*26 based id, some number id can crash opera9
 */
-_.id=function(){
-    var self=this, me=arguments.callee;
-    if(self.constructor!==me || self.a)
-        return (me._ || (me._= new me)).next();
-    self.a=[-1];
-    self.b=[''];
-    self.value='';
-};
-_.id.prototype = {
-    constructor:_.id,
-    _chars  :"abcdefghijklmnopqrstuvwxyz".split(''),
-    next : function(i){
-        with(this){
-            i = (i||i===0)?i:b.length-1;
-            var m,k,l;
-            if((m=a[i]) >= 25){
-                m=0;
-                if(i===0){
-                    a.splice(0,0,1);
-                    b.splice(0,0,'a');
-                    l=a.length;
-                    for(k=1;k<l;++k){
-                        a[k]=0;
-                        b[k]='0';
-                    }
-                    ++i;
-                }else
-                  next(i-1);
-            }else ++m;
-            a[i]=m;
-            b[i]=_chars[m];
-            return value = b.join('');
+new function(){
+    _.id=function(){
+        var self=this, me=arguments.callee;
+        if(self.constructor!==me || self.a)
+            return (me._ || (me._= new me)).next();
+        self.a=[-1];
+        self.b=[''];
+        self.value='';
+    };
+    _.id.prototype = {
+        constructor:_.id,
+        _chars  :"abcdefghijklmnopqrstuvwxyz".split(''),
+        next : function(i){
+            with(this){
+                i = (i||i===0)?i:b.length-1;
+                var m,k,l;
+                if((m=a[i]) >= 25){
+                    m=0;
+                    if(i===0){
+                        a.splice(0,0,1);
+                        b.splice(0,0,'a');
+                        l=a.length;
+                        for(k=1;k<l;++k){
+                            a[k]=0;
+                            b[k]='0';
+                        }
+                        ++i;
+                    }else
+                      next(i-1);
+                }else ++m;
+                a[i]=m;
+                b[i]=_chars[m];
+                return value = b.join('');
+            }
         }
-    }
+    };
 };
 
 //xui.absBox
@@ -8400,6 +8430,7 @@ Class('xui.Dom','xui.absBox',{
                 if(!hash[type])type=null;
                 xui(nodes).onTouchstart(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
+                    if(e.touches.length>1)return true;
                     var s=e.touches[0],t=xui(src).get(0);
                     if(t){
                         if(type=='xy'||type=='x')
@@ -8411,6 +8442,7 @@ Class('xui.Dom','xui.absBox',{
                 }:null);
                 xui(nodes).onTouchmove(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
+                    if(e.touches.length>1)return true;
                     var s=e.touches[0],t=xui(src).get(0),x1,y1,first;
                     if(t){
                         x1=t.scrollLeft;y1=t.scrollTop;
@@ -8434,6 +8466,7 @@ Class('xui.Dom','xui.absBox',{
                 }:null);
                 xui(nodes).onTouchend(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
+                    if(e.touches.length>1)return true;
                     ox=oy=null;
                 }:null);
             }
