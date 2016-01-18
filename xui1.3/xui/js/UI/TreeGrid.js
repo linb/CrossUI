@@ -1375,7 +1375,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     HCELLA:{
                                         //for IE78
                                         style:'line-height:inherit;{firstCellStyle};',
-                                        className:'{firstCellClass}',
+                                        className:'xui-v-wrapper {firstCellClass}',
                                         HHANDLER:{
                                             tagName:'div',
                                             style:'{colDDDisplay}'
@@ -1456,10 +1456,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:"width:{_pxWidth}px;height:{_hcellheight}px;line-height:{_hcelllineh}px;{colDisplay};",
                         className:'{cellCls}',
                         HCELLA:{
-                            className:'{headerClass}',
+                            className:'xui-v-wrapper {headerClass}',
                             style:"lline-height:inherit;{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                className:'xui-v-node',
                                 text:"{caption}"
                             },
                             SORT:{
@@ -1478,10 +1479,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:"position:absolute;width:{_pxWidth}px;height:{_hcellheight}px;line-height:{_hcelllineh}px;top:{_hcelltop}px;left:{_hcellleft}px;",
                         className:'{cellCls}',
                         HCELLA:{
-                            className:'{headerClass}',
+                            className:'xui-v-wrapper {headerClass}',
                             style:"line-height:inherit;{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                className:"xui-v-node",
                                 text:"{caption}"
                             },
                             HHANDLER : {
@@ -1515,7 +1517,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 CELLA:{
                                     tabindex: '{_tabindex}',
                                     style:'{cellStyle}{firstCellStyle}',
-                                    className:'{cellClass}{firstCellClass}',
+                                    className:'xui-v-wrapper {cellClass}{firstCellClass}',
                                     ROWLRULER:{
                                         $order:1,
                                         style:'{_treeMode};width:{_rulerW}px'
@@ -1535,7 +1537,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     },
                                     FCELLCAPTION:{
                                         $order:5,
-                                        text:'{caption}'
+                                        className:"xui-v-node",
+                                        text:"{caption}"
                                     },
                                     FHANDLER:{
                                         $order:6,
@@ -1576,10 +1579,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay};',
                         className:'{cellCls}',
                         CELLA:{
-                            className:'{cellClass}',
+                            className:'xui-v-wrapper {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
                             tabindex: '{_tabindex}',
-                            text:"{caption}"
+                            CELLCAPTION:{
+                                className:'xui-v-node',
+                                text:"{caption}"
+                            }
                         }
                     }
                 },
@@ -1588,10 +1594,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay};',
                         className:'{cellCls}',
                         CELLA:{
-                            className:'xui-cls-wordwrap {cellClass}',
+                            className:'xui-v-wrapper xui-cls-wordwrap {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
                             tabindex: '{_tabindex}',
-                            text:"{caption}"
+                            CELLCAPTION:{
+                                className:'xui-v-node',
+                                text:"{caption}"
+                            }
                         }
                     }
                 },
@@ -1614,7 +1623,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay}',
                         className:'{cellCls}',
                         CELLA:{
-                            className:'{cellClass}',
+                            className:'xui-v-wrapper {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
@@ -1632,9 +1641,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             PROGRESS:{
+                                $order:2,
                                 tagName:'div',
+                                className:'xui-v-wrapper',
                                 style:'width:{progress};',
-                                text:'{caption}'
+                                CELLCAPTION:{
+                                    className:'xui-v-node',
+                                    text:"{caption}"
+                                },
                             }
                         }
                     }
@@ -1876,7 +1890,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             "FHCELL HCELLA":{
                 'text-align': 'center'
             },
-            'HCELLCAPTION,SORT,HHANDLER':{
+            'CELLCAPTION,HCELLCAPTION,SORT,HHANDLER':{
                 'vertical-align':'middle'
             },
             FHANDLER:{
@@ -2004,7 +2018,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             PROGRESS:{
                 height:'100%',
                 'background-color':'#00ffff',
-                'text-align':'center',
                 'line-height':'22px',
                 overflow:'visible',
                 opacity:0.7,
@@ -2319,14 +2332,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         return;
                     }
 
-                    profile.box._adjusteditorH(profile, o.height(row._height=h),h);
 
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
                         profile.properties.headerHeight=h;
                         profile.box._adjustColsV(profile);
                         xui.UI.$tryResize(profile,profile.getRoot().width(),profile.getRoot().height(),true);
-                    }else
+                    }else{
+                        profile.box._adjusteditorH(profile, o.height(row._height=h),h);
                         row.height=h;
+                    }
 
                     if(profile.afterRowResized)
                         profile.boxing().afterRowResized(profile, row?row.id:null, h);
@@ -4129,7 +4143,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return v;
                })
             ;
-
+            if(node && node.get(0))node=node.first();
             switch(type){
                 case 'number':
                 case 'spin':
@@ -4200,7 +4214,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     cell.value=!!cell.value;
                     caption=cell.value+'';
                     if(node)
-                        node.first().tagClass('-checked', cell.value);
+                        node.tagClass('-checked', cell.value);
                     else
                         uicell.checkboxCls = profile.getClass('CHECKBOX', cell.value?'-checked':'');
                 break;
@@ -4209,7 +4223,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     cell.value=Math.min(Math.max(cell.value,0),1);
                     caption= capOut ||ren(profile,cell,uicell,f3);
                     if(node){
-                        node.first().html(caption, false).width(caption);
+                        node.first().html(caption, false);
+                        node.width(caption);
                     }else
                         uicell.progress=caption;
 
@@ -4819,7 +4834,7 @@ editorEvents
                     // 3. for checkbox/lable,button type
                     if(type=='checkbox'){
                         if(!inline){
-                            cellNode.first().focus();
+                            cellNode.focus();
                         }
                         return;
                     }else if(type=='button'||type=='label')

@@ -7826,7 +7826,7 @@ Class('xui.Event',null,{
             ".xui-node-a:hover{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
             ".xui-node-span, .xui-node-div{border:0;font-size:12px;}"+
-            ".xui-node-span, .xui-wrapper span{outline-offset:-1px;"+
+            ".xui-node-span, .xui-wrapper span"+((b.ie6||b.ie7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
             (b.gek
                 ? b.ver<3 
                     ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
@@ -7854,7 +7854,13 @@ Class('xui.Event',null,{
                 (b.opr?"white-space: -pre-wrap;":"") + // Opera 4-6
                 (b.opr?"white-space: -o-pre-wrap;":"") + // Opera 7
                 (b.ie?"word-wrap: break-word;":"")+ // Internet Explorer 5.5+
-           "}"
+           "}"+
+           ((b.ie6||b.ie7)?"":(".xui-v-wrapper:before{content:'';height:100%;font-size:0;vertical-align:middle;}"+
+           ".xui-v-wrapper > .xui-v-node{vertical-align:middle;}"+
+           ".xui-v-top > .xui-v-wrapper:before{vertical-align:top;}"+
+           ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
+           ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
+           ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -8406,6 +8412,7 @@ Class('xui.Dom','xui.absBox',{
                         }
                     //set attr
                     }else{
+                        value=name=='style'?(value+'').replace(/[;]+/g,';').replace(/^;/,''):value;
                         if(iestyle)o.style.cssText=''+value;
                         else if(normal){
                              o[name]=value;
@@ -8421,7 +8428,7 @@ Class('xui.Dom','xui.absBox',{
                 if(name=="selected"&&xui.browser.kde) return o.parentNode.selectedIndex;
                 r=((name in o) && normal)?o[name]:o.getAttribute(name, xui.browser.ie && !normal ? 2 : undefined );
                 o=null;
-                return r;
+                return name=='style'?r.replace(/[;]+/g,';').replace(/^;/,''):r;
             }
         },
         $touchscroll:function(type){
@@ -10935,7 +10942,7 @@ type:4
                 _.each(fack.style,function(o,i){
                     arr.push(i.replace(/([A-Z])/g, "-$1" ).toLowerCase()+":"+o);
                 });
-                return arr.join(';');
+                return arr.join(';').replace(/[;]+/g,';');
             }else{
                 return fack.style;
             }
@@ -22209,180 +22216,6 @@ Class("xui.UI.Image", "xui.UI",{
                     profile.getSubNode('COVER').cssSize(size,true);
                 }
                 profile.boxing().refreshFlash();
-            }
-        }
-    }
-});Class("xui.UI.Audio", "xui.UI",{
-    Instance:{
-        play:function(){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.play();
-        },
-        pause:function(){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.pause();
-        },
-        load:function(){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.load();
-        },
-        canPlayType:function(type){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn) return vn.canPlayType(type);
-        }
-    },
-    Static:{
-        Appearances:{
-            KEY:{
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null,
-                overflow:'hidden'
-            },
-            H5:{
-                position:'absolute',
-                left:0,
-                top:0,
-                'z-index':1
-            }
-        },
-        Templates:{
-            tagName:'div',
-            className:'{_className}',
-            style:'{_style}',
-            H5:{
-                tagName:'audio'
-            }
-        },
-        Behaviors:{
-            HotKeyAllowed:false,
-            onSize:xui.UI.$onSize
-        },
-        DataModel:{
-            selectable:true,
-            width:200,
-            height:50,
-            src:{
-                ini:'',
-                action:function(v){
-                    this.getSubNode("H5").attr("src",v||null);
-                }
-            },
-            controls:{
-                ini: true,
-                action:function(v){
-                    this.getSubNode("H5").attr("controls", v||null);
-                }
-            },
-            preload:{
-                ini: false,
-                action:function(v){
-                    this.getSubNode("H5").attr("preload", v||null);
-                }
-            },
-            loop:{
-                ini: false,
-                action:function(v){
-                    this.getSubNode("H5").attr("loop", v||null);
-                }
-            },
-            muted:{
-                ini: false,
-                action:function(v){
-                    this.getSubNode("H5").attr("muted", v||null);
-                }
-            },
-            volume:{
-                ini: 1,
-                action:function(v){
-                    this.getSubNode("H5").attr("volume", v);
-                }
-            },
-            autoplay:{
-                ini: false,
-                action:function(v){
-                    this.getSubNode("H5").attr("autoplay", v||null);
-                }
-            }
-        },
-        RenderTrigger:function(){
-            var prf = this,
-                H5 = prf.getSubNode('H5'),
-                prop = prf.properties,
-                ef = function(){
-                    if(prf.onMediaEvent){
-                        prf.boxing().onMediaEvent(prf, event,  arguments);
-                    }
-                },t;
-   
-            "loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" ").forEach(function(event, i){
-                if(H5&&H5.get(0))H5.get(0).addEventListener(event, ef, false);  
-            });
-            
-            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["detachEvents"]=function(){
-                "loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" ").forEach(function(event, i){
-                    if(H5&&H5.get(0))H5.get(0).removeEventListener(event, ef, false);  
-                });
-            };
-
-            if(t=prop.src)H5.attr("src",t);
-            if(t=prop.controls)H5.attr("controls",t);
-            if(t=prop.preload)H5.attr("preload",t);
-            if(t=prop.loop)H5.attr("loop",t);
-            if(t=prop.muted)H5.attr("muted",t);
-            if(t=prop.autoplay)H5.attr("autoplay",t);
-            if((t=prop.volume) !== 1)H5.attr("volume",t);
-        },
-        EventHandlers:{
-            onMediaEvent:function(profile, eventType, params){}
-        },
-        _onresize:function(profile,width,height){
-            var H5=profile.getSubNode('H5'), size = H5.cssSize(),prop=profile.properties;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
-                // reset here
-                if(width)prop.width=width;
-                if(height)prop.height=height;
-
-                size={width:width,height:height};
-                H5.cssSize(size,true);
-            }
-        }
-    }
-});Class("xui.UI.Video", "xui.UI.Audio",{
-    Instance:{
-    },
-    Static:{
-        Templates:{
-            tagName:'div',
-            className:'{_className}',
-            style:'{_style}',
-            H5:{
-                tagName:'video',
-                width:'{width}',
-                height:'{height}'
-            }
-        },
-        DataModel:{
-            width:400,
-            height:300,
-            poster:{
-                format:'image',
-                ini: '',
-                action:function(v){
-                    this.getSubNode("H5").attr("poster", v||null);
-                }
-            }
-        },
-        RenderTrigger:function(){
-            var prf=this,
-                H5 = prf.getSubNode('H5'),
-                prop = prf.properties,
-                t;
-            if(t=prop.poster)H5.attr("poster",t);
-        },
-        _onresize:function(profile,width,height){
-            var H5=profile.getSubNode('H5'), size = H5.cssSize(), prop=profile.properties;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
-                // reset here
-                if(width)prop.width=width;
-                if(height)prop.height=height;
-                if(width)H5.attr("width", width);
-                if(height)H5.attr("height", height);
             }
         }
     }
@@ -40812,7 +40645,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     HCELLA:{
                                         //for IE78
                                         style:'line-height:inherit;{firstCellStyle};',
-                                        className:'{firstCellClass}',
+                                        className:'xui-v-wrapper {firstCellClass}',
                                         HHANDLER:{
                                             tagName:'div',
                                             style:'{colDDDisplay}'
@@ -40893,10 +40726,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:"width:{_pxWidth}px;height:{_hcellheight}px;line-height:{_hcelllineh}px;{colDisplay};",
                         className:'{cellCls}',
                         HCELLA:{
-                            className:'{headerClass}',
+                            className:'xui-v-wrapper {headerClass}',
                             style:"lline-height:inherit;{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                className:'xui-v-node',
                                 text:"{caption}"
                             },
                             SORT:{
@@ -40915,10 +40749,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:"position:absolute;width:{_pxWidth}px;height:{_hcellheight}px;line-height:{_hcelllineh}px;top:{_hcelltop}px;left:{_hcellleft}px;",
                         className:'{cellCls}',
                         HCELLA:{
-                            className:'{headerClass}',
+                            className:'xui-v-wrapper {headerClass}',
                             style:"line-height:inherit;{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                className:"xui-v-node",
                                 text:"{caption}"
                             },
                             HHANDLER : {
@@ -40952,7 +40787,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 CELLA:{
                                     tabindex: '{_tabindex}',
                                     style:'{cellStyle}{firstCellStyle}',
-                                    className:'{cellClass}{firstCellClass}',
+                                    className:'xui-v-wrapper {cellClass}{firstCellClass}',
                                     ROWLRULER:{
                                         $order:1,
                                         style:'{_treeMode};width:{_rulerW}px'
@@ -40972,7 +40807,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     },
                                     FCELLCAPTION:{
                                         $order:5,
-                                        text:'{caption}'
+                                        className:"xui-v-node",
+                                        text:"{caption}"
                                     },
                                     FHANDLER:{
                                         $order:6,
@@ -41013,10 +40849,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay};',
                         className:'{cellCls}',
                         CELLA:{
-                            className:'{cellClass}',
+                            className:'xui-v-wrapper {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
                             tabindex: '{_tabindex}',
-                            text:"{caption}"
+                            CELLCAPTION:{
+                                className:'xui-v-node',
+                                text:"{caption}"
+                            }
                         }
                     }
                 },
@@ -41025,10 +40864,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay};',
                         className:'{cellCls}',
                         CELLA:{
-                            className:'xui-cls-wordwrap {cellClass}',
+                            className:'xui-v-wrapper xui-cls-wordwrap {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
                             tabindex: '{_tabindex}',
-                            text:"{caption}"
+                            CELLCAPTION:{
+                                className:'xui-v-node',
+                                text:"{caption}"
+                            }
                         }
                     }
                 },
@@ -41051,7 +40893,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{width}px;{cellDisplay}',
                         className:'{cellCls}',
                         CELLA:{
-                            className:'{cellClass}',
+                            className:'xui-v-wrapper {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
@@ -41069,9 +40911,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             PROGRESS:{
+                                $order:2,
                                 tagName:'div',
+                                className:'xui-v-wrapper',
                                 style:'width:{progress};',
-                                text:'{caption}'
+                                CELLCAPTION:{
+                                    className:'xui-v-node',
+                                    text:"{caption}"
+                                },
                             }
                         }
                     }
@@ -41313,7 +41160,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             "FHCELL HCELLA":{
                 'text-align': 'center'
             },
-            'HCELLCAPTION,SORT,HHANDLER':{
+            'CELLCAPTION,HCELLCAPTION,SORT,HHANDLER':{
                 'vertical-align':'middle'
             },
             FHANDLER:{
@@ -41441,7 +41288,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             PROGRESS:{
                 height:'100%',
                 'background-color':'#00ffff',
-                'text-align':'center',
                 'line-height':'22px',
                 overflow:'visible',
                 opacity:0.7,
@@ -41756,14 +41602,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         return;
                     }
 
-                    profile.box._adjusteditorH(profile, o.height(row._height=h),h);
 
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
                         profile.properties.headerHeight=h;
                         profile.box._adjustColsV(profile);
                         xui.UI.$tryResize(profile,profile.getRoot().width(),profile.getRoot().height(),true);
-                    }else
+                    }else{
+                        profile.box._adjusteditorH(profile, o.height(row._height=h),h);
                         row.height=h;
+                    }
 
                     if(profile.afterRowResized)
                         profile.boxing().afterRowResized(profile, row?row.id:null, h);
@@ -43566,7 +43413,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return v;
                })
             ;
-
+            if(node && node.get(0))node=node.first();
             switch(type){
                 case 'number':
                 case 'spin':
@@ -43637,7 +43484,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     cell.value=!!cell.value;
                     caption=cell.value+'';
                     if(node)
-                        node.first().tagClass('-checked', cell.value);
+                        node.tagClass('-checked', cell.value);
                     else
                         uicell.checkboxCls = profile.getClass('CHECKBOX', cell.value?'-checked':'');
                 break;
@@ -43646,7 +43493,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     cell.value=Math.min(Math.max(cell.value,0),1);
                     caption= capOut ||ren(profile,cell,uicell,f3);
                     if(node){
-                        node.first().html(caption, false).width(caption);
+                        node.first().html(caption, false);
+                        node.width(caption);
                     }else
                         uicell.progress=caption;
 
@@ -44256,7 +44104,7 @@ editorEvents
                     // 3. for checkbox/lable,button type
                     if(type=='checkbox'){
                         if(!inline){
-                            cellNode.first().focus();
+                            cellNode.focus();
                         }
                         return;
                     }else if(type=='button'||type=='label')

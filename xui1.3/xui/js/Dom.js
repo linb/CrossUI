@@ -545,6 +545,7 @@ Class('xui.Dom','xui.absBox',{
                         }
                     //set attr
                     }else{
+                        value=name=='style'?(value+'').replace(/[;]+/g,';').replace(/^;/,''):value;
                         if(iestyle)o.style.cssText=''+value;
                         else if(normal){
                              o[name]=value;
@@ -560,7 +561,7 @@ Class('xui.Dom','xui.absBox',{
                 if(name=="selected"&&xui.browser.kde) return o.parentNode.selectedIndex;
                 r=((name in o) && normal)?o[name]:o.getAttribute(name, xui.browser.ie && !normal ? 2 : undefined );
                 o=null;
-                return r;
+                return name=='style'?r.replace(/[;]+/g,';').replace(/^;/,''):r;
             }
         },
         $touchscroll:function(type){
@@ -3074,7 +3075,7 @@ type:4
                 _.each(fack.style,function(o,i){
                     arr.push(i.replace(/([A-Z])/g, "-$1" ).toLowerCase()+":"+o);
                 });
-                return arr.join(';');
+                return arr.join(';').replace(/[;]+/g,';');
             }else{
                 return fack.style;
             }
