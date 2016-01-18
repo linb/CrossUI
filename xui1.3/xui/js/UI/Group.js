@@ -123,7 +123,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             PANEL:{
                 position:'relative',
                 overflow:'auto',
-                'line-height':'1.22em',
+                'line-height':'auto',
                  background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
             },
             'FIELDSET-checked PANEL':{

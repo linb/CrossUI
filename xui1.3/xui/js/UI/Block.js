@@ -120,7 +120,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         },
         Appearances:{
             KEY:{
-                'line-height':'1.22em'
+                'line-height':'auto'
             }
         },
         RenderTrigger:function(){

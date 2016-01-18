@@ -302,7 +302,7 @@ class IO{
 		unset($i, $j, $k, $l, $id, $td);
 		return $result;
 	}
-	function countFile($pattern=".*", $path=".", $type=1, $sub_dir_level=0, &$sum) {
+	function countFile($pattern=".*", $path=".", $type=1, $sub_dir_level=0, &$sum=0) {
 		// check parameters
 		$is_error = $type!=1 && $type!=0 && $type!=-1;
 		$is_error = $is_error && (!is_int($sub_dir_level) || $sub_dir_level < 0);
@@ -607,7 +607,7 @@ class IO{
             $zip->addDirectory($parentPath);
             $parentPath=$parentPath.DIRECTORY_SEPARATOR;
         }
-        
+
 	    foreach($list as $v){
 	        if($v['type'] === 0){
 	            $this->_zip($basepath, $path.DIRECTORY_SEPARATOR.$v['name'], $zip, $parentPath.$v['name']);

@@ -1568,7 +1568,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 'rows.cells':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'checkbox':'.checkbox','button':'.button','progress':'.progress'});
+                    var me=arguments.callee,map=me._m||(me._m={'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'});
                     xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.input'),result)
                 },
                 'rows.cells.input':{
@@ -1577,6 +1577,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         className:'{cellCls}',
                         CELLA:{
                             className:'{cellClass}',
+                            style:'{bgcolor};{color};{cellStyle}',
+                            tabindex: '{_tabindex}',
+                            text:"{caption}"
+                        }
+                    }
+                },
+                'rows.cells.textarea':{
+                    CELL:{
+                        style:'width:{width}px;{cellDisplay};',
+                        className:'{cellCls}',
+                        CELLA:{
+                            className:'xui-cls-wordwrap {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -4156,7 +4168,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
-                    cell.cellClass = "xui-cls-wordwrap "+(cell.cellClass||"").replace(/(xui-cls-wordwrap\s+)|(\s+xui-cls-wordwrap)/g,"");
                     caption= capOut ||ren(profile,cell,uicell,f2);
                     if(node)
                         node.html(caption,false);

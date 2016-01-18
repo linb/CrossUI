@@ -319,7 +319,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 position:'relative',
                 overflow:'auto',
                 'font-size':'12px',
-                'line-height':'1.22em'
+                'line-height':'auto'
             },
             CAPTION:{
                 'font-size':'12px',

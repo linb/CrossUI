@@ -3659,7 +3659,7 @@ Class('xui.absObj',"xui.absBox",{
             temp,t,k,u,m,i,j,l,v,n,b;
         self._nameId=0;
         self._namePool={};
-        self._nameTag=self.$nameTag||('ctl_'+(t=self.KEY.split('.'))[t.length-1].toLowerCase());
+        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
         self._cache=[];
         m=me.a1 || (me.a1=_.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){

@@ -1145,7 +1145,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Gets a Com Object from cache directly if it exists, or loads the Com code first, creates the Com and returns it.",
             $rtn:"xui.Com",
             $paras:[
-                "id [Required] : String, the Com id.",
+                "cls [Required] : String, the Com class.",
                 "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
@@ -5729,7 +5729,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Gets a Com Object from cache directly if it exists, or loads the Com code first, creates the Com and returns it.",
             $rtn:"xui.Com",
             $paras:[
-                "id [Required] : String, the Com id.",
+                "cls [Required] : String, the Com class.",
                 "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
                 "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
@@ -7017,6 +7017,13 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            dumpContainer:{
+                $desc:"To dump a panel, to remove specific control or empty all the contents of the container.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [Optional] : String, the sub id that determines which profile will be removed. [true] for all contents. Default is [true]."
+                ]
+            },
             removePanel:{
                 $desc:"Removes a panel from the current UI.",
                 $snippet:[
@@ -7787,7 +7794,8 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Removes a set of xui.UIProfile objects from each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [Optional] : String, the sub id that determines which profile will be removed. [true] for all profiles."
+                    "subId [Optional] : String, the sub id that determines which profile will be removed. [true] for all profiles.  Default is [true]",
+                    "bdestroy : Boolean, to be destroyed or not. Default is [false]."
                 ],
                 $snippet:[
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

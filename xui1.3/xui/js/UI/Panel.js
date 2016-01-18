@@ -190,7 +190,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 left:0,
                 top:0,
                 overflow:'auto',
-                'line-height':'1.22em',
+                'line-height':'auto',
                 zoom:xui.browser.ie6?1:null
             },
             CAPTION:{

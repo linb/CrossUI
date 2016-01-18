@@ -3659,7 +3659,7 @@ Class('xui.absObj',"xui.absBox",{
             temp,t,k,u,m,i,j,l,v,n,b;
         self._nameId=0;
         self._namePool={};
-        self._nameTag=self.$nameTag||('ctl_'+(t=self.KEY.split('.'))[t.length-1].toLowerCase());
+        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
         self._cache=[];
         m=me.a1 || (me.a1=_.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){
@@ -15528,7 +15528,7 @@ Class("xui.Tips", null,{
         },
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
-            return this.box._CONTAINERKEY?this.getSubNode(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNode(this.keys.PANEL, subId):this.getRoot();
+            return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
         },
         linkParent:function(parentProfile, linkId, index){
             var profile=this;
@@ -16565,11 +16565,34 @@ Class("xui.UI",  "xui.absObj", {
             });
             return xui.UI.pack(a);
         },
+        /**
+        * subId:
+        *     "id1"
+        *     ["id1","id2"]
+        *     ["id1;id2"]
+        *     [xui.UIProfile]
+        *     [xui.UIProfile, [xui.UIProfile]
+        *     [xui.UI]
+        *     [xui.UI, [xui.UI]
+        **/
         removeChildren:function(subId, bDestroy){
             return this.each(function(o){
-                var c=_.copy(o.children);
+                var c=_.copy(o.children),
+                    s=o.box.$DataModel.valueSeparator||";",
+                    b,arr;
                 _.arr.each(c,function(v){
-                    if(subId===true?1:subId?typeof subId=='string'?(v[1]==subId):(v[0]==(subId["xui.UI"]?subId.get(0):subId)):1){
+                    b=0;
+                    if(!subId || subId===true){
+                        b=1;
+                    }else{
+                        if(_.isStr(subId) || _.isArr(subId)) {
+                            arr = _.isArr(subId)?subId:(subId+"").split(s);
+                            b=_.arr.indexOf(arr, v[1])!=-1 || _.arr.indexOf(arr, v[0])!=-1 || _.arr.indexOf(arr, v[0].boxing())!=-1;
+                        }else{
+                            b=v[0]==subId["xui.UI"]?subId.get(0):subId;
+                        }
+                    }
+                    if(b){
                         if(o.beforeRemove && false===o.boxing().beforeRemove(o,v[0],v[1],bDestroy))
                             return;
 
@@ -18380,6 +18403,31 @@ Class("xui.UI",  "xui.absObj", {
                         getPanelPara:function(){
                             return _.clone(this.get(0).properties,true);
                         },
+                        dumpContainer:function(subId){
+                            return this.each(function(profile){
+                               var dm = profile.box.$DataModel,
+                                    s = dm.valueSeparator||";",
+                                    p = profile.properties,
+                                    hasitems='items' in p,
+                                    b,id,arr,con;
+                                if(!hasitems){
+                                    if(con=profile.boxing().getContainer())con.html("",true);
+                                }else{
+                                    _.arr.each(p.items, function(item){
+                                        id = item.id;
+                                        if(!subId || subId===true){
+                                            b=1;
+                                        }else{
+                                            arr = _.isArr(subId)?subId:(subId+"").split(s);
+                                            b=_.arr.indexOf(arr, id)!=-1;
+                                        }
+                                        if(b){
+                                            if(con=profile.boxing().getContainer(id))con.html("",true);
+                                        }
+                                    });
+                                }
+                            });
+                        },
                         getPanelChildren:function(){
                             return this.get(0).children;
                         },
@@ -18591,7 +18639,7 @@ Class("xui.UI",  "xui.absObj", {
                 });
 
                 t=self.prototype;
-                _.arr.each('addPanel,removePanel,getPanelPara,getPanelChildren,getDropKeys,setDropKeys'.split(','),function(o){
+                _.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getDropKeys,setDropKeys'.split(','),function(o){
                     if(!t[o])t[o]=src[o];
                 });
                 self.$DataModel.dropKeys=self.$DataStruct.dropKeys='';
@@ -21339,7 +21387,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1.22em'
+                    'line-height':'auto'
                 }
             },
             Behaviors:{
@@ -21388,7 +21436,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1.22em',
+                    'line-height':'auto',
                     'cursor':'pointer'
                 }
             }
@@ -21435,7 +21483,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1.22em'
+                    'line-height':'auto'
                 }
             },
             Behaviors:{
@@ -21604,7 +21652,7 @@ new function(){
                    // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
                     outline:xui.browser.gek?'none':null,
                     zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                    'line-height':'1.22em',
+                    'line-height':'normal',
                     background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
                 }
             },
@@ -21795,7 +21843,7 @@ new function(){
             },
             Appearances:{
                 KEY:{
-                    'line-height':'1.22em'
+                    'line-height':'auto'
                 }
             },
             RenderTrigger:function(){
@@ -23963,7 +24011,7 @@ Class("xui.UI.Resizer","xui.UI",{
         },
         Appearances:{
             KEY:{
-                'line-height':'1.22em'
+                'line-height':'auto'
             }
         },
         RenderTrigger:function(){
@@ -28926,7 +28974,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             PANEL:{
                 position:'relative',
                 overflow:'auto',
-                'line-height':'1.22em',
+                'line-height':'auto',
                  background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
             },
             'FIELDSET-checked PANEL':{
@@ -32767,7 +32815,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 left:0,
                 top:0,
                 overflow:'auto',
-                'line-height':'1.22em',
+                'line-height':'auto',
                 zoom:xui.browser.ie6?1:null
             },
             CAPTION:{
@@ -40957,7 +41005,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 'rows.cells':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'checkbox':'.checkbox','button':'.button','progress':'.progress'});
+                    var me=arguments.callee,map=me._m||(me._m={'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'});
                     xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.input'),result)
                 },
                 'rows.cells.input':{
@@ -40966,6 +41014,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         className:'{cellCls}',
                         CELLA:{
                             className:'{cellClass}',
+                            style:'{bgcolor};{color};{cellStyle}',
+                            tabindex: '{_tabindex}',
+                            text:"{caption}"
+                        }
+                    }
+                },
+                'rows.cells.textarea':{
+                    CELL:{
+                        style:'width:{width}px;{cellDisplay};',
+                        className:'{cellCls}',
+                        CELLA:{
+                            className:'xui-cls-wordwrap {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -43545,7 +43605,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
-                    cell.cellClass = "xui-cls-wordwrap "+(cell.cellClass||"").replace(/(xui-cls-wordwrap\s+)|(\s+xui-cls-wordwrap)/g,"");
                     caption= capOut ||ren(profile,cell,uicell,f2);
                     if(node)
                         node.html(caption,false);
@@ -45438,7 +45497,7 @@ editorEvents
                 position:'relative',
                 overflow:'auto',
                 'font-size':'12px',
-                'line-height':'1.22em'
+                'line-height':'auto'
             },
             CAPTION:{
                 'font-size':'12px',

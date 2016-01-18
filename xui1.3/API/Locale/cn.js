@@ -1142,7 +1142,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"加载一个Com类.",
             $rtn:"xui.Com",
             $paras:[
-                "id [必需参数] : String, 应用模块对象id.",
+                "cls [必需参数] : String, 应用模块对象类名.",
                 "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
                 "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newCom.",
@@ -5789,7 +5789,7 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"获取一个缓存中已经存在的应用模块对象(Com Object), 如果不存在,则加载应用模块对应的js文件,再生成应用模块对象(Com Object).",
             $rtn:"xui.Com",
             $paras:[
-                "id [必需参数] : String, 应用模块对象id.",
+                "cls [必需参数] : String, 应用模块对象类名.",
                 "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
                 "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newCom.",
@@ -7039,6 +7039,13 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            dumpContainer:{
+                $desc:"移除容器内部所有内容.",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有. 默认为[true]"
+                ]
+            },
             removePanel:{
                 $desc:"移除面板.",
                 $snippet:[
@@ -7809,14 +7816,14 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"移除内部所有的子控件.",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有.",
-                    "bDestroy [可选参数] : Boolean, 是否移除的子控件会被销毁."
+                    "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有. 默认为[true]",
+                    "bDestroy [可选参数] : Boolean, 是否移除的子控件会被销毁. 默认为[false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block,btn1,btn2;xui(id).prepend(block=new xui.UI.Block({border:true}));"+
                     "block.append(btn1=new xui.UI.Button({position:'relative'})).append(btn2=new xui.UI.Button({position:'relative'}), false);"+
-                    "_.asyRun(function(){block.removeChildren(null,true)},1000)"+
+                    "_.asyRun(function(){block.removeChildren(true,true)},1000)"+
                     "}"
                 ]
             },
