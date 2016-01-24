@@ -1384,7 +1384,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                             tagName:'div',
                                             style:'{rowDDDisplay}'
                                         },
+                                        LTAGCMDS:{
+                                            $order:1,
+                                            tagName:'span',
+                                            text:"{ltagCmds}"
+                                        },
                                         HFMARK:{
+                                            $order:2,
                                             className:"xui-uicmd-check",
                                             style:'{_rowMarkDisplay}'
                                         },
@@ -1403,7 +1409,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     text:'{header}'
                                 },
                                 LHCELL:{
-                                    $order: 2
+                                    $order: 2,
+                                    className:'xui-v-wrapper',
+                                    RTAGCMDS:{
+                                        $order:1,
+                                        tagName:'span',
+                                        text:"{rtagCmds}"
+                                    }
                                 }
                             },
                             GRPCELLBOX:{
@@ -1535,6 +1547,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                         style:'{_treeMode};',
                                         className:'{subClass}'
                                     },
+                                    LTAGCMDS:{
+                                        $order:1,
+                                        tagName:'span',
+                                        text:"{ltagCmds}"
+                                    },
                                     FCELLCAPTION:{
                                         $order:5,
                                         className:"xui-v-node",
@@ -1554,7 +1571,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             LCELL:{
                                 $order: 2,
-                                text:"{tagCmds}"
+                                className:'xui-v-wrapper',
+                                RTAGCMDS:{
+                                    $order:1,
+                                    tagName:'span',
+                                    text:"{rtagCmds}"
+                                }
                             }
                         },
                         SUB:{
@@ -1648,14 +1670,26 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 CELLCAPTION:{
                                     className:'xui-v-node',
                                     text:"{caption}"
-                                },
+                                }
                             }
                         }
                     }
                 },
-                'rows.tagCmds':function(profile,template,v,tag,result){
+                'rows.rtagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'rows.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'rtagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
+                },
+                'ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
                 },
                 'rows.tagCmds.text':{
                     CMD:{
@@ -1741,7 +1775,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 display:'none',
                 width:'14px',
-                height:'18px',
+                height:'22px',
                 'background-image':  xui.UI.$bg('icons.gif','',true),
                 'background-repeat':'no-repeat',
                 'background-position':'-72px -270px'
@@ -2061,6 +2095,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'font-size':'1px',
                 //1px for ie8
                 'line-height':'1px'
+            },
+            LTAGCMDS:{
+                "padding-right":'2px',
+                'vertical-align':'middle'
+            },
+            RTAGCMDS:{
+                'vertical-align':'middle'
             },
             CMD:{
                 "margin-left":'2px',
@@ -3127,7 +3168,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         cmdkey=id[id.length-1];
                     id.pop();
                     var row = profile.rowMap[profile.getSubId(id.join("_"))];
-                    if(p.disabled|| row.disabled)return false;
+                    if(p.disabled|| (row&&row.disabled))return false;
 
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,row, cmdkey, e, src);
@@ -3271,7 +3312,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             headerHeight:{
-                ini:18,
+                ini:22,
                 action:function(v){
                     var o=this;
                     o.box._adjustColsV(o);
@@ -3440,6 +3481,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             afterColResized:function(profile,colId,width){},
             beforeRowResized:function(profile, rowId, height){},
             afterRowResized:function(profile, rowId, height){},
+
+            beforePrepareRow:function(profile, row, pid){},
+            beforePrepareCol:function(profile,  col){},
 
             beforeRowActive:function(profile, row){},
             afterRowActive:function(profile, row){},
@@ -3722,8 +3766,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _asy:function(profile){
             var pro=profile.properties,b=profile.boxing(),id=profile.$xid;
-            if(pro.altRowsBg)_.resetRun(id+"1",function(){b.setAltRowsBg(true,true)});
-            if(pro.rowNumbered)_.resetRun(id+"2",function(){b.setRowNumbered(true,true)});
+            if(pro.altRowsBg)_.resetRun(id+"1",function(){if(profile.rowMap)b.setAltRowsBg(true,true)});
+            if(pro.rowNumbered)_.resetRun(id+"2",function(){if(profile.rowMap)b.setRowNumbered(true,true)});
         },
         _setRowHanderW:function(profile, flag){
             var pro=profile.properties,
@@ -3911,6 +3955,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             pro.rows=this._adjustRows(profile, pro.rows);
             data.rows = this._prepareItems(profile, pro.rows);
+            xui.UI.List._prepareCmds(profile, data, function(item){
+                return !item.tag || !!item.tag.match(/\bheader\b/);
+            });
+
             return data;
         },
         _parepareCol:function(profile,col){
@@ -4057,10 +4105,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             profile.colMap = {};
 
             _.arr.each(arr,function(o,i){
+                if(profile.beforePrepareCol && false===profile.boxing().beforePrepareCol(profile, o)){
+                    return;
+                }
                 colResult=profile.box._parepareCol(profile,o);
                 arr[i]=colResult[0];
                 header.push(colResult[1]);
             });
+
             return header;
         },
         // to set uicell, or set dom node directly
@@ -4301,7 +4353,7 @@ editorEvents
                     node.addClass(t2);
             }
         },
-        _prepareItems:function(profile, arr, pid,temparr){
+        _prepareItems:function(profile, arr, pid ,temparr){
             var self=this,
                 pro=profile.properties,
                 mm = pro.$subMargin,
@@ -4323,6 +4375,9 @@ editorEvents
                     row.id="-"+t;
                 }else{
                     row.id+="";
+                }
+                if(profile.beforePrepareRow && false===profile.boxing().beforePrepareRow(profile, row, pid, temparr)){
+                    continue;
                 }
 
                 // give _serialId
@@ -4395,8 +4450,10 @@ editorEvents
 
                 xui.UI.adjustData(profile, row, t);
 
-                xui.UI.List._prepareCmds(profile, t);
-                
+                xui.UI.List._prepareCmds(profile, t, function(item){
+                    return !item.tag || !!item.tag.match(/\brow\b/);
+                });
+
                 rows.push(t);
             }
             return rows;
@@ -5324,7 +5381,7 @@ editorEvents
                 }
 
                 if(last){
-                    body.width(bw=last.offsetWidth+last.offsetLeft);
+                    body.width(bw = Math.max(last.offsetWidth,profile.__lcellW||0) + last.offsetLeft);
                 }else{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
@@ -5333,7 +5390,7 @@ editorEvents
                         if(o.hidden!==true)
                             w += ('_pxWidth' in o) ? o._pxWidth : (o.width + 2);
                     });
-                    body.width(bw=w);
+                    body.width(bw = (profile.__lcellW||0) + w);
                 }
                 t=last=null;
 
@@ -5656,6 +5713,14 @@ editorEvents
                 if(t2.isScrollBarShowed('y'))
                     width-=xui.Dom.getScrollBarSize();
             }
+            
+            var lcellw=0;
+            profile.getSubNodes('LCELL',true).each(function(hc){
+                if(hc.children.length){
+                    lcellw=Math.max(lcellw,hc.clientWidth);
+                }
+            });
+            width -= (profile.__lcellW = lcellw);
 
             while(relWCol.length && width!=fixW+borderC*borderW){
                 var fW=width-(fixW+borderC*borderW),

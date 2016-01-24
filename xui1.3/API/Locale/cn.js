@@ -5660,6 +5660,18 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $memo:'See constructor.'
             },
+            beforeShow:{
+                $desc:'在COM显示前触发.',
+                $paras:[
+                    'com : xui.Com 对象.'
+                ]
+            },
+            afterShow:{
+                $desc:'在COM显示后触发.',
+                $paras:[
+                    'com : xui.Com 对象.'
+                ]
+            },
             onLoadBaseClass:{
                 $desc:'当COM加载基类的时候触发本事件.',
                 $paras:[
@@ -7454,7 +7466,7 @@ _.set(xui.Locale,["cn","app"], {
                     "item : Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
-                    "type : String, 'mousedown'或'mouseup'."
+                    "type : String, 'mouseover'或'mouseout'."
                 ],
                 $snippet:[
                     "var id='xui.temp.ab8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16517,11 +16529,11 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"生成xui.UI.TreeView."
         },
         prototype:{
-            getNoIcons:{
+            getNoIcon:{
                 $desc:"判断是否带有图标",
                 $rtn:"Boolean"
             },
-            setNoIcons:{
+            setNoIcon:{
                 $desc:"设置是否带有图标.",
                 $rtn:"[self]",
                 $paras:[
@@ -20144,7 +20156,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'togglePlaceholder':'切换按钮占位'
         },
         'xui_UI_TreeView' : {
-            noIcons:"隐藏图像"
+            noIcon:"隐藏图像"
         },
         'xui_UI_MenuBar' : {
             'parentID':'父对象标示',

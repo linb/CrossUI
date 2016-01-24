@@ -120,6 +120,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         className:'xui-uitembg {_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
+                        LTAGCMDS:{
+                            $order:2,
+                            tagName:'span',
+                            text:"{ltagCmds}"
+                        },
                         MARK:{
                             $order:5,
                             style:"{_cbDisplay}"
@@ -143,13 +148,17 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         TAGCMDS:{
                             $order:60,
                             tagName:'span',
-                            text:"{tagCmds}"
+                            text:"{rtagCmds}"
                         }    
                     }
                 },
-                'items.tagCmds':function(profile,template,v,tag,result){
+                'items.ltagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
+                },
+                'items.rtagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
                 },
                 'items.tagCmds.text':{
                     CMD:{
@@ -267,7 +276,12 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 $order:30,
                 'background-position':'-130px -264px'
             },
-            TAGCMDS:{
+            LTAGCMDS:{
+                "padding-left":'4px',
+                "padding-right":'4px',
+                'vertical-align':'middle'
+            },
+            RTAGCMDS:{
                 "padding-left":'4px',
                 'vertical-align':'middle'
             },
@@ -558,15 +572,24 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
         },
-        _prepareCmds:function(profile, item){
+        _prepareCmds:function(profile, item, filter){
             var p=profile.properties,
                 cmds = item.tagCmds || _.clone(p.tagCmds,true);
             if(cmds && cmds.length){
                 var sid=xui.UI.$tag_subId,
-                    a=[],c;
+                    a=[],b=[],c;
                 for(var i=0,t=cmds,l=t.length;i<l;i++){
                     if(typeof t[i]=='string')t[i]={id:t[i]};
                     c=t[i];
+
+                    if(filter && _.isFun(filter)){
+                        if(!filter(c)){
+                            continue;
+                        }
+                    }else{
+                        if(item.tag && item.tag.match((new RegExp("\\b"+"nocmd-" + c.id + "\\b"))) )
+                            continue;
+                    }
 
                     if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
 
@@ -582,10 +605,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     c._style="";
                     if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";
                     if('height' in c)c._style+=c.height + (_.isFinite(c.height) &&"px")+ ";";
-                    a.push(c);
-                    c[sid]=(item[sid]?( item[sid] + '_'):"") + c.id;
+                    c[sid]=(item[sid]?item[sid] :"") + '_' + c.id;
+                    if(c["location"]=="left")
+                        b.push(c);
+                    else
+                        a.push(c);
                 }
-                item.tagCmds=a;
+                item.ltagCmds=b;
+                item.rtagCmds=a;
             }
         },
         RenderTrigger:function(){

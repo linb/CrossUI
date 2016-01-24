@@ -35,6 +35,10 @@ Class=function(key, pkey, obj){
     }
     parent0=_parent[0];
 
+    // Give a change to modify the original object
+    var $Start = obj.$Start || (parent0&&parent0.$Start);
+    _.tryF($Start, [], obj);
+
     // collect items
     _Static=obj.Static||{};
     t={};
@@ -42,10 +46,11 @@ Class=function(key, pkey, obj){
         if(reg[i])t[i]=1;
     for(i in t)
         delete _Static[i];
-
+    
     //before and after will pass to children
     _Static.Before = obj.Before || (parent0&&parent0.Before);
     _Static.After = obj.After || (parent0&&parent0.After);
+    _Static.$Start = $Start;
     _Static.$End = obj.$End || (parent0&&parent0.$End);
     _Static.__gc = obj.__gc || _Static.__gc || (parent0&&parent0.__gc) || function(){Class.__gc(this.$key)};
 
@@ -770,7 +775,7 @@ _.merge(Class, {
         fun.$name$=name;
         fun.$original$=original;
         if(type)fun.$type$=type;
-        if(upper)fun.upper=upper;
+        if(upper && fun!==upper)fun.upper=upper;
         return fun;
     },
     _other:["toString", "valueOf"],
@@ -3687,6 +3692,13 @@ Class('xui.absObj',"xui.absBox",{
                 }
             if(self[v])
                 temp.push(self[v]);
+            
+            // sort sub node
+            _.arr.stableSort(temp,function(x,y){
+                x=x.$order||0;y=y.$order||0;
+                return x>y?1:x==y?0:-1;
+            });
+
             self['$'+v] = temp;
             delete self[v];
         }

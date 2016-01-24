@@ -1879,27 +1879,33 @@ type:4
             if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
             if(!_.isDefined(type))type='outer';
 
-            var aysid=groupid || (this.xid()+":"+node.xid());
+            var aysid=groupid || (this.xid()+":"+node.xid()),self=this;
             this.onMouseover(type===null?null:function(prf, e, src){
                 if(e.$force)return;
                 _.resetRun(aysid,null);
                 var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                 && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                 if(!ignore){
-                    if(!beforePop || false!==beforePop(prf, node, e, src)){
-                        node.popToTop(src, type, parent,showEffects);
-                    }
                     xui.setData([aysid,'$ui.hover.pop'],1);
                     xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
+                    if(!beforePop || false!==beforePop(prf, node, e, src)){
+                        node.popToTop(src, type, parent,showEffects);
+                        node.onMouseover(function(){
+                            self.onMouseover(true)
+                        },'hoverPop').onMouseout(function(){
+                            self.onMouseout(true)
+                        },'hoverPop');
+                    }
                 }
             },aysid).onMouseout(type===null?null:function(prf, e, src){
                 if(e.$force)return;
                 _.resetRun(aysid,function(){
-                    if(!beforeHide || false!==beforeHide(prf, node,e, src,'host')){
-                        node.hide(null,hideEffects);
-                    }
                     xui.setData([aysid,'$ui.hover.pop']);
                     xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
+                    if(!beforeHide || false!==beforeHide(prf, node,e, src,'host')){
+                        node.hide(null,hideEffects);
+                        node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
+                    }
                 });
             },aysid);
             if(node){
@@ -1909,11 +1915,12 @@ type:4
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
                     _.resetRun(aysid,function(){
-                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
-                            node.hide(null,hideEffects);
-                        }
                         xui.setData([aysid,'$ui.hover.pop']);
                         xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
+                        if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
+                            node.hide(null,hideEffects);
+                            node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
+                        }
                     });
                 },aysid);
             }

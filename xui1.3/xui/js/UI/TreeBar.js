@@ -1,4 +1,7 @@
 Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
+    $Start:function(t){
+        if(t=this.Static.RenderTrigger)t.$order = -1;
+    },
     Instance:{
         _setCtrlValue:function(value, flag){
             return this.each(function(profile){
@@ -239,34 +242,39 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
-                                $order:3,
+                                $order:4,
                                 className:'{togglemark}'
                             },
+                            LTAGCMDS:{
+                                $order:3,
+                                tagName:'span',
+                                text:"{ltagCmds}"
+                            },
                             MARK:{
-                                $order:4,
+                                $order:5,
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
-                                $order:5,
+                                $order:6,
                                 className:'xui-ui-icon {imageClass}',
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
                                 className:"{disabled}  {readonly}",
-                                $order:6
+                                $order:7
                             },
                             EXTRA:{
                                 text : '{ext}',
-                                $order:7
-                            },
-                            OPT:{
                                 $order:8
                             },
-                            TAGCMDS:{
-                                $order:9,
+                            OPT:{
+                                $order:9
+                            },
+                            RTAGCMDS:{
+                                $order:10,
                                 tagName:'span',
-                                text:"{tagCmds}"
+                                text:"{rtagCmds}"
                             }
                         },
                         SUB:{
@@ -276,9 +284,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }
                     }
                 },
-                'items.tagCmds':function(profile,template,v,tag,result){
+                'items.ltagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,tag+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,'items.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'items.rtagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,'items.tagCmds'+(map[v.type]||'.button'),result)
                 },
                 'items.tagCmds.text':{
                     CMD:{
@@ -328,7 +340,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 left:0,
                 overflow: 'auto',
                 'overflow-x': 'hidden',
-                position:'relative'
+                position:'relative',
+                clear:"both"
             },
             ITEMS:{
                 overflow: 'hidden'
@@ -417,9 +430,18 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 $order:30,
                 'background-position':'-130px -264px'
             },
-            TAGCMDS:{
+            LTAGCMDS:{
+                "padding-left":'4px',
+                "padding-right":'4px',
+                'vertical-align':'middle'
+            },
+            RTAGCMDS:{
                 "padding-left":'4px',
                 'vertical-align':'middle'
+            },
+            'BOX-tagcmdleft TAGCMDS':{
+                "padding-right":'4px',
+                "float":"left"
             },
             CMD:{
                 "margin-left":'2px',
@@ -574,6 +596,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 ini:[],
                 action:function(){
                     this.boxing().refresh();
+                }
+            },
+            tagCmdsAlign:{
+                ini:"right",
+                listbox:['left','right'],
+                action:function(v){
+                    var profile=this;
+                    if(v=="left")
+                        profile.getSubNode("BOX").addClass(profile.getClass('BOX','-tagcmdleft'));
+                    else
+                        profile.getSubNode("BOX").removeClass(profile.getClass('BOX','-tagcmdleft'));
                 }
             }
         },
@@ -809,7 +842,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
-            item.mark2Display = (p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
+            item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){

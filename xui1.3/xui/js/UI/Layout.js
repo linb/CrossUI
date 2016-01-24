@@ -566,7 +566,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 }
             },
             PANEL:{
-                onClickPanel:function(profile, e, src){
+                onClick:function(profile, e, src){
                     var p=profile.properties,
                         item = profile.getItemByDom(src);
                     if(p.disabled || item.disabled)return false;
@@ -785,9 +785,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             if(t=data.panelBgImgAttachment||p.panelBgImgAttachment)
                 data._bginfo+="background-attachment:"+t+";";
             if(_.isStr(data.overflow))
-                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
+                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             else if(_.isStr(p.overflow))
-                data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):("overflow:"+p.overflow);
+                data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
         },
         RenderTrigger:function(){
             var t, profile=this;

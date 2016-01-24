@@ -5599,6 +5599,18 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $memo:'See constructor.'
             },
+            beforeShow:{
+                $desc:'Fired before com is showed.',
+                $paras:[
+                    'com : xui.Com .'
+                ]
+            },
+            afterShow:{
+                $desc:'Fired after com is showed.',
+                $paras:[
+                    'com : xui.Com .'
+                ]
+            },
             onLoadBaseClass:{
                 $desc:'Fired when com loads base classes.',
                 $paras:[
@@ -16590,11 +16602,11 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Creates a xui.UI.TreeView Object."
         },
         prototype:{
-            getNoIcons:{
+            getNoIcon:{
                 $desc:"To determine whether this control has icons or not",
                 $rtn:"Boolean"
             },
-            setNoIcons:{
+            setNoIcon:{
                 $desc:"Specifys whether this control has icons or not.",
                 $rtn:"[self]",
                 $paras:[

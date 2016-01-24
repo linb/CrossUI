@@ -344,7 +344,7 @@ Class("xui.CSS", null,{
             ".xui-node-a:hover{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
             ".xui-node-span, .xui-node-div{border:0;font-size:12px;}"+
-            ".xui-node-span, .xui-wrapper span"+((b.ie6||b.ie7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
+            ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
             (b.gek
                 ? b.ver<3 
                     ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
@@ -373,7 +373,7 @@ Class("xui.CSS", null,{
                 (b.opr?"white-space: -o-pre-wrap;":"") + // Opera 7
                 (b.ie?"word-wrap: break-word;":"")+ // Internet Explorer 5.5+
            "}"+
-           ((b.ie6||b.ie7)?"":(".xui-v-wrapper:before{content:'';height:100%;font-size:0;vertical-align:middle;}"+
+           ((b.ie && b.ver<=7)?"":(".xui-v-wrapper:before{content:'';height:100%;font-size:0;vertical-align:middle;}"+
            ".xui-v-wrapper > .xui-v-node{vertical-align:middle;}"+
            ".xui-v-top > .xui-v-wrapper:before{vertical-align:top;}"+
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+

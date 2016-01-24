@@ -53,7 +53,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             PANEL:{
-                onClickPanel:function(profile, e, src){
+                onClick:function(profile, e, src){
                     var p=profile.properties;
                     if(p.disabled)return false;
                     if(profile.onClickPanel)

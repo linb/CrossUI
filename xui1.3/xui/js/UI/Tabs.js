@@ -945,7 +945,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             },
             PANEL:{
-                onClickPanel:function(profile, e, src){
+                onClick:function(profile, e, src){
                     var p=profile.properties,
                         item = profile.getItemByDom(src);
                     if(p.disabled || item.disabled)return false;
@@ -1058,9 +1058,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._bginfo+="background-attachment:"+t+";";
                 
             if(_.isStr(item.overflow))
-                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):("overflow:"+item.overflow);
+                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
             else if(_.isStr(p.overflow))
-                item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):("overflow:"+p.overflow);
+                item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
         },
         getDropKeys:function(profile,node){
             return profile.properties[profile.getKey(xui.use(node).id())==profile.keys.PANEL?'dropKeys':'dropKeysPanel'];

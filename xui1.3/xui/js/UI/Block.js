@@ -32,7 +32,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             PANEL:{
-                onClickPanel:function(profile, e, src){
+                onClick:function(profile, e, src){
                     var p=profile.properties;
                     if(p.disabled)return false;
                     if(profile.onClickPanel)
@@ -144,7 +144,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             var data=arguments.callee.upper.call(this, profile);
             data.background= data.background?'background:'+data.background:'';
             if(_.isStr(data.overflow))
-                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):("overflow:"+data.overflow);
+                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;
         },        
         _onresize:function(profile,width,height){

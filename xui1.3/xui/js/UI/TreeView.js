@@ -168,7 +168,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         },
         DataModel:{
             group:null,
-            noIcons:{
+            noIcon:{
                 ini:false,
                 action:function(v){
                     this.getSubNode("ITEMICON",true).css('display',v?'none':'');
@@ -225,15 +225,13 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
-            item.imageDisplay=p.noIcons?"display:none;":"";
+            item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
 
-            item._noicon=p.onIcons?"":"";
-
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
-            item.mark2Display = p.selMode=='multibycheckbox'?'':'display:none;';
+            item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             xui.UI.List._prepareCmds(profile, item);
         },

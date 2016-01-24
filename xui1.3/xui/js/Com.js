@@ -2,6 +2,8 @@
     initialize
 beforeCreated
 onCreated
+beforeShow
+afterShow
 onLoadBaseClass
 onLoadReqiredClass
 onIniResource
@@ -192,6 +194,7 @@ Class('xui.Com',null,{
             return false;
         },
         show:function(onEnd,parent,subId,threadid,left,top){
+            if(false===this._fireEvent('beforeShow'))return false;
             parent=parent||xui('body');
 
             var self=this,f=function(){
@@ -217,7 +220,8 @@ Class('xui.Com',null,{
                         //append only
                         parent.append(self.getUIComponents(false),subId);
                         // append and show
-                        self.getUIComponents(true).show(parent, subId).each(function(o){
+                        self.getUIComponents(true).each(function(o){
+                            o.boxing().show(parent, subId);
                             if(o.KEY=='xui.UIProfile' && _.get(o,['properties','defaultFocus'])){
                                try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
                             }
@@ -227,7 +231,9 @@ Class('xui.Com',null,{
                     _.tryF(onEnd,[null, self, threadid],self.host);
                 }
                 self._showed=1;
+                self._fireEvent('afterShow');
             };
+            
             self.threadid=threadid;
             if(self.created) f();
             else self.create(f,threadid);
@@ -255,8 +261,7 @@ Class('xui.Com',null,{
                 return;
             }
 
-            var  t,funs=[]
-                ;
+            var  t,funs=[];
             self.threadid=threadid;
 
             if(false===self._fireEvent('beforeCreated'))return;
