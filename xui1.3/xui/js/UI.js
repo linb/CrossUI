@@ -3906,6 +3906,14 @@ Class("xui.UI",  "xui.absObj", {
                 'outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom'
                 ]
             },
+            locked:{
+                ini:false,
+                action:function(){
+                    if(this.$inDesign){
+                            this.boxing().refresh(true);
+                    }
+                }
+            },
             dock:{
                 ini:'none',
                 listbox:['none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'],

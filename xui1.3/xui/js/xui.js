@@ -1260,7 +1260,8 @@ _.merge(xui,{
     */
     _m:[],
     main:function(fun){
-        xui._m.push(fun);
+        if(_.arr.indexOf(xui._m, fun)==-1)
+            xui._m.push(fun);
         // run it now
         if(xui.isDomReady){
             xui._domReadyFuns();
@@ -1319,7 +1320,15 @@ _.merge(xui,{
     //profile object cache
     _pool:[],
     getObject:function(id){return xui._pool['$'+id]},
-
+    getObjectByAlias:function(alias){
+        var o;
+        for(var i in xui._pool){
+            o=xui._pool[i];
+            if(('alias' in o)&&o.alias===alias){
+                return typeof(o.boxing)=="function"?o.boxing():o;
+            }
+        }
+    },
     _ghostDivId:"xui.ghost::",
     $getGhostDiv:function(){
         var pool=xui.$cache.ghostDiv,
@@ -1475,6 +1484,7 @@ new function(){
     //browser sniffer
     var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
         kde:/webkit/.test(u),
+        applewebkit:/applewebkit/.test(u),
         opr:/opera/.test(u),
         ie:(/msie/.test(u) && !/opera/.test(u)),
         newie:/trident\/.* rv:([0-9]{1,}[.0-9]{0,})/.test(u),
@@ -3804,21 +3814,25 @@ Class('xui.absObj',"xui.absBox",{
                             //if same return
                             if(v.properties[i] === value && !force)return;
 
-                            var ovalue = v.properties[i];
-                            if(v.beforePropertyChanged && false===v.boxing().beforePropertyChanged(v,i,value,ovalue))
+                            if(v.$beforePropSet && false===v.$beforePropSet(i,value,force,tag,tag2)){
                                 return;
-
-                            if(typeof $set=='function'){
-                                $set.call(v,value,force,tag,tag2);
                             }else{
-                                var m = _.get(v.box.$DataModel, [i, 'action']);
-                                v.properties[i] = value;
-                                if(typeof m == 'function' && v._applySetAction(m, value, ovalue, force, tag, tag2) === false)
-                                    v.properties[i] = ovalue;
-                            }
+                                var ovalue = v.properties[i];
+                                if(v.beforePropertyChanged && false===v.boxing().beforePropertyChanged(v,i,value,ovalue))
+                                    return;
 
-                            if(v.afterPropertyChanged)v.boxing().afterPropertyChanged(v,i,value,ovalue);
-                            if(v.$afterPropertyChanged) _.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
+                                if(typeof $set=='function'){
+                                    $set.call(v,value,force,tag,tag2);
+                                }else{
+                                    var m = _.get(v.box.$DataModel, [i, 'action']);
+                                    v.properties[i] = value;
+                                    if(typeof m == 'function' && v._applySetAction(m, value, ovalue, force, tag, tag2) === false)
+                                        v.properties[i] = ovalue;
+                                }
+
+                                if(v.afterPropertyChanged)v.boxing().afterPropertyChanged(v,i,value,ovalue);
+                                if(v.$afterPropertyChanged) _.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
+                            }
                         });
                     },n,self.KEY,null,'instance');
                     //delete o.set;

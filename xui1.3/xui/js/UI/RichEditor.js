@@ -56,7 +56,19 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             width:400,
             height:300,
             frameTemplate:{
-                ini:'<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>',
+                ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0;">'+
+                        '<head>'+
+                            '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
+                            '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
+                            '<style type="text/css">'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:12px;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.6}'+
+                                'div, p{margin:0;padding:0;} '+
+                                'body, p, div{word-wrap: break-word;} '+
+                                'img, input, textarea{cursor:default;}'+
+                            '</style>'+
+                        '</head>'+
+                        '<body scroll="auto" spellcheck="false"></body>'+
+                    '</html>',
                 action:function(){
                     this.boxing().refresh();
                 }
@@ -115,6 +127,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         },
         Behaviors:{
             onSize:xui.UI.$onSize
+        },
+        EventHandlers:{
+            onInnerEvent : function(prf, type, node, e){}
         },
         $cmds:{
             //font style
@@ -210,6 +225,11 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     }
                     //_updateToolbar event
                     var kprf=this,
+                        eventOutput =self._eventOutput=function(e){
+                            if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
+                            if(kprf.onInnerEvent)
+                                return kprf.boxing().onInnerEvent(kprf, e.type, xui.Event.getSrc(e), e);
+                        },
                         event=self._event=function(e){
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
     
@@ -218,10 +238,19 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                 if(!kprf.box)return;
                                 xui.UI.RichEditor._updateToolbar(domId)
                             },100);
-    
+                             if(e.type=='mousedown'){
+                                if(xui.browser.applewebkit && e.target.tagName=="IMG"){
+                                        var sel = self.$win.getSelection(), range = self.$doc.createRange();
+                                        range.selectNode(e.target);
+                                        sel.removeAllRanges();
+                                        sel.addRange(range);
+                                }
                             //for BlurTrigger
-                            if(e.type=='mousedown')
+                             }else if(e.type=='mousedown')
                                 xui.doc.onMousedown(true);
+
+                            if(kprf.onInnerEvent)
+                                return kprf.boxing().onInnerEvent(kprf, e.type, xui.Event.getSrc(e), e);
                         },
                         _focus=function(e){
                             if(!kprf)return;
@@ -303,6 +332,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                             doc.attachEvent("onmousedown",event);
                                             doc.attachEvent("ondblclick",event);
                                             doc.attachEvent("onclick",event);
+                                            doc.attachEvent("oncontextmenu",eventOutput);
                                             doc.attachEvent("onkeyup",event);
                                             doc.attachEvent("onkeydown",event);
                                             win.attachEvent("onfocus",_focus);
@@ -333,6 +363,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                     doc.detachEvent("onmousedown",event);
                                                     doc.detachEvent("ondblclick",event);
                                                     doc.detachEvent("onclick",event);
+                                                    doc.detachEvent("oncontextmenu",eventOutput);
                                                     doc.detachEvent("onkeyup",event);
                                                     doc.detachEvent("onkeydown",event);
                                                     win.detachEvent("onfocus",_focus);
@@ -360,6 +391,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                             doc.addEventListener("mousedown",event,false);
                                             doc.addEventListener("dblclick",event,false);
                                             doc.addEventListener("click",event,false);
+                                            doc.addEventListener("contextmenu",eventOutput,false);
                                             doc.addEventListener("keyup",event,false);
                                             if(xui.browser.gek || !win.addEventListener){
                                                 doc.addEventListener("focus",_focus,false);
@@ -399,6 +431,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                 doc.removeEventListener("mousedown",event,false);
                                                 doc.removeEventListener("dblclick",event,false);
                                                 doc.removeEventListener("click",event,false);
+                                                doc.removeEventListener("contextmenu",eventOutput,false);
                                                 doc.removeEventListener("keyup",event,false);
                                                 if(xui.browser.gek || !win.removeEventListener){
                                                     doc.removeEventListener("focus",_focus,false);
@@ -417,6 +450,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                     self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
                                     
                                     iframe.style.visibility='';
+                                    iframe.style.overflow='auto';
                                 }
                             });
                         };
@@ -426,7 +460,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     iframe.src="about:blank";
                     iframe.frameBorder=0;
                     iframe.border=0;
-                    iframe.scrolling='no';
+                    iframe.scrolling='yes';
                     iframe.marginWidth=0;
                     iframe.marginHeight=0;
                     iframe.tabIndex=-1;

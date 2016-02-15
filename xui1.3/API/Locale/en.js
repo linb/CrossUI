@@ -951,6 +951,13 @@ _.set(xui.Locale,["en","app"], {
                 "var id=xui.UI.getAll().get(0).getId(); alert(xui.getObject(id).key);"
             ]
         },
+        getObjectByAlias:{
+            $desc:"To get the widget from its alias",
+            $rtn:'xui.absBox',
+            $paras:[
+                "alias [Required]: String, the alias."
+            ]
+        },
         getPath:{
             $desc:"Gets the absolute URL path from its class path key.",
             $rtn:'String',
@@ -8217,6 +8224,18 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
                     "}"
+                ]
+            },
+            getLocked:{
+                $desc:"To determine whether the control be locked automatically not",
+                $rtn:"Boolean"
+            },
+            setLocked:{
+                $desc:"To set whether the control be locked automatically not",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean, default is [false]",
+                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
             getDefaultFocus:{

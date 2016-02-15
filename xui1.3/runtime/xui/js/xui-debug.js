@@ -1260,7 +1260,8 @@ _.merge(xui,{
     */
     _m:[],
     main:function(fun){
-        xui._m.push(fun);
+        if(_.arr.indexOf(xui._m, fun)==-1)
+            xui._m.push(fun);
         // run it now
         if(xui.isDomReady){
             xui._domReadyFuns();
@@ -1319,7 +1320,15 @@ _.merge(xui,{
     //profile object cache
     _pool:[],
     getObject:function(id){return xui._pool['$'+id]},
-
+    getObjectByAlias:function(alias){
+        var o;
+        for(var i in xui._pool){
+            o=xui._pool[i];
+            if(('alias' in o)&&o.alias===alias){
+                return typeof(o.boxing)=="function"?o.boxing():o;
+            }
+        }
+    },
     _ghostDivId:"xui.ghost::",
     $getGhostDiv:function(){
         var pool=xui.$cache.ghostDiv,
@@ -1475,6 +1484,7 @@ new function(){
     //browser sniffer
     var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
         kde:/webkit/.test(u),
+        applewebkit:/applewebkit/.test(u),
         opr:/opera/.test(u),
         ie:(/msie/.test(u) && !/opera/.test(u)),
         newie:/trident\/.* rv:([0-9]{1,}[.0-9]{0,})/.test(u),
@@ -3804,21 +3814,25 @@ Class('xui.absObj',"xui.absBox",{
                             //if same return
                             if(v.properties[i] === value && !force)return;
 
-                            var ovalue = v.properties[i];
-                            if(v.beforePropertyChanged && false===v.boxing().beforePropertyChanged(v,i,value,ovalue))
+                            if(v.$beforePropSet && false===v.$beforePropSet(i,value,force,tag,tag2)){
                                 return;
-
-                            if(typeof $set=='function'){
-                                $set.call(v,value,force,tag,tag2);
                             }else{
-                                var m = _.get(v.box.$DataModel, [i, 'action']);
-                                v.properties[i] = value;
-                                if(typeof m == 'function' && v._applySetAction(m, value, ovalue, force, tag, tag2) === false)
-                                    v.properties[i] = ovalue;
-                            }
+                                var ovalue = v.properties[i];
+                                if(v.beforePropertyChanged && false===v.boxing().beforePropertyChanged(v,i,value,ovalue))
+                                    return;
 
-                            if(v.afterPropertyChanged)v.boxing().afterPropertyChanged(v,i,value,ovalue);
-                            if(v.$afterPropertyChanged) _.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
+                                if(typeof $set=='function'){
+                                    $set.call(v,value,force,tag,tag2);
+                                }else{
+                                    var m = _.get(v.box.$DataModel, [i, 'action']);
+                                    v.properties[i] = value;
+                                    if(typeof m == 'function' && v._applySetAction(m, value, ovalue, force, tag, tag2) === false)
+                                        v.properties[i] = ovalue;
+                                }
+
+                                if(v.afterPropertyChanged)v.boxing().afterPropertyChanged(v,i,value,ovalue);
+                                if(v.$afterPropertyChanged) _.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
+                            }
                         });
                     },n,self.KEY,null,'instance');
                     //delete o.set;
@@ -7861,7 +7875,7 @@ Class('xui.Event',null,{
             // some cross browser css solution
             ".xui-nooutline:focus{outline:0;}"+
             ".xui-cls-wordwrap{"+
-                "white-space: pre-wrap;" + // css-3
+                "white-space: pre-wrap;word-break: break-all;" + // css-3
                 (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999
                 (b.opr?"white-space: -pre-wrap;":"") + // Opera 4-6
                 (b.opr?"white-space: -o-pre-wrap;":"") + // Opera 7
@@ -19243,6 +19257,14 @@ Class("xui.UI",  "xui.absObj", {
                 'outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom'
                 ]
             },
+            locked:{
+                ini:false,
+                action:function(){
+                    if(this.$inDesign){
+                            this.boxing().refresh(true);
+                    }
+                }
+            },
             dock:{
                 ini:'none',
                 listbox:['none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'],
@@ -26661,7 +26683,19 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             width:400,
             height:300,
             frameTemplate:{
-                ini:'<html style="overflow: auto; -webkit-overflow-scrolling: touch;padding:0;margin:0;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"> <style type="text/css">body{height: 100%;overflow: auto; -webkit-overflow-scrolling: touch;border:0;margin:0;padding:0;margin:0;cursor:text;background:#fff;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;}p{margin:0;padding:0;} div{margin:0;padding:0;}</style></head><body scroll="auto" spellcheck="false"></body></html>',
+                ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0;">'+
+                        '<head>'+
+                            '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
+                            '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
+                            '<style type="text/css">'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:12px;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.6}'+
+                                'div, p{margin:0;padding:0;} '+
+                                'body, p, div{word-wrap: break-word;} '+
+                                'img, input, textarea{cursor:default;}'+
+                            '</style>'+
+                        '</head>'+
+                        '<body scroll="auto" spellcheck="false"></body>'+
+                    '</html>',
                 action:function(){
                     this.boxing().refresh();
                 }
@@ -26720,6 +26754,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         },
         Behaviors:{
             onSize:xui.UI.$onSize
+        },
+        EventHandlers:{
+            onInnerEvent : function(prf, type, node, e){}
         },
         $cmds:{
             //font style
@@ -26815,6 +26852,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     }
                     //_updateToolbar event
                     var kprf=this,
+                        eventOutput =self._eventOutput=function(e){
+                            if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
+                            if(kprf.onInnerEvent)
+                                return kprf.boxing().onInnerEvent(kprf, e.type, xui.Event.getSrc(e), e);
+                        },
                         event=self._event=function(e){
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
     
@@ -26823,10 +26865,19 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                 if(!kprf.box)return;
                                 xui.UI.RichEditor._updateToolbar(domId)
                             },100);
-    
+                             if(e.type=='mousedown'){
+                                if(xui.browser.applewebkit && e.target.tagName=="IMG"){
+                                        var sel = self.$win.getSelection(), range = self.$doc.createRange();
+                                        range.selectNode(e.target);
+                                        sel.removeAllRanges();
+                                        sel.addRange(range);
+                                }
                             //for BlurTrigger
-                            if(e.type=='mousedown')
+                             }else if(e.type=='mousedown')
                                 xui.doc.onMousedown(true);
+
+                            if(kprf.onInnerEvent)
+                                return kprf.boxing().onInnerEvent(kprf, e.type, xui.Event.getSrc(e), e);
                         },
                         _focus=function(e){
                             if(!kprf)return;
@@ -26908,6 +26959,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                             doc.attachEvent("onmousedown",event);
                                             doc.attachEvent("ondblclick",event);
                                             doc.attachEvent("onclick",event);
+                                            doc.attachEvent("oncontextmenu",eventOutput);
                                             doc.attachEvent("onkeyup",event);
                                             doc.attachEvent("onkeydown",event);
                                             win.attachEvent("onfocus",_focus);
@@ -26938,6 +26990,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                                     doc.detachEvent("onmousedown",event);
                                                     doc.detachEvent("ondblclick",event);
                                                     doc.detachEvent("onclick",event);
+                                                    doc.detachEvent("oncontextmenu",eventOutput);
                                                     doc.detachEvent("onkeyup",event);
                                                     doc.detachEvent("onkeydown",event);
                                                     win.detachEvent("onfocus",_focus);
@@ -26965,6 +27018,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                             doc.addEventListener("mousedown",event,false);
                                             doc.addEventListener("dblclick",event,false);
                                             doc.addEventListener("click",event,false);
+                                            doc.addEventListener("contextmenu",eventOutput,false);
                                             doc.addEventListener("keyup",event,false);
                                             if(xui.browser.gek || !win.addEventListener){
                                                 doc.addEventListener("focus",_focus,false);
@@ -27004,6 +27058,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                                 doc.removeEventListener("mousedown",event,false);
                                                 doc.removeEventListener("dblclick",event,false);
                                                 doc.removeEventListener("click",event,false);
+                                                doc.removeEventListener("contextmenu",eventOutput,false);
                                                 doc.removeEventListener("keyup",event,false);
                                                 if(xui.browser.gek || !win.removeEventListener){
                                                     doc.removeEventListener("focus",_focus,false);
@@ -27022,6 +27077,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                     self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
                                     
                                     iframe.style.visibility='';
+                                    iframe.style.overflow='auto';
                                 }
                             });
                         };
@@ -27031,7 +27087,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     iframe.src="about:blank";
                     iframe.frameBorder=0;
                     iframe.border=0;
-                    iframe.scrolling='no';
+                    iframe.scrolling='yes';
                     iframe.marginWidth=0;
                     iframe.marginHeight=0;
                     iframe.tabIndex=-1;
@@ -39729,7 +39785,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //build dom
             var nodes = profile._buildItems('rows', arr);
             if(temp&&temp.length){
-                var needshowinput=[],arr=[];
+                var needshowinput=[],arrt=[];
                 _.arr.each(temp,function(o){
                        if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
                             needshowinput.push(o);
@@ -39739,13 +39795,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(needshowinput.length){
                     for(var i=0,l=needshowinput.length,t;i<l;i++){
                         t=parseInt(i/25,10);
-                        if(!arr[t])arr[t]=[];
-                        arr[t].push(needshowinput[i]);
+                        if(!arrt[t])arrt[t]=[];
+                        arrt[t].push(needshowinput[i]);
                     }
                     needshowinput.length=0;
                     var fun=function(){
-                        if(arr.length){
-                            var a=arr.shift();
+                        if(arrt.length){
+                            var a=arrt.shift();
                             if(a&&a.length){
                                 for(var i=0,l=a.length;i<l;i++){
                                     if(profile&&profile.box&&!profile.destroyed&&a[i]&&a[i]._row)
@@ -39753,6 +39809,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 }
                                 _.asyRun(fun);
                             }
+                        }else{
+                            arrt=null;
                         }
                     };
                     fun();

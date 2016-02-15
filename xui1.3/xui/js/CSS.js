@@ -367,7 +367,7 @@ Class("xui.CSS", null,{
             // some cross browser css solution
             ".xui-nooutline:focus{outline:0;}"+
             ".xui-cls-wordwrap{"+
-                "white-space: pre-wrap;" + // css-3
+                "white-space: pre-wrap;word-break: break-all;" + // css-3
                 (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999
                 (b.opr?"white-space: -pre-wrap;":"") + // Opera 4-6
                 (b.opr?"white-space: -o-pre-wrap;":"") + // Opera 7

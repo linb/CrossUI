@@ -106,7 +106,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //build dom
             var nodes = profile._buildItems('rows', arr);
             if(temp&&temp.length){
-                var needshowinput=[],arr=[];
+                var needshowinput=[],arrt=[];
                 _.arr.each(temp,function(o){
                        if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
                             needshowinput.push(o);
@@ -116,13 +116,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(needshowinput.length){
                     for(var i=0,l=needshowinput.length,t;i<l;i++){
                         t=parseInt(i/25,10);
-                        if(!arr[t])arr[t]=[];
-                        arr[t].push(needshowinput[i]);
+                        if(!arrt[t])arrt[t]=[];
+                        arrt[t].push(needshowinput[i]);
                     }
                     needshowinput.length=0;
                     var fun=function(){
-                        if(arr.length){
-                            var a=arr.shift();
+                        if(arrt.length){
+                            var a=arrt.shift();
                             if(a&&a.length){
                                 for(var i=0,l=a.length;i<l;i++){
                                     if(profile&&profile.box&&!profile.destroyed&&a[i]&&a[i]._row)
@@ -130,6 +130,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 }
                                 _.asyRun(fun);
                             }
+                        }else{
+                            arrt=null;
                         }
                     };
                     fun();

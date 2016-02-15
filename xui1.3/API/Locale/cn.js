@@ -948,6 +948,13 @@ _.set(xui.Locale,["cn","app"], {
                 "var id=xui.UI.getAll().get(0).getId(); alert(xui.getObject(id).key);"
             ]
         },
+        getObjectByAlias:{
+            $desc:"从控件的别名取得控件",
+            $rtn:'xui.absBox',
+            $paras:[
+                "alias [必需参数]: String, 控件的全局 alias."
+            ]
+        },
         getPath:{
             $desc:"获取类（或其他文件）存放的绝对URL路径.",
             $rtn:'String',
@@ -8239,6 +8246,18 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "_.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
                     "}"
+                ]
+            },
+            getLocked:{
+                $desc:"控件是否为锁定状态",
+                $rtn:"Boolean"
+            },
+            setLocked:{
+                $desc:"设置控件是否为锁定状态",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean, 默认为[false].",
+                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
             getDefaultFocus:{
@@ -19794,6 +19813,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'disableTips':'禁用工具提示',
             'disabled':'禁用控件',
             'defaultFocus':'自动获得焦点',
+            locked:'锁定',
             hoverPop:"悬停弹出对象",
             hoverPopType:"悬停弹出类型",
             'dock':'停靠类型',
