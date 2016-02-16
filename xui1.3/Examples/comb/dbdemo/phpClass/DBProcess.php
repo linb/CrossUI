@@ -4,12 +4,12 @@ class DBProcess extends Unit
     const DB_HOST='localhost';
     const DB_USER='root';
     const DB_PASS='root';
-    const DB_DBNAME='testDB';    
+    const DB_DBNAME='testDB';
 
-    public function stimulate(&$hash){        
+    public function stimulate(&$hash){
         $db = new MYSQL;
         $db->connect(self::DB_HOST, self::DB_USER, self::DB_PASS, self::DB_DBNAME);
-        @mysql_query("SET NAMES 'UTF8'");
+        mysqli_query($db->link_id, "SET NAMES 'UTF8'");
 
         //must have a string parameter 'action'
         LINB::checkArgs($hash, array(
@@ -31,7 +31,7 @@ class DBProcess extends Unit
                     )
                 ));
                 $db->update("tbl_test",array("key"=>$hash->key, "value"=>$hash->value), "`key`='".$hash->key."'");
-                return 'ok';            
+                return 'ok';
             case 'delete':
                 //must have a string parameter 'key'
                 LINB::checkArgs($hash, array(
@@ -40,7 +40,7 @@ class DBProcess extends Unit
                     )
                 ));
                 $db->delete("tbl_test", "`key`='".$hash->key."'");
-                return 'ok';            
+                return 'ok';
             case 'create':
                 //must have string parameters 'key' and 'value'
                 LINB::checkArgs($hash, array(

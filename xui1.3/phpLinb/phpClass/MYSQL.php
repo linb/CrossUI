@@ -18,16 +18,15 @@ class MYSQL{
    * connect and select database
    */
    function connect($host, $user, $pass, $dbname="") {
-        $this->link_id=@mysql_connect($host,$user,$pass);
+        $this->link_id=mysqli_connect($host,$user,$pass,$dbname);
         //open failed
-        if (!$this->link_id)
+        if (mysqli_connect_errno($this->link_id))
             throw new LINB_E("Cant connect to server: $host.");
-            
+
         $this->host = $host;
         $this->user = $user;
         $this->pass = $pass;
-        if($dbname)
-            $this->selectdb($dbname);
+        $this->dbname = $dbname;
    }
 
    /**
@@ -35,31 +34,30 @@ class MYSQL{
    */
     function close() {
         //open failed
-        if(!mysql_close())
+        if(!mysqli_close($this->link_id))
             throw new LINB_E("Connection close failed.");
     }
-    
+
     /**
     * select database
     **/
     function selectdb($dbname) {
         //cant find the database
-        if(!@mysql_select_db($dbname, $this->link_id))
+        if(!mysqli_select_db($this->link_id, $dbname))
             throw new LINB_E("Cant open database: $dbname'</b>");
        $this->dbname = $dbname;
     }
-    
+
     /**
     * list all databases
     **/
     function listdbs($assoc=false) {
-        $i = @mysql_query("show databases",$this->link_id); 
-        //$i = @mysql_list_dbs($this->link_id);
+        $i = mysqli_query($this->link_id, "show databases");
         $r = $this->_fetch_all($i, $assoc);
         $this->_release($i);
         return $r;
     }
-    
+
     /**
     * list all tables
     **/
@@ -76,7 +74,7 @@ class MYSQL{
         $this->_release($i);
         return $r;
    }
-    
+
    /**
    * select
    * return array [{},{},...]
@@ -103,11 +101,11 @@ class MYSQL{
             elseif(strtolower($val)=='now()')
                 $q.= "`$key` = NOW(), ";
             else
-                $q.= "`$key`='".mysql_real_escape_string($val)."', ";
+                $q.= "`$key`='".mysqli_real_escape_string($this->link_id, $val)."', ";
         }
         $qq = rtrim($q, ', ').' WHERE '.$where.';';
         $i = $this->_query($qq);
-        $r = @mysql_affected_rows();
+        $r = mysqli_affected_rows($this->link_id);
         return $r;
    }
 
@@ -124,12 +122,12 @@ class MYSQL{
                 $v.="NULL, ";
             elseif(strtolower($val)=='now()')
                 $v.="NOW(), ";
-            else 
-                $v.= "'".mysql_real_escape_string($val)."', ";
+            else
+                $v.= "'".mysqli_real_escape_string($this->link_id, $val)."', ";
         }
         $q .= "(". rtrim($n, ', ') .") VALUES (". rtrim($v, ', ') .");";
         $i = $this->_query($q);
-        $r = mysql_insert_id();
+        $r = mysqli_insert_id($this->link_id);
         return $r;
     }
 
@@ -140,7 +138,7 @@ class MYSQL{
     public function delete($table, $where = null) {
         $q = "DELETE FROM `".$table.'` WHERE '.$where.';';
         $i = $this->_query($q);
-        $r = @mysql_affected_rows();
+        $r = mysqli_affected_rows($this->link_id);
         return $r;
     }
 
@@ -150,7 +148,7 @@ class MYSQL{
      */
     public function TransactionBegin() {
         if (! $this->in_transaction) {
-            if (! mysql_query("START TRANSACTION", $this->link_id))
+            if (! mysqli_query($this->link_id, "START TRANSACTION"))
                 throw new LINB_E("Cant start TRANSACTION in this server: $this->host.");
             else
                 $this->in_transaction = 1;
@@ -162,7 +160,7 @@ class MYSQL{
      */
     public function TransactionEnd() {
         if ($this->in_transaction) {
-            if (! mysql_query("COMMIT", $this->link_id))
+            if (! mysqli_query($this->link_id, "COMMIT"))
                 throw new LINB_E("Cant commit a transaction: $this->in_transaction.");
             else
                 $this->in_transaction = 0;
@@ -174,12 +172,12 @@ class MYSQL{
      * rolls the current transaction back
      */
     public function TransactionRollback() {
-        if(! mysql_query("ROLLBACK", $this->link_id))
+        if(! mysqli_query($this->link_id, "ROLLBACK"))
             throw new LINB_E("Could not rollback transaction: $this->in_transaction.");
         else
             $this->in_transaction = 0;
     }
-    
+
     /*
     *====================================================
     *====================================================
@@ -192,7 +190,7 @@ class MYSQL{
    * @return query_id for the further
    */
     function _query($query_string) {
-        $query_id = @mysql_query($query_string,$this->link_id);
+        $query_id = mysqli_query($this->link_id, $query_string);
         if (!$query_id)
             throw new LINB_E("Query fail: $query_string");
         return $query_id;
@@ -205,9 +203,9 @@ class MYSQL{
         if (!isset($query_id) )
             throw new LINB_E("Invalid query_id $query_id.");
         if($assoc)
-            $record = @mysql_fetch_assoc($query_id);
+            $record = mysqli_fetch_assoc($query_id);
         else
-            $record = @mysql_fetch_row($query_id);
+            $record = mysqli_fetch_row($query_id);
         if($record)
             foreach($record as $key=>$val)
                 $record[$key]=stripslashes($val);
@@ -245,9 +243,9 @@ class MYSQL{
    * free result
    */
     function _release($query_id) {
-        if(!@mysql_free_result($query_id))
-            throw new LINB_E("Result set ID $this->query_id not freed.");
+        if(!$query_id)return;
+        mysqli_free_result($query_id);
     }
-    
+
 }
 ?>
