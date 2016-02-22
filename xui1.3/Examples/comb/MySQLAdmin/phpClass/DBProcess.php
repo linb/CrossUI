@@ -9,7 +9,7 @@ class DBProcess extends Unit
     public function stimulate(&$hash){
         $db = new MYSQL;
         $db->connect(self::DB_HOST, self::DB_USER, self::DB_PASS);
-        mysqli_query($db->link_id, "SET NAMES 'UTF8'");
+        $db->query("SET NAMES 'UTF8'");
 
         //must have a string parameter 'action'
         LINB::checkArgs($hash, array(

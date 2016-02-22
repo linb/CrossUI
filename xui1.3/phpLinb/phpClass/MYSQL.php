@@ -66,13 +66,17 @@ class MYSQL{
     }
    /**
    * query any string
-   * return array [{},{},...]
+   * return array [{},{},...] or TRUE/FALSE
    */
    public function query($any, $assoc=false) {
         $i = $this->_query($any);
-        $r = $this->_fetch_all($i, $assoc);
-        $this->_release($i);
-        return $r;
+        if(is_bool($i)){
+            return $i;
+        }else{
+            $r = $this->_fetch_all($i, $assoc);
+            $this->_release($i);
+            return $r;
+        }
    }
 
    /**

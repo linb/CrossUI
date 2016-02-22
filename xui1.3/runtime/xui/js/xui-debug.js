@@ -16370,7 +16370,7 @@ Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(o,false,true);
                 //first call show
                 }else{
-                    parent = o.parent;
+                    parent = parent || o.parent;
                     if(!parent && (!o.renderId || (o.getRootNode().id || "").indexOf(xui.Dom._emptyDivId)===0))
                         parent=xui('body');
                 }
