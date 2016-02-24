@@ -4327,15 +4327,25 @@ Class("xui.UI",  "xui.absObj", {
                              var style=(isWin?xui.win:node).get(0).style,
                                 obj,i,k,o,key,target,width,height;
 
-                            var old_of=isWin ? xui('body').get(0).style.overflow : style.overflow;
-                            if(style)style.overflow="hidden";
+                            var ofs = isWin ? xui('body').get(0).style : style,
+                                old_of=ofs.overflow,
+                                old_ofx=ofs.overflowX,
+                                old_ofy=ofs.overflowY;
+
+                            if(style){
+                                style.overflow=style.overflowX=style.overflowY="hidden";
+                            }
 
                             width=(style&&parseInt(style.width,10))||node.width()||0;
                             height=(style&&parseInt(style.height,10))||node.height()||0;
                             //width=Math.max( node.scrollWidth()||0,  (style&&parseInt(style.width,10))||node.width()||0);
                             //height=Math.max( node.scrollHeight()||0, (style&&parseInt(style.height,10))||node.height()||0);
 
-                           if(style)style.overflow = old_of;
+                           if(style){
+                               style.overflow = old_of;
+                               style.overflowX = old_ofx;
+                               style.overflowY = old_ofy;
+                           }
 
                             //window resize: check time span, for window resize in firefox
                             //force call when input $dockid
