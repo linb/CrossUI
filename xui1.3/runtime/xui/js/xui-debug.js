@@ -4442,7 +4442,7 @@ Class("xui.Timer","xui.absObj",{
 
                             if(!_.isEmpty(v)){
                                 _.filter(v,function(o,i){
-                                    return i in p || i in ev;
+                                    return (i in p) || (i in v);
                                 });
                                 if(!_.isEmpty(v)){
                                     // keep value and caption at first
@@ -17855,7 +17855,8 @@ Class("xui.UI",  "xui.absObj", {
                 'background-repeat': 'no-repeat',
                 'background-position':'-390px -290px'
             },
-            'input:readonly, .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
+            // Firefox will ignore input:read-only
+            'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
                 $order:2,
                 color: '#808080'
             },

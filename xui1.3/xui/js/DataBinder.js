@@ -242,7 +242,7 @@ Class("xui.DataBinder","xui.absObj",{
 
                             if(!_.isEmpty(v)){
                                 _.filter(v,function(o,i){
-                                    return i in p || i in ev;
+                                    return (i in p) || (i in v);
                                 });
                                 if(!_.isEmpty(v)){
                                     // keep value and caption at first
