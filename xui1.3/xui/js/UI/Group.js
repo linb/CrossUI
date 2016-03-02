@@ -181,9 +181,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             }
         },
-        LayoutTrigger:function(){
-            var self=this, t=self.properties, b=self.box;
-            if(!t.toggle)b._toggle(self,false,true);
+        LayoutTrigger:function(ns){
+            ns.box._toggle(ns, ns.properties.toggle, true);
         },
         EventHandlers:{
             onIniPanelView:function(profile){},

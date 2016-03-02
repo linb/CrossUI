@@ -417,9 +417,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             onClickBar:function(profile, src){},
             onClickPanel:function(profile, e, src){}
         },
-        LayoutTrigger:function(){
-            var self=this, t=self.properties, b=self.box;
-            if(!t.toggle)b._toggle(self,false,true);
+        LayoutTrigger:function(ns){
+            ns.box._toggle(ns, ns.properties.toggle, true);
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
