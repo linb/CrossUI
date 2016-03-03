@@ -418,6 +418,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             onClickPanel:function(profile, e, src){}
         },
         LayoutTrigger:function(ns){
+            ns=this;
             ns.box._toggle(ns, ns.properties.toggle, true);
         },
         _prepareData:function(profile){

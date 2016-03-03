@@ -182,6 +182,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             }
         },
         LayoutTrigger:function(ns){
+            ns=this;
             ns.box._toggle(ns, ns.properties.toggle, true);
         },
         EventHandlers:{
