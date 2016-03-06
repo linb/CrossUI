@@ -418,8 +418,14 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             onClickPanel:function(profile, e, src){}
         },
         LayoutTrigger:function(ns){
-            ns=this;
-            ns.box._toggle(ns, ns.properties.toggle, true);
+            var self=this, t=self.properties;
+            // for expand
+            if(!t.toggle){
+                self.box._toggle(self,false,true);
+            }else{
+                // for default expand container
+                self.boxing().iniPanelView();
+            }
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -448,7 +454,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             var p=profile.properties, ins=profile.boxing();
 
             //event
-            if(value &&!profile.$ini){
+            if(value && !profile.$ini){
                 ins.iniPanelView();
             }
 
@@ -471,7 +477,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 var h=profile.getSubNode('BORDER').height();
                 // display => adjust ctrl's height to border's
                 // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
-                profile.getRoot().height(h?h:p.toggle?p.height:'auto');
+                profile.getRoot().height(p.toggle?p.height:h?h:'auto');
 
                 if(!ignoreEvent){
                     if(value){
