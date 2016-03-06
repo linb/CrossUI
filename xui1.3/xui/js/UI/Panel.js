@@ -475,9 +475,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
 
                 var h=profile.getSubNode('BORDER').height();
-                // display => adjust ctrl's height to border's
-                // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
-                profile.getRoot().height(p.toggle?p.height:h?h:'auto');
+                // same to ***
+                // for expand status:
+                //    adjust ctrl's height to p.height
+                // for fold status:
+                //    if display => adjust ctrl's height to border's
+                //    if non-display => adjust ctrl's height to 'auto'
+                profile.getRoot().height(p.toggle?p.height:(h||'auto'));
 
                 if(!ignoreEvent){
                     if(value){
@@ -494,6 +498,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             var isize={},
                 p=profile.properties,
                 noFrame=p.noFrame,
+                root=profile.getRoot(),
+                bd=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
                 v2=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
@@ -505,10 +511,20 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(height=='auto')
                     isize.height=height;
                 else{
-                    h1=v1.height();
-                    h4=noFrame?0:v4.height();
-                    if((t=height-h1-h4)>0)
-                        isize.height=t-size;
+                    if(profile._toggle){
+                        h1=v1.height();
+                        h4=noFrame?0:v4.height();
+                        if((t=height-h1-h4)>0)
+                            isize.height=t-size;
+                    }else{
+                        // same to ***
+                        // for expand status:
+                        //    height is set in upper function
+                        // for fold status:
+                        //    if display => adjust ctrl's height to border's
+                        //    if non-display => adjust ctrl's height to 'auto'
+                        root.height(bd.height() || 'auto');
+                    }
                 }
             }
             if(width)

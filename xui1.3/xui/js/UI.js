@@ -4188,7 +4188,7 @@ Class("xui.UI",  "xui.absObj", {
                         c="xui-css-noscrolly";
                     }
                     if(isWin){
-                        xui('html').removeClass("xui-css-noscroll").removeClass("xui-css-noscrollx").removeClass("xui-css-noscrolly");
+                        xui('html').removeClass(/^xui-css-noscroll(x|y)?$/);
                         t=xui('body').get(0);
                         if(t)t.scroll='';
                         if(c){
@@ -4200,7 +4200,7 @@ Class("xui.UI",  "xui.absObj", {
                             }
                         }
                     }else{
-                        p.removeClass("xui-css-noscroll").removeClass("xui-css-noscrollx").removeClass("xui-css-noscrolly");
+                        p.removeClass(/^xui-css-noscroll(x|y)?$/);
                         if(c){
                             if(x)p.scrollLeft(0);
                             if(y)p.scrollTop(0);

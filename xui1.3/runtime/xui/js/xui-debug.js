@@ -9063,27 +9063,63 @@ Class('xui.Dom','xui.absBox',{
         },
 //class and src
         hasClass:function(name){
-            var arr = xui.Dom._getClass(this.get(0)).split(/\s+/);
-            return _.arr.indexOf(arr,name)!=-1;
+            var i,l,isReg=_.isReg(name), arr = xui.Dom._getClass(this.get(0)).split(/\s+/);
+            if(isReg){
+                for(i=0,l=arr.length;i<l;i++){
+                    if(name.test(arr[i])){
+                        return true;
+                    }
+                }
+            }else{
+                return _.arr.indexOf(arr, name+"")!=-1;
+            }
+            return false;
         },
         addClass:function(name){
-            var arr, t, me=arguments.callee,reg=(me.reg||(me.reg=/\s+/));
+            var arr, i,l,me=arguments.callee,reg=(me.reg||(me.reg=/\s+/)),t,ok,
+                  arr2 = (name+"").split(reg);                
+            if(!arr2.length)return this;
+
             return this.each(function(o){
-                arr = (t=xui.Dom._getClass(o)).split(reg);
-                if(_.arr.indexOf(arr,name)==-1)
-                    xui.Dom._setClass(o, t + " " +name);
+                ok=0;
+                arr = xui.Dom._getClass(o).split(reg);
+                t=[];
+                for(i=0,l=arr.length;i<l;i++)if(arr[i])t.push(arr[i]);
+                for(i=0,l=arr2.length;i<l;i++){
+                    if(arr2[i] && _.arr.indexOf(arr, arr2[i])==-1){
+                        ok=1;
+                        t.push(arr2[i]);
+                    }
+                };
+                if(ok)xui.Dom._setClass(o, t.join(" "));
             });
         },
         removeClass:function(name){
-            var arr, i,l,a, t, bs=typeof name=='string', me=arguments.callee,reg=(me.reg||(me.reg=/\s+/));
+            var arr, i,l, isReg=_.isReg(name), me=arguments.callee,reg=(me.reg||(me.reg=/\s+/)),ok,
+                  arr2;
+            if(!isReg){
+                arr2=(name+"").split(reg);
+                if(!arr2.length)return this;
+            }
             return this.each(function(o){
+                ok=0;
                 arr = xui.Dom._getClass(o).split(reg);
-                l=arr.length;
-                a=[];
-                for(i=0;t=arr[i];i++)
-                    if(bs?(t!=name):(!name.test(""+t)))
-                        a[a.length]=t;
-                if(l!=a.length)xui.Dom._setClass(o,a.join(' '));
+                if(!isReg){
+                    for(i=0,l=arr2.length;i<l;i++){
+                        if(_.arr.indexOf(arr,arr2[i])!=-1){
+                            ok=1;
+                            _.arr.removeValue(arr, arr2[i]);
+                        }
+                    }
+                }else{
+                    _.filter(arr,function(o,i){
+                        if(name.test(o)){
+                            ok=1;
+                            return false;
+                        }
+                    });
+                }
+                if(ok)xui.Dom._setClass(o, arr.join(" "));
             });
         },
         replaceClass:function(regexp,replace){
@@ -19539,7 +19575,7 @@ Class("xui.UI",  "xui.absObj", {
                         c="xui-css-noscrolly";
                     }
                     if(isWin){
-                        xui('html').removeClass("xui-css-noscroll").removeClass("xui-css-noscrollx").removeClass("xui-css-noscrolly");
+                        xui('html').removeClass(/^xui-css-noscroll(x|y)?$/);
                         t=xui('body').get(0);
                         if(t)t.scroll='';
                         if(c){
@@ -19551,7 +19587,7 @@ Class("xui.UI",  "xui.absObj", {
                             }
                         }
                     }else{
-                        p.removeClass("xui-css-noscroll").removeClass("xui-css-noscrollx").removeClass("xui-css-noscrolly");
+                        p.removeClass(/^xui-css-noscroll(x|y)?$/);
                         if(c){
                             if(x)p.scrollLeft(0);
                             if(y)p.scrollTop(0);
@@ -29261,16 +29297,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             return data;
         },
-        _onresize:function(profile,width,height){
-            if(profile._toggle){
-                if(height && height!='auto'){
-                    profile.getSubNode('FIELDSET').height(height);
-                    profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
-                }
-            }
-            if(width && width!='auto')
-                profile.getSubNode('PANEL').width(width-2);
-        },
         _toggle:function(profile, value, ignoreEvent){
             var p=profile.properties, ins=profile.boxing();
 
@@ -29298,8 +29324,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
 
                 var h=profile.getSubNode('LEGEND').height();
-                // display => adjust ctrl's height to border's
-                // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
+                // same to ***
+                // for expand status:
+                //    adjust ctrl's height to p.height
+                // for fold status:
+                //    if display => adjust ctrl's height to legend's
+                //    if non-display => adjust ctrl's height to 'auto'
                 profile.getRoot().height(p.toggle?p.height:h?h:'auto');
 
                 if(!ignoreEvent){
@@ -29312,6 +29342,24 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
                 }
             }
+        },
+        _onresize:function(profile,width,height){
+            if(profile._toggle){
+                if(height && height!='auto'){
+                    profile.getSubNode('FIELDSET').height(height);
+                    profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
+                }
+            }else{
+                // same to ***
+                // for expand status:
+                //    height is set in upper function
+                // for fold status:
+                //    if display => adjust ctrl's height to legend's
+                //    if non-display => adjust ctrl's height to 'auto'
+                profile.getRoot().height(profile.getSubNode('LEGEND').height() || 'auto');
+            }
+            if(width && width!='auto')
+                profile.getSubNode('PANEL').width(width-2);
         }
     }
 });Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
@@ -33329,9 +33377,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
 
                 var h=profile.getSubNode('BORDER').height();
-                // display => adjust ctrl's height to border's
-                // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
-                profile.getRoot().height(p.toggle?p.height:h?h:'auto');
+                // same to ***
+                // for expand status:
+                //    adjust ctrl's height to p.height
+                // for fold status:
+                //    if display => adjust ctrl's height to border's
+                //    if non-display => adjust ctrl's height to 'auto'
+                profile.getRoot().height(p.toggle?p.height:(h||'auto'));
 
                 if(!ignoreEvent){
                     if(value){
@@ -33348,6 +33400,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             var isize={},
                 p=profile.properties,
                 noFrame=p.noFrame,
+                root=profile.getRoot(),
+                bd=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
                 v2=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
@@ -33359,10 +33413,20 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(height=='auto')
                     isize.height=height;
                 else{
-                    h1=v1.height();
-                    h4=noFrame?0:v4.height();
-                    if((t=height-h1-h4)>0)
-                        isize.height=t-size;
+                    if(profile._toggle){
+                        h1=v1.height();
+                        h4=noFrame?0:v4.height();
+                        if((t=height-h1-h4)>0)
+                            isize.height=t-size;
+                    }else{
+                        // same to ***
+                        // for expand status:
+                        //    height is set in upper function
+                        // for fold status:
+                        //    if display => adjust ctrl's height to border's
+                        //    if non-display => adjust ctrl's height to 'auto'
+                        root.height(bd.height() || 'auto');
+                    }
                 }
             }
             if(width)

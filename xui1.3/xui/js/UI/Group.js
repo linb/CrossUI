@@ -215,16 +215,6 @@ Class("xui.UI.Group", "xui.UI.Div",{
 
             return data;
         },
-        _onresize:function(profile,width,height){
-            if(profile._toggle){
-                if(height && height!='auto'){
-                    profile.getSubNode('FIELDSET').height(height);
-                    profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
-                }
-            }
-            if(width && width!='auto')
-                profile.getSubNode('PANEL').width(width-2);
-        },
         _toggle:function(profile, value, ignoreEvent){
             var p=profile.properties, ins=profile.boxing();
 
@@ -252,8 +242,12 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
 
                 var h=profile.getSubNode('LEGEND').height();
-                // display => adjust ctrl's height to border's
-                // display-none => adjust ctrl's height to p.height(expand) or 'auto'(fold)
+                // same to ***
+                // for expand status:
+                //    adjust ctrl's height to p.height
+                // for fold status:
+                //    if display => adjust ctrl's height to legend's
+                //    if non-display => adjust ctrl's height to 'auto'
                 profile.getRoot().height(p.toggle?p.height:h?h:'auto');
 
                 if(!ignoreEvent){
@@ -266,6 +260,24 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     }
                 }
             }
+        },
+        _onresize:function(profile,width,height){
+            if(profile._toggle){
+                if(height && height!='auto'){
+                    profile.getSubNode('FIELDSET').height(height);
+                    profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
+                }
+            }else{
+                // same to ***
+                // for expand status:
+                //    height is set in upper function
+                // for fold status:
+                //    if display => adjust ctrl's height to legend's
+                //    if non-display => adjust ctrl's height to 'auto'
+                profile.getRoot().height(profile.getSubNode('LEGEND').height() || 'auto');
+            }
+            if(width && width!='auto')
+                profile.getSubNode('PANEL').width(width-2);
         }
     }
 });
