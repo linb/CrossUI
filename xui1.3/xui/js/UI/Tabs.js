@@ -1141,7 +1141,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();
-                    ifr.src=_if.url;
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';
@@ -1151,7 +1150,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     ifr.width='100%';
                     ifr.height='100%';
                     box.getPanel(item.id).html("").append(ifr);
-                    xui.Dom.submit(_if.url, _if.query, _if.method, id, _if.enctype);
+    
+                    if((_if.method||"").toLowerCase()=="post")
+                        xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
+                    else
+                        ifr.src=_if.url;
                 }else if(item.ajaxAutoLoad){
                     var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:_.clone(item.ajaxAutoLoad,true),
                         options={rspType:"text"};

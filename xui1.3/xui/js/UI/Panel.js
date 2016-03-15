@@ -31,11 +31,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         iniPanelView:function(){
             return this.each(function(profile){
-                profile.$ini=true;
-                var p=profile.properties;
-                if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
-                if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                    xui.UI.Div._applyAutoLoad(profile);
+                if(!profile.$ini){
+                    profile.$ini=true;
+                    var p=profile.properties;
+                    if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
+                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                        xui.UI.Div._applyAutoLoad(profile);
+                }
             });
         }
     },
@@ -419,7 +421,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         LayoutTrigger:function(ns){
             var self=this, t=self.properties;
-            // for expand
+            // for fold
             if(!t.toggle){
                 self.box._toggle(self,false,true);
             }else{
@@ -454,7 +456,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             var p=profile.properties, ins=profile.boxing();
 
             //event
-            if(value && !profile.$ini){
+            if(value){
                 ins.iniPanelView();
             }
 
@@ -490,6 +492,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     }else{
                         if(ins.afterFold)
                             ins.afterFold(profile);
+                    }
+                    // try redock
+                    if(p.dock && p.dock!='none'){
+                        ins.adjustDock(true);
                     }
                 }
             }

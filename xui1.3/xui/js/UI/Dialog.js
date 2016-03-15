@@ -547,14 +547,12 @@ if(xui.browser.ie){
             iframeAutoLoad:{
                 ini:"",
                 action:function(){
-                    this.getSubNode("PANEL").html("",false);
                     xui.UI.Div._applyAutoLoad(this);
                 }
             },
             ajaxAutoLoad:{
                 ini:"",
                 action:function(){
-                    this.getSubNode("PANEL").html("",false);
                     xui.UI.Div._applyAutoLoad(this);
                 }
             },

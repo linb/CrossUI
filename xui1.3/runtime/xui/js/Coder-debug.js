@@ -262,6 +262,8 @@ Class("xui.Coder", null,{
 
                 //ignore input and img
                 arr.push([/<!\[CDATA\[(([^\]])|(\][^\]])|(\]\][^>]))*\]\]>/, function(a,i){return space[deep]+a[i]+'\n'}]);
+                arr.push([/<br\s*>/, function(a,i){return space[deep]+a[i]+'\n'}]);
+                arr.push([/<hr\s*>/, function(a,i){return space[deep]+a[i]+'\n'}]);
                 arr.push([/<input[^>]+>/, function(a,i){return space[deep]+a[i]+'\n'}]);
                 arr.push([/<img[^>]+>/, function(a,i){return space[deep]+a[i]+'\n'}]);
                 arr.push([/<[\w]+[^>]*\/>/, function(a,i){return space[deep]+a[i]+'\n'}]);

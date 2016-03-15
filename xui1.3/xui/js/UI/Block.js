@@ -51,14 +51,12 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             iframeAutoLoad:{
                 ini:"",
                 action:function(){
-                    this.getSubNode("PANEL").html("",false);
                     xui.UI.Div._applyAutoLoad(this);
                 }
             },
             ajaxAutoLoad:{
                 ini:"",
                 action:function(){
-                    this.getSubNode("PANEL").html("",false);
                     xui.UI.Div._applyAutoLoad(this);
                 }
             },

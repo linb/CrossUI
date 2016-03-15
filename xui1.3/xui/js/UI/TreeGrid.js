@@ -2112,9 +2112,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1},
+        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1,data:1},
         Behaviors:{
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', HCELL:'HCELL', FHCELL:'FHCELL',CMD:'CMD'},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FHCELL:'FHCELL',CMD:'CMD'},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
             DroppableKeys:['SCROLL','CELLS','ROWTOGGLE'],
             DraggableKeys:['FCELL'],
@@ -3395,6 +3395,40 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o.properties.rows = _.copy(value);
                 }
             },
+            // can be se dynamic only
+            rawData:{
+                ini:[],
+                set:function(value){
+                    if(!value || !_.isArr(value) || !value.length)return;
+                    var o=this,cols={},header=[],rows=[],i,j,l=value.length,hash;
+                    // collect data
+                    for(i=0;i<l;i++){
+                        if(!_.isHash(hash=value[i])){
+                            return;
+                        }
+                        for(var k in hash){
+                            if(!(k in cols))cols[k]=[];
+                            cols[k][i] = hash[k];
+                        }
+                    }
+                    //convert to header / rows
+                    j=0;
+                    for(var k in cols){
+                        header.push(k);
+                        for(i=0;i<l;i++){
+                            if(!rows[i])rows[i]=[];
+                            rows[i][j]=cols[k][i];
+                        }
+                      j++;
+                    }
+
+                    var ins=o.boxing();
+                    if(ins.getHeader('min').join(';') != header.join(';')){
+                        ins.setHeader(header)
+                    }
+                    ins.setRows(rows);
+                }
+            },
             tagCmds:{
                 ini:[],
                 action:function(){
@@ -3909,6 +3943,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             delete op.activeRow;
             delete op.activeCell;
+            delete op.data;
             return o;
         },
         _clsCache:{},

@@ -222,7 +222,16 @@ Class('xui.Dom','xui.absBox',{
             });
             return this.$sum(property?typeof property=='function'?f5:expr?_.isReg(expr)?f1:f2:f3:f4, [tagName, property, expr]);
         },
-
+        querySelector:function(selectors){
+            return this.$sum(function(){
+                return _.toArr(this.querySelector(selectors));
+            });
+        },
+        querySelectorAll:function(selectors){
+            return this.$sum(function(){
+                return _.toArr(this.querySelectorAll(selectors));
+            });
+        },
         /*
         dom add implementation
         for addPrev prepend addNext append
@@ -2179,6 +2188,8 @@ type:4
                     ? ['!document']
                     : _.isArr(obj)
                     ? obj
+                    :(obj=='[object NodeList]' || obj=='[object HTMLCollection]')
+                    ? _.toArr(obj)
                     : obj['xui.Dom']
                     ? obj._nodes
                     : obj._toDomElems
@@ -3791,6 +3802,9 @@ type:4
 
         xui.win=xui(['!window'],false);
         xui.doc=xui(['!document'],false);
+        xui.busy=xui.Dom.busy;
+        xui.busy=xui.Dom.free;
+
 
         xui.$inlineBlock=xui.browser.gek
             ? xui.browser.ver<3

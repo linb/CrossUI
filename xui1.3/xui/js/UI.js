@@ -504,8 +504,8 @@ Class('xui.UIProfile','xui.Profile', {
             return r;
         },
         getSubNodes:function(arr,subId,tag){
-            if(!subId)subId=true;
-            var a=[],s1=typeof arr=='string',s2=typeof subId=='string'||subId===true,o,v;
+            if(!_.isDefined(subId))subId=true;
+            var a=[],s1=typeof arr=='string',s2=typeof subId=='string'||subId===true||_.isNull(subId),o,v;
             if(s1){
                 if(s2)
                     Array.prototype.push.apply(a,this.getSubNode(arr,subId,tag).get());
@@ -6477,14 +6477,12 @@ new function(){
                 iframeAutoLoad:{
                     ini:"",
                     action:function(){
-                        this.getRoot().html("",false);
                         this.box._applyAutoLoad(this);
                     }
                 },
                 ajaxAutoLoad:{
                     ini:"",
                     action:function(){
-                        this.getRoot().html("",false);
                         this.box._applyAutoLoad(this);
                     }
                 },
@@ -6558,7 +6556,6 @@ new function(){
 
                     if(!_if.query)_if.query={};
                     _if.query._rand=_();                    
-                    //ifr.src=_if.url;
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';
@@ -6567,8 +6564,13 @@ new function(){
                     ifr.allowTransparency='true';
                     ifr.width='100%';
                     ifr.height='100%';
+                    ins.getContainer().html("",false);
                     ins.append(ifr);
-                    xui.Dom.submit(_if.url, _if.query, _if.method, id, _if.enctype);
+    
+                    if((_if.method||"").toLowerCase()=="post")
+                        xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
+                    else
+                        ifr.src=_if.url;
                 }else if(prop.ajaxAutoLoad){
                     var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:_.clone(prop.ajaxAutoLoad,true),
                         options={rspType:"text"};

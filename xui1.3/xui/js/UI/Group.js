@@ -23,11 +23,13 @@ Class("xui.UI.Group", "xui.UI.Div",{
         },
         iniPanelView:function(){
             return this.each(function(profile){
-                profile.$ini=true;
-                var p=profile.properties;
-                if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
-                if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                    xui.UI.Div._applyAutoLoad(profile);
+                if(!profile.$ini){
+                    profile.$ini=true;
+                    var p=profile.properties;
+                    if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
+                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
+                        xui.UI.Div._applyAutoLoad(profile);
+                }
             });
         }
     },
@@ -219,7 +221,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             var p=profile.properties, ins=profile.boxing();
 
             //event
-            if(value && !profile.$ini){
+            if(value){
                 ins.iniPanelView();
             }
             if(ignoreEvent || profile._toggle !== !!value){
@@ -257,6 +259,11 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     }else{
                         if(ins.afterFold)
                             ins.afterFold(profile);
+                    }
+
+                    // try redock
+                    if(p.dock && p.dock!='none'){
+                        ins.adjustDock(true);
                     }
                 }
             }
