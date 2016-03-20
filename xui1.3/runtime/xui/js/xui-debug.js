@@ -40070,6 +40070,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
                 box._adjustColsH(profile);
                 box._adjustColsV(profile);
+
+                xui.UI.$tryResize(profile,profile.getRoot().width(),profile.getRoot().height(),true);
             }
             if(rows&&rows.length)
                 this.setRows(rows);
@@ -40299,10 +40301,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }else{
                     if('sub' in options){
                         t=ns.getSubNode('ROWTOGGLE',rid);
-                        if(options.sub)
-                            t.removeClass('xui-uicmd-none').addClass('xui-uicmd-toggle2')
-                        else
-                            t.removeClass('xui-uicmd-toggle2').addClass('xui-uicmd-none')
+                        if(options.sub){
+                            t.addClass('xui-uicmd-toggle2');
+                            if(orow._layer)
+                                t.removeClass('xui-uicmd-empty');
+                        }else{
+                            t.removeClass('xui-uicmd-toggle2');
+                            if(orow._layer)
+                                t.addClass('xui-uicmd-empty');
+                        }
                     }
 
                     if(t=options.height){
@@ -40571,7 +40578,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             if(profile.renderId){
-                colResult = box._parepareCol(profile, col);
+                colResult = box._parepareCol(profile, col,prop.header);
                 col=colResult[0];
 
                 // insert header
@@ -41981,7 +41988,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1,data:1},
         Behaviors:{
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FHCELL:'FHCELL',CMD:'CMD'},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL:"SCROLL",BODY:"BODY",HEADER:"HEADER"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
             DroppableKeys:['SCROLL','CELLS','ROWTOGGLE'],
             DraggableKeys:['FCELL'],
@@ -43865,22 +43872,31 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             return data;
         },
-        _parepareCol:function(profile,col){
+        _parepareCol:function(profile,col,cols,index){
             // build header
             var SubID=xui.UI.$tag_subId,
                 prop=profile.properties,
                 headerHeight=prop.headerHeight,
-                NONE='display:none',
-                forDom;
+                NONE='display:none',iid,
+                ii=1,tt,
+                oid, forDom;
 
-            if(typeof col=='string')
-                col={id:col};
+            if(!_.isHash(col)){
+                oid = col + "";
+                col={id : oid};
+            }else{
+                oid = col.id +"";
+            }
 
             // links
             col._cells={};
-            col[SubID]='-h_'+profile.pickSubId('header');
+            iid = profile.pickSubId('header');
+            col[SubID]='-h_'+iid;
 
-            col.id=col.id||col[SubID];
+            col.id = col.id || iid;
+            while((tt=_.arr.subIndexOf(cols,"id",col.id) )!= -1 && tt!==index){
+                col.id = iid + (ii++);
+            }
 
             profile.colMap[col[SubID]]=col;
             col.width = col.width||prop._colDfWidth;
@@ -43912,7 +43928,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             forDom.firstCellClass=prop.colOptions.firstCellClass||'';
 
             if(!col.type)col.type=prop.colOptions.type || 'input';
-            if(!col.caption)col.caption=col.id;
+            if(!('caption' in col))col.caption = oid;
             xui.UI.adjustData(profile, col, forDom);
 
             // id to dom item id
@@ -44012,7 +44028,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.beforePrepareCol && false===profile.boxing().beforePrepareCol(profile, o)){
                     return;
                 }
-                colResult=profile.box._parepareCol(profile,o);
+                colResult=profile.box._parepareCol(profile,o,arr,i);
                 arr[i]=colResult[0];
                 header.push(colResult[1]);
             });
@@ -44331,7 +44347,7 @@ editorEvents
                 cells = t.cells = [];
 
                 t[SubID]=temp;
-                t.subClass = row.sub?'xui-uicmd-toggle2':'xui-uicmd-none';
+                t.subClass = row.sub?'xui-uicmd-toggle2':(row._layer?'xui-uicmd-empty':'');
 
                 // id to dom item id
                 a[row.id]=temp;
@@ -44505,7 +44521,7 @@ editorEvents
                 cell = cellId;
                 cellId = cell._serialId;
             }
-            if(!cell)return;
+            if(!cell || !cell._row)return;
             ishotrow=cell._row.id==box._temprowid;
 
             if(!_.isHash(options))options={value:options};
