@@ -1,0 +1,753 @@
+/*background [[[colors]]]*/
+html, .xui-uibg-base{
+    background-color:#FFFFFF;
+}
+.xui-uibg-content{
+    background-color:#FFFFFF;
+}
+.xui-uibg-bar{
+    background-color:#B8D6E6;
+}
+.xui-uibg-bar-mouseover{
+    background-color:#D5E6F0;
+}
+.xui-uiborder-linkbottombar{
+   border-bottom-color:#9CBCCF;
+}
+/*border  [[[colors]]]*/
+.xui-hiddenborder{
+    border:solid 1px #FFFFFF;
+}
+.xui-hiddenborder-mouseover{
+    border:solid 1px #B8D6E6;
+}
+.xui-hiddenborder-mousedown,.xui-hiddenborder-checked{
+    border:solid 1px #7290A0;
+}
+.xui-uiborder-flat{
+    border-color:#7290A0;
+}
+.xui-uiborder-l{
+    border-left-color:#D5E6F0;
+}
+.xui-uiborder-t{
+    border-top-color:#D5E6F0;
+}
+.xui-uiborder-r{
+    border-right-color:#7290A0;
+}
+.xui-uiborder-b{
+    border-bottom-color:#7290A0;
+}
+.xui-uiborder-lr{
+    border-left-color:#D5E6F0;
+    border-right-color:#7290A0;
+}
+.xui-uiborder-tb{
+    border-top-color:#D5E6F0;
+    border-bottom-color:#7290A0;
+}
+.xui-uiborder-lt{
+    border-left-color:#D5E6F0;
+    border-top-color:#D5E6F0;
+}
+.xui-uiborder-rb{
+    border-right-color:#7290A0;
+    border-bottom-color:#7290A0;
+}
+.xui-uiborder-outset{
+    border-color:#D5E6F0 #7290A0 #7290A0 #D5E6F0;
+}
+.xui-uiborder-inset{
+    border-color:#7290A0 #D5E6F0 #D5E6F0 #7290A0;
+}
+/*item [[[colors]]]*/
+.xui-uitembg{
+    background-color:#FFF;
+}
+.xui-uitembg-mouseover{
+    background-color:#85AEC2;
+    border-color:#85AEC2;
+}
+.xui-uitembg-mousedown{
+    background-color:#97B9C8;
+    border-color:#97B9C8;
+}
+.xui-uitembg-checked{
+    background-color:#B8D6E6;
+    border-color:#B8D6E6;
+}
+.xui-uibarbg, .xui-uipicbg-mouseover, .xui-uipicbg-checked{
+    background-color:#DBE6EB;
+}
+.xui-uibarbg-mouseover, .xui-uibarbg2-mouseover{
+    background-color:#E9ECEE;
+}
+.xui-uibarbg-mousedown, .xui-uibarbg2-mousedown{
+    background-color:#7399AF;
+}
+.xui-uibarbg-checked, .xui-uibarbg2-checked{
+    background-color:#B8D6E6;
+}
+
+.xui-uitd{
+    background-color: #F9F9FB;
+}
+.xui-uitd-alt{
+    background-color:#DEECF4;
+}
+.xui-uith{
+    color:#333333;
+    background-color:#B8D6E6;
+}
+.xui-uitd-mouseover{
+    background-color: #DEECF4;
+}
+.xui-uitd-checked, .xui-uitd-checked .xui-node{
+    background-color:#B8D6E6;
+    color:#fff;
+}
+
+/*common*/
+.xui-ui-inputdisabled, .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
+   background-color:#eee;
+}
+/*
+.xui-tips-c {}
+.xui-ui-draggable{}
+.xui-uiw-shell{}
+.xui-uiw-frame{}
+.xui-uiw-border{}
+.xui-ui-invalid, .xui-ui-invalid *{}
+.xui-ui-ctrl{}
+.xui-cover{}
+.xui-coverlabel{}
+*/
+.xui-ui-dirty{
+    background-image: url('Public/icons.gif')
+}
+/*xui-border*/
+.xui-border-t{
+    top:-1px;
+    height:3px;
+    background-image: url('Border/vertical.gif')
+}
+.xui-border-b{
+    bottom:-1px;
+    height:3px;
+    background-image: url('Border/vertical.gif')
+}
+.xui-border-l{
+    left:-1px;
+    width:3px;
+    background-image: url('Border/horizontal.gif')
+}
+.xui-border-r{
+    right:-1px;
+    width:3px;
+    background-image: url('Border/horizontal.gif')
+}
+.xui-border-lt{
+    left:-1px;
+    top:-1px;
+    width:3px;
+    height:3px;
+    background-image: url('Border/corner.gif')
+}
+.xui-border-rt{
+    right:-1px;
+    top:-1px;
+    width:3px;
+    height:3px;
+    background-image: url('Border/corner.gif')
+}
+.xui-border-rb{
+    right:-1px;
+    bottom:-1px;
+    width:3px;
+    height:3x;
+    background-image: url('Border/corner.gif')
+}
+.xui-border-lb{
+    left:-1px;
+    bottom:-1px;
+    width:3px;
+    height:3px;
+    background-image: url('Border/corner.gif')
+}
+.xui-ui-btn, .xui-ui-btni, .xui-ui-btnc{
+    background-image:url(Public/button.gif);
+}
+.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
+.xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore,
+.xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add{
+    background-image: url(Public/icons.gif);
+}
+.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
+.xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore{
+    width:16px;
+    height:16px;
+}
+.xui-uicmd-toggle, .xui-uicmd-toggle2{
+    background-image: url(Public/icons.gif);
+}
+.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td{
+    background-image: url(Public/bar_vertical.gif);
+}
+/*set table height for ff2, set uibar height for performance*/
+.xui-uibar-top, .xui-uibar-top .xui-uibar-t{
+    height:29px;
+}
+.xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t{
+    height:12px;
+}
+.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t{
+    height:7px;
+}
+.xui-uibar-bottom-s, .xui-uibar-bottom-s .xui-uibar-t{
+    height:6px;
+}
+
+/*.xui-uibar-top .xui-uibar-cmdr{
+}*/
+.xui-uicon-main{
+    background-image: url(Public/bar_horizontal.gif);
+}
+.xui-uicon-maini{
+    background-image: url(Public/container_right.gif);
+}
+
+/** widgets **/
+
+/*xui.UI.Button [[[colors]]]*/
+.xui-button-border{
+    background-color:#D9E8F1;
+}
+.xui-button-border-mouseover{
+    background-color:#B8D6E6;
+}
+.xui-button-border-mousedown, .xui-button-border-checked{
+    background-color:#B8D6E6;
+}
+.xui-button-drop{
+    background-image: url(Button/drop.gif);
+}
+.xui-button-b-t, .xui-button-b-b{
+    height:10px;
+    background-image: url(Button/vertical.gif);
+}
+.xui-button-border-mouseover .xui-button-b-t, .xui-button-border-mouseover .xui-button-b-b{
+    background-image: url(Button/vertical_mouseover.gif);
+}
+.xui-button-border-checked .xui-button-b-t, .xui-button-border-checked .xui-button-b-b, .xui-button-border-mousedown .xui-button-b-t, .xui-button-border-mousedown .xui-button-b-b{
+    background-image: url(Button/vertical_mousedown.gif);
+}
+.xui-button-b-l, .xui-button-b-r{
+    width:4px;
+    background-image: url(Button/horizontal.gif);
+}
+.xui-button-border-mouseover .xui-button-b-l, .xui-button-border-mouseover .xui-button-b-r{
+    background-image: url(Button/horizontal_mouseover.gif);
+}
+.xui-button-border-checked .xui-button-b-l, .xui-button-border-checked .xui-button-b-r, .xui-button-border-mousedown .xui-button-b-l, .xui-button-border-mousedown .xui-button-b-r{
+    background-image: url(Button/horizontal_mousedown.gif);
+}
+.xui-button-b-lt, .xui-button-b-rt, .xui-button-b-rb, .xui-button-b-lb{
+    height:10px;
+    width:4px;
+    background-image: url(Button/corner.gif);
+}
+.xui-button-border-mouseover .xui-button-b-lt, .xui-button-border-mouseover .xui-button-b-rt, .xui-button-border-mouseover .xui-button-b-rb, .xui-button-border-mouseover .xui-button-b-lb{
+    background-image: url(Button/corner_mouseover.gif);
+}
+.xui-button-border-checked .xui-button-b-lt, .xui-button-border-checked .xui-button-b-rt, .xui-button-border-checked .xui-button-b-rb, .xui-button-border-checked .xui-button-b-lb, .xui-button-border-mousedown .xui-button-b-lt, .xui-button-border-mousedown .xui-button-b-rt, .xui-button-border-mousedown .xui-button-b-rb, .xui-button-border-mousedown .xui-button-b-lb{
+    background-image: url(Button/corner_mousedown.gif);
+}
+
+.xui-button-b-t{
+    top:-1px;
+}
+.xui-button-b-b{
+    bottom:-1px;
+}
+.xui-button-b-l{
+    left:-1px;
+}
+.xui-button-b-r{
+    right:-1px;
+}
+.xui-button-b-lt{
+    left:-1px;
+    top:-1px;
+}
+.xui-button-b-rt{
+    right:-1px;
+    top:-1px;
+}
+.xui-button-b-rb{
+    right:-1px;
+    bottom:-1px;
+}
+.xui-button-b-lb{
+    left:-1px;
+    bottom:-1px;
+}
+
+/*xui.UI.Input [[[colors]]]*/
+/*xui.UI.ComboInput*/
+.xui-input-box, .xui-comboinput-box{
+    background-image: url(Input/inputbg.gif);
+    border: solid 1px #B5B8C8;
+}
+.xui-input-box-focus, .xui-input-box-mouseover, .xui-comboinput-box-focus, .xui-comboinput-box-mouseover{
+    border-color:#7EADD9;
+}
+ 
+.xui-comboinput-r1, .xui-comboinput-r2, .xui-comboinput-btn, .xui-comboinput-sbtn, .xui-comboinput-stop, .xui-comboinput-top,.xui-comboinput-r1t, .xui-comboinput-r2t, .xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid
+{
+    background-image: url(ComboInput/bg.gif);
+}
+.xui-input-b-t, .xui-input-b-b,
+.xui-comboinput-b-t, .xui-comboinput-b-b
+{
+    height:2px;
+    background-image: url(Input/vertical.gif);
+}
+.xui-input-box-mouseover .xui-input-b-t, .xui-input-box-mouseover .xui-input-b-b,
+.xui-input-box-focus .xui-input-b-t, .xui-input-box-focus .xui-input-b-b,
+.xui-comboinput-box-mouseover .xui-comboinput-b-t, .xui-comboinput-box-mouseover .xui-comboinput-b-b,
+.xui-comboinput-box-focus .xui-comboinput-b-t, .xui-comboinput-box-focus .xui-comboinput-b-b
+{
+    background-image: url(Input/vertical_mouseover.gif);
+}
+.xui-input-b-l, .xui-input-b-r,
+.xui-comboinput-b-l, .xui-comboinput-b-r{
+    width:2px;
+    background-image: url(Input/horizontal.gif);
+}
+.xui-input-box-mouseover .xui-input-b-l, .xui-input-box-mouseover .xui-input-b-r,
+.xui-input-box-focus .xui-input-b-l, .xui-input-box-focus .xui-input-b-r,
+.xui-comboinput-box-mouseover .xui-comboinput-b-l, .xui-comboinput-box-mouseover .xui-comboinput-b-r,
+.xui-comboinput-box-focus .xui-comboinput-b-l, .xui-comboinput-box-focus .xui-comboinput-b-r
+{
+    background-image: url(Input/horizontal_mouseover.gif);
+}
+.xui-input-b-lt, .xui-input-b-rt, .xui-input-b-rb, .xui-input-b-lb,
+.xui-comboinput-b-lt, .xui-comboinput-b-rt, .xui-comboinput-b-rb, .xui-comboinput-b-lb
+{
+    height:2px;
+    width:2px;
+    background-image: url(Input/corner.gif);
+}
+.xui-input-box-mouseover .xui-input-b-lt, .xui-input-box-mouseover .xui-input-b-rt, .xui-input-box-mouseover .xui-input-b-rb, .xui-input-box-mouseover .xui-input-b-lb,
+.xui-input-box-focus .xui-input-b-lt, .xui-input-box-focus .xui-input-b-rt, .xui-input-box-focus .xui-input-b-rb, .xui-input-box-focus .xui-input-b-lb,
+.xui-comboinput-box-mouseover .xui-comboinput-b-lt, .xui-comboinput-box-mouseover .xui-comboinput-b-rt, .xui-comboinput-box-mouseover .xui-comboinput-b-rb, .xui-comboinput-box-mouseover .xui-comboinput-b-lb,
+.xui-comboinput-box-focus .xui-comboinput-b-lt, .xui-comboinput-box-focus .xui-comboinput-b-rt, .xui-comboinput-box-focus .xui-comboinput-b-rb, .xui-comboinput-box-focus .xui-comboinput-b-lb
+{
+    background-image: url(Input/corner_mouseover.gif);
+}
+.xui-input-b-t, .xui-comboinput-b-t{
+    top:-1px;
+}
+.xui-input-b-b, .xui-comboinput-b-b{
+    bottom:-1px;
+}
+.xui-input-b-l, .xui-comboinput-b-l{
+    left:-1px;
+}
+.xui-input-b-r, .xui-comboinput-b-r{
+    right:-1px;
+}
+.xui-input-b-lt, .xui-comboinput-b-lt{
+    left:-1px;
+    top:-1px;
+}
+.xui-input-b-rt, .xui-comboinput-b-rt{
+    right:-1px;
+    top:-1px;
+}
+.xui-input-b-rb, .xui-comboinput-b-rb{
+    right:-1px;
+    bottom:-1px;
+}
+.xui-input-b-lb, .xui-comboinput-b-lb{
+    left:-1px;
+    bottom:-1px;
+}
+
+
+/*xui.UI.List*/
+.xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{
+    background-image: url(List/item.gif);
+}
+.xui-list-mark{
+    background-image: url(Public/icons.gif);
+}
+.xui-list-opt{
+    background-image: url(Public/icons.gif);
+}
+
+/*xui.UI.Slider*/
+.xui-slider-box-v .xui-slider-decrease, .xui-slider-box-v .xui-slider-increase, .xui-slider-box-h .xui-slider-decrease, .xui-slider-box-h .xui-slider-increase, .xui-slider-box-h .xui-slider-ind1, .xui-slider-box-h .xui-slider-ind2, .xui-slider-box-v .xui-slider-ind1, .xui-slider-box-v .xui-slider-ind2{
+    background-image: url(Public/icons.gif);
+}
+.xui-slider-box-h .xui-slider-ruler, .xui-slider-box-h .xui-slider-rulerleft, .xui-slider-box-h .xui-slider-rulerright{
+    background-image: url(Public/bar_vertical.gif);
+}
+.xui-slider-box-v .xui-slider-ruler, .xui-slider-box-v .xui-slider-rulerleft, .xui-slider-box-v .xui-slider-rulerright{
+    background-image: url(Public/bar_horizontal.gif);
+}
+
+/*xui.UI.TreeBar*/
+.xui-treebar-bar{
+}
+.xui-treebar-bar-mouseover{
+}
+.xui-treebar-bar-checked{
+}
+.xui-treebar-bar-group{
+    background-image: url(Public/bar_vertical.gif);
+}
+.xui-treebar-checked{
+    background-image: url(Public/icons.gif);
+}
+.xui-treebar-opt{
+    background-image: url(Public/icons.gif);
+}
+/*xui.UI.TreeView*/
+.xui-treeview-image-vertical, 
+.xui-treeview-image-path-1, 
+.xui-treeview-image-path-2, 
+.xui-treeview-image-path-3, 
+.xui-treeview-image-fold-1, 
+.xui-treeview-image-fold-2, 
+.xui-treeview-image-fold-3{
+    background-image: url(Public/icons.gif);
+}
+.xui-treeview-mark{
+    background-image: url(Public/icons.gif);
+}
+.xui-treeview-opt{
+    background-image: url(Public/icons.gif);
+}
+.xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
+    background-image: url(List/item.gif);
+}
+.xui-treeview-bar-mouseover{
+}
+.xui-treeview-bar-mousedown{
+}
+.xui-treeview-bar-checked{
+}
+.xui-treeview-bar .xui-treeview-itemicon{
+    background-image: url(Public/icons.gif);
+}
+.xui-treeview-bar-expand .xui-treeview-itemicon{
+    background-image: url(Public/icons.gif);
+}
+
+/*xui.UI.Tabs*/
+.xui-tabs-items{
+    padding:1px 0 2px 0;
+}
+.xui-tabs-list{
+    background-image: url(Tabs/line.gif);
+}
+.xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
+    background-image: url(Public/button.gif);
+}
+.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop, .xui-tabs-left-mouseover, .xui-tabs-right-mouseover, .xui-tabs-drop-mouseover{
+    background-image: url(Tabs/cmds.png);
+}
+
+/*xui.UI.ButtonViews*/
+.xui-buttonviews-item, .xui-buttonviews-itemi, .xui-buttonviews-itemc{
+background-image: url(Public/button.gif);
+}
+
+/*xui.UI.Stacks*/
+.xui-stacks-cmds{
+    top:6px;
+    right:8px;
+    text-align:right;
+    vertical-align: middle;
+}
+.xui-stacks-item{
+    background-image: url(Public/bar_vertical.gif);
+}
+.xui-stacks-handle{
+    height:18px;
+}
+
+
+
+/*xui.UI.Panel*/
+.xui-panel-panel{
+}
+
+/*xui.UI.PopMenu*/
+.xui-popmenu-items{
+    background-image:url(PopMenu/bg.gif);
+}
+.xui-popmenu-itemsplit{
+    background-image:url(Public/split_horizontal.gif);
+}
+.xui-popmenu-checkbox, .xui-popmenu-checkbox-checked, .xui-popmenu-top, .xui-popmenu-bottom,  .xui-popmenu-sub
+{
+    background-image: url(Public/icons.gif);
+}
+
+
+/*xui.UI.Layout*/
+.xui-layout-move-top, .xui-layout-move-bottom{
+    height:7px;
+}
+.xui-layout-move-left, .xui-layout-move-right{
+    width:7px;
+}
+.xui-layout-move-top-mouseover, .xui-layout-move-bottom-mouseover,
+.xui-layout-move-left-mouseover, .xui-layout-move-right-mouseover{
+}
+
+.xui-layout-cmd-top, .xui-layout-cmd-bottom, .xui-layout-cmd-left, .xui-layout-cmd-right{
+    background-image: url(Public/icons.gif);
+}
+.xui-layout-cmd-top{
+    margin-left:-20px;
+    width:40px;
+    height:9px;
+    background-position:-360px -232px;
+}
+.xui-layout-cmd-bottom{
+    margin-left:-20px;
+    width:40px;
+    height:9px;
+    background-position:-360px -258px;
+}
+.xui-layout-cmd-left{
+    margin-top:-20px;
+    height:40px;
+    width:9px;
+    background-position:-310px -240px;
+}
+.xui-layout-cmd-right{
+    margin-top:-20px;
+    height:40px;
+    width:9px;
+    background-position:-336px -240px;
+}
+.xui-layout-cmd-top-mouseover{
+    background-position:-360px -245px;
+}
+.xui-layout-cmd-bottom-mouseover{
+    background-position:-360px -271px;
+}
+.xui-layout-cmd-left-mouseover{
+    background-position:-323px -240px;
+}
+.xui-layout-cmd-right-mouseover{
+    background-position:-349px -240px;
+}
+
+
+/*xui.UI.ToolBar and xui.UI.MenuBar*/
+.xui-toolbar-handler, .xui-menubar-handler{
+    background-image: url(Public/handler.gif);
+    width:7px;
+}
+.xui-toolbar-split{
+    background-image: url(Public/split_vertical.gif);
+}
+.xui-toolbar-drop{
+    background-image: url(Button/drop.gif);
+}
+.xui-toolbar-btn, .xui-toolbar-btni, .xui-toolbar-btnc{
+background-image: url(Public/button.gif);
+}
+
+.xui-menubar-item-mouseover,
+.xui-menubar-item-mouseover .xui-menubar-itemi,
+.xui-menubar-item-mouseover .xui-menubar-itemc,
+.xui-menubar-item-mousedown,
+.xui-menubar-item-mousedown .xui-menubar-itemi,
+.xui-menubar-item-mousedown .xui-menubar-itemc
+{
+    background-image: url(Public/button.gif);
+}
+
+
+/*xui.UI.ProgressBar*/
+.xui-progressbar-border{
+}
+.xui-progressbar-fill{
+    background: #7399AF url(ProgressBar/bar.gif) repeat-x scroll 0 0;
+}
+
+/*xui.UI.DatePicker*/
+/*xui.UI.TimePicker*/
+/*xui.UI.ColorPicker*/
+.xui-datepicker-today, .xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
+.xui-timepicker-pre, .xui-timepicker-next, .xui-timepicker-pre2, .xui-timepicker-next2,
+.xui-colorpicker-toggle{
+    background-image: url(Public/icons.gif);
+}
+
+/*xui.UI.TreeGrid [[[colors]]]*/
+.xui-treegrid-mark, .xui-treegrid-arrow{
+    background-image: url(Public/icons.gif);
+}
+.xui-treegrid-collist {
+    background-image: url(TreeGrid/collist.gif);
+}
+.xui-treegrid-sort, .xui-treegrid-checkbox, .xui-treegrid-checkbox-checked{
+    background-image: url(Public/icons.gif);
+}
+
+.xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
+    background: #CAE3FF url(TreeGrid/head.gif) repeat-x left top;
+}
+.xui-treegrid-fhcell, .xui-treegrid-hcell{
+    border-right:solid 1px #B8D6E6;
+    border-bottom:solid 1px #B8D6E6;
+}
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
+    background: #B8D6E6 url(TreeGrid/head_mouseover.gif) repeat-x left top;
+}
+
+.xui-treegrid-fcell,.xui-treegrid-cell, .xui-treegrid-cells-group, .xui-treegrid-preview, .xui-treegrid-summary{
+    border-right:solid 1px #B8D6E6;
+}
+.xui-treegrid-cell-mouseover{
+    background-color: #B8D6E6;
+}
+.xui-treegrid-cells-mouseover{
+    background-color: #DFE8F6;
+}
+.xui-treegrid-cells-active, .xui-treegrid-cells-active .xui-treegrid-cella, .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
+    background-color: #B8D6E6;
+}
+.xui-treegrid-cells-checked, .xui-treegrid-cells-checked .xui-treegrid-cella, .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
+    background-color: #7290A0;
+    color:#fff;
+}
+
+
+/**
+*
+* advance
+*
+**/
+
+/*xui.UI.StatusButtons*/
+.xui-statusbuttons-item-none{
+    background-image: url(Public/icons.gif);
+}
+.xui-statusbuttons-item-left{
+    background-image: url(Public/icons.gif);
+}
+.xui-statusbuttons-item-right{
+    background-image: url(Public/icons.gif);
+}
+
+/*xui.UI.Poll*/
+.xui-poll-progress, .xui-poll-progressi{
+    background-image: url(Public/icons.gif);
+}
+/*xui.UI.FoldingList*/
+.xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr{
+    background-image: url(FoldingList/corner.gif);
+}
+.xui-foldinglist-head{
+    background-image: url(FoldingList/border_top.gif);
+}
+.xui-foldinglist-tail{
+    background-image: url(FoldingList/border_bottom.gif);
+}
+.xui-foldinglist-cmds, .xui-foldinglist-body, .xui-foldinglist-bodyi{
+    background-image: url(FoldingList/border_left.gif);
+}
+
+/*xui.UI.FoldingTabs*/
+.xui-foldingtabs-hl, .xui-foldingtabs-hr, .xui-foldingtabs-tl, .xui-foldingtabs-tr{
+    background-image: url(FoldingList/corner.gif);
+}
+.xui-foldingtabs-handle{
+    background-image: url(FoldingList/border_top.gif);
+}
+.xui-foldingtabs-tail{
+    background-image: url(FoldingList/border_bottom.gif);
+}
+.xui-foldinglist-body, .xui-foldinglist-bodyi{
+    background-image: url(FoldingList/border_left.gif);
+}
+/*xui.UI.TimeLine*/
+.xui-timeline-items{
+}
+.xui-timeline-head, .xui-timeline-handler{
+    background-image: url(Public/handler.gif);
+}
+.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-pre, .xui-timeline-next, .xui-timeline-min{
+    background-image: url(Public/icons.gif);
+}
+.xui-timeline-mainc{
+}
+.xui-timeline-biglabel, .xui-timeline-smalllabel {
+}
+.xui-timeline-biglabel div, .xui-timeline-smalllabel div{
+}
+
+/*xui.UI.Range*/
+.xui-range-ruler{
+    background-image: url(Range/bg.png);
+}
+.xui-range-ruler1{
+    background-image: url(Range/bg.png);
+}
+.xui-range-ruler3{
+    background-image: url(Range/front.png);
+}
+.xui-range-ind1, .xui-range-ind2{
+    background-image: url(Public/icons.gif);
+}
+
+
+
+
+/***setting begin***/
+.setting-xui-border{
+    border-style:solid;
+    border-top-width:1px;
+    border-bottom-width:1px;
+    border-left-width:1px;
+    border-right-width:1px;
+}
+.setting-xui-button{
+    border-style:solid;
+    border-top-width:1px;
+    border-bottom-width:1px;
+    border-left-width:1px;
+    border-right-width:1px;
+}
+.setting-xui-input{
+    border-style:solid;
+    border-top-width:1px;
+    border-bottom-width:1px;
+    border-left-width:1px;
+    border-right-width:1px;
+}
+.setting-xui-comboinput{
+    border-style:solid;
+    border-top-width:1px;
+    border-bottom-width:1px;
+    border-left-width:1px;
+    border-right-width:1px;
+}
+.setting-xui-layout{
+    width:9px;
+}
+/***the last one***/
+.setting-uikey{
+    font-family: lightblue;
+}
+/***setting end***/
+
