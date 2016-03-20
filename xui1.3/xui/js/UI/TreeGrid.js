@@ -2121,7 +2121,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1,data:1},
         Behaviors:{
-                        HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL:"SCROLL",BODY:"BODY",HEADER:"HEADER"},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL:"SCROLL",BODY:"BODY",HEADER:"HEADER"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
             DroppableKeys:['SCROLL','CELLS','ROWTOGGLE'],
             DraggableKeys:['FCELL'],
