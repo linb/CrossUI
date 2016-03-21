@@ -21,15 +21,7 @@ Class('App.Module1', 'xui.Com',{
                 .setHtml("UI in Module1")
             );
             
-            host.panelMain.append((new xui.UI.Tag)
-                .setHost(host,"tag2")
-                .setLeft(20)
-                .setTop(70)
-                .setWidth(218)
-                .setHeight(98)
-                .setTagKey("tag_SubModule1")
-            );
-            
+   
             host.panelMain.append((new xui.UI.Button)
                 .setHost(host,"button22")
                 .setLeft(20)

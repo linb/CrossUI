@@ -90,6 +90,7 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\UI\CheckBox.js /b ^
 + %relPath%xui\js\UI\Slider.js /b ^
 + %relPath%xui\js\UI\Input.js /b ^
++ %relPath%xui\js\UI\HiddenInput.js /b ^
 + %relPath%xui\js\UI\RichEditor.js /b ^
 + %relPath%xui\js\UI\ComboInput.js /b ^
 + %relPath%xui\js\UI\Group.js /b  ^

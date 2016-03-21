@@ -874,6 +874,8 @@ _.merge(xui,{
     $localeKey:'en',
     $localeDomId:'xlid',
     $dateFormat:'',
+    // for show xui.echo
+    debugMode:true,
 
     Locale:{},
     $cache:{
@@ -4288,10 +4290,12 @@ Class("xui.Timer","xui.absObj",{
             xui.absValue.pack(xui.DataBinder._getBoundElems(this.get(0)),false).each(function(prf){
                 if(!prf.boxing().checkValid()){
                     if(!ignoreAlert){
-                        xui.alert('$inline.required',xui.getRes('$inline.required') + (prf.properties.labelCaption?(" : " +prf.properties.labelCaption):"")  , function(){
-                            if(prf&&prf.renderId)
-                                   prf.boxing().activate();
-                        });
+                        if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'invalid')){
+                            xui.alert('$inline.invalid',xui.getRes('$inline.invalid') + (prf.properties.labelCaption?(" : " +prf.properties.labelCaption):"")  , function(){
+                                if(prf&&prf.renderId)
+                                       prf.boxing().activate();
+                            });
+                        }
                         return result=false;
                     }
                      result=false;
@@ -4304,10 +4308,12 @@ Class("xui.Timer","xui.absObj",{
             xui.absValue.pack(xui.DataBinder._getBoundElems(this.get(0)),false).each(function(prf){
                 if(prf.properties.required && (!(i=prf.boxing().getUIValue())) && i!==0){
                     if(!ignoreAlert){
-                        xui.alert('$inline.required',xui.getRes('$inline.required') + (prf.properties.labelCaption?(" : " +prf.properties.labelCaption):"")  , function(){
-                            if(prf&&prf.renderId)
-                                   prf.boxing().activate();
-                        });
+                        if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'required')){
+                            xui.alert('$inline.required',xui.getRes('$inline.required') + (prf.properties.labelCaption?(" : " +prf.properties.labelCaption):"")  , function(){
+                                if(prf&&prf.renderId)
+                                       prf.boxing().activate();
+                            });
+                        }
                         return result=false;
                     }
                     result=false;
@@ -5004,6 +5010,7 @@ Class("xui.Timer","xui.absObj",{
             }
         },
         EventHandlers:{
+            beforeInputAlert:function(profile, ctrlPrf, type){},
             beforeUpdateDataToUI:function(profile, dataToUI){},
             afterUpdateDataFromUI:function(profile, dataFromUI){},
             beforeInvoke:function(profile, requestId){},
@@ -5027,7 +5034,8 @@ Class("xui.Timer","xui.absObj",{
     no:'No',
     noFlash:'No Flash PlugIn!',
     transparent:'transparent',
-    required:'There is required field need to be filled out'
+    required:'There is required field need to be filled out',
+    invalid:'There is invalid field'
 };
 xui.Locale.en.date={
     WEEKS:{
@@ -15232,25 +15240,6 @@ Class("xui.Tips", null,{
                                 fun=function(arr,subcfg,firstlayer){
                                     var self1 = arguments.callee;
                                     _.arr.each(arr,function(v,i){
-                                        //if tag exists, replace tag with com from xui.ComFactory
-                                        if(v.key=='xui.UI.Tag'){
-                                            var tag=v, cid=tag.properties.tagKey;
-
-                                            if(cid && subcfg && subcfg[cid])
-                                                self.apply(me, [subcfg[cid], function(){
-                                                    //set link to parent com(xui.Com)
-                                                    com[cid]=this;
-                                                    //set com parent
-                                                    this.parent=com;
-
-                                                    //replace tag with this
-                                                    var ui = this.getUIComponents(), root;
-                                                    // no UI in this com
-                                                    if(!(root=ui.get(0)))return;
-
-                                                    xui.UI.Tag.replace(tag,root,firstlayer?com:null);
-                                                },threadid]);
-                                        }
                                         if(v.children){
                                             var a=[];
                                             _.arr.each(v.children,function(o){
@@ -18726,6 +18715,141 @@ Class("xui.UI",  "xui.absObj", {
                         getPanelChildren:function(){
                             return this.get(0).children;
                         },
+                        getFormValues:function(dirtied, subId, withCaption){
+                            var hash={};
+                            this.getFormElements(subId).each(function(prf){
+                                var p=prf.properties,
+                                    ins = prf.boxing(),
+                                    // maybe return array
+                                    uv = ins.getUIValue();
+                                // v and uv can be object(Date,Number)
+                                if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
+                                    if(withCaption && ins.getCaption){
+                                        hash[p.name||prf.alias]={value:uv,caption:ins.getCaption()};
+                                    }else{
+                                        hash[p.name||prf.alias]=uv;
+                                    }
+                                }
+                            });
+                            return hash;
+                        },
+                        setFormValues:function(values, subId){
+                            if(!_.isEmpty(values)){
+                                this.getFormElements(subId).each(function(prf){
+                                    if('value' in prf.properties && (p.name||prf.alias) in values){
+                                        var v=values[p.name||prf.alias],b=_.isHash(v) ;
+                                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'com');
+                                        if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
+                                            prf.boxing().setCaption(v.caption, null, true,'com');
+                                    }
+                                });
+                            }
+                            return this;
+                        },
+                        getFormElements:function(subId, dirtiedOnly){
+                            var elems = xui.absValue.pack(this.getChildren(subId, true));
+                            if(dirtiedOnly){
+                                var arr=[],ins;
+                                elems.each(function(prf){
+                                    ins = prf.boxing();
+                                    if( (ins.getUIValue()+" ")!==(ins.getValue()+" ")){
+                                        arr.push(prf);    
+                                    }
+                                });
+                                return xui.absValue.pack(arr);
+                            }
+                            return elems;
+                        },
+                        isDirtied:function(subId){
+                           var elems = this.getFormElements(subId).get();
+                           for(var i=0,l=elems.length;i<l;i++){
+                                var profile=elems[i],ins;
+                                if(profile.box["xui.absValue"]){
+                                    ins = profile.boxing();
+                                    if((ins.getUIValue()+" ")!==(ins.getValue()+" ")){
+                                        return true;
+                                    }
+                                }
+                            }
+                            return false;
+                        },
+                        checkValid:function(ignoreAlert, subId){
+                            var profile=this.get(0), result=true;
+                            this.getFormElements(subId).each(function(prf){
+                                if(!prf.boxing().checkValid()){
+                                    if(!ignoreAlert){
+                                        if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'invalid')){
+                                            xui.alert('$inline.invalid',xui.getRes('$inline.invalid') + (prf.properties.labelCaption?(" : " +prf.properties.labelCaption):"")  , function(){
+                                                if(prf&&prf.renderId)
+                                                       prf.boxing().activate();
+                                            });
+                                        }
+                                        return result=false;
+                                    }
+                                     result=false;
+                                }
+                            });
+                            return result;
+                        },
+                        checkRequired:function(ignoreAlert, subId){
+                            var result=true;
+                            this.getFormElements(subId).each(function(prf, i){
+                                if(prf.properties.required && (!(i=prf.boxing().getUIValue())) && i!==0){
+                                    if(!ignoreAlert){
+                                        if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'required')){
+                                            xui.alert('$inline.required',xui.getRes('$inline.required') + (prf.properties.labelCaption?(" : " +prf.properties.labelCaption):"")  , function(){
+                                                if(prf&&prf.renderId)
+                                                       prf.boxing().activate();
+                                            });
+                                        }
+                                        return result=false;
+                                    }
+                                    result=false;
+                                }
+                            });
+                            return result;
+                        },
+                        formReset:function(subId){
+                            return this.each(function(prf){
+                                var p = prf.properties,
+                                     elems = prf.boxing().getFormElements();
+                                if(prf.beforeFormReset && false===prf.boxing().beforeFormReset(prf, elems, subId)){
+                                        return;
+                                }
+                                elems.each(function(p,i){
+                                        if((i=p.properties.$UIValue) !== p.properties.value)
+                                        p.boxing().setValue(i, true);
+                                });
+                                if(prf.afterFormReset){
+                                        prf.boxing().afterFormReset(prf, elems, subId);
+                                }
+                            });
+                        },
+                        formSubmit:function(ignoreAlert, subId){
+                            var ns=this;
+                            // check valid first
+                            if(!ignoreAlert && !ns.checkValid()){
+                                return;
+                            }
+                            var prf=ns.get(0),
+                                  p = prf.properties,
+                                  data = ns.getFormValues(subId);
+                            // call before event
+                            if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId)){
+                                    return;
+                            }
+                            // and check required
+                            if(!ignoreAlert && !ns.checkRequired()){
+                                return;
+                            }
+
+                            xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
+
+                            // update UI 
+                            ns.getFormElements().updateValue();
+
+                            if(prf.afterFormSubmit)prf.boxing().afterFormSubmit(prf, data, subId);
+                        },
                         _e1:function(profile, item, e, src, type){},
                         _e2:function(profile, keyboard, e, src){},
                         _e3:function(profile, e, shiftKey, src){},
@@ -18806,9 +18930,28 @@ Class("xui.UI",  "xui.absObj", {
                                         prf.getSubNode(k,true).css('background-attachment',v);
                                     });
                                 }
+                            },
+                            formMethod:{
+                                ini:'get',
+                                listbox:['get','post']
+                            },
+                            formTarget:{
+                                ini:'_blank',
+                                listbox:['_blank','_self','_parent','_top','[framename]']
+                            },
+                           formAction:"",
+                           formEnctype:{
+                                ini:'application/x-www-form-urlencoded',
+                                listbox:['application/x-www-form-urlencoded','multipart/form-data','text/plain']
                             }
                         },
-                        $abstract:true
+                        EventHandlers:{
+                            beforeInputAlert:function(profile, ctrlPrf, type){},
+                            beforeFormReset:function(profile, elems, subId){},
+                            afterFormReset:function(profile, elems, subId){},
+                            beforeFormSubmit:function(profile, data, subId){},
+                            afterFormSubmit:function(profile, data, subId){},
+                        }
                     }
                 });
             var src=xui.absComposed.prototype;
@@ -18934,7 +19077,7 @@ Class("xui.UI",  "xui.absObj", {
                 });
 
                 t=self.prototype;
-                _.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getDropKeys,setDropKeys'.split(','),function(o){
+                _.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getDropKeys,setDropKeys,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formReset,formSubmit'.split(','),function(o){
                     if(!t[o])t[o]=src[o];
                 });
                 self.$DataModel.dropKeys=self.$DataStruct.dropKeys='';
@@ -18959,7 +19102,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                _.arr.each(["overflow","panelBgClr","panelBgImg","panelBgImgPos","panelBgImgRepeat","panelBgImgAttachment"],function(o){
+                _.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
                     var f='get'+_.str.initial(o);
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
@@ -18967,6 +19110,8 @@ Class("xui.UI",  "xui.absObj", {
                     self.$DataStruct[o]="";
                     self.$DataModel[o]=_.copy(xui.absComposed.$DataModel[o]);
                 });
+
+                 _.merge(hls, xui.absComposed.$EventHandlers);
             }
             self.setEventHandlers(hls);
         },
@@ -21306,7 +21451,7 @@ Class("xui.absValue", "xui.absObj",{
         }
     }
 });
- 
+
 //som base widgets Classes
 new function(){
     var u='xui.UI';
@@ -22192,63 +22337,6 @@ new function(){
                         ins.free();
                     }, null, options).start();
                 }
-            }
-        }
-    });
-    Class(u+".Tag", u+".Div",{
-        Static:{
-            Templates:{
-                tagName:'div',
-                className:'{_className}',
-                style:'overflow:auto;border:dashed blue 1px;text-align:center;background-color:#EBEADB;{_style};{_panelstyle};{_overflow};',
-                text:'{tagKey}'+xui.UI.$childTag
-            },
-            DataModel:{
-                html:null,
-                tagKey:{
-                    action:function(v){
-                        this.getRoot().html(v);
-                    }
-                }
-            },
-            _l:_.toArr('left,top,bottom,right,width,height,zIndex,tabindex,position,dock,dockFloat,dockMinW,dockMinH,dockOrder,dockMargin'),
-            //replace tag profile with other UI profile
-            replace:function(tagProfile, profile, com){
-                //reset properties
-                _.arr.each(this._l,function(s){
-                    if(s in tagProfile.properties)profile.properties[s]=tagProfile.properties[s];
-                });
-                _.merge(profile.CS,tagProfile.CS,'all');
-                _.merge(profile.CC,tagProfile.CC,'all');
-                _.merge(profile.CA,tagProfile.CA,'all');
-                if(typeof tagProfile.theme =="string")
-                    profile.theme=tagProfile.theme;
-
-                //if parent exist, replace
-                if(tagProfile.parent){
-                    //get tag link
-                    var clink = tagProfile.parent.children,
-                        linkObj = clink['$'+tagProfile.$xid],
-                        index = _.arr.indexOf(clink,linkObj);
-                    tagProfile.parent.boxing().append(profile, linkObj[1]);
-                    // set to tag index
-                    clink[index] = clink.pop();
-
-                    //detach tag from parent
-                    tagProfile.unLink('$parent');
-                    delete tagProfile.parent;
-                //for _nodes in com
-                }else if(com){
-                    _.arr.each(com._nodes,function(o,i){
-                        if(o===tagProfile){
-                            com._nodes[i]=profile;
-                            return false;
-                        }
-                    });
-                }
-
-                if(tagProfile.renderId)
-                    profile.boxing().renderOnto(tagProfile.getRootNode());
             }
         }
     });
@@ -26021,6 +26109,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         this.setTemplate(t)
     },
     Static:{
+        $initRootHidden:true,
         _syncResize:true,
         _maskMap:{
             '~':'[+-]',
@@ -26889,6 +26978,98 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
                 /*for ie6 bug*/
                 if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+        }
+    }
+});Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
+    Instance:{
+        activate:function(){
+            return this;
+        },
+        _setCtrlValue:function(value){
+            if(_.isNull(value) || !_.isDefined(value))value='';
+            return this.each(function(profile){
+                profile.getSubNode('KEY').attr('value',value+"");
+            });
+        },
+        _getCtrlValue:function(){
+            var node=this.getSubNode('KEY');
+            if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
+            return v;
+        }
+    },
+    Static:{
+        $initRootHidden:true,
+        Templates:{
+            className:'xui-display-none',
+            style:'display:none',
+            tagName:'input',
+            type:'hidden'
+        },
+        DataModel:{
+            locked:null,
+            required:null,
+            dataBinder:null,
+            dataField:null,
+            display:null,
+            visibility:null,
+            position:null,
+            left:null,
+            top:null,
+            right:null,
+            bottom:null,
+            width:null,
+            height:null,
+            rotate:null,
+            showEffects:null,
+            hideEffects:null,
+            activeAnim:null,
+            tabindex:null,
+            zIndex:null,
+            defaultFocus:null,
+            hoverPop:null,
+            hoverPopType:null,
+            disabled:null,
+            readonly:null,
+            disableClickEffect:null,
+            disableHoverEffect:null,
+            dock:null,
+            dockOrder:null,
+            dockMargin:null,
+            dockMinW:null,
+            dockMinH:null,
+            dockFloat:null,
+            dockIgnore:null,
+            dirtyMark:null,
+            showDirtyMark:null,
+            selectable:null,
+            autoTips:null,
+            tips:null,
+            disableTips:null,
+            renderer:null,
+            className:null
+        },
+        EventHandlers:{
+            beforeDirtyMark:null,
+            onContextmenu:null,
+            onDock:null,
+            onLayout:null,
+            onMove:null,
+            onRender:null,
+            onResize:null,
+            onShowTips:null,
+            beforeAppend:null,
+            afterAppend:null,
+            beforeRender:null,
+            afterRender:null,
+            beforeRemove:null,
+            afterRemove:null,
+            onHotKeydown:null,
+            onHotKeypress:null,
+            onHotKeyup:null
+        },
+        _ensureValue:function(profile, value){
+            // ensure return string
+            return ""+(_.isSet(value)?value:"");
         }
     }
 });Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{

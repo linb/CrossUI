@@ -9205,44 +9205,6 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","UI","Tag"], {
-        KEY:{$desc:"本类名"},
-        $desc:"xui.UI.Tag 类",
-        constructor:{
-            $desc:"生成一个xui.UI.Tag对象. xui.UI.Tag is a proxy UI class for 'Inversion of Control' in CrossUI.",
-            $memo:"xui.UI.Tag is for embedding a target UI Object(from xui.Com Object) into an existing UI dynamically.",
-            $links:[
-                ["xui.ComFactory.getCom","#xui.ComFactory"]
-            ]
-        },
-        replace:{
-            $desc:"To replace the tagProfile with the profile.",
-            $paras:[
-                "tagProfile [必需参数] : the profile of xui.UI.Tag Object.",
-                "profile [必需参数] : the profile of the target UI Object",
-                "com [可选参数] : xui.Com Object, if the tagProfile is in a com objcet directly(no parent UIProfile), you have to specify this."
-            ],
-            $demo:"Generally, you don't need to use this function manually."
-        },
-        prototype:{
-            KEY:{$desc:"本类名"},
-            getTagKey:{
-                $desc:"得到 tagKey 字符串.",
-                $rtn:"String",
-                $memo:"xui.ComFactory 会按照这个tabKey查找对应的 xui.Com."
-            },
-            setTagKey:{
-                $desc:"设置 tagKey 字符串.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, the tag key.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
-                ],
-                $memo:"xui.ComFactory 会按照这个tabKey查找对应的 xui.Com."
-            }
-        }
-    });
-
     _.set(xui.Locale,["cn","doc","xui","UI","Link"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Link 类",

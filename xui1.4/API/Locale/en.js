@@ -9189,44 +9189,6 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Tag"], {
-        KEY:{$desc:"Class Name"},
-        $desc:"xui.UI.Tag Class",
-        constructor:{
-            $desc:"Creates a xui.UI.Tag Object. xui.UI.Tag is a proxy UI class for 'Inversion of Control' in CrossUI.",
-            $memo:"xui.UI.Tag is for embedding a target UI Object(from xui.Com Object) into an existing UI dynamically.",
-            $links:[
-                ["xui.ComFactory.getCom","#xui.ComFactory"]
-            ]
-        },
-        replace:{
-            $desc:"To replace the tagProfile with the profile.",
-            $paras:[
-                "tagProfile [Required] : the profile of xui.UI.Tag Object.",
-                "profile [Required] : the profile of the target UI Object",
-                "com [Optional] : xui.Com Object, if the tagProfile is in a com objcet directly(no parent UIProfile), you have to specify this."
-            ],
-            $demo:"Generally, you don't need to use this function manually."
-        },
-        prototype:{
-            KEY:{$desc:"Class Name"},
-            getTagKey:{
-                $desc:"Gets the tag key string.",
-                $rtn:"String",
-                $memo:"xui.ComFactory will find the target UI Object in the matched xui.Com according to this tagKey."
-            },
-            setTagKey:{
-                $desc:"Sets the tag key string.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, the tag key.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $memo:"xui.ComFactory will find the target UI Object in the matched xui.Com according to this tagKey."
-            }
-        }
-    });
-
     _.set(xui.Locale,["en","doc","xui","UI","Link"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Link Class",

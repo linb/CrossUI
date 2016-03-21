@@ -1,0 +1,5 @@
+1) Separated xui.APICaller from xui.DataBinder
+2£©Remvoed xui.UI.Tag
+3) Added Form-function to all Container controls
+4) Added HiddrenInput Control for  Form-function
+5) Added dockPadding/dockSpace/dockRelative prop for docker
