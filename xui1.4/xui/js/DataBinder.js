@@ -1,4 +1,4 @@
-Class("xui.DataBinder","xui.absObj",{
+Class("xui.DataBinder","xui.APICaller",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -52,7 +52,7 @@ Class("xui.DataBinder","xui.absObj",{
 
         isDirtied:function(){
             var prf=this.get(0),
-                elems=xui.DataBinder._getBoundElems(prf);
+                elems=prf.constructor._getBoundElems(prf);
             for(var i=0,l=elems.length;i<l;i++){
                 var profile=elems[i],ins;
                 if(profile.box["xui.absValue"]){
@@ -66,7 +66,7 @@ Class("xui.DataBinder","xui.absObj",{
         },
         checkValid:function(ignoreAlert){
             var result=true;
-            xui.absValue.pack(xui.DataBinder._getBoundElems(this.get(0)),false).each(function(prf){
+            xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).each(function(prf){
                 if(!prf.boxing().checkValid()){
                     if(!ignoreAlert){
                         if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'invalid')){
@@ -84,7 +84,7 @@ Class("xui.DataBinder","xui.absObj",{
         },
         checkRequired:function(ignoreAlert){
             var result = true;
-            xui.absValue.pack(xui.DataBinder._getBoundElems(this.get(0)),false).each(function(prf){
+            xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).each(function(prf){
                 if(prf.properties.required && (!(i=prf.boxing().getUIValue())) && i!==0){
                     if(!ignoreAlert){
                         if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'required')){
@@ -105,9 +105,9 @@ Class("xui.DataBinder","xui.absObj",{
         getUI:function(key){
             var r;
             if(!key)
-                r=xui.UI.pack(xui.DataBinder._getBoundElems(this.get(0)),false);
+                r=xui.UI.pack(this.constructor._getBoundElems(this.get(0)),false);
             else
-                _.arr.each(xui.DataBinder._getBoundElems(this.get(0)),function(profile){
+                _.arr.each(this.constructor._getBoundElems(this.get(0)),function(profile){
                     var p=profile.properties;
                     if((p.name||p.dataField||profile.alias)==key){
                         r=profile.boxing();
@@ -120,7 +120,7 @@ Class("xui.DataBinder","xui.absObj",{
             var ns=this,
                 prf=ns.get(0),
                 hash={};
-            _.arr.each(xui.DataBinder._getBoundElems(prf),function(profile){
+            _.arr.each(this.constructor._getBoundElems(prf),function(profile){
                 if(!profile.box["xui.absValue"])return;
                 var p=profile.properties,
                     b = profile.boxing(),
@@ -177,7 +177,7 @@ Class("xui.DataBinder","xui.absObj",{
             return this;
         },
         updateValue:function(){
-            xui.absValue.pack(xui.DataBinder._getBoundElems(this.get(0)),false).updateValue();
+            xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).updateValue();
             return this;
         },
         updateDataFromUI:function(updateUIValue,withCaption,returnArr,adjustData,dataKeys,ignoreAlert,ignoreEvent){
@@ -199,7 +199,7 @@ Class("xui.DataBinder","xui.absObj",{
             _.merge(map,prop.data,function(v,t){
                 return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
             });
-            _.arr.each(xui.DataBinder._getBoundElems(prf),function(profile){
+            _.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 var p=profile.properties,
                       eh=profile.box.$EventHandlers,
                       t=p.name || p.dataField || profile.alias;
@@ -300,7 +300,7 @@ Class("xui.DataBinder","xui.absObj",{
                 mapb=null;
             }
 
-            _.arr.each(xui.DataBinder._getBoundElems(prf),function(profile){
+            _.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 p=profile.properties;
                 eh=profile.box.$EventHandlers;
                 t=p.name || p.dataField || profile.alias;
@@ -356,230 +356,12 @@ Class("xui.DataBinder","xui.absObj",{
                 }
             });
             return ns;
-        },
-        setHost:function(value, alias){
-            var self=this;
-            if(value && alias)
-                self.setName(alias);
-            return arguments.callee.upper.apply(self,arguments);
-        },
-        invoke:function(onSuccess, onFail, onStart, onEnd, mode, threadid, options){
-            var ns=this,
-                con=ns.constructor,
-                prf=ns.get(0),
-                prop=prf.properties,
-                dsType=prop.dataSourceType;
-            if(dsType!="remoting")return;                
-            var responseType=prop.responseType,
-                requestType=prop.requestType,
-                requestId=prop.requestId,
-                hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
-                queryURL=(hashModel?(((prop.queryURL.lastIndexOf("/")!=prop.queryURL.length-1)?(prop.queryURL+"/"):prop.queryURL)+prop.queryModel):prop.queryURL),
-                queryUserName=prop.queryUserName;
-                queryPasswrod=prop.queryPasswrod;
-                queryArgs=_.copy(prop.queryArgs),
-                tokenParams=_.copy(prop.tokenParams),
-                queryOptions=_.copy(prop.queryOptions);
-
-            if(requestType=="HTTP")
-                    queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
-            if(_.isHash(queryArgs) && !_.isEmpty(tokenParams))
-                _.merge(queryArgs,tokenParams,'all');
-
-            // Normally, Gives a change to modify "queryArgs" for XML
-            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
-                return;
-
-            // for auto adjusting options
-            var proxyType,rMap={};
-            if(responseType=='SOAP'||requestType=='SOAP'){
-                // for wsdl
-                if(!con.WDSLCache)con.WDSLCache={};
-                if(!con.WDSLCache[queryURL]){
-                    var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
-                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                        if(prf.onError)prf.boxing().onError(prf, rspData);
-                        _.tryF(onFail,arguments,this);
-                        _.tryF(onEnd,arguments,this);
-                    });
-                    if(wsdl)
-                        con.WDSLCache[queryURL] = wsdl;
-                    else
-                        // stop the further call
-                        return;
-                }
-            }
-            switch(responseType){
-                case "JSON":
-                    rMap.rspType="json";
-                break;
-                case "XML":
-                    proxyType="ajax";
-                    rMap.rspType="xml";
-                break;
-                case "SOAP":
-                    proxyType="ajax";
-                    rMap.rspType="xml";
-                    var namespace=xui.SOAP.getNameSpace(con.WDSLCache[queryURL]),
-                        action = ((namespace.lastIndexOf("/")!=namespace.length-1)?namespace+"/":namespace)+(queryArgs.methodName||"");
-                    rMap.header=rMap.header||{};
-                    rMap.header["SOAPAction"]=action;
-                break;
-            }
-            switch(requestType){
-                case "HTTP":
-                    // ensure object
-                    queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
-                break;
-                case "JSON":
-                    rMap.reqType="json";
-
-                    if(prop.queryMethod=="auto")
-                        rMap.method="POST";
-                    // ensure string
-                    queryArgs = typeof queryArgs=='string'?queryArgs:_.serialize(queryArgs);
-                break;
-                case "XML":
-                    rMap.reqType="xml";
-                    proxyType="ajax";
-                    rMap.method="POST";
-                    if(queryUserName && queryPassword){
-                        rMap.username=queryUserName;
-                        rMap.password=queryPassword;
-                        rMap.header=rMap.header||{};
-                        rMap.header["Authorization"]="Basic "+con._toBase64(queryUserName+":"+queryPassword);
-                    }
-                    // ensure string
-                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.XMLRPC.wrapRequest(queryArgs);
-                break;
-                case "SOAP":
-                    rMap.reqType="xml";
-                    proxyType="ajax";
-                    rMap.method="POST";
-                    if(queryUserName && queryPassword){
-                        rMap.username=queryUserName;
-                        rMap.password=queryPassword;
-                        rMap.header=rMap.header||{};
-                        rMap.header["Authorization"]="Basic "+con._toBase64(queryUserName+":"+queryPassword);
-                    }
-                    // ensure string
-                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.SOAP.wrapRequest(queryArgs, con.WDSLCache[queryURL]);
-                break;
-            }
-
-            // Ajax/SAjax/IAjax
-            if(!proxyType && prop.proxyType!="auto")
-                proxyType = prop.proxyType;
-            if(proxyType!="ajax")
-                rMap.asy=true;
-            if(proxyType=="sajax")
-                rMap.method="GET";
-            if(proxyType)
-                proxyType=proxyType.toLowerCase();
-
-            options=options||{};
-            if(!("asy" in options))
-                options.asy=!!prop.queryAsync;
-            if(!("method" in options)&&prop.queryMethod!="auto")
-                options.method=prop.queryMethod;
-            if(!("onEnd" in options))
-                options.onEnd=onEnd;
-            if(!("onStart" in options))
-                options.onStart=onStart;
-            _.merge(options, queryOptions);
-
-            _.merge(options, rMap, 'all');
-            options.proxyType=proxyType;
-
-            var ajax=xui._getrpc(queryURL, queryArgs, options).apply(null, [
-                queryURL,
-                queryArgs,
-                function(rspData){
-                    var mapb;
-
-                    // Normally, Gives a change to modify the "rspData" format for XML
-                    if(prf.afterInvoke){
-                        mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                        if(_.isSet(mapb))rspData=mapb;
-                        mapb=null;
-                    }
-                    // ensure to json
-                    if(dsType=='remoting' && !_.isHash(rspData) && !_.isStr(rspData)){
-                        if(responseType=="XML")
-                            rspData=xui.XMLRPC.parseResponse(rspData);
-                        else if(responseType=="SOAP")
-                            rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
-                    }
-                   if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
-                   _.tryF(onSuccess,arguments,this);
-                },
-                function(rspData){
-                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                   if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
-                    _.tryF(onFail,arguments,this);
-                },
-                threadid,
-                options]
-            );
-            if(mode=="busy")
-                _.observableRun(function(threadid){
-                    ajax.start();
-                });
-            else if(mode=="return")
-                return ajax;
-            else
-                ajax.start();
-        },
-        "read":function(onSuccess, onFail, onStart, onEnd, mode, threadid, options, adjustData){
-            var ns=this,prf=ns.get(0),
-                prop=prf.properties,
-                requestId=prop.requestId,
-                dsType=prop.dataSourceType;
-            if(dsType=='none'||dsType=='memory')return;
-
-            if(prf.beforeRead && false===prf.boxing().beforeRead(prf, requestId||this.uid))
-                return;
-
-            return ns.invoke(function(rspData){
-                var mapb;
-                // Normally, Gives a change to modify the "rspData" format to suitable key/value maps
-                if(prf.afterRead){
-                    mapb = prf.boxing().afterRead(prf, rspData, requestId||this.uid);
-                    if(_.isSet(mapb))rspData=mapb;
-                    mapb=null;
-                }
-
-                if(_.isHash(rspData))
-                    // auto setData ,and reset values to UI
-                    prf.boxing().setData(rspData).updateDataToUI(adjustData);
-
-                _.tryF(onSuccess,arguments,this);
-
-            }, onFail, onStart, onEnd, mode, threadid, options);
-        },
-        "write":function(onSuccess, onFail, onStart, onEnd, mode, threadid, options){
-            var ns=this,prf=ns.get(0),dsType=prf.properties.dataSourceType;
-            if(dsType=='none'||dsType=='memory')return;
-
-            if(prf.beforeWrite && false===prf.boxing().beforeWrite(prf, requestId||this.uid))
-                return;
-
-            return ns.invoke(function(rspData){
-               var mapb;
-               if(prf.afterWrite){
-                    mapb = prf.boxing().afterWrite(prf, rspData, requestId||this.uid);
-                    if(_.isSet(mapb))rspData=mapb;
-                    mapb=null;
-                }
-                _.tryF(onSuccess,arguments,this);
-            }, onFail, onStart, onEnd, mode, threadid, options);
         }
     },
     Static:{
-        WDSLCache:{},
         $nameTag:"databinder_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1},
+        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1,tokenParams:1,queryOptions:1},
         _getBoundElems:function(prf){
             var arr=[];
             _.arr.each(prf._n,function(profile){
@@ -595,33 +377,6 @@ Class("xui.DataBinder","xui.absObj",{
                 }
             });
             return _.arr.removeDuplicate(arr);
-        },
-        destroyAll:function(){
-            this.pack(_.toArr(this._pool,false),false).destroy();
-            this._pool={};
-        },
-        getFromName:function(name){
-            var o=this._pool[name];
-            return o && o.boxing();
-        },
-        _toBase64:function(str){
-            var keyStr="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-                arr=[],
-                i=0,
-                c1,c2,c3,e1,e2,e3,e4;
-            do {
-                c1=str.charCodeAt(i++);
-                c2=str.charCodeAt(i++);
-                c3=str.charCodeAt(i++);
-                e1=c1>>2;
-                e2=((c1&3)<<4)|(c2>>4);
-                e3=((c2&15)<<2)|(c3>>6);
-                e4=c3&63;
-                if (isNaN(c2))e3=e4=64;
-                else if(isNaN(c3))e4=64;
-                arr.push(keyStr.charAt(e1)+keyStr.charAt(e2)+keyStr.charAt(e3)+keyStr.charAt(e4));
-            }while(i<str.length);
-            return arr.join('');
         },
         _bind:function(name, profile){
             if(!name)return;
@@ -672,134 +427,15 @@ Class("xui.DataBinder","xui.absObj",{
             if(profile && profile.box && this._pool[name])
                 profile.unLink('databinder.'+name);
         },
-        _beforeSerialized:function(profile){
-            var o={};
-            _.merge(o, profile, 'all');
-            var p = o.properties = _.clone(profile.properties,true);
-            if(p.dataSourceType=='none' || p.dataSourceType=='memory'){
-                delete p.queryURL;
-                delete p.queryUserName;
-                delete p.queryPassword;
-                delete p.queryModel;
-                delete p.queryArgs;
-                delete p.queryOptions;
-                delete p.tokenParams;
-                delete p.proxyType;
-                delete p.queryAsync;
-                delete p.queryMethod;
-                delete p.requestType;
-                delete p.responseType;
-            }else{
-                delete p.data;
-            }
-            if(p.tagVar && _.isEmpty(p.tagVar))
-                delete p.tagVar;
-            if(p.data && _.isEmpty(p.data))
-                delete p.data;
-            if(p.queryArgs && _.isEmpty(p.queryArgs))
-                delete p.queryArgs;
-            if(p.tokenParams && _.isEmpty(p.tokenParams))
-                delete p.tokenParams;
-            if(p.queryOptions && _.isEmpty(p.queryOptions))
-                delete p.queryOptions;
-            return o;
-        },
         DataModel:{
-            dataBinder:null,
-            dataField:null,
             "data":{
                 ini:{}
-            },
-            requestId:"",
-            dataSourceType:{
-                ini:"none",
-                listbox:["none","memory","remoting"]
-            },
-            queryURL:{
-                ini:""
-            },
-            queryUserName:{
-                ini:""
-            },
-            queryPassword:{
-                ini:""
-            },
-            queryModel:"",
-            queryMethod:{
-                ini:"auto",
-                listbox:["auto","GET","POST"]
-            },
-            queryAsync:true,
-            requestType:{
-                ini:"HTTP",
-                listbox:["HTTP","JSON","XML","SOAP"]
-            },
-            responseType:{
-                ini:"JSON",
-                listbox:["JSON","XML","SOAP"]
-            },
-            queryArgs:{
-                ini:{}
-            },
-            tokenParams:{
-                ini:{}
-            },
-            queryOptions:{
-                ini:{}
-            },
-            proxyType:{
-                ini:"auto",
-                listbox:["auto","Ajax","SAjax","IAjax"]
-            },
-            "name":{
-                set:function(value){
-                    var o=this,
-                        ovalue=o.properties.name,
-                         c=xui.DataBinder,
-                        _p=c._pool,
-                        _old=_p[ovalue],
-                        _new=_p[value],
-                        ui;
-
-                    //if it exists, overwrite it dir
-                    //if(_old && _new)
-                    //    throw value+' exists!';
-
-                    _p[o.properties.name=value]=o;
-                    //modify name
-                    if(_old && !_new && o._n.length)
-                        for(var i=0,l=o._n.length;i<l;i++)
-                            _.set(o._n[i], ["properties","dataBinder"], value);
-
-                    //pointer _old the old one
-                    if(_new && !_old) o._n=_new._n;
-                    //delete the old name from pool
-                    if(_old)delete _p[ovalue];
-                }
-            },
-            proxyInvoker:{
-                inner:true,
-                trigger:function(){
-                    this.read(function(d){
-                        xui.alert("onData",_.stringify(d));
-                    },function(e){
-                        xui.alert("onError",_.stringify(e));
-                    });
-                }
             }
         },
         EventHandlers:{
             beforeInputAlert:function(profile, ctrlPrf, type){},
             beforeUpdateDataToUI:function(profile, dataToUI){},
-            afterUpdateDataFromUI:function(profile, dataFromUI){},
-            beforeInvoke:function(profile, requestId){},
-            afterInvoke:function(profile, rspData, requestId){},
-            onData:function(profile, rspData, requestId){},
-            onError:function(profile, rspData, requestId){},
-            beforeRead:function(profile, requestId){},
-            afterRead:function(profile, rspData, requestId){},
-            beforeWrite:function(profile, requestId){},
-            afterWrite:function(profile, rspData, requestId){}
+            afterUpdateDataFromUI:function(profile, dataFromUI){}
         }
     }
 });

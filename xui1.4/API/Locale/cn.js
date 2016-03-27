@@ -6050,18 +6050,6 @@ _.set(xui.Locale,["cn","app"], {
                     "value [可选参数] : Object, 值关键字,只有在key为String的时候有效."
                 ]
             },
-            getDataSourceType:{
-                $desc:"[废弃] 获取数据源的类型.",
-                $rtn:"String"
-            },
-            setDataSourceType:{
-                $desc:"[废弃] 设置数据源的类型.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String, 数据源的类型. 'none','memory','remoting' 之一,默认为none. 只有设置为'remoting', queryURL,queryUserName, queryPassword, queryMethod,queryAsync,queryModel,queryArgs,tokenParams,queryOptions,proxyType,requestType,responseType等属性才会有效.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
             getQueryURL:{
                 $desc:"[废弃] 获取远程数据源的URL请求地址.",
                 $rtn:"String"
@@ -19770,8 +19758,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             interval:"定时间隔(ms)"
         },
         'xui_DataBinder' : {
-            'data':'内部数据',
-            'dataSourceType':'数据源类型',
+            'data':'绑定的数据',
             'queryURL':'远程服务地址',
             'queryUserName':'服务登陆账号',
             'queryPassword':'服务登陆密码',
@@ -19806,6 +19793,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             hoverPop:"悬停弹出对象",
             hoverPopType:"悬停弹出类型",
             'dock':'停靠类型',
+            'dockStretch':'停靠延展',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
             'dockMargin':'停靠外补丁',

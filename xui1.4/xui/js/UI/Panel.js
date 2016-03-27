@@ -399,7 +399,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     var ns=this,root=ns.getRoot();
                     ns.getSubNode('BBAR').css('display',v?'none':'');
                     ns.getSubNode('MAIN').css('paddingLeft',v?'0':'');
-                    ns.getSubNode('MAINI').css('paddingRight',v?'0':'');
+                    ns.getSubNode('MAINI').css('paddingRight',v?'0':'').css('backgroundImage',v?'none':'');
                     //force to resize
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
@@ -447,7 +447,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
 
             data._bbarDisplay=data.noFrame?nodisplay:"";
             data._leftp=data.noFrame?"padding-left:0;":"";
-            data._rightp=data.noFrame?"padding-right:0;":"";
+            data._rightp=data.noFrame?"padding-right:0;background-image:none;":"";
 
             profile._toggle = !!data.toggle;
             return data;

@@ -2119,7 +2119,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,rowOptions:1,colOptions:1,animConf:1,data:1},
+        _objectProp:{rowOptions:1,colOptions:1,data:1},
         Behaviors:{
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL:"SCROLL",BODY:"BODY",HEADER:"HEADER"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
@@ -2172,7 +2172,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var p=profile.properties,
                         id = profile.getSubId(src),
                         col = profile.colMap[id];
-                    if(col && col.relWidth)return;
+                    if(col && col.flexSize)return;
 
                     var o=xui(src),
                     minW =o.parent(2).width()-p._minColW,
@@ -2274,7 +2274,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o=profile.getSubNode("HCELL",col._serialId);
                     }
 
-                    if(col && col.relWidth)return;
+                    if(col && col.flexSize)return;
 
                     //for row0
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
@@ -4033,8 +4033,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             profile.colMap[col[SubID]]=col;
             col.width = col.width||prop._colDfWidth;
+
+            if('relWidth' in col){
+                col.flexSize = col.relWidth
+                delete col.relWidth;
+            }
             // width
-            if(!col.relWidth){
+            if(!col.flexSize){
                 if(col.hasOwnProperty('minWidth'))col.width=Math.max(col.minWidth);
                 if(col.hasOwnProperty('maxWidth'))col.width=Math.min(col.minWidth);
             }
@@ -4049,7 +4054,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             forDom._tabindex=prop.tabindex;
             forDom.colDDDisplay = (('colResizer' in col)?col.colResizer:prop.colResizer)?'':NONE;
 
-            if(col.relWidth)forDom.colDDDisplay = NONE;
+            if(col.flexSize)forDom.colDDDisplay = NONE;
 
             //  Forward-compatible with 'visibility'
             if(col.hasOwnProperty('visibility') && !col.hasOwnProperty('hidden'))
@@ -5748,7 +5753,7 @@ editorEvents
             }
             _.each(profile.colMap,function(col){
                 if(col.hidden)return;
-                if(!col.relWidth){
+                if(!col.flexSize){
                     fixW+=col.width;
                 }else{
                     relWTotal+=parseFloat(col.width);

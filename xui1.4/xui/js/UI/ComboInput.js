@@ -808,7 +808,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
 
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,popCtrlProp:1,popCtrlEvents:1,animConf:1},
+        _objectProp:{popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
             HoverEffected:{BOX:'BOX',BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
             ClickEffected:{BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},

@@ -5990,18 +5990,6 @@ _.set(xui.Locale,["en","app"], {
                     "value [Optional] : Object, value, only when the parameter 'key' was specified."
                 ]
             },
-            getDataSourceType:{
-                $desc:"[Deprecated] Gets the remoting data source type.",
-                $rtn:"String"
-            },
-            setDataSourceType:{
-                $desc:"[Deprecated] Sets the remoting data source type.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String, data source type. Can be 'none','memory' or 'remoting', the default is 'none'. Those properties(queryURL,queryUserName,queryPassowrd,queryMethod,queryAsync,queryModel,queryArgs,queryOptions,proxyType,requestType,responseType) can be used only when dataSourceType is 'remoting'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
             getQueryURL:{
                 $desc:"[Deprecated] Gets the remoting data source's query URL.",
                 $rtn:"String"

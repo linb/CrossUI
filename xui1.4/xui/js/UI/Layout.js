@@ -107,8 +107,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 if(!node.isEmpty()){
                     if(options.hasOwnProperty('size')){
                         options.size = parseInt(''+options.size,10);
-                        if(options.size!=item.size){
-                            item.size=options.size;
+                        if(options.size!=item._size){
+                            item._size=options.size;
                             if(vertical)
                                 node.height(options.size);
                              else
@@ -465,18 +465,29 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     var t=profile.properties,
                         o=xui.use(src).parent(),
                         r=profile.getRoot(),
-                        item = profile.getItemByDom(src);
-
+                        item = profile.getItemByDom(src),
+                        sum=0, cur,
+                        innerW=null,innerH=null,mainItem;
+                    for (var i=0,l=t.items.length; i<l; i++){
+                        sum += t.items[i].size || 80;
+                        if(t.items[i].id=="main")mainItem=t.items[i];
+                    }
                     //add offset and refresh
                     if(t.type=='vertical'){
+                        innerH = r.height();
                         //use size to ignore onresize event once
-                        o.height(item.size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y);
-                        xui.UI.$tryResize(profile,null,r.height(),true);
+                        o.height(item._size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y);
+                        cur = sum * item._size / innerH;
                     }else{
-                        o.width(item.size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x);
-                        //use size to ignore onresize event once
-                        xui.UI.$tryResize(profile,r.width(),null,true);
+                        innerW = r.width();
+                        o.width(item._size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x);
+                        cur = sum * item._size / innerW;
                     }
+                    // always - main
+                    mainItem.size -= cur - item.size;
+                    item.size = cur;
+                    //use size to ignore onresize event once
+                    xui.UI.$tryResize(profile,innerW,innerH,true);
                     profile._limited=0;
                 }
             },
@@ -497,9 +508,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(t.type=='vertical'){
                         // restore resize mode
                         if(item.folded){
-                           // if(item.size <= m.height() - main.min + _handlerSize){
+                           // if(item._size <= m.height() - main.min + _handlerSize){
                                 //restore h
-                                o.height(item.size);
+                                o.height(item._size);
                                 panel.show();
 
                                 item.folded=false;
@@ -532,8 +543,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         xui.UI.$tryResize(profile,null,r.height(),true);
                     }else{
                         if(item.folded){
-                           // if(item.size <= m.width()-main.min + _handlerSize){
-                                o.width(item.size);
+                           // if(item._size <= m.width()-main.min + _handlerSize){
+                                o.width(item._size);
                                 panel.show();
                                 item.folded=false;
                                 if(item.pos=='before')
@@ -619,6 +630,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             listKey:null,
             width:200,
             height:200,
+            flexSize:{
+                ini: false,
+                action:function(){
+                    var prf=this,r=prf.getRoot();
+                    xui.UI.$tryResize(prf, r.width(), r.height(), true);
+                }
+            },
             items:{
                 ini:[],
                 set:function(value){
@@ -683,7 +701,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             _.arr.each(arr,function(o){
                 o.id = _.isStr(o.id)?o.id:_.id();
                 o.min = o.min || 10;
-                o.size = parseInt(o.size,10) || 80;
+                o._size = o.size = parseInt(o.size,10) || 80;
                 o.locked= typeof o.locked=='boolean'?o.locked:false;
                 o.folded = typeof o.folded=='boolean'?o.folded:false;
                 o.hidden = typeof o.hidden=='boolean'?o.hidden:false;
@@ -696,8 +714,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
             //arrage items
             _.arr.each(items,function(o){
+                o=_.copy(o);
                 if(o.id=='main'){
-                    main=o
+                    main=o;
                 }else{
                     if(o.pos=='before')
                         before.push(o);
@@ -711,6 +730,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             main = main || {};
             main.id = 'main';
             main.min = main.min || 10;
+            // no _size in main
+            main.size = parseInt(main.size,10) || 80;
 
             //reset items
             items.length = 0;
@@ -746,9 +767,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data.cls3  = profile.getClass('CMD', '-main' );
             }else{
                 if(p.type=='vertical')
-                    data.size = 'height:'+data.size+'px';
+                    data._size = 'height:'+data._size+'px';
                 else
-                    data.size = 'width:'+data.size+'px';
+                    data._size = 'width:'+data._size+'px';
 
                 var pos;
                 if(p.type=='vertical'){
@@ -807,7 +828,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 move=profile.getSubNode('MOVE',true),
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
-                _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
+                _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width'),
+                pct = t.flexSize, sum=0;
 
             var obj={}, obj2={};
             // **keep the original size
@@ -817,22 +839,24 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 obj[itemId] = {};
                 obj2[itemId] = {};
 //                obj3[itemId] = o;
+                if(pct)sum+=o.size||80;
             });
 
             var fun=function(prop,w,width,left,right,offset,forceoffset){
                 var _t,m,m1,itemId, temp1=0,temp2=0,temp=0,blocknumb=0,offsetbak=offset;
+
                 _.arr.each(prop.items,function(o){
                     if(o.id=='main')return;
                     if(o.pos=='before'){
                         itemId = profile.getSubIdByItemId(o.id);
                         if(o.hidden){
                             m=0;
-                            obj2[itemId][width]=o.size;
+                            obj2[itemId][width]=pct? parseInt(w*Math.min(1,(o.size/sum)),10) :o._size;
                         }else if(o.folded){
                             m=obj2[itemId][width]=_handlerSize;
                         }else{
                             blocknumb++;
-                            m=m1=o.size;
+                            m=m1=pct? parseInt(w*Math.min(1,(o.size/sum)),10) :o._size;
                             if(m>offset+o.min){
                                 m-=offset;
                             }else{
@@ -857,12 +881,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         itemId = profile.getSubIdByItemId(o.id);
                         if(o.hidden){
                             m=0;
-                            obj2[itemId][width]=o.size;
+                            obj2[itemId][width]= pct? parseInt(w*Math.min(1,(o.size/sum)),10) : o._size;
                         }else if(o.folded){
                             m=obj2[itemId][width]=_handlerSize;
                         }else{
                             blocknumb++;
-                            m=m1=o.size;
+                            m=m1= pct? parseInt(w*Math.min(1,(o.size/sum)),10): o._size;
                             if(m>offset+o.min){
                                 m-=offset;
                             }else{
@@ -909,7 +933,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     //get left
                     fun(t,width,'width','left','right',0,0);
 //                    _.each(obj2,function(o,i){
-//                       if(o.width && !obj3[i].folded)obj3[i].size=o.width;
+//                       if(o.width && !obj3[i].folded)obj3[i]._size=o.width;
 //                    });
                  }
                 if(!_.isNull(height)){
@@ -922,7 +946,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     //get left
                     fun(t,height,'height','top','bottom',0,0);
 //                    _.each(obj2,function(o,i){
-//                        if(o.height  && !obj3[i].folded)obj3[i].size=o.height;
+//                        if(o.height  && !obj3[i].folded)obj3[i]._size=o.height;
 //                    });
                 }
                 if(!_.isNull(width)){

@@ -927,8 +927,7 @@ Class("xui.UI",  "xui.absObj", {
                     o.boxing().adjustDock(force);
                 }else{
                     if(force){
-                        o._resize_h=-1;
-                        o._resize_w=-1;
+                        o._resize_h=o._resize_w=-1;
                     }
                     xui.UI.$tryResize(o,p.width,p.height,force);
                 }
@@ -1571,8 +1570,7 @@ Class("xui.UI",  "xui.absObj", {
                             n.style.width=0;
                             n.style.height=0;
                             // ensure force 2
-                            o._resize_h=-1;
-                            o._resize_w=-1;
+                            o._resize_h=o._resize_w=-1;
                         }
                         xui.UI.$dock(o,true,true);
                     }
@@ -1617,7 +1615,7 @@ Class("xui.UI",  "xui.absObj", {
                     }
 
                     if(p.dock!='none'){
-                        args={
+                            args={
                             $type:p.dock,
                             $dockid:_.arr.indexOf(['width','height','fill','cover'],p.dock)!=-1?self.$xid:null
                         };
@@ -1660,7 +1658,12 @@ Class("xui.UI",  "xui.absObj", {
                                 args.width=args.height=1;
                                 break;
                         }
-                        _.tryF(self.$dockFun,[args],self);
+                        var pp = xui.UIProfile.getFromDom(self.$dockParent);
+                        if(pp && pp.properties.conDockFlexFill){
+                            pp.boxing().adjustDock(true);
+                        }else{
+                            _.tryF(self.$dockFun,[args],self);
+                        }
                     }
                 }
             }
@@ -2618,7 +2621,7 @@ Class("xui.UI",  "xui.absObj", {
             style=null;
         },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,animConf:1},
+        objectProp:{},
         $toDom:function(profile, str, addEventHandler){
             if(addEventHandler===false)
                 return _.str.toDom(str);
@@ -3375,6 +3378,32 @@ Class("xui.UI",  "xui.absObj", {
                                     });
                                 }
                             },
+                            conDockPadding:{
+                                ini:{left:0,top:0,right:0,bottom:0},
+                                action:function(){
+                                    this.boxing().adjustDock(true);
+                                }
+                            },
+                            conDockSpacing:{
+                                ini:{width:0,height:0},
+                                action:function(){
+                                    this.boxing().adjustDock(true);
+                                }
+                            },
+                            conDockFlexFill:{
+                                ini:"",
+                                combobox:['none','width','height','both'],
+                                action:function(){
+                                    this.boxing().adjustDock(true);
+                                }
+                            },
+                            conDockFlowStretch:{
+                                ini:"",
+                                combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5'],
+                                action:function(){
+                                    this.boxing().adjustDock(true);
+                                }
+                            },
                             formMethod:{
                                 ini:'get',
                                 listbox:['get','post']
@@ -3546,13 +3575,14 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                _.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
-                    var f='get'+_.str.initial(o);
+                _.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockFlowStretch,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
+                    var f='get'+_.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
                     if(!t[f])t[f]=src[f];
-                    self.$DataStruct[o]="";
-                    self.$DataModel[o]=_.copy(xui.absComposed.$DataModel[o]);
+                    dm=xui.absComposed.$DataModel[o];
+                    self.$DataStruct[o]=_.isSet(dm.ini)?_.copy(dm.ini):"";
+                    self.$DataModel[o]=_.copy(dm);
                 });
 
                  _.merge(hls, xui.absComposed.$EventHandlers);
@@ -4126,6 +4156,24 @@ Class("xui.UI",  "xui.absObj", {
             },
             dockMinW:0,
             dockMinH:0,
+            // for top/left/right/bottom only
+            // "" can be reset by container's conDockFlowStretch
+            dockFlowStretch:{
+                ini:"",
+                combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5'],
+                set:function(value){
+                    var o=this, t=o.properties;
+                    t.dockFlowStretch=value;
+                    if(t.dock == "fill"||t.dock == "cover"||t.dock == "width"||t.dock == "height"){
+                        if(value!='forward'&&value!='rearward'&&value!='stretch'){
+                            t.dockFlowStretch="stretch";
+                        }
+                    }
+                    if(o.rendered && t.dock!='none'){
+                        xui.UI.$dock(o,true,true);
+                    }
+                }
+            },
             tips:{
                 ini:'',
                 action:function(v){
@@ -4322,6 +4370,7 @@ Class("xui.UI",  "xui.absObj", {
             var node = profile.getRoot(),
                 isSVG = profile.box['xui.svg'],
                 ins = profile.boxing(),
+                i1=-1,i2=-1,i3=-1,i4=-1,
                 p=xui((node.get(0) && node.get(0).parentNode)||profile.$dockParent),
                 adjustOverflow=function(p,isWin){
                     var f,t,c,x,y;
@@ -4419,10 +4468,10 @@ Class("xui.UI",  "xui.absObj", {
                 profile.$dockType = value;
 
                 //unlink first
-                profile.unLink('$dockall');
-                profile.unLink('$dock');
-                profile.unLink('$dock1');
-                profile.unLink('$dock2');
+                i1=profile.unLink('$dockall');
+                i2=profile.unLink('$dock');
+                i3=profile.unLink('$dock1');
+                i4=profile.unLink('$dock2');
 
                 //set the fix value first
                 switch(value){
@@ -4491,6 +4540,14 @@ Class("xui.UI",  "xui.absObj", {
                                 pid=me.pid,
                                 // the dock parent is window
                                 isWin= me.pid=="!window" || me.pid=="!document",
+                                pprf = isWin?0:xui.UIProfile.getFromDom(pid),
+                                pprop = pprf && pprf.properties,
+                                conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
+                                conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
+                                conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
+                                conDockFlowStretch=(pprop && ('conDockFlowStretch' in pprop))?pprop.conDockFlowStretch:'',
+                                perW=conDockFlexFill=="width"||conDockFlexFill=="both",
+                                perH=conDockFlexFill=="height"||conDockFlexFill=="both",
                                 node=isWin?xui.win:xui(pid);
 
                              if(!node.get(0))
@@ -4524,15 +4581,118 @@ Class("xui.UI",  "xui.absObj", {
                             //any node resize
                             if( arg.$dockid || !isWin || ((_() - xui.$cache._resizeTime) > 50)){
                                 //recruit call, give a short change
-                                obj = {left:0,top:0,right:0,bottom:0,width:width,height:height};
-    
+                                obj = {
+                                    left: conDockPadding.left,
+                                    top: conDockPadding.top,
+                                    right: conDockPadding.right,
+                                    bottom: conDockPadding.bottom,
+                                    width: width,
+                                    height: height
+                                };
+                                obj.preX = obj.oX = obj.left;
+                                obj.preY = obj.oY = obj.top;
+                                obj.ww = obj.width - obj.left - obj.right + conDockSpacing.width;
+                                obj.hh = obj.height - obj.top - obj.bottom + conDockSpacing.height;
+                                obj.leftHolder=obj.topHolder=obj.rightHolder=obj.bottomHolder=0;
+
+
+                                // adjust width/height first
+                                if(perW || perH){
+                                    var wCount=0,wSum=0,hCount=0,hSum=0,tmp,hMax=0;
+                                    // collect controls (w/h) to be percentaged, no dockIgnore
+                                    for(k=0;key=arr[k++];){
+                                        target = me[key];
+                                        if(target.length){
+                                            for(i=0;o=target[i++];){
+                                                if(!o.properties.dockIgnore){
+                                                    var node = o.getRoot();
+                                                    if(perW && (key=='left'||key=='right'||key=='width')){
+                                                        wCount++;
+                                                        tmp= parseFloat(o.properties.width) || node.width() ;
+                                                        wSum +=tmp;
+                                                        if(o.properties.dock!="fill"){
+                                                            hMax = Math.max(hMax, parseFloat(o.properties.height) || node.height());
+                                                        }
+                                                    }
+                                                    if(perH && (key=='top'||key=='bottom'||key=='height')){
+                                                        hCount++;
+                                                        hSum += parseFloat(o.properties.height) || node.height();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(hSum&&hMax){
+                                        hSum += hMax;
+                                    }
+                                    // for w percent
+                                    if(wCount>=1 && wSum && obj.width){
+                                        var innerW = obj.width - conDockPadding.left - conDockPadding.right - (wCount-1)*conDockSpacing.width;
+                                        for(k=0;key=arr[k++];){
+                                            target = me[key];
+                                            if(target.length){
+                                                for(i=0;o=target[i++];){
+                                                    if(!o.properties.dockIgnore){
+                                                        var node = o.getRoot();
+                                                        if(key=='left'||key=='right'||key=='width'){
+                                                            node.width(Math.min(1, (parseFloat(o.properties.width) || node.width()) / wSum) * innerW);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // for h percent
+                                    if(hCount>=1  && hSum && obj.height){
+                                        var innerH = obj.height - conDockPadding.top - conDockPadding.bottom - (hCount-1)*conDockSpacing.height;
+                                        for(k=0;key=arr[k++];){
+                                            target = me[key];
+                                            if(target.length){
+                                                for(i=0;o=target[i++];){
+                                                    if(!o.properties.dockIgnore){
+                                                        var node = o.getRoot();
+                                                        if(key=='top'||key=='bottom'||key=='height'){
+                                                            node.height(Math.min(1, (parseFloat(o.properties.height) || node.height())/ hSum) * innerH);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(perW)pprf._conDockFlexFillW=1;
+                                    if(perH)pprf._conDockFlexFillH=1;
+                                }
+                                if(conDockFlexFill!="both"){
+                                    for(k=0;key=arr[k++];){
+                                        target = me[key];
+                                        if(target.length){
+                                            for(i=0;o=target[i++];){
+                                                if(!o.properties.dockIgnore){
+                                                    var node = o.getRoot();
+                                                    if(pprf._conDockFlexFillW && !perW && (key=='left'||key=='right'||key=='width')){
+                                                        node.width(o.properties.width) ;
+                                                    }
+                                                    if(pprf._conDockFlexFillH && !perH && (key=='top'||key=='bottom'||key=='height')){
+                                                        node.height(o.properties.height);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(!perW)delete pprf._conDockFlexFillW;
+                                    if(!perH)delete pprf._conDockFlexFillH;
+                                }
+
                                 for(k=0;key=arr[k++];){
+                                    obj.preX = obj.oX;
+                                    obj.preY = obj.top;
+
                                     target = me[key];
                                     if(target.length){
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
                                             if(!o.properties.dockIgnore){
-                                                rePos(o, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height);
+                                                rePos(o, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockFlowStretch);
                                             }
                                         }
                                     }
@@ -4610,13 +4770,16 @@ Class("xui.UI",  "xui.absObj", {
                             f[key]=[];
                         });
                         f.dockall=[];
-                        f.rePos=function(profile, obj, value, id, w, h){
+                        f.rePos=function(profile, obj, value, id, w, h, spaceW, spaceH, conDockFlowStretch){
                             //if $dockid input, and not the specific node, return
                             var flag=false;
                             if(id && profile.$xid!=id)flag=true;
                             var prop = profile.properties,
                                 flt=prop.dockFloat,
                                 margin = prop.dockMargin,
+                                stretch=prop.dockFlowStretch,
+                                sStart,sEnd,noStretch,pct,isCover,
+                                tempW=0,tempH=0,
                                 node = profile.getRoot(),
                                 ins = profile.boxing(),
                                 style = profile.getRootNode().style,
@@ -4635,6 +4798,47 @@ Class("xui.UI",  "xui.absObj", {
 
                             if(style.display=='none')
                                 return;
+                            switch(value){
+                                case 'middle':
+                                case 'center':
+                                    sStart = sEnd = 0;
+                                    break;
+                                default:                                    
+                                    // flow stretch can be copy from container
+                                    stretch = stretch || ((value=="width"||value=="height")?"":conDockFlowStretch) || "stretch";
+
+                                    // width/height support 3 only:
+                                    if(value=="width" || value=="height"){
+                                        if(stretch!="stretch" && stretch!="forward" && stretch!="rearward"){
+                                            stretch='stretch';
+                                        }
+                                    }
+                                    switch(stretch){
+                                        case 'stretch':
+                                            sStart=1;
+                                            sEnd=1;
+                                            noStretch=0;
+                                        break;
+                                        case 'forward':
+                                            sStart=1;
+                                            sEnd=0;
+                                            noStretch=0;
+                                        break;
+                                        case 'rearward':
+                                            sStart=0;
+                                            sEnd=1;
+                                            noStretch=0;
+                                        break;
+                                        case 'fixed':
+                                            noStretch=1;
+                                        break;
+                                        default:
+                                            noStretch=1;
+                                            pct = Math.min(1, Math.max(0, parseFloat(stretch) ));
+                                    }
+                            }
+
+                            isCover = prop.dock=='cover';
                             //top/bottom/left/right must be set by order first
                             switch(value){
                                 case 'middle':
@@ -4652,90 +4856,285 @@ Class("xui.UI",  "xui.absObj", {
                                     break;
                                 case 'top':
                                     if(!flag){
-                                        left=margin.left;
-                                        right=margin.right;
-                                        top=(flt?0:obj.top)+margin.top;
-                                        if(parseFloat(style.top)!=top)region.top=top;
-                                        temp=obj.width - left - right - x;
-                                        temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockwFixed, temp):(profile.$dockwFixed=1,  prop.dockMinW));
-                                        if(parseFloat(style.width)!=temp)region.width=_adjust(temp);
-                                        if(!_.isEmpty(region)){
-                                            if(isSVG)
-                                                ins._setBBox(region);
-                                            else
-                                                node.cssRegion(region,true);
+                                        if(noStretch){
+                                            temp = pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width);
+                                            temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockwFixed, temp):(profile.$dockwFixed=1,  prop.dockMinW));
+
+                                            tempW = temp - margin.left - margin.right;
+                                            if((obj.preX + temp - obj.oX) > obj.ww){
+                                                obj.top += obj.topHolder;
+                                                obj.topHolder=0;
+                                                obj.preX = obj.oX;
+                                            }
+                                            tempW -= spaceW;
+
+                                            left=obj.preX;
+                                            top=obj.top + margin.top;
+                                           
+                                            if(parseFloat(style.left)!=left)region.left=left;
+                                            if(parseFloat(style.top)!=top)region.top=top;
+                                            if(parseFloat(style.width)!=tempW)region.width=tempW=_adjust(tempW)
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)  ins._setBBox(region);
+                                                else node.cssRegion(region,true);
+                                            }
+
+                                            // keep for next calculation
+                                            obj.preX += temp;
+                                            obj.topHolder = Math.max(obj.topHolder, (isSVG ? bbox.height : node.offsetHeight()) + margin.top + margin.bottom + spaceH);
+                                        }else{
+                                            if(obj.topHolder){
+                                                obj.top += obj.topHolder;
+                                                obj.topHolder=0;
+                                                obj.preX = obj.oX;
+                                            }
+                                            left = sStart ? ((flt?0:obj.left)+margin.left) : parseFloat(prop.left);
+                                            right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-parseFloat(prop.width)-parseFloat(prop.left));
+                                            top=(flt?0:obj.top)+margin.top;
+                                            temp = obj.width - left - right - x;
+                                            temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockwFixed, temp):(profile.$dockwFixed=1,  prop.dockMinW));
+
+                                            if(parseFloat(style.left)!=left)region.left=left;
+                                            if(parseFloat(style.top)!=top)region.top=top;
+                                            if(parseFloat(style.width)!=temp)region.width=_adjust(temp);
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG) ins._setBBox(region);
+                                                else node.cssRegion(region,true);
+                                            }
+
+                                            if(!flt)
+                                                obj.top += (isSVG ? bbox.height : node.offsetHeight()) + margin.top + margin.bottom + spaceH;
                                         }
                                     }
 
-                                    if(!flt)
-                                        obj.top += (isSVG?bbox.height:node.offsetHeight() + margin.top + margin.bottom);
                                     break;
                                 case 'bottom':
                                     if(!flag){
-                                        left=margin.left;
-                                        right=margin.right;
-                                        bottom=(flt?0:obj.bottom)+margin.bottom;
-                                        if(parseFloat(style.bottom)!=bottom)region.bottom=bottom;
-                                        temp=obj.width - left - right - x;
-                                        temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockwFixed, temp):(profile.$dockwFixed=1,  prop.dockMinW));
-                                        if(parseFloat(style.width)!=temp)region.width=_adjust(temp);
-                                        if(!_.isEmpty(region)){
-                                            if(isSVG)
-                                                ins._setBBox(region);
-                                            else
-                                                node.cssRegion(region,true);
+                                        if(noStretch){
+                                            temp = pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width);
+                                            temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockwFixed, temp):(profile.$dockwFixed=1,  prop.dockMinW));
+
+                                            tempW = temp - margin.left - margin.right;
+                                            if((obj.preX + temp - obj.oX) > obj.ww){
+                                                obj.bottom += obj.bottomHolder;
+                                                obj.bottomHolder=0;
+                                                obj.preX = obj.oX;
+                                            }
+                                            tempW -= spaceW;
+
+                                            left=obj.preX;
+                                            bottom=obj.bottom + margin.bottom;
+                                           
+                                            if(parseFloat(style.left)!=left)region.left=left;
+                                            if(parseFloat(style.bottom)!=bottom)region.bottom=bottom;
+                                            if(parseFloat(style.width)!=tempW)region.width=tempW=_adjust(tempW)
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)  ins._setBBox(region);
+                                                else node.cssRegion(region,true);
+                                            }
+
+                                            // keep for next calculation
+                                            obj.preX += temp;
+                                            obj.bottomHolder = Math.max(obj.bottomHolder, (isSVG ? bbox.height : node.offsetHeight()) + margin.top + margin.bottom + spaceH);
+                                        }
+                                        else{
+                                            if(obj.bottomHolder){
+                                                obj.bottom += obj.bottomHolder;
+                                                obj.bottomHolder=0;
+                                                obj.preX = obj.oX;
+                                            }
+                                            left=sStart?((flt?0:obj.left)+margin.left):parseFloat(prop.left);
+                                            right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-parseFloat(prop.width)-parseFloat(prop.left));
+                                            bottom=(flt?0:obj.bottom)+margin.bottom;
+
+                                            temp=obj.width - left - right - x;
+                                            temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockwFixed, temp):(profile.$dockwFixed=1,  prop.dockMinW));
+
+                                            if(parseFloat(style.bottom)!=bottom)region.bottom=bottom;
+                                            if(parseFloat(style.left)!=left)region.left=left;
+                                            if(parseFloat(style.width)!=temp)region.width=_adjust(temp);
+                                            
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)
+                                                    ins._setBBox(region);
+                                                else
+                                                    node.cssRegion(region,true);
+                                            }
+                                        
+                                            if(!flt)
+                                                obj.bottom += (isSVG?bbox.height:node.offsetHeight()) + margin.top + margin.bottom + spaceH;
                                         }
                                     }
-                                    if(!flt)
-                                        obj.bottom += (isSVG?bbox.height:node.offsetHeight() + margin.top + margin.bottom);
                                     break;
                                 case 'left':
                                     if(!flag){
-                                        left=(flt?0:obj.left)+margin.left;
-                                        top=(flt?0:obj.top)+margin.top;
-                                        bottom=(flt?0:obj.bottom)+margin.bottom;
-                                        if(parseFloat(style.left)!=left)region.left=left;
-                                        if(parseFloat(style.top)!=top)region.top=top;
-                                        temp=obj.height - top - bottom - y;
-                                        temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockhFixed, temp):(profile.$dockhFixed=1,  prop.dockMinH));
-                                        if(parseFloat(style.height)!=temp)region.height=_adjust(temp);
-                                        if(!_.isEmpty(region)){
-                                            if(isSVG)
-                                                ins._setBBox(region);
-                                            else
-                                                node.cssRegion(region,true);
+                                        if(obj.topHolder){
+                                            obj.top += obj.topHolder;
+                                            obj.topHolder=0;
+                                            // reset preY
+                                            obj.preY = obj.top;
+                                        }
+                                        if(obj.bottomHolder){
+                                            obj.bottom += obj.bottomHolder;
+                                            obj.bottomHolder = 0;
+                                        }
+                                        // reset hh
+                                        obj.hh = obj.height - obj.top - obj.bottom + spaceH;
+
+                                        if(obj.hh<=0)return;
+
+                                        if(noStretch){
+                                            temp = pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height);
+                                            temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockhFixed, temp):(profile.$dockhFixed=1,  prop.dockMinH));
+
+                                            tempH = temp - margin.top - margin.bottom;
+                                            if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
+                                                obj.left += obj.leftHolder;
+                                                obj.leftHolder=0;
+                                                // reset preY
+                                                obj.preY = obj.top;
+                                            }
+                                            tempH -= spaceH;
+
+                                            top=obj.preY;
+                                            left=obj.left + margin.left;
+                                           
+                                            if(parseFloat(style.left)!=left)region.left=left;
+                                            if(parseFloat(style.top)!=top)region.top=top;
+                                            if(parseFloat(style.height)!=tempH)region.height=tempH=_adjust(tempH)
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)  ins._setBBox(region);
+                                                else node.cssRegion(region,true);
+                                            }
+
+                                            // keep for next calculation
+                                            obj.preY += temp;
+                                            obj.leftHolder = Math.max(obj.leftHolder, (isSVG ? bbox.width : node.offsetWidth()) + margin.left + margin.right + spaceW);
+                                        }
+                                        else{
+                                            if(obj.leftHolder){
+                                                obj.left += obj.leftHolder;
+                                                obj.leftHolder=0;
+                                                obj.preY = obj.top;
+                                            }
+
+                                            left=(flt?0:obj.left)+margin.left;
+                                            top=sStart?((flt?0:obj.top)+margin.top):parseFloat(prop.top);
+                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
+
+                                            temp=obj.height - top - bottom - y;
+                                            temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockhFixed, temp):(profile.$dockhFixed=1,  prop.dockMinH));
+                                            
+                                            if(parseFloat(style.left)!=left)region.left=left;
+                                            if(parseFloat(style.top)!=top)region.top=top;
+                                            if(parseFloat(style.height)!=temp)region.height=_adjust(temp);
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)
+                                                    ins._setBBox(region);
+                                                else
+                                                    node.cssRegion(region,true);
+                                            }
+                                            if(!flt)
+                                                obj.left += (isSVG?bbox.width:node.offsetWidth()) + margin.left + margin.right + spaceW;
                                         }
                                     }
-                                    if(!flt)
-                                        obj.left += (isSVG?bbox.width:node.offsetWidth() + margin.left + margin.right);
                                     break;
                                 case 'right':
                                     //if no top/bottom and change w only
                                     if(!flag){
-                                        right=(flt?0:obj.right)+margin.right;
-                                        top=(flt?0:obj.top)+margin.top;
-                                        bottom=(flt?0:obj.bottom)+margin.bottom;
-                                        if(parseFloat(style.right)!=right)region.right=right;
-                                        if(parseFloat(style.top)!=top)region.top=top;
-                                        temp=obj.height - top - bottom - y;
-                                        temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockhFixed, temp):(profile.$dockhFixed=1,  prop.dockMinH));
-                                        if(parseFloat(style.height)!=temp)region.height=_adjust(temp);
-                                        if(!_.isEmpty(region)){
-                                            if(isSVG)
-                                                ins._setBBox(region);
-                                            else
-                                                node.cssRegion(region,true);
+                                        if(obj.topHolder){
+                                            obj.top += obj.topHolder;
+                                            obj.topHolder=0;
+                                            // reset preY
+                                            obj.preY = obj.top;
+                                        }
+                                        if(obj.bottomHolder){
+                                            obj.bottom += obj.bottomHolder;
+                                            obj.bottomHolder = 0;
+                                        }
+                                        // reset hh
+                                        obj.hh = obj.height - obj.top - obj.bottom + spaceH;
+
+                                        if(obj.hh<=0)return;
+
+                                        if(noStretch){
+                                            temp = pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height);
+                                            temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockhFixed, temp):(profile.$dockhFixed=1,  prop.dockMinH));
+
+                                            tempH = temp - margin.top - margin.bottom;
+                                            if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
+                                                obj.right += obj.rightHolder;
+                                                obj.rightHolder=0;
+                                                // reset preY
+                                                obj.preY = obj.top;
+                                            }
+                                            tempH -= spaceH;
+
+                                            top=obj.preY;
+                                            right=obj.right + margin.right;
+                                           
+                                            if(parseFloat(style.right)!=right)region.right=right;
+                                            if(parseFloat(style.top)!=top)region.top=top;
+                                            if(parseFloat(style.height)!=tempH)region.height=tempH=_adjust(tempH)
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)  ins._setBBox(region);
+                                                else node.cssRegion(region,true);
+                                            }
+
+                                            // keep for next calculation
+                                            obj.preY += temp;
+                                            obj.rightHolder = Math.max(obj.rightHolder, (isSVG ? bbox.width : node.offsetWidth()) + margin.left + margin.right + spaceW);
+                                        }
+                                        else{
+                                            if(obj.rightHolder){
+                                                obj.right += obj.rightHolder;
+                                                obj.rightHolder=0;
+                                                obj.preY = obj.top;
+                                            }
+
+                                            right=(flt?0:obj.right)+margin.right;
+                                            top=sStart?((flt?0:obj.top)+margin.top):(parseFloat(prop.top));
+                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
+
+                                            temp=obj.height - top - bottom - y;
+                                            temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockhFixed, temp):(profile.$dockhFixed=1,  prop.dockMinH));
+                                            
+                                            if(parseFloat(style.right)!=right)region.right=right;
+                                            if(parseFloat(style.top)!=top)region.top=top;
+                                            if(parseFloat(style.height)!=temp)region.height=_adjust(temp);
+
+                                            if(!_.isEmpty(region)){
+                                                if(isSVG)
+                                                    ins._setBBox(region);
+                                                else
+                                                    node.cssRegion(region,true);
+                                            }
+                                            if(!flt)
+                                                obj.right += (isSVG?bbox.width:node.offsetWidth()) + margin.left + margin.right + spaceW;
                                         }
                                     }
-                                    if(!flt)
-                                        obj.right += (isSVG?bbox.width:node.offsetWidth() + margin.left + margin.right);
                                     break;
                                 case 'width':
                                     //if no top/bottom/left/right and change h only
                                     if(!w)return;
-                                    left = (prop.dock=='cover'?0:(flt?0:obj.left)) + margin.left;
-                                    right = (prop.dock=='cover'?0:(flt?0:obj.right))  + margin.right;
-                                    top = prop.dock=='width'?(parseInt(prop.top,10) || 0):( (prop.dock=='cover'?0:(flt?0:obj.top)) + margin.top);
+                                    if(obj.leftHolder){
+                                        obj.left += obj.leftHolder;
+                                        obj.leftHolder=0;
+                                    }
+                                    if(obj.rightHolder){
+                                        obj.right += obj.rightHolder;
+                                        obj.rightHolder=0;
+                                    }
+
+                                    left = sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left);
+                                    right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-parseFloat(prop.width)-parseFloat(prop.left));
+                                    top = prop.dock=='width'?(parseInt(prop.top,10) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top));
                                     //later call for w/h change once
                                     temp=obj.width - left - right - x;
                                     obj.later=obj.later||{};
@@ -4752,9 +5151,20 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'height':
                                     //if no top/bottom/left/right and change w only
                                     if(!h)return;
-                                    top = (prop.dock=='cover'?0:(flt?0:obj.top)) + margin.top;
-                                    bottom = (prop.dock=='cover'?0:(flt?0:obj.bottom))  + margin.bottom;
-                                    left = prop.dock=='height'?(parseInt(prop.left,10) || 0):((prop.dock=='cover'?0:(flt?0:obj.left))+ margin.left);
+                                    if(obj.topHolder){
+                                        obj.top += obj.topHolder;
+                                        obj.topHolder=0;
+                                        obj.preX = obj.oX;
+                                    }
+                                    if(obj.bottomHolder){
+                                        obj.bottom += obj.bottomHolder;
+                                        obj.bottomHolder=0;
+                                        obj.preX = obj.oX;
+                                    }
+
+                                    top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top);
+                                    bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
+                                    left = prop.dock=='height'?(parseInt(prop.left,10) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left));
                                     //later call for w/h change once
                                     temp=obj.height - top - bottom - y;
                                     obj.later=obj.later||{};
@@ -4777,18 +5187,18 @@ Class("xui.UI",  "xui.absObj", {
                     }
                     //set link to node
                     if(value=='fill' || value=='cover'){
-                        profile.link(f.height, '$dock1');
-                        profile.link(f.width, '$dock2');
+                        profile.link(f.height, '$dock1',null,i3);
+                        profile.link(f.width, '$dock2',null,i4);
                         _.arr.stableSort(f.height,order);
                         _.arr.stableSort(f.width,order);
                     }else if(value=='origin'){
-                        profile.link(f.center, '$dock1');
-                        profile.link(f.middle, '$dock2');
+                        profile.link(f.center, '$dock1',null,i3);
+                        profile.link(f.middle, '$dock2',null,i4);
                     }else{
-                        profile.link(f[value], '$dock');
+                        profile.link(f[value], '$dock',null,i2);
                         _.arr.stableSort(f[value],order);
                     }
-                    profile.link(f.dockall, '$dockall');
+                    profile.link(f.dockall, '$dockall',null,i1);
 
                     //
                     xui.$cache._resizeTime=1;
@@ -4829,25 +5239,16 @@ Class("xui.UI",  "xui.absObj", {
         _beforeSerialized:function(profile){
             var b,t,o={};
             _.merge(o, profile, 'all');
-            var p = o.properties = _.clone(profile.properties,true);
+            var p = o.properties = _.clone(profile.properties,true),
+                ds = o.box.$DataStruct;
             switch(p.dock){
                 case 'top':
                 case 'bottom':
-                    delete p.width;delete p.left;delete p.top;delete p.right;delete p.bottom;
+                    delete delete p.top;delete p.bottom;delete p.right;
                     break;
                 case 'left':
                 case 'right':
-                    delete p.height;delete p.left;delete p.top;delete p.right;delete p.bottom;
-                    break;
-                case 'width':
-                    delete p.width;delete p.left;delete p.right;
-                    break;
-                case 'height':
-                    delete p.height;delete p.top;delete p.bottom;
-                    break;
-                case 'fill':
-                case 'cover':
-                    delete p.width;delete p.height;delete p.left;delete p.top;delete p.right;delete p.bottom;
+                    delete p.left;delete p.right;delete p.bottom;
                     break;
             }
             for(var i in xui.UI.$ps)
@@ -4871,6 +5272,17 @@ Class("xui.UI",  "xui.absObj", {
             
             if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
                 delete p.dockMargin;
+            if((t=p.conDockPadding)&&!t.left&&!t.top&&!t.right&&!t.bottom)
+                delete p.conDockPadding;
+            if((t=p.conDockSpacing)&&!t.width&&!t.height)
+                delete p.conDockSpacing;
+            if(p.propBinder && _.isHash(p.propBinder) && _.isEmpty(p.propBinder))
+                delete p.propBinder;
+            if(p.tagVar && _.isHash(p.tagVar) && _.isEmpty(p.tagVar))
+                delete p.tagVar;
+            if(p.animConf && _.isHash(p.animConf) && _.isEmpty(p.animConf))
+                delete p.animConf;
+            
             if(_.isEmpty(p.resizerProp))
                 delete p.resizerProp;
             if(p.items&&(p.items.length==0||p.listKey))
@@ -4907,7 +5319,7 @@ Class("xui.UI",  "xui.absObj", {
             if(prop.id)delete prop.id;
 
             if('required' in dm)
-                prop.required=prop.required?"xui-required":"";
+                prop._required=prop.required?"xui-required":"";
 
             // cant null
             if('nodeName' in dm && !prop.nodeName)
@@ -6321,7 +6733,7 @@ new function(){
     
     Class(u+".Element", u,{
         Static:{
-            _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attributes:1,animConf:1},
+            _objectProp:{attributes:1},
             Templates:{
                 _NativeElement:true,
                 tagName:'{nodeName}',
@@ -6512,7 +6924,7 @@ new function(){
         },
         Static:{
             $initRootHidden:true,
-            _objectProp:{tagVar:1,propBinder:1,normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1,animConf:1},
+            _objectProp:{normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
                 style:'padding:6px;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
                 className:'{_className}',

@@ -106,7 +106,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         _.merge(t.FRAME.BORDER,{
             style:'',
             LABEL:{
-                className:'{required}',
+                className:'{_required}',
                 style:'{labelShow};width:{labelSize}px;{labelHAlign}',
                 text:'{labelCaption}'
             },
@@ -128,7 +128,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         this.setTemplate(t)
     },
     Static:{
-        $initRootHidden:true,
         _syncResize:true,
         _maskMap:{
             '~':'[+-]',

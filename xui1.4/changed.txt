@@ -1,5 +1,13 @@
 1) Separated xui.APICaller from xui.DataBinder
-2£©Remvoed xui.UI.Tag
-3) Added Form-function to all Container controls
-4) Added HiddrenInput Control for  Form-function
-5) Added dockPadding/dockSpace/dockRelative prop for docker
+2) Added Form-function to all Container controls
+3) Remvoed xui.UI.Tag
+4) Added xui.UI.HiddrenInput Control.
+5) Added conDockPadding / conDockSpacing / conDockFlexFill / conDockFlowStretch for docker container
+6) Added dockFlowStretch for docker
+
+
+Updated to NWJS 13.0
+Updated to Codemirror 5.13
+
+
+Version 1.4 is the last version to be compatible with IE678.

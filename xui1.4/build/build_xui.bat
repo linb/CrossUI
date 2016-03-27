@@ -37,6 +37,7 @@ rem ==================
 rem for mini xui code
 rem ==================
 copy %relPath%xui\js\xui.js /b ^
++ %relPath%xui\js\APICaller.js /b ^
 + %relPath%xui\js\DataBinder.js /b ^
 + %relPath%xui\js\Event.js /b ^
 + %relPath%xui\js\CSS.js /b ^
@@ -57,6 +58,7 @@ rem ==================
 rem for all xui code
 rem ==================
 copy %relPath%xui\js\xui.js /b ^
++ %relPath%xui\js\APICaller.js /b ^
 + %relPath%xui\js\DataBinder.js /b ^
 + %relPath%xui\Locale\en.js /b ^
 + %relPath%xui\js\Event.js /b  ^

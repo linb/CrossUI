@@ -1779,7 +1779,7 @@ Class("xui.svg", "xui.UI",{
     },
     Static:{
         $abstract:true,
-        _objectProp:{tagVar:1,propBinder:1,dockMargin:1,attr:1,animConf:1},
+        _objectProp:{attr:1},
         DataModel:{
             selectable:null,
             defaultFocus:null,

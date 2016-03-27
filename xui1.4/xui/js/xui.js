@@ -3504,20 +3504,24 @@ Class('xui.absProfile',null,{
         },
         unLink:function(id){
             var self=this,
-                o,
+                o, index,
                 //avoid Number;
                 uid='$'+self.$xid;
             if(!self._links)return;
             if(!(o=self._links[id]))return;
 
             //remove from target
-            if(_.isArr(o))_.arr.removeValue(o,o[uid]);
-            delete o[uid];
+            if(_.isArr(o)){
+                index = _.arr.indexOf(o,o[uid]);
+                if(index!=-1){
+                    _.arr.removeFrom(o, index);
+                }
+            }delete o[uid];
 
             //remove from self
             delete self._links[id];
 
-            return self;
+            return index;
         },
         unLinkAll:function(){
             var self=this,
@@ -3736,7 +3740,8 @@ Class('xui.absObj',"xui.absBox",{
     //don't add any other function or member to absObj
     Static:{
         $abstract:true,
-        $specialChars:{_:1,$:1},
+        $specialChars:{_:1, $:1},
+
         // *** non-abstract child must have this
         //_objectProp:{tagVar:1,propBinder:1},
         DataModel:{
@@ -4198,6 +4203,7 @@ Class("xui.Timer","xui.absObj",{
         }
     },
     Static:{
+        _objectProp:{tagVar:1,propBinder:1},
         _beforeSerialized:function(profile){
             var o={};
             _.merge(o, profile, 'all');

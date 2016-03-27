@@ -3801,10 +3801,11 @@ type:4
                         value = xui.Dom.getStyle(node, o);
                     return value=='auto'?value:(parseInt(value,10)||0);
                 }else{
-                    var f=xui.Dom._setPxStyle,t,a;
+                    var f=xui.Dom._setPxStyle,t,a,
+                    av = _.isFinite(value) ? (value+"px") : value;
                     return self.each(function(v){
                         if(v.nodeType!=1)return;
-                            if(v.style[o]!==value){
+                            if(v.style[o]!==av){
                                 if(o=='width')self._W(v,1,value);
                                 else if(o=='height')self._H(v,1,value);
                                 else{
