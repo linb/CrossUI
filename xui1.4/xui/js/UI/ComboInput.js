@@ -201,6 +201,20 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 return o;
             }
         },
+        popFileSelector:function(){
+            var profile=this.get(0),prop=profile.properties;
+            if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
+                var fileInput = profile.getSubNode('FILE').get(0);
+                if (!!window.ActiveXObject || "ActiveXObject" in window)  {
+                  var label=document.createElement( "div" );
+                  fileInput.appendChild(label);
+                  label.click();
+                  fileInput.removeChild(label);
+                }else{
+                  fileInput.click();
+                }
+            }
+        },
         resetValue:function(value){
             this.each(function(p){
                 if(p.properties.type=='upload'||p.properties.type=='file')

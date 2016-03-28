@@ -18944,7 +18944,7 @@ Class("xui.UI",  "xui.absObj", {
                             },
                             conDockFlowStretch:{
                                 ini:"",
-                                combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5'],
+                                combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5','0.25,0.5,0.25'],
                                 action:function(){
                                     this.boxing().adjustDock(true);
                                 }
@@ -20090,7 +20090,7 @@ Class("xui.UI",  "xui.absObj", {
                                 conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
                                 conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
                                 conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
-                                conDockFlowStretch=(pprop && ('conDockFlowStretch' in pprop))?pprop.conDockFlowStretch:'',
+                                conDockFlowStretch=(pprop && ('conDockFlowStretch' in pprop))?pprop.conDockFlowStretch.split(/[,;\s]+/):[],
                                 perW=conDockFlexFill=="width"||conDockFlexFill=="both",
                                 perH=conDockFlexFill=="height"||conDockFlexFill=="both",
                                 node=isWin?xui.win:xui(pid);
@@ -20233,11 +20233,12 @@ Class("xui.UI",  "xui.absObj", {
                                     obj.preY = obj.top;
 
                                     target = me[key];
+                                    var ii=0;
                                     if(target.length){
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
                                             if(!o.properties.dockIgnore){
-                                                rePos(o, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockFlowStretch);
+                                                rePos(o, ii++, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockFlowStretch);
                                             }
                                         }
                                     }
@@ -20315,7 +20316,7 @@ Class("xui.UI",  "xui.absObj", {
                             f[key]=[];
                         });
                         f.dockall=[];
-                        f.rePos=function(profile, obj, value, id, w, h, spaceW, spaceH, conDockFlowStretch){
+                        f.rePos=function(profile, index, obj, value, id, w, h, spaceW, spaceH, conDockFlowStretch){
                             //if $dockid input, and not the specific node, return
                             var flag=false;
                             if(id && profile.$xid!=id)flag=true;
@@ -20350,7 +20351,7 @@ Class("xui.UI",  "xui.absObj", {
                                     break;
                                 default:                                    
                                     // flow stretch can be copy from container
-                                    stretch = stretch || ((value=="width"||value=="height")?"":conDockFlowStretch) || "stretch";
+                                    stretch = stretch || ((value=="width"||value=="height")?"":conDockFlowStretch[index % conDockFlowStretch.length]) || "stretch";
 
                                     // width/height support 3 only:
                                     if(value=="width" || value=="height"){
@@ -28618,6 +28619,20 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 this.setUIValue(this.getValue(),null,null,'getfile');
 
                 return o;
+            }
+        },
+        popFileSelector:function(){
+            var profile=this.get(0),prop=profile.properties;
+            if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
+                var fileInput = profile.getSubNode('FILE').get(0);
+                if (!!window.ActiveXObject || "ActiveXObject" in window)  {
+                  var label=document.createElement( "div" );
+                  fileInput.appendChild(label);
+                  label.click();
+                  fileInput.removeChild(label);
+                }else{
+                  fileInput.click();
+                }
             }
         },
         resetValue:function(value){

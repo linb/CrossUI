@@ -4,6 +4,7 @@
 4) Added xui.UI.HiddrenInput Control.
 5) Added conDockPadding / conDockSpacing / conDockFlexFill / conDockFlowStretch for docker container
 6) Added dockFlowStretch for docker
+7) Added fileButton type for xui.UI.ComboInput
 
 
 Updated to NWJS 13.0
