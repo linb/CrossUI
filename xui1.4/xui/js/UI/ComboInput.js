@@ -1478,6 +1478,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
+
                 label = profile.getSubNode('LABEL'),
                 labelSize=t.labelSize||0,
                 labelGap=t.labelGap||0,

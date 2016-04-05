@@ -108,6 +108,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             tagName : 'div',
             style:'{_style}',
             className:'{_className}',
+            LABEL:{
+                className:'{_required}',
+                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                text:'{labelCaption}'
+            },
             ITEMS:{
                $order:10,
                tagName:'div',
@@ -177,7 +182,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-list-cmd {itemClass}',
+                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -199,6 +204,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         Appearances:{
             KEY:{
                 'font-size':'12px'
+            },
+            LABEL:{
+               'z-index':1,
+               top:0,
+               left:0,
+               position:'absolute',
+               'padding-top':'4px',
+               'font-size':'12px'
             },
             EXTRA:{
                 display:'none'
@@ -287,7 +300,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             CMD:{
                 "margin-left":'2px',
-                padding:'0 2px',
+                "padding": "0 2px",
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -462,6 +475,24 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
                 }
+            },
+            LABEL:{
+                onClick:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
+                    if(profile.onLabelClick)
+                        profile.boxing().onLabelClick(profile, e, src);
+                },
+                onDblClick:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
+                    if(profile.onLabelDblClick)
+                        profile.boxing().onLabelDblClick(profile, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    if(xui.Event.getBtn(e)!='left')return;
+                    if(profile.properties.disabled)return false;
+                     if(profile.onLabelActive)
+                        profile.boxing().onLabelActive(profile, e, src);
+                }
             }
         },
         DataModel:{
@@ -507,6 +538,41 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 action:function(){
                     this.boxing().refresh();
                 }
+            },
+            // label
+            labelSize:{
+                ini:0,
+                action: function(v){
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            labelPos:{
+                ini:"left",
+                listbox:['left','top', 'right', 'bottom'],
+                action: function(v){
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }                
+            },
+            labelGap:{
+                ini:4,
+                action: function(v){
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            labelCaption:{
+                ini:"",
+                action: function(v){
+                    v=(_.isSet(v)?v:"")+"";
+                    this.getSubNode('LABEL').html(xui.adjustRes(v,true));
+                }
+            },
+            labelHAlign:{
+                ini:'right',
+                listbox:['','left','center','right'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('textAlign',v);
+                }
             }
         },
         EventHandlers:{
@@ -516,7 +582,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             afterClick:function(profile, item, e, src){},
             onDblclick:function(profile, item, e, src){},
             onShowOptions:function(profile, item, e, src){},
-            onItemSelected:function(profile, item, e, src, type){}
+            onItemSelected:function(profile, item, e, src, type){},
+
+            onLabelClick:function(profile, e, src){},
+            onLabelDblClick:function(profile, e, src){},
+            onLabelActive:function(profile, e, src){}
         },
         _onStartDrag:function(profile, e, src, pos){
             var pos=xui.Event.getPos(e);
@@ -563,9 +633,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             return false;
         },
         _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile);
-            data._bordertype='xui-uiborder-'+data.borderType;
-            return data;
+            var d=arguments.callee.upper.call(this, profile);
+            d._bordertype='xui-uiborder-'+d.borderType;
+            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            d.labelShow=d.labelSize?"":("display:none");
+            // adjustRes for labelCaption
+            if(d.labelCaption)
+                d.labelCaption=xui.adjustRes(d.labelCaption,true);
+            return d;
         },
         _prepareItem:function(profile, item){
             item._cbDisplay = (profile.properties.selMode=='multibycheckbox')?'':'display:none;';
@@ -622,21 +697,46 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             xui.UI.$doResize(this,p.width,p.height);
         },
         _onresize:function(profile,width,height){
-            var pp=profile.properties,
-                size=pp.borderType!='none'?2:0,
-                dock=pp.dock,
-                max=pp.maxHeight;
-            if(height){
-                profile.getSubNode('ITEMS').height(height=='auto'?height:(height-size));
+            var p=profile.properties,
+                border=p.borderType!='none'?2:0,
+                dock=p.dock,
+                max=p.maxHeight,
+
+                f=function(k){return profile.getSubNode(k)},
+                o = f('ITEMS'),
+                label = f('LABEL'),
+                root = profile.getRoot(),
+                labelSize = p.labelSize||0,
+                labelGap = p.labelGap||0,
+                labelPos = p.labelPos || 'left',
+                ll, tt, ww, hh;
+
+            o.cssRegion({
+                left : ll = labelPos=='left'?labelSize:0,
+                top : tt = labelPos=='top'?labelSize:0,
+                width : ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)),
+                height : hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border))
+            });
+
+
+            if(height=="auto"){
                 if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
-                    if(profile.getSubNode('ITEMS').height()>max){
-                        profile.getSubNode('ITEMS').height(max);
-                        profile.getRoot().height('auto');
+                    if(o.height()>max){
+                        o.height(max);
+                        root.height('auto');
                     }
                 }
             }
-            if(width)
-                profile.getSubNode('ITEMS').width(width=='auto'?width:(width-size));
+            if(labelSize){
+                if(width=='auto')ww=o.offsetWidth();
+                if(height=='auto')hh=o.offsetHeight();
+                profile.getSubNode('LABEL').cssRegion({
+                    left: width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),
+                    top:  height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0), 
+                    width: width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width))),
+                    height: height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height)))
+                });
+            }
         }
     }
 });

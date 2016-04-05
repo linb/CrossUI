@@ -2766,7 +2766,7 @@ Class("xui.UI",  "xui.absObj", {
             if(isA){
                 if(typeof temp != 'function')temp = self;
                 for(var i=0;t=properties[i++];)
-                    temp(profile, template, t, tag, result);
+                    temp(profile, template, t, tag, result, i);
             }else{
                 if(t=properties.object){
                     //[properties] is for xui.Template

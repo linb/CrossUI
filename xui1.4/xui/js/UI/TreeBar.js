@@ -309,7 +309,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-list-cmd {itemClass}',
+                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -388,7 +388,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //1px for ie8
                 'line-height':'1px',
                 position:'relative',
-                'margin-left':'16px'
+                'margin-left':'22px'
             },
 
             MARK:{
@@ -969,12 +969,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
 
                         if(!stopanim){
-                            var h=0;
                             subNs.css("height","0px").css("display",'');
-                            subNs.children().each(function(o){
-                                h+=o.offsetHeight;
-                            });
                             if(p.animCollapse){
+                                var h=0;
+                                subNs.children().each(function(o){
+                                    h+=o.offsetHeight;
+                                });
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
                                 },200, null, 'expoIn', profile.key+profile.id).start();

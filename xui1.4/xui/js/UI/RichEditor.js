@@ -56,13 +56,19 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             tagName:'div',
             style:'{_style}',
             className:'{_className} xui-ui-selectable',
-            EDITOR:{
-                tagName:'div'
+            LABEL:{
+                className:'{_required}',
+                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                text:'{labelCaption}'
             },
-            MARK:{
-                left:'1px'
-            },
-            POOL:{}
+            BOX:{
+                EDITOR:{
+                    tagName:'div'
+                },
+                MARK:{
+                },
+                POOL:{}
+            }
         },
         DataModel:{
             selectable:true,
@@ -122,11 +128,53 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 action: function(v){
                     this.boxing().setDisabled(v);
                 }
+            },
+           // label
+            labelSize:{
+                ini:0,
+                action: function(v){
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            labelPos:{
+                ini:"left",
+                listbox:['left','top', 'right', 'bottom'],
+                action: function(v){
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }                
+            },
+            labelGap:{
+                ini:4,
+                action: function(v){
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            labelCaption:{
+                ini:"",
+                action: function(v){
+                    v=(_.isSet(v)?v:"")+"";
+                    this.getSubNode('LABEL').html(xui.adjustRes(v,true));
+                }
+            },
+            labelHAlign:{
+                ini:'right',
+                listbox:['','left','center','right'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('textAlign',v);
+                }
             }
         },
         Appearances:{
             KEY:{
                 overflow:"hidden"
+            },
+            BOX:{
+                left:0,
+                top:0,
+                width:'100%',
+                position:'absolute',
+                overflow:'hidden'
             },
             POOL:{
                 position:'absolute',
@@ -139,6 +187,14 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             },
             TOOLBARBTN:{
                 background:xui.UI.$bg('toolbar.gif', 'no-repeat')
+            },
+            LABEL:{
+               'z-index':1,
+               top:0,
+               left:0,
+               position:'absolute',
+               'padding-top':'4px',
+               'font-size':'12px'
             },
             EDITOR:{
                 position:'absolute',
@@ -155,12 +211,34 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             }
         },
         Behaviors:{
-            onSize:xui.UI.$onSize
+            onSize:xui.UI.$onSize,
+            LABEL:{
+                onClick:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
+                    if(profile.onLabelClick)
+                        profile.boxing().onLabelClick(profile, e, src);
+                },
+                onDblClick:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
+                    if(profile.onLabelDblClick)
+                        profile.boxing().onLabelDblClick(profile, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    if(xui.Event.getBtn(e)!='left')return;
+                    if(profile.properties.disabled)return false;
+                     if(profile.onLabelActive)
+                        profile.boxing().onLabelActive(profile, e, src);
+                }
+            }
         },
         EventHandlers:{
             onInnerEvent : function(profile, type, node, e){},
             onUpdateToolbar : function(profile, etype, doc){},
-            onReady : function(profile){}
+            onReady : function(profile){},
+            
+            onLabelClick:function(profile, e, src){},
+            onLabelDblClick:function(profile, e, src){},
+            onLabelActive:function(profile, e, src){}
         },
         $cmds:{
             //font style
@@ -207,6 +285,15 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             html:[
                 {id:'html',command:'custom', imagePos:"-234px 0"}
             ]
+        },
+        _prepareData:function(profile){
+            var d=arguments.callee.upper.call(this, profile);            
+            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            d.labelShow=d.labelSize?"":("display:none");
+            // adjustRes for labelCaption
+            if(d.labelCaption)
+                d.labelCaption=xui.adjustRes(d.labelCaption,true);
+            return d;
         },
         _updateToolbar:function(domId, clear,etype){
             var profile=xui.$cache.profileMap[domId],toolbar;
@@ -616,7 +703,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 });
     
                 //compose
-                self.getRoot().prepend(
+                self.getSubNode('BOX').prepend(
                     t=new xui.UI.ToolBar({selectable:false,handler:false,items:items,disabled:pro.disabled||pro.readonly})
                 );
                 t.render(true);
@@ -624,7 +711,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 profile.$_tbH=tbH=t.getRoot().height();
 
                 if(xui.browser.ie)
-                    t.getRoot().query('*').attr('unselectable','on');
+                    t.getSubNode('BOX').query('*').attr('unselectable','on');
 
                 t = self._$tb = t.get(0);
     
@@ -751,7 +838,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     }
 
                     if(first && xui.browser.ie)
-                        o.getRoot().query('*').attr('unselectable','on');
+                        o.getSubNode('BOX').query('*').attr('unselectable','on');
                     
                     _.tryF(o.activate,[],o);
 
@@ -916,10 +1003,41 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             return value;
         },
         _onresize:function(profile,width,height){
-            var size={},_top=0;
-            if(width || height){                
+            if(width || height){
+                if(!height)
+                    height=profile.properties.height;
+
+                var size={},
+                    _top=0,
+                    t = profile.properties,
+
+                    o = profile.getSubNode('BOX'),
+                    label = profile.getSubNode('LABEL'),
+
+                    labelSize=t.labelSize||0,
+                    labelGap=t.labelGap||0,
+                    labelPos=t.labelPos || 'left',
+                    ll, tt, ww, hh;
+
+                o.cssRegion({
+                    left : ll = labelPos=='left'?labelSize:0,
+                    top : tt = labelPos=='top'?labelSize:0,
+                    width : ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
+                    height : hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+                });
+                if(labelSize)
+                    label.cssRegion({
+                        left: width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),
+                        top:  height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
+                        width: width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),
+                        height: height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                    });
+
+                // calculate toolbar's height
                 var itb=profile._$tb,tbh;
                 if(itb){
+                    // here, do resize first
+                    xui.UI.$doResize(itb, ww, hh,true);
                     tbh=itb.getRoot().height();
                     if(tbh)
                         profile.$_tbH=tbh;
@@ -927,18 +1045,20 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         tbh=profile.$_tbH;
                 }
                 _top=(itb?(tbh-1):0);
-                if(!height)
-                    height=profile.properties.height;
-                size.height=height-_top-2;
                 
-                if(width)
-                    size.width=width-2;
+                size.height=hh - _top -2;
+                if(ww) size.width = ww - 2;
+
+                if(size.width<0)size.width=0;
+                if(size.height<0)size.height=0;
+
+                if(ww||hh){
+                    if(profile&&profile.renderId){
+                        profile.getSubNode('EDITOR').top(_top).cssSize(size,true);
+                        profile.getSubNode('MARK').left(1).top(_top+1);
+                    }
+                }
             }
-            if(size.width<0)size.width=0;
-            if(size.height<0)size.height=0;
-            
-            profile.getSubNode('EDITOR').top(_top).cssSize(size,true);
-            profile.getSubNode('MARK').top(_top+1);
         }
     }
 });

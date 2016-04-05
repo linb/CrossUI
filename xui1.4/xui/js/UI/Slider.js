@@ -22,6 +22,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         Templates:{
             style:'{_style}',
             className:'{_className}',
+            LABEL:{
+                className:'{_required}',
+                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                text:'{labelCaption}'
+            },
             BOX:{
                 tagName:'div',
                 className:'{_cls}',
@@ -61,8 +66,16 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'line-height':0,
                 position:'absolute'
             },
+            LABEL:{
+               'z-index':1,
+               top:0,
+               left:0,
+               position:'absolute',
+               'padding-top':'4px',
+               'font-size':'12px'
+            },
             BOX:{
-                position:'relative',
+                position:'absolute',
                 left:0,
                 top:0,
                 width:'100%',
@@ -433,6 +446,24 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     if(profile.properties.disabled || profile.properties.readonly)return;
                     xui.Thread.abort(profile.$xid+':auto');
                 }
+            },
+            LABEL:{
+                onClick:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
+                    if(profile.onLabelClick)
+                        profile.boxing().onLabelClick(profile, e, src);
+                },
+                onDblClick:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
+                    if(profile.onLabelDblClick)
+                        profile.boxing().onLabelDblClick(profile, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    if(xui.Event.getBtn(e)!='left')return;
+                    if(profile.properties.disabled)return false;
+                     if(profile.onLabelActive)
+                        profile.boxing().onLabelActive(profile, e, src);
+                }
             }
         },
         DataModel:{
@@ -469,7 +500,47 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 action:function(v){
                     this.boxing().refresh();
                 }
+            },
+            // label
+            labelSize:{
+                ini:0,
+                action: function(v){
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            labelPos:{
+                ini:"left",
+                listbox:['left','top', 'right', 'bottom'],
+                action: function(v){
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }                
+            },
+            labelGap:{
+                ini:4,
+                action: function(v){
+                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                }
+            },
+            labelCaption:{
+                ini:"",
+                action: function(v){
+                    v=(_.isSet(v)?v:"")+"";
+                    this.getSubNode('LABEL').html(xui.adjustRes(v,true));
+                }
+            },
+            labelHAlign:{
+                ini:'right',
+                listbox:['','left','center','right'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('textAlign',v);
+                }
             }
+        },
+        EventHandlers:{
+            onLabelClick:function(profile, e, src){},
+            onLabelDblClick:function(profile, e, src){},
+            onLabelActive:function(profile, e, src){}
         },
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile),
@@ -478,6 +549,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d._showIns=d.showIncreaseHandle?'':N,
             d._showD2=d.isRange?'':N;
             d._cls=profile.getClass('BOX',d.type=='vertical'?'-v':'-h');
+            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            d.labelShow=d.labelSize?"":("display:none");
+            // adjustRes for labelCaption
+            if(d.labelCaption)
+                d.labelCaption=xui.adjustRes(d.labelCaption,true);
             return d;
         },
         _adjustValue:function(profile,value){
@@ -548,22 +624,43 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         },
         _onresize:function(profile, width, height){
             var p=profile.properties,
-            type=p.type,
-            f=function(k){return profile.getSubNode(k)},
+                type=p.type,
+                f=function(k){return profile.getSubNode(k)},
+                ruler = f('RULER'),
+                ind = f('IND'),
+                ru1 = f('RULERLEFT'),
 
-            ruler=f('RULER'),
-            ind=f('IND'),
+                o = f('BOX'),
+                label = profile.getSubNode('LABEL'),
+                labelSize = p.labelSize||0,
+                labelGap = p.labelGap||0,
+                labelPos = p.labelPos || 'left',
+                ll, tt, ww, hh;
 
-            ru1=f('RULERLEFT');
+            o.cssRegion({
+                left : ll = labelPos=='left'?labelSize:0,
+                top : tt = labelPos=='top'?labelSize:0,
+                width : ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
+                height : hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+            });
+
+            if(labelSize)
+                label.cssRegion({
+                    left: width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),
+                    top:  height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
+                    width: width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),
+                    height: height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                });
+
             if(type=='vertical'){
                 var w=ru1.height(),
                 w1=p.showDecreaseHandle?f('DECREASE').height():0,
                 w2=p.showIncreaseHandle?f('INCREASE').height():0,
                 w3=f('IND1').height();
     
-                if(height){
-                    ruler.top(w1+w).height(height-w1-w2-2*w);
-                    ind.top(w1).height(profile._size=height-w1-w2-w3);
+                if(hh){
+                    ruler.top(w1+w).height(hh-w1-w2-2*w);
+                    ind.top(w1).height(profile._size=hh-w1-w2-w3);
                 }
             }else{
                 var w=ru1.width(),
@@ -571,9 +668,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 w2=p.showIncreaseHandle?f('INCREASE').width():0,
                 w3=f('IND1').width();
     
-                if(width){
-                    ruler.left(w1+w).width(width-w1-w2-2*w);
-                    ind.left(w1).width(profile._size=width-w1-w2-w3);
+                if(ww){
+                    ruler.left(w1+w).width(ww-w1-w2-2*w);
+                    ind.left(w1).width(profile._size=ww-w1-w2-w3);
                 }
             }
         }

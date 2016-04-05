@@ -17681,14 +17681,14 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTreeMode:{
-                $desc:"得到Grid是否在树状模式.",
-                $rtn:"Boolean"
+                $desc:"得到Grid的树状模式.",
+                $rtn:"String"
             },
             setTreeMode:{
-                $desc:"设置Grid是否为树状模式.",
+                $desc:"设置Grid的树状模式. 可以是'无树形'，'树形在行柄'，或'树形在首格'",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : String. 'none','inhandler' or 'infirstcell'",
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
@@ -19793,7 +19793,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             hoverPop:"悬停弹出对象",
             hoverPopType:"悬停弹出类型",
             'dock':'停靠类型',
-            'dockStretch':'停靠延展',
+            'dockFlowStretch':'停靠延展',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
             'dockMargin':'停靠外补丁',

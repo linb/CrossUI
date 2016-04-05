@@ -341,19 +341,23 @@ Class('xui.Dom','xui.absBox',{
         },
         //flag : false => remove from dom tree, not free memory
         remove:function(triggerGC){
-            var c=xui.$getGhostDiv();
             if(triggerGC===false)
                 this.each(function(o,i){
                     if(o.raphael&&o.remove)o.remove();
                     else if(o.parentNode)o.parentNode.removeChild(o);
                 });
             else{
+                var c=xui.$getGhostDiv();
+                // append to ghost first
                 this.each(function(o){
                     c.appendChild(o);
                 });
-                xui.$purgeChildren(c);
-                c.innerHTML='';
-                c=null;
+                // for performance
+                _.asyRun(function(){
+                    xui.$purgeChildren(c);
+                    c.innerHTML='';
+                    c=null;
+                });
             }
             return this;
         },
@@ -378,8 +382,19 @@ Class('xui.Dom','xui.absBox',{
                          // only asy purgeChildren need this line
                          // if(!triggerGC && xui.browser.ie)while(t=o.firstChild)o.removeChild(t);
                          //clear first
-                         if(triggerGC)
-                            xui.$purgeChildren(o);
+                         if(triggerGC){
+                            // append to ghost first
+                            var c=xui.$getGhostDiv();
+                            xui(o).children().each(function(k){
+                                c.appendChild(k);
+                            });
+                            // for performance
+                            _.asyRun(function(){
+                                xui.$purgeChildren(c);
+                                c.innerHTML='';
+                                c=null;
+                            });
+                         }
 
                          var scripts;
                          if(loadScripts){
@@ -3403,7 +3418,7 @@ type:4
         getEmptyDiv:function(sequence){
             var i=1,id,rt,style,o,t,count=0,doc=document,body=doc.body,ini=function(o){
                 o.id=id;
-                xui([o]).attr('style','position:absolute;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
+                xui([o]).attr('style','position:relative;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
             };
             sequence=sequence || 1;
             while(1){

@@ -17755,14 +17755,14 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getTreeMode:{
-                $desc:"Gets whether the grid is in tree mode or not.",
-                $rtn:"Boolean"
+                $desc:"Gets the tree mode.",
+                $rtn:"String"
             },
             setTreeMode:{
-                $desc:"To determine whether the grid is in tree mode or not.",
+                $desc:"Sets the tree mode.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Boolean.",
+                    "value [Required] : String. 'none','inhandler' or 'infirstcell'",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },

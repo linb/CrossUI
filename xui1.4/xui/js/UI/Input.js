@@ -209,7 +209,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 'background-position':'left -244px',
                 'z-index':'50'
             },
-//border<<<
+            //border<<<
             '.setting-xui-input':{
                 'border-style':'solid',
                 'border-top-width':'1px',
@@ -293,7 +293,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 $order:1,
                 'background-image': xui.UI.$bg('corner_mouseover.gif','','Input')
             }
-//border>>>
+            //border>>>
         },
         Behaviors:{
             HoverEffected:{BOX:['BOX']},
@@ -510,17 +510,18 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
             dynCheck:false,
             selectOnFocus:true,
+            placeholder: {
+                ini: '',
+                action: function (value) {
+                    this.getSubNode('INPUT').attr('placeholder', value);
+                }
+            },
+            // label
             labelSize:{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
-                }
-            },
-            placeholder: {
-                ini: '',
-                action: function (value) {
-                    this.getSubNode('INPUT').attr('placeholder', value);
                 }
             },
             labelPos:{
@@ -949,10 +950,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
                 var t = profile.properties,
                     o = profile.getSubNode('BOX'),
+
                     label = profile.getSubNode('LABEL'),
                     labelSize=t.labelSize||0,
                     labelGap=t.labelGap||0,
                     labelPos=t.labelPos || 'left',
+
                     v1=profile.getSubNode('INPUT'),
                     ww=width,
                     hh=height,
