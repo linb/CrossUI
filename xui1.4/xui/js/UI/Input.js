@@ -15,7 +15,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
             if(ot!==profile.tips && xui.Tips && xui.Tips.getTips())xui.Tips.setTips(profile.tips);
         },
-        activate:function(){
+        activate:function(select){
             var profile = this.get(0);
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
@@ -23,7 +23,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     try{
                         node.focus(); 
                         if(!xui.browser.isTouch){
-                            node.tagName.toLowerCase()=="input" && node.select();
+                            try{
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
+                                else xui(node).caret(0,0);
+                            }catch(e){}
                         }
                     }catch(e){}
                     delete profile._justFocus;
@@ -417,7 +420,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
                                 if(!xui.browser.isTouch){
-                                    try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                    if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             })
                         }
@@ -426,7 +429,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(profile._activedonmousedown){
                         delete profile._activedonmousedown;
                         var node=xui.use(src).get(0);
-                         try{node.select()}catch(e){}
+                        if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                     }
                 },
                 onFocus:function(profile, e, src){
@@ -457,12 +460,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
                                 if(!xui.browser.isTouch){
-                                    try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                    if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             });
                         }else{
                             if(!xui.browser.isTouch){
-                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             }
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret

@@ -933,7 +933,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                try{node.select()}catch(e){}
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             })
                         }
                         delete profile._stopmouseupcaret;
@@ -978,10 +978,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                try{node.select()}catch(e){}
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             });
                         }else{
-                            try{node.select()}catch(e){}
+                            if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret
                         if(profile._mousedownmark)profile._stopmouseupcaret=1;

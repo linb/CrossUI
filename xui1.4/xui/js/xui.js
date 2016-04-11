@@ -3784,6 +3784,9 @@ Class('xui.absObj',"xui.absBox",{
                 }
             }
         },
+        get:function(index){
+          return this.pack([this._cache[index||0]]);
+        },
         getAll:function(){
           return this.pack(this._cache);
         },

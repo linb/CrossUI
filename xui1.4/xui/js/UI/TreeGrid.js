@@ -375,7 +375,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 orow = ns.getRowbyRowId(rowId),
                 prop = profile.properties,
                 pdm = prop.dirtyMark,
-                psdm = prop.showDirtyMark, 
+                psdm = pdm && prop.showDirtyMark, 
                 ishotrow = orow.id==box._temprowid,
                 sc = xui.absObj.$specialChars,
                 ext;
@@ -2393,11 +2393,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                         id = profile.getSubId(src),
-                        col = profile.colMap[id];
+                        col = profile.colMap[id],o;
                     if(col && col.flexSize)return;
-
-                    var o=xui(src),
-                    minW =o.parent(2).width()-p._minColW,
+                    if(col._isgroup){
+                        o=profile.getSubNode("HHANDLER",profile.properties.header[col["to"]]._serialId);
+                    }else{
+                        o=xui(src);
+                    }
+                    var minW =o.parent(2).width()-p._minColW,
                     scroll = profile.getSubNode('SCROLL'),
                     maxW = scroll.offset().left + scroll.width() - xui.Event.getPos(e).left - 4;
 
@@ -4915,7 +4918,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var box=profile.box,
                 prop=profile.properties,
                 pdm=prop.dirtyMark,
-                psdm=prop.showDirtyMark,
+                psdm=pdm&&prop.showDirtyMark,
                 sc=xui.absObj.$specialChars,
                 cell,node,ishotrow,ext;
 
@@ -5226,6 +5229,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // 4. try to get editor from cache
                         if(editorCacheKey && profile.$cache_editor[editorCacheKey])
                             editor=profile.$cache_editor[editorCacheKey];
+                        if(editor && (!editor.get(0) || editor.isDestroyed()))
+                            editor=nulll;
                     }
                     // 5. else, create a ComboInput Editor, and cache it
                     if(!editor){

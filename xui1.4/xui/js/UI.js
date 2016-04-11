@@ -752,7 +752,7 @@ Class("xui.UI",  "xui.absObj", {
         getTheme:function(){
             return this.get(0) && this.get(0).theme;
         },
-        destroy:function(ignoreEffects){
+        destroy:function(ignoreEffects, purgeNow){
             var ns=this;
             this.each(function(o,i){
                 if(o.destroyed)return;
@@ -772,7 +772,7 @@ Class("xui.UI",  "xui.absObj", {
                         });
                         _.breakO(o.$afterDestroy,2);
                     }
-                    if(o.renderId)o.getRoot().remove();
+                    if(o.renderId)o.getRoot().remove(true, purgeNow);
                     else o.__gc();    
                     _.arr.removeFrom( ns._nodes, i);
                 };
@@ -1107,7 +1107,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 // keep cache refrence
                 var _c=o.Instace;
-                o.boxing().destroy(true);
+                o.boxing().destroy(true,true);
 
                 //set back
                 _.merge(o,s,'all');
@@ -6258,7 +6258,7 @@ Class("xui.absValue", "xui.absObj",{
                     if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
-            dirtyMark:true,
+            dirtyMark:false,
             showDirtyMark:true
         },
         // for item in box array

@@ -3784,6 +3784,9 @@ Class('xui.absObj',"xui.absBox",{
                 }
             }
         },
+        get:function(index){
+          return this.pack([this._cache[index||0]]);
+        },
         getAll:function(){
           return this.pack(this._cache);
         },
@@ -8346,7 +8349,7 @@ Class('xui.Dom','xui.absBox',{
             return self;
         },
         //flag : false => remove from dom tree, not free memory
-        remove:function(triggerGC){
+        remove:function(triggerGC, purgeNow){
             if(triggerGC===false)
                 this.each(function(o,i){
                     if(o.raphael&&o.remove)o.remove();
@@ -8358,12 +8361,13 @@ Class('xui.Dom','xui.absBox',{
                 this.each(function(o){
                     c.appendChild(o);
                 });
-                // for performance
-                _.asyRun(function(){
+                var f=function(){
                     xui.$purgeChildren(c);
                     c.innerHTML='';
                     c=null;
-                });
+                };
+                // for performance
+                if(purgeNow)f();else _.asyRun(f);
             }
             return this;
         },
@@ -8376,7 +8380,7 @@ Class('xui.Dom','xui.absBox',{
         },
 
         //flag = false: no gc
-        html:function(content,triggerGC,loadScripts){
+        html:function(content,triggerGC,loadScripts,purgeNow){
             var s='',t,o=this.get(0);triggerGC=triggerGC!==false;
             if(content!==undefined){
                 if(o){
@@ -8394,12 +8398,13 @@ Class('xui.Dom','xui.absBox',{
                             xui(o).children().each(function(k){
                                 c.appendChild(k);
                             });
-                            // for performance
-                            _.asyRun(function(){
+                            var f=function(){
                                 xui.$purgeChildren(c);
                                 c.innerHTML='';
                                 c=null;
-                            });
+                            };
+                            // for performance
+                            if(purgeNow)f();else _.asyRun(f);                            
                          }
 
                          var scripts;
@@ -16312,7 +16317,7 @@ Class("xui.UI",  "xui.absObj", {
         getTheme:function(){
             return this.get(0) && this.get(0).theme;
         },
-        destroy:function(ignoreEffects){
+        destroy:function(ignoreEffects, purgeNow){
             var ns=this;
             this.each(function(o,i){
                 if(o.destroyed)return;
@@ -16332,7 +16337,7 @@ Class("xui.UI",  "xui.absObj", {
                         });
                         _.breakO(o.$afterDestroy,2);
                     }
-                    if(o.renderId)o.getRoot().remove();
+                    if(o.renderId)o.getRoot().remove(true, purgeNow);
                     else o.__gc();    
                     _.arr.removeFrom( ns._nodes, i);
                 };
@@ -16667,7 +16672,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 // keep cache refrence
                 var _c=o.Instace;
-                o.boxing().destroy(true);
+                o.boxing().destroy(true,true);
 
                 //set back
                 _.merge(o,s,'all');
@@ -21818,7 +21823,7 @@ Class("xui.absValue", "xui.absObj",{
                     if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
-            dirtyMark:true,
+            dirtyMark:false,
             showDirtyMark:true
         },
         // for item in box array
@@ -26510,7 +26515,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             }
             if(ot!==profile.tips && xui.Tips && xui.Tips.getTips())xui.Tips.setTips(profile.tips);
         },
-        activate:function(){
+        activate:function(select){
             var profile = this.get(0);
             if(profile&&profile.renderId){
                 var node=profile.getSubNode('INPUT').get(0);
@@ -26518,7 +26523,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     try{
                         node.focus(); 
                         if(!xui.browser.isTouch){
-                            node.tagName.toLowerCase()=="input" && node.select();
+                            try{
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
+                                else xui(node).caret(0,0);
+                            }catch(e){}
                         }
                     }catch(e){}
                     delete profile._justFocus;
@@ -26912,7 +26920,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
                                 if(!xui.browser.isTouch){
-                                    try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                    if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             })
                         }
@@ -26921,7 +26929,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     if(profile._activedonmousedown){
                         delete profile._activedonmousedown;
                         var node=xui.use(src).get(0);
-                         try{node.select()}catch(e){}
+                        if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                     }
                 },
                 onFocus:function(profile, e, src){
@@ -26952,12 +26960,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
                                 if(!xui.browser.isTouch){
-                                    try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                    if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             });
                         }else{
                             if(!xui.browser.isTouch){
-                                try{node.tagName.toLowerCase()=="input" && node.select();}catch(e){}
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             }
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret
@@ -27674,7 +27682,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:12px;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.6}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:6px;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.6}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -28627,7 +28635,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 var itb=profile._$tb,tbh;
                 if(itb){
                     // here, do resize first
-                    xui.UI.$doResize(itb, ww, hh,true);
+                    itb.getRoot().width(ww);
                     tbh=itb.getRoot().height();
                     if(tbh)
                         profile.$_tbH=tbh;
@@ -29588,7 +29596,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=_.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                try{node.select()}catch(e){}
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             })
                         }
                         delete profile._stopmouseupcaret;
@@ -29633,10 +29641,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=_.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                try{node.select()}catch(e){}
+                                if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             });
                         }else{
-                            try{node.select()}catch(e){}
+                            if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                         }
                         // if focus was triggerred by mousedown, try to stop mouseup's caret
                         if(profile._mousedownmark)profile._stopmouseupcaret=1;
@@ -41432,7 +41440,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 orow = ns.getRowbyRowId(rowId),
                 prop = profile.properties,
                 pdm = prop.dirtyMark,
-                psdm = prop.showDirtyMark, 
+                psdm = pdm && prop.showDirtyMark, 
                 ishotrow = orow.id==box._temprowid,
                 sc = xui.absObj.$specialChars,
                 ext;
@@ -43450,11 +43458,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                         id = profile.getSubId(src),
-                        col = profile.colMap[id];
+                        col = profile.colMap[id],o;
                     if(col && col.flexSize)return;
-
-                    var o=xui(src),
-                    minW =o.parent(2).width()-p._minColW,
+                    if(col._isgroup){
+                        o=profile.getSubNode("HHANDLER",profile.properties.header[col["to"]]._serialId);
+                    }else{
+                        o=xui(src);
+                    }
+                    var minW =o.parent(2).width()-p._minColW,
                     scroll = profile.getSubNode('SCROLL'),
                     maxW = scroll.offset().left + scroll.width() - xui.Event.getPos(e).left - 4;
 
@@ -45972,7 +45983,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var box=profile.box,
                 prop=profile.properties,
                 pdm=prop.dirtyMark,
-                psdm=prop.showDirtyMark,
+                psdm=pdm&&prop.showDirtyMark,
                 sc=xui.absObj.$specialChars,
                 cell,node,ishotrow,ext;
 
@@ -46283,6 +46294,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // 4. try to get editor from cache
                         if(editorCacheKey && profile.$cache_editor[editorCacheKey])
                             editor=profile.$cache_editor[editorCacheKey];
+                        if(editor && (!editor.get(0) || editor.isDestroyed()))
+                            editor=nulll;
                     }
                     // 5. else, create a ComboInput Editor, and cache it
                     if(!editor){
