@@ -4,9 +4,12 @@
 4) Added xui.UI.HiddrenInput Control.
 5) Added conDockPadding / conDockSpacing / conDockFlexFill / conDockFlowStretch for docker container
 6) Added dockFlowStretch for docker
-
+7) Modify xui.Com to xui.Module; xui.ComFactory to xui.ModuleFactory
+8) Enabled the UI Builder to support reusable modules
 
 Updated to NWJS 13.0
+Using sublime Text bindings
+
 Updated to Codemirror 5.13
 
 

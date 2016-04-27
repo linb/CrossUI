@@ -1043,15 +1043,15 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"确保某个类加载到内存.",
             $paras:[
                 "cls [必需参数]: String, 符合XUI规范的类名",
-                "sync [可选参数]: Boolean, 是否同步. 如果是同步,要确保cls的对应代码文件在同域名下.",
-                "onSuccess [可选参数]: Function, 包含文件成功时触发的回调函数. ",
-                "onFail [可选参数]: Function, 包含文件失败时触发的回调函数."
+                "onEnd [可选参数]: Function, 结束回调函数. ",
+                "callback [可选参数]: Function, 回调函数. ",
+                "isAsy [可选参数]: Boolean, 是否异步凡是. 如果是同步调用,要确保cls的对应代码文件在同域名下."
             ],
             $snippet:[
                 "// 同步获取一个存在的 .js 文件\n"+
-                "App.Test1=undefined; xui.require('App.Test1',true); alert(App.Test1.KEY);",
+                "App.Test1=undefined; xui.require('App.Test1',function(cls){alert(cls.KEY);},null,false); ",
                 "// 一个不存在的.js文件 \n " +
-                "xui.require('App.doesntexist',true,null,function(rsp){alert(rsp)});"
+                "xui.require('App.doesntexist',function(rsp){alert(rsp)});"
             ]
         },
         request:{
@@ -1135,50 +1135,50 @@ _.set(xui.Locale,["cn","app"], {
             ]
         },
        launch:{
-            $desc:"加载一个 xui.Com 类, 并显示.",
+            $desc:"加载一个 xui.Module 类, 并显示.",
             $paras:[
                 "cls [必需参数] : String, 类名字.",
-                "onEnd [可选参数]: Function(err:Error/String, com: xui.Com). 类加载完之后调用.",
+                "onEnd [可选参数]: Function(err:Error/String, module: xui.Module). 类加载完之后调用.",
                 "lang [可选参数] : String, 语言名称.(例如, 'en').",
                 "theme [可选参数] : String, 主题名称.(例如, 'vis').",
                 "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
             ],
-            $memo:"与xui.Com.load相同"
+            $memo:"与xui.Module.load相同"
         },
-        getCom :{
-            $desc:"加载一个Com类.",
-            $rtn:"xui.Com",
+        getModule :{
+            $desc:"加载一个Module类.",
+            $rtn:"xui.Module",
             $paras:[
                 "cls [必需参数] : String, 应用模块对象类名.",
-                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 生成应用模块对象(Module Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
-                "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newCom.",
-                "properties [可选参数] : Object, 键值对,com的属性.",
-                "events [可选参数] : Object, 键值对,com的事件."
+                "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newModule.",
+                "properties [可选参数] : Object, 键值对,module的属性.",
+                "events [可选参数] : Object, 键值对,module的事件."
             ],
-            $memo:"与xui.ComFactory.getCom相同"
+            $memo:"与xui.ModuleFactory.getModule相同"
         },
-        newCom:{
-            $desc:"加载一个Com类.",
+        newModule:{
+            $desc:"加载一个Module类.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
-                "properties [可选参数] : Object, 键值对,com的属性.",
-                "events [可选参数] : Object, 键值对,com的事件."
+                "properties [可选参数] : Object, 键值对,module的属性.",
+                "events [可选参数] : Object, 键值对,module的事件."
             ],
-            $memo:"与xui.ComFactory.newCom相同"
+            $memo:"与xui.ModuleFactory.newModule相同"
         },
-        showCom:{
-            $desc:"加载一个Com类，并显示",
+        showModule:{
+            $desc:"加载一个Module类，并显示",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "beforeShow[可选参数] : Function(com: xui.Com, threadid:String), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
-                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 加载应用模块类成功后被调用.",
+                "beforeShow[可选参数] : Function(module: xui.Module, threadid:String), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, 线程id.",
                 "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. ",
-                "properties [可选参数] : Object, 键值对, 设置该com的属性.",
-                "events [可选参数] : Object, 键值对, 设置该com的事件.",
+                "properties [可选参数] : Object, 键值对, 设置该module的属性.",
+                "events [可选参数] : Object, 键值对, 设置该module的事件.",
                 "parent [可选参数] : xui.UIProfile/xui.UI/Element/xui.Dom. 显示到的父对象",
                 "subId [可选参数] : String, 父对象容器的id.",
                 "left [可选参数] : Number, 显示的左边坐标.",
@@ -2199,13 +2199,13 @@ _.set(xui.Locale,["cn","app"], {
             $desc:"将一组字符串路径编组,并并行地调用它们.一般用来从多个远程代码文件中同步地加载多个类或对象.(通过把相关的过程包装在一个外壳线程中执行)",
             $paras:[
                 "pathArr [必需参数]: Array, 一组字符串路径.",
-                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象.",
                 "onEnd [可选参数]: Function, 函数的参数:[threadid]. 所有的直接调用都完成后执行.",
+                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象.",
                 "threadid [可选参数]: String, 制定外壳线程的id号."
             ],
             $snippet:[
                 "/*\n//最常用的用法是: \n"+
-                "xui.SC.groupCall(['xui.UI.Button','xui.UI.Input','xui.UI.List'],function(path){alert(path+' loaded.')},function(){alert('ends.')});"+
+                "xui.SC.groupCall(['xui.UI.Button','xui.UI.Input','xui.UI.List'],function(){alert('ends.')},function(path){alert(path+' loaded.')});"+
                 "\n*/"
             ],
             $memo:'相当于loadSnips和execSnips的综合'
@@ -5170,18 +5170,18 @@ _.set(xui.Locale,["cn","app"], {
     });
 
 
-    _.set(xui.Locale,["cn","doc","xui","Com"], {
+    _.set(xui.Locale,["cn","doc","xui","Module"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.Com 类",
+        $desc:"xui.Module 类",
         constructor:{
-            $desc:"xui.Com的构造函数",
+            $desc:"xui.Module的构造函数",
             $paras:[
-                "properties [可选参数] : Object, key/value(any) pairs. the Com properties Object. 默认为 {}.",
-                "events [可选参数] : Object, key/value(Function) pairs. the Com event Object. 默认为 {}.",
-                "host [可选参数] : Object, the Com's host Object. 默认为 itself."
+                "properties [可选参数] : Object, key/value(any) pairs. the Module properties Object. 默认为 {}.",
+                "events [可选参数] : Object, key/value(Function) pairs. the Module event Object. 默认为 {}.",
+                "host [可选参数] : Object, the Module's host Object. 默认为 itself."
             ],
             $snippet:[
-                "var order=[], com = new xui.Com({"+
+                "var order=[], module = new xui.Module({"+
                 "    $1:1"+
                 "  },"+
                 "  {"+
@@ -5193,64 +5193,64 @@ _.set(xui.Locale,["cn","app"], {
                 "    afterIniComponents:function(){order.push('afterIniComponents'); xui.log('afterIniComponents');},"+
                 "    onLoadReqiredClass:function(c,t,key){order.push('onLoadReqiredClass: '+key); xui.log('onLoadReqiredClass: '+key);},"+
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
-                "    onRender:function(com){order.push('onRender'); xui.log('onRender'); com.dialog1.setHtml(order.join('<br />'));}"+
+                "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
-                "com.base=['xui.UI','xui.Date'];"+
-                "com.required=['xui.UI.Dialog','xui.UI.Button'];"+
-                "com.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
-                "com.iniResource=function(){order.push('iniResource'); };"+
-                "com.iniExComs=function(){order.push('iniExComs'); };"+
+                "module.base=['xui.UI','xui.Date'];"+
+                "module.required=['xui.UI.Dialog','xui.UI.Button'];"+
+                "module.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
+                "module.iniResource=function(){order.push('iniResource'); };"+
+                "module.iniExModules=function(){order.push('iniExModules'); };"+
 
-                "var abox=com.getComponents();"+
-                "abox.merge((new xui.UI.Dialog()).setHost(com, 'dialog1'));"+
-                "com.setComponents(abox);"+
+                "var abox=module.getComponents();"+
+                "abox.merge((new xui.UI.Dialog()).setHost(module, 'dialog1'));"+
+                "module.setComponents(abox);"+
 
-                "com.show(function(com){"+
+                "module.show(function(module){"+
                 "   order.push('onEnd'); "+
                 "});",
 
-                "Class('App1','xui.Com',{" +
+                "Class('App1','xui.Module',{" +
                 "    Instance:{" +
                 "        base : ['xui.UI', 'xui.Date']," +
                 "        required : ['xui.UI.Dialog', 'xui.UI.Button']," +
                 "        events:{" +
-                "            beforeCreated : function(com){" +
-                "                com._info=[];" +
-                "                com._info.push('beforeCreated');" +
+                "            beforeCreated : function(module){" +
+                "                module._info=[];" +
+                "                module._info.push('beforeCreated');" +
                 "                xui.log('beforeCreated');" +
                 "            }," +
-                "            onCreated : function(com){" +
-                "                com._info.push('onCreated');" +
+                "            onCreated : function(module){" +
+                "                module._info.push('onCreated');" +
                 "                xui.log('onCreated');" +
                 "            }," +
-                "            onLoadBaseClass : function(com, t, key){" +
-                "                com._info.push('onLoadBaseClass: ' + key);" +
+                "            onLoadBaseClass : function(module, t, key){" +
+                "                module._info.push('onLoadBaseClass: ' + key);" +
                 "                xui.log('onLoadBaseClass: ' + key);" +
                 "            }," +
-                "            onIniResource : function(com){" +
-                "                com._info.push('onIniResource');" +
+                "            onIniResource : function(module){" +
+                "                module._info.push('onIniResource');" +
                 "                xui.log('onIniResource');" +
                 "            }," +
-                "            beforeIniComponents : function(com){" +
-                "                com._info.push('beforeIniComponents');" +
+                "            beforeIniComponents : function(module){" +
+                "                module._info.push('beforeIniComponents');" +
                 "                xui.log('beforeIniComponents');" +
                 "            }," +
-                "            afterIniComponents : function(com){" +
-                "                com._info.push('afterIniComponents');" +
+                "            afterIniComponents : function(module){" +
+                "                module._info.push('afterIniComponents');" +
                 "                xui.log('afterIniComponents');" +
                 "            }," +
-                "            onLoadReqiredClass : function(com, t, key){" +
-                "                com._info.push('onLoadReqiredClass: ' + key);" +
+                "            onLoadReqiredClass : function(module, t, key){" +
+                "                module._info.push('onLoadReqiredClass: ' + key);" +
                 "                xui.log('onLoadReqiredClass: ' + key);" +
                 "            }," +
-                "            onReady : function(com){" +
-                "                com._info.push('onReady');" +
+                "            onReady : function(module){" +
+                "                module._info.push('onReady');" +
                 "                xui.log('onReady');" +
                 "            }," +
-                "            onRender : function(com){" +
-                "                com._info.push('onRender');" +
+                "            onRender : function(module){" +
+                "                module._info.push('onRender');" +
                 "                xui.log('onRender');" +
-                "                com.dialog1.setHtml(com._info.join('<br />'));" +
+                "                module.dialog1.setHtml(module._info.join('<br />'));" +
                 "            }" +
                 "        }," +
                 "        customAppend:function(parent){" +
@@ -5271,15 +5271,15 @@ _.set(xui.Locale,["cn","app"], {
                 "        iniResource : function(){" +
                 "            this._info.push('iniResource');" +
                 "        }," +
-                "        iniExComs : function(){" +
-                "            this._info.push('iniExComs');" +
+                "        iniExModules : function(){" +
+                "            this._info.push('iniExModules');" +
                 "        }" +
                 "    }" +
                 "});" +
-                "var com = new App1;" +
-                "com.show();",
+                "var module = new App1;" +
+                "module.show();",
 
-                "Class('App2','xui.Com',{" +
+                "Class('App2','xui.Module',{" +
                 "    Instance:{" +
                 "        base : ['xui.UI']," +
                 "        required : ['xui.UI.Dialog']," +
@@ -5312,43 +5312,43 @@ _.set(xui.Locale,["cn","app"], {
                 "        iniResource : function(){" +
                 "            this._info.push('iniResource');" +
                 "        }," +
-                "        iniExComs : function(){" +
-                "            this._info.push('iniExComs');" +
+                "        iniExModules : function(){" +
+                "            this._info.push('iniExModules');" +
                 "        }, " +
-                "        _trace : function(com, threadid){" +
-                "            com._info.push(com.$lastEvent);" +
+                "        _trace : function(module, threadid){" +
+                "            module._info.push(module.$lastEvent);" +
                 "        }" +
                 "    }" +
                 "});" +
-                "var com = new App2;" +
-                "com._info=[];"+
-                "com.show(function(com){com.dialog1.setHtml(com._info.join('<br />'));});"
+                "var module = new App2;" +
+                "module._info=[];"+
+                "module.show(function(module){module.dialog1.setHtml(module._info.join('<br />'));});"
             ]
         },
         'load':{
-            $desc:"从远程文件加载一个 xui.Com 的代码,然后新建它的 xui.Com 的实例,最后返回这个实例.",
+            $desc:"从远程文件加载一个 xui.Module 的代码,然后新建它的 xui.Module 的实例,最后返回这个实例.",
             $paras:[
                 "cls [必需参数] : String, 类名字.",
-                "onEnd [可选参数]: Function(err:Error/String, com: xui.Com). 类加载完之后调用.",
+                "onEnd [可选参数]: Function(err:Error/String, module: xui.Module). 类加载完之后调用.",
                 "lang [可选参数] : String, 语言名称.(例如, 'en').",
                 "theme [可选参数] : String, 主题名称.(例如, 'vista').",
                 "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
             ],
             $snippet:[
                 "////Uses the beblow line to load a specified application, and append its UI to 'document.body' if its UI exits. \n"+
-                "//xui.Com.load('RootClassName',function(){alert('ok')},'en')\n",
-                "xui.Com.load('App.Test1',function(){alert('ok')});",
-                "xui.Com.load('App.Test1',function(com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
+                "//xui.Module.load('RootClassName',function(){alert('ok')},'en')\n",
+                "xui.Module.load('App.Test1',function(){alert('ok')});",
+                "xui.Module.load('App.Test1',function(module){module.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
         getFromDom:{
-            $desc:"从一个指定的DOM元素获取 xui.Com 实例.",
+            $desc:"从一个指定的DOM元素获取 xui.Module 实例.",
             $paras:[
                 "id [必需参数] : String, DOM元素或xid."
             ]
         },
         getClsFromDom:{
-            $desc:"从一个指定的DOM元素获取 xui.Com 类名.",
+            $desc:"从一个指定的DOM元素获取 xui.Module 类名.",
             $paras:[
                 "id [必需参数] : String, DOM元素或xid."
             ]
@@ -5365,7 +5365,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"数据绑定功能类型.  none, sync, async之一.  默认 none"
             },
             autoDestroy:{
-                $desc:"本Com是否随着第一个内UI控件的销毁而销毁."
+                $desc:"本Module是否随着第一个内UI控件的销毁而销毁."
             },
             isDestroyed:{
                 $desc:"判断当前对象是否已被销毁."
@@ -5379,14 +5379,14 @@ _.set(xui.Locale,["cn","app"], {
                     "host [可选参数]: Object, 事件函数的作用域对象."
                 ],
                 $snippet:[
-                 "Class('Temp.Demo', 'xui.Com',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
-                 "xui.ComFactory.getCom('Temp.Demo',function(){this.setEvents('onCall',function(){alert(_.toArr(arguments))});this.trigger();});"
+                 "Class('Temp.Demo', 'xui.Module',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
+                 "xui.ModuleFactory.getModule('Temp.Demo',function(){this.setEvents('onCall',function(){alert(_.toArr(arguments))});this.trigger();});"
                 ]
             },
             render:{
                 $desc:'渲染内部的 UI 组件.',
                 $rtn:"[self]",
-                $demo:"You have to call this function after the com was created. And xui.Com.show will trigger this function automatically."
+                $demo:"You have to call this function after the module was created. And xui.Module.show will trigger this function automatically."
             },
             getAlias:{
                 $desc:"得到别名.",
@@ -5400,27 +5400,27 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             AddComponents:{
-                $desc:"向当前 Com 中添加控件.",
+                $desc:"向当前 Module 中添加控件.",
                 $rtn:"[self]",
                 $paras:[
                     "obj [必需参数] : xui.absObj Object."
                 ]
             },
             setComponents:{
-                $desc:"设置目前COM的内部组件.",
+                $desc:"设置目前Module的内部组件.",
                 $rtn:"[self]",
                 $paras:[
                     "obj [必需参数]  : xui.absObj Object."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setComponents((new xui.UI.Button()).setHost(window,'btn') ); alert(com.getComponents().get(0).alias); });},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setComponents((new xui.UI.Button()).setHost(window,'btn') ); alert(module.getComponents().get(0).alias); });},false);"
                 ]
             },
             getComponents:{
                 $desc:"得到所有的内部组件.",
                 $rtn:"xui.absObj",
                 $snippet:[
-                    "Class('App1','xui.Com',{" +
+                    "Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5437,19 +5437,19 @@ _.set(xui.Locale,["cn","app"], {
                     "        }" +
                     "   }" +
                     "});"+
-                    "var com=new App1;"+
-                    "com.create(function(com){alert(com.getComponents().get(0).alias);});"
+                    "var module=new App1;"+
+                    "module.create(function(module){alert(module.getComponents().get(0).alias);});"
                 ]
             },
             getDataBinders:{
-                $desc:"获取指定xui.Com对象包含的所有DataBinder组件.",
+                $desc:"获取指定xui.Module对象包含的所有DataBinder组件.",
                 $rtn:"Array"
             },
             getUIComponents:{
-                $desc:"获取指定xui.Com对象包含的所有UI组件.",
+                $desc:"获取指定xui.Module对象包含的所有UI组件.",
                 $rtn:"xui.UI",
                 $snippet:[
-                    "Class('App1','xui.Com',{" +
+                    "Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5466,8 +5466,8 @@ _.set(xui.Locale,["cn","app"], {
                     "        }" +
                     "   }" +
                     "});"+
-                    "var com=new App1;"+
-                    "com.create(function(com){alert(com.getUIComponents().get(0).alias);});"
+                    "var module=new App1;"+
+                    "module.create(function(module){alert(module.getUIComponents().get(0).alias);});"
                 ]
             },
             getAllComponents:{
@@ -5508,11 +5508,11 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getUIValue:{
-                $desc:"获取Com对象上的所有界面值控件的界面值.",
+                $desc:"获取Module对象上的所有界面值控件的界面值.",
                 $rtn:"Object, 键值对"
             },
             setUIValue:{
-                $desc:"设置Com对象上的所有界面值控件的界面值.",
+                $desc:"设置Module对象上的所有界面值控件的界面值.",
                 $rtn:"[self]",
                  $paras:[
                     "values [必需参数] : Object, 键值对"
@@ -5526,35 +5526,35 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getEvents:{
-                $desc:"获取Com对象上的所有事件处理函数.",
+                $desc:"获取Module对象上的所有事件处理函数.",
                 $rtn:"Object, String or Function",
                 $paras:[
                     "key [可选参数] : String"
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(_.serialize(com.getEvents()))});},false);",
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(_.serialize(com.getEvents('onReady')))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getEvents()))});},false);",
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getEvents('onReady')))});},false);"
                 ]
             },
             setEvents:{
-                $desc:"将一系列的事件处理函数(或一个带有key的事件处理函数)附加到Com对象.",
+                $desc:"将一系列的事件处理函数(或一个带有key的事件处理函数)附加到Module对象.",
                 $rtn:"[self]",
                 $paras:[
                     "key [必需参数] : Objecyt/String, 一系列的事件处理函数或key值.",
                     "value [可选参数] : Function, event function."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setEvents('onA',function(){}); alert(com.getEvents('onA'))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setEvents('onA',function(){}); alert(module.getEvents('onA'))});},false);"
                 ]
             },
             create:{
-                $desc:"使用异步方式生成Com对象.",
+                $desc:"使用异步方式生成Module对象.",
                 $paras:[
-                    "onEnd [Optiona] : Function. 回调函数,在Com对象成功生成后执行.",
-                    "threadid [可选参数] : String, 内部线程id.  如本参数为 false, 表示生成Com的过程不会异步调用函数（不用xui.Thread）."
+                    "onEnd [Optiona] : Function. 回调函数,在Module对象成功生成后执行.",
+                    "threadid [可选参数] : String, 内部线程id.  如本参数为 false, 表示生成Module的过程不会异步调用函数（不用xui.Thread）."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert('created!')});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert('created!')});},false);"
                 ]
             },
             customAppend:{
@@ -5567,30 +5567,30 @@ _.set(xui.Locale,["cn","app"], {
                     "threadid [可选参数] : String, 线程Id."
                 ]
             },
-            iniExComs:{
-                $desc:"加载其他Com可以用本函数.",
+            iniExModules:{
+                $desc:"加载其他Module可以用本函数.",
                 $paras:[
-                    "com [必需参数] : xui.Com, 当前Com对象.",
+                    "module [必需参数] : xui.Module, 当前Module对象.",
                     "threadid [可选参数] : String, 线程Id."
                 ]
             },
             iniResource:{
                 $desc:"加载外部的资源（通过Ajax取得数据）可以用本函数.",
                 $paras:[
-                    "com [必需参数] : xui.Com, 当前Com对象.",
+                    "module [必需参数] : xui.Module, 当前Module对象.",
                     "threadid [可选参数] : String, 线程Id."
                 ]
             },
             show:{
-                $desc:"显示Com对象.",
+                $desc:"显示Module对象.",
                 $paras:[
-                    "onEnd [Optiona] : Function. 回调函数,在Com对象成功显示后执行.",
+                    "onEnd [Optiona] : Function. 回调函数,在Module对象成功显示后执行.",
                     "parent [可选参数] : String/Element/xui.Dom, 父DOM节点或xui.UI对象.",
                     "subId [可选参数] : String, 该参数在parent为xui.UI对象时有效.该子id. The sub id that Determines the [target] will be added to which sub DOM node. 该参数也可以设置成[false], that means the [target] will be appended to DOM only, no link created between the [target] UIProfiles and the parent UIProfile.",
-                    "threadid [可选参数] : String, 内部线程id. 如本参数为 false, 表示显示Com的过程不会异步调用函数（不用xui.Thread）."
+                    "threadid [可选参数] : String, 内部线程id. 如本参数为 false, 表示显示Module的过程不会异步调用函数（不用xui.Thread）."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.show(function(){});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; Module.show(function(){});},false);"
                 ]
             },
             destroy:{
@@ -5601,7 +5601,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"生成内部的组件并返回内部组件数组(xui.absObj Object).",
                 $rtn:"Array, xui.absObj对象数组.",
                 $snippet:[
-                    "Class('App1','xui.Com',{" +
+                    "Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5618,30 +5618,30 @@ _.set(xui.Locale,["cn","app"], {
                     "        }" +
                     "   }" +
                     "});"+
-                    "var com=new App1;"+
-                    "com.create(function(com){alert(com.getUIComponents().get(0).alias);});"
+                    "var module=new App1;"+
+                    "module.create(function(module){alert(module.getUIComponents().get(0).alias);});"
                 ]
             },
             getProperties:{
-                $desc:"取得Com对象所有的属性或某个指定的属性.",
+                $desc:"取得Module对象所有的属性或某个指定的属性.",
                 $rtn:"Object",
                 $paras:[
                     "key [可选参数] : String, 属性名称."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(_.serialize(com.getProperties()))});},false);",
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(com.getProperties('p1'))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getProperties()))});},false);",
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(module.getProperties('p1'))});},false);"
                 ]
             },
             setProperties:{
-                $desc:"设置Com对象的一系列的属性或某个指定的属性.",
+                $desc:"设置Module对象的一系列的属性或某个指定的属性.",
                 $rtn:"[self]",
                 $paras:[
                     "key [必需参数] : Object/String, 属性或key数组.",
                     "value [可选参数] : Object, a property value."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setProperties('p3','p3 value'); alert(com.getProperties('p3'))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setProperties('p3','p3 value'); alert(module.getProperties('p3'))});},false);"
                 ]
             },
             setHost:{
@@ -5652,99 +5652,99 @@ _.set(xui.Locale,["cn","app"], {
                     "alias [可选参数] : String, 别名."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setHost(window,'com_alias'); alert(com.getHost()===window); alert(window.com_alias)});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setHost(window,'module_alias'); alert(module.getHost()===window); alert(window.module_alias)});},false);"
                 ]
             },
             getHost:{
                 $desc:"获取host对象.",
                 $rtn:"Object",
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setHost(window,'com_alias'); alert(com.getHost()===window); alert(window.com_alias)});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setHost(window,'module_alias'); alert(module.getHost()===window); alert(window.module_alias)});},false);"
                 ]
             },
 
             beforeCreated:{
-                $desc:'在COM生成之前触发.如果返回false,当前COM对象将不会生成.',
+                $desc:'在Module生成之前触发.如果返回false,当前Module对象将不会生成.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
             },
             onCreated:{
-                $desc:'在COM生成的时候触发.',
+                $desc:'在Module生成的时候触发.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
             },
             beforeShow:{
-                $desc:'在COM显示前触发.',
+                $desc:'在Module显示前触发.',
                 $paras:[
-                    'com : xui.Com 对象.'
+                    'module : xui.Module 对象.'
                 ]
             },
             afterShow:{
-                $desc:'在COM显示后触发.',
+                $desc:'在Module显示后触发.',
                 $paras:[
-                    'com : xui.Com 对象.'
+                    'module : xui.Module 对象.'
                 ]
             },
             onLoadBaseClass:{
-                $desc:'当COM加载基类的时候触发本事件.',
+                $desc:'当Module加载基类的时候触发本事件.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.',
                     'key: String, 基类的类名.'
                 ],
                 $memo:'See constructor.'
             },
             onIniResource:{
-                $desc:'当COM加载资源的时候触发本事件.',
+                $desc:'当Module加载资源的时候触发本事件.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
             },
             beforeIniComponents:{
-                $desc:'当COM初始化组件前触发本事件.如果返回false,iniComponents函数将不被执行.',
+                $desc:'当Module初始化组件前触发本事件.如果返回false,iniComponents函数将不被执行.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
             },
             afterIniComponents:{
-                $desc:'当 COM 运行iniComponents函数之后触发.',
+                $desc:'当 Module 运行iniComponents函数之后触发.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
             },
             onLoadRequiredClass:{
-                $desc:'当 COM 加载所需要的类时触发.',
+                $desc:'当 Module 加载所需要的类时触发.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.',
                     'key: String, 加载的类名.'
                 ],
                 $memo:'See constructor.'
             },
             onReady:{
-                $desc:'当 COM 构建完成后触发.',
+                $desc:'当 Module 构建完成后触发.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
             },
             onRender:{
-                $desc:'当 COM 的UI部分被加到DOM时触发.',
+                $desc:'当 Module 的UI部分被加到DOM时触发.',
                 $paras:[
-                    'com : xui.Com 对象.',
+                    'module : xui.Module 对象.',
                     'threadid : String, 线程 id.'
                 ],
                 $memo:'See constructor.'
@@ -5753,132 +5753,132 @@ _.set(xui.Locale,["cn","app"], {
     });
 
 
-    _.set(xui.Locale,["cn","doc","xui","ComFactory"], {
+    _.set(xui.Locale,["cn","doc","xui","ModuleFactory"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.ComFactory 类(静态类)",
+        $desc:"xui.ModuleFactory 类(静态类)",
         setProfile:{
-            $desc:"设置应用模块工厂(ComFatory)的profile.",
-            $rtn:'xui.ComFactory',
+            $desc:"设置应用模块工厂(ModuleFatory)的profile.",
+            $rtn:'xui.ModuleFactory',
             $paras:[
                 "key [必需参数] : String或键值对.",
                 "value [可选参数] : String 或 键值对."
             ],
             $snippet:[
-                "xui.ComFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
-                "xui.ComFactory.setProfile('test1','App.Test1');"+
-                "xui.ComFactory.setProfile({test1:{cls:'App.Test1'},test2:{cls:'App.Test2'}});"+
-                "xui.ComFactory.setProfile('test1',{cls:'App.Test1',props:{dlgCaption:'dialog caption'}});"+
-                "alert(_.serialize(xui.ComFactory.getProfile()));"+
-                "alert(xui.ComFactory.getProfile('test1'));"
+                "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
+                "xui.ModuleFactory.setProfile('test1','App.Test1');"+
+                "xui.ModuleFactory.setProfile({test1:{cls:'App.Test1'},test2:{cls:'App.Test2'}});"+
+                "xui.ModuleFactory.setProfile('test1',{cls:'App.Test1',props:{dlgCaption:'dialog caption'}});"+
+                "alert(_.serialize(xui.ModuleFactory.getProfile()));"+
+                "alert(xui.ModuleFactory.getProfile('test1'));"
             ]
         },
         getProfile:{
-            $desc:"获取应用模块工厂(ComFatory)的profile.",
+            $desc:"获取应用模块工厂(ModuleFatory)的profile.",
             $rtn:'String/Object',
             $paras:[
                 "key [可选参数] : String."
             ],
             $snippet:[
-                "xui.ComFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
-                "alert(xui.ComFactory.getProfile());"+
-                "alert(xui.ComFactory.getProfile('test1'));"
+                "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
+                "alert(xui.ModuleFactory.getProfile());"+
+                "alert(xui.ModuleFactory.getProfile('test1'));"
             ]
         },
         broadcast:{
-            $desc:"广播一个消息(function)到所有的应用模块(xui.Com)中.",
+            $desc:"广播一个消息(function)到所有的应用模块(xui.Module)中.",
             $paras:[
                 "fun [必需参数] : Function, 要广播的函数."
             ],
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1', (new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "xui.ComFactory.broadcast(function(i){alert(i + ' / ' + this.KEY)});"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1', (new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "xui.ModuleFactory.broadcast(function(i){alert(i + ' / ' + this.KEY)});"
             ]
         },
         destroyAll:{
-            $desc:"销毁应用模块工厂(ComFatory)加载的所有模块.",
+            $desc:"销毁应用模块工厂(ModuleFatory)加载的所有模块.",
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1',(new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "xui.ComFactory.destroyAll();"+
-                "alert(xui.ComFactory.getComFromCache('test'));"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "xui.ModuleFactory.destroyAll();"+
+                "alert(xui.ModuleFactory.getModuleFromCache('test'));"
             ]
         },
-        getComFromCache:{
-            $desc:"获取一个缓存中已经存在的应用模块对象(Com Object).",
-            $rtn:"xui.Com",
+        getModuleFromCache:{
+            $desc:"获取一个缓存中已经存在的应用模块对象(Module Object).",
+            $rtn:"xui.Module",
             $paras:[
                 "id [必需参数] : String, 应用模块对象id."
             ],
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1',(new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "alert(xui.ComFactory.getComFromCache('test1').KEY);"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "alert(xui.ModuleFactory.getModuleFromCache('test1').KEY);"
             ]
         },
-        getCom :{
-            $desc:"获取一个缓存中已经存在的应用模块对象(Com Object), 如果不存在,则加载应用模块对应的js文件,再生成应用模块对象(Com Object).",
-            $rtn:"xui.Com",
+        getModule :{
+            $desc:"获取一个缓存中已经存在的应用模块对象(Module Object), 如果不存在,则加载应用模块对应的js文件,再生成应用模块对象(Module Object).",
+            $rtn:"xui.Module",
             $paras:[
                 "cls [必需参数] : String, 应用模块对象类名.",
-                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数, 生成应用模块对象(Com Object)成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 生成应用模块对象(Module Object)成功后被调用.",
                 "threadid [可选参数] : String, 内部线程id",
-                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newCom.",
-                "properties [可选参数] : Object, 键值对,com的属性.",
-                "events [可选参数] : Object, 键值对,com的事件."
+                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newModule.",
+                "properties [可选参数] : Object, 键值对,module的属性.",
+                "events [可选参数] : Object, 键值对,module的事件."
             ],
             $snippet:[
-                "xui.ComFactory.getCom('App.Test1',function(){alert('The Com loaded successfully.')});",
+                "xui.ModuleFactory.getModule('App.Test1',function(){alert('The Module loaded successfully.')});",
 
-                "xui.ComFactory.destroyAll();"+
-                "xui.ComFactory.setProfile({test1:{cls:'App.Test1',properties:{key1:1},events:{ev1:function(){alert(2)}}},test2:'App.Test2'});"+
-                "xui.ComFactory.getCom('test1',function(){alert('The Com loaded successfully.');alert(this.properties.key1); this.events.ev1();});"
+                "xui.ModuleFactory.destroyAll();"+
+                "xui.ModuleFactory.setProfile({test1:{cls:'App.Test1',properties:{key1:1},events:{ev1:function(){alert(2)}}},test2:'App.Test2'});"+
+                "xui.ModuleFactory.getModule('test1',function(){alert('The Module loaded successfully.');alert(this.properties.key1); this.events.ev1();});"
             ]
         },
-        setCom:{
-            $desc:"设置一个应用模块对象(Com Object),并和一个Com id关联.",
-            $rtn:"xui.ComFactory",
+        setModule:{
+            $desc:"设置一个应用模块对象(Module Object),并和一个Module id关联.",
+            $rtn:"xui.ModuleFactory",
             $paras:[
-                "id [必需参数] : String, Com id关联.",
-                "obj [必需参数] : Object, 应用模块对象(Com Object)."
+                "id [必需参数] : String, Module id关联.",
+                "obj [必需参数] : Object, 应用模块对象(Module Object)."
             ],
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1',(new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "alert(xui.ComFactory.getComFromCache('test1').KEY);"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "alert(xui.ModuleFactory.getModuleFromCache('test1').KEY);"
             ]
         },
-        newCom :{
+        newModule :{
             $desc:"生成一个新的应用模块类, 或加载一个应用模块类, 生成并返回它.",
             $paras:[
                 "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function(err:Error/String, com: xui.Com, threadid:String), 回调函数,加载应用模块类成功后被调用.",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数,加载应用模块类成功后被调用.",
                 "threadid [可选参数] : String, the inner threadid",
-                "properties [可选参数] : Object, 键值对,com的属性.",
-                "events [可选参数] : Object, 键值对,com的事件."
+                "properties [可选参数] : Object, 键值对,module的属性.",
+                "events [可选参数] : Object, 键值对,module的事件."
             ],
             $snippet:[
-                "xui.ComFactory.destroyAll();"+
-                "xui.ComFactory.newCom('App.Test1',function(){alert('The com loaded successfully.')});"
+                "xui.ModuleFactory.destroyAll();"+
+                "xui.ModuleFactory.newModule('App.Test1',function(){alert('The module loaded successfully.')});"
             ]
         },
-        prepareComs:{
+        prepareModules:{
             $desc:"在后台加载并生成一些列的应用模块, 这些模块需要在profile中事先被定义.",
-            $rtn:"xui.ComFactory",
+            $rtn:"xui.ModuleFactory",
             $snippet:[
-                "//xui.ComFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});\n"+
-                "//xui.ComFactory.prepareWidgets(['test1','test2']);"
+                "//xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});\n"+
+                "//xui.ModuleFactory.prepareWidgets(['test1','test2']);"
             ]
         },
-        storeCom:{
+        storeModule:{
             $desc:"存储一个应用模块. (切断和父DOM节点的关联, 并存放到一个隐藏的div.)",
             $paras:[
                 "id [Require] : 应用模块id."
             ],
             $snippet:[
-                "xui.ComFactory.destroyAll();"+
-                "xui.ComFactory.setProfile('test1',{cls:'App.Test1',props:{dlgCaption:'dialog caption'}});"+
-                "xui.ComFactory.getCom('test1',function(){ this.showDlg(); _.asyRun(function(){xui.ComFactory.storeCom('test1')},1000); });"
+                "xui.ModuleFactory.destroyAll();"+
+                "xui.ModuleFactory.setProfile('test1',{cls:'App.Test1',props:{dlgCaption:'dialog caption'}});"+
+                "xui.ModuleFactory.getModule('test1',function(){ this.showDlg(); _.asyRun(function(){xui.ModuleFactory.storeModule('test1')},1000); });"
             ]
         }
     });
@@ -6110,18 +6110,6 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
-            getQueryModel:{
-                $desc:"[废弃] 获取远程数据源的模板(MVC的M)名称.",
-                $rtn:"Boolean"
-            },
-            setQueryModel:{
-                $desc:"[废弃] 设置远程数据源的模板(MVC的M)名称. 这个模板字符串会加到数据源请求地址的后面.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
             getQueryArgs:{
                 $desc:"[废弃] 获取远程数据源的数据请求参数.",
                 $rtn:"Object"
@@ -6134,11 +6122,11 @@ _.set(xui.Locale,["cn","app"], {
                     "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
                 ]
             },
-            getTokenParams:{
+            getBearerToken:{
                 $desc:"[废弃] 获取数据请求token参数.",
                 $rtn:"Object"
             },
-            setTokenParams:{
+            setBearerToken:{
                 $desc:"[废弃] 设置数据请求token参数.",
                 $rtn:"[self].",
                 $paras:[
@@ -20318,7 +20306,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         }
 });
 _.set(xui.Locale,["cn","doc","eventname"],{
-        'xui_Com':{
+        'xui_Module':{
             beforeCreated:"部件生成前",
             onLoadBaseClass:"加载基础类",
             onLoadRequiredClass:"加载必须类",

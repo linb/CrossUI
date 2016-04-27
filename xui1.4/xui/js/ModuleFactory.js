@@ -1,33 +1,47 @@
-Class('xui.ComFactory',null,{
+Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.getCom=function(cls, onEnd, threadid, cached, properties, events){
-            return ns.getCom.apply(ns,arguments)
+        xui.getModule=function(cls, onEnd, threadid, cached, properties, events){
+            return ns.getModule.apply(ns,arguments)
         };
-        xui.newCom=function(cls, onEnd, threadid, properties, events){
-            return ns.newCom.apply(ns,arguments)
+        xui.newModule=function(cls, onEnd, threadid, properties, events){
+            return ns.newModule.apply(ns,arguments)
         };
-        xui.showCom=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
-            return ns.getCom(cls, function(err, com, threadid){
-                if(!err && false!==_.tryF(beforeShow, [com, threadid], com)){
-                    this.show.apply(com, [onEnd,parent,subId,threadid,left,top]);
+        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+            return ns.getModule(cls, function(err, module, threadid){
+                if(!err && false!==_.tryF(beforeShow, [module, threadid], module)){
+                    this.show.apply(module, [onEnd,parent,subId,threadid,left,top]);
                 }else{
-                    _.tryF(onEnd, [err, com, threadid], com);
+                    _.tryF(onEnd, [err, module, threadid], module);
                 }
             }, threadid, cached, properties, events);
         };
+
+        //compitable
+        xui.getCom=xui.getModule;
+        xui.newCom=xui.newModule;
+        xui.showCom=xui.showModule;
+
+        ns.setCom=ns.setModule;
+        ns.getComFromCache=ns.getModuleFromCache;
+        ns.getCom=ns.getModule;
+        ns.newCom=ns.newModule;
+        ns.storeCom=ns.storeModule;
+        ns.prepareComs=ns.prepareModules;
+
+        xui.ComFactory=ns;
     },
     Static:{
         _pro:{},
         _cache:{},
-        _domId:'xui:ComFactory:',
+        _domId:'xui:ModuleFactory:',
         getProfile:function(key){
             return key?this._pro[key]:this._pro;
         },
         setProfile:function(key, value){
             if(typeof key=='string')
                 this._pro[key]=value;
-            else
+            else if(_.isHash(key))
                 this._pro=key;
             return this;
         },
@@ -45,16 +59,16 @@ Class('xui.ComFactory',null,{
             }
         },
 
-        setCom:function(id, obj){
+        setModule:function(id, obj){
             this._cache[id]=obj;
-            if(obj)obj.comRefId=id;
+            if(obj)obj.moduleRefId=id;
             return this;
         },
-        getComFromCache:function(id){
+        getModuleFromCache:function(id){
             return this._cache[id]||null;
         },
         //cached:false->don't get it from cache, and don't cache the result.
-        getCom:function(id, onEnd, threadid, cached, properties, events){
+        getModule:function(id, onEnd, threadid, cached, properties, events){
             if(!id){
                 var e=new Error("No id");
                 _.tryF(onEnd,[e,null,threadid]);
@@ -96,10 +110,10 @@ Class('xui.ComFactory',null,{
                         if(config.events)
                             _.merge(o.events,config.events,'all');
                         if(config.cached!==false)
-                            xui.ComFactory.setCom(id, o);
+                            xui.ModuleFactory.setModule(id, o);
 
-                        var args = [function(err,com,threadid){
-                            var arr = com.getUIComponents().get(),
+                        var args = [function(err,module,threadid){
+                            var arr = module.getUIComponents().get(),
                                 fun=function(arr,subcfg,firstlayer){
                                     var self1 = arguments.callee;
                                     _.arr.each(arr,function(v,i){
@@ -112,7 +126,7 @@ Class('xui.ComFactory',null,{
                                         }
                                     });
                                 };
-                            //handle tag sub from com
+                            //handle tag sub from module
                             fun(arr,config.children,1);
                         }];
                         args.push(threadid||null);
@@ -162,10 +176,10 @@ Class('xui.ComFactory',null,{
                 },null,threadid);
             }
         },
-        newCom:function(cls, onEnd, threadid, properties, events){
-            return this.getCom(cls, onEnd, threadid, false, properties, events);
+        newModule:function(cls, onEnd, threadid, properties, events){
+            return this.getModule(cls, onEnd, threadid, false, properties, events);
         },
-        storeCom:function(id){
+        storeModule:function(id){
             var m,t,c=this._cache,domId=this._domId;
             if(t=c[id]){
                 if(!(m=xui.Dom.byId(domId)))
@@ -181,11 +195,11 @@ Class('xui.ComFactory',null,{
                 }
             }
         },
-        prepareComs:function(arr){
+        prepareModules:function(arr){
             var self=this,funs=[];
             _.arr.each(arr, function(i){
                 funs.push(function(){
-                    self.getCom(i);
+                    self.getModule(i);
                 });
             });
             xui.Thread(null, funs, 500).start();

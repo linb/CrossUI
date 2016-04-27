@@ -167,6 +167,7 @@ Class("xui.UI.Resizer","xui.UI",{
     Static:{
         Templates:{
             tagName:'div',
+            className:'{_disabled}',
             style:'{_style};'
         },
         Appearances:{
@@ -182,6 +183,31 @@ Class("xui.UI.Resizer","xui.UI",{
                 /*for get top Index, when it's static*/
                 'z-index':60,
                 cursor:'move'
+            },
+            "KEY.disabled":{
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 300 300'><path d='M300 0 L0 300 ' stroke='black' stroke-width='1'/><path d='M0 0 L300 300 ' stroke='black' stroke-width='1'/></svg>\")",
+                'background-repeat':'no-repeat',
+                'background-position':'center center',
+                'background-size':'100% 100%, auto',
+                border: 'solid #888 1px',
+                'background-color':'#bbb',
+                 opacity: '0.3'
+            },
+            "KEY.disabled.active":{
+                'background-color':'#eee'
+            },
+            /*
+            "KEY.disabled":{
+                background: (xui.browser.isWebKit?"-webkit-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -webkit-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
+                                   :xui.browser.isFF?"-moz-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -moz-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
+                                   :xui.browser.opr?"-o-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -o-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
+                                   :"")
+                                 + ";linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px",
+                'background-size': "64px 64px",
+                border:"solid 1px #d9ecff"
+            },*/
+            "KEY.disabled div":{
+                display:'none'
             },
             MOVE:{
                 position:'absolute',
@@ -294,16 +320,19 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             CONF1:{
                 onMouseover:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src, 'left','mouseover');
                     return false;
                 },
                 onMousedown:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'left','mousedown');
                     return false;
                 },
                 onClick:function(profile,e,src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'left','click');
                     return false;
@@ -311,16 +340,19 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             CONF2:{
                 onMouseover:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'right','mouseover');
                     return false;
                 },
                 onMousedown:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'right','mousedown');
                     return false;
                 },
                 onClick:function(profile,e,src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'right','click');
                     return false;
@@ -486,6 +518,13 @@ Class("xui.UI.Resizer","xui.UI",{
 
             handlerSize:4,
             handlerOffset:0,
+            disabled:{
+                ini:false,
+                action:function(v){
+                     if(v)this.getRoot().addClass("disabled");
+                     else this.getRoot().removeClass("disabled");
+                }
+            },
             leftConfigBtn:{
                 ini:false,
                 action:function(v){
@@ -660,6 +699,7 @@ Class("xui.UI.Resizer","xui.UI",{
             if(r && xui.browser.ie&&xui.browser.ver<=8)
                 r=false;
             t._rotateBtn = r?'':'display:none';
+            t._disabled = t.disabled?"disabled":"";
             return arguments.callee.upper.call(this, profile);
         },
         RenderTrigger:function(){
@@ -735,6 +775,8 @@ Class("xui.UI.Resizer","xui.UI",{
             }
         },
         _onMousedown:function(profile, e, src, axis){
+            if(profile.properties.disabled)return false;
+
             var ddparas=this._getDDParas(0, axis);
             if(xui.Event.getBtn(e)!="left")return;
             var puip=profile.$parentUIProfile;

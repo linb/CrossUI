@@ -40,7 +40,7 @@ Class('App.xui_UI_TreeView', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         },
         // Give a chance to load other com
-        iniExComs : function(com, threadid){
+        iniExModules : function(com, threadid){
         },
         // Give a chance to determine which UI controls will be appended to parent container
         customAppend : function(parent, subId, left, top){

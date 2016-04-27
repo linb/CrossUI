@@ -5,7 +5,7 @@ Class('App', 'xui.Com',{
         _onready:function () {
             SPA=this;
             //set com factory profile
-            xui.ComFactory.setProfile(CONF.ComFactoryProfile);
+            xui.ComFactory.setProfile(CONF.ModuleFactoryProfile);
         }, 
         _button9_onclick:function (profile, e, value) {
             var host=this;

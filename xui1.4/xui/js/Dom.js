@@ -3559,6 +3559,25 @@ type:4
                 window.open(action,target);
             }
         },
+        selectFile:function(callback, accept){
+            var fileInput=document.createElement( "input" );
+            fileInput.type="file";
+            // "image/*, video/*, audio/*"
+            if(accept)fileInput.accept = accept;
+
+            fileInput.onchange=function(){
+                _.tryF(callback, [this, this.files[0]], this);
+            };
+            if (!!window.ActiveXObject || "ActiveXObject" in window)  {
+              var label=document.createElement( "div" );
+              fileInput.appendChild(label);
+              label.click();
+              fileInput.removeChild(label);
+            }else{
+              fileInput.click();
+            }
+            fileInput=null;
+        },
         busy:function(label,busyMsg){
             xui.Dom.setCover(busyMsg||true,label);
         },

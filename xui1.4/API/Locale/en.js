@@ -1045,16 +1045,16 @@ _.set(xui.Locale,["en","app"], {
         require:{
             $desc:"Requires a class.",
             $paras:[
-                "cls [Required]: String, class name",
-                "sync [Optional]: Boolean, sync or async. Default is [false].",
-                "onSuccess [Optional]: Function, if requires the file successfully, call this function. ",
-                "onFail [Optional]: Function, if doesn't require the file successfully, call this function."
+                "cls [Required]: String/Array, class name",
+                "onEnd [Optional]: Function, the end callback function. ",
+                "callback [Optional]: Function, the callback function. ",
+                "isAsy[Optional]: Boolean, sync or async. Default is [true]."
             ],
             $snippet:[
                 "// Gets .js sync \n"+
-                "App.Test1=undefined; xui.require('App.Test1',true); alert(App.Test1.KEY);",
+                "App.Test1=undefined; xui.require('App.Test1',function(cls){alert(cls.KEY);},null,false); ",
                 "// This path doesn't exist \n " +
-                "xui.require('App.doesntexist',true,null,function(rsp){alert(rsp)});"
+                "xui.require('App.doesntexist',function(rsp){alert(rsp)});"
             ]
         },
         request:{
@@ -1138,50 +1138,50 @@ _.set(xui.Locale,["en","app"], {
             ]
         },
         launch:{
-            $desc:"To create a xui.Com , and show it.",
+            $desc:"To create a xui.Module , and show it.",
             $paras:[
                 "cls [Required] : String, the full class path name(e.g. 'xui.App').",
-                "onEnd [Optional]: Function(err:Error/String, com: xui.Com). This function will be called after the process is end.",
+                "onEnd [Optional]: Function(err:Error/String, module: xui.Module). This function will be called after the process is end.",
                 "lang [Optional] : String, language name.(e.g. 'en').",
                 "theme [Optional] : String, theme name..(e.g. 'vista').",
-                "showUI [Optional] : Boolean, indicates whether or not it shows the Com UI. Default is true;"
+                "showUI [Optional] : Boolean, indicates whether or not it shows the Module UI. Default is true;"
             ],
-            $memo:"Equals to xui.Com.load"
+            $memo:"Equals to xui.Module.load"
         },
-        getCom :{
-            $desc:"Gets a Com Object from cache directly if it exists, or loads the Com code first, creates the Com and returns it.",
-            $rtn:"xui.Com",
+        getModule :{
+            $desc:"Gets a Module Object from cache directly if it exists, or loads the Module code first, creates the Module and returns it.",
+            $rtn:"xui.Module",
             $paras:[
-                "cls [Required] : String, the Com class.",
-                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
+                "cls [Required] : String, the Module class.",
+                "onEnd [Optional] : Function(err:Error/String, module: xui.Module, threadid:String), the callback function, it will be executed once when the Module is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
-                "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events."
+                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ModuleFactory won't get it from the Module cache, and won't cache the result.",
+                "properties [Optional] : Object, key/value pairs, module's properties",
+                "events [Optional] : Object, key/value pairs, module's events."
             ],
-            $memo:"Equals to xui.ComFactory.getCom"
+            $memo:"Equals to xui.ModuleFactory.getModule"
         },
-        newCom:{
-            $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
+        newModule:{
+            $desc:"Creates a new Module Class if the Class exists, or loads the Module Class code first, creates it, and returns it.",
             $paras:[
-                "cls [Required] : String, the Com Class path name.",
-                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
+                "cls [Required] : String, the Module Class path name.",
+                "onEnd [Optional] : Function(err:Error/String, module: xui.Module, threadid:String), the callback function, it will be executed once when the Module is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events."
+                "properties [Optional] : Object, key/value pairs, module's properties",
+                "events [Optional] : Object, key/value pairs, module's events."
             ],
-            $memo:"Equals to xui.ComFactory.newCom"
+            $memo:"Equals to xui.ModuleFactory.newModule"
         },
-        showCom:{
-            $desc:"Creates a com and show it.",
+        showModule:{
+            $desc:"Creates a module and show it.",
             $paras:[
-                "cls [Required] : String, the Com Class path name.",
-                "beforeShow[Optional] : Function(com: xui.Com, threadid:String), the callback function, it will be executed once before the Com will be showed. If returns false, the default show function will be ignored",
-                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
+                "cls [Required] : String, the Module Class path name.",
+                "beforeShow[Optional] : Function(module: xui.Module, threadid:String), the callback function, it will be executed once before the Module will be showed. If returns false, the default show function will be ignored",
+                "onEnd [Optional] : Function(err:Error/String, module: xui.Module, threadid:String), the callback function, it will be executed once when the Module is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
-                "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events.",
+                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ModuleFactory won't get it from the Module cache, and won't cache the result.",
+                "properties [Optional] : Object, key/value pairs, module's properties",
+                "events [Optional] : Object, key/value pairs, module's events.",
                 "parent [Required] : xui.UI, xui.UI ojbect, Element or xui.Dom Object.",
                 "subId [Optional] : String, the sub id that determines the set of UIProfiles will be added to.",
                 "left [Optional] : Number, the css left value.",
@@ -2189,13 +2189,13 @@ _.set(xui.Locale,["en","app"], {
             $desc:"To group a set of path names to load code snippet and execute them in parallel.",
             $paras:[
                 "pathArr [Required]: Array, a set of path names(String).",
-                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code snip returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/iajax Object.",
                 "onEnd [Optional]: Function, arguments:[the process id]. A function to be executed after all the code snippet are loaded and executed.",
+                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code snip returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/iajax Object.",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]"
             ],
             $snippet:[
                 "/*\n//The most common usage: \n"+
-                "xui.SC.groupCall(['xui.UI.Button','xui.UI.Input','xui.UI.List'],function(path){alert(path+' loaded.')},function(){alert('ends.')});"+
+                "xui.SC.groupCall(['xui.UI.Button','xui.UI.Input','xui.UI.List'],function(){alert('ends.')},function(path){alert(path+' loaded.')});"+
                 "\n*/"
             ]
         },
@@ -5108,18 +5108,18 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Com"], {
+    _.set(xui.Locale,["en","doc","xui","Module"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.Com Class",
+        $desc:"xui.Module Class",
         constructor:{
-            $desc:"xui.Com constructor",
+            $desc:"xui.Module constructor",
             $paras:[
-                "properties [Optional] : key/value(any) pairs. the Com properties Object. Default is {}.",
-                "events [Optional] : key/value(Function) pairs. the Com event Object. Default is {}.",
-                "host [Optional] : Object. the Com's host Object. Default is itself."
+                "properties [Optional] : key/value(any) pairs. the Module properties Object. Default is {}.",
+                "events [Optional] : key/value(Function) pairs. the Module event Object. Default is {}.",
+                "host [Optional] : Object. the Module's host Object. Default is itself."
             ],
             $snippet:[
-                "var order=[], com = new xui.Com({"+
+                "var order=[], module = new xui.Module({"+
                 "    $1:1"+
                 "  },"+
                 "  {"+
@@ -5131,64 +5131,64 @@ _.set(xui.Locale,["en","app"], {
                 "    afterIniComponents:function(){order.push('afterIniComponents'); xui.log('afterIniComponents');},"+
                 "    onLoadReqiredClass:function(c,t,key){order.push('onLoadReqiredClass: '+key); xui.log('onLoadReqiredClass: '+key);},"+
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
-                "    onRender:function(com){order.push('onRender'); xui.log('onRender'); com.dialog1.setHtml(order.join('<br />'));}"+
+                "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
-                "com.base=['xui.UI','xui.Date'];"+
-                "com.required=['xui.UI.Dialog','xui.UI.Button'];"+
-                "com.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
-                "com.iniResource=function(){order.push('iniResource'); };"+
-                "com.iniExComs=function(){order.push('iniExComs'); };"+
+                "module.base=['xui.UI','xui.Date'];"+
+                "module.required=['xui.UI.Dialog','xui.UI.Button'];"+
+                "module.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
+                "module.iniResource=function(){order.push('iniResource'); };"+
+                "module.iniExModules=function(){order.push('iniExModules'); };"+
 
-                "var abox=com.getComponents();"+
-                "abox.merge((new xui.UI.Dialog()).setHost(com, 'dialog1'));"+
-                "com.setComponents(abox);"+
+                "var abox=module.getComponents();"+
+                "abox.merge((new xui.UI.Dialog()).setHost(module, 'dialog1'));"+
+                "module.setComponents(abox);"+
 
-                "com.show(function(err,com){"+
+                "module.show(function(err,module){"+
                 "   order.push('onEnd'); "+
                 "});",
 
-                "Class('App1','xui.Com',{" +
+                "Class('App1','xui.Module',{" +
                 "    Instance:{" +
                 "        base : ['xui.UI', 'xui.Date']," +
                 "        required : ['xui.UI.Dialog', 'xui.UI.Button']," +
                 "        events:{" +
-                "            beforeCreated : function(com){" +
-                "                com._info=[];" +
-                "                com._info.push('beforeCreated');" +
+                "            beforeCreated : function(module){" +
+                "                module._info=[];" +
+                "                module._info.push('beforeCreated');" +
                 "                xui.log('beforeCreated');" +
                 "            }," +
-                "            onCreated : function(com){" +
-                "                com._info.push('onCreated');" +
+                "            onCreated : function(module){" +
+                "                module._info.push('onCreated');" +
                 "                xui.log('onCreated');" +
                 "            }," +
-                "            onLoadBaseClass : function(com, t, key){" +
-                "                com._info.push('onLoadBaseClass: ' + key);" +
+                "            onLoadBaseClass : function(module, t, key){" +
+                "                module._info.push('onLoadBaseClass: ' + key);" +
                 "                xui.log('onLoadBaseClass: ' + key);" +
                 "            }," +
-                "            onIniResource : function(com){" +
-                "                com._info.push('onIniResource');" +
+                "            onIniResource : function(module){" +
+                "                module._info.push('onIniResource');" +
                 "                xui.log('onIniResource');" +
                 "            }," +
-                "            beforeIniComponents : function(com){" +
-                "                com._info.push('beforeIniComponents');" +
+                "            beforeIniComponents : function(module){" +
+                "                module._info.push('beforeIniComponents');" +
                 "                xui.log('beforeIniComponents');" +
                 "            }," +
-                "            afterIniComponents : function(com){" +
-                "                com._info.push('afterIniComponents');" +
+                "            afterIniComponents : function(module){" +
+                "                module._info.push('afterIniComponents');" +
                 "                xui.log('afterIniComponents');" +
                 "            }," +
-                "            onLoadReqiredClass : function(com, t, key){" +
-                "                com._info.push('onLoadReqiredClass: ' + key);" +
+                "            onLoadReqiredClass : function(module, t, key){" +
+                "                module._info.push('onLoadReqiredClass: ' + key);" +
                 "                xui.log('onLoadReqiredClass: ' + key);" +
                 "            }," +
-                "            onReady : function(com){" +
-                "                com._info.push('onReady');" +
+                "            onReady : function(module){" +
+                "                module._info.push('onReady');" +
                 "                xui.log('onReady');" +
                 "            }," +
-                "            onRender : function(com){" +
-                "                com._info.push('onRender');" +
+                "            onRender : function(module){" +
+                "                module._info.push('onRender');" +
                 "                xui.log('onRender');" +
-                "                com.dialog1.setHtml(com._info.join('<br />'));" +
+                "                module.dialog1.setHtml(module._info.join('<br />'));" +
                 "            }" +
                 "        }," +
                 "        customAppend:function(parent){" +
@@ -5209,15 +5209,15 @@ _.set(xui.Locale,["en","app"], {
                 "        iniResource : function(){" +
                 "            this._info.push('iniResource');" +
                 "        }," +
-                "        iniExComs : function(){" +
-                "            this._info.push('iniExComs');" +
+                "        iniExModules : function(){" +
+                "            this._info.push('iniExModules');" +
                 "        }" +
                 "    }" +
                 "});" +
-                "var com = new App1;" +
-                "com.show();",
+                "var module = new App1;" +
+                "module.show();",
 
-                "Class('App2','xui.Com',{" +
+                "Class('App2','xui.Module',{" +
                 "    Instance:{" +
                 "        base : ['xui.UI']," +
                 "        required : ['xui.UI.Dialog']," +
@@ -5250,43 +5250,43 @@ _.set(xui.Locale,["en","app"], {
                 "        iniResource : function(){" +
                 "            this._info.push('iniResource');" +
                 "        }," +
-                "        iniExComs : function(){" +
-                "            this._info.push('iniExComs');" +
+                "        iniExModules : function(){" +
+                "            this._info.push('iniExModules');" +
                 "        }, " +
-                "        _trace : function(com, threadid){" +
-                "            com._info.push(com.$lastEvent);" +
+                "        _trace : function(module, threadid){" +
+                "            module._info.push(module.$lastEvent);" +
                 "        }" +
                 "    }" +
                 "});" +
-                "var com = new App2;" +
-                "com._info=[];"+
-                "com.show(function(err,com){com.dialog1.setHtml(com._info.join('<br />'));});"
+                "var module = new App2;" +
+                "module._info=[];"+
+                "module.show(function(err,module){module.dialog1.setHtml(module._info.join('<br />'));});"
             ]
         },
         'load':{
-            $desc:"Loads a xui.Com Object code from remote file first, creates it, and returns it.",
+            $desc:"Loads a xui.Module Object code from remote file first, creates it, and returns it.",
             $paras:[
                 "cls [Required] : String, the full class path name(e.g. 'xui.App').",
-                "onEnd [Optional]: Function(err:Error/String, com: xui.Com). This function will be called after the process is end.",
+                "onEnd [Optional]: Function(err:Error/String, module: xui.Module). This function will be called after the process is end.",
                 "lang [Optional] : String, language name.(e.g. 'en').",
                 "theme [Optional] : String, theme name..(e.g. 'vista').",
-                "showUI [Optional] : Boolean, indicates whether or not it shows the Com UI. Default is true;"
+                "showUI [Optional] : Boolean, indicates whether or not it shows the Module UI. Default is true;"
             ],
             $snippet:[
                 "////Uses the beblow line to load a specified application, and append its UI to 'document.body' if its UI exits. \n"+
-                "//xui.Com.load('RootClassName',function(){alert('ok')},'en')\n",
-                "xui.Com.load('App.Test1',function(){alert('ok')});",
-                "xui.Com.load('App.Test1',function(err,com){com.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
+                "//xui.Module.load('RootClassName',function(){alert('ok')},'en')\n",
+                "xui.Module.load('App.Test1',function(){alert('ok')});",
+                "xui.Module.load('App.Test1',function(err,module){module.show(function(){alert('ok')},SPA.mainLayout,'main')},null,false)"
             ]
         },
         getFromDom:{
-            $desc:"Gets xui.Com instance from a DOM node or xid.",
+            $desc:"Gets xui.Module instance from a DOM node or xid.",
             $paras:[
                 "id [Required] : String, DOM node or id."
             ]
         },
         getClsFromDom:{
-            $desc:"Gets xui.Com class name from a DOM node or xid.",
+            $desc:"Gets xui.Module class name from a DOM node or xid.",
             $paras:[
                 "id [Required] : String, DOM node or id."
             ]
@@ -5303,7 +5303,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"DataBinder type. one of 'none, sync, async'. Default is [none]"
             },
             autoDestroy:{
-                $desc:"To determine whether the first inner UI control's detory will trigger com's destroy or not.",
+                $desc:"To determine whether the first inner UI control's detory will trigger module's destroy or not.",
                 $rtn:"Boolean"
             },
             isDestroyed:{
@@ -5318,14 +5318,14 @@ _.set(xui.Locale,["en","app"], {
                     "host [Optional]: Object, event funtion's scope object."
                 ],
                 $snippet:[
-                 "Class('Temp.Demo', 'xui.Com',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
-                 "xui.ComFactory.getCom('Temp.Demo',function(){this.setEvents('onCall',function(){alert(_.toArr(arguments))});this.trigger();});"
+                 "Class('Temp.Demo', 'xui.Module',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
+                 "xui.ModuleFactory.getModule('Temp.Demo',function(){this.setEvents('onCall',function(){alert(_.toArr(arguments))});this.trigger();});"
                 ]
             },
             render:{
                 $desc:'To render the inner UI Components',
                 $rtn:"[self]",
-                $demo:"You have to call this function after the com was created. And xui.Com.show will trigger this function automatically."
+                $demo:"You have to call this function after the module was created. And xui.Module.show will trigger this function automatically."
             },
             getAlias:{
                 $desc:"Gets alias.",
@@ -5339,27 +5339,27 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             AddComponents:{
-                $desc:"Adds components to the current Com.",
+                $desc:"Adds components to the current Module.",
                 $rtn:"[self]",
                 $paras:[
                     "obj [Reqired] : xui.absObj Object."
                 ]
             },
             setComponents:{
-                $desc:"Sets the current Com's Components.",
+                $desc:"Sets the current Module's Components.",
                 $rtn:"[self]",
                 $paras:[
                     "obj [Reqired] : xui.absObj Object."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setComponents((new xui.UI.Button()).setHost(window,'btn') ); alert(com.getComponents().get(0).alias); });},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setComponents((new xui.UI.Button()).setHost(window,'btn') ); alert(module.getComponents().get(0).alias); });},false);"
                 ]
             },
             getComponents:{
-                $desc:"Gets all first layer Components in a specified xui.Com Object.",
+                $desc:"Gets all first layer Components in a specified xui.Module Object.",
                 $rtn:"xui.absObj",
                 $snippet:[
-                    "Class('App1','xui.Com',{" +
+                    "Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5376,19 +5376,19 @@ _.set(xui.Locale,["en","app"], {
                     "        }" +
                     "   }" +
                     "});"+
-                    "var com=new App1;"+
-                    "com.create(function(com){alert(com.getComponents().get(0).alias);});"
+                    "var module=new App1;"+
+                    "module.create(function(module){alert(module.getComponents().get(0).alias);});"
                 ]
             },
             getDataBinders:{
-                $desc:"Gets all DataBinder objects in a specified xui.Com.",
+                $desc:"Gets all DataBinder objects in a specified xui.Module.",
                 $rtn:"Array"
             },
             getUIComponents:{
-                $desc:"Gets all first layer UI Components in a specified xui.Com.",
+                $desc:"Gets all first layer UI Components in a specified xui.Module.",
                 $rtn:"xui.UI",
                 $snippet:[
-                    "Class('App1','xui.Com',{" +
+                    "Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5405,12 +5405,12 @@ _.set(xui.Locale,["en","app"], {
                     "        }" +
                     "   }" +
                     "});"+
-                    "var com=new App1;"+
-                    "com.create(function(com){alert(com.getUIComponents().get(0).alias);});"
+                    "var module=new App1;"+
+                    "module.create(function(module){alert(module.getUIComponents().get(0).alias);});"
                 ]
             },
             getAllComponents:{
-                $desc:"Gets all Components in a specified xui.Com Object.",
+                $desc:"Gets all Components in a specified xui.Module Object.",
                 $rtn:"xui.absObj"
             },
             getProfile:{
@@ -5465,35 +5465,35 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getEvents:{
-                $desc:"Gets all events or a specified event from a Com Object.",
+                $desc:"Gets all events or a specified event from a Module Object.",
                 $rtn:"Object, String or Function",
                 $paras:[
                     "key [Optional] : String"
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(_.serialize(com.getEvents()))});},false);",
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(_.serialize(com.getEvents('onReady')))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getEvents()))});},false);",
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getEvents('onReady')))});},false);"
                 ]
             },
             setEvents:{
-                $desc:"Sets a set of event functions(or a specified event function with a key) to the Com Object.",
+                $desc:"Sets a set of event functions(or a specified event function with a key) to the Module Object.",
                 $rtn:"[self]",
                 $paras:[
                     "key [Required] : Object/String, A set of event functions or key.",
                     "value [Optional] : Function, event function."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setEvents('onA',function(){}); alert(com.getEvents('onA'))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setEvents('onA',function(){}); alert(module.getEvents('onA'))});},false);"
                 ]
             },
             create:{
-                $desc:"Creates the Com Object in async mode.",
+                $desc:"Creates the Module Object in async mode.",
                 $paras:[
-                    "onEnd [Optiona] : Function, the callback function, it will be executed once when the Com is created successfully.",
-                    "threadid [Optional] : String, the inner thread id. If is 'false', system will create the Com in sync mode."
+                    "onEnd [Optiona] : Function, the callback function, it will be executed once when the Module is created successfully.",
+                    "threadid [Optional] : String, the inner thread id. If is 'false', system will create the Module in sync mode."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert('created!')});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert('created!')});},false);"
                 ]
             },
             customAppend:{
@@ -5506,30 +5506,30 @@ _.set(xui.Locale,["en","app"], {
                     "threadid [Optional] : String, thread Id."
                 ]
             },
-            iniExComs:{
-                $desc:"Give a chance to load other com",
+            iniExModules:{
+                $desc:"Give a chance to load other module",
                 $paras:[
-                    "com [Required] : xui.Com, Com object.",
+                    "module [Required] : xui.Module, module object.",
                     "threadid [Optional] : String, thread Id."
                 ]
             },
             iniResource:{
                 $desc:"Give a chance to load other resource",
                 $paras:[
-                    "com [Required] : xui.Com, Com object.",
+                    "module [Required] : xui.Module, module object.",
                     "threadid [Optional] : String, thread Id."
                 ]
             },
             show:{
-                $desc:"Shows the Com Object.",
+                $desc:"Shows the module Object.",
                 $paras:[
-                    "onEnd [Optiona] : Function, the callback function, it will be executed once when the Com is created successfully.",
+                    "onEnd [Optiona] : Function, the callback function, it will be executed once when the module is created successfully.",
                     "parent [Optional] : String/Element/xui.Dom, the parent DOM node or xui.UI Object.",
                     "subId [Optional] : String, this parameter valid when parent is xui.UI only. The sub id that determines the [target] will be added to which sub DOM node. This parameter can be [false] too, that means the [target] will be appended to DOM only, no link created between the [target] UIProfiles and the parent UIProfile.",
-                    "threadid [Optional] : String, the inner thread id. If is 'false', system will show the Com in sync mode."
+                    "threadid [Optional] : String, the inner thread id. If is 'false', system will show the module in sync mode."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.show(function(){});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.show(function(){});},false);"
                 ]
             },
             destroy:{
@@ -5540,7 +5540,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Creates the inner Components and return the set of Components(xui.absObj Object).",
                 $rtn:"Array, a set of xui.absObj objects.",
                 $snippet:[
-                    "Class('App1','xui.Com',{" +
+                    "Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5557,134 +5557,134 @@ _.set(xui.Locale,["en","app"], {
                     "        }" +
                     "   }" +
                     "});"+
-                    "var com=new App1;"+
-                    "com.create(function(com){alert(com.getUIComponents().get(0).alias);});"
+                    "var module=new App1;"+
+                    "module.create(function(module){alert(module.getUIComponents().get(0).alias);});"
                 ]
             },
             getProperties:{
-                $desc:"Gets all Properties or a specified Properties from a Com Object.",
+                $desc:"Gets all Properties or a specified Properties from a module Object.",
                 $rtn:"Object",
                 $paras:[
                     "key [Optional] : String"
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(_.serialize(com.getProperties()))});},false);",
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){alert(com.getProperties('p1'))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getProperties()))});},false);",
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(module.getProperties('p1'))});},false);"
                 ]
             },
             setProperties:{
-                $desc:"Sets a set of Properties(or an specified Property with a key) to the current Com Object.",
+                $desc:"Sets a set of Properties(or an specified Property with a key) to the current module Object.",
                 $rtn:"[self]",
                 $paras:[
                     "key [Required] : Object/String, A set of Properties or key.",
                     "value [Optional] : Object, a property value."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setProperties('p3','p3 value'); alert(com.getProperties('p3'))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setProperties('p3','p3 value'); alert(module.getProperties('p3'))});},false);"
                 ]
             },
             setHost:{
-                $desc:"Sets the host Object to the Com Object.",
+                $desc:"Sets the host Object to the module Object.",
                 $rtn:"[self]",
                 $paras:[
                     "host [Requied] : Object, the host Object.",
                     "alias [Optional] : String, the alias name."
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setHost(window,'com_alias'); alert(com.getHost()===window); alert(window.com_alias)});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setHost(window,'module_alias'); alert(module.getHost()===window); alert(window.module_alias)});},false);"
                 ]
             },
             getHost:{
                 $desc:"Gets the host Object.",
                 $rtn:"Object",
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var com=new this; com.create(function(com){com.setHost(window,'com_alias'); alert(com.getHost()===window); alert(window.com_alias)});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setHost(window,'module_alias'); alert(module.getHost()===window); alert(window.module_alias)});},false);"
                 ]
             },
 
             beforeCreated:{
-                $desc:'Fired before com is created.',
+                $desc:'Fired before module is created.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
             },
             onCreated:{
-                $desc:'Fired when com is created.',
+                $desc:'Fired when module is created.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
             },
             beforeShow:{
-                $desc:'Fired before com is showed.',
+                $desc:'Fired before module is showed.',
                 $paras:[
-                    'com : xui.Com .'
+                    'module : xui.Module .'
                 ]
             },
             afterShow:{
-                $desc:'Fired after com is showed.',
+                $desc:'Fired after module is showed.',
                 $paras:[
-                    'com : xui.Com .'
+                    'module : xui.Module .'
                 ]
             },
             onLoadBaseClass:{
-                $desc:'Fired when com loads base classes.',
+                $desc:'Fired when module loads base classes.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.',
                     'key: String, base class name.'
                 ],
                 $memo:'See constructor.'
             },
             onIniResource:{
-                $desc:'Fired when com loads resources.',
+                $desc:'Fired when module loads resources.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.',
                     'key: String, base class name.'
                 ],
                 $memo:'See constructor.'
             },
             beforeIniComponents:{
-                $desc:'Fired beofre com Object initializes inner components.',
+                $desc:'Fired beofre module Object initializes inner components.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
             },
             afterIniComponents:{
-                $desc:'Fired after com Object initializes inner components.',
+                $desc:'Fired after module Object initializes inner components.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
             },
             onLoadRequiredClass:{
-                $desc:'Fired when com loads requried Classes.',
+                $desc:'Fired when module loads requried Classes.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.',
                     'key: String, class name.'
                 ],
                 $memo:'See constructor.'
             },
             onReady:{
-                $desc:'Fired when com is ready.',
+                $desc:'Fired when module is ready.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
             },
             onRender:{
-                $desc:'Fired when com is added to DOM.',
+                $desc:'Fired when module is added to DOM.',
                 $paras:[
-                    'com : xui.Com .',
+                    'module : xui.Module .',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5693,132 +5693,132 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","ComFactory"], {
+    _.set(xui.Locale,["en","doc","xui","ModuleFactory"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.ComFactory Class(static)",
+        $desc:"xui.ModuleFactory Class(static)",
         setProfile:{
-            $desc:"Sets comfactory profile.",
-            $rtn:'xui.ComFactory',
+            $desc:"Sets Modulefactory profile.",
+            $rtn:'xui.ModuleFactory',
             $paras:[
                 "key [Required] : String or key/value pairs Object.",
                 "value [Optional] : String or key/value pairs Object."
             ],
             $snippet:[
-                "xui.ComFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
-                "xui.ComFactory.setProfile('test1','App.Test1');"+
-                "xui.ComFactory.setProfile({test1:{cls:'App.Test1'},test2:{cls:'App.Test2'}});"+
-                "xui.ComFactory.setProfile('test1',{cls:'App.Test1',properties:{dlgCaption:'dialog caption'}});"+
-                "alert(_.serialize(xui.ComFactory.getProfile()));"+
-                "alert(xui.ComFactory.getProfile('test1'));"
+                "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
+                "xui.ModuleFactory.setProfile('test1','App.Test1');"+
+                "xui.ModuleFactory.setProfile({test1:{cls:'App.Test1'},test2:{cls:'App.Test2'}});"+
+                "xui.ModuleFactory.setProfile('test1',{cls:'App.Test1',properties:{dlgCaption:'dialog caption'}});"+
+                "alert(_.serialize(xui.ModuleFactory.getProfile()));"+
+                "alert(xui.ModuleFactory.getProfile('test1'));"
             ]
         },
         getProfile:{
-            $desc:"Gets comfactory profile.",
+            $desc:"Gets Modulefactory profile.",
             $rtn:'String/Object',
             $paras:[
                 "key [Optional] : String."
             ],
             $snippet:[
-                "xui.ComFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
-                "alert(xui.ComFactory.getProfile());"+
-                "alert(xui.ComFactory.getProfile('test1'));"
+                "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
+                "alert(xui.ModuleFactory.getProfile());"+
+                "alert(xui.ModuleFactory.getProfile('test1'));"
             ]
         },
         broadcast:{
-            $desc:"Broadcasts a message(function) to all the Coms.",
+            $desc:"Broadcasts a message(function) to all the Modules.",
             $paras:[
                 "fun [Required] : Function, the function to broadcast."
             ],
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1', (new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "xui.ComFactory.broadcast(function(i){alert(i + ' / ' + this.KEY)});"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1', (new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "xui.ModuleFactory.broadcast(function(i){alert(i + ' / ' + this.KEY)});"
             ]
         },
         destroyAll:{
-            $desc:"Destroys all the Coms in ComFactory.",
+            $desc:"Destroys all the Modules in ModuleFactory.",
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1',(new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "xui.ComFactory.destroyAll();"+
-                "alert(xui.ComFactory.getComFromCache('test'));"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "xui.ModuleFactory.destroyAll();"+
+                "alert(xui.ModuleFactory.getModuleFromCache('test'));"
             ]
         },
-        getComFromCache:{
-            $desc:"Gets a Com Object from cache directly if it exists.",
-            $rtn:"xui.Com",
+        getModuleFromCache:{
+            $desc:"Gets a Module Object from cache directly if it exists.",
+            $rtn:"xui.Module",
             $paras:[
-                "id [Required] : String, the Com id."
+                "id [Required] : String, the Module id."
             ],
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1',(new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "alert(xui.ComFactory.getComFromCache('test1').KEY);"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "alert(xui.ModuleFactory.getModuleFromCache('test1').KEY);"
             ]
         },
-        getCom :{
-            $desc:"Gets a Com Object from cache directly if it exists, or loads the Com code first, creates the Com and returns it.",
-            $rtn:"xui.Com",
+        getModule :{
+            $desc:"Gets a Module Object from cache directly if it exists, or loads the Module code first, creates the Module and returns it.",
+            $rtn:"xui.Module",
             $paras:[
-                "cls [Required] : String, the Com class.",
-                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
+                "cls [Required] : String, the Module class.",
+                "onEnd [Optional] : Function(err:Error/String, Module: xui.Module, threadid:String), the callback function, it will be executed once when the Module is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ComFactory won't get it from the Com cache, and won't cache the result.",
-                "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events."
+                "cached [Optional] : Boolean, Default is true. If cached is false, that indicates ModuleFactory won't get it from the Module cache, and won't cache the result.",
+                "properties [Optional] : Object, key/value pairs, module's properties",
+                "events [Optional] : Object, key/value pairs, module's events."
             ],
             $snippet:[
-                "xui.ComFactory.getCom('App.Test1',function(){alert('The Com loaded successfully.')});",
+                "xui.ModuleFactory.getModule('App.Test1',function(){alert('The Module loaded successfully.')});",
 
-                "xui.ComFactory.destroyAll();"+
-                "xui.ComFactory.setProfile({test1:{cls:'App.Test1',properties:{key1:1},events:{ev1:function(){alert(2)}}},test2:'App.Test2'});"+
-                "xui.ComFactory.getCom('test1',function(){alert('The Com loaded successfully.');alert(this.properties.key1); this.events.ev1();});"
+                "xui.ModuleFactory.destroyAll();"+
+                "xui.ModuleFactory.setProfile({test1:{cls:'App.Test1',properties:{key1:1},events:{ev1:function(){alert(2)}}},test2:'App.Test2'});"+
+                "xui.ModuleFactory.getModule('test1',function(){alert('The Module loaded successfully.');alert(this.properties.key1); this.events.ev1();});"
             ]
         },
-        setCom:{
-            $desc:"Sets the Com Object to the cache with a specified id string.",
-            $rtn:"xui.ComFactory",
+        setModule:{
+            $desc:"Sets the Module Object to the cache with a specified id string.",
+            $rtn:"xui.ModuleFactory",
             $paras:[
-                "id [Required] : String, the Com id.",
-                "obj [Required] : Object, the Com Object."
+                "id [Required] : String, the Module id.",
+                "obj [Required] : Object, the Module Object."
             ],
             $snippet:[
-                "xui.SC('App.Test1',function(){xui.ComFactory.setCom('test1',(new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ComFactory.setCom('test2',(new this));},false);"+
-                "alert(xui.ComFactory.getComFromCache('test1').KEY);"
+                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
+                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
+                "alert(xui.ModuleFactory.getModuleFromCache('test1').KEY);"
             ]
         },
-        newCom :{
-            $desc:"Creates a new Com Class if the Class exists, or loads the Com Class code first, creates it, and returns it.",
+        newModule :{
+            $desc:"Creates a new Module Class if the Class exists, or loads the Module Class code first, creates it, and returns it.",
             $paras:[
-                "cls [Required] : String, the Com Class path name.",
-                "onEnd [Optional] : Function(err:Error/String, com: xui.Com, threadid:String), the callback function, it will be executed once when the Com is created successfully.",
+                "cls [Required] : String, the Module Class path name.",
+                "onEnd [Optional] : Function(err:Error/String, module: xui.Module, threadid:String), the callback function, it will be executed once when the Module is created successfully.",
                 "threadid [Optional] : String, the inner threadid",
-                "properties [Optional] : Object, key/value pairs, com's properties",
-                "events [Optional] : Object, key/value pairs, com's events."
+                "properties [Optional] : Object, key/value pairs, module's properties",
+                "events [Optional] : Object, key/value pairs, module's events."
             ],
             $snippet:[
-                "xui.ComFactory.destroyAll();"+
-                "xui.ComFactory.newCom('App.Test1',function(){alert('The com loaded successfully.')});"
+                "xui.ModuleFactory.destroyAll();"+
+                "xui.ModuleFactory.newModule('App.Test1',function(){alert('The module loaded successfully.')});"
             ]
         },
-        prepareComs:{
-            $desc:"Loads and creates a set of Coms in the background, those Coms needs to be defined in the profile first.",
-            $rtn:"xui.ComFactory",
+        prepareModules:{
+            $desc:"Loads and creates a set of Modules in the background, those Modules needs to be defined in the profile first.",
+            $rtn:"xui.ModuleFactory",
             $snippet:[
-                "//xui.ComFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});\n"+
-                "//xui.ComFactory.prepareWidgets(['test1','test2']);"
+                "//xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});\n"+
+                "//xui.ModuleFactory.prepareWidgets(['test1','test2']);"
             ]
         },
-        storeCom:{
-            $desc:"Stores a specified Com UI. (Detaches it from its parent Node, and saves it to a hidden div.)",
+        storeModule:{
+            $desc:"Stores a specified Module UI. (Detaches it from its parent Node, and saves it to a hidden div.)",
             $paras:[
-                "id [Required] : the Com id in xui.ComFactory profile."
+                "id [Required] : the Module id in xui.ModuleFactory profile."
             ],
             $snippet:[
-                "xui.ComFactory.destroyAll();"+
-                "xui.ComFactory.setProfile('test1',{cls:'App.Test1',properties:{dlgCaption:'dialog caption'}});"+
-                "xui.ComFactory.getCom('test1',function(){ this.showDlg(); _.asyRun(function(){xui.ComFactory.storeCom('test1')},1000); });"
+                "xui.ModuleFactory.destroyAll();"+
+                "xui.ModuleFactory.setProfile('test1',{cls:'App.Test1',properties:{dlgCaption:'dialog caption'}});"+
+                "xui.ModuleFactory.getModule('test1',function(){ this.showDlg(); _.asyRun(function(){xui.ModuleFactory.storeModule('test1')},1000); });"
             ]
         }
     });
@@ -6050,18 +6050,6 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
-            getQueryModel:{
-                $desc:"[Deprecated] Gets the name of the Model to tie to this remoting data service.",
-                $rtn:"Boolean"
-            },
-            setQueryModel:{
-                $desc:"[Deprecated] Sets the name of the Model to tie to this remoting data service.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
             getQueryArgs:{
                 $desc:"[Deprecated] Gets the arguments for this remoting call.",
                 $rtn:"Object"
@@ -6074,11 +6062,11 @@ _.set(xui.Locale,["en","app"], {
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },
-            getTokenParams:{
+            getBearerToken:{
                 $desc:"[Deprecated] Gets the token parameters for this remoting call.",
                 $rtn:"Object"
             },
-            setTokenParams:{
+            setBearerToken:{
                 $desc:"[Deprecated] Sets the token parameters for this remoting call.",
                 $rtn:"[self].",
                 $paras:[

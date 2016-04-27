@@ -202,9 +202,14 @@ _.merge(_,{
         var me=this,
             d=document,
             h=d.getElementsByTagName("head")[0] || d.documentElement,
-            s=d.createElement("script");
+            s=d.createElement("script"),n;
         s.type = "text/javascript";
-        if(id)s.id=id;
+        if(id){
+            if((n=d.getElementById(id))&&n.parentNode==h){
+                h.removeChild(n);
+            }
+            s.id=id;
+        }
         if(xui.browser.ie)
             s.text=script;
         else
@@ -212,7 +217,10 @@ _.merge(_,{
         h.appendChild(s);
         s.disalbed=true;
         s.disabled=false;
-        if(!id)h.removeChild(s);
+        if(!id){
+            h.removeChild(s);
+        }
+        return s;
     },
     /*
     get something from deep hash
@@ -1195,7 +1203,7 @@ _.merge(xui,{
             }else{
                 options.asy=!sync;
                 xui.Ajax(path,xui.Ajax.uid,function(rsp){
-                    try{_.exec(rsp)}
+                    try{_.exec(rsp,id)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
                     _.tryF(onSuccess);
                 },onFail,0,options).start();
@@ -1210,17 +1218,28 @@ _.merge(xui,{
             + '&bcc= ' + (bcc||"");
         xui.IAjax(url).start();
     },
-    fetchClass:function(uri,onSuccess,onFail,force){
-        var t,c=xui.$cache.clsByURI;
-        if(!force && (t=c[uri]) && t.$xui$)
-            _.tryF(onSuccess,[uri],t);
+    fetchClass:function(uri, onSuccess, onFail, force, threadid, options){
+        if(/\//.test(uri) && !/\.js$/i.test(uri))
+            uri=uri+".js";
+        options=options||{};
+        var isPath=/\.js$/i.test(uri), 
+            c=xui.$cache.clsByURI,
+            cls,t;
+         if(!isPath){
+             // special path( dont use any dynamic
+             if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
+             cls=uri;
+             uri=xui.getPath(uri,'.js','js',options);
+         }
+        if(!force && (isPath?((t=c[uri]) && t.$xui$):(t=xui.SC.get(cls))))
+            _.tryF(onSuccess,[uri,cls],t);
         else{
             if(xui.absIO.isCrossDomain(uri)){
                 Class._ignoreNSCache=1;Class._last=null;
                 xui.SAjax(uri,xui.SAjax.uid,function(){
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
-                    _.tryF(onSuccess, [uri],t);
+                    if(t)_.tryF(onSuccess, [uri,t.KEY],t);
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
@@ -1229,16 +1248,17 @@ _.merge(xui,{
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
-                },0,{rspType:'script'}).start();
+                },threadid,{rspType:'script'}).start();
             }else{
                 xui.Ajax(uri,xui.Ajax.uid,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
-                    try{_.exec(rsp,uri)}
+                    var scriptnode;
+                    var s=xui.getClassName(uri);
+                    try{scriptnode=_.exec(rsp, s)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
-                    _.tryF(onSuccess, [uri],t);
-                    var s=xui.getClassName(uri);
+                    if(t)_.tryF(onSuccess, [uri,t.KEY],t);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
                             throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
@@ -1246,12 +1266,57 @@ _.merge(xui,{
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
-                },0,{rspType:'text',asy:false}).start();
+                },threadid,{rspType:'text',asy:true}).start();
             }
         }
     },
-    require:function(cls,sync,onSuccess,onFail){
-        xui.include(cls,xui.getPath(cls,".js","js"),onSuccess,onFail,sync);
+    fetchClasses:function(uris, onEnd, onSuccess, onFail, force, threadid, options){
+        var hash={}, f=function(uri,i,hash){
+            hash[i]=xui.Thread(null,[function(threadid){
+                xui.fetchClass(uri, onSuccess, onFail, force, threadid, options);
+            }]);
+        };
+        for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
+        return xui.Thread.group(null, hash, null, function(){
+            xui.Thread(threadid).suspend();
+        }, function(){
+            _.tryF(onEnd,arguments,this);
+            xui.Thread(threadid).resume();
+        }).start();
+    },
+    // Recursive require
+    require:function(clsArr, onEnd, onSuccess, onFail, force, threadid, options){
+        if(_.isStr(clsArr))clsArr=[clsArr];
+        var fun=function(paths, tid){
+            xui.fetchClasses(paths,function(){ 
+                var a2=[], t, r;
+                for(var i=0,l=paths.length;i<l;i++){
+                    t=xui.SC.get(paths[i]);
+                    //collect  required class
+                    if(t && (r=t.required) && r.length){
+                        for(var j=0,m=r.length;j<m;j++){
+                            if(!xui.SC.get(r[j]))a2.push(r[j]);
+                        }
+                    }
+                    // if it's module, collect required class in iniComponents
+                    if(t && t['xui.Module'] && (t=t.prototype&&t.prototype.iniComponents)){
+                        _.fun.body(t).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                            if(!xui.SC.get(b))a2.push(b);
+                        });
+                    }
+                }
+                if(a2.length){
+                    fun(a2, null);
+                }else{
+                    var arr=[];
+                    for(var i=0,l=clsArr.length;i<l;i++){
+                        arr.push(xui.SC.get(clsArr[i]));
+                    }
+                    if(onEnd)onEnd.apply(null,arr);
+                }
+            },onSuccess,onFail,force,tid,options);
+        };
+        fun(clsArr, threadid);
     },
     /*
     set application main function
@@ -1279,7 +1344,7 @@ _.merge(xui,{
         xui.getPath('a.b','','appearance') => xui.ini.appPath + /a/appearance/b/"
         xui.getPath('a.b','.gif','appearance') => xui.ini.appPath + /a/appearance/b.gif"
     */
-    getPath : function(key, tag, folder){
+    getPath : function(key, tag, folder,options){
         key=key.split('.');
         if(folder){
             var a=[key[0],folder];
@@ -1291,13 +1356,13 @@ _.merge(xui,{
 
         var pre,ini=xui.ini;
         if(key[0]=='xui'){
-            pre=ini.path;
+            pre=(options&&options.xuiPath)||ini.path;
             key.shift();
             if(key.length==(folder?1:0))key.push('xui');
         }else{
-            pre=ini.appPath;
+            pre=(options&&options.appPath)||ini.appPath;
             if(key.length==((folder?1:0)+1) && tag=='.js')key.push('index');
-            if(ini.verPath) pre += ini.verPath + '/';
+            if((options&&options.verPath)||ini.verPath) pre += ((options&&options.verPath)||ini.verPath) + '/';
             if(ini.ver) pre += ini.ver + '/';
         }
         if(pre.slice(-1)!="/")
@@ -1447,7 +1512,7 @@ _.merge(xui,{
     },
 
     //create:function(tag, properties, events, host){
-    create:function(tag){
+    create:function(tag,bak){
         var arr,o,t,me=arguments.callee,r1=me.r1||(me.r1=/</);
         if(typeof tag == 'string'){
             //Any class inherited from xui.absBox
@@ -1458,18 +1523,36 @@ _.merge(xui,{
                     arr[i-1]=arguments[i];
                 o = new (xui.SC(t))(false);
                 if(o._ini)o._ini.apply(o, arr);
+            }else if( ((t=xui.SC.get(tag))&&t["xui.Module"]) || bak =="xui.Module" ){
+                if(t){
+                    o=new t();
+                // use place holder to lazy bind
+                }else{
+                    if(xui.UI && xui.UI.MoudlueHolder){
+                        o = new xui.UI.MoudlueHolder();
+                        xui.require(tag,function(module){
+                             if(module&&module["xui.Module"]){
+                                 var m=new module();
+                                 m.create(function(){
+                                     o.replaceWithModule(m);
+                                 });
+                             }
+                         });
+                    }
+                }
             //from HTML string
-            }else if(r1.test(tag))
+            }else if(r1.test(tag)){
                 o = _.str.toDom(tag);
             //from HTML element tagName
-            else{
+            }else{
                 o=document.createElement(tag);
                 o.id = typeof id=='string'?id:_.id();
                 o=xui(o);
             }
         //Any class inherited from xui.absBox
-        }else
+        }else{
             o = new (xui.SC(tag.key))(tag);
+        }
         return o;
     },
     use:function(xid){
@@ -1779,31 +1862,31 @@ new function(){
                                         }
                                         // get root only
                                         xui('body').children().each(function(xid){
-                                            var com=xui.Com.getFromDom(xid);
-                                            if(com && com._showed){
-                                                if(ar.cache)com.hide();else com.destroy();
+                                            var module=xui.Module.getFromDom(xid);
+                                            if(module && module._showed){
+                                                if(ar.cache)module.hide();else module.destroy();
                                             }
                                         });   
-                                        xui.showCom(ar.xuicom);
+                                        xui.showModule(ar.xuimodule);
                                     });
                                 }
                                 
-                                var fi="xuicom="+target;
+                                var fi="xuimodule="+target;
                                 if(iparams[0])fi+="&cache="+(iparams[0]?true:false);
                                 xui.History.setFI(fi);
                                 return;
                             }
-                            // try to get com
+                            // try to get module
                             var cls=_.get(window,target.split(".")),ins;
                             // get first one
                             if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
 
                             // handle hide / destroy
                             if(method=="show"||method=="pop"){
-                                // special for xui.Com.show
-                                iparams.unshift(function(err,com){
+                                // special for xui.Module.show
+                                iparams.unshift(function(err,module){
                                     if(method=="pop" && !err){
-                                        t=com.getUIComponents(true);
+                                        t=module.getUIComponents(true);
                                         if((t=t.getRoot())&&(t=t.get(0)))
                                             xui(t).pop(iparams[1]||_ns.args[0]);
                                     }
@@ -1813,7 +1896,7 @@ new function(){
                                     if(err)return;
                                     if(_.isFun(t=ins.show))t.apply(ins, iparams);
                                 };
-                                if(!ins)xui.getCom(target,ff);  else ff(null, ins);
+                                if(!ins)xui.getModule(target,ff);  else ff(null, ins);
                             }else{
                                 if(ins && _.isFun(t=_.get(ins,[method])))t.apply(ins,iparams)
                                 return;
@@ -2980,7 +3063,7 @@ Class('xui.IAjax','xui.absIO',{
 *  dependency: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
 */
 Class('xui.SC',null,{
-    Constructor:function(path, callback, isAsy, threadid, options){
+    Constructor:function(path, callback, isAsy, threadid, options, force){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
         upper=null;
@@ -2991,7 +3074,7 @@ Class('xui.SC',null,{
             options=options||{};
             options.$cb=callback;
             if(isAsy)options.threadid=threadid;
-            r=p[path]=xui.SC._call(path||'', options, isAsy);
+            r=p[path]=xui.SC._call(path||'', options, isAsy, force);
         }
         return r;
     },
@@ -3013,7 +3096,7 @@ Class('xui.SC',null,{
         *   false   ture    ajax
         *   false   false   ajax
         */
-        _call : function (s, options, isAsy){
+        _call : function (s, options, isAsy, force){
             isAsy = !!isAsy;
             var i,t,r,o,funs=[],ep=xui.SC.get,ct=xui.$cache.snipScript,
             f= function(text,n,threadid){
@@ -3026,7 +3109,7 @@ Class('xui.SC',null,{
                             (self.$cache || ct)[self.$tag]=text;
                         else
                             //for sy xmlhttp ajax
-                            try{_.exec(text)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
+                            try{_.exec(text,s)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
                 t=Class._last;
@@ -3044,19 +3127,19 @@ Class('xui.SC',null,{
                 _.tryF(self.$cb,[null,null,self.threadid],self);
             };
             //get from object first
-            if(!(r=ep(s))){
+            if(force || !(r=ep(s))){
                 //if script in cache
-                if(t=ct[s]){
+                if(!force && (t=ct[s])){
                     isAsy=false;
                     f.call({$cb: options.$cb},t);
                     //delete it
                     delete ct[s];
                 }
                 //get from object second
-                if(!(r=ep(s))){
-                     //load from sy ajax
-                     o=xui.getPath(s,'.js','js');
+                if(force || !(r=ep(s))){
                      options = options ||{};
+                     //load from sy ajax
+                     o=xui.getPath(s,'.js','js',options);
                      options.$tag = s;
                      Class._ignoreNSCache=1;Class._last=null;
                      var ajax;
@@ -3083,12 +3166,12 @@ Class('xui.SC',null,{
         arr: key array, ['xui.UI.Button','xui.UI.Input']
         callback: fire this function after all js loaded
         */
-        loadSnips:function(pathArr,cache,callback,onEnd,threadid){
+        loadSnips:function(pathArr,cache,callback,onEnd,threadid,options,isAsy){
             if(!pathArr || !pathArr.length){
                 _.tryF(onEnd,[threadid]);
                 return;
             }
-            var bak={}, options={$p:1,$cache:cache||xui.$cache.snipScript};
+            var bak={}, options=_.merge(options||{}, {$p:1,$cache:cache||xui.$cache.snipScript});
             for(var i=0,l=pathArr.length;i<l;i++)
                 bak[pathArr[i]]=1;
 
@@ -3106,7 +3189,7 @@ Class('xui.SC',null,{
             }
             xui.Thread.suspend(threadid);
             for(var i=0,s; s=pathArr[i++];)
-                this._call(s, _.merge({$tag:s},options), true);
+                this._call(s, _.merge({$tag:s},options,isAsy), true);
         },
         runInBG:function(pathArr, callback, onStart, onEnd){
             var i=0,j,t,self=this,fun=function(threadid){
@@ -3123,7 +3206,7 @@ Class('xui.SC',null,{
         execSnips:function(cache){
             var i,h=cache||xui.$cache.snipScript;
             for(i in h)
-                try{_.exec(h[i])}catch(e){throw e}
+                try{_.exec(h[i],i)}catch(e){throw e}
             h={};
         },
         //asy load multi js file, whatever dependency
@@ -3135,7 +3218,7 @@ Class('xui.SC',null,{
         *6.execute other ..
         *7.free UI
         */
-        groupCall:function(pathArr, callback, onEnd, threadid){
+        groupCall:function(pathArr, onEnd, callback, threadid,options,isAsy){
             if(pathArr){
                 //clear first
                 var self=this;
@@ -3146,7 +3229,7 @@ Class('xui.SC',null,{
                     _.tryF(onEnd,[threadid]);
                     onEnd=null;
                     xui.Thread.resume(threadid);
-                });
+                },null,options,isAsy);
             }else
                 _.tryF(onEnd,[threadid]);
         }
@@ -3486,9 +3569,10 @@ Class('xui.absProfile',null,{
             return this.$xid;
         },
         link:function(obj,id,target,index){
-            var self=this,
-                //avoid Number;
-                uid='$'+self.$xid;
+            return xui.absProfile.prototype.$link(this,obj,id,target,index);
+        },
+        $link:function(self,obj,id,target,index){
+            var uid='$'+self.$xid;
 
             target = target||self;
             if(obj[uid])self.unLink(id);
@@ -3503,8 +3587,10 @@ Class('xui.absProfile',null,{
             return self;
         },
         unLink:function(id){
-            var self=this,
-                o, index,
+             return xui.absProfile.prototype.$unLink(this,id);
+        },
+        $unLink:function(self, id){
+            var o, index,
                 //avoid Number;
                 uid='$'+self.$xid;
             if(!self._links)return;
@@ -3524,8 +3610,10 @@ Class('xui.absProfile',null,{
             return index;
         },
         unLinkAll:function(){
-            var self=this,
-                id='$'+self.$xid,
+            return xui.absProfile.prototype.$unLinkAll(this);
+        },
+        $unLinkAll:function(self){
+            var id='$'+self.$xid,
                 l=self._links,
                 o,i;
             for(i in l){
@@ -3585,6 +3673,7 @@ Class('xui.Profile','xui.absProfile',{
             }
         },
         getProperties:function(key){
+            if(this._getProperties)this.properties=this._getProperties();
             var prop=this.properties;
             return key?prop[key]:_.copy(prop);
         },
@@ -3593,6 +3682,7 @@ Class('xui.Profile','xui.absProfile',{
                 this.properties=key;
             else
                 this.properties[key]=value;
+            if(this._setProperties)this._setProperties(this.properties);
         },
         _applySetAction:function(fun, value){
             return fun.call(this,value);
@@ -3791,8 +3881,11 @@ Class('xui.absObj',"xui.absBox",{
           return this.pack(this._cache);
         },
         pickAlias:function(){
-            var t,p=this._namePool,a=this._nameTag;
-            while(p[t=(a+(++this._nameId))]){}
+            return xui.absObj.$pickAlias(this);
+        },
+        $pickAlias:function(cls){
+            var t,p=cls._namePool,a=cls._nameTag;
+            while(p[t=(a+(++cls._nameId))]){}
             return  t;
         },
         setDataModel:function(hash){
@@ -4292,25 +4385,22 @@ Class("xui.Timer","xui.absObj",{
             var responseType=prop.responseType,
                 requestType=prop.requestType,
                 requestId=prop.requestId,
-                hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
-                queryURL=(hashModel?(((prop.queryURL.lastIndexOf("/")!=prop.queryURL.length-1)?(prop.queryURL+"/"):prop.queryURL)+prop.queryModel):prop.queryURL),
+                queryURL=prop.queryURL,
                 queryUserName=prop.queryUserName;
                 queryPasswrod=prop.queryPasswrod;
                 queryArgs=_.copy(prop.queryArgs),
-                tokenParams=_.copy(prop.tokenParams),
+                OAuth2Token=prop.OAuth2Token,
                 queryOptions=_.copy(prop.queryOptions);
 
-            if(requestType=="HTTP")
+            if(requestType=="FORM")
                     queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
-            if(_.isHash(queryArgs) && !_.isEmpty(tokenParams))
-                _.merge(queryArgs,tokenParams,'all');
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
 
             // for auto adjusting options
-            var proxyType,rMap={};
+            var proxyType,rMap={header:{}};
             if(responseType=='SOAP'||requestType=='SOAP'){
                 // for wsdl
                 if(!con.WDSLCache)con.WDSLCache={};
@@ -4329,6 +4419,8 @@ Class("xui.Timer","xui.absObj",{
                 }
             }
             switch(responseType){
+                case "TEXT":
+                    rMap.rspType="text";
                 case "JSON":
                     rMap.rspType="json";
                 break;
@@ -4341,12 +4433,11 @@ Class("xui.Timer","xui.absObj",{
                     rMap.rspType="xml";
                     var namespace=xui.SOAP.getNameSpace(con.WDSLCache[queryURL]),
                         action = ((namespace.lastIndexOf("/")!=namespace.length-1)?namespace+"/":namespace)+(queryArgs.methodName||"");
-                    rMap.header=rMap.header||{};
                     rMap.header["SOAPAction"]=action;
                 break;
             }
             switch(requestType){
-                case "HTTP":
+                case "FORM":
                     // ensure object
                     queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
                 break;
@@ -4365,7 +4456,6 @@ Class("xui.Timer","xui.absObj",{
                     if(queryUserName && queryPassword){
                         rMap.username=queryUserName;
                         rMap.password=queryPassword;
-                        rMap.header=rMap.header||{};
                         rMap.header["Authorization"]="Basic "+con._toBase64(queryUserName+":"+queryPassword);
                     }
                     // ensure string
@@ -4378,13 +4468,14 @@ Class("xui.Timer","xui.absObj",{
                     if(queryUserName && queryPassword){
                         rMap.username=queryUserName;
                         rMap.password=queryPassword;
-                        rMap.header=rMap.header||{};
                         rMap.header["Authorization"]="Basic "+con._toBase64(queryUserName+":"+queryPassword);
                     }
                     // ensure string
                     queryArgs = typeof queryArgs=='string'?queryArgs:xui.SOAP.wrapRequest(queryArgs, con.WDSLCache[queryURL]);
                 break;
             }
+            if(OAuth2Token)
+               rMap.header["Authorization"]="Bearer " + OAuth2Token
 
             // Ajax/SAjax/IAjax
             if(!proxyType && prop.proxyType!="auto")
@@ -4454,7 +4545,7 @@ Class("xui.Timer","xui.absObj",{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,tokenParams:1,queryOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -4482,6 +4573,7 @@ Class("xui.Timer","xui.absObj",{
             }while(i<str.length);
             return arr.join('');
         },
+        
         _beforeSerialized:function(profile){
             var o={};
             _.merge(o, profile, 'all');
@@ -4494,33 +4586,27 @@ Class("xui.Timer","xui.absObj",{
             dataBinder:null,
             dataField:null,
             requestId:"",
-            queryURL:{
-                ini:""
-            },
-            queryUserName:{
-                ini:""
-            },
-            queryPassword:{
-                ini:""
-            },
-            queryModel:"",
+            queryAsync:true,
+            queryURL:"",
+
+            OAuth2Token:"",
+            queryUserName:"",
+            queryPassword:"",
+
             queryMethod:{
                 ini:"auto",
                 listbox:["auto","GET","POST","PUT","DELETE"]
             },
-            queryAsync:true,
             requestType:{
-                ini:"HTTP",
-                listbox:["HTTP","JSON","XML","SOAP"]
+                ini:"FORM",
+                listbox:["FORM","JSON","XML","SOAP"]
             },
             responseType:{
                 ini:"JSON",
-                listbox:["JSON","XML","SOAP"]
+                listbox:["JSON","TEXT","XML","SOAP"]
             },
+
             queryArgs:{
-                ini:{}
-            },
-            tokenParams:{
                 ini:{}
             },
             queryOptions:{
@@ -11568,6 +11654,25 @@ type:4
                 window.open(action,target);
             }
         },
+        selectFile:function(callback, accept){
+            var fileInput=document.createElement( "input" );
+            fileInput.type="file";
+            // "image/*, video/*, audio/*"
+            if(accept)fileInput.accept = accept;
+
+            fileInput.onchange=function(){
+                _.tryF(callback, [this, this.files[0]], this);
+            };
+            if (!!window.ActiveXObject || "ActiveXObject" in window)  {
+              var label=document.createElement( "div" );
+              fileInput.appendChild(label);
+              label.click();
+              fileInput.removeChild(label);
+            }else{
+              fileInput.click();
+            }
+            fileInput=null;
+        },
         busy:function(label,busyMsg){
             xui.Dom.setCover(busyMsg||true,label);
         },
@@ -12346,56 +12451,94 @@ type:4
     beforeShow
     afterShow
     onLoadBaseClass
-    onLoadReqiredClass
+    onLoadRequiredClass
+    onLoadRequiredClassErr
     onIniResource
         iniResource (asy)
     beforeIniComponents
         iniComponents (asy)
     afterIniComponents
-        iniExComs (asy)
+        iniExModules (asy)
     onReady
     onRender
     onDestroy
-*/
 
-Class('xui.Com',null,{
+    // for values
+    getValue:function(){},
+    getUIValue:function(){},
+    resetValue:function(){},
+    setUIValue:function(){},
+    updateValue:function(){},
+    isDirtied:function(){},
+    checkValid:function(){},
+*/
+Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI){
             ns.load.apply(ns, arguments);
         };
+        // compitable
+        ns['xui.Com']=ns.prototype['xui.Com']=1;
+        xui.Com=ns;
     },
     After:function(){
-        var self=this,
-            v='$EventHandlers',
-            k=self[v]||{}, e, t, b, i;
-        if((t=self.$parent) && (e=t.length)){
-            while(e--){
-                b=t[e][v];
-                for(i in b){
-                    if(!(i in k))k[i]=b[i];
+        var self=this,k, e, t, b, i;
+        _.arr.each(['$DataModel','$EventHandlers'],function(v){
+            k=self[v]||{};
+            if((t=self.$parent) && (e=t.length)){
+                while(e--){
+                    b=t[e][v];
+                    for(i in b){
+                        if(!(i in k))k[i]=b[i];
+                    }
                 }
             }
-        }
-        self[v]=k;
-
-        self._pool={};
+            self[v]=k;
+        });
+        self._nameId=0;
+        self._namePool={};
+        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
+        self._cache=[];
     },
     Constructor:function(properties, events, host){
-        var self=this;
-        self._nodes=[];
+        var upper=arguments.callee.upper;
+        if(upper)upper.call(this);
+        upper=null;
+
+        var self=this,opt,alias;
+
+        self.Class=self.box=self.constructor;
+        self.key=self.KEY;
+
+        if(properties && properties.key && properties["xui.Module"]){
+             opt=properties;
+             properties = (opt && opt.properties) || {};
+             events = (opt && opt.events) || {};
+             alias = opt.alias;
+             host = opt.host;
+        }else{
+            properties = properties || (self.properties?_.clone(self.properties):{});
+            events = events || (self.events?_.clone(self.events):{});
+        }
+        if(!alias)alias =self.constructor.pickAlias();
+        if(!_.isEmpty(self.constructor.$DataModel)){
+            _.merge( properties, _.clone(self.constructor.$DataModel),'without');
+        }
+        //
+        self._links={};
+        self.link(self.constructor._cache, "self")
+        self.link(xui.Module._cache, "xui.module");
+        self.link(xui._pool,'xui');
+        
         self.host=host||self;
+        self.alias=alias;
 
-        self.$xid=self.constructor._ctrlId.next();
-
-        self.constructor._pool[self.$xid]=xui.Com._pool[self.$xid]=self;
-
-        self.properties = properties || (self.properties?_.clone(self.properties):{});
-        //copy those from class setting
-        self.events = _.copy(self.events) || {};
-        if(events)
-            _.merge(self.events, events, 'all');
+        self._nodes=[];
         self._ctrlpool={};
+        self.events=events;
+        self.properties={};
+        self.setProperties(properties);
 
         self._innerCall('initialize');
     },
@@ -12404,6 +12547,39 @@ Class('xui.Com',null,{
         dataBindLoadType:"none", // "sync", "async", "none"
         background:"",
 
+        // [[[ fake boxing
+        get:function(index){
+            return  _.isNumb(index)?this:[this];
+        },
+        size:function(){
+            return 1;
+        },
+        boxing:function(){
+            return this;
+        },
+        each:function(fun,scope){
+            fun.call(scope, this);
+            return this;
+        },
+        getRoot:function(){
+            if(!this._innerModulesCreated)
+                this._createInnerModules();
+            var fun = function(m){
+                if(m["xui.Module"]){
+                    for(var i=0,l=m._nodes,o;i<l, o=m._nodes[i];i++){
+                        if(o["xui.Module"]) return fun(o);
+                        if(o["xui.UIProfile"] && !o.box.$initRootHidden) return o.getRoot();
+                    }
+                }
+            };
+            return fun(this);
+        },
+        getRootNode:function(){
+            var ui=this.getRoot();
+            if(!ui.isEmpty())return ui.get(0);
+        },
+        // ]]] 
+        
         _toDomElems:function(){
             var ns=this;
             if(!ns.created)
@@ -12413,11 +12589,24 @@ Class('xui.Com',null,{
             return ns.getUIComponents()._toDomElems();
         },
         setAlias:function(str){
-            var self=this,old=self.alias;
-            if(old && self.host && self.host!==self)
-                try{delete self.host[old]}catch(e){self.host[old]=undefined}
-            if(self.host && self.host!==self)
-                self.host[str]=self;
+            var self=this,prf=self,old;
+            if(old=prf.alias){
+                if(prf.host && prf.host!==prf){
+                    try{delete prf.host[old]}catch(e){prf.host[old]=undefined}
+                    if(prf.host._ctrlpool)
+                        delete prf.host._ctrlpool[old];
+                }
+                delete self.constructor._namePool[old];
+            }
+            self.constructor._namePool[prf.alias=str]=1;
+            if(prf.host && prf.host!==prf){
+                prf.host[str]=self;
+                if(prf.host._ctrlpool)
+                    prf.host._ctrlpool[str]=self;
+            }
+            if(prf.box&&prf.box._syncAlias){
+                prf.box._syncAlias(prf,old,str);
+            }
             return self;
         },
         getAlias:function(){
@@ -12426,9 +12615,21 @@ Class('xui.Com',null,{
         setHost:function(host, alias){
             var self=this;
             self.host=host;
-            if(alias)
+            if(alias && self.alias!==alias)
                 self.setAlias(alias);
             return self;
+        },
+        getName:function(){
+            return this.properties.name || this.alias;
+        },
+        setName:function(name){
+            this.properties.name=name;
+        },
+        getDesc:function(){
+            return this.properties.desc;
+        },
+        setDesc:function(desc){
+            this.properties.desc=desc;
         },
         getHost:function(){
             return this.host;
@@ -12439,12 +12640,23 @@ Class('xui.Com',null,{
                 self.properties={};
             else if(typeof key=='string')
                 self.properties[key]=value;
-            else
-                _.merge(self.properties, key, 'all');
+            else if(_.isHash(key)){
+                if(value/*force*/){
+                    self.properties = _.clone(key);
+                }else{
+                    _.merge(self.properties, key);
+                }
+            }
+
+            if(self._setProperties)self._setProperties(self.properties);
+
             return self;
         },
         getProperties:function(key){
-            return key?this.properties[key]:this.properties;
+             var self=this;
+             if(self._getProperties)self.properties=self._getProperties();
+
+            return key?self.properties[key]:self.properties;
         },
         setEvents:function(key,value){
             var self=this;
@@ -12452,13 +12664,57 @@ Class('xui.Com',null,{
                 self.events={};
             else if(typeof key=='string')
                 self.events[key]=value;
-            else
-                _.merge(self.events, key, 'all');
+            else if(_.isHash(key)){
+                if(value/*force*/){
+                    self.events = _.clone(key);            
+                }else{
+                    _.merge(self.events, key);
+                }
+            }
             return self;
         },
         getEvents:function(key){
             return key?this.events[key]:this.events;
         },
+        serialize:function(rtnString, keepHost, children){
+            var t,m,
+                self=this,
+                o=(t=self.constructor._beforeSerialized)?t(self):self,
+                r={
+                    "xui.Module":true,
+                    alias:o.alias,
+                    key:o.KEY,
+                    host:o.host
+                };
+            //host
+            if(r.host===self){
+                delete r.host;
+            }else if(o.host && !keepHost ){
+                if(rtnString!==false)
+                    r.host='@this';
+                else
+                    delete r.host;
+            }
+            //properties
+            var c={}, p=o.box.$DataModel;
+            _.merge(c,o.properties, function(o,i){return p[i]!==o});
+            if(!_.isEmpty(c))r.properties=c;
+
+            //events
+            if(!_.isEmpty(t=this.getEvents()))r.events=t;
+            var eh = o.box.$EventHandlers;
+            _.filter(r.events, function(o,i){
+                return o!==eh[i];
+            });
+            if(_.isEmpty(r.properties))delete r.properties;
+
+            //events
+            if(!_.isEmpty(t=this.getEvents()))r.events=t;
+            if(_.isEmpty(r.events))delete r.events;
+
+            return rtnString===false?r:_.serialize(r);
+        },
+
         // for outter events
         fireEvent:function(name, args, host){
             var t,o,r,l,self=this;
@@ -12537,6 +12793,8 @@ Class('xui.Com',null,{
         show:function(onEnd,parent,subId,threadid,left,top){
             if(false===this._fireEvent('beforeShow'))return false;
             parent=parent||xui('body');
+            
+            if(parent['xui.UIProfile'])parent=parent.boxing();
 
             var self=this,f=function(){
                 var style=self.customStyle;
@@ -12545,15 +12803,15 @@ Class('xui.Com',null,{
                     _.each(style,function(v,k){
                         arr.push(k+" : "+v+";");
                     });
-                    var txt=".xui-com-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
-                    xui.CSS.addStyleSheet(txt,"xui:css:com-"+self.$xid,1);
+                    var txt=".xui-module-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
+                    xui.CSS.addStyleSheet(txt,"xui:css:module-"+self.$xid,1);
                 }
-                // no UI control in com
+                // no UI control in module
                 if(self.getUIComponents().isEmpty()){
                     _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
                     _.tryF(onEnd,[null, self, threadid],self.host);
                 }else{
-                    // if parent is an ui object without rendered, dont render the com
+                    // if parent is an ui object without rendered, dont render the module
                     if(!(parent && parent['xui.UI'] && !parent.get(0).renderId))
                         self.render();
 
@@ -12636,23 +12894,42 @@ Class('xui.Com',null,{
             }
 
             //base classes
-            if((t=self.base) && t.length)
+            if((t=self.dependencies) && t.length)
                 funs.push(function(threadid){
-                    xui.SC.groupCall(self.base,function(key){
-                        self._fireEvent('onLoadBaseClass', [key]);
-                    },null,threadid);
+                    xui.require(self.dependencies,null,function(uir,key){
+                        self._fireEvent('onLoadBaseClass', [uri,key]);
+                    },function(key){
+                        self._fireEvent('onLoadBaseClassErr', [uri]);
+                    },false, threadid);
                 });
+            if(self.iniComponents){
+                var arr=[];
+                try{
+                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\(['"]([\w.]+)['"]\)/g,function(a,b){
+                        if(!xui.SC.get(b))arr.push(b);
+                    });
+                }catch(e){}
+                if(arr.length){
+                    if(self.required&&_.isArr(self.required)){
+                        self.required.concat(arr);
+                    }else{
+                        self.required=arr;
+                    }
+                }
+            }
             //load required class
             if((t=self.required) && t.length)
                 funs.push(function(threadid){
-                    xui.SC.groupCall(self.required,function(key){
-                        self._fireEvent('onLoadReqiredClass', [key]);
-                    },null,threadid);
+                    xui.require(self.required,null,function(uir,key){
+                        self._fireEvent('onLoadRequiredClass', [uri,key]);
+                    },function(key){
+                        self._fireEvent('onLoadRequiredClassErr', [uri]);
+                    },false, threadid);
                 });
             //inner components
             if(self.iniComponents)
                 funs.push(function(){
-                    self._createInnerComs();
+                    self._createInnerModules();
                 });
             //load resource here
             if(self.iniResource)
@@ -12661,9 +12938,13 @@ Class('xui.Com',null,{
                     self._innerCall('iniResource');
                 });
             //Outter components
-            if(self.iniExComs)
+            if(self.iniExComs){
+                self.iniExModules=self.iniExComs;
+                delete self.iniExComs;
+            }
+            if(self.iniExModules)
                 funs.push(function(){
-                    self._innerCall('iniExComs');
+                    self._innerCall('iniExModules');
                 });
             //core
             funs.push(function(threadid){
@@ -12687,18 +12968,25 @@ Class('xui.Com',null,{
 
             return self;
         },
-        _createInnerComs:function(){
+        _createInnerModules:function(){
             var self=this;
-            if(self._innerComsCreated)
+            if(self._innerModulesCreated)
                 return;
             if(false===self._fireEvent('beforeIniComponents'))return;
             Array.prototype.push.apply(self._nodes, self._innerCall('iniComponents')||[]);
+
+            _.arr.each(self._nodes,function(o){
+                xui.Module.$attachModuleInfo(self,o);
+                //Recursive call
+                if(o['xui.Module'])o._createInnerModules();
+            });
             // attach destroy to the first UI control
-            if(self.autoDestroy)
+            var autoDestroy = self.autoDestroy || self.properties.autoDestroy;
+            if(autoDestroy)
                 _.arr.each(self._nodes,function(o){
-                    if(o.box && o.box["xui.UI"] && !o.box.$initRootHidden){
-                        (o.$afterDestroy=(o.$afterDestroy||{}))["comDestroyTrigger"]=function(){
-                            if(self.autoDestroy && !self.destroyed)
+                    if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudlueHolder"] && !o.box.$initRootHidden){
+                        (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(){
+                            if(autoDestroy && !self.destroyed)
                                 self.destroy();
                             self=null;
                         };
@@ -12706,21 +12994,11 @@ Class('xui.Com',null,{
                     }
                 });
             self._fireEvent('afterIniComponents');
-            self._innerComsCreated=true;
+            self._innerModulesCreated=true;
         },
         iniComponents:function(){},
 
-        // get all children
-        getAllComponents:function(){
-            if(!this._innerComsCreated)
-                this._createInnerComs();
 
-            var arr=[];
-            _.each(this._ctrlpool,function(o){
-                arr.push(o);
-            });
-            return xui.absObj.pack(arr,false);
-        },
         getProfile:function(){
             var hash={};
             this.getAllComponents().each(function(prf){
@@ -12815,88 +13093,180 @@ Class('xui.Com',null,{
             });
             return this;
         },
-        getValue:function(){
-            var hash={}, cap, uv;
-            this.getAllComponents().each(function(prf){
-                if('value' in prf.properties){
-                    if(_.isSet(prf.properties.caption)){
-                        cap = prf.properties.caption;
-                        uv = prf.properties.value;
 
-                        // igore unnecessary caption
-                        if((!cap && !uv) || cap==uv)
-                            hash[prf.alias]=uv;
-                        else
-                            hash[prf.alias]={value:uv, caption:cap};
+        // fack absValue
+        getValue:function(innerUI){
+            if(innerUI){
+                var hash={}, cap, uv;
+                this.getAllComponents().each(function(prf){
+                    if('value' in prf.properties){
+                        if(_.isSet(prf.properties.caption)){
+                            cap = prf.properties.caption;
+                            uv = prf.properties.value;
+
+                            // igore unnecessary caption
+                            if((!cap && !uv) || cap==uv)
+                                hash[prf.alias]=uv;
+                            else
+                                hash[prf.alias]={value:uv, caption:cap};
+                        }
+                        else{
+                            hash[prf.alias]=prf.properties.value;
+                        }
                     }
-                    else{
-                        hash[prf.alias]=prf.properties.value;
-                    }
+                });
+                return hash;
+            }else{
+                return this.properties.value;
+            }
+        },
+        setValue:function(values, innerUI){
+            if(innerUI){
+                if(!_.isEmpty(values)){
+                    this.getAllComponents().each(function(prf){
+                        if('value' in prf.properties && prf.alias in values){
+                            var v=values[prf.alias],b=_.isHash(v) ;
+                            prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
+                            if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
+                                prf.boxing().setCaption(v.caption, null, true,'module');
+                        }
+                    });
                 }
-            });
-            return hash;
-        },
-        setValue:function(values){
-            if(!_.isEmpty(values)){
-                this.getAllComponents().each(function(prf){
-                    if('value' in prf.properties && prf.alias in values){
-                        var v=values[prf.alias],b=_.isHash(v) ;
-                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'com');
-                        if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
-                            prf.boxing().setCaption(v.caption, null, true,'com');
-                    }
-                });
+            }else{
+                this.properties.value = values;
             }
             return this;
         },
-        getUIValue:function(){
-            var hash={};
-            this.getAllComponents().each(function(prf){
-                if('$UIvalue' in prf.properties)
-                    hash[prf.alias]=prf.properties.$UIvalue;
-            });
-            return hash;
-        },
-        setUIValue:function(values){
-            if(!_.isEmpty(values)){
+        getUIValue:function(innerUI){
+            if(innerUI){
+                var hash={};
                 this.getAllComponents().each(function(prf){
-                    if('value' in prf.properties && prf.alias in values){
-                        var v=values[prf.alias],b=_.isHash(v) ;
-                        prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'com');
-                        if(typeof(prf.boxing().setCaption)=="function" && b &&  'caption' in v)
-                            prf.boxing().setCaption(v.caption, null, true,'com');
-                    }
+                    if('$UIValue' in prf.properties)
+                        hash[prf.alias]=prf.properties.$UIValue;
                 });
+                return hash;
+            }else{
+                return this.properties.$UIValue;
+            }
+        },
+        setUIValue:function(values,innerUI){
+            if(innerUI){
+                if(!_.isEmpty(values)){
+                    this.getAllComponents().each(function(prf){
+                        if('value' in prf.properties && prf.alias in values){
+                            var v=values[prf.alias],b=_.isHash(v) ;
+                            prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'module');
+                            if(typeof(prf.boxing().setCaption)=="function" && b &&  'caption' in v)
+                                prf.boxing().setCaption(v.caption, null, true,'module');
+                        }
+                    });
+                }
+            }else{
+                this.properties.$UIValue = values;
             }
             return this;
+        },
+        resetValue:function(innerUI){
+            if(innerUI){
+                 this.getAllComponents().each(function(prf){
+                     if(prf.boxing().resetValue)prf.boxing().resetValue();
+                 });
+            }else{
+                this.properties.$UIValue=this.properties.value; 
+            }
+            return this;
+        },
+        updateValue:function(innerUI){
+            if(innerUI){
+                 this.getAllComponents().each(function(prf){
+                     if(prf.boxing().updateValue)prf.boxing().updateValue();
+                 });
+            }else{
+                this.properties.value=this.properties.$UIValue; return this;
+            }
+            return this;
+        },
+        isDirtied:function(innerUI){
+            if(innerUI){
+                var dirtied=false;
+                 this.getAllComponents().each(function(prf){
+                     if(prf.boxing().isDirtied){
+                         if(prf.boxing().isDirtied()){
+                             return false;
+                         }
+                    }
+                 });
+                 return dirtied;
+            }else{
+                return this.properties.value===this.properties.$UIValue;
+            }
+        },
+        checkValid:function(innerUI){
+            if(innerUI){
+                 this.getAllComponents().each(function(prf){
+                     if(prf.boxing().checkValid){
+                         if(!prf.boxing().checkValid()){
+                             return false;
+                         }
+                    }
+                 });
+            }else{
+                return true;
+            }
         },
 
         getDataBinders:function(){
-            if(!this._innerComsCreated)
-                this._createInnerComs();
+            if(!this._innerModulesCreated)
+                this._createInnerModules();
             var nodes = _.copy(this._nodes),t,k='xui.DataBinder';
             _.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
             return nodes;
         },
+        // get all children
+        getAllComponents:function(){
+            if(!this._innerModulesCreated)
+                this._createInnerModules();
+            var nodes=[];
+            var fun = function(m){
+                    if(m["xui.Module"]){
+                        _.each(m._ctrlpool,function(o){
+                            if(o["xui.Module"])fun(o);
+                            else nodes.push(o);
+                        });
+                    }
+                };
+            fun(this);
+            return xui.absObj.pack(nodes,false);
+        },
+        // get first level children only
+        getComponents:function(){
+            if(!this._innerModulesCreated)
+                this._createInnerModules();
+            var nodes = [];
+            var fun = function(m){
+                if(m["xui.Module"]){
+                    _.arr.each(m._nodes,function(o){
+                        if(o["xui.Module"])fun(o);
+                        else nodes.push(o);
+                    });
+                }
+            };
+            fun(this);
+            return xui.absObj.pack(nodes,false);
+        },
+        // get first level UI children only
         // flag:true => no  $initRootHidden
         // flag:false => $initRootHidden
         // no flag: all
         getUIComponents:function(flag){
-            if(!this._innerComsCreated)
-                this._createInnerComs();
-            var nodes = _.copy(this._nodes),t,k='xui.UI',n='$initRootHidden';
+            var nodes = this.getComponents().get(),
+                k='xui.UI', n='$initRootHidden';
             _.filter(nodes,function(o){
-                return !!(o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
+                return !!(o && o.box &&o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
             });
             return xui.UI.pack(nodes, false);
-        },
-        // get first level children only
-        getComponents:function(){
-            if(!this._innerComsCreated)
-                this._createInnerComs();
-            return xui.absObj.pack(_.copy(this._nodes),false);
         },
         setComponents:function(obj){
             var self=this,t;
@@ -12908,13 +13278,17 @@ Class('xui.Com',null,{
                 // set host
                 o.boxing().setHost(self, o.alias);
             });
+            _.arr.each(self._nodes,function(o){
+                xui.Module.$attachModuleInfo(self,o);
+            });
             return self;
         },
         AddComponents:function(obj){
-            var self=this,ns=self._nodes;
+            var self=this;
             _.arr.each(obj.get(),function(o){
                 o.boxing().setHost(self, o.alias);
                 self._nodes.push(o);
+                xui.Module.$attachModuleInfo(self,o);
             });
             return self;
         },
@@ -12922,7 +13296,7 @@ Class('xui.Com',null,{
             return !!this.destroyed;
         },
         destroy:function(){
-            var self=this,ns=self._nodes;
+            var self=this,con=self.constructor,ns=self._nodes;
             self._fireEvent('onDestroy');
             //set once
             self.destroyed=true;
@@ -12934,9 +13308,9 @@ Class('xui.Com',null,{
             if(ns && ns.length)
                 self._nodes.length=0;
             self._ctrlpool=null;
-
-            delete self.constructor._pool[self.$xid]
-            delete xui.Com._pool[self.$xid];
+            
+            delete con._namePool[self.alias];
+            self.unLinkAll();
 
             _.breakO(self);
             self.destroy=function(){};
@@ -12945,7 +13319,11 @@ Class('xui.Com',null,{
         }
     },
     Static:{
-        _ctrlId : new _.id(),
+        // fake absValue
+        "xui.absValue":true,
+        pickAlias:function(){
+            return xui.absObj.$pickAlias(this);
+        },
         getFromDom:function(id){
             var prf=xui.UIProfile.getFromDom(id);
             if(prf&&(prf=prf.host)){
@@ -12956,13 +13334,33 @@ Class('xui.Com',null,{
             return _.get(this.getFromDom(id),["KEY"]);
         },
         getAllInstance:function(){
-            return this._pool;
+            var hash={};
+            _.arr.each(this._cache,function(o){
+                hash[o.$xid]=o;
+            });
+            return hash;
         },
-        getInstance:function(){
-            for(var i in this._pool)return this._pool[i];
+        getInstance:function(module, xid){
+            var m=this;
+            if(!xid){
+                if(module['xui.Profile'] && module.moduleClass && module.moduleXid){
+                    xid = module.moduleXid;
+                    module = module.moduleClass;
+                }else{
+                    xid = module;
+                    module = null;
+                }
+            }
+            if(module){
+                m=xui.SC.get(module);
+                if(!m||!m['xui.Module'])return;
+            }
+            var c=m._cache;
+            for(var i in c)
+                if(_.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
         destroyAll:function(){
-            _.each(this._pool,function(o){
+            _.arr.each(this._cache,function(o){
                 if(!o.destroyed)o.destroy();
             });
         },
@@ -13000,7 +13398,7 @@ Class('xui.Com',null,{
                                 // record it
                                 a._callfrom=cls;
     
-                                _.set(xui.ComFactory,["_cache",cls],o);
+                                _.set(xui.ModuleFactory,["_cache",cls],o);
     
                                 if(showUI!==false)o.show(onEnd);
                                 else _.tryF(onEnd,[null,o],o);
@@ -13025,12 +13423,14 @@ Class('xui.Com',null,{
                 };
                 if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
                 else cls=cls+"";
-                if(/\.js$/i.test(cls))
+                if(/\//.test(cls) && !/\.js$/i.test(cls))
+                    cls=cls+".js";
+                if(/\.js$/i.test(cls)){
                     xui.fetchClass(cls,ifun,
                         function(e){
                             _.tryF(onEnd,[e,null]);
                         });
-                else
+                }else
                     //get app class
                     xui.SC(cls,ifun,true,null,{
                         retry:0,
@@ -13044,16 +13444,43 @@ Class('xui.Com',null,{
             else
                 xui.main(fun);
         },
+        $attachModuleInfo:function(module,prf){
+            // module in module
+            if(prf.moduleClass && prf.moduleXid){
+                var t=xui.SC.get(prf.moduleClass);
+                    t=t.getInstance(prf.moduleXid);
+                if(t!==module){
+                    t.moduleClass=module.KEY;
+                    t.moduleXid=module.$xid;
+                    return;
+                }
+            }
+
+            prf.moduleClass=module.KEY;
+            prf.moduleXid=module.$xid;
+            _.arr.each(prf.children,function(v){
+               xui.Module.$attachModuleInfo(module, v[0]);
+            });
+       },
+
+        // for setting only
+        $DataModel:{
+            autoDestroy:true,
+            $UIValue:"",
+            value:""
+        },
         $EventHandlers:{
-            beforeCreated:function(com, threadid){},
-            onLoadBaseClass:function(com, threadid, key){},
-            onIniResource:function(com, threadid){},
-            beforeIniComponents:function(com, threadid){},
-            afterIniComponents:function(com, threadid){},
-            onLoadRequiredClass:function(com, threadid, key){},
-            onReady:function(com, threadid){},
-            onRender:function(com, threadid){},
-            onDestroy:function(com){}
+            beforeCreated:function(module, threadid){},
+            onLoadBaseClass:function(module, threadid, key){},
+            onLoadBaseClassErr:function(module, threadid, key){},
+            onLoadRequiredClass:function(module, threadid, uri, key){},
+            onLoadRequiredClassErr:function(module, threadid, uri){},
+            onIniResource:function(module, threadid){},
+            beforeIniComponents:function(module, threadid){},
+            afterIniComponents:function(module, threadid){},
+            onReady:function(module, threadid){},
+            onRender:function(module, threadid){},
+            onDestroy:function(module){}
         }
     }
 });Class("xui.Cookies", null,{
@@ -15144,36 +15571,50 @@ Class("xui.Tips", null,{
 
         }
     }
-});Class('xui.ComFactory',null,{
+});Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.getCom=function(cls, onEnd, threadid, cached, properties, events){
-            return ns.getCom.apply(ns,arguments)
+        xui.getModule=function(cls, onEnd, threadid, cached, properties, events){
+            return ns.getModule.apply(ns,arguments)
         };
-        xui.newCom=function(cls, onEnd, threadid, properties, events){
-            return ns.newCom.apply(ns,arguments)
+        xui.newModule=function(cls, onEnd, threadid, properties, events){
+            return ns.newModule.apply(ns,arguments)
         };
-        xui.showCom=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
-            return ns.getCom(cls, function(err, com, threadid){
-                if(!err && false!==_.tryF(beforeShow, [com, threadid], com)){
-                    this.show.apply(com, [onEnd,parent,subId,threadid,left,top]);
+        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+            return ns.getModule(cls, function(err, module, threadid){
+                if(!err && false!==_.tryF(beforeShow, [module, threadid], module)){
+                    this.show.apply(module, [onEnd,parent,subId,threadid,left,top]);
                 }else{
-                    _.tryF(onEnd, [err, com, threadid], com);
+                    _.tryF(onEnd, [err, module, threadid], module);
                 }
             }, threadid, cached, properties, events);
         };
+
+        //compitable
+        xui.getCom=xui.getModule;
+        xui.newCom=xui.newModule;
+        xui.showCom=xui.showModule;
+
+        ns.setCom=ns.setModule;
+        ns.getComFromCache=ns.getModuleFromCache;
+        ns.getCom=ns.getModule;
+        ns.newCom=ns.newModule;
+        ns.storeCom=ns.storeModule;
+        ns.prepareComs=ns.prepareModules;
+
+        xui.ComFactory=ns;
     },
     Static:{
         _pro:{},
         _cache:{},
-        _domId:'xui:ComFactory:',
+        _domId:'xui:ModuleFactory:',
         getProfile:function(key){
             return key?this._pro[key]:this._pro;
         },
         setProfile:function(key, value){
             if(typeof key=='string')
                 this._pro[key]=value;
-            else
+            else if(_.isHash(key))
                 this._pro=key;
             return this;
         },
@@ -15191,16 +15632,16 @@ Class("xui.Tips", null,{
             }
         },
 
-        setCom:function(id, obj){
+        setModule:function(id, obj){
             this._cache[id]=obj;
-            if(obj)obj.comRefId=id;
+            if(obj)obj.moduleRefId=id;
             return this;
         },
-        getComFromCache:function(id){
+        getModuleFromCache:function(id){
             return this._cache[id]||null;
         },
         //cached:false->don't get it from cache, and don't cache the result.
-        getCom:function(id, onEnd, threadid, cached, properties, events){
+        getModule:function(id, onEnd, threadid, cached, properties, events){
             if(!id){
                 var e=new Error("No id");
                 _.tryF(onEnd,[e,null,threadid]);
@@ -15242,10 +15683,10 @@ Class("xui.Tips", null,{
                         if(config.events)
                             _.merge(o.events,config.events,'all');
                         if(config.cached!==false)
-                            xui.ComFactory.setCom(id, o);
+                            xui.ModuleFactory.setModule(id, o);
 
-                        var args = [function(err,com,threadid){
-                            var arr = com.getUIComponents().get(),
+                        var args = [function(err,module,threadid){
+                            var arr = module.getUIComponents().get(),
                                 fun=function(arr,subcfg,firstlayer){
                                     var self1 = arguments.callee;
                                     _.arr.each(arr,function(v,i){
@@ -15258,7 +15699,7 @@ Class("xui.Tips", null,{
                                         }
                                     });
                                 };
-                            //handle tag sub from com
+                            //handle tag sub from module
                             fun(arr,config.children,1);
                         }];
                         args.push(threadid||null);
@@ -15308,10 +15749,10 @@ Class("xui.Tips", null,{
                 },null,threadid);
             }
         },
-        newCom:function(cls, onEnd, threadid, properties, events){
-            return this.getCom(cls, onEnd, threadid, false, properties, events);
+        newModule:function(cls, onEnd, threadid, properties, events){
+            return this.getModule(cls, onEnd, threadid, false, properties, events);
         },
-        storeCom:function(id){
+        storeModule:function(id){
             var m,t,c=this._cache,domId=this._domId;
             if(t=c[id]){
                 if(!(m=xui.Dom.byId(domId)))
@@ -15327,11 +15768,11 @@ Class("xui.Tips", null,{
                 }
             }
         },
-        prepareComs:function(arr){
+        prepareModules:function(arr){
             var self=this,funs=[];
             _.arr.each(arr, function(i){
                 funs.push(function(){
-                    self.getCom(i);
+                    self.getModule(i);
                 });
             });
             xui.Thread(null, funs, 500).start();
@@ -15687,11 +16128,11 @@ Class("xui.Tips", null,{
                         ins.append(v[0],v[1]);
                     delete ns.exchildren;
                 }
-                if(ns.excoms){
+                if(ns.exmodules){
                     var arr=[];
-                    for(var i=0,v;v=ns.excoms[i++];)
+                    for(var i=0,v;v=ns.exmodules[i++];)
                         v[0].show(null, ins, v[1], false);
-                    delete ns.excoms;
+                    delete ns.exmodules;
                 }
             }
             
@@ -15772,6 +16213,17 @@ Class("xui.Tips", null,{
             ns.destroy=function(){};
             ns.destroyed=true;
         },
+        linkParent:function(parentProfile, linkId, index){
+            var profile=this;
+            //unlink first
+            profile.unlinkParent();
+
+            //link
+            profile.parent = parentProfile;
+            profile.childrenId = linkId;
+            profile.link(parentProfile.children, '$parent', [profile, linkId], index);
+            return profile;
+        },
         unlinkParent:function(){
             var profile=this;
             delete profile.parent;
@@ -15788,17 +16240,6 @@ Class("xui.Tips", null,{
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
             return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
-        },
-        linkParent:function(parentProfile, linkId, index){
-            var profile=this;
-            //unlink first
-            profile.unlinkParent();
-
-            //link
-            profile.parent = parentProfile;
-            profile.childrenId = linkId;
-            profile.link(parentProfile.children, '$parent', [profile, linkId], index);
-            return profile;
         },
         _cacheR1:/^\w[\w_-]*$/,
         setDomId:function(id){
@@ -15928,7 +16369,7 @@ Class("xui.Tips", null,{
             return nodes;
         },
         serialize:function(rtnString, keepHost, children){
-            var t,m,
+            var t,m,moduleHash={},
                 self=this,
                 o=(t=self.box._beforeSerialized)?t(self):self,
                 r={
@@ -15980,8 +16421,15 @@ Class("xui.Tips", null,{
                     });
                 }
                 t=r.children=[];
-                _.arr.each(o.children,function(v){
-                    m=[v[0].serialize(false, keepHost)];
+                _.arr.each(o.children,function(v,w,y,z){
+                    w=v[0];
+                    if(w.moduleClass && w.moduleXid && (y=xui.SC.get(w.moduleClass)) && (y=y.getInstance(w.moduleXid)) && y["xui.Module"]){
+                        if(!!moduleHash[z=w.moduleClass+"["+w.moduleXid+"]"]){
+                            moduleHash[z]=1;
+                            w=y;
+                        }
+                    }
+                    m=[w.serialize(false, keepHost)];
                     if(v[1])m[1]=v[1];
                     t[t.length]=m
                 });
@@ -15989,6 +16437,7 @@ Class("xui.Tips", null,{
             if(false!==children && o.exchildren && o.exchildren.length){
                 r.exchildren=o.exchildren;
             }
+            moduleHash=null;
             return rtnString===false?r:_.serialize(r);
         },
         _applySetAction:function(fun, value, ovalue){
@@ -16132,6 +16581,14 @@ Class("xui.Tips", null,{
                 });
             f(items, fun, deep, single, flag, r);
             return r;
+        },
+        getModule:function(){
+            var prf=this,t;
+            if(prf.moduleClass&&prf.moduleXid){
+                if(t=xui.SC.get(prf.moduleClass)){
+                    return t.getInstance(prf.moduleXid);
+                }
+            }
         }
     },
     Static:{
@@ -16316,6 +16773,10 @@ Class("xui.UI",  "xui.absObj", {
         },
         getTheme:function(){
             return this.get(0) && this.get(0).theme;
+        },
+        getModule:function(){
+            var prf=this.get(0);
+            if(prf)return prf.getModule();
         },
         destroy:function(ignoreEffects, purgeNow){
             var ns=this;
@@ -16623,7 +17084,7 @@ Class("xui.UI",  "xui.absObj", {
                 var autoDestroy,
                     host=o.host,
                     alias=o.alias;
-                if(o.host&&o.host['xui.Com']&&o.host.autoDestroy){
+                if(o.host&&o.host['xui.Module']&&o.host.autoDestroy){
                     o.host.autoDestroy=false;
                 }
                 //save related id
@@ -16723,7 +17184,7 @@ Class("xui.UI",  "xui.absObj", {
                     n.get(0).$afterRefresh=ar;
                     ar(n.get(0));
                 }
-                if(_.isSet(autoDestroy&&n.host&&n.host['xui.Com'])){
+                if(_.isSet(autoDestroy&&n.host&&n.host['xui.Module'])){
                     n.host.autoDestroy=autoDestroy;
                 }
             });
@@ -16762,7 +17223,7 @@ Class("xui.UI",  "xui.absObj", {
             if(pro.beforeAppend && false===this.beforeAppend(pro,target,subId,pre,base))
                 return;
 
-            if(target['xui.Com']){
+            if(target['xui.Module']){
                 if(subId!==false){
                     var i=index;
                     target.getUIComponents().each(function(profile){
@@ -16780,7 +17241,7 @@ Class("xui.UI",  "xui.absObj", {
                     }
                 }
                 else{
-                    _.arr.insertAny(pro.excoms||(pro.excoms=[]),[target,subId],index,true);
+                    _.arr.insertAny(pro.exmodules||(pro.exmodules=[]),[target,subId],index,true);
                 }
             }else{
                 if(subId!==false){
@@ -16827,21 +17288,77 @@ Class("xui.UI",  "xui.absObj", {
             var prf=this.get(0);
             if(prf)return prf.childrenId;
         },
-        getChildren:function(subId, deep){
-            var a=[],f=function(prf){
-                _.arr.each(prf.children,function(v){
-                    a.push(v[0]);
-                    if(v[0].children && v[0].children.length)
-                        f(v[0]);
+        getChildren:function(subId, type){
+            // return array only, don't recursive call in any module
+            if(type===false || type=="withModule"){
+                var prf=this.get(0),
+                    moduleHash={},
+                    a=[],z,
+                    moduleClass=prf.moduleClass,
+                    moduleXid=prf.moduleXid,
+                    getModlue=function(p){
+                        if(p.moduleClass && p.moduleXid){
+                            // exclude the container's module
+                            if(p.moduleClass!==moduleClass && p.moduleXid!==moduleXid){
+                                // got it already
+                                if(moduleHash[z=p.moduleClass+"'"+p.moduleXid+"]"]){
+                                    return null;
+                                }else{
+                                    moduleHash[z]=1;
+                                    var q = p.getModule();
+                                    // module in module, we use the top mudule only( exclude the container's module )
+                                     if(q && q.moduleClass && q.moduleXid){
+                                         // look up toward top layer
+                                         if(q.moduleClass!==moduleClass && q.moduleXid!==moduleXid){
+                                            return getModlue(q);
+                                         }else{
+                                             return q;
+                                         }
+                                     }
+                                }
+                            }
+                        }
+                        return p;
+                    },
+                    f=function(p){
+                        _.arr.each(p.children,function(v,t){
+                            t=getModlue(v[0]);
+                            if(t){
+                                a.push(t);
+                                if(t['xui.UIProfile'] && t.children && t.children.length)
+                                    f(t);
+                            }
+                        });
+                    };
+                _.arr.each(prf.children,function(v,t){
+                    if((subId&&typeof(subId)=="string")?v[1]===subId:1){
+                        t=getModlue(v[0]);
+                        if(t){
+                            a.push(t);
+                            if(t['xui.UIProfile'] && t.children && t.children.length)
+                                f(t);
+                        }
+                    }
                 });
-            };
-            _.arr.each(this.get(0).children,function(v){
-                if((subId&&typeof(subId)=="string")?v[1]===subId:1){
-                    a.push(v[0]);
-                    if(deep)f(v[0]);
-                }
-            });
-            return xui.UI.pack(a);
+                // return array only
+                return a;
+            }else{
+                var a=[],f=function(prf){
+                    _.arr.each(prf.children,function(v){
+                        a.push(v[0]);
+                        if(v[0].children && v[0].children.length)
+                            f(v[0]);
+                    });
+                };
+                _.arr.each(this.get(0).children,function(v){
+                    if((subId&&typeof(subId)=="string")?v[1]===subId:1){
+                        a.push(v[0]);
+                        if((type===true ||type=="recurse") && v[0].children && v[0].children.length)
+                            f(v[0]);
+                    }
+                });
+                return xui.UI.pack(a);
+            }
         },
         /**
         * subId:
@@ -18176,7 +18693,7 @@ Class("xui.UI",  "xui.absObj", {
         $ID:"\x01id\x01",
         $DOMID:'\x01domid\x01',
         $CLS:"\x01cls\x01",
-        $COMCLS:"\x01comcls\x01",
+        $MODULECLS:"\x01modulecls\x01",
         $childTag:"<!--\x03{id}\x04-->",
 
         $onSize:function(profile,e){
@@ -18432,7 +18949,7 @@ Class("xui.UI",  "xui.absObj", {
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
                     u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + ' '+
-                    u.$COMCLS +" xui-custom"
+                    u.$MODULECLS +" xui-custom"
             }
             delete template.className;
 
@@ -18512,7 +19029,7 @@ Class("xui.UI",  "xui.absObj", {
         _rpt:function(profile,temp){
             var me=arguments.callee,
                 host = profile.host,
-                comCls = (host&&host['xui.Com']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-com-"+host.$xid):null,
+                moduleCls = (host&&host['xui.Module']&&host.customStyle&&!_.isEmpty(host.customStyle))?(" xui-module-"+host.$xid):null,
                 ui=xui.UI,
                 tag=ui.$tag_special,
                 ca=function(h,s,i){
@@ -18525,7 +19042,7 @@ Class("xui.UI",  "xui.absObj", {
                     id:profile.serialId,
                     cls:profile.getClass('KEY'),
                     domid:profile.$domId,
-                    comcls:comCls
+                    modulecls:moduleCls
                 },
                 h2={
                     A:profile.CA,
@@ -18750,22 +19267,23 @@ Class("xui.UI",  "xui.absObj", {
                                 this.getFormElements(subId).each(function(prf){
                                     if('value' in prf.properties && (p.name||prf.alias) in values){
                                         var v=values[p.name||prf.alias],b=_.isHash(v) ;
-                                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'com');
+                                        prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
                                         if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
-                                            prf.boxing().setCaption(v.caption, null, true,'com');
+                                            prf.boxing().setCaption(v.caption, null, true,'module');
                                     }
                                 });
                             }
                             return this;
                         },
                         getFormElements:function(subId, dirtiedOnly){
-                            var elems = xui.absValue.pack(this.getChildren(subId, true));
+                            var a=this.getChildren(subId, false),
+                                elems = xui.absValue.pack(a);
                             if(dirtiedOnly){
-                                var arr=[],ins;
-                                elems.each(function(prf){
-                                    ins = prf.boxing();
+                                var arr=[],ins,t;
+                                elems.each(function(p,z){
+                                    ins = p.boxing();
                                     if( (ins.getUIValue()+" ")!==(ins.getValue()+" ")){
-                                        arr.push(prf);    
+                                        arr.push(p);    
                                     }
                                 });
                                 return xui.absValue.pack(arr);
@@ -20803,7 +21321,7 @@ Class("xui.UI",  "xui.absObj", {
         },
 
         _beforeSerialized:function(profile){
-            var b,t,o={};
+            var b,t,r,o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true),
                 ds = o.box.$DataStruct;
@@ -20820,9 +21338,6 @@ Class("xui.UI",  "xui.absObj", {
             for(var i in xui.UI.$ps)
                 if((i in p) && typeof p[i]!='number' && p[i]!='' && p[i]!='auto')p[i]=isNaN(p[i]=parseFloat(p[i]))?'auto':p[i];
 
-            for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
-
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
                 p.items = _.clone(p.items,function(o,i,d){
@@ -20835,19 +21350,21 @@ Class("xui.UI",  "xui.absObj", {
                     return !t[((d===1?o.id:i)+'').charAt(0)] && o!=undefined;
                 });
             }
-            
-            if((t=p.dockMargin)&&!t.left&&!t.top&&!t.right&&!t.bottom)
-                delete p.dockMargin;
-            if((t=p.conDockPadding)&&!t.left&&!t.top&&!t.right&&!t.bottom)
-                delete p.conDockPadding;
-            if((t=p.conDockSpacing)&&!t.width&&!t.height)
-                delete p.conDockSpacing;
-            if(p.propBinder && _.isHash(p.propBinder) && _.isEmpty(p.propBinder))
-                delete p.propBinder;
-            if(p.tagVar && _.isHash(p.tagVar) && _.isEmpty(p.tagVar))
-                delete p.tagVar;
-            if(p.animConf && _.isHash(p.animConf) && _.isEmpty(p.animConf))
-                delete p.animConf;
+            // for empty object
+            for(var i in profile.box._objectProp)
+                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+            // 
+            _.arr.each(["dockMargin","conDockPadding","conDockSpacing","propBinder","tagVar","animConf"],function(key){
+                if(t=p[key]){
+                    r=ds[key];
+                    for(var i in t){
+                        if(r[i]!==t[i]){
+                            return;
+                        }
+                    }
+                    delete p[key];
+                }
+            });
             
             if(_.isEmpty(p.resizerProp))
                 delete p.resizerProp;
@@ -21321,6 +21838,9 @@ Class("xui.absList", "xui.absObj",{
                 return a;
             }else
                 return v;
+        },
+        selectItem:function(subId){
+            return this.fireItemClickEvent(subId);
         },
         fireItemClickEvent:function(subId){
             subId+="";
@@ -22539,7 +23059,12 @@ new function(){
                 height:null,
                 right:null,
                 bottom:null,
+                rotate:null,
+                activeAnim:null,
+                hoverPop:null,
+                hoverPopType:null,
                 dock:null,
+                dockFlowStretch:null,
                 renderer:null,
                 display:null,
                 html:null,
@@ -22552,7 +23077,7 @@ new function(){
                 disableTips:null,
                 disabled:null,
                 defaultFocus:null,
-                doc:null,
+                dockFlowStretch:null,
                 dockIgnore:null,
                 dockOrder:null,
                 dockMargin:null,
@@ -22607,12 +23132,14 @@ new function(){
             },
             EventHandlers:{
                 onContextmenu:null,
+                onClick:null,
                 onDock:null,
                 onLayout:null,
                 onMove:null,
                 onRender:null,
                 onResize:null,
                 onShowTips:null,
+                beforeHoverEffect:null,
                 beforeAppend:null,
                 afterAppend:null,
                 beforeRender:null,
@@ -22762,6 +23289,116 @@ new function(){
             }
         }
     });
+     
+     Class(u+".MoudlueHolder", u+".Div",{
+        Instance:{
+            adjustDock:null,
+            draggable:null,
+            busy:null,
+            free:null,
+            // for Module
+            setProperties:function(key,value){
+                var self=this;
+                if(!self._properties)self._properties={};
+                if(!key)self._properties={};
+                else if(typeof key=='string') self._properties[key]=value;
+                else _.merge(self._properties, key, 'all');
+                return self;
+            },
+            getProperties:function(key){
+                var self=this;
+                if(!self._properties)self._properties={};
+                return key?self._properties[key]:self._properties;
+            },
+            setEvents:function(key,value){
+                var self=this;
+                if(!self._events)self._events={};
+                if(!key)
+                    self._events={};
+                else if(typeof key=='string')
+                    self._events[key]=value;
+                else
+                    _.merge(self._events, key, 'all');
+                return self;
+            },
+            getEvents:function(key){
+                var self=this;
+                if(!self._events)self._events={};
+                return key?this._events[key]:this._events;
+            },
+            replaceWithModule:function(module){
+                var self=this, 
+                    prf=self.get(0), 
+                    prop=prf._properties||{}, 
+                    events=prf._events||{},
+                    m,parent,subId;
+                if(prf.moduleClass && prf.moduleXid){
+                    if(m = xui.Module.getInstance(prf.moduleClass, prf.moduleXid)){
+                        m.AddComponents(module);
+                    }
+                }
+                if(parent = prf.parent){
+                    subId = prf.childrenId;
+                    module.show(function(){
+                        self.destroy();
+                    },parent,subId);
+                }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
+                    parent.show(function(){
+                        self.destroy();
+                    },parent);
+                }
+            }
+        },
+        Static:{
+            Templates:{
+                tagName:'div',
+                style:'left:0px;top:0px;width:0px;height:0px;visibility:hidden;display:none;position:absolute;z-index:0;'
+            },
+            DataModel:{
+                showEffects:null,
+                hideEffects:null,
+                activeAnim:null,
+                hoverPop:null,
+                hoverPopType:null,
+                dock:null,
+                dockFlowStretch:null,
+                renderer:null,
+                html:null,
+                disableClickEffect:null,
+                disableHoverEffect:null,
+                disableTips:null,
+                disabled:null,
+                defaultFocus:null,
+                dockFlowStretch:null,
+                dockIgnore:null,
+                dockOrder:null,
+                dockMargin:null,
+                dockFloat:null,
+                dockMinW:null,
+                dockMinH:null,
+                tips:null
+            },
+            EventHandlers:{
+                onContextmenu:null,
+                onDock:null,
+                onLayout:null,
+                onMove:null,
+                onRender:null,
+                onResize:null,
+                onShowTips:null,
+                beforeAppend:null,
+                afterAppend:null,
+                beforeRender:null,
+                afterRender:null,
+                beforeRemove:null,
+                afterRemove:null,
+                onHotKeydown:null,
+                onHotKeypress:null,
+                onHotKeyup:null
+            }
+        }
+    });
+
     Class(u+".Pane", u+".Div",{
         Static:{
             Behaviors:{
@@ -23930,6 +24567,7 @@ Class("xui.UI.Resizer","xui.UI",{
     Static:{
         Templates:{
             tagName:'div',
+            className:'{_disabled}',
             style:'{_style};'
         },
         Appearances:{
@@ -23945,6 +24583,31 @@ Class("xui.UI.Resizer","xui.UI",{
                 /*for get top Index, when it's static*/
                 'z-index':60,
                 cursor:'move'
+            },
+            "KEY.disabled":{
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 300 300'><path d='M300 0 L0 300 ' stroke='black' stroke-width='1'/><path d='M0 0 L300 300 ' stroke='black' stroke-width='1'/></svg>\")",
+                'background-repeat':'no-repeat',
+                'background-position':'center center',
+                'background-size':'100% 100%, auto',
+                border: 'solid #888 1px',
+                'background-color':'#bbb',
+                 opacity: '0.3'
+            },
+            "KEY.disabled.active":{
+                'background-color':'#eee'
+            },
+            /*
+            "KEY.disabled":{
+                background: (xui.browser.isWebKit?"-webkit-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -webkit-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
+                                   :xui.browser.isFF?"-moz-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -moz-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
+                                   :xui.browser.opr?"-o-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -o-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
+                                   :"")
+                                 + ";linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px",
+                'background-size': "64px 64px",
+                border:"solid 1px #d9ecff"
+            },*/
+            "KEY.disabled div":{
+                display:'none'
             },
             MOVE:{
                 position:'absolute',
@@ -24057,16 +24720,19 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             CONF1:{
                 onMouseover:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src, 'left','mouseover');
                     return false;
                 },
                 onMousedown:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'left','mousedown');
                     return false;
                 },
                 onClick:function(profile,e,src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'left','click');
                     return false;
@@ -24074,16 +24740,19 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             CONF2:{
                 onMouseover:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'right','mouseover');
                     return false;
                 },
                 onMousedown:function(profile, e, src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'right','mousedown');
                     return false;
                 },
                 onClick:function(profile,e,src){
+                    if(profile.properties.disabled)return false;
                     if(profile.onConfig)
                         return profile.boxing().onConfig(profile,e,src,'right','click');
                     return false;
@@ -24249,6 +24918,13 @@ Class("xui.UI.Resizer","xui.UI",{
 
             handlerSize:4,
             handlerOffset:0,
+            disabled:{
+                ini:false,
+                action:function(v){
+                     if(v)this.getRoot().addClass("disabled");
+                     else this.getRoot().removeClass("disabled");
+                }
+            },
             leftConfigBtn:{
                 ini:false,
                 action:function(v){
@@ -24423,6 +25099,7 @@ Class("xui.UI.Resizer","xui.UI",{
             if(r && xui.browser.ie&&xui.browser.ver<=8)
                 r=false;
             t._rotateBtn = r?'':'display:none';
+            t._disabled = t.disabled?"disabled":"";
             return arguments.callee.upper.call(this, profile);
         },
         RenderTrigger:function(){
@@ -24498,6 +25175,8 @@ Class("xui.UI.Resizer","xui.UI",{
             }
         },
         _onMousedown:function(profile, e, src, axis){
+            if(profile.properties.disabled)return false;
+
             var ddparas=this._getDDParas(0, axis);
             if(xui.Event.getBtn(e)!="left")return;
             var puip=profile.$parentUIProfile;
@@ -37928,7 +38607,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         markNode.tagClass('-checked', false);
                         barNode.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
-                        if(properties.dynDestory){
+                        if(properties.dynDestory || item.dynDestory){
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
@@ -37945,7 +38624,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }else onend();
                     }else onend();
                 }
-                if(recursive && item.sub && !properties.dynDestory){
+                if(recursive && item.sub && !properties.dynDestory && !item.dynDestory){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
                             profile.box._setSub(profile, o, flag, recursive, true);
@@ -38242,6 +38921,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             }
         },
         DataModel:{
+            $subMargin:22,
             group:null,
             noIcon:{
                 ini:false,
@@ -38276,7 +38956,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     arr=_.copy(pitem._icons);
                     arr.push(index==len-1?'last':index===0?'first':'middle');
                     oitem._icons=arr;
-                    item.rulerStyle='width:'+(oitem._deep*16)+'px;';
+                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'px;';
 
 
                     // build image html
@@ -43406,7 +44086,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{rowOptions:1,colOptions:1,data:1},
+        _objectProp:{rowOptions:1,colOptions:1},
         Behaviors:{
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL:"SCROLL",BODY:"BODY",HEADER:"HEADER"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
@@ -47133,10 +47813,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 borderC++;
             });
             
-            var lcellw=0;
+            var lcellw=profile.getSubNode("LHCELL").get(0).clientWidth || 0;
             profile.getSubNodes('LCELL',true).each(function(hc){
                 if(hc.children.length){
-                    lcellw=Math.max(lcellw,hc.clientWidth);
+                    lcellw=Math.max(lcellw, hc.clientWidth);
                 }
             });
             profile.__lcellW = lcellw;

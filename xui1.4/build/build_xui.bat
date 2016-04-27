@@ -66,7 +66,7 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\CSS.js /b ^
 + %relPath%xui\js\Dom.js /b ^
 + %relPath%xui\js\Template.js /b  ^
-+ %relPath%xui\js\Com.js /b ^
++ %relPath%xui\js\Module.js /b ^
 + %relPath%xui\js\Cookies.js /b ^
 + %relPath%xui\js\MessageService.js /b ^
 + %relPath%xui\js\XML.js /b ^
@@ -75,7 +75,7 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\DragDrop.js /b ^
 + %relPath%xui\js\Tips.js /b ^
 + %relPath%xui\js\History.js /b ^
-+ %relPath%xui\js\ComFactory.js /b  ^
++ %relPath%xui\js\ModuleFactory.js /b  ^
 + %relPath%xui\js\Debugger.js /b ^
 + %relPath%xui\js\UI.js /b ^
 + %relPath%xui\js\UI\Image.js /b ^

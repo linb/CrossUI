@@ -872,7 +872,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         markNode.tagClass('-checked', false);
                         barNode.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
-                        if(properties.dynDestory){
+                        if(properties.dynDestory || item.dynDestory){
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
@@ -889,7 +889,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }else onend();
                     }else onend();
                 }
-                if(recursive && item.sub && !properties.dynDestory){
+                if(recursive && item.sub && !properties.dynDestory && !item.dynDestory){
                     _.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
                             profile.box._setSub(profile, o, flag, recursive, true);

@@ -2341,7 +2341,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cursor:'pointer'
             }
         },
-        _objectProp:{rowOptions:1,colOptions:1,data:1},
+        _objectProp:{rowOptions:1,colOptions:1},
         Behaviors:{
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL:"SCROLL",BODY:"BODY",HEADER:"HEADER"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
@@ -6068,10 +6068,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 borderC++;
             });
             
-            var lcellw=0;
+            var lcellw=profile.getSubNode("LHCELL").get(0).clientWidth || 0;
             profile.getSubNodes('LCELL',true).each(function(hc){
                 if(hc.children.length){
-                    lcellw=Math.max(lcellw,hc.clientWidth);
+                    lcellw=Math.max(lcellw, hc.clientWidth);
                 }
             });
             profile.__lcellW = lcellw;

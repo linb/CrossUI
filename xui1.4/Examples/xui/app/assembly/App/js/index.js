@@ -7,7 +7,7 @@ Class('App', 'xui.Com',{
             
             xui.Thread(threadid).insert(1000);
         }, 
-        iniExComs:function(com, threadid){
+        iniExModules:function(com, threadid){
             //use getCom
             xui.getCom('App.Module2',function(err,com,threadid){
                 var ns=this;

@@ -62,25 +62,22 @@ Class("xui.APICaller","xui.absObj",{
             var responseType=prop.responseType,
                 requestType=prop.requestType,
                 requestId=prop.requestId,
-                hashModel=_.isSet(prop.queryModel) && prop.queryModel!=="",
-                queryURL=(hashModel?(((prop.queryURL.lastIndexOf("/")!=prop.queryURL.length-1)?(prop.queryURL+"/"):prop.queryURL)+prop.queryModel):prop.queryURL),
+                queryURL=prop.queryURL,
                 queryUserName=prop.queryUserName;
                 queryPasswrod=prop.queryPasswrod;
                 queryArgs=_.copy(prop.queryArgs),
-                tokenParams=_.copy(prop.tokenParams),
+                OAuth2Token=prop.OAuth2Token,
                 queryOptions=_.copy(prop.queryOptions);
 
-            if(requestType=="HTTP")
+            if(requestType=="FORM")
                     queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
-            if(_.isHash(queryArgs) && !_.isEmpty(tokenParams))
-                _.merge(queryArgs,tokenParams,'all');
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
 
             // for auto adjusting options
-            var proxyType,rMap={};
+            var proxyType,rMap={header:{}};
             if(responseType=='SOAP'||requestType=='SOAP'){
                 // for wsdl
                 if(!con.WDSLCache)con.WDSLCache={};
@@ -99,6 +96,8 @@ Class("xui.APICaller","xui.absObj",{
                 }
             }
             switch(responseType){
+                case "TEXT":
+                    rMap.rspType="text";
                 case "JSON":
                     rMap.rspType="json";
                 break;
@@ -111,12 +110,11 @@ Class("xui.APICaller","xui.absObj",{
                     rMap.rspType="xml";
                     var namespace=xui.SOAP.getNameSpace(con.WDSLCache[queryURL]),
                         action = ((namespace.lastIndexOf("/")!=namespace.length-1)?namespace+"/":namespace)+(queryArgs.methodName||"");
-                    rMap.header=rMap.header||{};
                     rMap.header["SOAPAction"]=action;
                 break;
             }
             switch(requestType){
-                case "HTTP":
+                case "FORM":
                     // ensure object
                     queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
                 break;
@@ -135,7 +133,6 @@ Class("xui.APICaller","xui.absObj",{
                     if(queryUserName && queryPassword){
                         rMap.username=queryUserName;
                         rMap.password=queryPassword;
-                        rMap.header=rMap.header||{};
                         rMap.header["Authorization"]="Basic "+con._toBase64(queryUserName+":"+queryPassword);
                     }
                     // ensure string
@@ -148,13 +145,14 @@ Class("xui.APICaller","xui.absObj",{
                     if(queryUserName && queryPassword){
                         rMap.username=queryUserName;
                         rMap.password=queryPassword;
-                        rMap.header=rMap.header||{};
                         rMap.header["Authorization"]="Basic "+con._toBase64(queryUserName+":"+queryPassword);
                     }
                     // ensure string
                     queryArgs = typeof queryArgs=='string'?queryArgs:xui.SOAP.wrapRequest(queryArgs, con.WDSLCache[queryURL]);
                 break;
             }
+            if(OAuth2Token)
+               rMap.header["Authorization"]="Bearer " + OAuth2Token
 
             // Ajax/SAjax/IAjax
             if(!proxyType && prop.proxyType!="auto")
@@ -224,7 +222,7 @@ Class("xui.APICaller","xui.absObj",{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,tokenParams:1,queryOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -252,6 +250,7 @@ Class("xui.APICaller","xui.absObj",{
             }while(i<str.length);
             return arr.join('');
         },
+        
         _beforeSerialized:function(profile){
             var o={};
             _.merge(o, profile, 'all');
@@ -264,33 +263,27 @@ Class("xui.APICaller","xui.absObj",{
             dataBinder:null,
             dataField:null,
             requestId:"",
-            queryURL:{
-                ini:""
-            },
-            queryUserName:{
-                ini:""
-            },
-            queryPassword:{
-                ini:""
-            },
-            queryModel:"",
+            queryAsync:true,
+            queryURL:"",
+
+            OAuth2Token:"",
+            queryUserName:"",
+            queryPassword:"",
+
             queryMethod:{
                 ini:"auto",
                 listbox:["auto","GET","POST","PUT","DELETE"]
             },
-            queryAsync:true,
             requestType:{
-                ini:"HTTP",
-                listbox:["HTTP","JSON","XML","SOAP"]
+                ini:"FORM",
+                listbox:["FORM","JSON","XML","SOAP"]
             },
             responseType:{
                 ini:"JSON",
-                listbox:["JSON","XML","SOAP"]
+                listbox:["JSON","TEXT","XML","SOAP"]
             },
+
             queryArgs:{
-                ini:{}
-            },
-            tokenParams:{
                 ini:{}
             },
             queryOptions:{

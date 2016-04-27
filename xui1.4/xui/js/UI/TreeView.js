@@ -167,6 +167,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             }
         },
         DataModel:{
+            $subMargin:22,
             group:null,
             noIcon:{
                 ini:false,
@@ -201,7 +202,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     arr=_.copy(pitem._icons);
                     arr.push(index==len-1?'last':index===0?'first':'middle');
                     oitem._icons=arr;
-                    item.rulerStyle='width:'+(oitem._deep*16)+'px;';
+                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'px;';
 
 
                     // build image html

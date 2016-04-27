@@ -202,9 +202,14 @@ _.merge(_,{
         var me=this,
             d=document,
             h=d.getElementsByTagName("head")[0] || d.documentElement,
-            s=d.createElement("script");
+            s=d.createElement("script"),n;
         s.type = "text/javascript";
-        if(id)s.id=id;
+        if(id){
+            if((n=d.getElementById(id))&&n.parentNode==h){
+                h.removeChild(n);
+            }
+            s.id=id;
+        }
         if(xui.browser.ie)
             s.text=script;
         else
@@ -212,7 +217,10 @@ _.merge(_,{
         h.appendChild(s);
         s.disalbed=true;
         s.disabled=false;
-        if(!id)h.removeChild(s);
+        if(!id){
+            h.removeChild(s);
+        }
+        return s;
     },
     /*
     get something from deep hash
@@ -1195,7 +1203,7 @@ _.merge(xui,{
             }else{
                 options.asy=!sync;
                 xui.Ajax(path,xui.Ajax.uid,function(rsp){
-                    try{_.exec(rsp)}
+                    try{_.exec(rsp,id)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
                     _.tryF(onSuccess);
                 },onFail,0,options).start();
@@ -1210,17 +1218,28 @@ _.merge(xui,{
             + '&bcc= ' + (bcc||"");
         xui.IAjax(url).start();
     },
-    fetchClass:function(uri,onSuccess,onFail,force){
-        var t,c=xui.$cache.clsByURI;
-        if(!force && (t=c[uri]) && t.$xui$)
-            _.tryF(onSuccess,[uri],t);
+    fetchClass:function(uri, onSuccess, onFail, force, threadid, options){
+        if(/\//.test(uri) && !/\.js$/i.test(uri))
+            uri=uri+".js";
+        options=options||{};
+        var isPath=/\.js$/i.test(uri), 
+            c=xui.$cache.clsByURI,
+            cls,t;
+         if(!isPath){
+             // special path( dont use any dynamic
+             if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
+             cls=uri;
+             uri=xui.getPath(uri,'.js','js',options);
+         }
+        if(!force && (isPath?((t=c[uri]) && t.$xui$):(t=xui.SC.get(cls))))
+            _.tryF(onSuccess,[uri,cls],t);
         else{
             if(xui.absIO.isCrossDomain(uri)){
                 Class._ignoreNSCache=1;Class._last=null;
                 xui.SAjax(uri,xui.SAjax.uid,function(){
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
-                    _.tryF(onSuccess, [uri],t);
+                    if(t)_.tryF(onSuccess, [uri,t.KEY],t);
                     var s=xui.getClassName(uri);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
@@ -1229,16 +1248,17 @@ _.merge(xui,{
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
-                },0,{rspType:'script'}).start();
+                },threadid,{rspType:'script'}).start();
             }else{
                 xui.Ajax(uri,xui.Ajax.uid,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
-                    try{_.exec(rsp,uri)}
+                    var scriptnode;
+                    var s=xui.getClassName(uri);
+                    try{scriptnode=_.exec(rsp, s)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
-                    _.tryF(onSuccess, [uri],t);
-                    var s=xui.getClassName(uri);
+                    if(t)_.tryF(onSuccess, [uri,t.KEY],t);
                     if(t&&t.KEY!=s)
                         _.asyRun(function(){
                             throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
@@ -1246,12 +1266,57 @@ _.merge(xui,{
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
-                },0,{rspType:'text',asy:false}).start();
+                },threadid,{rspType:'text',asy:true}).start();
             }
         }
     },
-    require:function(cls,sync,onSuccess,onFail){
-        xui.include(cls,xui.getPath(cls,".js","js"),onSuccess,onFail,sync);
+    fetchClasses:function(uris, onEnd, onSuccess, onFail, force, threadid, options){
+        var hash={}, f=function(uri,i,hash){
+            hash[i]=xui.Thread(null,[function(threadid){
+                xui.fetchClass(uri, onSuccess, onFail, force, threadid, options);
+            }]);
+        };
+        for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
+        return xui.Thread.group(null, hash, null, function(){
+            xui.Thread(threadid).suspend();
+        }, function(){
+            _.tryF(onEnd,arguments,this);
+            xui.Thread(threadid).resume();
+        }).start();
+    },
+    // Recursive require
+    require:function(clsArr, onEnd, onSuccess, onFail, force, threadid, options){
+        if(_.isStr(clsArr))clsArr=[clsArr];
+        var fun=function(paths, tid){
+            xui.fetchClasses(paths,function(){ 
+                var a2=[], t, r;
+                for(var i=0,l=paths.length;i<l;i++){
+                    t=xui.SC.get(paths[i]);
+                    //collect  required class
+                    if(t && (r=t.required) && r.length){
+                        for(var j=0,m=r.length;j<m;j++){
+                            if(!xui.SC.get(r[j]))a2.push(r[j]);
+                        }
+                    }
+                    // if it's module, collect required class in iniComponents
+                    if(t && t['xui.Module'] && (t=t.prototype&&t.prototype.iniComponents)){
+                        _.fun.body(t).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                            if(!xui.SC.get(b))a2.push(b);
+                        });
+                    }
+                }
+                if(a2.length){
+                    fun(a2, null);
+                }else{
+                    var arr=[];
+                    for(var i=0,l=clsArr.length;i<l;i++){
+                        arr.push(xui.SC.get(clsArr[i]));
+                    }
+                    if(onEnd)onEnd.apply(null,arr);
+                }
+            },onSuccess,onFail,force,tid,options);
+        };
+        fun(clsArr, threadid);
     },
     /*
     set application main function
@@ -1279,7 +1344,7 @@ _.merge(xui,{
         xui.getPath('a.b','','appearance') => xui.ini.appPath + /a/appearance/b/"
         xui.getPath('a.b','.gif','appearance') => xui.ini.appPath + /a/appearance/b.gif"
     */
-    getPath : function(key, tag, folder){
+    getPath : function(key, tag, folder,options){
         key=key.split('.');
         if(folder){
             var a=[key[0],folder];
@@ -1291,13 +1356,13 @@ _.merge(xui,{
 
         var pre,ini=xui.ini;
         if(key[0]=='xui'){
-            pre=ini.path;
+            pre=(options&&options.xuiPath)||ini.path;
             key.shift();
             if(key.length==(folder?1:0))key.push('xui');
         }else{
-            pre=ini.appPath;
+            pre=(options&&options.appPath)||ini.appPath;
             if(key.length==((folder?1:0)+1) && tag=='.js')key.push('index');
-            if(ini.verPath) pre += ini.verPath + '/';
+            if((options&&options.verPath)||ini.verPath) pre += ((options&&options.verPath)||ini.verPath) + '/';
             if(ini.ver) pre += ini.ver + '/';
         }
         if(pre.slice(-1)!="/")
@@ -1447,7 +1512,7 @@ _.merge(xui,{
     },
 
     //create:function(tag, properties, events, host){
-    create:function(tag){
+    create:function(tag,bak){
         var arr,o,t,me=arguments.callee,r1=me.r1||(me.r1=/</);
         if(typeof tag == 'string'){
             //Any class inherited from xui.absBox
@@ -1458,18 +1523,36 @@ _.merge(xui,{
                     arr[i-1]=arguments[i];
                 o = new (xui.SC(t))(false);
                 if(o._ini)o._ini.apply(o, arr);
+            }else if( ((t=xui.SC.get(tag))&&t["xui.Module"]) || bak =="xui.Module" ){
+                if(t){
+                    o=new t();
+                // use place holder to lazy bind
+                }else{
+                    if(xui.UI && xui.UI.MoudlueHolder){
+                        o = new xui.UI.MoudlueHolder();
+                        xui.require(tag,function(module){
+                             if(module&&module["xui.Module"]){
+                                 var m=new module();
+                                 m.create(function(){
+                                     o.replaceWithModule(m);
+                                 });
+                             }
+                         });
+                    }
+                }
             //from HTML string
-            }else if(r1.test(tag))
+            }else if(r1.test(tag)){
                 o = _.str.toDom(tag);
             //from HTML element tagName
-            else{
+            }else{
                 o=document.createElement(tag);
                 o.id = typeof id=='string'?id:_.id();
                 o=xui(o);
             }
         //Any class inherited from xui.absBox
-        }else
+        }else{
             o = new (xui.SC(tag.key))(tag);
+        }
         return o;
     },
     use:function(xid){
@@ -1779,31 +1862,31 @@ new function(){
                                         }
                                         // get root only
                                         xui('body').children().each(function(xid){
-                                            var com=xui.Com.getFromDom(xid);
-                                            if(com && com._showed){
-                                                if(ar.cache)com.hide();else com.destroy();
+                                            var module=xui.Module.getFromDom(xid);
+                                            if(module && module._showed){
+                                                if(ar.cache)module.hide();else module.destroy();
                                             }
                                         });   
-                                        xui.showCom(ar.xuicom);
+                                        xui.showModule(ar.xuimodule);
                                     });
                                 }
                                 
-                                var fi="xuicom="+target;
+                                var fi="xuimodule="+target;
                                 if(iparams[0])fi+="&cache="+(iparams[0]?true:false);
                                 xui.History.setFI(fi);
                                 return;
                             }
-                            // try to get com
+                            // try to get module
                             var cls=_.get(window,target.split(".")),ins;
                             // get first one
                             if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
 
                             // handle hide / destroy
                             if(method=="show"||method=="pop"){
-                                // special for xui.Com.show
-                                iparams.unshift(function(err,com){
+                                // special for xui.Module.show
+                                iparams.unshift(function(err,module){
                                     if(method=="pop" && !err){
-                                        t=com.getUIComponents(true);
+                                        t=module.getUIComponents(true);
                                         if((t=t.getRoot())&&(t=t.get(0)))
                                             xui(t).pop(iparams[1]||_ns.args[0]);
                                     }
@@ -1813,7 +1896,7 @@ new function(){
                                     if(err)return;
                                     if(_.isFun(t=ins.show))t.apply(ins, iparams);
                                 };
-                                if(!ins)xui.getCom(target,ff);  else ff(null, ins);
+                                if(!ins)xui.getModule(target,ff);  else ff(null, ins);
                             }else{
                                 if(ins && _.isFun(t=_.get(ins,[method])))t.apply(ins,iparams)
                                 return;
@@ -2980,7 +3063,7 @@ Class('xui.IAjax','xui.absIO',{
 *  dependency: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
 */
 Class('xui.SC',null,{
-    Constructor:function(path, callback, isAsy, threadid, options){
+    Constructor:function(path, callback, isAsy, threadid, options, force){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
         upper=null;
@@ -2991,7 +3074,7 @@ Class('xui.SC',null,{
             options=options||{};
             options.$cb=callback;
             if(isAsy)options.threadid=threadid;
-            r=p[path]=xui.SC._call(path||'', options, isAsy);
+            r=p[path]=xui.SC._call(path||'', options, isAsy, force);
         }
         return r;
     },
@@ -3013,7 +3096,7 @@ Class('xui.SC',null,{
         *   false   ture    ajax
         *   false   false   ajax
         */
-        _call : function (s, options, isAsy){
+        _call : function (s, options, isAsy, force){
             isAsy = !!isAsy;
             var i,t,r,o,funs=[],ep=xui.SC.get,ct=xui.$cache.snipScript,
             f= function(text,n,threadid){
@@ -3026,7 +3109,7 @@ Class('xui.SC',null,{
                             (self.$cache || ct)[self.$tag]=text;
                         else
                             //for sy xmlhttp ajax
-                            try{_.exec(text)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
+                            try{_.exec(text,s)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
                 t=Class._last;
@@ -3044,19 +3127,19 @@ Class('xui.SC',null,{
                 _.tryF(self.$cb,[null,null,self.threadid],self);
             };
             //get from object first
-            if(!(r=ep(s))){
+            if(force || !(r=ep(s))){
                 //if script in cache
-                if(t=ct[s]){
+                if(!force && (t=ct[s])){
                     isAsy=false;
                     f.call({$cb: options.$cb},t);
                     //delete it
                     delete ct[s];
                 }
                 //get from object second
-                if(!(r=ep(s))){
-                     //load from sy ajax
-                     o=xui.getPath(s,'.js','js');
+                if(force || !(r=ep(s))){
                      options = options ||{};
+                     //load from sy ajax
+                     o=xui.getPath(s,'.js','js',options);
                      options.$tag = s;
                      Class._ignoreNSCache=1;Class._last=null;
                      var ajax;
@@ -3083,12 +3166,12 @@ Class('xui.SC',null,{
         arr: key array, ['xui.UI.Button','xui.UI.Input']
         callback: fire this function after all js loaded
         */
-        loadSnips:function(pathArr,cache,callback,onEnd,threadid){
+        loadSnips:function(pathArr,cache,callback,onEnd,threadid,options,isAsy){
             if(!pathArr || !pathArr.length){
                 _.tryF(onEnd,[threadid]);
                 return;
             }
-            var bak={}, options={$p:1,$cache:cache||xui.$cache.snipScript};
+            var bak={}, options=_.merge(options||{}, {$p:1,$cache:cache||xui.$cache.snipScript});
             for(var i=0,l=pathArr.length;i<l;i++)
                 bak[pathArr[i]]=1;
 
@@ -3106,7 +3189,7 @@ Class('xui.SC',null,{
             }
             xui.Thread.suspend(threadid);
             for(var i=0,s; s=pathArr[i++];)
-                this._call(s, _.merge({$tag:s},options), true);
+                this._call(s, _.merge({$tag:s},options,isAsy), true);
         },
         runInBG:function(pathArr, callback, onStart, onEnd){
             var i=0,j,t,self=this,fun=function(threadid){
@@ -3123,7 +3206,7 @@ Class('xui.SC',null,{
         execSnips:function(cache){
             var i,h=cache||xui.$cache.snipScript;
             for(i in h)
-                try{_.exec(h[i])}catch(e){throw e}
+                try{_.exec(h[i],i)}catch(e){throw e}
             h={};
         },
         //asy load multi js file, whatever dependency
@@ -3135,7 +3218,7 @@ Class('xui.SC',null,{
         *6.execute other ..
         *7.free UI
         */
-        groupCall:function(pathArr, callback, onEnd, threadid){
+        groupCall:function(pathArr, onEnd, callback, threadid,options,isAsy){
             if(pathArr){
                 //clear first
                 var self=this;
@@ -3146,7 +3229,7 @@ Class('xui.SC',null,{
                     _.tryF(onEnd,[threadid]);
                     onEnd=null;
                     xui.Thread.resume(threadid);
-                });
+                },null,options,isAsy);
             }else
                 _.tryF(onEnd,[threadid]);
         }
@@ -3486,9 +3569,10 @@ Class('xui.absProfile',null,{
             return this.$xid;
         },
         link:function(obj,id,target,index){
-            var self=this,
-                //avoid Number;
-                uid='$'+self.$xid;
+            return xui.absProfile.prototype.$link(this,obj,id,target,index);
+        },
+        $link:function(self,obj,id,target,index){
+            var uid='$'+self.$xid;
 
             target = target||self;
             if(obj[uid])self.unLink(id);
@@ -3503,8 +3587,10 @@ Class('xui.absProfile',null,{
             return self;
         },
         unLink:function(id){
-            var self=this,
-                o, index,
+             return xui.absProfile.prototype.$unLink(this,id);
+        },
+        $unLink:function(self, id){
+            var o, index,
                 //avoid Number;
                 uid='$'+self.$xid;
             if(!self._links)return;
@@ -3524,8 +3610,10 @@ Class('xui.absProfile',null,{
             return index;
         },
         unLinkAll:function(){
-            var self=this,
-                id='$'+self.$xid,
+            return xui.absProfile.prototype.$unLinkAll(this);
+        },
+        $unLinkAll:function(self){
+            var id='$'+self.$xid,
                 l=self._links,
                 o,i;
             for(i in l){
@@ -3585,6 +3673,7 @@ Class('xui.Profile','xui.absProfile',{
             }
         },
         getProperties:function(key){
+            if(this._getProperties)this.properties=this._getProperties();
             var prop=this.properties;
             return key?prop[key]:_.copy(prop);
         },
@@ -3593,6 +3682,7 @@ Class('xui.Profile','xui.absProfile',{
                 this.properties=key;
             else
                 this.properties[key]=value;
+            if(this._setProperties)this._setProperties(this.properties);
         },
         _applySetAction:function(fun, value){
             return fun.call(this,value);
@@ -3791,8 +3881,11 @@ Class('xui.absObj',"xui.absBox",{
           return this.pack(this._cache);
         },
         pickAlias:function(){
-            var t,p=this._namePool,a=this._nameTag;
-            while(p[t=(a+(++this._nameId))]){}
+            return xui.absObj.$pickAlias(this);
+        },
+        $pickAlias:function(cls){
+            var t,p=cls._namePool,a=cls._nameTag;
+            while(p[t=(a+(++cls._nameId))]){}
             return  t;
         },
         setDataModel:function(hash){
