@@ -11745,9 +11745,11 @@ type:4
         ],function(o){
             //use get Style dir
             var node,fun=xui.Dom.getStyle;
-            self.plugIn(o[0],function(){
+            self.plugIn(o[0],function(type){
+                type=type||'both';
                 node = this.get(0);
-                return (parseInt(fun(node, o[1]),10) + parseInt(fun(node, o[2]),10)) || 0;
+                return ((type=='both'||type=='left'||type=='top')?parseInt(fun(node, o[1]),10):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?parseInt(fun(node, o[2]),10):0) || 0;
             })
         });
         /*
@@ -12644,7 +12646,7 @@ Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.properties = _.clone(key);
                 }else{
-                    _.merge(self.properties, key);
+                    _.merge(self.properties, key, 'all');
                 }
             }
 
@@ -12668,7 +12670,7 @@ Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.events = _.clone(key);            
                 }else{
-                    _.merge(self.events, key);
+                    _.merge(self.events, key, 'all');
                 }
             }
             return self;
@@ -23298,7 +23300,7 @@ new function(){
             free:null,
             // for Module
             setProperties:function(key,value){
-                var self=this;
+                var self=this.get(0);
                 if(!self._properties)self._properties={};
                 if(!key)self._properties={};
                 else if(typeof key=='string') self._properties[key]=value;
@@ -23306,12 +23308,12 @@ new function(){
                 return self;
             },
             getProperties:function(key){
-                var self=this;
+                var self=this.get(0);
                 if(!self._properties)self._properties={};
                 return key?self._properties[key]:self._properties;
             },
             setEvents:function(key,value){
-                var self=this;
+                var self=this.get(0);
                 if(!self._events)self._events={};
                 if(!key)
                     self._events={};
@@ -23322,7 +23324,7 @@ new function(){
                 return self;
             },
             getEvents:function(key){
-                var self=this;
+                var self=this.get(0);
                 if(!self._events)self._events={};
                 return key?this._events[key]:this._events;
             },
@@ -23331,9 +23333,14 @@ new function(){
                     prf=self.get(0), 
                     prop=prf._properties||{}, 
                     events=prf._events||{},
-                    m,parent,subId;
+                    m,t,parent,subId;
                 if(prf.moduleClass && prf.moduleXid){
                     if(m = xui.Module.getInstance(prf.moduleClass, prf.moduleXid)){
+                        module.setHost(prf.host, prf.alias);
+                        if(t=prf.properties.name)module.setName(t);
+                        if(t=prf.properties.desc)module.setDesc(t);
+                        module.setEvents(events);
+                        module.setProperties(prop);
                         m.AddComponents(module);
                     }
                 }
@@ -24585,11 +24592,10 @@ Class("xui.UI.Resizer","xui.UI",{
                 cursor:'move'
             },
             "KEY.disabled":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 300 300'><path d='M300 0 L0 300 ' stroke='black' stroke-width='1'/><path d='M0 0 L300 300 ' stroke='black' stroke-width='1'/></svg>\")",
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 200 200'><rect x='0' y='0' width='200' height='200' stroke='black' fill='transparent' stroke-width='1'></rect><path d='M200 0 L0 200 ' stroke='black' stroke-width='1'/><path d='M0 0 L200 200 ' stroke='black' stroke-width='1'/></svg>\")",
                 'background-repeat':'no-repeat',
                 'background-position':'center center',
                 'background-size':'100% 100%, auto',
-                border: 'solid #888 1px',
                 'background-color':'#bbb',
                  opacity: '0.3'
             },

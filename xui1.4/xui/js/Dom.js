@@ -3650,9 +3650,11 @@ type:4
         ],function(o){
             //use get Style dir
             var node,fun=xui.Dom.getStyle;
-            self.plugIn(o[0],function(){
+            self.plugIn(o[0],function(type){
+                type=type||'both';
                 node = this.get(0);
-                return (parseInt(fun(node, o[1]),10) + parseInt(fun(node, o[2]),10)) || 0;
+                return ((type=='both'||type=='left'||type=='top')?parseInt(fun(node, o[1]),10):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?parseInt(fun(node, o[2]),10):0) || 0;
             })
         });
         /*

@@ -7292,7 +7292,7 @@ new function(){
             free:null,
             // for Module
             setProperties:function(key,value){
-                var self=this;
+                var self=this.get(0);
                 if(!self._properties)self._properties={};
                 if(!key)self._properties={};
                 else if(typeof key=='string') self._properties[key]=value;
@@ -7300,12 +7300,12 @@ new function(){
                 return self;
             },
             getProperties:function(key){
-                var self=this;
+                var self=this.get(0);
                 if(!self._properties)self._properties={};
                 return key?self._properties[key]:self._properties;
             },
             setEvents:function(key,value){
-                var self=this;
+                var self=this.get(0);
                 if(!self._events)self._events={};
                 if(!key)
                     self._events={};
@@ -7316,7 +7316,7 @@ new function(){
                 return self;
             },
             getEvents:function(key){
-                var self=this;
+                var self=this.get(0);
                 if(!self._events)self._events={};
                 return key?this._events[key]:this._events;
             },
@@ -7325,9 +7325,14 @@ new function(){
                     prf=self.get(0), 
                     prop=prf._properties||{}, 
                     events=prf._events||{},
-                    m,parent,subId;
+                    m,t,parent,subId;
                 if(prf.moduleClass && prf.moduleXid){
                     if(m = xui.Module.getInstance(prf.moduleClass, prf.moduleXid)){
+                        module.setHost(prf.host, prf.alias);
+                        if(t=prf.properties.name)module.setName(t);
+                        if(t=prf.properties.desc)module.setDesc(t);
+                        module.setEvents(events);
+                        module.setProperties(prop);
                         m.AddComponents(module);
                     }
                 }

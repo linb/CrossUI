@@ -169,7 +169,7 @@ Class('xui.Module','xui.absProfile',{
         setHost:function(host, alias){
             var self=this;
             self.host=host;
-            if(alias && self.alias!==alias)
+            if(alias)
                 self.setAlias(alias);
             return self;
         },
@@ -198,7 +198,7 @@ Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.properties = _.clone(key);
                 }else{
-                    _.merge(self.properties, key);
+                    _.merge(self.properties, key, 'all');
                 }
             }
 
@@ -222,7 +222,7 @@ Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.events = _.clone(key);            
                 }else{
-                    _.merge(self.events, key);
+                    _.merge(self.events, key, 'all');
                 }
             }
             return self;
@@ -851,7 +851,12 @@ Class('xui.Module','xui.absProfile',{
         },
         destroy:function(){
             var self=this,con=self.constructor,ns=self._nodes;
+            
             self._fireEvent('onDestroy');
+            if(self.alias && self.host && self.host[self.alias]){
+                delete self.host[self.alias];
+            }
+
             //set once
             self.destroyed=true;
             if(ns && ns.length)

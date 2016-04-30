@@ -185,11 +185,10 @@ Class("xui.UI.Resizer","xui.UI",{
                 cursor:'move'
             },
             "KEY.disabled":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 300 300'><path d='M300 0 L0 300 ' stroke='black' stroke-width='1'/><path d='M0 0 L300 300 ' stroke='black' stroke-width='1'/></svg>\")",
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 200 200'><rect x='0' y='0' width='200' height='200' stroke='black' fill='transparent' stroke-width='1'></rect><path d='M200 0 L0 200 ' stroke='black' stroke-width='1'/><path d='M0 0 L200 200 ' stroke='black' stroke-width='1'/></svg>\")",
                 'background-repeat':'no-repeat',
                 'background-position':'center center',
                 'background-size':'100% 100%, auto',
-                border: 'solid #888 1px',
                 'background-color':'#bbb',
                  opacity: '0.3'
             },
