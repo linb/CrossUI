@@ -211,11 +211,12 @@ Class('xui.UIProfile','xui.Profile', {
             var profile=this;
             //unlink first
             profile.unlinkParent();
-
-            //link
-            profile.parent = parentProfile;
-            profile.childrenId = linkId;
-            profile.link(parentProfile.children, '$parent', [profile, linkId], index);
+            if(!profile.destroyed){ 
+                //link
+                profile.parent = parentProfile;
+                profile.childrenId = linkId;
+                profile.link(parentProfile.children, '$parent', [profile, linkId], index);
+            }
             return profile;
         },
         unlinkParent:function(){
@@ -317,8 +318,8 @@ Class('xui.UIProfile','xui.Profile', {
                 h={},
                 str,
                 k1='xui.UIProfile',
-                k2='xui.Profile',
-                id, i, o, m, a, b, data;
+                k2='xui.Module',
+                id, i, l, o, m, a, b, data;
             if(self.destroyed)return "";
 
             // create first
@@ -332,15 +333,21 @@ Class('xui.UIProfile','xui.Profile', {
                 str = c._build(self, data);
     
                 if((!prop.lazyAppend||force) && (m=self.children)){
-                    for(i=0; o=m[i++];)
-                        if(o[0][k1]){
-                            id=o[1]||'';
-                            a=h[id]||(h[id]=[]);
-                            a[a.length]=o[0].toHtml(force);
-                        }else if(!o[0][k2]){
-                            b.ini.call(b,o[0]);
-                            o[0]=b.get(0);
+                    for(i=0, l=m.length; i<l; i++){
+                        o=m[i];
+                        if(o&&o[0]){
+                            if(o[0][k2]){
+                                var mh=new xui.UI.MoudlueHolder();
+                                mh.get(0)._module = o[0];
+                                o[0] = mh.get(0);
+                            }
+                            if(o[0][k1]){
+                                id=o[1]||'';
+                                a=h[id]||(h[id]=[]);
+                                a[a.length]=o[0].toHtml(force);
+                            }
                         }
+                    }
                 }
     
                 return str.replace(self._cacheR2, function(a,b){
@@ -418,7 +425,9 @@ Class('xui.UIProfile','xui.Profile', {
                 _.arr.each(o.children,function(v,w,y,z){
                     w=v[0];
                     if(w.moduleClass && w.moduleXid && (y=xui.SC.get(w.moduleClass)) && (y=y.getInstance(w.moduleXid)) && y["xui.Module"]){
-                        if(!!moduleHash[z=w.moduleClass+"["+w.moduleXid+"]"]){
+                        if(moduleHash[z=w.moduleClass+"["+w.moduleXid+"]"]){
+                            return;
+                        }else{
                             moduleHash[z]=1;
                             w=y;
                         }
@@ -7323,16 +7332,20 @@ new function(){
             replaceWithModule:function(module){
                 var self=this, 
                     prf=self.get(0), 
-                    prop=prf._properties||{}, 
-                    events=prf._events||{},
                     m,t,parent,subId;
+                
+                if(prf._replaced)return;
+                prf._replaced=1;
+
+                // 5 only
+                module.setHost(prf.host, prf.alias);
+                if(t=prf.properties.name)module.setName(t);
+                if(t=prf.properties.desc)module.setDesc(t);
+                if(t=prf._events)module.setEvents(t);
+                if(t=prf._properties)module.setProperties(t);
+
                 if(prf.moduleClass && prf.moduleXid){
                     if(m = xui.Module.getInstance(prf.moduleClass, prf.moduleXid)){
-                        module.setHost(prf.host, prf.alias);
-                        if(t=prf.properties.name)module.setName(t);
-                        if(t=prf.properties.desc)module.setDesc(t);
-                        module.setEvents(events);
-                        module.setProperties(prop);
                         m.AddComponents(module);
                     }
                 }
@@ -7342,7 +7355,7 @@ new function(){
                         self.destroy();
                     },parent,subId);
                 }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                    parent.show(function(){
+                    module.show(function(){
                         self.destroy();
                     },parent);
                 }
@@ -7394,6 +7407,29 @@ new function(){
                 onHotKeydown:null,
                 onHotKeypress:null,
                 onHotKeyup:null
+            },
+            // for parent UIProfile toHtml case
+            RenderTrigger:function(){
+                var prf=this, self=prf.boxing(), module=prf._module, parent, subId;
+                if(prf&&prf._replaced)return;
+                // try it now
+                if(module){
+                    if(prf&&prf._replaced)return;
+                    if(parent = module.parent){
+                        subId = module.childrenId;
+                        module.unlinkParent();
+                        
+                        module.show(function(){
+                            if(self)self.destroy();
+                        },parent,subId);
+                    }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
+                         module.unlinkParent();
+
+                        module.show(function(){
+                            if(self)self.destroy();
+                        },parent);
+                    }
+                }
             }
         }
     });

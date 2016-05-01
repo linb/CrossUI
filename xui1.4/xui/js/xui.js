@@ -1218,7 +1218,7 @@ _.merge(xui,{
             + '&bcc= ' + (bcc||"");
         xui.IAjax(url).start();
     },
-    fetchClass:function(uri, onSuccess, onFail, force, threadid, options){
+    fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
         if(/\//.test(uri) && !/\.js$/i.test(uri))
             uri=uri+".js";
         options=options||{};
@@ -1240,11 +1240,15 @@ _.merge(xui,{
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     if(t)_.tryF(onSuccess, [uri,t.KEY],t);
+                    else _.tryF(onFail,  _.toArr(arguments));
                     var s=xui.getClassName(uri);
-                    if(t&&t.KEY!=s)
+                    if(t&&t.KEY!=s){
+                        var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                        _.tryF(onAlert, [msg, uri, s, t.KEY]);
                         _.asyRun(function(){
-                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw msg;
                         });
+                    }
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
@@ -1259,10 +1263,14 @@ _.merge(xui,{
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
                     if(t)_.tryF(onSuccess, [uri,t.KEY],t);
-                    if(t&&t.KEY!=s)
+                    else _.tryF(onFail, _.toArr(arguments));
+                    if(t&&t.KEY!=s){
+                        var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                        _.tryF(onAlert, [msg, uri, s,  t.KEY]);
                         _.asyRun(function(){
-                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw msg;
                         });
+                    }
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
@@ -1270,10 +1278,10 @@ _.merge(xui,{
             }
         }
     },
-    fetchClasses:function(uris, onEnd, onSuccess, onFail, force, threadid, options){
+    fetchClasses:function(uris, onEnd, onSuccess, onFail, onAlert, force, threadid, options){
         var hash={}, f=function(uri,i,hash){
             hash[i]=xui.Thread(null,[function(threadid){
-                xui.fetchClass(uri, onSuccess, onFail, force, threadid, options);
+                xui.fetchClass(uri, onSuccess, onFail, onAlert, force, threadid, options);
             }]);
         };
         for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
@@ -1285,7 +1293,7 @@ _.merge(xui,{
         }).start();
     },
     // Recursive require
-    require:function(clsArr, onEnd, onSuccess, onFail, force, threadid, options){
+    require:function(clsArr, onEnd, onSuccess, onFail, onAlert,force, threadid, options){
         if(_.isStr(clsArr))clsArr=[clsArr];
         var fun=function(paths, tid){
             xui.fetchClasses(paths,function(){ 
@@ -1314,7 +1322,7 @@ _.merge(xui,{
                     }
                     if(onEnd)onEnd.apply(null,arr);
                 }
-            },onSuccess,onFail,force,tid,options);
+            },onSuccess,onFail,onAlert,force,tid,options);
         };
         fun(clsArr, threadid);
     },
@@ -1551,7 +1559,26 @@ _.merge(xui,{
             }
         //Any class inherited from xui.absBox
         }else{
-            o = new (xui.SC(tag.key))(tag);
+            if(tag['xui.Module']){
+                if(t=xui.SC.get(tag.key)){
+                    o = new (xui.SC(tag.key))(tag);
+                // use place holder to lazy bind
+                }else{
+                    if(xui.UI && xui.UI.MoudlueHolder){
+                        o = new xui.UI.MoudlueHolder();
+                        xui.require(tag.key, function(module){
+                            if(module&&module["xui.Module"]){
+                                var m=new module(tag);
+                                m.create(function(){
+                                    o.replaceWithModule(m);
+                                });
+                             }
+                         });
+                    }
+                }
+            }else{
+                o = new (xui.SC(tag.key))(tag);
+            }
         }
         return o;
     },
@@ -4099,30 +4126,6 @@ Class('xui.absObj',"xui.absBox",{
             });
             return rtnString===false?a:a.length==1?" new "+a[0].key+"("+_.serialize(a[0])+")":"xui.UI.unserialize("+_.serialize(a)+")";
         },
-        setAlias:function(str){
-            var self=this,prf=this.get(0),old;
-            if(old=prf.alias){
-                if(prf.host && prf.host!==prf){
-                    try{delete prf.host[old]}catch(e){prf.host[old]=undefined}
-                    if(prf.host._ctrlpool)
-                        delete prf.host._ctrlpool[old];
-                }
-                delete self.constructor._namePool[old];
-            }
-            self.constructor._namePool[prf.alias=str]=1;
-            if(prf.host && prf.host!==prf){
-                prf.host[str]=self;
-                if(prf.host._ctrlpool)
-                    prf.host._ctrlpool[str]=self.get(0);
-            }
-            if(prf.box&&prf.box._syncAlias){
-                prf.box._syncAlias(prf,old,str);
-            }
-            return self;
-        },
-        getAlias:function(){
-            return this.get(0).alias;
-        },
         getProperties:function(key){
             var h={},prf=this.get(0),prop=prf.properties,funName;
             if(key===true)
@@ -4181,11 +4184,41 @@ Class('xui.absObj',"xui.absBox",{
             return value?this.setHost(value, alias):this.getHost();
         },
         setHost:function(host, alias){
-            var self=this;
-            self.get(0).host=host;
-            if(alias)
-                self.setAlias(alias);
+            return this._setHostAlias(host, alias);
+        },
+        _setHostAlias:function(host, alias){
+            var self=this,
+                  prf=this.get(0),
+                  oldAlias=prf.alias;
+            
+            prf.host=host;
+            alias=alias||prf.alias;
+
+            if(oldAlias){
+                if(prf.host && prf.host!==prf){
+                    try{delete prf.host[oldAlias]}catch(e){prf.host[oldAlias]=undefined}
+                    if(prf.host._ctrlpool)
+                        delete prf.host._ctrlpool[oldAlias];
+                }
+                delete self.constructor._namePool[oldAlias];
+            }
+            self.constructor._namePool[prf.alias=alias]=1;
+            if(prf.box&&prf.box._syncAlias){
+                prf.box._syncAlias(prf,oldAlias,alias);
+            }
+
+            if(prf.host && prf.host!==prf){
+                prf.host[alias]=self;
+                if(prf.host._ctrlpool)
+                    prf.host._ctrlpool[alias]=self.get(0);
+            }
             return self;
+        },
+        setAlias:function(alias){
+            return this._setHostAlias(null, alias);
+        },
+        getAlias:function(){
+            return this.get(0).alias;
         },
         getHost:function(){
             return this.get(0).host;

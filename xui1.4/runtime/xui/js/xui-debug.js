@@ -1218,7 +1218,7 @@ _.merge(xui,{
             + '&bcc= ' + (bcc||"");
         xui.IAjax(url).start();
     },
-    fetchClass:function(uri, onSuccess, onFail, force, threadid, options){
+    fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
         if(/\//.test(uri) && !/\.js$/i.test(uri))
             uri=uri+".js";
         options=options||{};
@@ -1240,11 +1240,15 @@ _.merge(xui,{
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     if(t)_.tryF(onSuccess, [uri,t.KEY],t);
+                    else _.tryF(onFail,  _.toArr(arguments));
                     var s=xui.getClassName(uri);
-                    if(t&&t.KEY!=s)
+                    if(t&&t.KEY!=s){
+                        var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                        _.tryF(onAlert, [msg, uri, s, t.KEY]);
                         _.asyRun(function(){
-                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw msg;
                         });
+                    }
                 },function(){
                     Class._ignoreNSCache=1;Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
@@ -1259,10 +1263,14 @@ _.merge(xui,{
                     if(Class._last)t=c[uri]=Class._last;
                     Class._last=null;
                     if(t)_.tryF(onSuccess, [uri,t.KEY],t);
-                    if(t&&t.KEY!=s)
+                    else _.tryF(onFail, _.toArr(arguments));
+                    if(t&&t.KEY!=s){
+                        var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                        _.tryF(onAlert, [msg, uri, s, t.KEY]);
                         _.asyRun(function(){
-                            throw "The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            throw msg;
                         });
+                    }
                 },function(){
                     Class._last=null;
                     _.tryF(onFail, _.toArr(arguments));
@@ -1270,10 +1278,10 @@ _.merge(xui,{
             }
         }
     },
-    fetchClasses:function(uris, onEnd, onSuccess, onFail, force, threadid, options){
+    fetchClasses:function(uris, onEnd, onSuccess, onFail, onAlert, force, threadid, options){
         var hash={}, f=function(uri,i,hash){
             hash[i]=xui.Thread(null,[function(threadid){
-                xui.fetchClass(uri, onSuccess, onFail, force, threadid, options);
+                xui.fetchClass(uri, onSuccess, onFail, onAlert, force, threadid, options);
             }]);
         };
         for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
@@ -1285,7 +1293,7 @@ _.merge(xui,{
         }).start();
     },
     // Recursive require
-    require:function(clsArr, onEnd, onSuccess, onFail, force, threadid, options){
+    require:function(clsArr, onEnd, onSuccess, onFail, onAlert,force, threadid, options){
         if(_.isStr(clsArr))clsArr=[clsArr];
         var fun=function(paths, tid){
             xui.fetchClasses(paths,function(){ 
@@ -1314,7 +1322,7 @@ _.merge(xui,{
                     }
                     if(onEnd)onEnd.apply(null,arr);
                 }
-            },onSuccess,onFail,force,tid,options);
+            },onSuccess,onFail,onAlert,force,tid,options);
         };
         fun(clsArr, threadid);
     },
@@ -12617,7 +12625,7 @@ Class('xui.Module','xui.absProfile',{
         setHost:function(host, alias){
             var self=this;
             self.host=host;
-            if(alias && self.alias!==alias)
+            if(alias)
                 self.setAlias(alias);
             return self;
         },
@@ -12900,8 +12908,10 @@ Class('xui.Module','xui.absProfile',{
                 funs.push(function(threadid){
                     xui.require(self.dependencies,null,function(uir,key){
                         self._fireEvent('onLoadBaseClass', [uri,key]);
-                    },function(key){
-                        self._fireEvent('onLoadBaseClassErr', [uri]);
+                    },function(){
+                        self._fireEvent('onLoadBaseClassErr', _.toArr(arguments));
+                    },function(){
+                        self._fireEvent('onLoadBaseClassErr',  _.toArr(arguments));
                     },false, threadid);
                 });
             if(self.iniComponents){
@@ -12924,8 +12934,10 @@ Class('xui.Module','xui.absProfile',{
                 funs.push(function(threadid){
                     xui.require(self.required,null,function(uir,key){
                         self._fireEvent('onLoadRequiredClass', [uri,key]);
-                    },function(key){
-                        self._fireEvent('onLoadRequiredClassErr', [uri]);
+                    },function(){
+                        self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
+                    },function(msg){
+                        self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
                     },false, threadid);
                 });
             //inner components
@@ -13299,7 +13311,12 @@ Class('xui.Module','xui.absProfile',{
         },
         destroy:function(){
             var self=this,con=self.constructor,ns=self._nodes;
+            
             self._fireEvent('onDestroy');
+            if(self.alias && self.host && self.host[self.alias]){
+                delete self.host[self.alias];
+            }
+
             //set once
             self.destroyed=true;
             if(ns && ns.length)
@@ -23350,7 +23367,7 @@ new function(){
                         self.destroy();
                     },parent,subId);
                 }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                    parent.show(function(){
+                    module.show(function(){
                         self.destroy();
                     },parent);
                 }

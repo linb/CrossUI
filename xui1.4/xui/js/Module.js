@@ -116,8 +116,7 @@ Class('xui.Module','xui.absProfile',{
             return this;
         },
         getRoot:function(){
-            if(!this._innerModulesCreated)
-                this._createInnerModules();
+            if(!this._innerModulesCreated)this._createInnerModules();
             var fun = function(m){
                 if(m["xui.Module"]){
                     for(var i=0,l=m._nodes,o;i<l, o=m._nodes[i];i++){
@@ -132,8 +131,31 @@ Class('xui.Module','xui.absProfile',{
             var ui=this.getRoot();
             if(!ui.isEmpty())return ui.get(0);
         },
+        getModule:function(){
+            return this;
+        },
         // ]]] 
-        
+         // [[[ fake UIProfile
+        linkParent:function(parentProfile, linkId, index){
+            var profile=this;
+            //unlink first
+            profile.unlinkParent();
+            if(!profile.destroyed){ 
+            //link
+                profile.parent = parentProfile;
+                profile.childrenId = linkId;
+                profile.link(parentProfile.children, '$parent', [profile, linkId], index);
+            }
+            return profile;
+        },
+        unlinkParent:function(){
+            var profile=this;
+            delete profile.parent;
+            delete profile.childrenId;
+            profile.unLink('$parent');
+            return profile;
+        },
+        // ]]] 
         _toDomElems:function(){
             var ns=this;
             if(!ns.created)
@@ -142,36 +164,14 @@ Class('xui.Module','xui.absProfile',{
             ns.render();
             return ns.getUIComponents()._toDomElems();
         },
-        setAlias:function(str){
-            var self=this,prf=self,old;
-            if(old=prf.alias){
-                if(prf.host && prf.host!==prf){
-                    try{delete prf.host[old]}catch(e){prf.host[old]=undefined}
-                    if(prf.host._ctrlpool)
-                        delete prf.host._ctrlpool[old];
-                }
-                delete self.constructor._namePool[old];
-            }
-            self.constructor._namePool[prf.alias=str]=1;
-            if(prf.host && prf.host!==prf){
-                prf.host[str]=self;
-                if(prf.host._ctrlpool)
-                    prf.host._ctrlpool[str]=self;
-            }
-            if(prf.box&&prf.box._syncAlias){
-                prf.box._syncAlias(prf,old,str);
-            }
-            return self;
+        setAlias:function(alias){
+            return xui.absObj.prototype._setHostAlias.call(this, null, alias);
         },
         getAlias:function(){
             return this.alias;
         },
         setHost:function(host, alias){
-            var self=this;
-            self.host=host;
-            if(alias)
-                self.setAlias(alias);
-            return self;
+            return xui.absObj.prototype._setHostAlias.call(this, host, alias);
         },
         getName:function(){
             return this.properties.name || this.alias;
@@ -184,6 +184,12 @@ Class('xui.Module','xui.absProfile',{
         },
         setDesc:function(desc){
             this.properties.desc=desc;
+        },
+        getTabindex:function(){
+            return this.properties.tabindex;
+        },
+        setTabindex:function(tabindex){
+            this.properties.tabindex=tabindex;
         },
         getHost:function(){
             return this.host;
@@ -268,7 +274,11 @@ Class('xui.Module','xui.absProfile',{
 
             return rtnString===false?r:_.serialize(r);
         },
-
+        clone:function(){
+            var ns=this.serialize(false,true);
+            delete ns.alias;
+            return this.constructor.unserialize(ns);
+        },
         // for outter events
         fireEvent:function(name, args, host){
             var t,o,r,l,self=this;
@@ -452,8 +462,10 @@ Class('xui.Module','xui.absProfile',{
                 funs.push(function(threadid){
                     xui.require(self.dependencies,null,function(uir,key){
                         self._fireEvent('onLoadBaseClass', [uri,key]);
-                    },function(key){
-                        self._fireEvent('onLoadBaseClassErr', [uri]);
+                    },function(){
+                        self._fireEvent('onLoadBaseClassErr', _.toArr(arguments));
+                    },function(){
+                        self._fireEvent('onLoadBaseClassErr',  _.toArr(arguments));
                     },false, threadid);
                 });
             if(self.iniComponents){
@@ -476,8 +488,10 @@ Class('xui.Module','xui.absProfile',{
                 funs.push(function(threadid){
                     xui.require(self.required,null,function(uir,key){
                         self._fireEvent('onLoadRequiredClass', [uri,key]);
-                    },function(key){
-                        self._fireEvent('onLoadRequiredClassErr', [uri]);
+                    },function(){
+                        self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
+                    },function(msg){
+                        self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
                     },false, threadid);
                 });
             //inner components
@@ -552,19 +566,23 @@ Class('xui.Module','xui.absProfile',{
         },
         iniComponents:function(){},
 
-
         getProfile:function(){
+            if(!this._innerModulesCreated)this._createInnerModules();
+
             var hash={};
-            this.getAllComponents().each(function(prf){
+            _.each(this._ctrlpool, function(prf){
                 hash[prf.alias]=prf.serialize(false,false,false);
                 delete hash[prf.alias].key;
                 delete hash[prf.alias].alias;
                 delete hash[prf.alias].events;
+                delete hash[prf.alias]['xui.Module'];
             });
             return hash;
         },
         setProfile:function(profiles){
-            this.getAllComponents().each(function(prf,i){
+            if(!this._innerModulesCreated)this._createInnerModules();
+
+             _.each(this._ctrlpool, function(prf,i){
                 if(prf.alias in profiles){
                     i=profiles[prf.alias];
                     var ins=prf.boxing();
@@ -582,6 +600,8 @@ Class('xui.Module','xui.absProfile',{
             return this;
         },
         _getPropBinderKeys:function(){
+            if(!this._innerModulesCreated)this._createInnerModules();
+
             var bak;
             if(window.get)bak=get;
             // collect keys
@@ -593,7 +613,7 @@ Class('xui.Module','xui.absProfile',{
                 }
             };
             try{
-                this.getAllComponents().each(function(prf){
+                 _.each(this._ctrlpool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         _.each(prop.propBinder,function(fun,key){
@@ -604,19 +624,23 @@ Class('xui.Module','xui.absProfile',{
             return _.toArr(hash,true);
         },
         reBindProp:function(dataMap){
+            if(!this._innerModulesCreated)this._createInnerModules();
+
             var bak;
             if(window.get)bak=get;
             window.get=function(k){return xui.SC.get(k,dataMap)};
             try{
-                this.getAllComponents().each(function(prf){
+                 _.each(this._ctrlpool, function(prf){
                     prf.boxing().reBindProp(dataMap,true);
                 });
             }catch(e){window.get=bak}
         },
 
         getData:function(withValue){
+            if(!this._innerModulesCreated)this._createInnerModules();
+
             var hash={};
-            this.getAllComponents().each(function(prf){
+             _.each(this._ctrlpool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),
                     ih=hash[prf.alias]={};
@@ -632,7 +656,9 @@ Class('xui.Module','xui.absProfile',{
             return hash;
         },
         setData:function(data){
-            this.getAllComponents().each(function(prf){
+            if(!this._innerModulesCreated)this._createInnerModules();
+
+             _.each(this._ctrlpool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),ih;
                if(prf.alias in data){
@@ -651,8 +677,10 @@ Class('xui.Module','xui.absProfile',{
         // fack absValue
         getValue:function(innerUI){
             if(innerUI){
+                if(!this._innerModulesCreated)this._createInnerModules();
+
                 var hash={}, cap, uv;
-                this.getAllComponents().each(function(prf){
+                 _.each(this._ctrlpool, function(prf){
                     if('value' in prf.properties){
                         if(_.isSet(prf.properties.caption)){
                             cap = prf.properties.caption;
@@ -676,8 +704,10 @@ Class('xui.Module','xui.absProfile',{
         },
         setValue:function(values, innerUI){
             if(innerUI){
+                if(!this._innerModulesCreated)this._createInnerModules();
+
                 if(!_.isEmpty(values)){
-                    this.getAllComponents().each(function(prf){
+                     _.each(this._ctrlpool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
                             var v=values[prf.alias],b=_.isHash(v) ;
                             prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
@@ -693,8 +723,10 @@ Class('xui.Module','xui.absProfile',{
         },
         getUIValue:function(innerUI){
             if(innerUI){
+                if(!this._innerModulesCreated)this._createInnerModules();
+
                 var hash={};
-                this.getAllComponents().each(function(prf){
+                 _.each(this._ctrlpool, function(prf){
                     if('$UIValue' in prf.properties)
                         hash[prf.alias]=prf.properties.$UIValue;
                 });
@@ -705,8 +737,10 @@ Class('xui.Module','xui.absProfile',{
         },
         setUIValue:function(values,innerUI){
             if(innerUI){
+                if(!this._innerModulesCreated)this._createInnerModules();
+
                 if(!_.isEmpty(values)){
-                    this.getAllComponents().each(function(prf){
+                     _.each(this._ctrlpool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
                             var v=values[prf.alias],b=_.isHash(v) ;
                             prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'module');
@@ -722,9 +756,10 @@ Class('xui.Module','xui.absProfile',{
         },
         resetValue:function(innerUI){
             if(innerUI){
-                 this.getAllComponents().each(function(prf){
+                if(!this._innerModulesCreated)this._createInnerModules();
+                _.each(this._ctrlpool, function(prf){
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
-                 });
+                });
             }else{
                 this.properties.$UIValue=this.properties.value; 
             }
@@ -732,9 +767,10 @@ Class('xui.Module','xui.absProfile',{
         },
         updateValue:function(innerUI){
             if(innerUI){
-                 this.getAllComponents().each(function(prf){
+                if(!this._innerModulesCreated)this._createInnerModules();
+                _.each(this._ctrlpool, function(prf){
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
-                 });
+                });
             }else{
                 this.properties.value=this.properties.$UIValue; return this;
             }
@@ -742,14 +778,16 @@ Class('xui.Module','xui.absProfile',{
         },
         isDirtied:function(innerUI){
             if(innerUI){
+                if(!this._innerModulesCreated)this._createInnerModules();
+
                 var dirtied=false;
-                 this.getAllComponents().each(function(prf){
-                     if(prf.boxing().isDirtied){
-                         if(prf.boxing().isDirtied()){
-                             return false;
-                         }
+                _.each(this._ctrlpool, function(prf){
+                    if(prf.boxing().isDirtied){
+                        if(prf.boxing().isDirtied()){
+                            return false;
+                        }
                     }
-                 });
+                });
                  return dirtied;
             }else{
                 return this.properties.value===this.properties.$UIValue;
@@ -757,7 +795,9 @@ Class('xui.Module','xui.absProfile',{
         },
         checkValid:function(innerUI){
             if(innerUI){
-                 this.getAllComponents().each(function(prf){
+                if(!this._innerModulesCreated)this._createInnerModules();
+
+                  _.each(this._ctrlpool, function(prf){
                      if(prf.boxing().checkValid){
                          if(!prf.boxing().checkValid()){
                              return false;
@@ -770,8 +810,8 @@ Class('xui.Module','xui.absProfile',{
         },
 
         getDataBinders:function(){
-            if(!this._innerModulesCreated)
-                this._createInnerModules();
+            if(!this._innerModulesCreated)this._createInnerModules();
+            
             var nodes = _.copy(this._nodes),t,k='xui.DataBinder';
             _.filter(nodes,function(o){
                 return !!(o.box[k]);
@@ -780,8 +820,7 @@ Class('xui.Module','xui.absProfile',{
         },
         // get all children
         getAllComponents:function(){
-            if(!this._innerModulesCreated)
-                this._createInnerModules();
+            if(!this._innerModulesCreated)this._createInnerModules();
             var nodes=[];
             var fun = function(m){
                     if(m["xui.Module"]){
@@ -796,8 +835,7 @@ Class('xui.Module','xui.absProfile',{
         },
         // get first level children only
         getComponents:function(){
-            if(!this._innerModulesCreated)
-                this._createInnerModules();
+            if(!this._innerModulesCreated)this._createInnerModules();
             var nodes = [];
             var fun = function(m){
                 if(m["xui.Module"]){
@@ -873,6 +911,13 @@ Class('xui.Module','xui.absProfile',{
 
             _.breakO(self);
             self.destroy=function(){};
+            //afterDestroy
+            if(self.$afterDestroy){
+                _.each(self.$afterDestroy,function(f){
+                    _.tryF(f,[],self);
+                });
+                _.breakO(self.$afterDestroy,2);
+            }
             //set again
             self.destroyed=true;
         }
@@ -1003,6 +1048,9 @@ Class('xui.Module','xui.absProfile',{
             else
                 xui.main(fun);
         },
+        unserialize:function(hash){
+            return new this(hash);
+        },
         $attachModuleInfo:function(module,prf){
             // module in module
             if(prf.moduleClass && prf.moduleXid){
@@ -1020,7 +1068,7 @@ Class('xui.Module','xui.absProfile',{
             _.arr.each(prf.children,function(v){
                xui.Module.$attachModuleInfo(module, v[0]);
             });
-       },
+        },
 
         // for setting only
         $DataModel:{

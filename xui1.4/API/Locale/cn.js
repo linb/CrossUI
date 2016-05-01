@@ -1007,6 +1007,7 @@ _.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, .js 文件路径",
                 "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数. ",
                 "onFail [可选参数]: Function, 失败时触发的回调函数.",
+                "onAlert [可选参数]: Function, 警告时触发的回调函数.",
                 "force [可选参数]: Boolean, 是否强制重新读取文件."
             ]
         },
@@ -1044,8 +1045,10 @@ _.set(xui.Locale,["cn","app"], {
             $paras:[
                 "cls [必需参数]: String, 符合XUI规范的类名",
                 "onEnd [可选参数]: Function, 结束回调函数. ",
-                "callback [可选参数]: Function, 回调函数. ",
-                "isAsy [可选参数]: Boolean, 是否异步凡是. 如果是同步调用,要确保cls的对应代码文件在同域名下."
+                "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数. ",
+                "onFail [可选参数]: Function, 失败时触发的回调函数.",
+                "onAlert [可选参数]: Function, 警告时触发的回调函数.",
+                "force [可选参数]: Boolean, 是否强制重新读取文件."
             ],
             $snippet:[
                 "// 同步获取一个存在的 .js 文件\n"+

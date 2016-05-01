@@ -1010,6 +1010,7 @@ _.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, .js file path",
                 "onSuccess [Optional]: Function(class, uir), if it's successfully, call this function. ",
                 "onFail [Optional]: Function, if it's fail, call this function.",
+                "onAlert [Optional]: Function, if there's an alert, call this function.",
                 "force [Optional]: Boolean, whether force to read the file or not."
             ]
         },
@@ -1047,8 +1048,10 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "cls [Required]: String/Array, class name",
                 "onEnd [Optional]: Function, the end callback function. ",
-                "callback [Optional]: Function, the callback function. ",
-                "isAsy[Optional]: Boolean, sync or async. Default is [true]."
+                "onSuccess [Optional]: Function(class, uir), if it's successfully, call this function. ",
+                "onFail [Optional]: Function, if it's fail, call this function.",
+                "onAlert [Optional]: Function, if there's an alert, call this function.",
+                "force [Optional]: Boolean, whether force to read the file or not."
             ],
             $snippet:[
                 "// Gets .js sync \n"+
