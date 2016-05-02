@@ -3096,7 +3096,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onDblclick:function(profile, e, src){
                     var p = profile.properties,
                         row = profile.rowMap[profile.getSubId(src)];
-                    if(p.disabled || row.disabled)return false;
+                    if(!row || p.disabled || row.disabled)return false;
                     if(profile.onDblclickRow)profile.boxing().onDblclickRow(profile, row, e, src);
                     return false;
                 },

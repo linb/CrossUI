@@ -62,7 +62,8 @@ Class('xui.Module','xui.absProfile',{
 
         var self=this,opt,alias;
 
-        self.Class=self.box=self.constructor;
+        self.Class=self.constructor;
+        self.box=self.constructor;
         self.key=self.KEY;
 
         if(properties && properties.key && properties["xui.Module"]){
@@ -135,6 +136,7 @@ Class('xui.Module','xui.absProfile',{
             return this;
         },
         // ]]] 
+        /*
          // [[[ fake UIProfile
         linkParent:function(parentProfile, linkId, index){
             var profile=this;
@@ -156,6 +158,7 @@ Class('xui.Module','xui.absProfile',{
             return profile;
         },
         // ]]] 
+        */
         _toDomElems:function(){
             var ns=this;
             if(!ns.created)
@@ -415,6 +418,68 @@ Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
+        refresh:function(){
+            var paras, b, p, s, fun, autoDestroy, 
+                o=this,
+                inm, firstUI,
+                box=o.box,
+                host=o.host,
+                alias=o.alias,
+                $xid=o.$xid,
+                rt = o.$refreshTrigger;
+                
+            if(!o.renderId)return;
+            if((inm=o.getUIComponents()).isEmpty())return;
+            firstUI = inm.get(0);
+
+            if(host && host['xui.Module'] && host.autoDestroy){
+                host.autoDestroy=false;
+            }
+            //keep parent
+            if(b=!!firstUI.parent){
+                p=firstUI.parent.boxing();
+                paras=firstUI.childrenId;
+            }else{
+                p=firstUI.parent();
+            }
+            //unserialize
+            s = o.serialize(false, true);
+            o.destroy();
+            //set back
+            _.merge(o,s,'all');
+            // notice: remove destroyed here
+            delete o.destroyed;
+            o.$xid=$xid;
+
+            //create
+            var n = new box(o);
+            if(host)n.setHost(host,alias);
+
+            n.create(function(){
+                //add to parent, and trigger RenderTrigger
+                if(b)
+                    p.append(n,paras);
+                else if(!p.isEmpty())
+                    p.append(n);
+
+                //for functions like: UI refresh itself
+                if(rt)
+                    rt.call(rt.target, n);
+            });
+
+            if(_.isSet(autoDestroy&&n.host&&n.host['xui.Module'])){
+                n.host.autoDestroy=autoDestroy;
+            }
+            return this;
+        },
+        getParent:function(){
+            var prf=this.getUIComponents().get(0);
+            if(prf)return prf.parent && prf.parent.boxing();
+        },
+        getChildrenId:function(){
+            var prf=this.getUIComponents().get(0);
+            if(prf)return prf.childrenId;
+        },
         create:function(onEnd, threadid){
             //get paras
             var self=this;
@@ -552,7 +617,7 @@ Class('xui.Module','xui.absProfile',{
             var autoDestroy = self.autoDestroy || self.properties.autoDestroy;
             if(autoDestroy)
                 _.arr.each(self._nodes,function(o){
-                    if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudlueHolder"] && !o.box.$initRootHidden){
+                    if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudluePlaceHolder"] && !o.box.$initRootHidden){
                         (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(){
                             if(autoDestroy && !self.destroyed)
                                 self.destroy();

@@ -16,6 +16,7 @@ set advRawPath=%relPath%API\App\js\adv-raw.js
 mkdir %outPath%
 mkdir %outPath%xui
 mkdir %outPath%xui\js
+mkdir %outPath%xui\js\Module
 mkdir %outPath%xui\Locale
 mkdir %outPath%xui\appearance
 
@@ -23,7 +24,7 @@ mkdir %outPath%xui\appearance
 rem ==================
 rem for xui source code
 rem ==================
-rem xcopy %relPath%xui\js\*.* %outPath%xui\js\ /E /Y
+xcopy %relPath%xui\js\Module\*.* %outPath%xui\js\Module\ /E /Y
 
 xcopy %relPath%xui\appearance\*.* %outPath%xui\appearance\ /E /Y
 xcopy %relPath%xui\Locale\*.* %outPath%xui\Locale\ /E /Y

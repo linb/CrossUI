@@ -1186,10 +1186,10 @@ _.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, rspType, onSuccess, onFail, options){
-        return xui.Ajax(uri,xui.Ajax.uid,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri,_()+"-"+xui.Ajax.uid,onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, rspType, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.Ajax.uid,onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,_()+"-"+xui.Ajax.uid,onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1199,10 +1199,10 @@ _.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.SAjax(path,xui.SAjax.uid,onSuccess,onFail,0,options).start()
+                xui.SAjax(path,_()+"-"+xui.SAjax.uid,onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui.Ajax.uid,function(rsp){
+                xui.Ajax(path,_()+"-"+xui.Ajax.uid,function(rsp){
                     try{_.exec(rsp,id)}
                     catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
                     _.tryF(onSuccess);
@@ -1236,7 +1236,7 @@ _.merge(xui,{
         else{
             if(xui.absIO.isCrossDomain(uri)){
                 Class._ignoreNSCache=1;Class._last=null;
-                xui.SAjax(uri,xui.SAjax.uid,function(){
+                xui.SAjax(uri,_()+"-"+xui.SAjax.uid,function(){
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     if(t)_.tryF(onSuccess, [uri,t.KEY],t);
@@ -1254,7 +1254,7 @@ _.merge(xui,{
                     _.tryF(onFail, _.toArr(arguments));
                 },threadid,{rspType:'script'}).start();
             }else{
-                xui.Ajax(uri,xui.Ajax.uid,function(rsp){
+                xui.Ajax(uri,_()+"-"+xui.Ajax.uid,function(rsp){
                     Class._ignoreNSCache=Class._last=null;
                     var scriptnode;
                     var s=xui.getClassName(uri);
@@ -1536,17 +1536,15 @@ _.merge(xui,{
                     o=new t();
                 // use place holder to lazy bind
                 }else{
-                    if(xui.UI && xui.UI.MoudlueHolder){
-                        o = new xui.UI.MoudlueHolder();
-                        xui.require(tag,function(module){
-                             if(module&&module["xui.Module"]){
-                                 var m=new module();
-                                 m.create(function(){
-                                     o.replaceWithModule(m);
-                                 });
-                             }
-                         });
-                    }
+                    o = new xui.UI.MoudluePlaceHolder();
+                    xui.require(tag,function(module){
+                         if(module&&module["xui.Module"]){
+                             var m=new module();
+                             m.create(function(){
+                                 o.replaceWithModule(m);
+                             });
+                         }
+                     }); 
                 }
             //from HTML string
             }else if(r1.test(tag)){
@@ -1560,21 +1558,27 @@ _.merge(xui,{
         //Any class inherited from xui.absBox
         }else{
             if(tag['xui.Module']){
-                if(t=xui.SC.get(tag.key)){
-                    o = new (xui.SC(tag.key))(tag);
+                if( (t=xui.SC.get(tag.key)) && t["xui.Module"]){
+                    o=new t(tag);
                 // use place holder to lazy bind
                 }else{
-                    if(xui.UI && xui.UI.MoudlueHolder){
-                        o = new xui.UI.MoudlueHolder();
-                        xui.require(tag.key, function(module){
-                            if(module&&module["xui.Module"]){
-                                var m=new module(tag);
-                                m.create(function(){
-                                    o.replaceWithModule(m);
-                                });
-                             }
-                         });
+                    o = new xui.UI.MoudluePlaceHolder();
+                    if(tag.host ||  tag.alias)o.setHost(tag.host, tag.alias);
+                    if(t=tag.events)o.setEvents(t);
+                    if(t=tag.properties)o.setProperties(t);
+
+                    if(tag.moduleClass && tag.moduleXid){
+                        o.get(0).moduleClass = tag.moduleClass;
+                        o.get(0).moduleXid = tag.moduleXid;
                     }
+                    xui.require(tag.key, function(module){
+                        if(module&&module["xui.Module"]){
+                            var m=new module(tag);
+                            m.create(function(){
+                                o.replaceWithModule(m);
+                            });
+                         }
+                     });
                 }
             }else{
                 o = new (xui.SC(tag.key))(tag);
@@ -1930,6 +1934,7 @@ new function(){
                             }
                             break;
                         case 'control':
+                        case 'module':
                             if(method=="pop"){
                                  t=_.get(scope,[target]);
                                  if((t=t.getRoot())&&(t=t.get(0)))
@@ -3650,6 +3655,20 @@ Class('xui.absProfile',null,{
             }
             self._links={};
             return self;
+        },
+        getModule:function(){
+            var prf=this,t;
+            if(prf.moduleClass&&prf.moduleXid){
+                if(t=xui.SC.get(prf.moduleClass)){
+                    return t.getInstance(prf.moduleXid);
+                }
+            }
+        },
+        getParent:function(){
+            return this.parent && this.parent.boxing();
+        },
+        getChildrenId:function(){
+            return this.childrenId;
         }
     },
     Static:{
@@ -3671,7 +3690,8 @@ Class('xui.Profile','xui.absProfile',{
         self.properties=properties?_.copy(properties):(self.properties||{});
         self.events=events?_.copy(events):(self.events||{});
         self.host=host||self.host||self;
-        self.Class=self.box=box||self.box||self.constructor;
+        self.Class=self.constructor;
+        self.box=box||self.box;
         if(self.events){
             self.setEvents(self.events);
             delete self.events;
@@ -4030,51 +4050,54 @@ Class('xui.absObj',"xui.absBox",{
                                 delete v[i];
                             });
                         else{
-                            var args=[], v=this.get(0), t=v[i], host=v.host || v,j,o,r;
-                            if(t && (!_.isArr(t) || t.length)){
-                                if(v.$inDesign)return;
-                                if(arguments[0]!=v)args[0]=v;
-                                for(j=0;j<l;j++)args[args.length]=arguments[j];
-                                v.$lastEvent=i;
-                                if(!_.isArr(t))t=[t];
-                                l=t.length;
-                                if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
-                                var temp={};
-                                var n=0,fun=function(data){
-                                    // set prompt's global var
-                                    if(_.isStr(this))temp[this+""]=data||"";
-                                    //callback from [n]
-                                    for(j=n;j<l;j++){
-                                        n=j+1;
-                                        o=t[j];
-                                        if(typeof o=='string')o=host[o];
-                                        if(typeof o=='function')r=_.tryF(o, args, host);
-                                        else if(_.isHash(o)){
-                                            if('onOK' in o ||'onKO' in o){
-                                                var resume=function(key,args){
-                                                    if(fun)fun.apply(key,args);
-                                                };
-                                                // onOK
-                                                if('onOK' in o)onOK=(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
-                                                   resume("okData",arguments);
-                                                };
-                                                if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
-                                                    resume("koData",arguments);
-                                                };
-                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp,resume))){
-                                                    n=temp=fun=null;
-                                                }
-                                                break;
-                                            }else
-                                                if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
-                                                    n=j;break;
-                                                }
+                            var args=[], v=this.get(0);
+                            if(v){
+                                var t=v[i], host=v.host || v,j,o,r;
+                                if(t && (!_.isArr(t) || t.length)){
+                                    if(v.$inDesign)return;
+                                    if(arguments[0]!=v)args[0]=v;
+                                    for(j=0;j<l;j++)args[args.length]=arguments[j];
+                                    v.$lastEvent=i;
+                                    if(!_.isArr(t))t=[t];
+                                    l=t.length;
+                                    if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                                    var temp={};
+                                    var n=0,fun=function(data){
+                                        // set prompt's global var
+                                        if(_.isStr(this))temp[this+""]=data||"";
+                                        //callback from [n]
+                                        for(j=n;j<l;j++){
+                                            n=j+1;
+                                            o=t[j];
+                                            if(typeof o=='string')o=host[o];
+                                            if(typeof o=='function')r=_.tryF(o, args, host);
+                                            else if(_.isHash(o)){
+                                                if('onOK' in o ||'onKO' in o){
+                                                    var resume=function(key,args){
+                                                        if(fun)fun.apply(key,args);
+                                                    };
+                                                    // onOK
+                                                    if('onOK' in o)onOK=(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
+                                                       resume("okData",arguments);
+                                                    };
+                                                    if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
+                                                        resume("koData",arguments);
+                                                    };
+                                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp,resume))){
+                                                        n=temp=fun=null;
+                                                    }
+                                                    break;
+                                                }else
+                                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
+                                                        n=j;break;
+                                                    }
+                                            }
                                         }
-                                    }
-                                    if(n==j)n=temp=fun=null;
-                                    return r;
-                                };
-                                return fun();
+                                        if(n==j)n=temp=fun=null;
+                                        return r;
+                                    };
+                                    return fun();
+                                }
                             }
                         }
                     };
@@ -4329,6 +4352,12 @@ Class("xui.Timer","xui.absObj",{
                 if(profile._threadid)xui.Thread(profile._threadid).suspend();
                 profile.onSuspend && box.onSuspend(profile,threadId);
             });
+        },
+        getParent:function(){
+            return this.parent && this.parent.boxing();
+        },
+        getChildrenId:function(){
+            return this.childrenId;
         }
     },
     Static:{

@@ -13,6 +13,7 @@ Class('xui.Template','xui.absProfile',{
         self.events={};
         self.$template={};
         self.link(self.constructor._cache,'self').link(xui._pool,'xui');
+        self.Class=self.constructor;
         self.box=self.constructor;
         self.boxing=function(){return this};
 

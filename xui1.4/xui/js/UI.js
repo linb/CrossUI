@@ -337,7 +337,10 @@ Class('xui.UIProfile','xui.Profile', {
                         o=m[i];
                         if(o&&o[0]){
                             if(o[0][k2]){
-                                var mh=new xui.UI.MoudlueHolder();
+                                var mh=new xui.UI.MoudluePlaceHolder({
+                                    host:o[0].host,
+                                    alias:o[0].alias
+                                });
                                 mh.get(0)._module = o[0];
                                 o[0] = mh.get(0);
                             }
@@ -584,14 +587,6 @@ Class('xui.UIProfile','xui.Profile', {
                 });
             f(items, fun, deep, single, flag, r);
             return r;
-        },
-        getModule:function(){
-            var prf=this,t;
-            if(prf.moduleClass&&prf.moduleXid){
-                if(t=xui.SC.get(prf.moduleClass)){
-                    return t.getInstance(prf.moduleXid);
-                }
-            }
         }
     },
     Static:{
@@ -895,9 +890,12 @@ Class("xui.UI",  "xui.absObj", {
             if(temp && temp.length){
                 for(var i=0,v;v=temp[i++];){
                     //from serialize
-                    if(!v[0]['xui.UIProfile'])
-                        v[0]=new (xui.SC(v[0].key))(v[0]).get(0);
-                    v[0].linkParent(profile,v[1]);
+                    if(!v[0]['xui.UIProfile'])  v[0]=xui.create(v[0]).get(0);
+                    if(v[0]['xui.UIProfile'])  v[0].linkParent(profile,v[1]);
+                    else if(v[0]['xui.Module']) 
+                        v[0].getUIComponents().each(function(p){
+                            p.linkParent(profile,v[1]);
+                        });
                 }
             }
             self._nodes.push(profile);
@@ -7292,8 +7290,32 @@ new function(){
             }
         }
     });
-     
-     Class(u+".MoudlueHolder", u+".Div",{
+    
+    Class(u+".Pane", u+".Div",{
+        Static:{
+            Behaviors:{
+                DroppableKeys:['KEY'],
+                PanelKeys:['KEY']
+            },
+            Appearances:{
+                KEY:{
+                    'line-height':'auto'
+                }
+            },
+            RenderTrigger:function(){
+                // only div
+                var ns=this;
+                if(ns.box.KEY=="xui.UI.Pane")
+                    if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
+                        ns.box._applyAutoLoad(ns);
+            },
+            DataModel:{
+                rotate:null
+            }
+        }
+    }); 
+
+    Class(u+".MoudluePlaceHolder", u+".Div",{
         Instance:{
             adjustDock:null,
             draggable:null,
@@ -7337,13 +7359,12 @@ new function(){
                 if(prf._replaced)return;
                 prf._replaced=1;
 
-                // 5 only
-                module.setHost(prf.host, prf.alias);
-                if(t=prf.properties.name)module.setName(t);
-                if(t=prf.properties.desc)module.setDesc(t);
+                if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);
+                // host and alias
+                if(prf.host || prf.alias)module.setHost(prf.host, prf.alias);
                 if(t=prf._events)module.setEvents(t);
                 if(t=prf._properties)module.setProperties(t);
-
+                // maybe in other module
                 if(prf.moduleClass && prf.moduleXid){
                     if(m = xui.Module.getInstance(prf.moduleClass, prf.moduleXid)){
                         m.AddComponents(module);
@@ -7351,14 +7372,15 @@ new function(){
                 }
                 if(parent = prf.parent){
                     subId = prf.childrenId;
-                    module.show(function(){
-                        self.destroy();
-                    },parent,subId);
+                    parent.boxing().append(module, subId);
                 }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                    module.show(function(){
-                        self.destroy();
-                    },parent);
+                    parent.append(module);
                 }
+
+                if(prf.$afterReplaced)prf.$afterReplaced.call(module);
+                // Avoid being removed from host 
+                prf.alias=null;
+                self.destroy();
             }
         },
         Static:{
@@ -7411,22 +7433,31 @@ new function(){
             // for parent UIProfile toHtml case
             RenderTrigger:function(){
                 var prf=this, self=prf.boxing(), module=prf._module, parent, subId;
-                if(prf&&prf._replaced)return;
                 // try it now
                 if(module){
                     if(prf&&prf._replaced)return;
+                    prf._replaced=1;
+                    if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);
+                    // host and alias
+                    module.setHost(prf.host, prf.alias);
                     if(parent = module.parent){
                         subId = module.childrenId;
-                        module.unlinkParent();
-                        
                         module.show(function(){
-                            if(self)self.destroy();
+                            if(prf.$afterReplaced)prf.$afterReplaced.call(module);
+                            if(self){
+                                // Avoid being removed from host 
+                                prf.alias=null;
+                                self.destroy();
+                            }
                         },parent,subId);
                     }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                         module.unlinkParent();
-
                         module.show(function(){
-                            if(self)self.destroy();
+                            if(prf.$afterReplaced)prf.$afterReplaced.call(module);
+                            if(self){
+                                // Avoid being removed from host 
+                                prf.alias=null;
+                                self.destroy();
+                            }
                         },parent);
                     }
                 }
@@ -7434,27 +7465,4 @@ new function(){
         }
     });
 
-    Class(u+".Pane", u+".Div",{
-        Static:{
-            Behaviors:{
-                DroppableKeys:['KEY'],
-                PanelKeys:['KEY']
-            },
-            Appearances:{
-                KEY:{
-                    'line-height':'auto'
-                }
-            },
-            RenderTrigger:function(){
-                // only div
-                var ns=this;
-                if(ns.box.KEY=="xui.UI.Pane")
-                    if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                        ns.box._applyAutoLoad(ns);
-            },
-            DataModel:{
-                rotate:null
-            }
-        }
-    });
 };

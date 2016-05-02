@@ -216,6 +216,12 @@ Class("xui.APICaller","xui.absObj",{
                 return ajax;
             else
                 ajax.start();
+        },
+        getParent:function(){
+            return this.parent && this.parent.boxing();
+        },
+        getChildrenId:function(){
+            return this.childrenId;
         }
     },
     Static:{
@@ -255,7 +261,7 @@ Class("xui.APICaller","xui.absObj",{
             var o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
-            for(var i in profile.constructor._objectProp)
+            for(var i in profile.box._objectProp)
                 if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
             return o;
         },
