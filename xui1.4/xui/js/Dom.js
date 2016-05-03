@@ -701,7 +701,11 @@ Class('xui.Dom','xui.absBox',{
                         var prf=xui.Event._getProfile(o.id);
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
                             // for format
-                            o=Raphael.parseTransformString(o.transform()).join();
+                            o=o.transform();
+                            if(_.isArr(o)){
+                                if(!o.length) o="";
+                                else o=Raphael.parseTransformString(o).join();
+                            }
                             var arr=/r,([-\d.]+)/i.exec(o);
                             v=arr?parseFloat(arr[1]||0):0;
                             v=v%360;
