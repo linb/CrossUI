@@ -3,13 +3,14 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         _index:0,  
         setValue:function(str){
             var ns=this,
-                obj=_.unserialize(str),
+                obj=_.isStr(str)?_.unserialize(str):str,
                 rows=ns._json2rows(obj);
-            ns.tg.insertRows(rows).free();
+            ns.tg.setRows(rows).free();
         },
-        getValue:function(){
+        getValue:function(returnObj){
             var rows=this.tg.getRows();
-            return this._rows2json(rows);
+            var str = this._rows2json(rows);
+            return returnObj?_.unserialize(str):str;
         },
         getEditor:function(){
             return this.tg;
@@ -211,7 +212,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                         /^\[[\s\S]*\]$/.test(v)  );
         },
         _tg_beforecellupdated:function (profile, cell, options) {
-            var map={'hash':1,'array':2},
+            var ns=this,
+                map={'hash':1,'array':2},
                 row=cell._row,
                 rowId=row.id,
                 tg=profile.boxing();
@@ -235,6 +237,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                         // must get
                         row = tg.getRowbyRowId(rowId);
                         row._type=va[0];
+
+                        ns.fireEvent("onchange", [ns]);
                     },100);
                 }
             }else{
@@ -291,10 +295,18 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                   //  });
                     break;
             }
-            if( nid )
+            if( nid ){
                 _.asyRun(function(){
                     tg.editCellbyRowCol(nid+'', type=='array'?"value":"key");
                 });
+            }
+
+            ns.fireEvent("onchange", [ns]);        
         } 
+    },
+    Static:{
+        $EventHandlers:{
+            onchange:function(module){}
+        }
     }
 });

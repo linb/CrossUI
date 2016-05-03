@@ -590,7 +590,7 @@ Class("xui.svg", "xui.UI",{
                 var ss=prf._elset;
                 if(ss&&ss[0]){
                     ss[0]._.dirty=1;
-                    var tf=ss[0].transform(),
+                    var tf=Raphael.parseTransformString(ss[0].transform()),
                         matrix;
                     if(tf && tf.length){
                         matrix=ss[0].matrix;
@@ -638,7 +638,7 @@ Class("xui.svg", "xui.UI",{
                 return _.get(prf._pathCached,['_connPath']);
 
             if(prf && (ss=prf._elset) && ss[0]){
-                var tf=ss[0].transform(),
+                var tf=Raphael.parseTransformString(ss[0].transform()),
                         matrix;
                     if(tf && tf.length){
                         matrix=ss[0].matrix;
@@ -2232,7 +2232,7 @@ Class("xui.svg", "xui.UI",{
             });
             if(el && (!_.isEmpty(h))){
                 // keep transfrom
-                var ts=el.transform(),withTransform;
+                var ts=Raphael.parseTransformString(el.transform()),withTransform;
                 if(ts && ts.length){
                     withTransform=1;
                     el.transform("");

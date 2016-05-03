@@ -8,9 +8,10 @@
 8) Enabled the UI Builder to support reusable modules
 
 Updated to NWJS 13.0
-Using sublime Text bindings
 
-Updated to Codemirror 5.13
+
+Updated to Codemirror 5.13, and using sublime Text bindings
+Update Raphael to 2.2
 
 
 Version 1.4 is the last version to be compatible with IE678.

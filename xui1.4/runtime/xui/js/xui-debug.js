@@ -8863,9 +8863,13 @@ Class('xui.Dom','xui.absBox',{
                 if(o.raphael&&o.id){
                         var prf=xui.Event._getProfile(o.id);
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            o=o.transform().join();
-                           var arr=/r,([-\d.]+)/i.exec(o);
-                           return arr?parseFloat(arr[1]||0):0;
+                            // for format
+                            o=Raphael.parseTransformString(o.transform()).join();
+                            var arr=/r,([-\d.]+)/i.exec(o);
+                            v=arr?parseFloat(arr[1]||0):0;
+                            v=v%360;
+                            if(v<0)v=v+360;
+                            return v;
                         }
                         return 0;
                 }else{
@@ -8881,7 +8885,7 @@ Class('xui.Dom','xui.absBox',{
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(o.transform(),true);
+                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
                                 t[0][1]=v;
@@ -8905,7 +8909,7 @@ Class('xui.Dom','xui.absBox',{
                     v=1;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(o.transform(),function(t){
+                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[1];
                         });
                     }
@@ -8927,7 +8931,7 @@ Class('xui.Dom','xui.absBox',{
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(o.transform(),true);
+                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
                                 t[0][2]=v;
@@ -8951,7 +8955,7 @@ Class('xui.Dom','xui.absBox',{
                    v=1;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(o.transform(),function(t){
+                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[2];
                         });
                     }
@@ -8974,7 +8978,7 @@ Class('xui.Dom','xui.absBox',{
                         var prf=xui.Event._getProfile(o.id),t;
                         // modify the last 't'
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(o.transform(),true);
+                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][1]=v;
                             }else{
@@ -8997,7 +9001,7 @@ Class('xui.Dom','xui.absBox',{
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(o.transform(),function(t){
+                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[1];
                         });
                     }
@@ -9015,7 +9019,7 @@ Class('xui.Dom','xui.absBox',{
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id);
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(o.transform(),true);
+                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
                             // modify the last 't'
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][2]=v;
@@ -9039,7 +9043,7 @@ Class('xui.Dom','xui.absBox',{
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(o.transform(),function(t){
+                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[2];
                         });
                     }
