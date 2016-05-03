@@ -124,56 +124,74 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                     
                     if(scaleChildren){
                         paper.forEach(function(elem){
-                            var wr=width/ow,hr=height/oh,xuiElem;
+                            var wr=width/ow,hr=height/oh,xuiElem, 
+                                fun=function(elem, key) {
+                                    var xuiElem=xui.UIProfile.getFromDom(elem.node.id);
+                                    if(!xuiElem)return;
+
+                                    var attr=elem.attr(),
+                                        hash;
+                                        
+                                    switch(elem.type){
+                                        // circle is xuiElem, so dont use cirle in this case
+                                        case 'circle':
+                                            hash={
+                                                cx:attr.cx*wr,
+                                                cy:attr.cy*hr,
+                                                r:attr.r*(wr+hr)/2
+                                            };
+                                        break;
+                                        case 'ellipse':
+                                            hash={
+                                                cx:attr.cx*wr,
+                                                cy:attr.cy*hr,
+                                                rx:attr.rx*wr,
+                                                ry:attr.ry*hr
+                                            };
+                                        break;
+                                        case 'rect':
+                                        case 'image':
+                                        hash={
+                                                x:attr.x*wr,
+                                                y:attr.y*hr,
+                                                width:attr.width*wr,
+                                                height:attr.height*hr
+                                            };
+                                        break;
+                                        case 'text':
+                                        hash={
+                                                x:attr.x*wr,
+                                                y:attr.y*hr
+                                            };
+                                        break;
+                                        case 'path':
+                                            hash={
+                                                path:Raphael.transformPath(_.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
+                                            };
+                                        break;
+                                    }
+
+                                    if(hash){
+                                        xuiElem.boxing().setAttr(key || "KEY",hash,false,true);
+                                        //elem.attr(hash);
+                                    }
+                                };
                             // find root node
                             if(profile._frame!==elem 
                                 && elem.node.$xid 
                                 && elem.node.id 
                                 && !/^[^:]+-/.test(elem.node.id) 
-                                && (xuiElem=xui.UIProfile.getFromDom(elem.node.id))
                                 ){
-                                var attr=elem.attr(),hash;
-                                switch(elem.type){
-                                    // circle is xuiElem, so dont use cirle in this case
-                                    case 'circle':
-                                        hash={
-                                            cx:attr.cx*wr,
-                                            cy:attr.cy*hr,
-                                            r:attr.r*(wr+hr)/2
-                                        };
-                                    break;
-                                    case 'ellipse':
-                                        hash={
-                                            cx:attr.cx*wr,
-                                            cy:attr.cy*hr,
-                                            rx:attr.rx*wr,
-                                            ry:attr.ry*hr
-                                        };
-                                    break;
-                                    case 'rect':
-                                    case 'image':
-                                    hash={
-                                            x:attr.x*wr,
-                                            y:attr.y*hr,
-                                            width:attr.width*wr,
-                                            height:attr.height*hr
-                                        };
-                                    break;
-                                    case 'text':
-                                    hash={
-                                            x:attr.x*wr,
-                                            y:attr.y*hr
-                                        };
-                                    break;
-                                    case 'path':
-                                        hash={
-                                            path:Raphael.transformPath(_.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
-                                        };
-                                    break;
-                                }
-                                if(hash){
-                                    xuiElem.boxing().setAttr("KEY",hash,false,true);
-                                    //elem.attr(hash);
+
+                                if(elem._isGroupFirst){
+                                    var xuiElem=xui.UIProfile.getFromDom(elem.node.id);
+                                    if(xuiElem){
+                                        xuiElem._elset.forEach(function(o){
+                                            fun(o, xuiElem.getKey(o.node.id, true));
+                                        })
+                                    }
+                                }else{
+                                    fun(elem);
                                 }
                             }
                         });

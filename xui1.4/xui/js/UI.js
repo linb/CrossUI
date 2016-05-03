@@ -4277,9 +4277,9 @@ Class("xui.UI",  "xui.absObj", {
                     v=v%360;
                     if(v<0)v=v+360;
                     if(this.box['xui.svg']){
-                            ins.setAttr("KEY", {transform:'r'+v}, false);
+                        ins.setAttr("KEY", {transform:'r'+v}, false);
                     }else{
-                            root.rotate(v);
+                        root.rotate(v);
                     }
                 }
             },

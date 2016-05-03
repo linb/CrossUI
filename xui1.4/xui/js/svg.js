@@ -2236,13 +2236,28 @@ Class("xui.svg", "xui.UI",{
                 if(ts && ts.length){
                     withTransform=1;
                     el.transform("");
+
+                    //for rotate setting
+                    //TODO: recalculate it back precisely
+                    var ir=-1, it=-1, rot; 
+                    for(var i=0,l=ts.length; i<l; i++){
+                        if(ts[i][0]=='r'){
+                            ir = i;
+                            rot = ts[i][1];
+                        }else if(ts[i][0]=='t'){
+                            it = i;
+                        }
+                    }
+                    if(it!=-1 && ir!=-1){
+                        _.arr.removeFrom(ts, it);
+                    }
                 }
 
                 el.attr(h);
 
                 // reset transform
                 if(withTransform){
-                    el.transform(ts);
+                    el.transform("r"+rot);
                 }
 
                 if(notify!==false)
@@ -3416,6 +3431,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
         _draw:function(paper, prf, prop){
             var s=paper.set(), attrs=prop.attr, rootattr=attrs.KEY||{path:""},
                 el=paper.path(rootattr.path||"");
+            el._isGroupFirst=1;
             // root is a path
             el.node.id=prf.box.KEY+":"+prf.serialId+":";
             s.push(el);
