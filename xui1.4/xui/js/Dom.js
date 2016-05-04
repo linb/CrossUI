@@ -704,6 +704,9 @@ Class('xui.Dom','xui.absBox',{
                             o=o.transform();
                             if(_.isArr(o)){
                                 if(!o.length) o="";
+                                else o=o.join();
+                            }else{
+                                if(!o)o="";
                                 else o=Raphael.parseTransformString(o).join();
                             }
                             var arr=/r,([-\d.]+)/i.exec(o);

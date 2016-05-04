@@ -2238,7 +2238,6 @@ Class("xui.svg", "xui.UI",{
                     el.transform("");
 
                     //for rotate setting
-                    //TODO: recalculate it back precisely
                     var ir=-1, it=-1, rot; 
                     for(var i=0,l=ts.length; i<l; i++){
                         if(ts[i][0]=='r'){
@@ -2249,7 +2248,17 @@ Class("xui.svg", "xui.UI",{
                         }
                     }
                     if(it!=-1 && ir!=-1){
-                        _.arr.removeFrom(ts, it);
+                        // recalculate it back precisely
+                        el.rotate(rot);
+                        var ts2=Raphael.parseTransformString(el.transform());
+                        //reset it gain
+                        el.transform("");
+                        ts[it][1]-=ts2[0][1];
+                        ts[it][2]-=ts2[0][2];
+                        
+                        if(!ts[it][1] && !ts[it][2]){
+                            _.arr.removeFrom(ts, it);
+                        }
                     }
                 }
 

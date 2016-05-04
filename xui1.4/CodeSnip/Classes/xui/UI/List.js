@@ -133,10 +133,29 @@ Class('App.xui_UI_List', 'xui.Com',{
             append(
                 (new xui.UI.List)
                 .setHost(host,"ctl_list1")
-                .setItems([{"imageClass":"xui-ui-busy", "caption":"xui-ui-busy", "id":"aq"}, {"imageClass":"xui-uicmd-none", "caption":"xui-uicmd-none", "id":"ar"}, {"imageClass":"xui-uicmd-empty", "caption":"xui-uicmd-empty", "id":"as"}, {"imageClass":"xui-uicmd-opt", "caption":"xui-uicmd-opt", "id":"at"}, {"imageClass":"xui-uicmd-pop", "caption":"xui-uicmd-pop", "id":"au"}, {"imageClass":"xui-uicmd-land", "caption":"xui-uicmd-land", "id":"av"}, {"imageClass":"xui-uicmd-refresh", "caption":"xui-uicmd-refresh", "id":"aw"}, {"imageClass":"xui-uicmd-toggle", "caption":"xui-uicmd-toggle", "id":"ax"}, {"imageClass":"xui-uicmd-toggle2", "caption":"xui-uicmd-toggle2", "id":"ay"}, {"imageClass":"xui-uicmd-min", "caption":"xui-uicmd-min", "id":"az"}, {"imageClass":"xui-uicmd-max", "caption":"xui-uicmd-max", "id":"ca"}, {"imageClass":"xui-uicmd-restore", "caption":"xui-uicmd-restore", "id":"cb"}, {"imageClass":"xui-uicmd-pin", "caption":"xui-uicmd-pin", "id":"cc"}, {"imageClass":"xui-uicmd-check", "caption":"xui-uicmd-check", "id":"cd"}, {"imageClass":"xui-uicmd-radio", "caption":"xui-uicmd-radio", "id":"ce"}, {"imageClass":"xui-uicmd-add", "caption":"xui-uicmd-add", "id":"cf"}, {"imageClass":"xui-uicmd-remove", "caption":"xui-uicmd-remove", "id":"cg"}])
+                .setItems([
+                    {"imageClass":"xui-ui-busy", "caption":"xui-ui-busy", "id":"aq"}, 
+                {"imageClass":"xui-uicmd-none", "caption":"xui-uicmd-none", "id":"ar"}, 
+                {"imageClass":"xui-uicmd-empty", "caption":"xui-uicmd-empty", "id":"as"}, 
+                {"imageClass":"xui-uicmd-opt", "caption":"xui-uicmd-opt", "id":"at"}, 
+                {"imageClass":"xui-uicmd-pop", "caption":"xui-uicmd-pop", "id":"au"}, 
+                {"imageClass":"xui-uicmd-land", "caption":"xui-uicmd-land", "id":"av"}, 
+                {"imageClass":"xui-uicmd-refresh", "caption":"xui-uicmd-refresh", "id":"aw"}, 
+                {"imageClass":"xui-uicmd-toggle", "caption":"xui-uicmd-toggle", "id":"ax"}, 
+                {"imageClass":"xui-uicmd-toggle2", "caption":"xui-uicmd-toggle2", "id":"ay"}, 
+                {"imageClass":"xui-uicmd-min", "caption":"xui-uicmd-min", "id":"az"}, 
+                {"imageClass":"xui-uicmd-max", "caption":"xui-uicmd-max", "id":"ca"}, 
+                {"imageClass":"xui-uicmd-restore", "caption":"xui-uicmd-restore", "id":"cb"}, 
+                {"imageClass":"xui-uicmd-pin", "caption":"xui-uicmd-pin", "id":"cc"}, 
+                {"imageClass":"xui-uicmd-check", "caption":"xui-uicmd-check", "id":"cd"}, 
+                {"imageClass":"xui-uicmd-radio", "caption":"xui-uicmd-radio", "id":"ce"}, 
+                {"imageClass":"xui-uicmd-add", "caption":"xui-uicmd-add", "id":"cf"}, 
+                {"imageClass":"xui-uicmd-remove", "caption":"xui-uicmd-remove", "id":"cg"}
+                
+            ])
                 .setLeft(560)
                 .setTop(80)
-                .setWidth(160)
+                .setWidth(200)
                 .setHeight(260)
                 .setValue("a")
             );
