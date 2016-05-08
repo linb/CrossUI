@@ -551,7 +551,7 @@ Class('xui.Module','xui.absProfile',{
             //load required class
             if((t=self.required) && t.length)
                 funs.push(function(threadid){
-                    xui.require(self.required,null,function(uir,key){
+                    xui.require(self.required,null,function(uri,key){
                         self._fireEvent('onLoadRequiredClass', [uri,key]);
                     },function(){
                         self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
