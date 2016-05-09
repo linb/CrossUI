@@ -346,6 +346,7 @@ Class("xui.svg", "xui.UI",{
                 var h={};
                 h[key]=attr;
                 attr=h;
+                key="KEY";
             };
             reset=reset!==false;
             return this.each(function(prf){

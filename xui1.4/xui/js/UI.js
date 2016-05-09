@@ -2855,9 +2855,10 @@ Class("xui.UI",  "xui.absObj", {
                     //[properties] is for xui.Template
                     result[result.length]=t.toHtml();
                 }else{
-                    if(typeof temp == 'function')
-                        temp(profile, template, properties, tag, result);
-                    else{
+                    if(typeof temp == 'function'){
+                        t=temp(profile, template, properties, tag, result);
+                        if(t)tag=t;
+                    }else{
                         tag = tag?tag+'.':'';
                         var a0=temp[0], a1=temp[1];
                         for(var i=0,l=a0.length;i<l;i++){

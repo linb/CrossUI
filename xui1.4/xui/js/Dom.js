@@ -1593,39 +1593,38 @@ Class('xui.Dom','xui.absBox',{
         }
         */
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
-            var me=arguments.callee,
-                tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
-            linear:function(s,c) {return (1/s)*c;},
-            sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
-            sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
-            sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
-            quadIn:function(s,c) {return (c/=s)*c;},
-            quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
-            quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
-            cubicIn:function(s,c) {return (c/=s)*c*c;},
-            cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
-            cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
-            quartIn:function(s,c) {return (c/=s)*c*c*c;},
-            quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
-            quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
-            quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
-            quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
-            quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
-            expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
-            expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
-            expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
-            circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
-            circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
-            circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
-            bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
-            bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
-            bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
-            backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
-            backOut:function(s,c) {var k=1.70158;   return ((c=c/s-1)*c*((k+1)*c+k)+1);},
-            backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
-            elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
-            elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
-            elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
+            var me=arguments.callee, tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
+                linear:function(s,c) {return (1/s)*c;},
+                sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
+                sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
+                sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
+                quadIn:function(s,c) {return (c/=s)*c;},
+                quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
+                quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
+                cubicIn:function(s,c) {return (c/=s)*c*c;},
+                cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
+                cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
+                quartIn:function(s,c) {return (c/=s)*c*c*c;},
+                quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
+                quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
+                quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
+                quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
+                quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
+                expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
+                expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
+                expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
+                circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
+                circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
+                circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
+                bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
+                bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
+                bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
+                backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
+                backOut:function(s,c) {var k=1.70158;   return ((c=c/s-1)*c*((k+1)*c+k)+1);},
+                backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
+                elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
+                elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
+                elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
                 }),
                 color = me.color || (me.color = function(from,to,curvalue){
                     if(typeof from !='string' || typeof to != 'string')return '#fff';
@@ -1669,7 +1668,7 @@ Class('xui.Dom','xui.absBox',{
             times=times||1;
             type = (type in tween)?type:'circIn';
 
-            var starttime, node=this.get(0), self=xui(node), fun=function(threadid){
+            var starttime, node=this.get(0), self=this, fun=function(threadid){
                 var offtime=_() - starttime, curvalue,u,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){

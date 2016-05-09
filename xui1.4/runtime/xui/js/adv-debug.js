@@ -13939,6 +13939,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 var h={};
                 h[key]=attr;
                 attr=h;
+                key="KEY";
             };
             reset=reset!==false;
             return this.each(function(prf){
@@ -15829,13 +15830,37 @@ return /******/ (function(modules) { // webpackBootstrap
                 if(ts && ts.length){
                     withTransform=1;
                     el.transform("");
+
+                    //for rotate setting
+                    var ir=-1, it=-1, rot; 
+                    for(var i=0,l=ts.length; i<l; i++){
+                        if(ts[i][0]=='r'){
+                            ir = i;
+                            rot = ts[i][1];
+                        }else if(ts[i][0]=='t'){
+                            it = i;
+                        }
+                    }
+                    if(it!=-1 && ir!=-1){
+                        // recalculate it back precisely
+                        el.rotate(rot);
+                        var ts2=Raphael.parseTransformString(el.transform());
+                        //reset it gain
+                        el.transform("");
+                        ts[it][1]-=ts2[0][1];
+                        ts[it][2]-=ts2[0][2];
+                        
+                        if(!ts[it][1] && !ts[it][2]){
+                            _.arr.removeFrom(ts, it);
+                        }
+                    }
                 }
 
                 el.attr(h);
 
                 // reset transform
                 if(withTransform){
-                    el.transform(ts);
+                    el.transform("r"+rot);
                 }
 
                 if(notify!==false)
@@ -17009,6 +17034,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
         _draw:function(paper, prf, prop){
             var s=paper.set(), attrs=prop.attr, rootattr=attrs.KEY||{path:""},
                 el=paper.path(rootattr.path||"");
+            el._isGroupFirst=1;
             // root is a path
             el.node.id=prf.box.KEY+":"+prf.serialId+":";
             s.push(el);
@@ -17171,56 +17197,74 @@ Class("xui.svg.group", "xui.svg.absComb",{
                     
                     if(scaleChildren){
                         paper.forEach(function(elem){
-                            var wr=width/ow,hr=height/oh,xuiElem;
+                            var wr=width/ow,hr=height/oh,xuiElem, 
+                                fun=function(elem, key) {
+                                    var xuiElem=xui.UIProfile.getFromDom(elem.node.id);
+                                    if(!xuiElem)return;
+
+                                    var attr=elem.attr(),
+                                        hash;
+                                        
+                                    switch(elem.type){
+                                        // circle is xuiElem, so dont use cirle in this case
+                                        case 'circle':
+                                            hash={
+                                                cx:attr.cx*wr,
+                                                cy:attr.cy*hr,
+                                                r:attr.r*(wr+hr)/2
+                                            };
+                                        break;
+                                        case 'ellipse':
+                                            hash={
+                                                cx:attr.cx*wr,
+                                                cy:attr.cy*hr,
+                                                rx:attr.rx*wr,
+                                                ry:attr.ry*hr
+                                            };
+                                        break;
+                                        case 'rect':
+                                        case 'image':
+                                        hash={
+                                                x:attr.x*wr,
+                                                y:attr.y*hr,
+                                                width:attr.width*wr,
+                                                height:attr.height*hr
+                                            };
+                                        break;
+                                        case 'text':
+                                        hash={
+                                                x:attr.x*wr,
+                                                y:attr.y*hr
+                                            };
+                                        break;
+                                        case 'path':
+                                            hash={
+                                                path:Raphael.transformPath(_.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
+                                            };
+                                        break;
+                                    }
+
+                                    if(hash){
+                                        xuiElem.boxing().setAttr(key || "KEY",hash,false,true);
+                                        //elem.attr(hash);
+                                    }
+                                };
                             // find root node
                             if(profile._frame!==elem 
                                 && elem.node.$xid 
                                 && elem.node.id 
                                 && !/^[^:]+-/.test(elem.node.id) 
-                                && (xuiElem=xui.UIProfile.getFromDom(elem.node.id))
                                 ){
-                                var attr=elem.attr(),hash;
-                                switch(elem.type){
-                                    // circle is xuiElem, so dont use cirle in this case
-                                    case 'circle':
-                                        hash={
-                                            cx:attr.cx*wr,
-                                            cy:attr.cy*hr,
-                                            r:attr.r*(wr+hr)/2
-                                        };
-                                    break;
-                                    case 'ellipse':
-                                        hash={
-                                            cx:attr.cx*wr,
-                                            cy:attr.cy*hr,
-                                            rx:attr.rx*wr,
-                                            ry:attr.ry*hr
-                                        };
-                                    break;
-                                    case 'rect':
-                                    case 'image':
-                                    hash={
-                                            x:attr.x*wr,
-                                            y:attr.y*hr,
-                                            width:attr.width*wr,
-                                            height:attr.height*hr
-                                        };
-                                    break;
-                                    case 'text':
-                                    hash={
-                                            x:attr.x*wr,
-                                            y:attr.y*hr
-                                        };
-                                    break;
-                                    case 'path':
-                                        hash={
-                                            path:Raphael.transformPath(_.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
-                                        };
-                                    break;
-                                }
-                                if(hash){
-                                    xuiElem.boxing().setAttr("KEY",hash,false,true);
-                                    //elem.attr(hash);
+
+                                if(elem._isGroupFirst){
+                                    var xuiElem=xui.UIProfile.getFromDom(elem.node.id);
+                                    if(xuiElem){
+                                        xuiElem._elset.forEach(function(o){
+                                            fun(o, xuiElem.getKey(o.node.id, true));
+                                        })
+                                    }
+                                }else{
+                                    fun(elem);
                                 }
                             }
                         });

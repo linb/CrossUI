@@ -2,508 +2,603 @@ Class('App', 'xui.Com',{
     Instance:{
         events:{"onReady":"_onready"},
         iniComponents:function(){
-            // [[Code created by CrossUI RAD Tools
+            // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
             
-            append((new xui.UI.Panel())
-            .setHost(host,"panel4")
-            .setDock("none")
-            .setLeft(30)
-            .setTop(20)
-            .setWidth(750)
-            .setHeight(210)
-            .setZIndex(1)
-            .setCaption("Update Grid dynamically!")
+            append(
+                xui.create("xui.UI.Panel")
+                .setHost(host,"panel4")
+                .setDock("none")
+                .setLeft(30)
+                .setTop(20)
+                .setWidth(750)
+                .setHeight(210)
+                .setZIndex(1)
+                .setCaption("Update Grid dynamically!")
             );
             
-            host.panel4.append((new xui.UI.TreeGrid())
-            .setHost(host,"treegrid")
-            .setSelMode("single")
+            host.panel4.append(
+                xui.create("xui.UI.TreeGrid")
+                .setHost(host,"treegrid")
+                .setSelMode("single")
+                );
+            
+            append(
+                xui.create("xui.UI.Pane")
+                .setHost(host,"ctl_pane127")
+                .setLeft(30)
+                .setTop(240)
+                .setWidth(750)
+                .setHeight(500)
             );
             
-            append((new xui.UI.Pane())
-            .setHost(host,"ctl_pane127")
-            .setLeft(30)
-            .setTop(240)
-            .setWidth(750)
-            .setHeight(500)
-            .setOverflow("")
-            );
+            host.ctl_pane127.append(
+                xui.create("xui.UI.FoldingTabs")
+                .setHost(host,"ctl_foldingtabs16")
+                .setItems([{
+                    "id" : "e",
+                    "caption" : "Grid",
+                    "height" : 120
+                },{
+                    "id" : "a",
+                    "caption" : "Row related",
+                    "height" : 180
+                },{
+                    "id" : "b",
+                    "caption" : "Column related",
+                    "height" : 130,
+                    "image" : ""
+                },{
+                    "id" : "c",
+                    "caption" : "Cell Related",
+                    "height" : 40
+                }])
+                .setValue("e")
+                );
             
-            host.ctl_pane127.append((new xui.UI.FoldingTabs())
-            .setHost(host,"ctl_foldingtabs16")
-            .setItems([{"id":"e", "caption":"Grid", "height":120}, {"id":"a", "caption":"Row related", "height":180}, {"id":"b", "caption":"Column related", "height":130, "image":""}, {"id":"c", "caption":"Cell Related", "height":40}])
-            .setValue("e")
-            );
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div1")
+                .setLeft(140)
+                .setTop(10)
+                .setWidth(50)
+                .setHeight(20)
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton111")
-            .setLeft(10)
-            .setTop(38)
-            .setWidth(150)
-            .setCaption("setValue (select 2rd row)")
-            .onClick("_sbutton111_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div2")
+                .setLeft(140)
+                .setTop(40)
+                .setWidth(50)
+                .setHeight(20)
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton149")
-            .setLeft(10)
-            .setTop(8)
-            .setWidth(90)
-            .setCaption("editable")
-            .onClick("_sbutton149_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div5")
+                .setLeft(140)
+                .setTop(70)
+                .setWidth(50)
+                .setHeight(20)
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div93")
-            .setLeft(110)
-            .setTop(8)
-            .setWidth(50)
-            .setHeight(20)
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div6")
+                .setLeft(140)
+                .setTop(100)
+                .setWidth(50)
+                .setHeight(20)
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton28")
-            .setLeft(10)
-            .setTop(68)
-            .setWidth(150)
-            .setCaption("setGridHandlerCaption")
-            .onClick("_sbutton28_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div10")
+                .setLeft(160)
+                .setTop(130)
+                .setWidth(40)
+                .setHeight(20)
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton29")
-            .setLeft(10)
-            .setTop(98)
-            .setWidth(150)
-            .setCaption("setRowHandlerWidth")
-            .onClick("_sbutton29_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div3")
+                .setLeft(130)
+                .setTop(70)
+                .setWidth(70)
+                .setHeight(20)
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton61")
-            .setLeft(200)
-            .setTop(8)
-            .setWidth(130)
-            .setCaption("set cell background")
-            .onClick("_ctl_sbutton61_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div4")
+                .setLeft(130)
+                .setTop(100)
+                .setWidth(70)
+                .setHeight(20)
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton62")
-            .setLeft(380)
-            .setTop(8)
-            .setWidth(130)
-            .setCaption("\"left\" align header")
-            .onClick("_ctl_sbutton62_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div7")
+                .setLeft(130)
+                .setTop(10)
+                .setWidth(70)
+                .setHeight(20)
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton63")
-            .setLeft(200)
-            .setTop(68)
-            .setWidth(130)
-            .setCaption("hide grid line")
-            .onClick("_ctl_sbutton63_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div8")
+                .setLeft(130)
+                .setTop(40)
+                .setWidth(70)
+                .setHeight(20)
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton64")
-            .setLeft(200)
-            .setTop(38)
-            .setWidth(130)
-            .setCaption("set Custom cell tips")
-            .onClick("_ctl_sbutton64_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div9")
+                .setLeft(380)
+                .setTop(100)
+                .setWidth(40)
+                .setHeight(20)
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton65")
-            .setLeft(380)
-            .setTop(68)
-            .setWidth(130)
-            .setCaption("disable tips")
-            .onClick("_ctl_sbutton65_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div93")
+                .setLeft(110)
+                .setTop(8)
+                .setWidth(50)
+                .setHeight(20)
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton66")
-            .setLeft(380)
-            .setTop(98)
-            .setWidth(130)
-            .setCaption("enable tips")
-            .onClick("_ctl_sbutton66_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton67")
+                .setLeft(30)
+                .setTop(10)
+                .setWidth(130)
+                .setCaption("updateCellByRowCol")
+                .onClick("_sbutton67_onclick")
+                , "c");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton351")
-            .setLeft(200)
-            .setTop(98)
-            .setWidth(130)
-            .setCaption("show grid line")
-            .onClick("_ctl_sbutton351_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton207")
+                .setLeft(360)
+                .setTop(10)
+                .setWidth(130)
+                .setCaption("editCellbyRowCol")
+                .onClick("_sbutton207_onclick")
+                , "c");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton712")
-            .setLeft(380)
-            .setTop(38)
-            .setWidth(130)
-            .setCaption("set a row's height")
-            .onClick("_ctl_sbutton712_onclick")
-            , "e");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton1")
+                .setLeft(20)
+                .setTop(10)
+                .setWidth(100)
+                .setCaption("rowHandler")
+                .onClick("_sbutton1_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton67")
-            .setLeft(30)
-            .setTop(10)
-            .setWidth(130)
-            .setCaption("updateCellByRowCol")
-            .onClick("_sbutton67_onclick")
-            , "c");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton2")
+                .setLeft(20)
+                .setTop(40)
+                .setWidth(100)
+                .setCaption("rowResizer")
+                .onClick("_sbutton2_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton207")
-            .setLeft(360)
-            .setTop(10)
-            .setWidth(130)
-            .setCaption("editCellbyRowCol")
-            .onClick("_sbutton207_onclick")
-            , "c");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton5")
+                .setLeft(20)
+                .setTop(70)
+                .setWidth(100)
+                .setCaption("rowNumbered")
+                .onClick("_sbutton5_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton1")
-            .setLeft(20)
-            .setTop(10)
-            .setWidth(100)
-            .setCaption("rowHandler")
-            .onClick("_sbutton1_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton6")
+                .setLeft(20)
+                .setTop(100)
+                .setWidth(100)
+                .setCaption("altRowsBg")
+                .onClick("_sbutton6_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton2")
-            .setLeft(20)
-            .setTop(40)
-            .setWidth(100)
-            .setCaption("rowResizer")
-            .onClick("_sbutton2_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton8")
+                .setLeft(20)
+                .setTop(130)
+                .setWidth(130)
+                .setCaption("setRowHeight(30)")
+                .onClick("_sbutton8_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton5")
-            .setLeft(20)
-            .setTop(70)
-            .setWidth(100)
-            .setCaption("rowNumbered")
-            .onClick("_sbutton5_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton54")
+                .setLeft(370)
+                .setTop(10)
+                .setWidth(130)
+                .setCaption("getRows('min')")
+                .onClick("_sbutton54_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton6")
-            .setLeft(20)
-            .setTop(100)
-            .setWidth(100)
-            .setCaption("altRowsBg")
-            .onClick("_sbutton6_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton94")
+                .setLeft(370)
+                .setTop(40)
+                .setWidth(130)
+                .setCaption("getActiveRow")
+                .onClick("_sbutton94_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div1")
-            .setLeft(140)
-            .setTop(10)
-            .setWidth(50)
-            .setHeight(20)
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton95")
+                .setLeft(370)
+                .setTop(70)
+                .setWidth(130)
+                .setCaption("setActiveRow")
+                .onClick("_sbutton95_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div2")
-            .setLeft(140)
-            .setTop(40)
-            .setWidth(50)
-            .setHeight(20)
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton252")
+                .setLeft(370)
+                .setTop(100)
+                .setWidth(130)
+                .setCaption("toggleRow")
+                .onClick("_sbutton252_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div5")
-            .setLeft(140)
-            .setTop(70)
-            .setWidth(50)
-            .setHeight(20)
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton253")
+                .setLeft(210)
+                .setTop(10)
+                .setWidth(120)
+                .setCaption("removeRows")
+                .onClick("_sbutton253_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div6")
-            .setLeft(140)
-            .setTop(100)
-            .setWidth(50)
-            .setHeight(20)
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton254")
+                .setLeft(210)
+                .setTop(40)
+                .setWidth(120)
+                .setCaption("insertRows")
+                .onClick("_sbutton254_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton8")
-            .setLeft(20)
-            .setTop(130)
-            .setWidth(130)
-            .setCaption("setRowHeight(30)")
-            .onClick("_sbutton8_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton30")
+                .setLeft(210)
+                .setTop(70)
+                .setWidth(120)
+                .setCaption("updateRow")
+                .onClick("_sbutton30_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton54")
-            .setLeft(370)
-            .setTop(10)
-            .setWidth(130)
-            .setCaption("getRows('min')")
-            .onClick("_sbutton54_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton31")
+                .setLeft(210)
+                .setTop(100)
+                .setWidth(120)
+                .setCaption("updateRow 2")
+                .onClick("_sbutton31_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton94")
-            .setLeft(370)
-            .setTop(40)
-            .setWidth(130)
-            .setCaption("getActiveRow")
-            .onClick("_sbutton94_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton32")
+                .setLeft(210)
+                .setTop(130)
+                .setWidth(120)
+                .setCaption("updateRow 3")
+                .onClick("_sbutton32_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton95")
-            .setLeft(370)
-            .setTop(70)
-            .setWidth(130)
-            .setCaption("setActiveRow")
-            .onClick("_sbutton95_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton2005")
+                .setLeft(540)
+                .setTop(10)
+                .setWidth(130)
+                .setCaption("autoRowHeight")
+                .onClick("_ctl_sbutton2005_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div10")
-            .setLeft(160)
-            .setTop(130)
-            .setWidth(40)
-            .setHeight(20)
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton2006")
+                .setLeft(540)
+                .setTop(40)
+                .setWidth(130)
+                .setCaption("autoColHeight")
+                .onClick("_ctl_sbutton2006_onclick")
+                , "a");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton252")
-            .setLeft(370)
-            .setTop(100)
-            .setWidth(130)
-            .setCaption("toggleRow")
-            .onClick("_sbutton252_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton3")
+                .setLeft(10)
+                .setTop(100)
+                .setWidth(100)
+                .setCaption("colMovable")
+                .onClick("_sbutton3_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton253")
-            .setLeft(210)
-            .setTop(10)
-            .setWidth(120)
-            .setCaption("removeRows")
-            .onClick("_sbutton253_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton4")
+                .setLeft(10)
+                .setTop(70)
+                .setWidth(100)
+                .setCaption("colHidable")
+                .onClick("_sbutton4_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton254")
-            .setLeft(210)
-            .setTop(40)
-            .setWidth(120)
-            .setCaption("insertRows")
-            .onClick("_sbutton254_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton17")
+                .setLeft(10)
+                .setTop(10)
+                .setWidth(100)
+                .setCaption("colResizer")
+                .onClick("_sbutton17_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton30")
-            .setLeft(210)
-            .setTop(70)
-            .setWidth(120)
-            .setCaption("updateRow")
-            .onClick("_sbutton30_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton18")
+                .setLeft(10)
+                .setTop(40)
+                .setWidth(100)
+                .setCaption("colSortable")
+                .onClick("_sbutton18_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton31")
-            .setLeft(210)
-            .setTop(100)
-            .setWidth(120)
-            .setCaption("updateRow 2")
-            .onClick("_sbutton31_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton7")
+                .setLeft(240)
+                .setTop(100)
+                .setWidth(120)
+                .setCaption("setHeaderHeight")
+                .onClick("_sbutton7_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton32")
-            .setLeft(210)
-            .setTop(130)
-            .setWidth(120)
-            .setCaption("updateRow 3")
-            .onClick("_sbutton32_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton53")
+                .setLeft(240)
+                .setTop(10)
+                .setWidth(120)
+                .setCaption("getHeader('min')")
+                .onClick("_sbutton53_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton2005")
-            .setLeft(540)
-            .setTop(10)
-            .setWidth(130)
-            .setCaption("autoRowHeight")
-            .onClick("_ctl_sbutton2005_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton128")
+                .setLeft(390)
+                .setTop(40)
+                .setWidth(100)
+                .setCaption("show Column")
+                .onClick("_sbutton128_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton2006")
-            .setLeft(540)
-            .setTop(40)
-            .setWidth(130)
-            .setCaption("autoColHeight")
-            .onClick("_ctl_sbutton2006_onclick")
-            , "a");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton129")
+                .setLeft(390)
+                .setTop(10)
+                .setWidth(100)
+                .setCaption("hide Column")
+                .onClick("_sbutton129_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton3")
-            .setLeft(10)
-            .setTop(100)
-            .setWidth(100)
-            .setCaption("colMovable")
-            .onClick("_sbutton3_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton208")
+                .setLeft(240)
+                .setTop(40)
+                .setWidth(120)
+                .setCaption("updateHeader")
+                .onClick("_sbutton208_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton4")
-            .setLeft(10)
-            .setTop(70)
-            .setWidth(100)
-            .setCaption("colHidable")
-            .onClick("_sbutton4_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton2713")
+                .setLeft(520)
+                .setTop(10)
+                .setWidth(130)
+                .setCaption("autoColWidth")
+                .onClick("_ctl_sbutton2713_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton17")
-            .setLeft(10)
-            .setTop(10)
-            .setWidth(100)
-            .setCaption("colResizer")
-            .onClick("_sbutton17_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton2914")
+                .setLeft(520)
+                .setTop(70)
+                .setWidth(130)
+                .setCaption("insertCol")
+                .onClick("_ctl_sbutton2914_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton18")
-            .setLeft(10)
-            .setTop(40)
-            .setWidth(100)
-            .setCaption("colSortable")
-            .onClick("_sbutton18_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton2915")
+                .setLeft(520)
+                .setTop(100)
+                .setWidth(130)
+                .setCaption("removeCols")
+                .onClick("_ctl_sbutton2915_onclick")
+                , "b");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div3")
-            .setLeft(130)
-            .setTop(70)
-            .setWidth(70)
-            .setHeight(20)
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton111")
+                .setLeft(10)
+                .setTop(38)
+                .setWidth(150)
+                .setCaption("setValue (select 2rd row)")
+                .onClick("_sbutton111_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div4")
-            .setLeft(130)
-            .setTop(100)
-            .setWidth(70)
-            .setHeight(20)
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton149")
+                .setLeft(10)
+                .setTop(8)
+                .setWidth(90)
+                .setCaption("editable")
+                .onClick("_sbutton149_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div7")
-            .setLeft(130)
-            .setTop(10)
-            .setWidth(70)
-            .setHeight(20)
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton28")
+                .setLeft(10)
+                .setTop(68)
+                .setWidth(150)
+                .setCaption("setGridHandlerCaption")
+                .onClick("_sbutton28_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div8")
-            .setLeft(130)
-            .setTop(40)
-            .setWidth(70)
-            .setHeight(20)
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"sbutton29")
+                .setLeft(10)
+                .setTop(98)
+                .setWidth(150)
+                .setCaption("setRowHandlerWidth")
+                .onClick("_sbutton29_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton7")
-            .setLeft(240)
-            .setTop(100)
-            .setWidth(120)
-            .setCaption("setHeaderHeight")
-            .onClick("_sbutton7_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton61")
+                .setLeft(200)
+                .setTop(8)
+                .setWidth(130)
+                .setCaption("set cell background")
+                .onClick("_ctl_sbutton61_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton53")
-            .setLeft(240)
-            .setTop(10)
-            .setWidth(120)
-            .setCaption("getHeader('min')")
-            .onClick("_sbutton53_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton62")
+                .setLeft(380)
+                .setTop(8)
+                .setWidth(130)
+                .setCaption("\"left\" align header")
+                .onClick("_ctl_sbutton62_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton128")
-            .setLeft(390)
-            .setTop(40)
-            .setWidth(100)
-            .setCaption("show Column")
-            .onClick("_sbutton128_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton63")
+                .setLeft(200)
+                .setTop(68)
+                .setWidth(130)
+                .setCaption("hide grid line")
+                .onClick("_ctl_sbutton63_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton129")
-            .setLeft(390)
-            .setTop(10)
-            .setWidth(100)
-            .setCaption("hide Column")
-            .onClick("_sbutton129_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton64")
+                .setLeft(200)
+                .setTop(38)
+                .setWidth(130)
+                .setCaption("set Custom cell tips")
+                .onClick("_ctl_sbutton64_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"sbutton208")
-            .setLeft(240)
-            .setTop(40)
-            .setWidth(120)
-            .setCaption("updateHeader")
-            .onClick("_sbutton208_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton65")
+                .setLeft(380)
+                .setTop(68)
+                .setWidth(130)
+                .setCaption("disable tips")
+                .onClick("_ctl_sbutton65_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.Div())
-            .setHost(host,"div9")
-            .setLeft(380)
-            .setTop(100)
-            .setWidth(40)
-            .setHeight(20)
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton66")
+                .setLeft(380)
+                .setTop(98)
+                .setWidth(130)
+                .setCaption("enable tips")
+                .onClick("_ctl_sbutton66_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton2713")
-            .setLeft(520)
-            .setTop(10)
-            .setWidth(130)
-            .setCaption("autoColWidth")
-            .onClick("_ctl_sbutton2713_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton351")
+                .setLeft(200)
+                .setTop(98)
+                .setWidth(130)
+                .setCaption("show grid line")
+                .onClick("_ctl_sbutton351_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton2914")
-            .setLeft(520)
-            .setTop(70)
-            .setWidth(130)
-            .setCaption("insertCol")
-            .onClick("_ctl_sbutton2914_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.SButton")
+                .setHost(host,"ctl_sbutton712")
+                .setLeft(380)
+                .setTop(38)
+                .setWidth(130)
+                .setCaption("set a row's height")
+                .onClick("_ctl_sbutton712_onclick")
+                , "e");
             
-            host.ctl_foldingtabs16.append((new xui.UI.SButton())
-            .setHost(host,"ctl_sbutton2915")
-            .setLeft(520)
-            .setTop(100)
-            .setWidth(130)
-            .setCaption("removeCols")
-            .onClick("_ctl_sbutton2915_onclick")
-            , "b");
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.HTMLButton")
+                .setHost(host,"xui_ui_htmlbutton1")
+                .setLeft(542)
+                .setTop(5)
+                .setWidth(130)
+                .setHeight(22)
+                .setHtml("TreeMode(infirstcell)")
+                .onClick("_xui_ui_htmlbutton1_onclick")
+                , "e");
+            
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.HTMLButton")
+                .setHost(host,"xui_ui_htmlbutton2")
+                .setLeft(540)
+                .setTop(40)
+                .setWidth(130)
+                .setHeight(22)
+                .setHtml("TreeMode(inhandler)")
+                .onClick("_xui_ui_htmlbutton2_onclick")
+                , "e");
             
             return children;
-            // ]]Code created by CrossUI RAD Tools
+            // ]]Code created by CrossUI RAD Studio
         },
         _onready:function (com, threadid) {
             this.treegrid
@@ -631,7 +726,7 @@ Class('App', 'xui.Com',{
             this.treegrid.toggleRow("030-7");
         },
         _sbutton253_onclick:function (profile, e, src, value) {
-            this.treegrid.removeRows(['a','b']);
+            this.treegrid.removeRows(['-a','-b']);
             xui.message('Two rows were removed!');
         },
         _sbutton254_onclick:function (profile, e, src, value) {
@@ -644,17 +739,17 @@ Class('App', 'xui.Com',{
             this.treegrid.setRowHandlerWidth(100);
         },
         _sbutton30_onclick:function (profile, e, src, value) {
-            this.treegrid.updateRow('c',{caption:'updated',height:60});
-            this.treegrid.setUIValue('c');
+            this.treegrid.updateRow('-c',{caption:'updated',height:60});
+            this.treegrid.setUIValue('-c');
         },
         _sbutton31_onclick:function (profile, e, src, value) {
             var ctrl=this.treegrid;
-            var row=ctrl.getRowbyRowId('d');
-            ctrl.updateRow('d',{sub:row.sub?null:[]});
-            this.treegrid.setUIValue('d');
+            var row=ctrl.getRowbyRowId('-d');
+            ctrl.updateRow('-d',{sub:row.sub?null:[]});
+            this.treegrid.setUIValue('-d');
         },
         _sbutton32_onclick:function (profile, e, src, value) {
-            this.treegrid.updateRow('d',{cells:["no"]});
+            this.treegrid.updateRow('-d',{cells:["no"]});
             this.treegrid.updateRow('030-7',{group:true});
             this.treegrid.setUIValue('030-7');
         },
@@ -711,6 +806,12 @@ Class('App', 'xui.Com',{
         },
         _ctl_sbutton2915_onclick:function (profile, e, src, value){
             this.treegrid.removeCols(["orderDate","progress"]);
+        },
+        _xui_ui_htmlbutton2_onclick:function (profile, e, value){
+            this.treegrid.setTreeMode("inhandler");
+        },
+        _xui_ui_htmlbutton1_onclick:function (profile, e, value){
+            this.treegrid.setTreeMode("infirstcell");
         }
     }
 });
