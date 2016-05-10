@@ -1,16 +1,18 @@
 1) Separated xui.APICaller from xui.DataBinder
-2) Added Form-function to all Container controls
+2) Added Form-functions(submit/reset) to any Container
 3) Remvoed xui.UI.Tag
-4) Added xui.UI.HiddrenInput Control.
+4) Added xui.UI.HiddrenInput Control
 5) Added conDockPadding / conDockSpacing / conDockFlexFill / conDockFlowStretch for docker container
 6) Added dockFlowStretch for docker
 7) Modify xui.Com to xui.Module; xui.ComFactory to xui.ModuleFactory
-8) Enabled the UI Builder to support reusable modules
+8) Add freezeColumn property to xui.UI.TreeGrid
+9) Enabled the UI Builder to support reusable modules
 
-Updated to NWJS 13.0
 
+Updated to NWJS 15.0
 
 Updated to Codemirror 5.13, and using sublime Text bindings
+
 Update Raphael to 2.2
 
 
