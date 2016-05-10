@@ -2678,7 +2678,7 @@ _.set(xui.Locale,["en","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});_.asyRun(function(){div.remove();},5000);"
                 ],
-                $memo:"Dependency: xui.UI.Border."
+                $memo:"Dependencies: xui.UI.Border."
             },
             removeBorder:{
                 $desc:"To remove an existing border from the first element. ",
@@ -2686,7 +2686,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependency: xui.UI.Border."
+                $memo:"Dependencies: xui.UI.Border."
             },
             addResizer:{
                 $desc:"To add a resizer to the first element. ",
@@ -2701,7 +2701,7 @@ _.set(xui.Locale,["en","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();_.asyRun(function(){div.remove();},10000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});_.asyRun(function(){div.remove();},10000);"
                 ],
-                $memo:"Dependency: xui.UI.Resizer."
+                $memo:"Dependencies: xui.UI.Resizer."
             },
             removeResizer:{
                 $desc:"To remove an existing resizer from the first element. ",
@@ -2709,7 +2709,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependency: xui.UI.Resizer."
+                $memo:"Dependencies: xui.UI.Resizer."
             },
             addShadow:{
                 $desc:"To add a shadow to the first element. ",
@@ -2722,7 +2722,7 @@ _.set(xui.Locale,["en","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove();},10000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove();},10000);"
                 ],
-                $memo:"Dependency: xui.UI.Shadow."
+                $memo:"Dependencies: xui.UI.Shadow."
             },
             removeShadow:{
                 $desc:"To remove an existing shadow from the first element. ",
@@ -2730,7 +2730,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow();},1000);_.asyRun(function(){div.removeShadow();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependency: xui.UI.Shadow."
+                $memo:"Dependencies: xui.UI.Shadow."
             },
             addClass:{
                 $desc:"To add a specified class name to each of the current elements.",
@@ -3155,7 +3155,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).onMousedown(function(p,e,s){xui(s).startDrag(e)})"+
                     "}"
                 ],
-                $memo:"Dependency: xui.DragDrop."
+                $memo:"Dependencies: xui.DragDrop."
             },
             draggable:{
                 $desc:"Enables/Disables the draggable functionality on the set of elements.",
@@ -3181,7 +3181,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id+'i').draggable(true,{maxLeftOffset:50,maxTopOffset:50,maxRightOffset:50,maxBottomOffset:50,targetReposition:false});"+
                     "}"
                 ],
-                $memo:"Dependency: xui.DragDrop."
+                $memo:"Dependencies: xui.DragDrop."
             },
             droppable:{
                 $desc:"Enables/Disables the droppable functionality on the set of elements.",
@@ -3195,7 +3195,7 @@ _.set(xui.Locale,["en","app"], {
                     "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.DragDrop.getProfile().dragData);})"+
                     "}"
                 ],
-                $memo:"Dependency: xui.DragDrop."
+                $memo:"Dependencies: xui.DragDrop."
             },
             empty:{
                 $desc:"Removes all child nodes from the set of elements.",
@@ -5136,8 +5136,8 @@ _.set(xui.Locale,["en","app"], {
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
                 "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
-                "module.base=['xui.UI','xui.Date'];"+
-                "module.required=['xui.UI.Dialog','xui.UI.Button'];"+
+                "module.Dependencies=['xui.UI','xui.Date'];"+
+                "module.Required=['xui.UI.Dialog','xui.UI.Button'];"+
                 "module.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
                 "module.iniResource=function(){order.push('iniResource'); };"+
                 "module.iniExModules=function(){order.push('iniExModules'); };"+
@@ -5152,8 +5152,8 @@ _.set(xui.Locale,["en","app"], {
 
                 "Class('App1','xui.Module',{" +
                 "    Instance:{" +
-                "        base : ['xui.UI', 'xui.Date']," +
-                "        required : ['xui.UI.Dialog', 'xui.UI.Button']," +
+                "        Dependencies : ['xui.UI', 'xui.Date']," +
+                "        Required : ['xui.UI.Dialog', 'xui.UI.Button']," +
                 "        events:{" +
                 "            beforeCreated : function(module){" +
                 "                module._info=[];" +
@@ -5222,8 +5222,8 @@ _.set(xui.Locale,["en","app"], {
 
                 "Class('App2','xui.Module',{" +
                 "    Instance:{" +
-                "        base : ['xui.UI']," +
-                "        required : ['xui.UI.Dialog']," +
+                "        Dependencies : ['xui.UI']," +
+                "        Required : ['xui.UI.Dialog']," +
                 "        events:{" +
                 "            beforeCreated : '_trace'," +
                 "            onCreated : '_trace'," +

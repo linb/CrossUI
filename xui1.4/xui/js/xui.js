@@ -2,19 +2,20 @@
 * CrossUI(xui) JavaScript Library v1.4
 * http://crossui.com
 * 
- * Copyright ( 2004 ~ present) CrossUI.com
- * Released under the MIT license
- *
- */
-//speed up references
+* Copyright ( 2004 ~ present) CrossUI.com
+* Released under the MIT license
+*
+*/
+// speed up references
 undefined;
-//global: time stamp
+// global 1: tools
 _=function(){return +new Date()};
+// global 2: namespace
 Namespace=function(key){
     var a=key.split('.'),w=window;
     return _.get(w, a) || _.set(w, a, {});
 };
-//global: class
+// global 3: class
 Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
         _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
@@ -27,9 +28,9 @@ Class=function(key, pkey, obj){
     for(i=0; t=pkey[i]; i++)
         if(!(_parent[i]=(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
             throw 'errNoParent--'+ t;
-    if(obj.Dependency){
-        if(typeof obj.Dependency == "string")obj.Dependency=[obj.Dependency];
-        for(i=0; t=obj.Dependency[i]; i++)
+    if(obj.Dependencies){
+        if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
+        for(i=0; t=obj.Dependencies[i]; i++)
             if(!(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
                 throw 'errNoDependency--'+ t;
     }
@@ -137,8 +138,10 @@ Class=function(key, pkey, obj){
     //return Class
     return self._last=_this;
 };
-//global: xui
+// global 4: xui
 linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
+
+
 
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
@@ -332,7 +335,7 @@ _.merge(_,{
             cache[k] = _.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
         else delete cache[k];
     },
-    //Dependency: xui.Dom xui.Thread
+    //Dependencies: xui.Dom xui.Thread
     observableRun:function(tasks,onEnd,threadid,busyMsg){
         xui.Thread.observableRun(tasks,onEnd,threadid,busyMsg);
     },
@@ -604,7 +607,7 @@ _.merge(_,{
             return s.length+(null===_t?0:_t.length);
         },
         */
-        //Dependency: xui.Dom
+        //Dependencies: xui.Dom
         toDom:function(str){
             var p=xui.$getGhostDiv(), r=[];
             p.innerHTML=str;
@@ -871,7 +874,7 @@ _.merge(Class, {
     destroy:function(key){Class.__gc(key)}
 });
 
-//function dependency: xui.Dom xui.Thread
+//function Dependencies: xui.Dom xui.Thread
 _.merge(xui,{
     version:1.4,
     $DEFAULTHREF:'javascript:;',
@@ -1301,7 +1304,7 @@ _.merge(xui,{
                 for(var i=0,l=paths.length;i<l;i++){
                     t=xui.SC.get(paths[i]);
                     //collect  required class
-                    if(t && (r=t.required) && r.length){
+                    if(t && (r=t.Required) && r.length){
                         for(var j=0,m=r.length;j<m;j++){
                             if(!xui.SC.get(r[j]))a2.push(r[j]);
                         }
@@ -1416,7 +1419,7 @@ _.merge(xui,{
         }
         return p;
     },
-//for handling dom element
+    //for handling dom element
     $xid:0,
     $registerNode:function(o){
         //get id from cache or id
@@ -2050,8 +2053,220 @@ new function(){
     };
 };
 
-/*xui.Thread
-*  dependency: _ ; Class ; xui
+/*serialize/unserialize
+*/
+new function(){
+    var
+    M ={
+        '\b': '\\b',
+        '\t': '\\t',
+        '\n': '\\n',
+        '\f': '\\f',
+        '\r': '\\r',
+        '\"' : '\\"',
+        '\\': '\\\\',
+        '/': '\\/',
+        '\x0B': '\\u000b'
+    },
+    H={'@window':'window','@this':'this'},
+    // A1/A2 for avoiding IE's lastIndex problem
+    A1=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/ : /[\\\"\x00-\x1f\x7f-\xff]/,
+    A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
+    D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
+    E=function(t,i,a,v,m,n,p){
+        for(i in t)
+            if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
+                m=v[8]&&v[8].charAt(0);
+                if(m!='Z')n=(m=='-'?-1:1)*((+v[9]||0)*60)+(+v[10]||0);
+                else n=0;
+                m=new Date(+v[1],+v[2]-1,+v[3],+v[4],+v[5],+v[6],+v[7]||0);
+                n+=m.getTimezoneOffset();
+                if(n)m.setTime(m.getTime()+n*60000);
+                t[i]=m;
+            }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
+        return t;
+    },
+    R=function(n){return n<10?'0'+n:n},
+
+    F='function',
+    N='number',
+    L='boolean',
+    S='string',
+    O='object',
+    T={},
+    MS=function(x,s){return '.'+((s=x[s]())?s<10?'00'+s:s<100?'0'+s:s:'000')},
+    Z=(function(a,b){a=-(new Date).getTimezoneOffset()/60; b=a>0?'+':'-'; a=''+Math.abs(a); return b+(a.length==1?'0':'')+a+'00'})();
+    T['undefined']=function(){return 'null'};
+    T[L]=function(x){return String(x)};
+    T[N]=function(x){return ((x||x===0)&&isFinite(x))?String(x):'null'};
+    T[S]=function(x){
+        return H[x] ||
+            '"' +
+            (
+            A1.test(x)
+            ?
+            x.replace(A2, function(a,b) {
+                if(b=M[a])return b;
+                return '\\u' + ((b=a.charCodeAt())<16?'000':b<256?'00':b<4096?'0':'')+b.toString(16)
+            })
+            :
+            x
+            )
+            + '"'
+    };
+    T[O]=function(x,filter,dateformat,deep,max){
+        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1});
+        deep=deep||1;
+        max=max||0;
+        if(deep>xui.SERIALIZEMAXLAYER||max>xui.SERIALIZEMAXSIZE)return '"too much recursion!"';
+        max++;
+        if (x){
+            var a=[], b=[], f, i, l, v;
+            if(x===window)return "window";
+            if(x===document)return "document";
+            //for ie alien
+            if((typeof x==O || typeof x==F) && !_.isFun(x.constructor))
+                return x.nodeType? "document.getElementById('"+x.id+"')" :"$alien";
+            else if(_.isArr(x)){
+                a[0] = '[';
+                l = x.length;
+                for(i=0;i<l;++i){
+                    if(typeof filter=='function' && false==filter.call(x,x[i],i))continue;
+                    
+                    if(_.isNaN(v=x[i]))b[b.length]="NaN";
+                    else if(_.isNull(v))b[b.length]="null";
+                    else if(!_.isDefined(v))b[b.length]="undefined";
+                    else if(f=T[typeof v]){
+                        if(typeof (v=f(v,filter,dateformat,deep+1,max))==S)
+                            b[b.length]=v;
+                    }
+                }
+                a[2]=']';
+            }else if(_.isDate(x)){
+                if(dateformat=='utc')
+                    return '"'+ x.getUTCFullYear() + '-' +
+                        R(x.getUTCMonth() + 1) + '-' +
+                         R(x.getUTCDate()) + 'T' +
+                         R(x.getUTCHours()) + ':' +
+                         R(x.getUTCMinutes()) + ':' +
+                         R(x.getUTCSeconds()) +
+                         MS(x,'getUTCMilliseconds')+
+                         'Z"';
+                else if(dateformat=='gmt')
+                    return '"'+ x.getFullYear() + '-' +
+                        R(x.getMonth() + 1) + '-' +
+                         R(x.getDate()) + 'T' +
+                         R(x.getHours()) + ':' +
+                         R(x.getMinutes()) + ':' +
+                         R(x.getSeconds()) +
+                         MS(x,'getMilliseconds')+
+                         Z+'"';
+                else
+                    return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
+            }else if(_.isReg(x)){
+                return String(x);
+            }else{
+                if(typeof x.serialize == F)
+                    x = x.serialize();
+                if(typeof x==O){
+                    if(x.nodeType){
+                        return "document.getElementById('"+x.id+"')";
+                    }else{
+                        a[0] = '{';
+                        for(i in x){
+                            if(map[i] ||
+                                (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i):0))
+                                continue;
+                            if(_.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
+                            else if(_.isNull(v))b[b.length]=T.string(i) + ':' + "null";
+                            else if(!_.isDefined(v))b[b.length]=T.string(i) + ':' + "undefined";
+                            else if (f=T[typeof v]){
+                                if (typeof (v=f(v,filter,dateformat,deep+1,max))==S)
+                                    b[b.length] = T.string(i) + ':' + v;
+                            }
+                        }
+                        a[2]='}';
+                    }
+                }else return String(x);
+            }
+            a[1]=b.join(', ');
+            return a[0]+a[1]+a[2];
+        }
+        return 'null'
+    };
+    T[F]=function(x){return x.$path?x.$path:String(x)};
+
+    //serialize object to string (bool/string/number/array/hash/simple function)
+    _.serialize = function (obj,filter,dateformat){
+        return _.isNaN(obj) ? "NaN" : 
+                    _.isNull(obj) ? "null" : 
+                    !_.isDefined(obj) ? "undefined" :
+                    T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat))||'';
+    };
+    _.stringify = function(obj,filter,dateformat){
+        return _.fromUTF8(_.serialize(obj,filter,dateformat));
+    };
+    //unserialize string to object
+    _.unserialize = function(str, dateformat){
+        if(typeof str !="string")return str;
+        try{
+            str='({_:'+str+'})';
+            str=eval(str);
+            if(dateformat||(xui&&xui.$dateFormat))E(str);
+            str=str._;
+            return str;
+        }catch(e){
+            return false;
+        }
+    };
+};
+
+/*26 based id, some number id can crash opera9
+*/
+new function(){
+    _.id=function(){
+        var self=this, me=arguments.callee;
+        if(self.constructor!==me || self.a)
+            return (me._ || (me._= new me)).next();
+        self.a=[-1];
+        self.b=[''];
+        self.value='';
+    };
+    _.id.prototype = {
+        constructor:_.id,
+        _chars  :"abcdefghijklmnopqrstuvwxyz".split(''),
+        next : function(i){
+            with(this){
+                i = (i||i===0)?i:b.length-1;
+                var m,k,l;
+                if((m=a[i]) >= 25){
+                    m=0;
+                    if(i===0){
+                        a.splice(0,0,1);
+                        b.splice(0,0,'a');
+                        l=a.length;
+                        for(k=1;k<l;++k){
+                            a[k]=0;
+                            b[k]='0';
+                        }
+                        ++i;
+                    }else
+                      next(i-1);
+                }else ++m;
+                a[i]=m;
+                b[i]=_chars[m];
+                return value = b.join('');
+            }
+        }
+    };
+};
+
+
+// Some basic Classes
+
+/*
+*xui.Thread
+*  Dependencies: _ ; Class ; xui
 parameters:
 id: id of this thread, if input null, thread will create a new id
 tasks: [task,task,task ...] or [{},{},{} ...]
@@ -2318,7 +2533,7 @@ Class('xui.Thread',null,{
         isAlive:function(id){
             return !!xui.$cache.thread[id];
         },
-        //Dependency: xui.Dom
+        //Dependencies: xui.Dom
         observableRun:function(tasks,onEnd,threadid,busyMsg){
             var thread=xui.Thread, dom=xui.Dom;
             if(!_.isArr(tasks))tasks=[tasks];
@@ -2385,7 +2600,7 @@ Class('xui.Thread',null,{
 });
 
 /*xui.absIO/ajax
-*  dependency: _ ; Class ; xui ; xui.Thread
+*  Dependencies: _ ; Class ; xui ; xui.Thread
 */
 /*
         get     post    get(cross domain)   post(corss domain)  post file   return big data(corss domain)
@@ -3092,7 +3307,7 @@ Class('xui.IAjax','xui.absIO',{
 });
 
 /*xui.SC for straight call
-*  dependency: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
+*  Dependencies: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
 */
 Class('xui.SC',null,{
     Constructor:function(path, callback, isAsy, threadid, options, force){
@@ -3241,7 +3456,7 @@ Class('xui.SC',null,{
                 try{_.exec(h[i],i)}catch(e){throw e}
             h={};
         },
-        //asy load multi js file, whatever dependency
+        //asy load multi js file, whatever Dependencies
         /*
         *1.busy UI
         *3.xui.SC.groupCall some js/class
@@ -3267,214 +3482,6 @@ Class('xui.SC',null,{
         }
     }
 });
-
-/*serialize/unserialize
-*/
-new function(){
-    var
-    M ={
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
-        '\"' : '\\"',
-        '\\': '\\\\',
-        '/': '\\/',
-        '\x0B': '\\u000b'
-    },
-    H={'@window':'window','@this':'this'},
-    // A1/A2 for avoiding IE's lastIndex problem
-    A1=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/ : /[\\\"\x00-\x1f\x7f-\xff]/,
-    A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
-    D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
-    E=function(t,i,a,v,m,n,p){
-        for(i in t)
-            if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
-                m=v[8]&&v[8].charAt(0);
-                if(m!='Z')n=(m=='-'?-1:1)*((+v[9]||0)*60)+(+v[10]||0);
-                else n=0;
-                m=new Date(+v[1],+v[2]-1,+v[3],+v[4],+v[5],+v[6],+v[7]||0);
-                n+=m.getTimezoneOffset();
-                if(n)m.setTime(m.getTime()+n*60000);
-                t[i]=m;
-            }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
-        return t;
-    },
-    R=function(n){return n<10?'0'+n:n},
-
-    F='function',
-    N='number',
-    L='boolean',
-    S='string',
-    O='object',
-    T={},
-    MS=function(x,s){return '.'+((s=x[s]())?s<10?'00'+s:s<100?'0'+s:s:'000')},
-    Z=(function(a,b){a=-(new Date).getTimezoneOffset()/60; b=a>0?'+':'-'; a=''+Math.abs(a); return b+(a.length==1?'0':'')+a+'00'})();
-    T['undefined']=function(){return 'null'};
-    T[L]=function(x){return String(x)};
-    T[N]=function(x){return ((x||x===0)&&isFinite(x))?String(x):'null'};
-    T[S]=function(x){
-        return H[x] ||
-            '"' +
-            (
-            A1.test(x)
-            ?
-            x.replace(A2, function(a,b) {
-                if(b=M[a])return b;
-                return '\\u' + ((b=a.charCodeAt())<16?'000':b<256?'00':b<4096?'0':'')+b.toString(16)
-            })
-            :
-            x
-            )
-            + '"'
-    };
-    T[O]=function(x,filter,dateformat,deep,max){
-        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1});
-        deep=deep||1;
-        max=max||0;
-        if(deep>xui.SERIALIZEMAXLAYER||max>xui.SERIALIZEMAXSIZE)return '"too much recursion!"';
-        max++;
-        if (x){
-            var a=[], b=[], f, i, l, v;
-            if(x===window)return "window";
-            if(x===document)return "document";
-            //for ie alien
-            if((typeof x==O || typeof x==F) && !_.isFun(x.constructor))
-                return x.nodeType? "document.getElementById('"+x.id+"')" :"$alien";
-            else if(_.isArr(x)){
-                a[0] = '[';
-                l = x.length;
-                for(i=0;i<l;++i){
-                    if(typeof filter=='function' && false==filter.call(x,x[i],i))continue;
-                    
-                    if(_.isNaN(v=x[i]))b[b.length]="NaN";
-                    else if(_.isNull(v))b[b.length]="null";
-                    else if(!_.isDefined(v))b[b.length]="undefined";
-                    else if(f=T[typeof v]){
-                        if(typeof (v=f(v,filter,dateformat,deep+1,max))==S)
-                            b[b.length]=v;
-                    }
-                }
-                a[2]=']';
-            }else if(_.isDate(x)){
-                if(dateformat=='utc')
-                    return '"'+ x.getUTCFullYear() + '-' +
-                        R(x.getUTCMonth() + 1) + '-' +
-                         R(x.getUTCDate()) + 'T' +
-                         R(x.getUTCHours()) + ':' +
-                         R(x.getUTCMinutes()) + ':' +
-                         R(x.getUTCSeconds()) +
-                         MS(x,'getUTCMilliseconds')+
-                         'Z"';
-                else if(dateformat=='gmt')
-                    return '"'+ x.getFullYear() + '-' +
-                        R(x.getMonth() + 1) + '-' +
-                         R(x.getDate()) + 'T' +
-                         R(x.getHours()) + ':' +
-                         R(x.getMinutes()) + ':' +
-                         R(x.getSeconds()) +
-                         MS(x,'getMilliseconds')+
-                         Z+'"';
-                else
-                    return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
-            }else if(_.isReg(x)){
-                return String(x);
-            }else{
-                if(typeof x.serialize == F)
-                    x = x.serialize();
-                if(typeof x==O){
-                    if(x.nodeType){
-                        return "document.getElementById('"+x.id+"')";
-                    }else{
-                        a[0] = '{';
-                        for(i in x){
-                            if(map[i] ||
-                                (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i):0))
-                                continue;
-                            if(_.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
-                            else if(_.isNull(v))b[b.length]=T.string(i) + ':' + "null";
-                            else if(!_.isDefined(v))b[b.length]=T.string(i) + ':' + "undefined";
-                            else if (f=T[typeof v]){
-                                if (typeof (v=f(v,filter,dateformat,deep+1,max))==S)
-                                    b[b.length] = T.string(i) + ':' + v;
-                            }
-                        }
-                        a[2]='}';
-                    }
-                }else return String(x);
-            }
-            a[1]=b.join(', ');
-            return a[0]+a[1]+a[2];
-        }
-        return 'null'
-    };
-    T[F]=function(x){return x.$path?x.$path:String(x)};
-
-    //serialize object to string (bool/string/number/array/hash/simple function)
-    _.serialize = function (obj,filter,dateformat){
-        return _.isNaN(obj) ? "NaN" : 
-                    _.isNull(obj) ? "null" : 
-                    !_.isDefined(obj) ? "undefined" :
-                    T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat))||'';
-    };
-    _.stringify = function(obj,filter,dateformat){
-        return _.fromUTF8(_.serialize(obj,filter,dateformat));
-    };
-    //unserialize string to object
-    _.unserialize = function(str, dateformat){
-        if(typeof str !="string")return str;
-        try{
-            str='({_:'+str+'})';
-            str=eval(str);
-            if(dateformat||(xui&&xui.$dateFormat))E(str);
-            str=str._;
-            return str;
-        }catch(e){
-            return false;
-        }
-    };
-};
-
-/*26 based id, some number id can crash opera9
-*/
-new function(){
-    _.id=function(){
-        var self=this, me=arguments.callee;
-        if(self.constructor!==me || self.a)
-            return (me._ || (me._= new me)).next();
-        self.a=[-1];
-        self.b=[''];
-        self.value='';
-    };
-    _.id.prototype = {
-        constructor:_.id,
-        _chars  :"abcdefghijklmnopqrstuvwxyz".split(''),
-        next : function(i){
-            with(this){
-                i = (i||i===0)?i:b.length-1;
-                var m,k,l;
-                if((m=a[i]) >= 25){
-                    m=0;
-                    if(i===0){
-                        a.splice(0,0,1);
-                        b.splice(0,0,'a');
-                        l=a.length;
-                        for(k=1;k<l;++k){
-                            a[k]=0;
-                            b[k]='0';
-                        }
-                        ++i;
-                    }else
-                      next(i-1);
-                }else ++m;
-                a[i]=m;
-                b[i]=_chars[m];
-                return value = b.join('');
-            }
-        }
-    };
-};
 
 //xui.absBox
 Class('xui.absBox',null, {

@@ -1,5 +1,5 @@
 Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
-    Dependency:['xui.UI.Panel'],
+    Dependencies:['xui.UI.Panel'],
     Instance:{
         addPanel:function(args, col, basePrf, before, type){
             var profile=this.get(0),

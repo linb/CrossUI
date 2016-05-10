@@ -523,9 +523,9 @@ Class('xui.Module','xui.absProfile',{
             }
 
             //base classes
-            if((t=self.dependencies) && t.length)
+            if((t=self.Dependencies) && t.length)
                 funs.push(function(threadid){
-                    xui.require(self.dependencies,null,function(uir,key){
+                    xui.require(self.Dependencies,null,function(uir,key){
                         self._fireEvent('onLoadBaseClass', [uri,key]);
                     },function(){
                         self._fireEvent('onLoadBaseClassErr', _.toArr(arguments));
@@ -541,17 +541,17 @@ Class('xui.Module','xui.absProfile',{
                     });
                 }catch(e){}
                 if(arr.length){
-                    if(self.required&&_.isArr(self.required)){
-                        self.required.concat(arr);
+                    if(self.Required&&_.isArr(self.Required)){
+                        self.Required.concat(arr);
                     }else{
-                        self.required=arr;
+                        self.Required=arr;
                     }
                 }
             }
             //load required class
-            if((t=self.required) && t.length)
+            if((t=self.Required) && t.length)
                 funs.push(function(threadid){
-                    xui.require(self.required,null,function(uri,key){
+                    xui.require(self.Required,null,function(uri,key){
                         self._fireEvent('onLoadRequiredClass', [uri,key]);
                     },function(){
                         self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));

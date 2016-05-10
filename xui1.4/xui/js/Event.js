@@ -1,5 +1,5 @@
 /* event
-*  dependency: base _ ; Class ; xui ;
+*  Dependencies: base _ ; Class ; xui ;
 */
 Class('xui.Event',null,{
     Constructor:function(event,node,fordrag,tid){

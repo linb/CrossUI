@@ -1,5 +1,5 @@
 Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
-    Dependency:['xui.Date'],
+    Dependencies:['xui.Date'],
     Instance:{
         activate:function(){
             this.getSubNode('PRE').focus();

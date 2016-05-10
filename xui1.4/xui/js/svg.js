@@ -1830,10 +1830,27 @@ Class("xui.svg", "xui.UI",{
                 //onClick event
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
+            },
+            onDblclick:function(profile, e, src){
+                if(profile.$inDesign)return false;
+                var p=profile.properties;
+                if(p.disabled)return false;
+                //onClick event
+                if(profile.onDblClick)
+                    return profile.boxing().onDblClick(profile, e, src);
+            },
+            onContextmenu:function(profile, e, src){
+                if(profile.onContextmenu)
+                    return profile.boxing().onContextmenu(profile, e, src)!==false;
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, src){}
+            onClick:function(profile, e, src){},
+            onDblClick:function(profile, e, src){},
+            onContextmenu:function(profile, e, src){},
+            onHotKeydown:null,
+            onHotKeypress:null,
+            onHotKeyup:null
         },
         _beforeSerialized:function(profile){
             var o = arguments.callee.upper.call(this,profile),prop=o.properties;
@@ -2611,6 +2628,18 @@ Class("xui.svg.absComb", "xui.svg",{
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
             },
+            onDblclick:function(profile, e, src){
+                if(profile.$inDesign)return false;
+                var p=profile.properties;
+                if(p.disabled)return false;
+                //onClick event
+                if(profile.onDblClick)
+                    return profile.boxing().onDblClick(profile, e, src);
+            },            
+            onContextmenu:function(profile, e, src){
+                if(profile.onContextmenu)
+                    return profile.boxing().onContextmenu(profile, e, src)!==false;
+            },
             TEXT:{
                 onClick:function(profile, e, src){
                     if(profile.$inDesign)return false;
@@ -2621,11 +2650,22 @@ Class("xui.svg.absComb", "xui.svg",{
                         rtn=profile.boxing().onTextClick(profile, e, src);
                     if(rtn!==false && profile.onClick)
                         return profile.boxing().onClick(profile, e, src);
+                },
+                onDblclick:function(profile, e, src){
+                    if(profile.$inDesign)return false;
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    //onClick event
+                    if(profile.onDblClick)
+                        return profile.boxing().onDblClick(profile, e, src);
+                },
+                onContextmenu:function(profile, e, src){
+                    if(profile.onContextmenu)
+                        return profile.boxing().onContextmenu(profile, e, src)!==false;
                 }
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
             onTextClick:function(profile, e, src){}
         },
         _initAttr2UI:function(prf){
@@ -3460,18 +3500,47 @@ Class("xui.svg.group", "xui.svg.absComb",{
                     case "ellipse":
                         el = paper.ellipse(attr.cx,attr.cy,attr.rx,attr.ry);
                         break;
-                    case "text":
-                        el = paper.text(attr.x, attr.y, attr.text);
-                        break;
                     case "image":
                         el =paper.image(attr.src,attr.x,attr.y,attr.width,attr.height);
                         break;
                     case "path":
                         el =paper.path(attr.path);
                         break;                    
+                    case "text":
+                        el = paper.text(attr.x, attr.y, attr.text);
+                        break;
                     default:
                         return;
                 }
+                var src = xui(this.node).xid();
+                if(type=="text"){
+                    el.click(function(e){
+                        if(prf.$inDesign)return false;
+                        if(prf.properties.disabled)return false;
+                        var rtn;
+                        if(prf.onTextClick)
+                            rtn=prf.boxing().onTextClick(prf, e, src);
+                        if(rtn!==false && prf.onClick)
+                            return prf.boxing().onClick(prf, e, src);
+                    });
+                }else{
+                    el.click(function(e){
+                        if(prf.$inDesign)return false;
+                        if(prf.properties.disabled)return false;
+                        if(prf.onClick)
+                            return prf.boxing().onClick(prf, e, src);
+                    });
+                }
+                el.dblclick(function(e){
+                    if(prf.$inDesign)return false;
+                    if(prf.properties.disabled)return false;
+                    if(prf.onDblClick)
+                        return prf.boxing().onDblClick(prf, e, src);
+                });
+                el.contextmenu(function(e){
+                    if(prf.onContextmenu)
+                        return prf.boxing().onContextmenu(prf, e, src)!==false;
+                });
                 el.node.id=prf.box.KEY+"-"+key+":"+prf.serialId+":";
                 s.push(el);
             });

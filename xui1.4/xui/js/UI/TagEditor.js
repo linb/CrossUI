@@ -1,5 +1,5 @@
 Class("xui.UI.TagEditor", ['xui.UI',"xui.absValue"], {
-    Dependency:['xui.UI.Input'],
+    Dependencies:['xui.UI.Input'],
     Instance:{
         activate:function(){
             // activate the first input

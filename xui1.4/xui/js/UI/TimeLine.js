@@ -1,5 +1,5 @@
 Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
-    Dependency:['xui.Date'],
+    Dependencies:['xui.Date'],
     Instance:{
         _setCtrlValue:function(value){
             if(!value)return;
