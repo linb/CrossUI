@@ -2836,16 +2836,19 @@ Class("xui.UI",  "xui.absObj", {
 
           flag: default flase => no clear not mactched symbols
         */
-        $doTemplate:function(profile, template, properties, tag, result){
+        $doTemplate:function(profile, template, properties, tag, result, index, realtag){
             var self=arguments.callee,
                 s,t,n,
                 x01=xui.UI.$x01,
                 x01r=' \x01 ',
                 str='',
                 isA = _.isArr(properties),
+                // this one maybe a fake tamplate tag, for switch function
                 temp = template[tag||''],
                 r = !result,
                 result= result || [];
+            // get the real tag
+            tag = realtag||tag;
             if(isA){
                 if(typeof temp != 'function')temp = self;
                 for(var i=0;t=properties[i++];)
