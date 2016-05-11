@@ -42105,10 +42105,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     v.width=v._col._pxWidth;
                 })
             });
+            // check freeze row exists?
+            if(profile.properties.freezeRow){
+                var t = profile.getSubNode('ROWS12');
+                if(!t.isEmpty()  && t.query('div','id',/-ROWS12\:/).isEmpty())
+                    delete profile._passFreezeRow;
+            }
 
             //build dom
             var nodes21 = profile._buildItems('rows21', arr),
-                 nodes22 = profile._buildItems('rows22', arr);
+                nodes22 = profile._buildItems('rows22', arr);
             if(temp&&temp.length){
                 var needshowinput=[],arrt=[];
                 _.arr.each(temp,function(o){
@@ -43722,9 +43728,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                             text:'{rows21}'
                                         }
                                     }
-                                },
-                                NAVBAR:{
-                                    tagName:'div'
                                 }
                             },
                             TDBODY22:{
@@ -43840,22 +43843,26 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 rows11:function(profile,template,v,tag,result,index){
+                    if(profile._passFreezeRow)return;
                     if(index > profile.properties.freezeRow)return;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows12:function(profile,template,v,tag,result,index){
+                    if(profile._passFreezeRow)return;
                     if(index > profile.properties.freezeRow)return;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
                 rows21:function(profile,template,v,tag,result,index){
-                    if(index <= profile.properties.freezeRow)return;
+                    if(!profile._passFreezeRow && index <= profile.properties.freezeRow)return;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows22:function(profile,template,v,tag,result,index){
-                    if(index <= profile.properties.freezeRow)return;
+                    if(!profile._passFreezeRow && index <= profile.properties.freezeRow)return;
+                    // *** dont calculate freeeze rows again
+                    profile._passFreezeRow=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
@@ -44217,14 +44224,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  height: '100%',
                  width: '100%'
             },
-            NAVBAR:{
-                display:'block',
-                position:'absolute',
-                left:0,
-                bottom:0,
-                right:0,
-                height:0
-            },
             'HEADER1, HEADER2':{
                 'background-image':  xui.UI.$bg('head.gif'),
                 'background-repeat':'repeat-x',
@@ -44289,7 +44288,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'BODY11, BODY12, BODY21, BODY22':{
                 overflow:'visible',
                 position:'absolute',
-                'padding-bottom':'1px',
                 left:0,
                 top:'0',
                 'font-size':0,
@@ -44654,8 +44652,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.$sl!=l){
                         profile.getSubNodes(['HEADER2','SCROLL12']).scrollLeft(profile.$sl=l);
                     }
-                    if(profile.$st!=t)
+                    if(profile.$st!=t){
                         profile.getSubNode('SCROLL21').get(0).scrollTop=profile.$st=t;
+                        //for IE11's scrollbar bug
+                        if((t=profile.getSubNode('SCROLL21').get(0).scrollTop)!=profile.$st){
+                            node.scrollTop=profile.$st=t;
+                        }                    
+                    }
                 }
             },
             SCROLL21:{
@@ -46100,7 +46103,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             freezeColumn:{
-                ini:0,
+                ini:2,
                 action:function(){
                     this.boxing().refresh();
                     this.box._adjustColsWidth(this);
@@ -48088,39 +48091,64 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!profile.renderId || profile.destroyed)return;
                 
                 var prop = profile.properties,
-                    w = profile.getSubNode("BORDER").width(),
+                    css = profile.getSubNode("BORDER").cssSize(),
+                    width = css.width,
+                    height = css.height,
+
                     //left region
                     w1 = prop.rowHandler?(prop.rowHandlerWidth + 2):0,
                     w2,
                     h1 = profile.getSubNode('HEADER1'),
                     h2 = profile.getSubNode('HEADER2'),
+                    b12 = profile.getSubNode('BODY12'),
+                    b21 = profile.getSubNode('BODY21'),
+                    s11 = profile.getSubNode('SCROLL11'),
+                    s12 = profile.getSubNode('SCROLL12'),
                     s21 = profile.getSubNode('SCROLL21'),
                     s22 = profile.getSubNode('SCROLL22'),
-                    nav = profile.getSubNode('NAVBAR');
+                    rh = h2.height(),
+                    rr = b12.height();
 
+
+
+                // adjust width
+                // left region
                 if(prop.freezeColumn){
                     _.arr.each(prop.header,function(col,i){
                         if(i==prop.freezeColumn)return false;
                         if(!col.hidden)w1 += col.width + 2;
                     });
                 }
-                w2 = w - w1;
+                // for border-bottom
+                if(rr)rr-=1;
+                // for border-right
+                if(w1 && prop.freezeColumn)w1-=1;
+
+                w2 = width - w1;
                 profile._leftregionw = w1;
 
-                nav.width(w1);
-                // h1.width(w1);
+                //h1.width(w1);
                 h2.width(w2);
-                // s21.width(w1);
+                //s21.width(w1);
                 s22.width(w2);
+
                 _.asyRun(function(){
-                    if(s22.isScrollBarShowed('x')){
-                        s21.height(s22.get(0).clientHeight);
-                        nav.height(xui.Dom.getScrollBarSize());
-                    }else{
-                        s21.height(s22.height());
-                        nav.height(0);
+                    b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + "px");
+                    s21.scrollTop(s22.scrollTop());
+                    if(prop.freezeRow){
+                        b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + "px");
+                        s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);
+
+                // adjust height
+                s11.height((rr?rr:0) + "px");
+                s12.height((rr?rr:0) + "px");
+                s21.height((height - rh - rr)+'px');
+                s22.height((height - rh - rr)+'px');
+
+
+                // others
                 s22.css('overflow','hidden');
                 var overflowX=profile.box._adjustRelWith(profile);
 
@@ -48640,58 +48668,53 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         _onresize:function(profile,width,height){
-            var css={}, prop = profile.properties;
-            if(width)css.width=width;
-            if(height)css.height=height;
+            profile.getSubNode('BORDER').cssSize({width:width||null,height:height||null});
 
-            var prop=profile.properties,
-                h1=profile.getSubNode('HEADER1'),
-                h2=profile.getSubNode('HEADER2'),
-                b12=profile.getSubNode('BODY12'),
-                s1=profile.getSubNodes(['SCROLL11','SCROLL12']),
-                s21=profile.getSubNode('SCROLL21'),
-                s22=profile.getSubNode('SCROLL22'),
-                cols=profile.colMap,
-                rw=0,
-                rh=0,
-                rr=0;
+            var prop = profile.properties,
+                w1 = prop.rowHandler?(prop.rowHandlerWidth + 2):0,
+                w2,
+                h1 = profile.getSubNode('HEADER1'),
+                h2 = profile.getSubNode('HEADER2'),
+                b12 = profile.getSubNode('BODY12'),
+                b21 = profile.getSubNode('BODY21'),
+                s11 = profile.getSubNode('SCROLL11'),
+                s12 = profile.getSubNode('SCROLL12'),
+                s21 = profile.getSubNode('SCROLL21'),
+                s22 = profile.getSubNode('SCROLL22'),
+                rh = h2.height(),
+                rr = b12.height();
 
-            profile.getSubNode('BORDER').cssSize(css);
-
-            if(width)h2.width(width);
-            if(height){
-                rh=h2.height() ;
-                rr=b12.height();
-
-                // 1 for border-bottom
-                if(rr)rr-=1;
-            }
-
-            s1.height(rr+"px");
-            // for main region
-            css.height = height?(height - rh - rr):null;
+            // adjust width
             if(width){
-                rw = prop.rowHandler?(prop.rowHandlerWidth + 2):0;
+                // left region
                 if(prop.freezeColumn){
                     _.arr.each(prop.header,function(col,i){
                         if(i==prop.freezeColumn)return false;
-                        if(!col.hidden)rw += col.width + 2;
+                        if(!col.hidden)w1 += col.width + 2;
                     });
                 }
-                css.width = width - rw;
-                //h1.width(rw);
-                h2.width(width - rw);
+                // for border-bottom
+                if(rr)rr-=1;
+                // for border-right
+                if(w1 && prop.freezeColumn)w1-=1;
+
+                w2 = width - w1;
+                profile._leftregionw = w1;
+
+                //h1.width(w1);
+                h2.width(w2);
+                //s21.width(w1);
+                s22.width(w2);
             }
-            s22.cssSize(css);
 
-            // for left region
-            //if(width){
-            //    css.width = rw;
-           // }
-            delete css.width;
-            css.height = (s22.get(0).clientHeight || css.height) + "px";
-            s21.cssSize(css);
 
+            // adjust height
+            if(height){
+                s11.height((rr?rr:0) + "px");
+                s12.height((rr?rr:0) + "px");
+                s21.height((height - rh - rr)+'px');
+                s22.height((height - rh - rr)+'px');
+            }
 
             this._adjustBody(profile,'resize');
         }
