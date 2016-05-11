@@ -1712,7 +1712,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tagName:'tr',
                             TDBODY21:{
                                 tagName:'td',
-                                valign:'top',
                                 SCROLL21:{
                                     $order:1,
                                     tagName:'div',
@@ -1729,7 +1728,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDBODY22:{
                                 tagName:'td',
-                                valign:'top',
                                 SCROLL22:{
                                     $order:1,
                                     tagName:'div',
