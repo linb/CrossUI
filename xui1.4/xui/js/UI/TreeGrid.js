@@ -1680,7 +1680,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 SCROLL11:{
                                     $order:1,
                                     tagName:'div',
-                                    className:'{_freeze}',
+                                    className:'{_rowfreezed} {_columnfreezed}',
                                     BODY11:{
                                         tagName:'div',
                                         ROWS11:{
@@ -1696,7 +1696,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 SCROLL12:{
                                     $order:1,
                                     tagName:'div',
-                                    className:'{_freeze}',
+                                    className:'{_rowfreezed}',
                                     BODY12:{
                                         tagName:'div',
                                         ROWS12:{
@@ -1715,7 +1715,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 SCROLL21:{
                                     $order:1,
                                     tagName:'div',
-                                    className:'{_freeze}',
+                                    className:'{_columnfreezed}',
                                     BODY21:{
                                         tagName:'div',
                                         ROWS21:{
@@ -2255,7 +2255,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'SCROLL11.columnfreezed, SCROLL21.columnfreezed':{
                 'border-right':'1px solid #9a9a9a'
             },
-            'SCROLL11, SCROLL12':{
+            'SCROLL11.rowfreezed, SCROLL12.rowfreezed':{
                 'border-bottom':'1px solid #9a9a9a'
             },
             SCROLL22:{
@@ -2654,7 +2654,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.$st!=t){
                         profile.getSubNode('SCROLL21').get(0).scrollTop=profile.$st=t;
                         //for IE11's scrollbar bug
-                        if((t=profile.getSubNode('SCROLL21').get(0).scrollTop)!=profile.$st){
+                        if((t=profile.getSubNode('SCROLL21').get(0).scrollTop) && t!=profile.$st){
                             node.scrollTop=profile.$st=t;
                         }                    
                     }
@@ -3558,137 +3558,134 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     profile.box._focusEvent(profile, e, src);
                 },
                 onKeydown:function(profile, e, src){
-                    var p = profile.properties,
+                    var akeys={"tab":1,"left":1,"right":1,"up":1,"down":1},
                         keys=xui.Event.getKey(e),
-                        key = keys.key,
-                        shift=keys.shiftKey,
-                        ctrl=keys.ctrlKey,
-                        cur = xui(src),
-                        body21 = profile.getSubNode('BODY21'),
-                        body22 = profile.getSubNode('BODY22'),
-                        keyid=new RegExp("^"+profile.box.$Keys.CELLA+":"+profile.serialId+":"),
-                        hasBody21 = !!body21.offsetWidth() ,
-                        first1 = body21.nextFocus(true, true, false,keyid),
-                        first2= body22.nextFocus(true, true, false,keyid),
-                        first = hasBody21? first1 : first2,
-                        last1 = body21.nextFocus(false, true, false,keyid),
-                        last2 = body22.nextFocus(false, true, false,keyid),
-                        last = last2,
+                        key = keys.key;
 
-                        cell=profile.cellMap[profile.getSubId(src)],
-                        cellNode = cur.parent(),
-                        cellsid = cellNode.parent().id(),
-                        subId = profile.getSubId(cellsid),
-                        inMainRegion = profile.getKey(cellsid) == profile.keys.CELLS2,
-                        row,t;
+                    if(key=='enter'){
+                        xui(src).onClick();
+                        return;
+                    }
 
+                    if(!akeys[key])return;
+
+                    var cell=profile.cellMap[profile.getSubId(src)];
                     if(profile.beforeCellKeydown && false===profile.boxing().beforeCellKeydown(profile,cell,keys)){
                         return false;
                     }
-                    switch(key){
-                    case 'enter':
-                        xui(src).onClick();
-                    break;
-                    //tab to next/pre
-                    case 'tab':
-                        if(shift){
-                            if(src!=first.xid()){
-                                if(inMainRegion && hasBody21 && !cellNode.get(0).previousSibling){
-                                    profile.getSubNode("CELLS1",subId).first(2).focus();
-                                }else if(!inMainRegion && !cellNode.get(0).previousSibling){
-                                    var prev = profile.getSubNode("ROW2",subId).prev();
-                                    if(prev)
-                                        prev.nextFocus(false, true, true,keyid);
-                                }else{
-                                    cur.nextFocus(false,false,true,keyid);
+
+                    // for navigation
+                    var p = profile.properties,
+                        shift=keys.shiftKey,
+                        ctrl=keys.ctrlKey,
+                        cur = xui(src),
+                        body11 = profile.getSubNode('BODY11'),
+                        body12 = profile.getSubNode('BODY12'),
+                        body21 = profile.getSubNode('BODY21'),
+                        body22 = profile.getSubNode('BODY22'),
+                        keyid=new RegExp("^"+profile.box.$Keys.CELLA+":"+profile.serialId+":"),
+                        hasBody12 = !!body12.offsetWidth() ,
+                        hasBody21 = !!body21.offsetWidth() ,
+                        hasBody22 = !!body22.offsetHeight() ,
+                        first11 = body11.nextFocus(true, true, false, keyid),
+                        first12 = body12.nextFocus(true, true, false, keyid),
+                        first21 = body21.nextFocus(true, true, false, keyid),
+                        first22 = body22.nextFocus(true, true, false, keyid),
+                        last11 = body11.nextFocus(false, true, false, keyid),
+                        last12 = body12.nextFocus(false, true, false, keyid),
+                        last21 = body21.nextFocus(false, true, false, keyid),
+                        last22 = body22.nextFocus(false, true, false, keyid),
+                        first = hasBody12 ? hasBody21 ? first11 : first12: hasBody21 ? first21 : first22,
+                        last = body22 ? last22 : body12 ? last12 : body21 ? last21 : last11,
+
+                        
+                        cellNode = cur.parent(),
+                        cellsid = cellNode.parent().id(),
+                        subId = profile.getSubId(cellsid),
+                        row = cell ? cell._row : profile.rowMap[profile.getSubId(src)], 
+                        region = cell ? (cell._row._region + "" + cell._col._region) : (row._region + "1"),
+                        t;
+
+
+                    var toLeft=function(inner){
+                        if(src!=first.xid()){
+                            var ok;
+                            if(!cellNode.get(0).previousSibling || !cellNode.get(0).previousSibling.clientWidth){
+                                switch(region){
+                                    case '11':
+                                    case '21':
+                                        // has right region
+                                        if(hasBody22){
+                                            if(src==first21.xid()){
+                                                last12.focus();
+                                                ok=1;
+                                            }else{
+                                                var prev = profile.getSubNode("ROW2",subId).prev();
+                                                if(prev){
+                                                    prev.nextFocus(false, true, true,keyid);
+                                                    ok=1;
+                                                }
+                                            }
+                                        }                        
+                                    break;
+                                    case '12':
+                                    case '22':
+                                        // has left region
+                                        if(hasBody21){
+                                            profile.getSubNode("CELLS1",subId).last(2).focus();
+                                            ok=1;
+                                        }
+                                    break;
                                 }
-                                return false;
                             }
-                        }else{
-                            if(src!=last.xid()){
-                                if(!inMainRegion && !cellNode.get(0).nextSibling){
-                                    profile.getSubNode("CELLS2",subId).first(2).focus();
-                                }else if(inMainRegion && (!(t=cellNode.get(0).nextSibling)||!t.clientWidth)){
-                                    var next = profile.getSubNode("ROW1",subId).next();
-                                    if(next)
-                                        next.nextFocus(true, true, true,keyid);
-                                }else{
-                                    cur.nextFocus(true,false,true,keyid);
-                                }
-                                return false;
-                            }
-                        }
-                        break;
-                    case 'left':
-                        if(cur.get(0)==first.get(0))
-                            last.focus();
-                        else{
-                            if(inMainRegion && hasBody21 && !cellNode.get(0).previousSibling){
-                                profile.getSubNode("CELLS1",subId).first(2).focus();
-                            }else if(!inMainRegion && !cellNode.get(0).previousSibling){
-                                var prev = profile.getSubNode("ROW2",subId).prev();
-                                if(prev)
-                                    prev.nextFocus(false, true, true,keyid);
-                            }else{
+                            if(!ok){
                                 cur.nextFocus(false,false,true,keyid);
                             }
-                        }
-                        return false;
-                        break;
-                    case 'right':
-                        if(cur.get(0)==last.get(0))
-                            first.focus();
-                        else{
-                            if(!inMainRegion && !cellNode.get(0).nextSibling){
-                                profile.getSubNode("CELLS2",subId).first(2).focus();
-                            }else if(inMainRegion && (!(t=cellNode.get(0).nextSibling)||!t.clientWidth)){
-                                var next = profile.getSubNode("ROW1",subId).next();
-                                if(next)
-                                    next.nextFocus(true, true, true,keyid);
-                            }else{
-                                cur.nextFocus(true,false,true,keyid);
-                            }
-                        }
-                        return false;
-                        break;
-                    case 'up':
-                        if(ctrl){
-                            if(cell)
-                                row=cell._row
-                            else
-                                row=profile.rowMap[profile.getSubId(src)];
-                            if(row && !(p.disabled || row.disabled) && (row.group||row.sub)){
-                                profile.box._getToggleNode(profile, row._serialId).onClick();
-                                return false;
-                            }
-                        }
-                        if(cur.get(0)==first.get(0)){
+                            return false;
+                        }else if(inner){
                             last.focus();
-                            return;
-                        }else if(cur.get(0)==first2.get(0)){
-                            last1.focus();
-                            return;
                         }
-                    case 'down':
-                        if(key=='down'){
-                            if(ctrl){
-                                if(cell)
-                                    row=cell._row
-                                else
-                                    row=profile.rowMap[profile.getSubId(src)];
-                                if(row && !(p.disabled || row.disabled) &&  (row.group||row.sub)){
-                                    profile.box._getToggleNode(profile, row._serialId).onClick();
-                                    return false;
+                    },
+                    toRight=function(inner){
+                        if(src!=last.xid()){
+                            var ok;
+                            if(region=="11"||region=="21" ? !cellNode.get(0).nextSibling : (!(t=cellNode.get(0).nextSibling)||!t.clientWidth)){
+                                switch(region){
+                                    case '11':
+                                    case '21':
+                                        // has right region
+                                        if(hasBody22){
+                                            profile.getSubNode("CELLS2",subId).first(2).focus();
+                                            ok=1;
+                                        }
+                                    break;
+                                    case '12':
+                                    case '22':
+                                        // has left region
+                                        if(hasBody21){
+                                            if(src==last12.xid()){
+                                                first21.focus();
+                                                ok=1;
+                                            }else{
+                                                var next = profile.getSubNode("ROW1",subId).next();
+                                                if(next){
+                                                    next.nextFocus(true, true, true,keyid);
+                                                    ok=1;
+                                                }
+                                            }
+                                        }
+                                    break;
                                 }
                             }
-                            if(cur.get(0)==last.get(0)){
-                                first.focus();
-                                return;
-                            }else if(cur.get(0)==last1.get(0)){
-                                first2.focus();
-                                return;
+                            if(!ok){
+                                cur.nextFocus(true,false,true,keyid);
                             }
+                            return false;
+                        }else if(inner){
+                            first.focus();
                         }
+                    },
+                    verticalNav=function(up){
                         //get no.
                         var count=1,
                             temp = cur.parent().get(0),
@@ -3698,12 +3695,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         //get row
                         temp=cur.parent(2).get(0);
 
-                        //get all rows(include header)
+                        //get all rows
                         if(!profile.$allrowscache2)
                             profile.box._cacheRows(profile);
 
                         //get index
-                        var index = _.arr.indexOf(inMainRegion ? profile.$allrowscache2 : profile.$allrowscache1, temp),
+                        var index = _.arr.indexOf(region=="12"||region=="22" ? profile.$allrowscache2 : profile.$allrowscache1, temp),
                             rowLen = profile.$allrowscache2.length,
                             newLine=0;
 
@@ -3749,7 +3746,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
                         }
                         //get node
-                        var node = xui( (inMainRegion?profile.$allrowscache2:profile.$allrowscache1)[index]).first(),
+                        var node = xui( (region=="12"||region=="22" ? profile.$allrowscache2 : profile.$allrowscache1)[index]).first(),
                             node2=node;
                         // it's normal cell
                         if(count>1)
@@ -3763,7 +3760,86 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // focus
                         if(!node2.isEmpty())
                             node2.focus();
-
+                    },
+                    toUp=function(){
+                        if(src!=first.xid()){
+                            var ok;
+                            if(cur.get(0)==first12.get(0) || cur.get(0)==first22.get(0)){
+                                if(hasBody21){
+                                    last21.focus();
+                                    ok=1;
+                                }else{
+                                    last11.focus();
+                                    ok=1;                                    
+                                }
+                            }
+                            if(!ok){
+                                verticalNav(true);
+                            }
+                        }else{
+                            last.focus();
+                        }
+                    },
+                    toDown=function(){
+                        if(src!=last.xid()){
+                            var ok;
+                            if(cur.get(0)==last11.get(0) || cur.get(0)==last21.get(0)){
+                                if(hasBody12){
+                                    first12.focus();
+                                    ok=1;
+                                }else{
+                                    first22.focus();
+                                    ok=1;                                    
+                                }
+                            }
+                            if(!ok){
+                                verticalNav();
+                            }
+                        }else{
+                            first.focus();
+                        }
+                    };
+                    switch(key){
+                    //tab to next/pre
+                    case 'tab':
+                        if(shift){
+                            if(false===toLeft()){
+                                return false;
+                            }
+                        }else{
+                            if(false===toRight()){
+                                return false;
+                            }
+                        }
+                        break;
+                    case 'left':
+                        if(false===toLeft(true)){
+                            return false;
+                        }
+                        break;
+                    case 'right':
+                        if(false===toRight(true)){
+                            return false;
+                        }
+                        break;
+                    case 'up':
+                        if(ctrl){
+                            if(row && !(p.disabled || row.disabled) && (row.group||row.sub)){
+                                profile.box._getToggleNode(profile, row._serialId).onClick();
+                                return false;
+                            }
+                        }
+                        toUp();
+                        return false;
+                        break;
+                    case 'down':
+                        if(ctrl){
+                            if(row && !(p.disabled || row.disabled) &&  (row.group||row.sub)){
+                                profile.box._getToggleNode(profile, row._serialId).onClick();
+                                return false;
+                            }
+                        }
+                        toDown();
                         return false;
                         break;
                     }
@@ -4651,7 +4727,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return !item.tag || !!item.tag.match(/\bheader\b/);
             });
             
-            data._freeze = pro.freezeColumn?'columnfreezed':'';
+            data._columnfreezed = pro.freezeColumn?'columnfreezed':'';
+            data._rowfreezed = pro.freezeRow?'rowfreezed':'';
+            
 
             return data;
         },
