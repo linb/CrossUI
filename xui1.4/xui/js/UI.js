@@ -2851,8 +2851,11 @@ Class("xui.UI",  "xui.absObj", {
             tag = realtag||tag;
             if(isA){
                 if(typeof temp != 'function')temp = self;
-                for(var i=0;t=properties[i++];)
-                    temp(profile, template, t, tag, result, i);
+                for(var i=0;t=properties[i++];){
+                    if(false===temp(profile, template, t, tag, result, i)){
+                        break;
+                    }
+                }
             }else{
                 if(t=properties.object){
                     //[properties] is for xui.Template
@@ -7360,7 +7363,7 @@ new function(){
                     prf=self.get(0), 
                     m,t,parent,subId;
                 
-                if(prf._replaced)return;
+                if(!prf || prf.destroyed || prf._replaced)return;
                 prf._replaced=1;
 
                 if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);

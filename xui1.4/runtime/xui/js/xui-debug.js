@@ -19063,8 +19063,11 @@ Class("xui.UI",  "xui.absObj", {
             tag = realtag||tag;
             if(isA){
                 if(typeof temp != 'function')temp = self;
-                for(var i=0;t=properties[i++];)
-                    temp(profile, template, t, tag, result, i);
+                for(var i=0;t=properties[i++];){
+                    if(false===temp(profile, template, t, tag, result, i)){
+                        break;
+                    }
+                }
             }else{
                 if(t=properties.object){
                     //[properties] is for xui.Template
@@ -23572,7 +23575,7 @@ new function(){
                     prf=self.get(0), 
                     m,t,parent,subId;
                 
-                if(prf._replaced)return;
+                if(!prf || prf.destroyed || prf._replaced)return;
                 prf._replaced=1;
 
                 if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);
@@ -43333,7 +43336,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 var pp=cellNode.parent(),
                     size2 = pp.cssSize(),
-                    baseNode = profile.getSubNode('SCROLL21'),
+                    baseNode = profile.getSubNode('BORDER'),
                     absPos = cellNode.offset(null, pp),
                     absPos2 = pp.offset(null, baseNode);
                 // too small
@@ -43345,7 +43348,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     editor=new xui.UI.ComboInput({type:"input"});
                     profile.$cache_editor['firstCellEditor'] = editor;
                 }
-                editor.setWidth(size2.width - absPos2.left + 2)
+                editor.setWidth(size2.width - absPos.left + 2)
                     .setHeight(size2.height + 2)
                     .setValue(row.value||row.value||"");
 
@@ -43768,18 +43771,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             $submap : {
                 /*the other header in table header*/
                 header1:function(profile,template,v,tag,result,index){
-                    if(index > profile.properties.freezeColumn)return;
-                    profile.colMap[v._serialId]._hregion=1;
+                    if(index > profile.properties.freezeColumn)return false;
+                    profile.colMap[v._serialId]._region=1;
                     tag="header";
                     xui.UI.$doTemplate(profile,template,v,tag, result);
                     return tag;
                 },
                 header2:function(profile,template,v,tag,result,index){
-                    if(index <= profile.properties.freezeColumn)return;
-                    profile.colMap[v._serialId]._hregion=2;
-                    tag="header";
-                    xui.UI.$doTemplate(profile,template,v,tag, result);
-                    return tag;
+                    if(index > profile.properties.freezeColumn){
+                        profile.colMap[v._serialId]._region=2;
+                        tag="header";
+                        xui.UI.$doTemplate(profile,template,v,tag, result);
+                        return tag;
+                    }
                 },
                 header:{
                     HCELL:{
@@ -43805,16 +43809,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 grpCols1:function(profile,template,v,tag,result,index){
-                    if(v.to <= profile.properties.freezeColumn - 1){
-                        profile.colMap[v._serialId]._hregion=1;
-                        tag="grpCols";
-                        xui.UI.$doTemplate(profile,template,v,tag, result);
-                        return tag;
-                    }
+                    if(v.to > profile.properties.freezeColumn - 1)return false;
+                    profile.colMap[v._serialId]._region=1;
+                    tag="grpCols";
+                    xui.UI.$doTemplate(profile,template,v,tag, result);
+                    return tag;
                 },
                 grpCols2:function(profile,template,v,tag,result,index){
                     if(v.to > profile.properties.freezeColumn - 1){
-                        profile.colMap[v._serialId]._hregion=2;
+                        profile.colMap[v._serialId]._region=2;
                         tag="grpCols";
                         xui.UI.$doTemplate(profile,template,v,tag, result);
                         return tag;
@@ -43841,19 +43844,22 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 rows11:function(profile,template,v,tag,result,index){
-                    if(profile._passFreezeRow)return;
-                    if(index > profile.properties.freezeRow)return;
+                    if(profile._passFreezeRow)return false;
+                    if(index > profile.properties.freezeRow)return false;
+                    profile.rowMap[v._serialId]._region=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows12:function(profile,template,v,tag,result,index){
-                    if(profile._passFreezeRow)return;
-                    if(index > profile.properties.freezeRow)return;
+                    if(profile._passFreezeRow)return false;
+                    if(index > profile.properties.freezeRow)return false;
+                    profile.rowMap[v._serialId]._region=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
                 rows21:function(profile,template,v,tag,result,index){
                     if(!profile._passFreezeRow && index <= profile.properties.freezeRow)return;
+                    profile.rowMap[v._serialId]._region=2;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
@@ -43861,6 +43867,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!profile._passFreezeRow && index <= profile.properties.freezeRow)return;
                     // *** dont calculate freeeze rows again
                     profile._passFreezeRow=1;
+                    profile.rowMap[v._serialId]._region=2;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
@@ -45024,6 +45031,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         var a1=[],a2=[], a4=[],t,ff;
                         var a11=[], a12=[], a31=[], a32=[];
                         _.arr.each(rows,function(row){
+                            if(row._region==1)return;
+
                             if(row.sub && row.sub.length>1)
                                 self(profile, row, index, type, sortby, order, null);
                              //for short input
@@ -46101,14 +46110,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             freezeColumn:{
-                ini:2,
+                ini:0,
                 action:function(){
                     this.boxing().refresh();
                     this.box._adjustColsWidth(this);
                 }
             },
             freezeRow:{
-                ini:2,
+                ini:0,
                 action:function(){
                     this.boxing().refresh();
                 }
@@ -47591,13 +47600,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             var editor,
                 grid = this,
-                colId = cell._col.id,
-                ishotrow=cell._row.id==profile.box._temprowid,
+                prop = profile.properties,
+                //region = prop.freezeColumn prop.freezeRow
+                col = cell._col,
+                colId = col.id,
+                row = cell._row,
+                rowId = row.id,
+                ishotrow=rowId==profile.box._temprowid,
                 editMode= getPro('editMode'),
                 inline=editMode=="inline",
-                baseNode = profile.getSubNode('SCROLL22'),
+                baseNode = profile.getSubNode('SCROLL' + row._region + col._region),
+                //baseNode = profile.getSubNode('BORDER'),
                 cellNode = profile.getSubNode('CELL', cellId),
-                capNode = profile.properties.treeMode=='infirstcell' && profile.getSubNode('CELLCAPTION', cellId);
+                capNode = prop.treeMode=='infirstcell' && profile.getSubNode('CELLCAPTION', cellId);
 
             if(!inline){
                 //clear the prev editor
@@ -48558,7 +48573,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             _.each(profile.colMap,function(col){
                 if(col.hidden || col._isgroup)return;
                 // ignore left region columns
-                if(col._hregion==1)return;
+                if(col._region==1)return;
 
                 if(!col.flexSize){
                     fixW+=col.width;
