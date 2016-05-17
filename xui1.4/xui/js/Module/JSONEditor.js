@@ -302,9 +302,26 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
             }
 
             ns.fireEvent("onchange", [ns]);        
-        } 
+        },
+        events:{
+            onRender:function(module){
+                module.tg.updateHeader("key", module.properties.keyCaption||"key");
+                module.tg.updateHeader("value", module.properties.valueCaption||"value");
+            }
+        },
+        _setProperties:function(prop){
+            var module=this;
+            if(module.tg && module.tg.getRootNode()){
+                if('keyCaption' in prop) module.tg.updateHeader("key", prop.keyCaption||"");
+                if('valueCaption' in prop) module.tg.updateHeader("value", prop.valueCaption||"");
+            }
+        }
     },
     Static:{
+        $DataModel:{
+            keyCaption:"key",
+            valueCaption:"value"
+        },
         $EventHandlers:{
             onchange:function(module){}
         }

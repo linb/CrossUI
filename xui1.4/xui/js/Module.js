@@ -50,6 +50,16 @@ Class('xui.Module','xui.absProfile',{
             }
             self[v]=k;
         });
+        if('events' in self.prototype){
+            b = self.prototype.events;
+            t= self.prototype._events = self.prototype._events||{};
+            for(i in b){
+                if(t[i]){
+                    if(!_.isArr(t[i]))t[i]=[t[i]];
+                    _.arr.insertAny(t[i],b[i]);
+                }else t[i]=_.clone(b[i]);
+            }
+        }
         self._nameId=0;
         self._namePool={};
         self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
@@ -330,7 +340,9 @@ Class('xui.Module','xui.absProfile',{
         },
         // for inner events
         _fireEvent:function(name, args){
-            var t,o,r,l,self=this;
+            var t,o,r,l,self=this,
+                ti=self._events && self.events[name];
+
             if(self.events && (t=self.events[name])){
                 self.$lastEvent=name;
                 if(t){
@@ -339,6 +351,10 @@ Class('xui.Module','xui.absProfile',{
                     args.splice(0,0,self,self.threadid);
 
                     if(!_.isArr(t))t=[t];
+                    
+                    // for 
+                    if(ti) _.arr.insertAny(t,ti,0);
+
                     l=t.length;
                     for(var i=0;i<l;i++){
                         o=t[i];

@@ -55,6 +55,8 @@ Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             dockMargin:null,
             dockMinW:null,
             dockMinH:null,
+            dockMaxW:null,
+            dockMaxH:null,
             dockFloat:null,
             dockIgnore:null,
             dirtyMark:null,
