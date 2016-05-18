@@ -174,9 +174,10 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
             return array ? '['+a.join(',')+']' : '{'+a.join(',')+'}';
         },
         _tg_onEdit:function(profile, obj, editor, type){
-            editor.getSubNode("INPUT").css("font-size", "16px").scrollTop(0);
+            if(profile.properties.bigFont)
+                editor.getSubNode("INPUT").css("font-size", "16px").scrollTop(0);
         },
-            // for value 
+        // for value 
         _tg_beforeIniEditor:function(profile, obj, cellNode, pNode, type){
             var ns=this;
             if(type!='cell')return;
@@ -301,26 +302,29 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 });
             }
 
-            ns.fireEvent("onchange", [ns]);        
+            ns.fireEvent("onchange", [ns]); 
         },
         events:{
             onRender:function(module){
                 module.tg.updateHeader("key", module.properties.keyCaption||"key");
                 module.tg.updateHeader("value", module.properties.valueCaption||"value");
+                module.tg.updateHeader("value", {type:module.properties.bigFont?'textarea':'input'});
             }
         },
-        _setProperties:function(prop){
+        propSetAction:function(prop){
             var module=this;
-            if(module.tg && module.tg.getRootNode()){
+            if(module.renderId && module.tg && module.tg.getRootNode()){
                 if('keyCaption' in prop) module.tg.updateHeader("key", prop.keyCaption||"");
                 if('valueCaption' in prop) module.tg.updateHeader("value", prop.valueCaption||"");
+                if('bigFont' in prop) module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
             }
         }
     },
     Static:{
         $DataModel:{
             keyCaption:"key",
-            valueCaption:"value"
+            valueCaption:"value",
+            bigFont:true
         },
         $EventHandlers:{
             onchange:function(module){}

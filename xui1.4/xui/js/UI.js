@@ -4691,7 +4691,11 @@ Class("xui.UI",  "xui.absObj", {
 
                                 // adjust width/height first
                                 if(perW || perH){
-                                    var wCount=0,wSum=0,hCount=0,hSum=0,tmp,hMax=0;
+                                    var wCount=0,wSum=0,hCount=0,hSum=0,tmp,hMax=0,adjustMM=function(prop,direction,numb,t){
+                                        if(t=prop['dockMin'+direction])numb=Math.min(t,numb);
+                                        if(t=prop['dockMax'+direction])numb=Math.max(t,numb);
+                                        return numb;
+                                    };
                                     // collect controls (w/h) to be percentaged, no dockIgnore
                                     for(k=0;key=arr[k++];){
                                         target = me[key];
@@ -4701,15 +4705,15 @@ Class("xui.UI",  "xui.absObj", {
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
-                                                        tmp= parseFloat(o.properties.width) || node.width() ;
+                                                        tmp= adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width()) ;
                                                         wSum +=tmp;
                                                         if(o.properties.dock!="fill"){
-                                                            hMax = Math.max(hMax, parseFloat(o.properties.height) || node.height());
+                                                            hMax = Math.max(hMax, adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height()));
                                                         }
                                                     }
                                                     if(perH && (key=='top'||key=='bottom'||key=='height')){
                                                         hCount++;
-                                                        hSum += parseFloat(o.properties.height) || node.height();
+                                                        hSum += adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height());
                                                     }
                                                 }
                                             }
@@ -4728,7 +4732,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!o.properties.dockIgnore){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            node.width(Math.min(1, (parseFloat(o.properties.width) || node.width()) / wSum) * innerW);
+                                                            node.width(Math.min(1, (adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width())) / wSum) * innerW);
                                                         }
                                                     }
                                                 }
@@ -4745,7 +4749,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!o.properties.dockIgnore){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            node.height(Math.min(1, (parseFloat(o.properties.height) || node.height())/ hSum) * innerH);
+                                                            node.height(Math.min(1, (adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height()))/ hSum) * innerH);
                                                         }
                                                     }
                                                 }
@@ -4783,6 +4787,7 @@ Class("xui.UI",  "xui.absObj", {
                                     target = me[key];
                                     var ii=0;
                                     if(target.length){
+                                        delete obj.$prevLeft;
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
                                             if(!o.properties.dockIgnore){
@@ -4951,9 +4956,10 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'top':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width);
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(profile.$dockMaxW=1,  prop.dockMaxW):(delete profile.$dockMaxW, temp));
+                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width)) + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;
+                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
+                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
                                             
                                             tempW = temp - margin.left - margin.right;
                                             if((obj.preX + temp - obj.oX) > obj.ww){
@@ -4987,9 +4993,11 @@ Class("xui.UI",  "xui.absObj", {
                                             left = sStart ? ((flt?0:obj.left)+margin.left) : parseFloat(prop.left);
                                             right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-parseFloat(prop.width)-parseFloat(prop.left));
                                             top=(flt?0:obj.top)+margin.top;
-                                            temp = obj.width - left - right - x;
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(profile.$dockMaxW=1,  prop.dockMaxW):(delete profile.$dockMaxW, temp));
+                                            temp = obj.width - left - right - x + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
+                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
+                                            
 
                                             if(parseFloat(style.left)!=left)region.left=left;
                                             if(parseFloat(style.top)!=top)region.top=top;
@@ -5009,9 +5017,10 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width);
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(profile.$dockMaxW=1,  prop.dockMaxW):(delete profile.$dockMaxW, temp));
+                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width)) + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
+                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
 
                                             tempW = temp - margin.left - margin.right;
                                             if((obj.preX + temp - obj.oX) > obj.ww){
@@ -5047,9 +5056,10 @@ Class("xui.UI",  "xui.absObj", {
                                             right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-parseFloat(prop.width)-parseFloat(prop.left));
                                             bottom=(flt?0:obj.bottom)+margin.bottom;
 
-                                            temp=obj.width - left - right - x;
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(profile.$dockMaxW=1,  prop.dockMaxW):(delete profile.$dockMaxW, temp));
+                                            temp=obj.width - left - right - x + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
+                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
 
                                             if(parseFloat(style.bottom)!=bottom)region.bottom=bottom;
                                             if(parseFloat(style.left)!=left)region.left=left;
@@ -5085,9 +5095,11 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height);
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(profile.$dockMaxH=1,  prop.dockMaxH):(delete profile.$dockMaxH, temp));
+                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height)) + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
+                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
+
 
                                             tempH = temp - margin.top - margin.bottom;
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
@@ -5125,9 +5137,10 @@ Class("xui.UI",  "xui.absObj", {
                                             top=sStart?((flt?0:obj.top)+margin.top):parseFloat(prop.top);
                                             bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
 
-                                            temp=obj.height - top - bottom - y;
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(profile.$dockMaxH=1,  prop.dockMaxH):(delete profile.$dockMaxH, temp));
+                                            temp=obj.height - top - bottom - y + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
+                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
                                             
                                             if(parseFloat(style.left)!=left)region.left=left;
                                             if(parseFloat(style.top)!=top)region.top=top;
@@ -5163,9 +5176,10 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height);
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(profile.$dockMaxH=1,  prop.dockMaxH):(delete profile.$dockMaxH, temp));
+                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height)) + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
+                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
 
                                             tempH = temp - margin.top - margin.bottom;
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
@@ -5203,9 +5217,10 @@ Class("xui.UI",  "xui.absObj", {
                                             top=sStart?((flt?0:obj.top)+margin.top):(parseFloat(prop.top));
                                             bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
 
-                                            temp=obj.height - top - bottom - y;
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(profile.$dockMaxH=1,  prop.dockMaxH):(delete profile.$dockMaxH, temp));
+                                            temp=obj.height - top - bottom - y + (obj.$prevLeft||0);
+                                            delete obj.$prevLeft;                                            
+                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
+                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
                                             
                                             if(parseFloat(style.right)!=right)region.right=right;
                                             if(parseFloat(style.top)!=top)region.top=top;

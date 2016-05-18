@@ -391,9 +391,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         updateRow:function(rowId,options,dirtyMark,triggerEvent){
             var ns=this, 
-                profile = ns.get(0), 
+                orow = ns.getRowbyRowId(rowId);
+            if(!orow)return ns;
+
+            var profile = ns.get(0), 
                 box = profile.box,
-                orow = ns.getRowbyRowId(rowId),
                 prop = profile.properties,
                 pdm = prop.dirtyMark,
                 psdm = pdm && prop.showDirtyMark, 
@@ -1160,6 +1162,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     ns.showColumn(colId, true);
                                 }
                             }
+                        }
+                        if('type' in options){
+                            delete colh.editorCacheKey;
                         }
                     }
 

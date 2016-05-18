@@ -3736,7 +3736,7 @@ Class('xui.Profile','xui.absProfile',{
                 this.properties=key;
             else
                 this.properties[key]=value;
-            if(this._setProperties)this._setProperties(this.properties);
+            if(this.propSetAction)this.propSetAction(this.properties);
         },
         _applySetAction:function(fun, value){
             return fun.call(this,value);

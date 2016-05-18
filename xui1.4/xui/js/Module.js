@@ -50,15 +50,24 @@ Class('xui.Module','xui.absProfile',{
             }
             self[v]=k;
         });
-        if('events' in self.prototype){
-            b = self.prototype.events;
-            t= self.prototype._events = self.prototype._events||{};
+        e = self.prototype;
+        if('_events' in e){
+            b = e._events;
+            // for parents defination
+            t = e._pevents = e._pevents||{};
             for(i in b){
                 if(t[i]){
                     if(!_.isArr(t[i]))t[i]=[t[i]];
                     _.arr.insertAny(t[i],b[i]);
                 }else t[i]=_.clone(b[i]);
             }
+            e._events=null;
+        }
+        if('events' in e){
+            // for class defination
+            e._events=e.events;
+            // for instance
+            e.events={};
         }
         self._nameId=0;
         self._namePool={};
@@ -103,6 +112,9 @@ Class('xui.Module','xui.absProfile',{
         self._ctrlpool={};
         self.events=events;
         self.properties={};
+        if(self._events) self._events = _.clone(self._events);
+        if(self._pevents) self._pevents = _.clone(self._pevents);
+
         self.setProperties(properties);
 
         self._innerCall('initialize');
@@ -221,7 +233,7 @@ Class('xui.Module','xui.absProfile',{
                 }
             }
 
-            if(self._setProperties)self._setProperties(self.properties);
+            if(self.propSetAction)self.propSetAction(self.properties);
 
             return self;
         },
@@ -294,14 +306,16 @@ Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var t,o,r,l,self=this;
-            if(self.events && (t=self.events[name])){
-                if(t && (!_.isArr(t) || t.length)){
-                    var host=host||self.host||self;
+            var o,r,l,
+                self = this,
+                tp = self._pevents && self._pevents[name],
+                ti = self._events && self._events[name],
+                t = self.events && self.events[name],
+                applyEvents=function(self, events, host, args){
                     args=args||[];
-                    if(!_.isArr(t))t=[t];
-                    l=t.length;
-                    if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                    if(!_.isArr(events))events=[events];
+                    l=events.length;
+                    if(_.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
                     var temp={};
                     var n=0,fun=function(data){
                         // set prompt's global var
@@ -309,7 +323,7 @@ Class('xui.Module','xui.absProfile',{
                         //callback from [n]
                         for(j=n;j<l;j++){
                             n=j+1;
-                            o=t[j];
+                            o=events[j];
                             if(typeof o=='string')o=host[o];
                             if(typeof o=='function')r=_.tryF(o, args, host);
                             else if(_.isHash(o)){
@@ -335,36 +349,39 @@ Class('xui.Module','xui.absProfile',{
                         return r;
                     };
                     return fun();
-                }
-            }
+                },
+                host = host||self.host||self;
+            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
+            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
+            if(t && (!_.isArr(t) || events.t))r = applyEvents(self, t, host, args);
+            return r;
         },
         // for inner events
         _fireEvent:function(name, args){
-            var t,o,r,l,self=this,
-                ti=self._events && self.events[name];
-
-            if(self.events && (t=self.events[name])){
-                self.$lastEvent=name;
-                if(t){
-                    var host=self.host||self
+            var o,r,l,
+                self = this,
+                tp = self._pevents && self._pevents[name],
+                ti = self._events && self._events[name],
+                t = self.events && self.events[name],
+                applyEvents=function(self, events, host, args){
+                    self.$lastEvent=name;
                     args=args||[];
                     args.splice(0,0,self,self.threadid);
-
-                    if(!_.isArr(t))t=[t];
-                    
-                    // for 
-                    if(ti) _.arr.insertAny(t,ti,0);
-
-                    l=t.length;
+                    if(!_.isArr(events))events=[events];
+                    l=events.length;
                     for(var i=0;i<l;i++){
-                        o=t[i];
-                        if(typeof o=='string')o=self[o];
+                        o=events[i];
+                        if(typeof o=='string')o=host[o];
                         if(typeof o=='function')r=o.apply(host, args);
-                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,host);
+                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,self);
                     }
-                    return r;
-                }
-            }
+
+                },
+                host = self.host||self;
+            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
+            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
+            if(t && (!_.isArr(t) || events.t))r = applyEvents(self, t, host, args);
+            return r;
         },
         _innerCall:function(name){
             var self=this;
