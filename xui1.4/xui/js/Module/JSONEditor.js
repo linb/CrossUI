@@ -185,7 +185,9 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
 
             var type=obj._row._type;
             if(type=='hash'||type=='array'){
-                obj.$editorValue = xui.Coder.formatText(this._rows2json(obj._row.sub, type=='array'));
+                var str=this._rows2json(obj._row.sub, type=='array');
+                if(xui.Coder)str = xui.Coder.formatText(str);
+                obj.$editorValue = str;
             }else if(type=='string'){
                 var v=_.unserialize(obj.value);
                       //number
