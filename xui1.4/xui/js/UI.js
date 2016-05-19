@@ -5725,13 +5725,13 @@ Class("xui.absList", "xui.absObj",{
                 //profile.properties.value=null;
             });
         },
-        updateItem:function(subId,options){
-            subId+='';
+        updateItem:function(itemId,options){
+            itemId=_.isHash(itemId)?itemId.id:(itemId+'');
             var self=this,
                 profile=self.get(0),
                 box=profile.box,
                 items=profile.properties.items,
-                rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
+                rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===itemId:o==itemId},true,true,true),
                 nid,item,serialId,arr,node,oldsub,t;
             if(!_.isHash(options))options={caption:options+''};
 
@@ -5744,13 +5744,13 @@ Class("xui.absList", "xui.absObj",{
 
                 // [[modify id
                 if(_.isSet(options.id))options.id+="";
-                if(options.id && subId!==options.id){
+                if(options.id && itemId!==options.id){
                     nid=options.id;
                     var m2=profile.ItemIdMapSubSerialId, v;
                     if(!m2[nid]){
-                        if(v=m2[subId]){
+                        if(v=m2[itemId]){
                             m2[nid]=v;
-                            delete m2[subId];
+                            delete m2[itemId];
                             profile.SubSerialIdMapItem[v].id=nid;
                         }else{
                             item.id=nid;
@@ -5764,7 +5764,7 @@ Class("xui.absList", "xui.absObj",{
                 //]]
                 
                 //in dom already?
-                node=profile.getSubNodeByItemId('ITEM',nid || subId);
+                node=profile.getSubNodeByItemId('ITEM',nid || itemId);
                 if(!node.isEmpty()){
                     //for the sub node
                     if('sub' in options){
@@ -5783,26 +5783,26 @@ Class("xui.absList", "xui.absObj",{
                     }
                     // keep sub nodes
                     else if(item.sub){
-                        oldsub=profile.getSubNodeByItemId('SUB',nid || subId);
+                        oldsub=profile.getSubNodeByItemId('SUB',nid || itemId);
                     }
                     
                     //merge options
                     _.merge(item, options, 'all');
                     //prepared already?
-                    serialId=_.get(profile,['ItemIdMapSubSerialId',nid || subId]);
+                    serialId=_.get(profile,['ItemIdMapSubSerialId',nid || itemId]);
                     arr=box._prepareItems(profile, [item],item._pid,false, serialId);
                     node.replace(profile._buildItems(arguments[2]||'items', arr),false);
 
                     // restore sub nodes
                     if(oldsub && !oldsub.isEmpty()){
-                        if(!(t=profile.getSubNodeByItemId('SUB',nid || subId)).isEmpty())
+                        if(!(t=profile.getSubNodeByItemId('SUB',nid || itemId)).isEmpty())
                             t.replace(oldsub);
                     }
                     if(typeof self.setUIValue=='function'){
                         var uiv=profile.properties.$UIvalue||"", arr=(''+uiv).split(profile.properties.valueSeparator);
-                        if(arr.length && _.arr.indexOf(arr, subId)!=-1){
+                        if(arr.length && _.arr.indexOf(arr, itemId)!=-1){
                             if(nid){
-                                _.arr.removeValue(arr,subId);
+                                _.arr.removeValue(arr,itemId);
                                 arr.push(item.id);
                                 // id changed
                                 self.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'update');
@@ -5842,24 +5842,24 @@ Class("xui.absList", "xui.absObj",{
                     }
                     if(!_.isEmpty(hash)){
                         _.arr.each(box.$Behaviors.PanelKeys,function(k){
-                            panel=profile.getSubNode(k,nid || subId).css(hash);
+                            panel=profile.getSubNode(k,nid || itemId).css(hash);
                         });
                     }
                 }
             }
             return self;
         },
-        hideItems:function(subId){
+        hideItems:function(itemId){
             return this.each(function(profile){
-                _.arr.each(_.isArr(subId)?subId:(subId+"").split(profile.properties.valueSeparator),function(i){
+                _.arr.each(_.isHash(itemId)?itemId.id:_.isArr(itemId)?itemId:(itemId+"").split(profile.properties.valueSeparator),function(i){
                     if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
                         i.css('display','none');
                 });
             });
         },
-        showItems:function(subId){
+        showItems:function(itemId){
             return this.each(function(profile){
-                _.arr.each(_.isArr(subId)?subId:(subId+"").split(profile.properties.valueSeparator),function(i){
+                _.arr.each(_.isHash(itemId)?itemId.id:_.isArr(itemId)?itemId:(itemId+"").split(profile.properties.valueSeparator),function(i){
                     if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
                         i.css('display','');
                 });
@@ -5878,15 +5878,16 @@ Class("xui.absList", "xui.absObj",{
             }else
                 return v;
         },
-        selectItem:function(subId){
-            return this.fireItemClickEvent(subId);
+        selectItem:function(itemId){
+            return this.fireItemClickEvent(_.isHash(itemId)?itemId.id:(itemId+''));
         },
-        fireItemClickEvent:function(subId){
-            subId+="";
-            this.getSubNodeByItemId(this.constructor._focusNodeKey, subId).onClick();
+        fireItemClickEvent:function(itemId){
+            itemId=_.isHash(itemId)?itemId.id:(itemId+'');
+            this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).onClick();
             return this;
         },
         editItem:function(itemId){
+            itemId=_.isHash(itemId)?subId.id:(itemId+'');
             var profile=this.get(0),item,source;
             if(profile&&profile.renderId&&!profile.destroyed){
                 if(item=profile.getItemByItemId(itemId)){
@@ -5949,6 +5950,24 @@ Class("xui.absList", "xui.absObj",{
                 }
             }
             return this;
+        },
+        getSelectedItem:function(){
+            var uiv=this.getUIValue(true),
+                prf=this.get(0),
+                items=[],
+                item;
+            if(_.isArr(uiv)){
+                if(uiv.length){
+                    _.arr.each(uiv,function(id){
+                        if(item=prf.getItemByItemId(id)){
+                            items.push(item);
+                        }
+                    });
+                    return items;
+                }
+            } else if (uiv){
+                return prf.getItemByItemId(uiv);
+            }
         }
     },
     Initialize:function(){
