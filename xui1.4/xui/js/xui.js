@@ -1163,7 +1163,7 @@ _.merge(xui,{
     _getrpc:function(uri,query,options){
         return (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
         // include a file => IAjax
-        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || d[i].$xuiFileCtrl)return 1})(query))) ? xui.IAjax
+        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.IAjax
         // post: crossdomain => IAjax, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.IAjax  : xui.Ajax
         // get : crossdomain => SAjax, else Ajax

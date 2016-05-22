@@ -178,7 +178,7 @@ html, .xui-uibg-base{
 }
 .xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
 .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore{
-    width:28px;
+    width:16px;
     height:16px;
 }
 .xui-uicmd-toggle, .xui-uicmd-toggle2{

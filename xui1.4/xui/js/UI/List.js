@@ -662,7 +662,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             continue;
                         }
                     }else{
-                        if(item.tag && item.tag.match((new RegExp("\\b"+"nocmd-" + c.id + "\\b"))) )
+                        if(item.tag && item.tag.match((new RegExp("\\b" + "no~" + c.id + "\\b"))) )
                             continue;
                     }
 

@@ -5682,8 +5682,8 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
-                 arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
-                _.arr.each(arr,function(o,i){arr[i]=''+o});
+                 arr = _.isHash(arr)?[arr.id+'']:_.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
+                _.arr.each(arr,function(o,i){arr[i]=''+(_.isHash(o)?o.id:o)});
                 // clear properties
                 remove(profile, p.items, arr, data);
                 // clear value

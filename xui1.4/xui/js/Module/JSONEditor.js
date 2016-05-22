@@ -311,6 +311,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 module.tg.updateHeader("key", module.properties.keyCaption||"key");
                 module.tg.updateHeader("value", module.properties.valueCaption||"value");
                 module.tg.updateHeader("value", {type:module.properties.bigFont?'textarea':'input'});
+                
+                if('value' in module.properties) module.setValue(module.properties.value);
             }
         },
         propSetAction:function(prop){
@@ -319,6 +321,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 if('keyCaption' in prop) module.tg.updateHeader("key", prop.keyCaption||"");
                 if('valueCaption' in prop) module.tg.updateHeader("value", prop.valueCaption||"");
                 if('bigFont' in prop) module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
+
+                if('value' in prop) module.setValue(prop.value);
             }
         }
     },

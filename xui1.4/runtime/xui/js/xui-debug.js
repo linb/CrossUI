@@ -1163,7 +1163,7 @@ _.merge(xui,{
     _getrpc:function(uri,query,options){
         return (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
         // include a file => IAjax
-        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || d[i].$xuiFileCtrl)return 1})(query))) ? xui.IAjax
+        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.IAjax
         // post: crossdomain => IAjax, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.IAjax  : xui.Ajax
         // get : crossdomain => SAjax, else Ajax
@@ -4570,10 +4570,7 @@ Class("xui.Timer","xui.absObj",{
             _.merge(options, rMap, 'all');
             options.proxyType=proxyType;
 
-            var ajax=xui._getrpc(queryURL, queryArgs, options).apply(null, [
-                queryURL,
-                queryArgs,
-                function(rspData){
+            var ajax,onSuccess = function(rspData){
                     var mapb;
 
                     // Normally, Gives a change to modify the "rspData" format for XML
@@ -4592,28 +4589,37 @@ Class("xui.Timer","xui.absObj",{
                    if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
                    _.tryF(onSuccess,arguments,this);
                 },
-                function(rspData){
+                onFail = function(rspData){
                    if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                    if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
                     _.tryF(onFail,arguments,this);
                 },
-                threadid,
-                options]
-            );
+                mocker = xui.APICaller.Mocker;
+            if(mocker){
+                //
+                // remoteSericeURL
+                // mockerDir
+                // endpoints
+                //      req
+                // structrue
+                //
+                var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'');                
+                if(mocker.endpoints && mocker.endpoints[endPoint]){
+                    ajax = xui.Ajax(mocker.mockerDir.replace(/[/]+$/,'') + "/" + endPoint, _() + "-" + xui.Ajax.uid, onSuccess, onFail,threadid, _.merge({asy:true},options,'without'));
+                }
+            }
+
+            if(!ajax){
+                ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, onSuccess, onFail, threadid, options]);
+            }
             if(mode=="busy")
-                _.observableRun(function(threadid){
+                _.observableRun(function(){
                     ajax.start();
                 });
             else if(mode=="return")
                 return ajax;
             else
                 ajax.start();
-        },
-        getParent:function(){
-            return this.parent && this.parent.boxing();
-        },
-        getChildrenId:function(){
-            return this.childrenId;
         }
     },
     Static:{
@@ -4648,7 +4654,6 @@ Class("xui.Timer","xui.absObj",{
             }while(i<str.length);
             return arr.join('');
         },
-        
         _beforeSerialized:function(profile){
             var o={};
             _.merge(o, profile, 'all');
@@ -21927,8 +21932,8 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
-                 arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
-                _.arr.each(arr,function(o,i){arr[i]=''+o});
+                 arr = _.isHash(arr)?[arr.id+'']:_.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
+                _.arr.each(arr,function(o,i){arr[i]=''+(_.isHash(o)?o.id:o)});
                 // clear properties
                 remove(profile, p.items, arr, data);
                 // clear value
@@ -34709,7 +34714,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             continue;
                         }
                     }else{
-                        if(item.tag && item.tag.match((new RegExp("\\b"+"nocmd-" + c.id + "\\b"))) )
+                        if(item.tag && item.tag.match((new RegExp("\\b" + "no~" + c.id + "\\b"))) )
                             continue;
                     }
 

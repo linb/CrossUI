@@ -178,10 +178,7 @@ Class("xui.APICaller","xui.absObj",{
             _.merge(options, rMap, 'all');
             options.proxyType=proxyType;
 
-            var ajax=xui._getrpc(queryURL, queryArgs, options).apply(null, [
-                queryURL,
-                queryArgs,
-                function(rspData){
+            var ajax,onSuccess = function(rspData){
                     var mapb;
 
                     // Normally, Gives a change to modify the "rspData" format for XML
@@ -200,28 +197,37 @@ Class("xui.APICaller","xui.absObj",{
                    if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
                    _.tryF(onSuccess,arguments,this);
                 },
-                function(rspData){
+                onFail = function(rspData){
                    if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                    if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
                     _.tryF(onFail,arguments,this);
                 },
-                threadid,
-                options]
-            );
+                mocker = xui.APICaller.Mocker;
+            if(mocker){
+                //
+                // remoteSericeURL
+                // mockerDir
+                // endpoints
+                //      req
+                // structrue
+                //
+                var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'');                
+                if(mocker.endpoints && mocker.endpoints[endPoint]){
+                    ajax = xui.Ajax(mocker.mockerDir.replace(/[/]+$/,'') + "/" + endPoint, _() + "-" + xui.Ajax.uid, onSuccess, onFail,threadid, _.merge({asy:true},options,'without'));
+                }
+            }
+
+            if(!ajax){
+                ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, onSuccess, onFail, threadid, options]);
+            }
             if(mode=="busy")
-                _.observableRun(function(threadid){
+                _.observableRun(function(){
                     ajax.start();
                 });
             else if(mode=="return")
                 return ajax;
             else
                 ajax.start();
-        },
-        getParent:function(){
-            return this.parent && this.parent.boxing();
-        },
-        getChildrenId:function(){
-            return this.childrenId;
         }
     },
     Static:{
@@ -256,7 +262,6 @@ Class("xui.APICaller","xui.absObj",{
             }while(i<str.length);
             return arr.join('');
         },
-        
         _beforeSerialized:function(profile){
             var o={};
             _.merge(o, profile, 'all');
