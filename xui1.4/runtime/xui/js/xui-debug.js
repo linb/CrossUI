@@ -4455,21 +4455,23 @@ Class("xui.Timer","xui.absObj",{
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 queryURL=prop.queryURL,
-                queryUserName=prop.queryUserName;
-                queryPasswrod=prop.queryPasswrod;
+                proxyType=prop.proxyType;
+                queryUserName=prop.queryUserName,
+                queryPasswrod=prop.queryPasswrod,
                 queryArgs=_.copy(prop.queryArgs),
                 OAuth2Token=prop.OAuth2Token,
                 queryOptions=_.copy(prop.queryOptions);
 
-            if(requestType=="FORM")
-                    queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(proxyType=="JSONP") proxyType="sajax";
+            else if(proxyType=="IFRAME") proxyType="iajax";
+            if(requestType=="FORM") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
 
             // for auto adjusting options
-            var proxyType,rMap={header:{}};
+            var rMap={header:{}};
             if(responseType=='SOAP'||requestType=='SOAP'){
                 // for wsdl
                 if(!con.WDSLCache)con.WDSLCache={};
@@ -4570,48 +4572,45 @@ Class("xui.Timer","xui.absObj",{
             _.merge(options, rMap, 'all');
             options.proxyType=proxyType;
 
-            var ajax,onSuccess = function(rspData){
-                    var mapb;
-
-                    // Normally, Gives a change to modify the "rspData" format for XML
-                    if(prf.afterInvoke){
-                        mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                        if(_.isSet(mapb))rspData=mapb;
-                        mapb=null;
-                    }
-                    // ensure to json
-                    if(!_.isHash(rspData) && !_.isStr(rspData)){
-                        if(responseType=="XML")
-                            rspData=xui.XMLRPC.parseResponse(rspData);
-                        else if(responseType=="SOAP")
-                            rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
-                    }
-                   if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
-                   _.tryF(onSuccess,arguments,this);
-                },
-                onFail = function(rspData){
-                   if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                   if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
-                    _.tryF(onFail,arguments,this);
-                },
-                mocker = xui.APICaller.Mocker;
+            // If there's mocker, we need try to adjust queryURL and other args
+            var mocker = xui.APICaller.Mocker;
             if(mocker){
                 //
                 // remoteSericeURL
-                // mockerDir
+                // mockerURL
                 // endpoints
-                //      req
-                // structrue
-                //
-                var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'');                
+                
+                // remvoe header / and tail /
+                var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
                 if(mocker.endpoints && mocker.endpoints[endPoint]){
-                    ajax = xui.Ajax(mocker.mockerDir.replace(/[/]+$/,'') + "/" + endPoint, _() + "-" + xui.Ajax.uid, onSuccess, onFail,threadid, _.merge({asy:true},options,'without'));
+                    queryURL = mocker.mockerURL.replace(/[/]+$/,'') + "/" + endPoint;
                 }
             }
 
-            if(!ajax){
-                ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, onSuccess, onFail, threadid, options]);
-            }
+            var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
+                var mapb;
+
+                // Normally, Gives a change to modify the "rspData" format for XML
+                if(prf.afterInvoke){
+                    mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                    if(_.isSet(mapb))rspData=mapb;
+                    mapb=null;
+                }
+                // ensure to json
+                if(!_.isHash(rspData) && !_.isStr(rspData)){
+                    if(responseType=="XML")
+                        rspData=xui.XMLRPC.parseResponse(rspData);
+                    else if(responseType=="SOAP")
+                        rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
+                }
+               if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
+               _.tryF(onSuccess,arguments,this);
+            }, function(rspData){
+               if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+               if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
+                _.tryF(onFail,arguments,this);
+            }, threadid, options]);
+
             if(mode=="busy")
                 _.observableRun(function(){
                     ajax.start();
@@ -4694,7 +4693,7 @@ Class("xui.Timer","xui.absObj",{
             },
             proxyType:{
                 ini:"auto",
-                listbox:["auto","Ajax","SAjax","IAjax"]
+                listbox:["auto","AJAX","JSONP","IFRAME"]
             },
             "name":{
                 set:function(value){
@@ -4725,7 +4724,7 @@ Class("xui.Timer","xui.absObj",{
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
-                    this.read(function(d){
+                    this.invoke(function(d){
                         xui.alert("onData",_.stringify(d));
                     },function(e){
                         xui.alert("onError",_.stringify(e));
@@ -5103,7 +5102,7 @@ Class("xui.Timer","xui.absObj",{
     Static:{
         $nameTag:"databinder_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1,tokenParams:1,queryOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1},
         _getBoundElems:function(prf){
             var arr=[];
             _.arr.each(prf._n,function(profile){
@@ -19620,8 +19619,9 @@ Class("xui.UI",  "xui.absObj", {
                                 return;
                             }
                             var prf=ns.get(0),
-                                  p = prf.properties,
-                                  data = ns.getFormValues(subId);
+                              p = prf.properties,
+                              data = ns.getFormValues(subId),
+                              apicaller;
                             // call before event
                             if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId)){
                                     return;
@@ -19630,9 +19630,16 @@ Class("xui.UI",  "xui.absObj", {
                             if(!ignoreAlert && !ns.checkRequired()){
                                 return;
                             }
-
-                            xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
-
+                            // try to get APICaller
+                            if(xui.APICaller && _.arr.indexOf(['_blank','_self','_parent','_top'],p.formTarget)==-1) {
+                                apicaller = xui.APICaller.getFromName(p.formTarget);
+                            }
+                            if(apicaller){
+                                apicaller.setQueryArgs(data);
+                                apicaller.invoke();
+                            }else{
+                                xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
+                            }
                             // update UI 
                             ns.getFormElements().updateValue();
 
@@ -23775,7 +23782,6 @@ new function(){
             }
         }
     });
-
 };Class("xui.UI.Image", "xui.UI",{
     Initialize:function(){
         var ns=this;

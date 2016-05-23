@@ -3370,8 +3370,9 @@ Class("xui.UI",  "xui.absObj", {
                                 return;
                             }
                             var prf=ns.get(0),
-                                  p = prf.properties,
-                                  data = ns.getFormValues(subId);
+                              p = prf.properties,
+                              data = ns.getFormValues(subId),
+                              apicaller;
                             // call before event
                             if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId)){
                                     return;
@@ -3380,9 +3381,16 @@ Class("xui.UI",  "xui.absObj", {
                             if(!ignoreAlert && !ns.checkRequired()){
                                 return;
                             }
-
-                            xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
-
+                            // try to get APICaller
+                            if(xui.APICaller && _.arr.indexOf(['_blank','_self','_parent','_top'],p.formTarget)==-1) {
+                                apicaller = xui.APICaller.getFromName(p.formTarget);
+                            }
+                            if(apicaller){
+                                apicaller.setQueryArgs(data);
+                                apicaller.invoke();
+                            }else{
+                                xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
+                            }
                             // update UI 
                             ns.getFormElements().updateValue();
 
@@ -7525,5 +7533,4 @@ new function(){
             }
         }
     });
-
 };

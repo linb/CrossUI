@@ -361,7 +361,7 @@ Class("xui.DataBinder","xui.APICaller",{
     Static:{
         $nameTag:"databinder_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1,tokenParams:1,queryOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1},
         _getBoundElems:function(prf){
             var arr=[];
             _.arr.each(prf._n,function(profile){
