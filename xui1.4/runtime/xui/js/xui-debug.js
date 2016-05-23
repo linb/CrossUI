@@ -1172,6 +1172,12 @@ _.merge(xui,{
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return xui._getrpc(uri, query, options).apply(null, arguments).start();
     },
+    ajax:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui.Ajax.apply(null, arguments).start();
+    },
+    jsonp:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui.SAjax.apply(null, arguments).start();
+    },
     restGet:function(uri, query, onSuccess, onFail, threadid,options){
         if(!options) options={};options.method="get";
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
@@ -4603,6 +4609,7 @@ Class("xui.Timer","xui.absObj",{
                     else if(responseType=="SOAP")
                         rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                 }
+
                if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
                _.tryF(onSuccess,arguments,this);
             }, function(rspData){
@@ -4684,6 +4691,9 @@ Class("xui.Timer","xui.absObj",{
                 ini:"JSON",
                 listbox:["JSON","TEXT","XML","SOAP"]
             },
+
+            requestDataSource:null,
+            responseDataTarget:null,
 
             queryArgs:{
                 ini:{}
@@ -19758,7 +19768,7 @@ Class("xui.UI",  "xui.absObj", {
                             },
                             formTarget:{
                                 ini:'_blank',
-                                listbox:['_blank','_self','_parent','_top','[framename]']
+                                combobox:['_blank','_self','_parent','_top','[framename]']
                             },
                            formAction:"",
                            formEnctype:{

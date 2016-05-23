@@ -1172,6 +1172,12 @@ _.merge(xui,{
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return xui._getrpc(uri, query, options).apply(null, arguments).start();
     },
+    ajax:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui.Ajax.apply(null, arguments).start();
+    },
+    jsonp:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui.SAjax.apply(null, arguments).start();
+    },
     restGet:function(uri, query, onSuccess, onFail, threadid,options){
         if(!options) options={};options.method="get";
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();

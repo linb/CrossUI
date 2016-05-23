@@ -211,6 +211,7 @@ Class("xui.APICaller","xui.absObj",{
                     else if(responseType=="SOAP")
                         rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                 }
+
                if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
                _.tryF(onSuccess,arguments,this);
             }, function(rspData){
@@ -292,6 +293,9 @@ Class("xui.APICaller","xui.absObj",{
                 ini:"JSON",
                 listbox:["JSON","TEXT","XML","SOAP"]
             },
+
+            requestDataSource:null,
+            responseDataTarget:null,
 
             queryArgs:{
                 ini:{}

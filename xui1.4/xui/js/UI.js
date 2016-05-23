@@ -3509,7 +3509,7 @@ Class("xui.UI",  "xui.absObj", {
                             },
                             formTarget:{
                                 ini:'_blank',
-                                listbox:['_blank','_self','_parent','_top','[framename]']
+                                combobox:['_blank','_self','_parent','_top','[framename]']
                             },
                            formAction:"",
                            formEnctype:{
