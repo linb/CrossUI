@@ -76,7 +76,11 @@ public class xuiUtils {
 		if(callbackValue!=null){
 		    if(callbackValue.equals("window.name")){
 		        strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
-		    }else{
+		    }
+			else if (oCallback.indexOf(":") != -1){
+		        strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'"+oCallback+"'.replace( /([^:]+:\/\/[^\/]+).*/, '$1'));</script>";
+			}
+			else{
 		        strResponse = callbackValue + '(' + strResponse + ')';
 		    }
 		}

@@ -29,8 +29,8 @@
 <br /><br />
 
                 <div> <button id='ajax_get'>use xui.Ajax 'get'</button> <button id='ajax_post'>use xui.Ajax 'post'</button></div><br />
-                <div> <button id='sajax'>use xui.Sajax</button></div><br />
-                <div> <button id='iajax_get'>use xui.IAjax 'get'</button> <button id='iajax_post'>use xui.IAjax 'post'</button></div><br />
+                <div> <button id='JSONP'>use xui.JSONP</button></div><br />
+                <div> <button id='iajax_get'>use xui.XDMI 'get'</button> <button id='iajax_post'>use xui.XDMI 'post'</button></div><br />
 
 
                 <p style="font-weight:bold">Monitor:</p>
@@ -118,12 +118,12 @@
                             }).start();
                         });
                 });
-                //use xui.SAjax
-                xui('sajax').onClick(function(){
+                //use xui.JSONP
+                xui('JSONP').onClick(function(){
                     var hash=getRequest();
                     if(hash)
                         xui.Thread.observableRun(function(threadid){
-                            xui.SAjax({
+                            xui.JSONP({
                                 uri:xui('uri').get(0).value,
                                 query: hash,
                                 threadid:threadid,
@@ -141,12 +141,12 @@
                             }).start();
                         });
                 });
-                //use xui.IAjax get
+                //use xui.XDMI get
                 xui('iajax_get').onClick(function(){
                     var hash=getRequest();
                     if(hash)
                         xui.Thread.observableRun(function(threadid){
-                            xui.IAjax({
+                            xui.XDMI({
                                 uri:xui('uri').get(0).value,
                                 query: hash,
                                 threadid:threadid,
@@ -166,12 +166,12 @@
                             }).start();
                         });
                 });
-                //use xui.IAjax post
+                //use xui.XDMI post
                 xui('iajax_post').onClick(function(){
                     var hash=getRequest();
                     if(hash)
                         xui.Thread.observableRun(function(threadid){
-                            xui.IAjax({
+                            xui.XDMI({
                                 uri:xui('uri').get(0).value,
                                 query: hash,
                                 threadid:threadid,

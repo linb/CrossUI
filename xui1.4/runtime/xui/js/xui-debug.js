@@ -1161,13 +1161,13 @@ _.merge(xui,{
                    : obj;
     },
     _getrpc:function(uri,query,options){
-        return (options&&options.proxyType) ? (options.proxyType.toLowerCase()=="sajax"?xui.SAjax:options.proxyType.toLowerCase()=="iajax"?xui.IAjax:xui.Ajax)
-        // include a file => IAjax
-        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.IAjax
-        // post: crossdomain => IAjax, else Ajax
-        : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.IAjax  : xui.Ajax
-        // get : crossdomain => SAjax, else Ajax
-        : xui.absIO.isCrossDomain(uri) ? xui.SAjax : xui.Ajax;
+        return (options&&options.proxyType) ? ((options.proxyType.toLowerCase()=="sajax"||options.proxyType.toLowerCase()=="jsonp")?xui.JSONP:(options.proxyType.toLowerCase()=="iajax"||options.proxyType.toLowerCase()=="xdmi")?xui.XDMI:xui.Ajax)
+        // include a file => XDMI
+        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
+        // post: crossdomain => XDMI, else Ajax
+        : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
+        // get : crossdomain => JSONP, else Ajax
+        : xui.absIO.isCrossDomain(uri) ? xui.JSONP : xui.Ajax;
     },
     request:function(uri, query, onSuccess, onFail, threadid, options){
         return xui._getrpc(uri, query, options).apply(null, arguments).start();
@@ -1176,7 +1176,10 @@ _.merge(xui,{
         return xui.Ajax.apply(null, arguments).start();
     },
     jsonp:function(uri, query, onSuccess, onFail, threadid, options){
-        return xui.SAjax.apply(null, arguments).start();
+        return xui.JSONP.apply(null, arguments).start();
+    },
+    xdmi:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui.XDMI.apply(null, arguments).start();
     },
     restGet:function(uri, query, onSuccess, onFail, threadid,options){
         if(!options) options={};options.method="get";
@@ -1208,7 +1211,7 @@ _.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.SAjax(path,_()+"-"+xui.SAjax.uid,onSuccess,onFail,0,options).start()
+                xui.JSONP(path,_()+"-"+xui.JSONP.uid,onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
                 xui.Ajax(path,_()+"-"+xui.Ajax.uid,function(rsp){
@@ -1225,7 +1228,7 @@ _.merge(xui,{
             + '&body= ' + encodeURIComponent(xui.adjustRes(body||""))
             + '&cc= ' + (cc||"")
             + '&bcc= ' + (bcc||"");
-        xui.IAjax(url).start();
+        xui.XDMI(url).start();
     },
     fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
         if(/\//.test(uri) && !/\.js$/i.test(uri))
@@ -1245,7 +1248,7 @@ _.merge(xui,{
         else{
             if(xui.absIO.isCrossDomain(uri)){
                 Class._ignoreNSCache=1;Class._last=null;
-                xui.SAjax(uri,_()+"-"+xui.SAjax.uid,function(){
+                xui.JSONP(uri,_()+"-"+xui.JSONP.uid,function(){
                     if(Class._last)t=c[uri]=Class._last;
                     Class._ignoreNSCache=Class._last=null;
                     if(t)_.tryF(onSuccess, [uri,t.KEY],t);
@@ -2611,8 +2614,8 @@ Class('xui.Thread',null,{
 /*
         get     post    get(cross domain)   post(corss domain)  post file   return big data(corss domain)
 ajax    +       +       -                   -                   -           -
-sajax   +       -       +                   -                   -           *
-iajax   +       +       +                   *                   *           *
+sajax   +       -       +                   -                   -           * JSONP
+iajax   +       +       +                   *                   *           * IDMI
 */
 Class('xui.absIO',null,{
     Constructor:function(uri, query, onSuccess, onFail, threadid, options){
@@ -2771,7 +2774,7 @@ Class('xui.absIO',null,{
         _if:function(doc,id,onLoad){
             var ie8=xui.browser.ie && xui.browser.ver<9,
                 scr=ie8
-                    ? ("<iframe "+(id?("name='"+"xui_IAajax_"+id+"'"):"")+(onLoad?(" onload='xui.IAjax._o(\""+id+"\")'"):"")+">")
+                    ? ("<iframe "+(id?("name='"+"xui_IAajax_"+id+"'"):"")+(onLoad?(" onload='xui.XDMI._o(\""+id+"\")'"):"")+">")
                     : "iframe";
             var n=doc.createElement(scr),w;
             if(id)n.id=n.name="xui_IAajax_"+id;
@@ -2949,8 +2952,8 @@ Class('xui.Ajax','xui.absIO',{
         $asFunction:1
     }
 });
-
-Class('xui.SAjax','xui.absIO',{
+// JSONP
+Class('xui.JSONP','xui.absIO',{
     Instance:{
         start:function(){
             var self=this,id,c=self.constructor, t, n, ok=false;
@@ -2982,8 +2985,8 @@ Class('xui.SAjax','xui.absIO',{
                         if(self.rspType=='script'){
                             if(typeof self.checkKey=='string')
                                 _.asyRun(function(){
-                                    _.exec("if(xui.SC.get('"+self.checkKey+"'))xui.SAjax._pool['"+id+"'][0]._onResponse();" +
-                                        "else xui.SAjax._pool['"+id+"'][0]._loaded();");
+                                    _.exec("if(xui.SC.get('"+self.checkKey+"'))xui.JSONP._pool['"+id+"'][0]._onResponse();" +
+                                        "else xui.JSONP._pool['"+id+"'][0]._loaded();");
                                 });
                             else
                                 self._onResponse();
@@ -3068,7 +3071,7 @@ Class('xui.SAjax','xui.absIO',{
             var self=this;
             _.asyRun(function(){
                 if(self.id && self.constructor._pool[self.id])
-                    self._onError(new Error("SAjax return script doesn't match"));
+                    self._onError(new Error("JSONP return script doesn't match"));
             },500);
         }
     },
@@ -3084,27 +3087,27 @@ Class('xui.SAjax','xui.absIO',{
                     o[i]._onResponse();
                 }
             }else
-                self._onError(new Error("SAjax return value formatting error--"+obj));
+                self._onError(new Error("JSONP return value formatting error--"+obj));
         },
         customQS:function(obj){
             var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
             if(typeof obj=='string')
-                return (obj||"") + (nr?("&" + b + '=xui.SAjax.No._'+this.id):'');
+                return (obj||"") + (nr?("&" + b + '=xui.JSONP.No._'+this.id):'');
             else{
                 if(nr){
-                    obj[b]="xui.SAjax.No._"+this.id;
+                    obj[b]="xui.JSONP.No._"+this.id;
                 }
                 return obj;
             }
         }
     }
 });
-
-Class('xui.IAjax','xui.absIO',{
+// XDMI : Cross-Domain Messaging with iframes
+Class('xui.XDMI','xui.absIO',{
     Instance:{
         _useForm:true,
         start:function(){
-            var self=this,c=self.constructor, i, id, t, n, k, o, b, form,onload;
+            var self=this,w=window,c=self.constructor, i, id, t, n, k, o, b, form,onload;
             if(false===_.tryF(self.beforeStart,[],self)){
                 self._onEnd();
                 return;
@@ -3119,54 +3122,72 @@ Class('xui.IAjax','xui.absIO',{
             else
                 c._pool[id]=[self];
 
-            //use window.name
-            self._onload = onload = function(id){
-                //in some situation, this function will be triggered twice.
-                if(self.OK)return;
-                //in IE/opera, "setting an image file as dummy" will trigger the second onload event with 'self.node == null'
-                if(!self.node)return;
-                var w=self.node.contentWindow,c=xui.IAjax,o,t;
-                //in opera, "set location" will trigger location=='about:blank' at first
-                if(xui.browser.opr)try{if(w.location=='about:blank')return}catch(e){}
-                self.OK=1;
-                // first round: try to syn domain
-                var flag=0;
-                try{if(w.name===undefined)flag=1}catch(e){flag=1}
-                if(flag){
-                    w.location.replace(c._getDummy()+'#'+xui.ini.dummy_tag);
-                }
-
-                // get data
-                (function(){
-                    // second round: try to get data
-                    var flag=0;
-                    try{if(w.name===undefined)flag=1}catch(e){flag=1}
-                    if(flag){
-                        return _.asyRun(arguments.callee);
-                    }
-
-                    var data;
-                    if(("xui_IAajax_"+self.id)==w.name){
-                        //clear first
-                        self._clear();
-                        self._onError(new Error('IAjax no return value'));
-                        return;
-                    }else{
-                        data=w.name;
-                    }
-
-                    if(data && (o=_.unserialize(data)) && (t=c._pool[self.id]) ){
+            // use postmessage
+            if (w['postMessage']) {
+                self._msgcb=function(e){
+                    if(!self.node)return;
+                    var o=e.data,t,obj;
+                    o=self.rspType=="json"?(obj=_.unserialize(o))===false?o:obj:o;
+                    if(t=c._pool[self.id]){
                         for(var i=0,l=t.length;i<l;i++){
                             t[i]._response=o;
                             t[i]._onResponse();
                         }
-                    }else{
-                        //clear first
-                        self._clear();
-                        self._onError(new Error("IAjax return value formatting error, or no matched 'id'-- "+data));
                     }
-                })();
-            };
+                };
+                 if (w.addEventListener) w.addEventListener('message', self._msgcb, false);
+                 else w.attachEvent('onmessage', self._msgcb);
+            }
+            // use window.name
+            else{
+                self._onload = onload = function(id){
+                    //in some situation, this function will be triggered twice.
+                    if(self.OK)return;
+                    //in IE/opera, "setting an image file as dummy" will trigger the second onload event with 'self.node == null'
+                    if(!self.node)return;
+                    var w=self.node.contentWindow,c=xui.XDMI,o,t;
+                    //in opera, "set location" will trigger location=='about:blank' at first
+                    if(xui.browser.opr)try{if(w.location=='about:blank')return}catch(e){}
+                    self.OK=1;
+                    // first round: try to syn domain
+                    var flag=0;
+                    try{if(w.name===undefined)flag=1}catch(e){flag=1}
+                    if(flag){
+                        w.location.replace(c._getDummy()+'#'+xui.ini.dummy_tag);
+                    }
+
+                    // get data
+                    (function(){
+                        // second round: try to get data
+                        var flag=0;
+                        try{if(w.name===undefined)flag=1}catch(e){flag=1}
+                        if(flag){
+                            return _.asyRun(arguments.callee);
+                        }
+
+                        var data;
+                        if(("xui_IAajax_"+self.id)==w.name){
+                            //clear first
+                            self._clear();
+                            self._onError(new Error('XDMI no return value'));
+                            return;
+                        }else{
+                            data=w.name;
+                        }
+
+                        if(data && (o=_.unserialize(data)) && (t=c._pool[self.id]) ){
+                            for(var i=0,l=t.length;i<l;i++){
+                                t[i]._response=o;
+                                t[i]._onResponse();
+                            }
+                        }else{
+                            //clear first
+                            self._clear();
+                            self._onError(new Error("XDMI return value formatting error, or no matched 'id'-- "+data));
+                        }
+                    })();
+                };
+            }
 
             //create form
             var a=c._if(document,id, onload);
@@ -3232,12 +3253,18 @@ Class('xui.IAjax','xui.absIO',{
                 self._flag = _.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
         },
         _clear:function(){
-            var self=this, n=self.node,f=self.form, c=self.constructor, div=document.createElement('div'),id=self.id,_pool=c._pool;
+            var self=this, n=self.node,f=self.form, c=self.constructor, w=window, div=document.createElement('div'),id=self.id,_pool=c._pool;
             if(_pool[id]){
                 _pool[id].length=0;
                 delete _pool[id];
             }
-            if(xui.browser.gek&&n)try{n.onload=null;var d=n.contentWindow.document;d.write(" ");d.close()}catch(e){}
+            if (n&&w.postMessage) {
+                 if (w.removeEventListener) w.removeEventListener('message', self._msgcb, false);
+                 else w.detachEvent('onmessage', self._msgcb);
+                 self._msgcb=null;
+            }else{
+                if(xui.browser.gek&&n)try{n.onload=null;var d=n.contentWindow.document;d.write(" ");d.close()}catch(e){}
+            }
             self.form=self.node=self.frm=null;
             if(n)div.appendChild(n.parentNode.removeChild(n));
             if(f)div.appendChild(f.parentNode.removeChild(f));
@@ -3305,13 +3332,21 @@ Class('xui.IAjax','xui.absIO',{
             return '/favicon.ico';
         },
         customQS:function(obj){
-            var s=this,c=s.constructor,t=c.callback;
+            var s=this,c=s.constructor,t=c.callback,w=window;
             obj[t]='window.name';
+            if(window.postMessage)
+                obj[t]=obj.parentDomain=w.location.origin || (w.location.protocol + "//" + w.location.hostname + (w.location.port ? ':' + w.location.port: ''));
+            else
+                obj[t]='window.name';
             return obj;
         }
     }
 });
-
+new function(){
+    // for compitable
+    xui.SAjax=xui.JSONP;
+    xui.IAjax=xui.XDMI;
+};
 /*xui.SC for straight call
 *  Dependencies: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
 */
@@ -3345,7 +3380,7 @@ Class('xui.SC',null,{
         /* function for "Straight Call"
         *   asy     loadSnips use
         *   true    true    ajax
-        *   true    false   sajax
+        *   true    false   sajax JSONP
         *   false   ture    ajax
         *   false   false   ajax
         */
@@ -3399,7 +3434,7 @@ Class('xui.SC',null,{
                      //asy and not for loadSnips
                      if(isAsy && !options.$p){
                         options.rspType="script";
-                        ajax=xui.SAjax;
+                        ajax=xui.JSONP;
                      }else{
                         options.asy=isAsy;
                         ajax=xui.Ajax;
@@ -4461,16 +4496,16 @@ Class("xui.Timer","xui.absObj",{
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 queryURL=prop.queryURL,
-                proxyType=prop.proxyType;
+                proxyType=prop.proxyType.toLowerCase();
                 queryUserName=prop.queryUserName,
                 queryPasswrod=prop.queryPasswrod,
                 queryArgs=_.copy(prop.queryArgs),
                 OAuth2Token=prop.OAuth2Token,
                 queryOptions=_.copy(prop.queryOptions);
 
-            if(proxyType=="JSONP") proxyType="sajax";
-            else if(proxyType=="IFRAME") proxyType="iajax";
-            if(requestType=="FORM") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(proxyType=="sajax") proxyType="jsonp";
+            else if(proxyType=="iajax") proxyType="xdmi";
+            if(requestType=="form") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
@@ -4554,16 +4589,12 @@ Class("xui.Timer","xui.absObj",{
             if(OAuth2Token)
                rMap.header["Authorization"]="Bearer " + OAuth2Token
 
-            // Ajax/SAjax/IAjax
-            if(!proxyType && prop.proxyType!="auto")
-                proxyType = prop.proxyType;
+            // Ajax/JSONP/XDMI
             if(proxyType!="ajax")
                 rMap.asy=true;
-            if(proxyType=="sajax")
+            if(proxyType=="jsonp")
                 rMap.method="GET";
-            if(proxyType)
-                proxyType=proxyType.toLowerCase();
-
+  
             options=options||{};
             if(!("asy" in options))
                 options.asy=!!prop.queryAsync;
@@ -4632,7 +4663,7 @@ Class("xui.Timer","xui.absObj",{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1,requestDataSource:1,responseDataTarget:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -4665,7 +4696,7 @@ Class("xui.Timer","xui.absObj",{
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
             return o;
         },
         DataModel:{
@@ -4692,8 +4723,12 @@ Class("xui.Timer","xui.absObj",{
                 listbox:["JSON","TEXT","XML","SOAP"]
             },
 
-            requestDataSource:null,
-            responseDataTarget:null,
+            requestDataSource:{
+                ini:[]
+            },
+            responseDataTarget:{
+                ini:[]
+            },
 
             queryArgs:{
                 ini:{}
@@ -4703,7 +4738,7 @@ Class("xui.Timer","xui.absObj",{
             },
             proxyType:{
                 ini:"auto",
-                listbox:["auto","AJAX","JSONP","IFRAME"]
+                listbox:["auto","AJAX","JSONP","XDMI"]// Cross-Domain Messaging with iframes
             },
             "name":{
                 set:function(value){
@@ -21658,7 +21693,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             // for empty object
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
             // 
             _.arr.each(["dockMargin","conDockPadding","conDockSpacing","propBinder","tagVar","animConf"],function(key){
                 if(t=p[key]){
@@ -22821,7 +22856,7 @@ new function(){
                     var r;
                     if(!profile.properties.disabled && profile.onClick)
                         r = profile.boxing().onClick(profile, e, src);
-                    //**** if dont return false, this click will break sajax in IE
+                    //**** if dont return false, this click will break jsonp in IE
                     //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading
                     var href=xui.use(src).attr('href');
                     return typeof r=='boolean'?r:(href.indexOf('javascript:')===0||href.indexOf('#')===0)?false:true;

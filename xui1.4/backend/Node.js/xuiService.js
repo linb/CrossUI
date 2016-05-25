@@ -61,7 +61,11 @@ function exec(req,res)
         if(obj.callback!=null){
             if(obj.callback=="window.name"){
                 strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
-            }else{
+            }
+            else if(obj.callback.indexOf(":")!=-1){
+                strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'"+obj.callback+"'.replace( /([^:]+:\/\/[^\/]+).*/, '$1'));</script>";
+            }
+            else{
                 strResponse = obj.callback + '(' + strResponse + ')';
             }
         }

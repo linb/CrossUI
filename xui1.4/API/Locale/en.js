@@ -1061,8 +1061,8 @@ _.set(xui.Locale,["en","app"], {
             ]
         },
         request:{
-            $desc:"To get/set data from/to server. It can switch between xui.Ajax, xui.SAjax and xui.IAjax automatically according to url and request method. "+
-                  "<>default=>xui.Ajax; if(isCrossDomain(uri))=>xui.SAjax;if(method=='POST')=>xui.IAjax;</strong>",
+            $desc:"To get/set data from/to server. It can switch between xui.Ajax, xui.JSONP and xui.XDMI automatically according to url and request method. "+
+                  "<>default=>xui.Ajax; if(isCrossDomain(uri))=>xui.JSONP;if(method=='POST')=>xui.XDMI;</strong>",
             $paras:[
                 "uri [Required]: String, The URL of the request target.",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}.",
@@ -1071,7 +1071,7 @@ _.set(xui.Locale,["en","app"], {
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request."
             ],
-            $memo:"Sees <a href='#xui.Ajax'>xui.Ajax</a>, <a href='#xui.SAjax'>xui.SAjax</a> and <a href='#xui.IAjax'>xui.IAjax</a> please!"
+            $memo:"Sees <a href='#xui.Ajax'>xui.Ajax</a>, <a href='#xui.JSONP'>xui.JSONP</a> and <a href='#xui.XDMI'>xui.XDMI</a> please!"
         },
         restGet:{
             $desc:"To call RESTful GET service .",
@@ -1643,7 +1643,7 @@ _.set(xui.Locale,["en","app"], {
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]"
             ],
             $snippet:[
-                "var out=[];var a=xui.Ajax('uri1',0,0,0,0,{retry:0,timeout:500}), b=xui.SAjax('uri2',0,0,0,0,{retry:0,timeout:500}), c=xui.IAjax('uri3',0,0,0,0,{retry:0,timeout:500}); xui.absIO.group({a:a,b:b,c:c},function(id){out.push(id+' end')},function(){out.push('start')},function(){out.push('end');alert(out)})"
+                "var out=[];var a=xui.Ajax('uri1',0,0,0,0,{retry:0,timeout:500}), b=xui.JSONP('uri2',0,0,0,0,{retry:0,timeout:500}), c=xui.XDMI('uri3',0,0,0,0,{retry:0,timeout:500}); xui.absIO.group({a:a,b:b,c:c},function(id){out.push(id+' end')},function(){out.push('start')},function(){out.push('end');alert(out)})"
             ]
         },
         isCrossDomain:{
@@ -1664,7 +1664,7 @@ _.set(xui.Locale,["en","app"], {
             ]
         },
         "get":{
-            $desc:"Calls Ajax/SAjax/IAjax with GET method.",
+            $desc:"Calls Ajax/JSONP/XDMI with GET method.",
             $rtn:"xui.absIO",
             $paras:[
                 "uri [Required]: String, The request target URI.",
@@ -1676,7 +1676,7 @@ _.set(xui.Locale,["en","app"], {
              ]
         },
         "post":{
-            $desc:"Calls Ajax/SAjax/IAjax with POST method.",
+            $desc:"Calls Ajax/JSONP/XDMI with POST method.",
             $rtn:"xui.absIO",
             $paras:[
                 "uri [Required]: String, The request target URI.",
@@ -1876,7 +1876,7 @@ _.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;retry: Number, how many times it is tried when the request is timeout."+
                 "<br>&nbsp;&nbsp;timeout: Number, the timeout time(ms) for this request."+
                 "<br>&nbsp;&nbsp;reqType: String, 'form'(Ajax), 'json'(Ajax), or 'xml'(Ajax). Request type, Default is 'form'."+
-                "<strong><br>&nbsp;&nbsp;rspType: String 'json'(Ajax),'xml'(Ajax), 'text'(SAjax), 'script'(SAjax), Response type, Default is 'json'.</strong>"+
+                "<strong><br>&nbsp;&nbsp;rspType: String 'json'(Ajax),'xml'(Ajax), 'text'(JSONP), 'script'(JSONP), Response type, Default is 'json'.</strong>"+
                 "<br><em>//functions</em>"+
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj, type]. A function to customize query string Object."+
                 "<br><em>//normal events</em>"+
@@ -1905,7 +1905,7 @@ _.set(xui.Locale,["en","app"], {
              "       threadid).start();\n"+
              "   });*/"
         ],
-        $memo:"Uses [xui.request] to handle simple request, it can switch ajax/sajax/iajax automatically according to url and request method.",
+        $memo:"Uses [xui.request] to handle simple request, it can switch ajax/JSONP/XDMI automatically according to url and request method.",
         callback:{
             $desc:"String, default callback function name. <strong>Server needs to match it in the response struct.</strong>.",
             $snippet:["alert(xui.Ajax.callback)"]
@@ -1955,10 +1955,10 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","SAjax"], {
+    _.set(xui.Locale,["en","doc","xui","JSONP"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.SAjax Class. It can handle cross domain GET/POST request.</strong>.",
-        $rtn:"xui.SAjax",
+        $desc:"xui.JSONP Class. It can handle cross domain GET/POST request.</strong>.",
+        $rtn:"xui.JSONP",
         $paras:[
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
             "query [Optional]:  Object[Key/value pairs], request data.",
@@ -1994,7 +1994,7 @@ _.set(xui.Locale,["en","app"], {
         $snippet:[
             "/*\n//The most common usage: \n"+
              "xui.Thread.observableRun(function(threadid){\n"+
-             "       xui.SAjax('request.php',hash, function(response){\n"+
+             "       xui.JSONP('request.php',hash, function(response){\n"+
              "               //setResponse(response);\n"+
              "           }, function(msg){\n"+
              "               //show error msg\n"+
@@ -2002,14 +2002,14 @@ _.set(xui.Locale,["en","app"], {
              "       threadid).start();\n"+
              "   });*/"
         ],
-        $memo:"<br />1.Uses [xui.include] to include a .js file.<br />2.Uses [xui.request] to handle simple request, it can switch ajax/sajax automatically according to url.",
+        $memo:"<br />1.Uses [xui.include] to include a .js file.<br />2.Uses [xui.request] to handle simple request, it can switch ajax/jsonp automatically according to url.",
         callback:{
             $desc:"String, default callback function name. <strong>Server needs to match it in the response struct.</strong>.",
-            $snippet:["alert(xui.SAjax.callback)"]
+            $snippet:["alert(xui.JSONP.callback)"]
         },
         method:{
             $desc:"String, default request method name('GET' or 'POST') for instance.",
-            $snippet:["alert(xui.SAjax.method)"]
+            $snippet:["alert(xui.JSONP.method)"]
         },
         optimized:{
             $desc:"Boolean, default optimized option.",
@@ -2017,22 +2017,22 @@ _.set(xui.Locale,["en","app"], {
         },
         retry:{
             $desc:"Number, default retry times.",
-            $snippet:["alert(xui.SAjax.retry)"]
+            $snippet:["alert(xui.JSONP.retry)"]
         },
         reqType:{
             $desc:"String, default request type.",
-            $snippet:["alert(xui.SAjax.reqType)"]
+            $snippet:["alert(xui.JSONP.reqType)"]
         },
         rspType:{
             $desc:"String, default respond type.",
-            $snippet:["alert(xui.SAjax.rspType)"]
+            $snippet:["alert(xui.JSONP.rspType)"]
         },
         uid:{
             $desc:"String,  unique id ."
         },
         timeout:{
             $desc:"Number, default timeout time.",
-            $snippet:["alert(xui.SAjax.timeout)"]
+            $snippet:["alert(xui.JSONP.timeout)"]
         },
         customQS: {
             $desc:"To customize query string Object. Subclass can overwrite it for adding extra variables or something.",
@@ -2045,19 +2045,19 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             start:{
-                $desc:"Starts to execute a xui.SAjax Object",
+                $desc:"Starts to execute a xui.JSONP Object",
                 $rtn:"[self]",
                 $snippet:[
-                    "//xui.SAjax('uri').start();"
+                    "//xui.JSONP('uri').start();"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","IAjax"], {
+    _.set(xui.Locale,["en","doc","xui","XDMI"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.IAjax Class. It can handle cross domain GET/POST request, and can upload/download file.",
-        $rtn:"xui.IAjax",
+        $desc:"xui.XDMI Class. It can handle cross domain GET/POST request, and can upload/download file.",
+        $rtn:"xui.XDMI",
         $paras:[
             "uri [Required]: String/Object. String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored.",
             "query [Optional]:  Object[Key/value pairs], request data.",
@@ -2093,7 +2093,7 @@ _.set(xui.Locale,["en","app"], {
         $snippet:[
             "/*\n//The most common usage: \n"+
              "xui.Thread.observableRun(function(threadid){\n"+
-             "       xui.IAjax('request.php',hash, function(response){\n"+
+             "       xui.XDMI('request.php',hash, function(response){\n"+
              "               //setResponse(response);\n"+
              "           }, function(msg){\n"+
              "               //show error msg\n"+
@@ -2102,7 +2102,7 @@ _.set(xui.Locale,["en","app"], {
              "   });*/",
             "/*\n//The most common usage: \n"+
              "xui.Thread.observableRun(function(threadid){\n"+
-             "       xui.SAjax('request.php',hash, function(response){\n"+
+             "       xui.JSONP('request.php',hash, function(response){\n"+
              "               //setResponse(response);\n"+
              "           }, function(msg){\n"+
              "               //show error msg\n"+
@@ -2110,14 +2110,14 @@ _.set(xui.Locale,["en","app"], {
              "       threadid).start();\n"+
              "   },{method:'GET'});*/"
         ],
-        $memo:"You have to use xui.IAjax to post cross domain data, or to upload an iamge file.",
+        $memo:"You have to use xui.XDMI to post cross domain data, or to upload an iamge file.",
         callback:{
             $desc:"String, default callback function name. <strong>Server needs to match it in the response struct.</strong>.",
-            $snippet:["alert(xui.IAjax.callback)"]
+            $snippet:["alert(xui.XDMI.callback)"]
         },
         method:{
             $desc:"String, default request method name('GET' or 'POST') for instance.",
-            $snippet:["alert(xui.IAjax.method)"]
+            $snippet:["alert(xui.XDMI.method)"]
         },
         optimized:{
             $desc:"Boolean, default optimized option.",
@@ -2125,22 +2125,22 @@ _.set(xui.Locale,["en","app"], {
         },
         retry:{
             $desc:"Number, default retry times.",
-            $snippet:["alert(xui.IAjax.retry)"]
+            $snippet:["alert(xui.XDMI.retry)"]
         },
         reqType:{
             $desc:"String, default request type.",
-            $snippet:["alert(xui.IAjax.reqType)"]
+            $snippet:["alert(xui.XDMI.reqType)"]
         },
         rspType:{
             $desc:"String, default respond type.",
-            $snippet:["alert(xui.IAjax.rspType)"]
+            $snippet:["alert(xui.XDMI.rspType)"]
         },
         uid:{
             $desc:"String,  unique id ."
         },
         timeout:{
             $desc:"Number, default timeout time.",
-            $snippet:["alert(xui.IAjax.timeout)"]
+            $snippet:["alert(xui.XDMI.timeout)"]
         },
         customQS: {
             $desc:"To customize query string Object. Subclass can overwrite it for adding extra variables or something.",
@@ -2152,10 +2152,10 @@ _.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             start:{
-                $desc:"Starts to execute a xui.IAjax Object",
+                $desc:"Starts to execute a xui.XDMI Object",
                 $rtn:"[self]",
                 $snippet:[
-                    "//xui.IAjax('uri').start();"
+                    "//xui.XDMI('uri').start();"
                 ]
             }
         }
@@ -2163,14 +2163,14 @@ _.set(xui.Locale,["en","app"], {
 
     _.set(xui.Locale,["en","doc","xui","SC"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.Ajax Class(static).<br />Call function : Straight Call. Uses path name to call a specified class/Object. If the target class/Object exists, returns it directly, but if the target class/Object does not exist, loads it from code(in memory or in the remote file[xui.Ajax/xui.SAjax]) first, returns it, and executes the callback function(if it exists).",
+        $desc:"xui.Ajax Class(static).<br />Call function : Straight Call. Uses path name to call a specified class/Object. If the target class/Object exists, returns it directly, but if the target class/Object does not exist, loads it from code(in memory or in the remote file[xui.Ajax/xui.JSONP]) first, returns it, and executes the callback function(if it exists).",
         $rtn:"Object, class/Object[in synchronous mode], undefined[in asynchronous mode]",
         $paras:[
             "path [Required]: String, path name of a class/Object(e.g. 'xui.UI.Button').",
-            "callback [Optional]: Function, arguments:[path, code, threadid]. A function to be executed whenever the straight call returns. If returns successfully, [path] will be the [path name], and [this] pointer will be the result class/Object; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/iajax Object.",
+            "callback [Optional]: Function, arguments:[path, code, threadid]. A function to be executed whenever the straight call returns. If returns successfully, [path] will be the [path name], and [this] pointer will be the result class/Object; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/XDMI Object.",
             "isAsy [Optional]: Boolean, To determine whether or not  the current SC is in asynchronous Mode. If the target class exists, this parameter is invalide. Default is [false].",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
-            "options [Optional]: Object, a set of key/value pairs that configure the inner xui.Ajax(asynchronous mode) or xui.SAjax(synchronous mode)."
+            "options [Optional]: Object, a set of key/value pairs that configure the inner xui.Ajax(asynchronous mode) or xui.JSONP(synchronous mode)."
         ],
         $snippet:[
             "alert(xui.SC('xui.SC'));xui.SC('xui.absIO',function(){alert(this===xui.absIO)});",
@@ -2193,7 +2193,7 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "pathArr [Required]: Array, a set of path names(String).",
                 "onEnd [Optional]: Function, arguments:[the process id]. A function to be executed after all the code snippet are loaded and executed.",
-                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code snip returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/iajax Object.",
+                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code snip returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/XDMI Object.",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]"
             ],
             $snippet:[
@@ -2206,7 +2206,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"To load a set of code snippet and execute them one by one in the background. (wrap them to a shell thread).",
             $paras:[
                 "pathArr [Required]: Array, a set of path names(String).",
-                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code snip returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/iajax Object.",
+                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code snip returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/XDMI Object.",
                 "onStart [Optional]: Function, onStart function for the shell thread.",
                 "onEnd [Optional]: Function, onEnd function for the shell thread."
             ],
@@ -2221,7 +2221,7 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "pathArr [Required]: Array, a set of path names(String).",
                 "cache [Optional]: Object[Key/value pairs], target cache pool. Defalut is [xui.$cache.text].",
-                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/iajax Object.",
+                "callback [Optional]: Function, arguments:[path, code]. A function to be executed whenever the code returns. If returns successfully, [path] will be the [path name], and [this] pointer will be an empty Object/{}; if fails, [path] will be [null], and [this] pointer will be the inner xui.Ajax/XDMI Object.",
                 "onEnd [Optional]: Function, arguments:[the process id]. A function to be executed whenever all the code snippets returned.",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]"
             ],
@@ -6097,7 +6097,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"[Deprecated] Sets the proxy type for this remoting call.",
                 $rtn:"[self].",
                 $paras:[
-                    "value [Required] : String. auto/Ajax/SAjax/IAjax\u00D6\u00AE\u00D2\u00BB,\u00C4\u00AC\u00C9\u008F\u00CE\u00AAauto.",
+                    "value [Required] : String. auto/Ajax/JSONP/IAjax\u00D6\u00AE\u00D2\u00BB,\u00C4\u00AC\u00C9\u008F\u00CE\u00AAauto.",
                     "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
                 ]
             },

@@ -51,7 +51,7 @@
          }
          return $inputData;
     }
-    
+
     // echo response data, or error info
     function xui_echoResponse($inputData, $outputData, $ok=true){
         $callback = XUI_KEYWORD_CALLBACK;
@@ -63,8 +63,8 @@
                 $callbackV=$inputData->$callback;
             unset($inputData);
         }
-                
-        $outputDataWrapped=new stdClass;        
+
+        $outputDataWrapped=new stdClass;
 
         if($ok)
             $outputDataWrapped->$data = $outputData;
@@ -74,20 +74,20 @@
         $outputDataWrapped=json_encode($outputDataWrapped);
 
         // wrap result data for xui.IAjax and xui.SAjax
- 	    if(_.isset($callbackV)){
- 	        // for xui.IAjax
- 	        if($callbackV=="window.name"){
- 	            $outputDataWrapped="<script type='text' id='json'>".$outputDataWrapped."</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
- 	        }
- 	        // for xui.SAjax
- 	        else{
- 	            $outputDataWrapped = $callbackV.'('.$outputDataWrapped.')';
- 	        }
- 	    }
+            if(isset($callbackV)){
+                if($callbackV=="window.name"){
+                    $outputDataWrapped="<script type='text' id='json'>".$outputDataWrapped."</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
+                }else if(strpos($callbackV,":")){
+                    $outputDataWrapped="<script type='text' id='json'>".$outputDataWrapped."</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'".$callbackV."'.replace( /([^:]+:\/\/[^\/]+).*/, '$1'));</script>";
+                }else{
+                    $outputDataWrapped = $callbackV.'('.$outputDataWrapped.')';
+                }
+            }
+
  	    // for xui.Ajax
         echo $outputDataWrapped;
     }
-    
+
     /* example
     public function action(){
         $inputData = xui_getRequestData();

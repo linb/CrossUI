@@ -63,16 +63,16 @@ Class("xui.APICaller","xui.absObj",{
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 queryURL=prop.queryURL,
-                proxyType=prop.proxyType;
+                proxyType=prop.proxyType.toLowerCase();
                 queryUserName=prop.queryUserName,
                 queryPasswrod=prop.queryPasswrod,
                 queryArgs=_.copy(prop.queryArgs),
                 OAuth2Token=prop.OAuth2Token,
                 queryOptions=_.copy(prop.queryOptions);
 
-            if(proxyType=="JSONP") proxyType="sajax";
-            else if(proxyType=="IFRAME") proxyType="iajax";
-            if(requestType=="FORM") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(proxyType=="sajax") proxyType="jsonp";
+            else if(proxyType=="iajax") proxyType="xdmi";
+            if(requestType=="form") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
@@ -156,16 +156,12 @@ Class("xui.APICaller","xui.absObj",{
             if(OAuth2Token)
                rMap.header["Authorization"]="Bearer " + OAuth2Token
 
-            // Ajax/SAjax/IAjax
-            if(!proxyType && prop.proxyType!="auto")
-                proxyType = prop.proxyType;
+            // Ajax/JSONP/XDMI
             if(proxyType!="ajax")
                 rMap.asy=true;
-            if(proxyType=="sajax")
+            if(proxyType=="jsonp")
                 rMap.method="GET";
-            if(proxyType)
-                proxyType=proxyType.toLowerCase();
-
+  
             options=options||{};
             if(!("asy" in options))
                 options.asy=!!prop.queryAsync;
@@ -234,7 +230,7 @@ Class("xui.APICaller","xui.absObj",{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1,requestDataSource:1,responseDataTarget:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -267,7 +263,7 @@ Class("xui.APICaller","xui.absObj",{
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true);
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
             return o;
         },
         DataModel:{
@@ -294,8 +290,12 @@ Class("xui.APICaller","xui.absObj",{
                 listbox:["JSON","TEXT","XML","SOAP"]
             },
 
-            requestDataSource:null,
-            responseDataTarget:null,
+            requestDataSource:{
+                ini:[]
+            },
+            responseDataTarget:{
+                ini:[]
+            },
 
             queryArgs:{
                 ini:{}
@@ -305,7 +305,7 @@ Class("xui.APICaller","xui.absObj",{
             },
             proxyType:{
                 ini:"auto",
-                listbox:["auto","AJAX","JSONP","IFRAME"]
+                listbox:["auto","AJAX","JSONP","XDMI"]// Cross-Domain Messaging with iframes
             },
             "name":{
                 set:function(value){

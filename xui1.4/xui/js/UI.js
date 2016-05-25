@@ -5399,7 +5399,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             // for empty object
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
             // 
             _.arr.each(["dockMargin","conDockPadding","conDockSpacing","propBinder","tagVar","animConf"],function(key){
                 if(t=p[key]){
@@ -6562,7 +6562,7 @@ new function(){
                     var r;
                     if(!profile.properties.disabled && profile.onClick)
                         r = profile.boxing().onClick(profile, e, src);
-                    //**** if dont return false, this click will break sajax in IE
+                    //**** if dont return false, this click will break jsonp in IE
                     //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading
                     var href=xui.use(src).attr('href');
                     return typeof r=='boolean'?r:(href.indexOf('javascript:')===0||href.indexOf('#')===0)?false:true;

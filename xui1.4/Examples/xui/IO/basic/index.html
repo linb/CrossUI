@@ -39,7 +39,7 @@
             			<td width="8%" align="center" bgcolor="#808080">no</td>
             		</tr>
             		<tr>
-            			<td width="14%" bgcolor="#FFFF00"><b>xui.SAjax</b></td>
+            			<td width="14%" bgcolor="#FFFF00"><b>xui.JSONPJSONP</b></td>
             			<td width="7%" align="center">yes</td>
             			<td width="9%" align="center" bgcolor="#808080">no</td>
             			<td width="16%" align="center" bgcolor="#808080">no</td>
@@ -47,7 +47,7 @@
             			<td width="8%" align="center" bgcolor="#808080">no</td>
             		</tr>
             		<tr>
-            			<td width="14%" bgcolor="#FFFF00"><b>xui.IAjax</b></td>
+            			<td width="14%" bgcolor="#FFFF00"><b>xui.XDMI</b></td>
             			<td width="7%" align="center">yes</td>
             			<td width="9%" align="center">yes</td>
             			<td width="16%" align="center">yes</td>
@@ -66,8 +66,8 @@
     }
 }</textarea><br /><br />
                 <div> <button id='ajax_get'>use xui.Ajax 'get'</button> <button id='ajax_post'>use xui.Ajax 'post'</button></div><br />
-                <div> <button id='sajax'>use xui.SAjax</button></div><br />
-                <div> <button id='iajax_get'>use xui.IAjax 'get'</button> <button id='iajax_post'>use xui.IAjax 'post'</button></div><br />
+                <div> <button id='JSONP'>use xui.JSONP</button></div><br />
+                <div> <button id='iajax_get'>use xui.XDMI 'get'</button> <button id='iajax_post'>use xui.XDMI 'post'</button></div><br />
                 <div> <button id='xui_request'>use xui.request function</button></div><br />
                 <p>Response data:</p>
                 <textarea id='response' style='width:100%;height:50px;' readonly=readonly>
@@ -114,28 +114,28 @@ var xuiService='request.php';
                             xui.Ajax(xuiService,hash, onOK, onFail,threadid,{method:'POST'},{reqType:'xml'}).start();
                         });
                 });
-                //use xui.SAjax
-                xui('sajax').onClick(function(){
+                //use xui.JSONP
+                xui('JSONP').onClick(function(){
                     var hash=getRequest();
                     if(hash)
                         xui.Thread.observableRun(function(threadid){
-                            xui.SAjax(xuiService,hash, onOK, onFail,threadid).start();
+                            xui.JSONP(xuiService,hash, onOK, onFail,threadid).start();
                         });
                 });
-                //use xui.IAjax get
+                //use xui.XDMI get
                 xui('iajax_get').onClick(function(){
                     var hash=getRequest();
                     if(hash)
                         xui.Thread.observableRun(function(threadid){
-                            xui.IAjax(xuiService,hash, onOK, onFail,threadid,{method:'GET'}).start();
+                            xui.XDMI(xuiService,hash, onOK, onFail,threadid,{method:'GET'}).start();
                         });
                 });
-                //use xui.IAjax post
+                //use xui.XDMI post
                 xui('iajax_post').onClick(function(){
                     var hash=getRequest();
                     if(hash)
                         xui.Thread.observableRun(function(threadid){
-                            xui.IAjax(xuiService,hash, onOK, onFail,threadid).start();
+                            xui.XDMI(xuiService,hash, onOK, onFail,threadid).start();
                         });
                 });
                 //use xui.request function
