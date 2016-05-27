@@ -3,7 +3,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         _index:0,  
         setValue:function(str){
             var ns=this,
-                obj=_.isStr(str)?_.unserialize(str):str,
+                obj=_.isStr(str)?str?_.unserialize(str):false:str,
                 rows=ns._json2rows(obj);
             ns.tg.setRows(rows).free();
         },

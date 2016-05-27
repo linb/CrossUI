@@ -2218,6 +2218,7 @@ new function(){
     //unserialize string to object
     _.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
+        if(!str)return false;
         try{
             str='({_:'+str+'})';
             str=eval(str);
@@ -4765,7 +4766,7 @@ Class("xui.Timer","xui.absObj",{
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            },
+            }/*,
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
@@ -4775,7 +4776,7 @@ Class("xui.Timer","xui.absObj",{
                         xui.alert("onError",_.stringify(e));
                     });
                 }
-            }
+            }*/
         },
         EventHandlers:{
             beforeInvoke:function(profile, requestId){},
@@ -20521,6 +20522,14 @@ Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(self,true,true);
                 }
             },
+            dockFloat:{
+                ini:false,
+                action:function(v){
+                    var self=this;
+                    if(self.properties.dock!='none')
+                        xui.UI.$dock(self,true,true);
+                }
+            },
             dockOrder:{
                 ini: 1,
                 action:function(v){
@@ -20539,7 +20548,14 @@ Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(self,true,true);
                 }
             },
-            dockFloat:{
+
+            dockMinW:0,
+            dockMinH:0,
+            dockMaxW:0,
+            dockMaxH:0,
+
+            // to stop conDockFlexFill
+            dockIgnoreFlex:{
                 ini:false,
                 action:function(v){
                     var self=this;
@@ -20547,10 +20563,6 @@ Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(self,true,true);
                 }
             },
-            dockMinW:0,
-            dockMinH:0,
-            dockMaxW:0,
-            dockMaxH:0,
             // for top/left/right/bottom only
             // "" can be reset by container's conDockFlowStretch
             dockFlowStretch:{
@@ -20994,8 +21006,8 @@ Class("xui.UI",  "xui.absObj", {
                                 // adjust width/height first
                                 if(perW || perH){
                                     var wCount=0,wSum=0,hCount=0,hSum=0,tmp,hMax=0,adjustMM=function(prop,direction,numb,t){
-                                        if(t=prop['dockMin'+direction])numb=Math.min(t,numb);
-                                        if(t=prop['dockMax'+direction])numb=Math.max(t,numb);
+                                        if(t=prop['dockMin'+direction])numb=Math.max(t,numb);
+                                        if(t=prop['dockMax'+direction])numb=Math.min(t,numb);
                                         return numb;
                                     };
                                     // collect controls (w/h) to be percentaged, no dockIgnore
@@ -21003,7 +21015,7 @@ Class("xui.UI",  "xui.absObj", {
                                         target = me[key];
                                         if(target.length){
                                             for(i=0;o=target[i++];){
-                                                if(!o.properties.dockIgnore){
+                                                if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
@@ -21031,10 +21043,19 @@ Class("xui.UI",  "xui.absObj", {
                                             target = me[key];
                                             if(target.length){
                                                 for(i=0;o=target[i++];){
-                                                    if(!o.properties.dockIgnore){
+                                                    if(!o.properties.dockIgnore && o.properties.dockIgnoreFlex){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            node.width(Math.min(1, (adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width())) / wSum) * innerW);
+                                                            innerW -= adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width());
+                                                            innerH -= conDockSpacing.width;
+                                                        }
+                                                    }
+                                                }
+                                                for(i=0;o=target[i++];){
+                                                    if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
+                                                        var node = o.getRoot();
+                                                        if(key=='left'||key=='right'||key=='width'){
+                                                            node.width(adjustMM(o.properties,"W",Math.min(1, (parseFloat(o.properties.width) || node.width()) / wSum) * innerW));
                                                         }
                                                     }
                                                 }
@@ -21048,10 +21069,19 @@ Class("xui.UI",  "xui.absObj", {
                                             target = me[key];
                                             if(target.length){
                                                 for(i=0;o=target[i++];){
-                                                    if(!o.properties.dockIgnore){
+                                                    if(!o.properties.dockIgnore && o.properties.dockIgnoreFlex){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            node.height(Math.min(1, (adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height()))/ hSum) * innerH);
+                                                            innerH -= adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height());
+                                                            innerH -= conDockSpacing.height;
+                                                        }
+                                                    }
+                                                }
+                                                for(i=0;o=target[i++];){
+                                                    if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
+                                                        var node = o.getRoot();
+                                                        if(key=='top'||key=='bottom'||key=='height'){
+                                                            node.height(adjustMM(o.properties,"H",Math.min(1, (parseFloat(o.properties.height) || node.height())/ hSum) * innerH));
                                                         }
                                                     }
                                                 }
@@ -21066,7 +21096,7 @@ Class("xui.UI",  "xui.absObj", {
                                         target = me[key];
                                         if(target.length){
                                             for(i=0;o=target[i++];){
-                                                if(!o.properties.dockIgnore){
+                                                if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
                                                     var node = o.getRoot();
                                                     if(pprf._conDockFlexFillW && !perW && (key=='left'||key=='right'||key=='width')){
                                                         node.width(o.properties.width) ;
@@ -21082,6 +21112,7 @@ Class("xui.UI",  "xui.absObj", {
                                     if(!perH)delete pprf._conDockFlexFillH;
                                 }
 
+                                // repos && resize
                                 for(k=0;key=arr[k++];){
                                     obj.preX = obj.oX;
                                     obj.preY = obj.top;
@@ -21258,7 +21289,7 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'top':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width)) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;
                                             if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
                                             if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
@@ -21319,7 +21350,7 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : prop.width)) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
                                             if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
                                             if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
@@ -21397,7 +21428,7 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height)) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
                                             if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
                                             if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
@@ -21478,7 +21509,7 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : prop.height)) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
                                             if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
                                             if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
@@ -21760,9 +21791,9 @@ Class("xui.UI",  "xui.absObj", {
 
             //give border width
             if('$hborder' in dm)
-                data.bWidth=prop.width - (prop.$hborder||0)*2;
+                data.bWidth=parseFloat(prop.width) - (prop.$hborder||0)*2;
             if('$vborder' in dm)
-                data.bHeight=prop.height - (prop.$vborder||0)*2;
+                data.bHeight=parseFloat(prop.height) - (prop.$vborder||0)*2;
 
             //set left,top,bottom,right,width,height,position,z-index,visibility,display
             for(var j=0,i;i=map[j];j++){

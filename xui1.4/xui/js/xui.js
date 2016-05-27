@@ -2218,6 +2218,7 @@ new function(){
     //unserialize string to object
     _.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
+        if(!str)return false;
         try{
             str='({_:'+str+'})';
             str=eval(str);

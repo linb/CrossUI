@@ -332,7 +332,7 @@ Class("xui.APICaller","xui.absObj",{
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            },
+            }/*,
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
@@ -342,7 +342,7 @@ Class("xui.APICaller","xui.absObj",{
                         xui.alert("onError",_.stringify(e));
                     });
                 }
-            }
+            }*/
         },
         EventHandlers:{
             beforeInvoke:function(profile, requestId){},
