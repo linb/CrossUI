@@ -6981,7 +6981,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absComposed"], {
+    _.set(xui.Locale,["en","doc","xui","absForm"], {
         prototype:{
             getDragKey:{
                 $desc:"Gets the dragKey property value on the first UIProfile",

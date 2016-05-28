@@ -193,6 +193,9 @@ new function(){
 };
 
 _.merge(_,{
+    rand:function(){
+        return _() * Math.random();
+    },
     setTimeout:function(callback,delay){
         return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
     },
@@ -1161,9 +1164,13 @@ _.merge(xui,{
                    : obj;
     },
     _getrpc:function(uri,query,options){
-        return (options&&options.proxyType) ? ((options.proxyType.toLowerCase()=="sajax"||options.proxyType.toLowerCase()=="jsonp")?xui.JSONP:(options.proxyType.toLowerCase()=="iajax"||options.proxyType.toLowerCase()=="xdmi")?xui.XDMI:xui.Ajax)
+        var t = (options&&options.proxyType) ? options.proxyType.toLowerCase() : "";
+
+        return (t=="sajax"||t=="jsonp") ? xui.JSONP 
+        : (t=="iajax"||t=="xdmi") ? xui.XDMI 
+        : (t=="ajax") ? xui.Ajax
         // include a file => XDMI
-        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
+        : (typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
         // post: crossdomain => XDMI, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
         // get : crossdomain => JSONP, else Ajax
@@ -2711,6 +2718,7 @@ Class('xui.absIO',null,{
                     self._flag=0
                 }
                 xui.Thread.resume(self.threadid);
+                _.tryF(self.$onEnd,[],self);
                 _.tryF(self.onEnd,[],self);
                 self._clear();
             }
@@ -2718,6 +2726,7 @@ Class('xui.absIO',null,{
         _onStart:function(){
             var self=this;
             xui.Thread.suspend(self.threadid);
+            _.tryF(self.$onStart,[],self);
             _.tryF(self.onStart,[],self);
         },
         _onResponse:function(){
@@ -3774,9 +3783,14 @@ Class('xui.Profile','xui.absProfile',{
             return key?prop[key]:_.copy(prop);
         },
         setProperties:function(key, value){
-            if(_.isHash(key))
+            if(_.isHash(key)){
+                _.merge(key, this.box.$DataStruct, function(o,i){
+                    if(!(i in key)){
+                        key[i] = _.isObj(o)?_.clone(o):o;
+                    }
+                });
                 this.properties=key;
-            else
+            }else
                 this.properties[key]=value;
             if(this.propSetAction)this.propSetAction(this.properties);
         },

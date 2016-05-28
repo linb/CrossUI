@@ -193,6 +193,9 @@ new function(){
 };
 
 _.merge(_,{
+    rand:function(){
+        return _() * Math.random();
+    },
     setTimeout:function(callback,delay){
         return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
     },
@@ -1161,9 +1164,13 @@ _.merge(xui,{
                    : obj;
     },
     _getrpc:function(uri,query,options){
-        return (options&&options.proxyType) ? ((options.proxyType.toLowerCase()=="sajax"||options.proxyType.toLowerCase()=="jsonp")?xui.JSONP:(options.proxyType.toLowerCase()=="iajax"||options.proxyType.toLowerCase()=="xdmi")?xui.XDMI:xui.Ajax)
+        var t = (options&&options.proxyType) ? options.proxyType.toLowerCase() : "";
+
+        return (t=="sajax"||t=="jsonp") ? xui.JSONP 
+        : (t=="iajax"||t=="xdmi") ? xui.XDMI 
+        : (t=="ajax") ? xui.Ajax
         // include a file => XDMI
-        :(typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
+        : (typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
         // post: crossdomain => XDMI, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
         // get : crossdomain => JSONP, else Ajax
@@ -2711,6 +2718,7 @@ Class('xui.absIO',null,{
                     self._flag=0
                 }
                 xui.Thread.resume(self.threadid);
+                _.tryF(self.$onEnd,[],self);
                 _.tryF(self.onEnd,[],self);
                 self._clear();
             }
@@ -2718,6 +2726,7 @@ Class('xui.absIO',null,{
         _onStart:function(){
             var self=this;
             xui.Thread.suspend(self.threadid);
+            _.tryF(self.$onStart,[],self);
             _.tryF(self.onStart,[],self);
         },
         _onResponse:function(){
@@ -3774,9 +3783,14 @@ Class('xui.Profile','xui.absProfile',{
             return key?prop[key]:_.copy(prop);
         },
         setProperties:function(key, value){
-            if(_.isHash(key))
+            if(_.isHash(key)){
+                _.merge(key, this.box.$DataStruct, function(o,i){
+                    if(!(i in key)){
+                        key[i] = _.isObj(o)?_.clone(o):o;
+                    }
+                });
                 this.properties=key;
-            else
+            }else
                 this.properties[key]=value;
             if(this.propSetAction)this.propSetAction(this.properties);
         },
@@ -4497,16 +4511,56 @@ Class("xui.Timer","xui.absObj",{
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 queryURL=prop.queryURL,
-                proxyType=prop.proxyType.toLowerCase();
+                proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
                 queryPasswrod=prop.queryPasswrod,
                 queryArgs=_.copy(prop.queryArgs),
-                OAuth2Token=prop.OAuth2Token,
-                queryOptions=_.copy(prop.queryOptions);
+                oAuth2Token=prop.oAuth2Token,
+                queryOptions=_.copy(prop.queryOptions),
+                queryHeader=_.copy(prop.queryHeader),
+                requestDataSource=prop.requestDataSource,
+                responseDataTarget=prop.responseDataTarget;
+
+            queryURL = xui.adjustVar(queryURL);
 
             if(proxyType=="sajax") proxyType="jsonp";
             else if(proxyType=="iajax") proxyType="xdmi";
-            if(requestType=="form") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(requestType=="FORM"||requestType=="JSON") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(!queryArgs)queryArgs={};
+            if(prop.avoidCache){
+                var i=0, rnd="_rand_";
+                while(queryArgs.hasOwnProperty(rnd))rnd="_rand_" + ++i;
+                queryArgs[rnd] = _.rand();
+            }
+            // merge request data
+            if(requestDataSource&&requestDataSource.length){
+                for(var i in requestDataSource){
+                    var o=requestDataSource[i],t;
+                    switch(o.bindertype){
+                        case "databinder":
+                            if(t = xui.DataBinder.getFromName(o.name)){
+                                if(!t.updateDataFromUI()){
+                                    return;
+                                }else{
+                                    if(o.path) _.set(queryArgs, o.path.split('.'),t.getData());
+                                    else _.merge(queryArgs, t.getData(), 'without');
+                                }
+                            }
+                            break;
+                        case "form":
+                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                                if(!t.checkValid() || !t.checkRequired()){
+                                    return;
+                                }else{
+                                    if(o.path)  _.set(queryArgs, o.path.split('.'), t.getFormValues());
+                                    else _.merge(queryArgs, t.getFormValues(), 'without');
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
@@ -4587,8 +4641,8 @@ Class("xui.Timer","xui.absObj",{
                     queryArgs = typeof queryArgs=='string'?queryArgs:xui.SOAP.wrapRequest(queryArgs, con.WDSLCache[queryURL]);
                 break;
             }
-            if(OAuth2Token)
-               rMap.header["Authorization"]="Bearer " + OAuth2Token
+            if(oAuth2Token)
+               rMap.header["Authorization"]="Bearer " + oAuth2Token
 
             // Ajax/JSONP/XDMI
             if(proxyType!="ajax")
@@ -4605,26 +4659,50 @@ Class("xui.Timer","xui.absObj",{
                 options.onEnd=onEnd;
             if(!("onStart" in options))
                 options.onStart=onStart;
+            if(!_.isEmpty(queryHeader)){
+                if(!_.isEmpty(queryOptions.header)){
+                    _.merge(queryOptions.header, queryHeader, 'without');
+                }else{
+                    queryOptions.header = queryHeader;
+                }
+            }
             _.merge(options, queryOptions);
 
             _.merge(options, rMap, 'all');
             options.proxyType=proxyType;
 
+            if(_.isEmpty(options.header)){
+                delete options.header;
+            }
             // If there's mocker, we need try to adjust queryURL and other args
             var mocker = xui.APICaller.Mocker;
             if(mocker){
-                //
-                // remoteSericeURL
-                // mockerURL
-                // endpoints
-                
                 // remvoe header / and tail /
                 var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
-                if(mocker.endpoints && mocker.endpoints[endPoint]){
+                if((mocker.blacklist && !mocker.blacklist[endPoint]) || (mocker.whitelist && mocker.whitelist[endPoint])){
                     queryURL = mocker.mockerURL.replace(/[/]+$/,'') + "/" + endPoint;
                 }
             }
-
+            var cookies={},t;
+            if(!_.isEmpty(prop.fakeCookies)){
+                options.$onStart = function(){
+                    _.each(prop.fakeCookies,function(v,k){
+                        if(_.isSet(t=xui.Cookies.get(k))){
+                            cookies[k] = t;
+                            xui.Cookies.remove(k);
+                        }
+                    });
+                    xui.Cookies.set(prop.fakeCookies);
+                }
+            }
+            if(!_.isEmpty(prop.fakeCookies)){
+                options.$onEnd = function(){
+                    _.each(prop.fakeCookies,function(v,k){
+                        xui.Cookies.remove(k);
+                    });
+                    xui.Cookies.set(cookies);
+                };
+            }
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
                 var mapb;
 
@@ -4642,29 +4720,72 @@ Class("xui.Timer","xui.absObj",{
                         rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                 }
 
-               if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
-               _.tryF(onSuccess,arguments,this);
+                if(responseDataTarget&&responseDataTarget.length){
+                    _.arr.each(responseDataTarget, function(o){
+                        var data = o.path?_.get(rspData,o.path.split('.')):rspData,t;
+                        switch(o.bindertype){
+                            case "alert":
+                                data = _.stringify(data);
+                                if(xui.Coder)data=xui.Coder.formatText(data);
+                                alert(data);
+                            break;
+                            case "log":
+                                xui.log(data);
+                            break;
+                            case "databinder":
+                                if(t = xui.DataBinder.getFromName(o.name)){
+                                    t.setData(data).updateDataToUI();
+                                }
+                                break;
+                            case "form":
+                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                                    t.setFormValues(data);
+                                }
+                                break;
+                        }
+                    });
+                }
+                if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
+                _.tryF(onSuccess,arguments,this);
+
             }, function(rspData){
-               if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-               if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
+                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+
+                if(responseDataTarget&&responseDataTarget.length){
+                    _.arr.each(responseDataTarget, function(o, t){
+                        switch(o.bindertype){
+                            case "alert":
+                                rspData = _.stringify(rspData);
+                                if(xui.Coder)rspData=xui.Coder.formatText(rspData);
+                                alert(rspData);
+                            break;
+                            case "log":
+                                xui.log(rspData);
+                            break;                            
+                        }
+                    });
+                }
+               
+                if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
                 _.tryF(onFail,arguments,this);
             }, threadid, options]);
 
-            if(mode=="busy")
-                _.observableRun(function(){
-                    ajax.start();
-                });
+            if(mode=="quiet")
+                ajax.start();
             else if(mode=="return")
                 return ajax;
             else
-                ajax.start();
+                _.observableRun(function(threadid){
+                    ajax.threadid=threadid;
+                    ajax.start();
+                });                
         }
     },
     Static:{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1,requestDataSource:1,responseDataTarget:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -4706,8 +4827,9 @@ Class("xui.Timer","xui.absObj",{
             requestId:"",
             queryAsync:true,
             queryURL:"",
+            avoidCache:true,
 
-            OAuth2Token:"",
+            oAuth2Token:"",
             queryUserName:"",
             queryPassword:"",
 
@@ -4734,7 +4856,13 @@ Class("xui.Timer","xui.absObj",{
             queryArgs:{
                 ini:{}
             },
+            queryHeader:{
+                ini:{}
+            },
             queryOptions:{
+                ini:{}
+            },
+            fakeCookies:{
                 ini:{}
             },
             proxyType:{
@@ -4756,36 +4884,53 @@ Class("xui.Timer","xui.absObj",{
                     //    throw value+' exists!';
 
                     _p[o.properties.name=value]=o;
-                    //modify name
-                    if(_old && !_new && o._n.length)
-                        for(var i=0,l=o._n.length;i<l;i++)
-                            _.set(o._n[i], ["properties","dataBinder"], value);
 
                     //pointer _old the old one
                     if(_new && !_old) o._n=_new._n;
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            }/*,
+            },
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
+                    var prf = this.get(0),
+                        bak = prf.properties.responseDataTarget;
+                    prf.properties.responseDataTarget=[];
                     this.invoke(function(d){
-                        xui.alert("onData",_.stringify(d));
-                    },function(e){
-                        xui.alert("onError",_.stringify(e));
+                        prf.properties.responseDataTarget = bak;
+
+                        d=_.stringify(d);
+                        if(xui.Coder)d=xui.Coder.formatText(d);
+                        alert(d);
+                    },function(d){
+                        prf.properties.responseDataTarget = bak;
+
+                        d=_.stringify(d);
+                        if(xui.Coder)d=xui.Coder.formatText(d);
+                        alert(d);
                     });
                 }
-            }*/
+            }
         },
         EventHandlers:{
             beforeInvoke:function(profile, requestId){},
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
             onError:function(profile, rspData, requestId){}
-        }
+        }//,
+        //Mocker:{
+        //    remoteSericeURL:"",
+        //    mockerURL:"",
+        //    blacklist:{
+        //      xxx:1
+        //    },
+        //    whitelist:{
+        //      xxx:1
+        //    }
+        //}
     }
-});Class("xui.DataBinder","xui.APICaller",{
+});Class("xui.DataBinder","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -4835,6 +4980,12 @@ Class("xui.Timer","xui.absObj",{
                 //free profile
                 profile.__gc();
             });
+        },
+        setHost:function(value, alias){
+            var self=this;
+            if(value && alias)
+                self.setName(alias);
+            return arguments.callee.upper.apply(self,arguments);
         },
 
         isDirtied:function(){
@@ -5148,7 +5299,23 @@ Class("xui.Timer","xui.absObj",{
     Static:{
         $nameTag:"databinder_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1},
+        _objectProp:{tagVar:1,propBinder:1,data:1},
+        destroyAll:function(){
+            this.pack(_.toArr(this._pool,false),false).destroy();
+            this._pool={};
+        },
+        getFromName:function(name){
+            var o=this._pool[name];
+            return o && o.boxing();
+        },
+        _beforeSerialized:function(profile){
+            var o={};
+            _.merge(o, profile, 'all');
+            var p = o.properties = _.clone(profile.properties,true);
+            for(var i in profile.box._objectProp)
+                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
+            return o;
+        },                
         _getBoundElems:function(prf){
             var arr=[];
             _.arr.each(prf._n,function(profile){
@@ -5215,6 +5382,34 @@ Class("xui.Timer","xui.absObj",{
                 profile.unLink('databinder.'+name);
         },
         DataModel:{
+            dataBinder:null,
+            dataField:null,            
+            "name":{
+                set:function(value){
+                    var o=this,
+                        ovalue=o.properties.name,
+                         c=o.box,
+                        _p=c._pool,
+                        _old=_p[ovalue],
+                        _new=_p[value],
+                        ui;
+
+                    //if it exists, overwrite it dir
+                    //if(_old && _new)
+                    //    throw value+' exists!';
+
+                    _p[o.properties.name=value]=o;
+                    //modify name
+                    if(_old && !_new && o._n.length)
+                        for(var i=0,l=o._n.length;i<l;i++)
+                            _.set(o._n[i], ["properties","dataBinder"], value);
+
+                    //pointer _old the old one
+                    if(_new && !_old) o._n=_new._n;
+                    //delete the old name from pool
+                    if(_old)delete _p[ovalue];
+                }
+            },            
             "data":{
                 ini:{}
             }
@@ -12691,6 +12886,8 @@ Class('xui.Module','xui.absProfile',{
         
         self.host=host||self;
         self.alias=alias;
+        
+        self.$UIValue="";
 
         self._nodes=[];
         self._ctrlpool={};
@@ -12705,7 +12902,6 @@ Class('xui.Module','xui.absProfile',{
     },
     Instance:{
         autoDestroy:true,
-        dataBindLoadType:"none", // "sync", "async", "none"
         background:"",
 
         // [[[ fake boxing
@@ -12804,7 +13000,12 @@ Class('xui.Module','xui.absProfile',{
             return this.host;
         },
         setProperties:function(key,value){
-            var self=this;
+            var self=this,
+                oDataBinder;
+            if('dataBinder' in self.properties){
+                oDataBinder = self.properties.dataBinder;
+            }
+
             if(!key)
                 self.properties={};
             else if(typeof key=='string')
@@ -12819,6 +13020,13 @@ Class('xui.Module','xui.absProfile',{
 
             if(self.propSetAction)self.propSetAction(self.properties);
 
+            if('dataBinder' in self.properties){
+                if(oDataBinder!==self.properties){
+                    if(oDataBinder)
+                        xui.DataBinder._unBind(oDataBinder, self);
+                    xui.DataBinder._bind(self.properties.dataBinder, self);
+                }
+            }
             return self;
         },
         getProperties:function(key){
@@ -13117,28 +13325,6 @@ Class('xui.Module','xui.absProfile',{
                 self._fireEvent('onCreated');
             });
 
-            //databinder
-            if(self.dataBindLoadType!="none"){
-                var bds=self.getDataBinders();
-                if(bds && bds.length){
-                    var dbf=function(threadid){
-                        var hash={};
-                        _.arr.each(bds,function(bd, i){
-                            var ajax=bd.boxing().read(null,null,null,null,"return");
-                            if(ajax)hash[i]=ajax;
-                        });
-                        if(!_.isEmpty(hash))
-                            xui.absIO.groupCall(hash, null, null, null, threadid);
-                        bds.length=0;
-                        hash=bds=null;
-                    };
-                    if(self.dataBindLoadType=="sync")
-                        funs.push(dbf);
-                    else
-                        dbf();
-                }
-            }
-
             //base classes
             if((t=self.Dependencies) && t.length)
                 funs.push(function(threadid){
@@ -13414,7 +13600,7 @@ Class('xui.Module','xui.absProfile',{
                 });
                 return hash;
             }else{
-                return this.properties.$UIValue;
+                return this.$UIValue;
             }
         },
         setUIValue:function(values,innerUI){
@@ -13432,7 +13618,7 @@ Class('xui.Module','xui.absProfile',{
                     });
                 }
             }else{
-                this.properties.$UIValue = values;
+                this.$UIValue = values;
             }
             return this;
         },
@@ -13443,7 +13629,7 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
-                this.properties.$UIValue=this.properties.value; 
+                this.$UIValue=this.properties.value; 
             }
             return this;
         },
@@ -13454,7 +13640,7 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
-                this.properties.value=this.properties.$UIValue; return this;
+                this.properties.value=this.$UIValue; return this;
             }
             return this;
         },
@@ -13472,7 +13658,7 @@ Class('xui.Module','xui.absProfile',{
                 });
                  return dirtied;
             }else{
-                return this.properties.value===this.properties.$UIValue;
+                return this.properties.value===this.$UIValue;
             }
         },
         checkValid:function(innerUI){
@@ -13495,6 +13681,15 @@ Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
             
             var nodes = _.copy(this._nodes),t,k='xui.DataBinder';
+            _.filter(nodes,function(o){
+                return !!(o.box[k]);
+            });
+            return nodes;
+        },
+        getForms:function(){
+            if(!this._innerModulesCreated)this._createInnerModules();
+            
+            var nodes = _.copy(this._ctrlpool),t,k='xui.absForm';
             _.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
@@ -13755,7 +13950,7 @@ Class('xui.Module','xui.absProfile',{
         // for setting only
         $DataModel:{
             autoDestroy:true,
-            $UIValue:"",
+            dataBinder:"",
             value:""
         },
         $EventHandlers:{
@@ -13775,13 +13970,15 @@ Class('xui.Module','xui.absProfile',{
 });Class("xui.Cookies", null,{
     Static:{
         set:function(name,value,days,path,domain,isSecure){
-	    if(name){
-	        if(typeof value !="string")value=_.serialize(value);
-    	        document.cookie = escape(name) + "=" + escape(value) +
-    		        (days?";expires="+(new Date((new Date()).getTime()+(24*60*60*1000*days))).toGMTString():"")+
-    		        (path?";path="+path:"")+
-    		        (domain?";domain="+domain:"")+ 
-    		        (isSecure?";secure":"");
+            if(_.isHash(name)){
+                for(var i in name) this.set(i, name[i],days,path,domain,isSecure);
+           }else{
+	           if(typeof value !="string")value=_.serialize(value);
+    	       document.cookie = escape(name+'') + "=" + escape(value) +
+    		        (days?"; expires="+(new Date((new Date()).getTime()+(24*60*60*1000*days))).toGMTString():"")+
+    		        (path?"; path="+path:"")+
+    		        (domain?"; domain="+domain:"")+ 
+    		        (isSecure?"; secure":"");
     	    }
             return this;
         },
@@ -13789,8 +13986,8 @@ Class('xui.Module','xui.absProfile',{
         	var i,a,s,ca = document.cookie.split( "; " ),hash={};
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
-        	        s=a[1]?unescape(a[1]):'';
-        	        hash[a[0]]=_.unserialize(s)||s;
+    	        s=a[1]?unescape(a[1]):'';
+    	        hash[a[0]]=_.unserialize(s)||s;
         		if(name && a[0]==escape(name))
         		    return hash[a[0]];
         	}
@@ -19494,8 +19691,8 @@ Class("xui.UI",  "xui.absObj", {
                     return fun;
                 }),
                 hls={},t;
-            if(!xui.SC.get('xui.absComposed'))
-                Class('xui.absComposed','xui.absObj',{
+            if(!xui.SC.get('xui.absForm'))
+                Class('xui.absForm','xui.absObj',{
                     Instance:{
                         addPanel:function(paras, children, item){
                             var pro = _.clone(xui.UI.Panel.$DataStruct,true);
@@ -19568,8 +19765,8 @@ Class("xui.UI",  "xui.absObj", {
                         setFormValues:function(values, subId){
                             if(!_.isEmpty(values)){
                                 this.getFormElements(subId).each(function(prf){
-                                    if('value' in prf.properties && (p.name||prf.alias) in values){
-                                        var v=values[p.name||prf.alias],b=_.isHash(v) ;
+                                    if('value' in prf.properties && (prf.properties.name||prf.alias) in values){
+                                        var v=values[prf.properties.name||prf.alias],b=_.isHash(v) ;
                                         prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
                                         if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
                                             prf.boxing().setCaption(v.caption, null, true,'module');
@@ -19821,7 +20018,7 @@ Class("xui.UI",  "xui.absObj", {
                         }
                     }
                 });
-            var src=xui.absComposed.prototype;
+            var src=xui.absForm.prototype;
 
             if(hash.HoverEffected){
                 _.each(hash.HoverEffected,function(o,i){
@@ -19974,12 +20171,14 @@ Class("xui.UI",  "xui.absObj", {
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
                     if(!t[f])t[f]=src[f];
-                    dm=xui.absComposed.$DataModel[o];
+                    dm=xui.absForm.$DataModel[o];
                     self.$DataStruct[o]=_.isSet(dm.ini)?_.copy(dm.ini):"";
                     self.$DataModel[o]=_.copy(dm);
                 });
 
-                 _.merge(hls, xui.absComposed.$EventHandlers);
+                 _.merge(hls, xui.absForm.$EventHandlers);
+
+                 self['xui.absForm']=true;
             }
             self.setEventHandlers(hls);
         },

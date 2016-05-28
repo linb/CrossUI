@@ -63,16 +63,56 @@ Class("xui.APICaller","xui.absObj",{
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 queryURL=prop.queryURL,
-                proxyType=prop.proxyType.toLowerCase();
+                proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
                 queryPasswrod=prop.queryPasswrod,
                 queryArgs=_.copy(prop.queryArgs),
-                OAuth2Token=prop.OAuth2Token,
-                queryOptions=_.copy(prop.queryOptions);
+                oAuth2Token=prop.oAuth2Token,
+                queryOptions=_.copy(prop.queryOptions),
+                queryHeader=_.copy(prop.queryHeader),
+                requestDataSource=prop.requestDataSource,
+                responseDataTarget=prop.responseDataTarget;
+
+            queryURL = xui.adjustVar(queryURL);
 
             if(proxyType=="sajax") proxyType="jsonp";
             else if(proxyType=="iajax") proxyType="xdmi";
-            if(requestType=="form") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(requestType=="FORM"||requestType=="JSON") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(!queryArgs)queryArgs={};
+            if(prop.avoidCache){
+                var i=0, rnd="_rand_";
+                while(queryArgs.hasOwnProperty(rnd))rnd="_rand_" + ++i;
+                queryArgs[rnd] = _.rand();
+            }
+            // merge request data
+            if(requestDataSource&&requestDataSource.length){
+                for(var i in requestDataSource){
+                    var o=requestDataSource[i],t;
+                    switch(o.bindertype){
+                        case "databinder":
+                            if(t = xui.DataBinder.getFromName(o.name)){
+                                if(!t.updateDataFromUI()){
+                                    return;
+                                }else{
+                                    if(o.path) _.set(queryArgs, o.path.split('.'),t.getData());
+                                    else _.merge(queryArgs, t.getData(), 'without');
+                                }
+                            }
+                            break;
+                        case "form":
+                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                                if(!t.checkValid() || !t.checkRequired()){
+                                    return;
+                                }else{
+                                    if(o.path)  _.set(queryArgs, o.path.split('.'), t.getFormValues());
+                                    else _.merge(queryArgs, t.getFormValues(), 'without');
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
 
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
@@ -153,8 +193,8 @@ Class("xui.APICaller","xui.absObj",{
                     queryArgs = typeof queryArgs=='string'?queryArgs:xui.SOAP.wrapRequest(queryArgs, con.WDSLCache[queryURL]);
                 break;
             }
-            if(OAuth2Token)
-               rMap.header["Authorization"]="Bearer " + OAuth2Token
+            if(oAuth2Token)
+               rMap.header["Authorization"]="Bearer " + oAuth2Token
 
             // Ajax/JSONP/XDMI
             if(proxyType!="ajax")
@@ -171,26 +211,50 @@ Class("xui.APICaller","xui.absObj",{
                 options.onEnd=onEnd;
             if(!("onStart" in options))
                 options.onStart=onStart;
+            if(!_.isEmpty(queryHeader)){
+                if(!_.isEmpty(queryOptions.header)){
+                    _.merge(queryOptions.header, queryHeader, 'without');
+                }else{
+                    queryOptions.header = queryHeader;
+                }
+            }
             _.merge(options, queryOptions);
 
             _.merge(options, rMap, 'all');
             options.proxyType=proxyType;
 
+            if(_.isEmpty(options.header)){
+                delete options.header;
+            }
             // If there's mocker, we need try to adjust queryURL and other args
             var mocker = xui.APICaller.Mocker;
             if(mocker){
-                //
-                // remoteSericeURL
-                // mockerURL
-                // endpoints
-                
                 // remvoe header / and tail /
                 var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
-                if(mocker.endpoints && mocker.endpoints[endPoint]){
+                if((mocker.blacklist && !mocker.blacklist[endPoint]) || (mocker.whitelist && mocker.whitelist[endPoint])){
                     queryURL = mocker.mockerURL.replace(/[/]+$/,'') + "/" + endPoint;
                 }
             }
-
+            var cookies={},t;
+            if(!_.isEmpty(prop.fakeCookies)){
+                options.$onStart = function(){
+                    _.each(prop.fakeCookies,function(v,k){
+                        if(_.isSet(t=xui.Cookies.get(k))){
+                            cookies[k] = t;
+                            xui.Cookies.remove(k);
+                        }
+                    });
+                    xui.Cookies.set(prop.fakeCookies);
+                }
+            }
+            if(!_.isEmpty(prop.fakeCookies)){
+                options.$onEnd = function(){
+                    _.each(prop.fakeCookies,function(v,k){
+                        xui.Cookies.remove(k);
+                    });
+                    xui.Cookies.set(cookies);
+                };
+            }
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
                 var mapb;
 
@@ -208,29 +272,72 @@ Class("xui.APICaller","xui.absObj",{
                         rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                 }
 
-               if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
-               _.tryF(onSuccess,arguments,this);
+                if(responseDataTarget&&responseDataTarget.length){
+                    _.arr.each(responseDataTarget, function(o){
+                        var data = o.path?_.get(rspData,o.path.split('.')):rspData,t;
+                        switch(o.bindertype){
+                            case "alert":
+                                data = _.stringify(data);
+                                if(xui.Coder)data=xui.Coder.formatText(data);
+                                alert(data);
+                            break;
+                            case "log":
+                                xui.log(data);
+                            break;
+                            case "databinder":
+                                if(t = xui.DataBinder.getFromName(o.name)){
+                                    t.setData(data).updateDataToUI();
+                                }
+                                break;
+                            case "form":
+                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                                    t.setFormValues(data);
+                                }
+                                break;
+                        }
+                    });
+                }
+                if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
+                _.tryF(onSuccess,arguments,this);
+
             }, function(rspData){
-               if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-               if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
+                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+
+                if(responseDataTarget&&responseDataTarget.length){
+                    _.arr.each(responseDataTarget, function(o, t){
+                        switch(o.bindertype){
+                            case "alert":
+                                rspData = _.stringify(rspData);
+                                if(xui.Coder)rspData=xui.Coder.formatText(rspData);
+                                alert(rspData);
+                            break;
+                            case "log":
+                                xui.log(rspData);
+                            break;                            
+                        }
+                    });
+                }
+               
+                if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
                 _.tryF(onFail,arguments,this);
             }, threadid, options]);
 
-            if(mode=="busy")
-                _.observableRun(function(){
-                    ajax.start();
-                });
+            if(mode=="quiet")
+                ajax.start();
             else if(mode=="return")
                 return ajax;
             else
-                ajax.start();
+                _.observableRun(function(threadid){
+                    ajax.threadid=threadid;
+                    ajax.start();
+                });                
         }
     },
     Static:{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryOptions:1,requestDataSource:1,responseDataTarget:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1},
         destroyAll:function(){
             this.pack(_.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -272,8 +379,9 @@ Class("xui.APICaller","xui.absObj",{
             requestId:"",
             queryAsync:true,
             queryURL:"",
+            avoidCache:true,
 
-            OAuth2Token:"",
+            oAuth2Token:"",
             queryUserName:"",
             queryPassword:"",
 
@@ -300,7 +408,13 @@ Class("xui.APICaller","xui.absObj",{
             queryArgs:{
                 ini:{}
             },
+            queryHeader:{
+                ini:{}
+            },
             queryOptions:{
+                ini:{}
+            },
+            fakeCookies:{
                 ini:{}
             },
             proxyType:{
@@ -322,33 +436,50 @@ Class("xui.APICaller","xui.absObj",{
                     //    throw value+' exists!';
 
                     _p[o.properties.name=value]=o;
-                    //modify name
-                    if(_old && !_new && o._n.length)
-                        for(var i=0,l=o._n.length;i<l;i++)
-                            _.set(o._n[i], ["properties","dataBinder"], value);
 
                     //pointer _old the old one
                     if(_new && !_old) o._n=_new._n;
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            }/*,
+            },
             proxyInvoker:{
                 inner:true,
                 trigger:function(){
+                    var prf = this.get(0),
+                        bak = prf.properties.responseDataTarget;
+                    prf.properties.responseDataTarget=[];
                     this.invoke(function(d){
-                        xui.alert("onData",_.stringify(d));
-                    },function(e){
-                        xui.alert("onError",_.stringify(e));
+                        prf.properties.responseDataTarget = bak;
+
+                        d=_.stringify(d);
+                        if(xui.Coder)d=xui.Coder.formatText(d);
+                        alert(d);
+                    },function(d){
+                        prf.properties.responseDataTarget = bak;
+
+                        d=_.stringify(d);
+                        if(xui.Coder)d=xui.Coder.formatText(d);
+                        alert(d);
                     });
                 }
-            }*/
+            }
         },
         EventHandlers:{
             beforeInvoke:function(profile, requestId){},
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
             onError:function(profile, rspData, requestId){}
-        }
+        }//,
+        //Mocker:{
+        //    remoteSericeURL:"",
+        //    mockerURL:"",
+        //    blacklist:{
+        //      xxx:1
+        //    },
+        //    whitelist:{
+        //      xxx:1
+        //    }
+        //}
     }
 });

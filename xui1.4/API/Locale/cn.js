@@ -7003,7 +7003,7 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","absComposed"], {
+    _.set(xui.Locale,["cn","doc","xui","absForm"], {
         prototype:{
             getDragKey:{
                 $desc:"获取拖动时的标志键",
@@ -19724,7 +19724,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'name':'字段名字',
             'desc':'组件描述'
         },
-       'xui_absComposed' : {
+       'xui_absForm' : {
             'dragKey':'拖拽标识',
             'dropKeys':'丢下标识',
             panelBgClr:'容器背景色',
@@ -20322,7 +20322,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
         },
         'xui_absObj' : {
         },
-       'xui_absComposed' : {
+       'xui_absForm' : {
             onHotKeydown:"热键下按",
             onHotKeypress:"热键按下",
             onHotKeyup:"热键抬起",

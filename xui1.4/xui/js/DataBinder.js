@@ -1,4 +1,4 @@
-Class("xui.DataBinder","xui.APICaller",{
+Class("xui.DataBinder","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -48,6 +48,12 @@ Class("xui.DataBinder","xui.APICaller",{
                 //free profile
                 profile.__gc();
             });
+        },
+        setHost:function(value, alias){
+            var self=this;
+            if(value && alias)
+                self.setName(alias);
+            return arguments.callee.upper.apply(self,arguments);
         },
 
         isDirtied:function(){
@@ -361,7 +367,23 @@ Class("xui.DataBinder","xui.APICaller",{
     Static:{
         $nameTag:"databinder_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,data:1,queryArgs:1},
+        _objectProp:{tagVar:1,propBinder:1,data:1},
+        destroyAll:function(){
+            this.pack(_.toArr(this._pool,false),false).destroy();
+            this._pool={};
+        },
+        getFromName:function(name){
+            var o=this._pool[name];
+            return o && o.boxing();
+        },
+        _beforeSerialized:function(profile){
+            var o={};
+            _.merge(o, profile, 'all');
+            var p = o.properties = _.clone(profile.properties,true);
+            for(var i in profile.box._objectProp)
+                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
+            return o;
+        },                
         _getBoundElems:function(prf){
             var arr=[];
             _.arr.each(prf._n,function(profile){
@@ -428,6 +450,34 @@ Class("xui.DataBinder","xui.APICaller",{
                 profile.unLink('databinder.'+name);
         },
         DataModel:{
+            dataBinder:null,
+            dataField:null,            
+            "name":{
+                set:function(value){
+                    var o=this,
+                        ovalue=o.properties.name,
+                         c=o.box,
+                        _p=c._pool,
+                        _old=_p[ovalue],
+                        _new=_p[value],
+                        ui;
+
+                    //if it exists, overwrite it dir
+                    //if(_old && _new)
+                    //    throw value+' exists!';
+
+                    _p[o.properties.name=value]=o;
+                    //modify name
+                    if(_old && !_new && o._n.length)
+                        for(var i=0,l=o._n.length;i<l;i++)
+                            _.set(o._n[i], ["properties","dataBinder"], value);
+
+                    //pointer _old the old one
+                    if(_new && !_old) o._n=_new._n;
+                    //delete the old name from pool
+                    if(_old)delete _p[ovalue];
+                }
+            },            
             "data":{
                 ini:{}
             }

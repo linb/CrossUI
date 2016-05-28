@@ -107,6 +107,8 @@ Class('xui.Module','xui.absProfile',{
         
         self.host=host||self;
         self.alias=alias;
+        
+        self.$UIValue="";
 
         self._nodes=[];
         self._ctrlpool={};
@@ -121,7 +123,6 @@ Class('xui.Module','xui.absProfile',{
     },
     Instance:{
         autoDestroy:true,
-        dataBindLoadType:"none", // "sync", "async", "none"
         background:"",
 
         // [[[ fake boxing
@@ -220,7 +221,12 @@ Class('xui.Module','xui.absProfile',{
             return this.host;
         },
         setProperties:function(key,value){
-            var self=this;
+            var self=this,
+                oDataBinder;
+            if('dataBinder' in self.properties){
+                oDataBinder = self.properties.dataBinder;
+            }
+
             if(!key)
                 self.properties={};
             else if(typeof key=='string')
@@ -235,6 +241,13 @@ Class('xui.Module','xui.absProfile',{
 
             if(self.propSetAction)self.propSetAction(self.properties);
 
+            if('dataBinder' in self.properties){
+                if(oDataBinder!==self.properties){
+                    if(oDataBinder)
+                        xui.DataBinder._unBind(oDataBinder, self);
+                    xui.DataBinder._bind(self.properties.dataBinder, self);
+                }
+            }
             return self;
         },
         getProperties:function(key){
@@ -533,28 +546,6 @@ Class('xui.Module','xui.absProfile',{
                 self._fireEvent('onCreated');
             });
 
-            //databinder
-            if(self.dataBindLoadType!="none"){
-                var bds=self.getDataBinders();
-                if(bds && bds.length){
-                    var dbf=function(threadid){
-                        var hash={};
-                        _.arr.each(bds,function(bd, i){
-                            var ajax=bd.boxing().read(null,null,null,null,"return");
-                            if(ajax)hash[i]=ajax;
-                        });
-                        if(!_.isEmpty(hash))
-                            xui.absIO.groupCall(hash, null, null, null, threadid);
-                        bds.length=0;
-                        hash=bds=null;
-                    };
-                    if(self.dataBindLoadType=="sync")
-                        funs.push(dbf);
-                    else
-                        dbf();
-                }
-            }
-
             //base classes
             if((t=self.Dependencies) && t.length)
                 funs.push(function(threadid){
@@ -830,7 +821,7 @@ Class('xui.Module','xui.absProfile',{
                 });
                 return hash;
             }else{
-                return this.properties.$UIValue;
+                return this.$UIValue;
             }
         },
         setUIValue:function(values,innerUI){
@@ -848,7 +839,7 @@ Class('xui.Module','xui.absProfile',{
                     });
                 }
             }else{
-                this.properties.$UIValue = values;
+                this.$UIValue = values;
             }
             return this;
         },
@@ -859,7 +850,7 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
-                this.properties.$UIValue=this.properties.value; 
+                this.$UIValue=this.properties.value; 
             }
             return this;
         },
@@ -870,7 +861,7 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
-                this.properties.value=this.properties.$UIValue; return this;
+                this.properties.value=this.$UIValue; return this;
             }
             return this;
         },
@@ -888,7 +879,7 @@ Class('xui.Module','xui.absProfile',{
                 });
                  return dirtied;
             }else{
-                return this.properties.value===this.properties.$UIValue;
+                return this.properties.value===this.$UIValue;
             }
         },
         checkValid:function(innerUI){
@@ -911,6 +902,15 @@ Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
             
             var nodes = _.copy(this._nodes),t,k='xui.DataBinder';
+            _.filter(nodes,function(o){
+                return !!(o.box[k]);
+            });
+            return nodes;
+        },
+        getForms:function(){
+            if(!this._innerModulesCreated)this._createInnerModules();
+            
+            var nodes = _.copy(this._ctrlpool),t,k='xui.absForm';
             _.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
@@ -1171,7 +1171,7 @@ Class('xui.Module','xui.absProfile',{
         // for setting only
         $DataModel:{
             autoDestroy:true,
-            $UIValue:"",
+            dataBinder:"",
             value:""
         },
         $EventHandlers:{

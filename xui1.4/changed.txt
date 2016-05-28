@@ -7,7 +7,7 @@
 7) Modify xui.Com to xui.Module; xui.ComFactory to xui.ModuleFactory
 8) Add freezeColumn property to xui.UI.TreeGrid
 9) Enabled the UI Builder to support reusable modules
-
+10) Added APICaller Configure dialog
 
 Updated to NWJS 15.0
 

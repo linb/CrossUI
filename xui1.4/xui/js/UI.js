@@ -3199,8 +3199,8 @@ Class("xui.UI",  "xui.absObj", {
                     return fun;
                 }),
                 hls={},t;
-            if(!xui.SC.get('xui.absComposed'))
-                Class('xui.absComposed','xui.absObj',{
+            if(!xui.SC.get('xui.absForm'))
+                Class('xui.absForm','xui.absObj',{
                     Instance:{
                         addPanel:function(paras, children, item){
                             var pro = _.clone(xui.UI.Panel.$DataStruct,true);
@@ -3273,8 +3273,8 @@ Class("xui.UI",  "xui.absObj", {
                         setFormValues:function(values, subId){
                             if(!_.isEmpty(values)){
                                 this.getFormElements(subId).each(function(prf){
-                                    if('value' in prf.properties && (p.name||prf.alias) in values){
-                                        var v=values[p.name||prf.alias],b=_.isHash(v) ;
+                                    if('value' in prf.properties && (prf.properties.name||prf.alias) in values){
+                                        var v=values[prf.properties.name||prf.alias],b=_.isHash(v) ;
                                         prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
                                         if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
                                             prf.boxing().setCaption(v.caption, null, true,'module');
@@ -3526,7 +3526,7 @@ Class("xui.UI",  "xui.absObj", {
                         }
                     }
                 });
-            var src=xui.absComposed.prototype;
+            var src=xui.absForm.prototype;
 
             if(hash.HoverEffected){
                 _.each(hash.HoverEffected,function(o,i){
@@ -3679,12 +3679,14 @@ Class("xui.UI",  "xui.absObj", {
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
                     if(!t[f])t[f]=src[f];
-                    dm=xui.absComposed.$DataModel[o];
+                    dm=xui.absForm.$DataModel[o];
                     self.$DataStruct[o]=_.isSet(dm.ini)?_.copy(dm.ini):"";
                     self.$DataModel[o]=_.copy(dm);
                 });
 
-                 _.merge(hls, xui.absComposed.$EventHandlers);
+                 _.merge(hls, xui.absForm.$EventHandlers);
+
+                 self['xui.absForm']=true;
             }
             self.setEventHandlers(hls);
         },
