@@ -3199,8 +3199,8 @@ Class("xui.UI",  "xui.absObj", {
                     return fun;
                 }),
                 hls={},t;
-            if(!xui.SC.get('xui.absForm'))
-                Class('xui.absForm','xui.absObj',{
+            if(!xui.SC.get('xui.absContainer'))
+                Class('xui.absContainer','xui.absObj',{
                     Instance:{
                         addPanel:function(paras, children, item){
                             var pro = _.clone(xui.UI.Panel.$DataStruct,true);
@@ -3526,7 +3526,7 @@ Class("xui.UI",  "xui.absObj", {
                         }
                     }
                 });
-            var src=xui.absForm.prototype;
+            var src=xui.absContainer.prototype;
 
             if(hash.HoverEffected){
                 _.each(hash.HoverEffected,function(o,i){
@@ -3679,14 +3679,14 @@ Class("xui.UI",  "xui.absObj", {
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
                     if(!t[f])t[f]=src[f];
-                    dm=xui.absForm.$DataModel[o];
+                    dm=xui.absContainer.$DataModel[o];
                     self.$DataStruct[o]=_.isSet(dm.ini)?_.copy(dm.ini):"";
                     self.$DataModel[o]=_.copy(dm);
                 });
 
-                 _.merge(hls, xui.absForm.$EventHandlers);
+                 _.merge(hls, xui.absContainer.$EventHandlers);
 
-                 self['xui.absForm']=true;
+                 self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
         },

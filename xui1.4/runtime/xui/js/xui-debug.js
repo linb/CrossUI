@@ -4548,7 +4548,7 @@ Class("xui.Timer","xui.absObj",{
                             }
                             break;
                         case "form":
-                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
                                 if(!t.checkValid() || !t.checkRequired()){
                                     return;
                                 }else{
@@ -4568,6 +4568,13 @@ Class("xui.Timer","xui.absObj",{
 
             // for auto adjusting options
             var rMap={header:{}};
+            if(!_.isEmpty(queryHeader)){
+                _.merge(rMap.header, queryHeader);
+            }
+            if(queryOptions.header && !_.isEmpty(queryOptions.header)){
+                _.merge(rMap.header, queryOptions.header);
+                delete queryOptions.header;
+            }
             if(responseType=='SOAP'||requestType=='SOAP'){
                 // for wsdl
                 if(!con.WDSLCache)con.WDSLCache={};
@@ -4659,13 +4666,7 @@ Class("xui.Timer","xui.absObj",{
                 options.onEnd=onEnd;
             if(!("onStart" in options))
                 options.onStart=onStart;
-            if(!_.isEmpty(queryHeader)){
-                if(!_.isEmpty(queryOptions.header)){
-                    _.merge(queryOptions.header, queryHeader, 'without');
-                }else{
-                    queryOptions.header = queryHeader;
-                }
-            }
+
             _.merge(options, queryOptions);
 
             _.merge(options, rMap, 'all');
@@ -4692,7 +4693,7 @@ Class("xui.Timer","xui.absObj",{
                             xui.Cookies.remove(k);
                         }
                     });
-                    xui.Cookies.set(prop.fakeCookies);
+                    xui.Cookies.set(prop.fakeCookies,1,"/");
                 }
             }
             if(!_.isEmpty(prop.fakeCookies)){
@@ -4738,7 +4739,7 @@ Class("xui.Timer","xui.absObj",{
                                 }
                                 break;
                             case "form":
-                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
                                     t.setFormValues(data);
                                 }
                                 break;
@@ -13689,7 +13690,7 @@ Class('xui.Module','xui.absProfile',{
         getForms:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
             
-            var nodes = _.copy(this._ctrlpool),t,k='xui.absForm';
+            var nodes = _.copy(this._ctrlpool),t,k='xui.absContainer';
             _.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
@@ -13955,7 +13956,7 @@ Class('xui.Module','xui.absProfile',{
         },
         $EventHandlers:{
             beforeCreated:function(module, threadid){},
-            onLoadBaseClass:function(module, threadid, key){},
+            onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
             onLoadRequiredClass:function(module, threadid, uri, key){},
             onLoadRequiredClassErr:function(module, threadid, uri){},
@@ -19691,8 +19692,8 @@ Class("xui.UI",  "xui.absObj", {
                     return fun;
                 }),
                 hls={},t;
-            if(!xui.SC.get('xui.absForm'))
-                Class('xui.absForm','xui.absObj',{
+            if(!xui.SC.get('xui.absContainer'))
+                Class('xui.absContainer','xui.absObj',{
                     Instance:{
                         addPanel:function(paras, children, item){
                             var pro = _.clone(xui.UI.Panel.$DataStruct,true);
@@ -20018,7 +20019,7 @@ Class("xui.UI",  "xui.absObj", {
                         }
                     }
                 });
-            var src=xui.absForm.prototype;
+            var src=xui.absContainer.prototype;
 
             if(hash.HoverEffected){
                 _.each(hash.HoverEffected,function(o,i){
@@ -20171,14 +20172,14 @@ Class("xui.UI",  "xui.absObj", {
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
                     if(!t[f])t[f]=src[f];
-                    dm=xui.absForm.$DataModel[o];
+                    dm=xui.absContainer.$DataModel[o];
                     self.$DataStruct[o]=_.isSet(dm.ini)?_.copy(dm.ini):"";
                     self.$DataModel[o]=_.copy(dm);
                 });
 
-                 _.merge(hls, xui.absForm.$EventHandlers);
+                 _.merge(hls, xui.absContainer.$EventHandlers);
 
-                 self['xui.absForm']=true;
+                 self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
         },
@@ -42482,11 +42483,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     v.width=v._col._pxWidth;
                 })
             });
-            // check freeze row exists?
-            if(profile.properties.freezeRow){
+            // check freezed row exists?
+            if(profile.properties.freezedRow){
                 var t = profile.getSubNode('ROWS12');
                 if(!t.isEmpty()  && t.query('div','id',/-ROWS12\:/).isEmpty())
-                    delete profile._passFreezeRow;
+                    delete profile._passFreezedRow;
             }
 
             //build dom
@@ -43135,7 +43136,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(pos<0)pos=0;
             if(prop.treeMode=='infirstcell' && pos===0)return false;
 
-            var leftRegion = pos <= prop.freezeColumn -1 ;
+            var leftRegion = pos <= prop.freezedColumn -1 ;
 
             var arr=prop.grpCols;
             if(arr && _.isArr(arr)&& arr.length){
@@ -44150,14 +44151,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             $submap : {
                 /*the other header in table header*/
                 header1:function(profile,template,v,tag,result,index){
-                    if(index > profile.properties.freezeColumn)return false;
+                    if(index > profile.properties.freezedColumn)return false;
                     profile.colMap[v._serialId]._region=1;
                     tag="header";
                     xui.UI.$doTemplate(profile,template,v,tag, result);
                     return tag;
                 },
                 header2:function(profile,template,v,tag,result,index){
-                    if(index > profile.properties.freezeColumn){
+                    if(index > profile.properties.freezedColumn){
                         profile.colMap[v._serialId]._region=2;
                         tag="header";
                         xui.UI.$doTemplate(profile,template,v,tag, result);
@@ -44188,14 +44189,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 grpCols1:function(profile,template,v,tag,result,index){
-                    if(v.to > profile.properties.freezeColumn - 1)return false;
+                    if(v.to > profile.properties.freezedColumn - 1)return false;
                     profile.colMap[v._serialId]._region=1;
                     tag="grpCols";
                     xui.UI.$doTemplate(profile,template,v,tag, result);
                     return tag;
                 },
                 grpCols2:function(profile,template,v,tag,result,index){
-                    if(v.to > profile.properties.freezeColumn - 1){
+                    if(v.to > profile.properties.freezedColumn - 1){
                         profile.colMap[v._serialId]._region=2;
                         tag="grpCols";
                         xui.UI.$doTemplate(profile,template,v,tag, result);
@@ -44223,29 +44224,29 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 rows11:function(profile,template,v,tag,result,index){
-                    if(profile._passFreezeRow)return false;
-                    if(index > profile.properties.freezeRow)return false;
+                    if(profile._passFreezedRow)return false;
+                    if(index > profile.properties.freezedRow)return false;
                     profile.rowMap[v._serialId]._region=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows12:function(profile,template,v,tag,result,index){
-                    if(profile._passFreezeRow)return false;
-                    if(index > profile.properties.freezeRow)return false;
+                    if(profile._passFreezedRow)return false;
+                    if(index > profile.properties.freezedRow)return false;
                     profile.rowMap[v._serialId]._region=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
                 rows21:function(profile,template,v,tag,result,index){
-                    if(!profile._passFreezeRow && index <= profile.properties.freezeRow)return;
+                    if(!profile._passFreezedRow && index <= profile.properties.freezedRow)return;
                     profile.rowMap[v._serialId]._region=2;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows22:function(profile,template,v,tag,result,index){
-                    if(!profile._passFreezeRow && index <= profile.properties.freezeRow)return;
+                    if(!profile._passFreezedRow && index <= profile.properties.freezedRow)return;
                     // *** dont calculate freeeze rows again
-                    profile._passFreezeRow=1;
+                    profile._passFreezedRow=1;
                     profile.rowMap[v._serialId]._region=2;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
@@ -44310,7 +44311,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 'rows1._cellhandler':function(profile,template,v,tag,result,index){
-                    xui.UI.$doTemplate(profile,template,v, profile.properties.treeMode=="infirstcell" &&  !profile.properties.freezeColumn ? "rows1.infirstcell" : "rows1.inhandler", result);
+                    xui.UI.$doTemplate(profile,template,v, profile.properties.treeMode=="infirstcell" &&  !profile.properties.freezedColumn ? "rows1.infirstcell" : "rows1.inhandler", result);
                 },
                 'rows1.inhandler':{
                     FCELL:{
@@ -44414,7 +44415,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
 
                 'rows1.cells':function(profile,template,v,tag,result,index){
-                    if(index > profile.properties.freezeColumn)return;
+                    if(index > profile.properties.freezedColumn)return;
                     tag = 'rows.cells';
 
                     var me=arguments.callee,map=me._m||(me._m={'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'}),
@@ -44427,7 +44428,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return tag;
                 },
                 'rows2.cells':function(profile,template,v,tag,result,index){
-                    if(index <= profile.properties.freezeColumn)return;
+                    if(index <= profile.properties.freezedColumn)return;
                     tag = 'rows.cells';
 
                     var me=arguments.callee,map=me._m||(me._m={'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'}),
@@ -46564,14 +46565,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 }
             },
-            freezeColumn:{
+            freezedColumn:{
                 ini:0,
                 action:function(){
                     this.boxing().refresh();
                     this.box._adjustColsWidth(this);
                 }
             },
-            freezeRow:{
+            freezedRow:{
                 ini:0,
                 action:function(){
                     this.boxing().refresh();
@@ -47112,8 +47113,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return !item.tag || !!item.tag.match(/\bheader\b/);
             });
             
-            data._columnfreezed = pro.freezeColumn?'columnfreezed':'';
-            data._rowfreezed = pro.freezeRow?'rowfreezed':'';
+            data._columnfreezed = pro.freezedColumn?'columnfreezed':'';
+            data._rowfreezed = pro.freezedRow?'rowfreezed':'';
             
 
             return data;
@@ -47640,7 +47641,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 // for cells
                 if(row.group){
                     row.cells=null;
-                    if(pro.treeMode=='infirstcell' && !pro.freezeColumn){
+                    if(pro.treeMode=='infirstcell' && !pro.freezedColumn){
                         t._fgrpcell={};
                         _.merge(t._fgrpcell, t, function(o){
                             return _.isNumb(o) || _.isStr(o);
@@ -48058,7 +48059,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var editor,
                 grid = this,
                 prop = profile.properties,
-                //region = prop.freezeColumn prop.freezeRow
+                //region = prop.freezedColumn prop.freezedRow
                 col = cell._col,
                 colId = col.id,
                 row = cell._row,
@@ -48583,16 +48584,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 // adjust width
                 // left region
-                if(prop.freezeColumn){
+                if(prop.freezedColumn){
                     _.arr.each(prop.header,function(col,i){
-                        if(i==prop.freezeColumn)return false;
+                        if(i==prop.freezedColumn)return false;
                         if(!col.hidden)w1 += col.width + 2;
                     });
                 }
                 // for border-bottom
                 if(rr)rr-=1;
                 // for border-right
-                if(w1 && prop.freezeColumn)w1-=1;
+                if(w1 && prop.freezedColumn)w1-=1;
 
                 w2 = width - w1;
                 profile._leftregionw = w1;
@@ -48605,7 +48606,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 _.asyRun(function(){
                     b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + "px");
                     s21.scrollTop(s22.scrollTop());
-                    if(prop.freezeRow){
+                    if(prop.freezedRow){
                         b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + "px");
                         s12.scrollLeft(s22.scrollLeft());
                     }
@@ -48824,7 +48825,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     for(var k=0,o;k<=grp.to;k++){
                         o=header[k];
                         // for the main region
-                        if(prop.freezeColumn && prop.freezeColumn==k && !_l2){
+                        if(prop.freezedColumn && prop.freezedColumn==k && !_l2){
                             _l2 = _left;
                         }
                         if(k===grp.from){
@@ -48838,8 +48839,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     n=profile.getSubNode("HCELL",grp._serialId);
                     if(_w>2){
-                        n.css({display:'',left:(_l - (prop.freezeColumn
-                                                                    ? (grp.to > prop.freezeColumn-1 
+                        n.css({display:'',left:(_l - (prop.freezedColumn
+                                                                    ? (grp.to > prop.freezedColumn-1 
                                                                             ? _l2 
                                                                             : (prop.rowHandler ? -(prop.rowHandlerWidth+2) : 0) 
                                                                         )
@@ -49157,16 +49158,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // adjust width
             if(width){
                 // left region
-                if(prop.freezeColumn){
+                if(prop.freezedColumn){
                     _.arr.each(prop.header,function(col,i){
-                        if(i==prop.freezeColumn)return false;
+                        if(i==prop.freezedColumn)return false;
                         if(!col.hidden)w1 += col.width + 2;
                     });
                 }
                 // for border-bottom
                 if(rr)rr-=1;
                 // for border-right
-                if(w1 && prop.freezeColumn)w1-=1;
+                if(w1 && prop.freezedColumn)w1-=1;
 
                 w2 = width - w1;
                 profile._leftregionw = w1;

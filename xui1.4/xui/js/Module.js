@@ -910,7 +910,7 @@ Class('xui.Module','xui.absProfile',{
         getForms:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
             
-            var nodes = _.copy(this._ctrlpool),t,k='xui.absForm';
+            var nodes = _.copy(this._ctrlpool),t,k='xui.absContainer';
             _.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
@@ -1176,7 +1176,7 @@ Class('xui.Module','xui.absProfile',{
         },
         $EventHandlers:{
             beforeCreated:function(module, threadid){},
-            onLoadBaseClass:function(module, threadid, key){},
+            onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
             onLoadRequiredClass:function(module, threadid, uri, key){},
             onLoadRequiredClassErr:function(module, threadid, uri){},

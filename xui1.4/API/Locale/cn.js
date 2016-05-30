@@ -1,7 +1,7 @@
 _.set(xui.Locale,["cn","app"], {
     en:'英文',
     cn:'中文',
-    apititle:"CrossUI 1.3 - API 文档",
+    apititle:"CrossUI 1.4 - API 文档",
 
     search:'API查询',
     lQ1:'按API查询',
@@ -36,6 +36,8 @@ _.set(xui.Locale,["cn","app"], {
             "flag  [可选参数]: Boolean, 仅删除事件的时候有效,表示是否删除所有相关的事件."
         ]
     };
+    var $force="force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false].";
+    var $profile="profile : xui.UIProfile, 当前控件的配置对象.";
     /*
     $desc string
     $paras array
@@ -4482,7 +4484,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getName:{
@@ -4494,7 +4496,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getTag:{
@@ -4512,7 +4514,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4530,7 +4532,7 @@ _.set(xui.Locale,["cn","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             reBindProp:{
@@ -4555,7 +4557,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4579,7 +4581,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.absv2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4603,7 +4605,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.absv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5194,7 +5196,7 @@ _.set(xui.Locale,["cn","app"], {
                 "    onIniResource:function(){order.push('onIniResource'); xui.log('onIniResource');},"+
                 "    beforeIniComponents:function(){order.push('beforeIniComponents'); xui.log('beforeIniComponents');},"+
                 "    afterIniComponents:function(){order.push('afterIniComponents'); xui.log('afterIniComponents');},"+
-                "    onLoadReqiredClass:function(c,t,key){order.push('onLoadReqiredClass: '+key); xui.log('onLoadReqiredClass: '+key);},"+
+                "    onLoadRequiredClass:function(c,t,key){order.push('onLoadRequiredClass: '+key); xui.log('onLoadRequiredClass: '+key);},"+
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
                 "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
@@ -5242,9 +5244,9 @@ _.set(xui.Locale,["cn","app"], {
                 "                module._info.push('afterIniComponents');" +
                 "                xui.log('afterIniComponents');" +
                 "            }," +
-                "            onLoadReqiredClass : function(module, t, key){" +
-                "                module._info.push('onLoadReqiredClass: ' + key);" +
-                "                xui.log('onLoadReqiredClass: ' + key);" +
+                "            onLoadRequiredClass : function(module, t, key){" +
+                "                module._info.push('onLoadRequiredClass: ' + key);" +
+                "                xui.log('onLoadRequiredClass: ' + key);" +
                 "            }," +
                 "            onReady : function(module){" +
                 "                module._info.push('onReady');" +
@@ -5293,7 +5295,7 @@ _.set(xui.Locale,["cn","app"], {
                 "            onIniResource : '_trace'," +
                 "            beforeIniComponents : '_trace'," +
                 "            afterIniComponents : '_trace'," +
-                "            onLoadReqiredClass : '_trace'," +
+                "            onLoadRequiredClass : '_trace'," +
                 "            onReady : '_trace'," +
                 "            onRender : '_trace'," +
                 "        }," +
@@ -5364,9 +5366,6 @@ _.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
-            dataBindLoadType:{
-                $desc:"数据绑定功能类型.  none, sync, async之一.  默认 none"
-            },
             autoDestroy:{
                 $desc:"本Module是否随着第一个内UI控件的销毁而销毁."
             },
@@ -5699,9 +5698,18 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     'module : xui.Module 对象.',
                     'threadid : String, 线程 id.',
+                    'uri: String 类的uri',
                     'key: String, 基类的类名.'
                 ],
                 $memo:'See constructor.'
+            },
+            onLoadBaseClassErr:{
+                $desc:'当Module加载基类出错的时候触发本事件.',
+                $paras:[
+                    'module : xui.Module 对象.',
+                    'threadid : String, 线程 id.',
+                    'key: String, 基类的类名.'
+                ]
             },
             onIniResource:{
                 $desc:'当Module加载资源的时候触发本事件.',
@@ -5732,9 +5740,18 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     'module : xui.Module 对象.',
                     'threadid : String, 线程 id.',
+                    'uri: String 类的uri',
                     'key: String, 加载的类名.'
                 ],
                 $memo:'See constructor.'
+            },
+            onLoadRequiredClassErr:{
+                $desc:'当 Module 加载所需要的类出错时触发.',
+                $paras:[
+                    'module : xui.Module 对象.',
+                    'threadid : String, 线程 id.',
+                    'key: String, 加载的类名.'
+                ]
             },
             onReady:{
                 $desc:'当 Module 构建完成后触发.',
@@ -5911,7 +5928,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self].",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             onTime:{
@@ -5945,12 +5962,310 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
     
-    _.set(xui.Locale,["cn","doc","xui","DataBinder"], {
+    _.set(xui.Locale,["cn","doc","xui","APICaller"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.DataBinder 类",
+        $desc:"xui.APICaller 类",
         WDSLCache:{
             $desc:"SOAP的WDSL缓存."
         },
+        constructor:{
+            $desc:"生成一个 APICaller 对象."
+        },
+        destroyAll:{
+            $desc:"销毁所有xui.APICaller.",
+            $snippet:[
+                "//xui.DataBinder.destroyAll()"
+            ]
+        },
+        getFromName:{
+            $desc:"获取名字为指定值的xui.DataBinder对象.",
+            $rtn:'xui.DataBinder Object.',
+            $paras:[
+                "name [必需参数] : String, DataBinder名字."
+            ]
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            setHost:{
+                $desc:"设置借宿对象和别名.",
+                $rtn:'[self]',
+                $paras:[
+                    "host [可选参数 : Object, 宿主.",
+                    "alias [可选参数 : String, 别名字符串."
+                ]
+            },
+            destroy:{
+                $desc:"销毁该对象.",
+                $memo:"一般情况下,程序员无需直接调用该函数."
+            },
+            setName:{
+                $desc:"设置名称.",
+                $rtn:'[self]',
+                $paras:[
+                    "value [必需参数] : String, 名字字符串"
+                ],
+                $memo:"参看'getValue'代码片段. "
+            },
+            getName:{
+                $desc:"返回名字.",
+                $rtn:'String',
+                $memo:"参看'getValue'代码片段. "
+            },
+            getAvoidCache:{
+                $desc:"得到是否要为了避免浏览器缓存，而添加一个随机参数.",
+                $rtn:'[self]'
+            },
+            setAvoidCache:{
+                $desc:"决定是否要为了避免浏览器缓存，而添加一个随机参数.",
+                $rtn:'[self]',
+                $paras:[
+                    "value [必需参数] : Boolean"
+                ]
+            },
+            getQueryURL:{
+                $desc:"获取远程数据源的URL请求地址.",
+                $rtn:"String"
+            },
+            setQueryURL:{
+                $desc:"设置远程数据源的URL请求地址.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getQueryUserName:{
+                $desc:"获取远程数据源的URL请求用户名.",
+                $rtn:"String"
+            },
+            setQueryUserName:{
+                $desc:"设置远程数据源的URL请求用户名.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getQueryPassword:{
+                $desc:"获取远程数据源的URL请求密码.",
+                $rtn:"String"
+            },
+            setQueryPassword:{
+                $desc:"设置远程数据源的URL请求密码.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getQueryMethod:{
+                $desc:"获取远程数据源的URL请求方式.",
+                $rtn:"String"
+            },
+            setQueryMethod:{
+                $desc:"设置远程数据源的URL请求方式.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String. 'auto','GET'或'POST', 默认为auto.",
+                    $force
+                ]
+            },
+            getQueryAsync:{
+                $desc:"获取远程数据源的数据请求是否为异步方式.",
+                $rtn:"Boolean"
+            },
+            setQueryAsync:{
+                $desc:"设置远程数据源的数据请求是否为异步方式.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    $force
+                ]
+            },
+            getFakeCookies:{
+                $desc:"获取Cookies伪装.",
+                $rtn:"Object"
+            },
+            setFakeCookies:{
+                $desc:"设置Cookies伪装.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    $force
+                ]
+            },
+            getQueryHeader:{
+                $desc:"得到需要附加的请求头",
+                $rtn:"Object"
+            },
+            setQueryHeader:{
+                $desc:"设置需要附加的请求头.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    $force
+                ]
+            },
+            getRequestDataSource:{
+                $desc:"得到请求的数据源",
+                $rtn:"Array"
+            },
+            setRequestDataSource:{
+                $desc:"设置请求的数据源.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Array. [{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    $force
+                ]
+            },
+            getResponseDataTarget:{
+                $desc:"得到响应数据的呈现方式",
+                $rtn:"Array"
+            },
+            setResponseDataTarget:{
+                $desc:"设置响应数据的呈现方式.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Array. [{bindertype:'alert',path:'xx'},{bindertype:'log',path:'xx'},{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    $force
+                ]
+            },
+            getQueryArgs:{
+                $desc:"获取远程数据源的数据请求参数.",
+                $rtn:"Object"
+            },
+            setQueryArgs:{
+                $desc:"设置远程数据源的数据请求参数.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    $force
+                ]
+            },
+            getOAuth2Token:{
+                $desc:"获取数据请求的 OAuth2Token.",
+                $rtn:"String"
+            },
+            setOAuth2Token:{
+                $desc:"设置数据请求的 OAuth2Token.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getQueryOptions:{
+                $desc:"获取远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
+                $rtn:"Object"
+            },
+            setQueryOptions:{
+                $desc:"设置远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : Object.",
+                    $force
+                ]
+            },
+            getProxyType:{
+                $desc:"获取远程数据源的数据请求代理种类.",
+                $rtn:"String"
+            },
+            setProxyType:{
+                $desc:"设置远程数据源的数据请求代理种类.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String. auto/Ajax/SAjax/IAjax之一,默认为auto.",
+                    $force
+                ]
+            },
+            getRequestId:{
+                $desc:"获取远程数请求的标识ID.",
+                $rtn:"String"
+            },
+            setRequestId:{
+                $desc:"设置远程数请求的标识ID.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String. 自定义的请求标识.",
+                    $force
+                ]
+            },
+            getRequestType:{
+                $desc:"获取向远程数据源发送数据请求的数类型.",
+                $rtn:"String"
+            },
+            setRequestType:{
+                $desc:"设置向远程数据源发送数据请求的数类型.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String. HTTP,JSON,XML,SOAP 之一",
+                    $force
+                ]
+            },
+            getResponseType:{
+                $desc:"获取从远程数据源得到的数据类型.",
+                $rtn:"String"
+            },
+            setResponseType:{
+                $desc:"设置从远程数据源得到的数据类型.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [必需参数] : String. JSON,XML,SOAP 之一",
+                    $force
+                ]
+            },
+            invoke:{
+                $desc:"远程数据调用.",
+                $rtn:"[xui.absIO]",
+                $paras:[
+                    "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
+                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                    "onStart [可选参数] : Function, ajax开始时的载的回调函数.",
+                    "onEnd [可选参数] : Function, ajax结束时的回调函数.",
+                    "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal.",
+                    "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                    "options [可选参数]: Object, 一组配置数据."
+                ]
+            },
+
+            beforeInvoke:{
+                $desc:"在invoke之前调用.  返回false可以阻止远程调用.",
+                $rtn:"Object",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "requestId : String"
+                ]
+            },
+            onData:{
+                $desc:"在得到数据之后调用.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
+                ]
+            },
+            onError:{
+                $desc:"在出现错误后调用.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
+                ]
+            },
+            afterInvoke:{
+                $desc:"在invoke之后调用.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
+                ]
+            }
+        }
+    });
+
+    _.set(xui.Locale,["cn","doc","xui","DataBinder"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.DataBinder 类",
         constructor:{
             $desc:"生成一个databinder对象."
         },
@@ -6053,150 +6368,6 @@ _.set(xui.Locale,["cn","app"], {
                     "value [可选参数] : Object, 值关键字,只有在key为String的时候有效."
                 ]
             },
-            getQueryURL:{
-                $desc:"[废弃] 获取远程数据源的URL请求地址.",
-                $rtn:"String"
-            },
-            setQueryURL:{
-                $desc:"[废弃] 设置远程数据源的URL请求地址.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getQueryUserName:{
-                $desc:"[废弃] 获取远程数据源的URL请求用户名.",
-                $rtn:"String"
-            },
-            setQueryUserName:{
-                $desc:"[废弃] 设置远程数据源的URL请求用户名.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getQueryPassword:{
-                $desc:"[废弃] 获取远程数据源的URL请求密码.",
-                $rtn:"String"
-            },
-            setQueryPassword:{
-                $desc:"[废弃] 设置远程数据源的URL请求密码.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getQueryMethod:{
-                $desc:"[废弃] 获取远程数据源的URL请求方式.",
-                $rtn:"String"
-            },
-            setQueryMethod:{
-                $desc:"[废弃] 设置远程数据源的URL请求方式.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String. 'auto','GET'或'POST', 默认为auto.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getQueryAsync:{
-                $desc:"[废弃] 获取远程数据源的数据请求是否为异步方式.",
-                $rtn:"Boolean"
-            },
-            setQueryAsync:{
-                $desc:"[废弃] 设置远程数据源的数据请求是否为异步方式.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getQueryArgs:{
-                $desc:"[废弃] 获取远程数据源的数据请求参数.",
-                $rtn:"Object"
-            },
-            setQueryArgs:{
-                $desc:"[废弃] 设置远程数据源的数据请求参数.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getBearerToken:{
-                $desc:"[废弃] 获取数据请求token参数.",
-                $rtn:"Object"
-            },
-            setBearerToken:{
-                $desc:"[废弃] 设置数据请求token参数.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getQueryOptions:{
-                $desc:"[废弃] 获取远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
-                $rtn:"Object"
-            },
-            setQueryOptions:{
-                $desc:"[废弃] 设置远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getProxyType:{
-                $desc:"[废弃] 获取远程数据源的数据请求代理种类.",
-                $rtn:"String"
-            },
-            setProxyType:{
-                $desc:"[废弃] 设置远程数据源的数据请求代理种类.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String. auto/Ajax/SAjax/IAjax之一,默认为auto.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getRequestId:{
-                $desc:"[废弃] 获取远程数请求的标识ID.",
-                $rtn:"String"
-            },
-            setRequestId:{
-                $desc:"[废弃] 设置远程数请求的标识ID.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String. 自定义的请求标识.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getRequestType:{
-                $desc:"[废弃] 获取向远程数据源发送数据请求的数类型.",
-                $rtn:"String"
-            },
-            setRequestType:{
-                $desc:"[废弃] 设置向远程数据源发送数据请求的数类型.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String. HTTP,JSON,XML,SOAP 之一",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
-            getResponseType:{
-                $desc:"[废弃] 获取从远程数据源得到的数据类型.",
-                $rtn:"String"
-            },
-            setResponseType:{
-                $desc:"[废弃] 设置从远程数据源得到的数据类型.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [必需参数] : String. JSON,XML,SOAP 之一",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ]
-            },
             updateDataToUI:{
                 $desc:"从内部数据data设置数据到所绑定的UI.",
                 $rtn:"[self]",
@@ -6217,46 +6388,6 @@ _.set(xui.Locale,["cn","app"], {
                     "ignoreAlert[可选参数] : Boolean, 不显示警告信息.",
                 ]
             },
-            invoke:{
-                $desc:"[废弃] 远程数据调用.",
-                $rtn:"[xui.absIO]",
-                $paras:[
-                    "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
-                    "onStart [可选参数] : Function, ajax开始时的载的回调函数.",
-                    "onEnd [可选参数] : Function, ajax结束时的回调函数.",
-                    "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal.",
-                    "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                    "options [可选参数]: Object, 一组配置数据."
-                ]
-            },
-            'read':{
-                $desc:"[废弃] 读取数据的远程数据调用.",
-                $rtn:"[xui.absIO]",
-                $paras:[
-                    "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
-                    "onStart [可选参数] : Function, ajax开始时的载的回调函数.",
-                    "onEnd [可选参数] : Function, ajax结束时的回调函数.",
-                    "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为norma.",
-                    "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                    "options [可选参数]: Object, 一组配置数据."
-                ]
-            },
-            'write':{
-                $desc:"[废弃] 写入数据的远程数据调用.",
-                $rtn:"[xui.absIO]",
-                $paras:[
-                    "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
-                    "onStart [可选参数] : Function, ajax开始时的载的回调函数.",
-                    "onEnd [可选参数] : Function, ajax结束时的回调函数.",
-                    "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为norma.",
-                    "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                    "options [可选参数]: Object, 一组配置数据."
-                ]
-            },
-
             beforeUpdateDataToUI:{
                 $desc:"在updateDataToUI函数设置数据到UI前被调用,用来调整数据对象. 本事件可以返回调整后的数据对象.",
                 $rtn:"Object",
@@ -6272,72 +6403,9 @@ _.set(xui.Locale,["cn","app"], {
                     "profile : xui.Profile.",
                     "dataFromUI : Object, 从UI得到的数据对象."
                 ]
-            },
-            beforeInvoke:{
-                $desc:"[废弃] 在invoke之前调用.  返回false可以阻止远程调用.",
-                $rtn:"Object",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "requestId : String"
-                ]
-            },
-            onData:{
-                $desc:"[废弃] 在得到数据之后调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据",
-                    "requestId : String"
-                ]
-            },
-            onError:{
-                $desc:"[废弃] 在出现错误后调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据",
-                    "requestId : String"
-                ]
-            },
-            afterInvoke:{
-                $desc:"[废弃] 在invoke之后调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据",
-                    "requestId : String"
-                ]
-            },
-            beforeRead:{
-                $desc:"[废弃] 在read之前调用.  返回false可以阻止远程调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "requestId : String"
-                ]
-            },
-            afterRead:{
-                $desc:"[废弃] 在read之后调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据",
-                    "requestId : String"
-                ]
-            },
-            beforeWrite:{
-                $desc:"[废弃] 在write之前调用.  返回false可以阻止远程调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "requestId : String"
-                ]
-            },
-            afterWrite:{
-                $desc:"[废弃] 在write之后调用.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, 从远程调用返回的数据",
-                    "requestId : String"
-                ]
             }
         }
     });
-
 
     _.set(xui.Locale,["cn","doc","xui","Tips"], {
         KEY:{$desc:"本类名"},
@@ -6565,7 +6633,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项数组.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.absl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6644,7 +6712,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 列表键.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.abs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6699,7 +6767,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeIniEditor:{
                 $desc:"在子项编辑之前调用. 如果返回false,默认的功能会被禁止.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 子项对象.",
                     "captionNode : xui.Dom, 子项标题的Dom对象"
                 ]
@@ -6707,7 +6775,7 @@ _.set(xui.Locale,["cn","app"], {
             onBeginEdit:{
                 $desc:"在编辑器显示前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 子项对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -6715,7 +6783,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeEditApply:{
                 $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 子项对象.",
                     "caption: String. 要更新的内容",
                     "editor: Object, 编辑器对象.",
@@ -6725,7 +6793,7 @@ _.set(xui.Locale,["cn","app"], {
             onEndEdit:{
                 $desc:"在编辑器消失前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 子项对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -6744,7 +6812,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getShowDirtyMark:{
@@ -6776,7 +6844,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getUIValue:{
@@ -6886,7 +6954,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeUIValueSet:{
                 $desc:"在setUIValue调用之前被调用. 返回false会阻止setUIValue被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldValue : String, 旧的界面值.",
                     "newValue : String, 新的界面值.",
                     "force : Boolean, 是否为强制调用",
@@ -6906,7 +6974,7 @@ _.set(xui.Locale,["cn","app"], {
             afterUIValueSet:{
                 $desc:"在setUIValue调用之后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldValue : String, 旧的界面值.",
                     "newValue : String, 新的界面值.",
                     "force : Boolean, 是否为强制调用",
@@ -6926,7 +6994,7 @@ _.set(xui.Locale,["cn","app"], {
             onChange:{
                 $desc:"当有值的控件在界面值改变时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldValue : String, 旧的界面值.",
                     "newValue : String, 新的界面值.",
                     "force : Boolean, 是否为强制调用",
@@ -6936,7 +7004,7 @@ _.set(xui.Locale,["cn","app"], {
             onValueChange:{
                 $desc:"当有值的控件在内部值改变时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldValue : String, 旧值.",
                     "newValue : String, 新值.",
                     "force : Boolean, 是否为强制调用",
@@ -6946,7 +7014,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeValueSet:{
                 $desc:"在setValue调用之前被调用. 返回false会阻止setValue被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldValue :String, 旧的内部值.",
                     "newValue : String, 新的内部值.",
                     "force : Boolean, 是否为强制调用",
@@ -6966,7 +7034,7 @@ _.set(xui.Locale,["cn","app"], {
             afterValueSet:{
                 $desc:"在setValue调用之后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldValue : String, 旧的内部值.",
                     "newValue : String, 新的内部值.",
                     "force : Boolean, 是否为强制调用",
@@ -6988,7 +7056,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDirtyMark:{
                 $desc:"在_setDirtyMark调用之前被调用. 返回false将阻止设置脏标志.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "dirty : Boolean, 脏标志."
                 ],
                 $snippet:[
@@ -7003,7 +7071,7 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
-    _.set(xui.Locale,["cn","doc","xui","absForm"], {
+    _.set(xui.Locale,["cn","doc","xui","absContainer"], {
         prototype:{
             getDragKey:{
                 $desc:"获取拖动时的标志键",
@@ -7116,7 +7184,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getPanelBgCrl:{
@@ -7128,7 +7196,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getPanelBgImg:{
@@ -7140,7 +7208,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getPanelBgImgPos:{
@@ -7152,7 +7220,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getPanelBgImgRepeat:{
@@ -7164,7 +7232,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getPanelBgImgAttachment:{
@@ -7176,14 +7244,14 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
 
             onHotKeydown:{
                 $desc:"当热键按下时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "keyboard : Object, keyboard 对象.",
                     "e : Event, DOM 事件.",
                     "src: String, 事件所属DOM元素的xid."
@@ -7201,7 +7269,7 @@ _.set(xui.Locale,["cn","app"], {
             onHotKeyup:{
                 $desc:"当热键弹起时被调用..",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "keyboard : Object, keyboard 对象.",
                     "e : Event, DOM 事件.",
                     "src: String, 事件所属DOM元素的xid."
@@ -7219,7 +7287,7 @@ _.set(xui.Locale,["cn","app"], {
             onHotKeypress:{
                 $desc:"当热键被按后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "keyboard : Object, keyboard 对象.",
                     "e : Event, DOM 事件.",
                     "src: String, 事件所属DOM元素的xid."
@@ -7237,7 +7305,7 @@ _.set(xui.Locale,["cn","app"], {
             onDragEnter:{
                 $desc:"当用户拖动某个对象到该对象上空时.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7262,7 +7330,7 @@ _.set(xui.Locale,["cn","app"], {
             onDragLeave:{
                 $desc:"当用户拖动某个对象离开该对象上空时.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7288,7 +7356,7 @@ _.set(xui.Locale,["cn","app"], {
             onDrop:{
                 $desc:"当用户拖动某个对象在该对象上空放下时.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7313,7 +7381,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDrop:{
                 $desc:"在用户拖动某个对象在该对象上空放下前调用,如返回 false,onDrop和afterDrop不会调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7324,7 +7392,7 @@ _.set(xui.Locale,["cn","app"], {
             afterDrop:{
                 $desc:"在用户拖动某个对象在该对象上空放下后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7335,7 +7403,7 @@ _.set(xui.Locale,["cn","app"], {
             onDropMarkClear:{
                 $desc:"当丢放标志被清除时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7360,7 +7428,7 @@ _.set(xui.Locale,["cn","app"], {
             onDropMarkShow:{
                 $desc:"当丢放标志被显示时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7385,7 +7453,7 @@ _.set(xui.Locale,["cn","app"], {
             onDropTest:{
                 $desc:"当判断该对象是否接受拖动时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "dragKey : String, 被拖动物体的拖动标志串.",
@@ -7410,7 +7478,7 @@ _.set(xui.Locale,["cn","app"], {
             onStartDrag:{
                 $desc:"当用户开始拖动该对象时被触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7426,7 +7494,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetDragData:{
                 $desc:"当用户开始拖动该对象时(这时候会取得拖拽的数据)调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7441,7 +7509,7 @@ _.set(xui.Locale,["cn","app"], {
             onDragstop:{
                 $desc:"当用户结束拖动该对象时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -7457,7 +7525,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClickEffect:{
                 $desc:"在用户单击控件的某一部分,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -7473,7 +7541,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeHoverEffect:{
                 $desc:"在鼠标悬停在控件的某一部分上,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -7489,7 +7557,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeNextFocus:{
                 $desc:"在下一个控件获取焦点时调用. 返回false可以阻止下一个控件获取焦点.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "k : Object, {key:按键字符, type:事件种类, ctrlKey: ctrl键状态, shiftKey: shift 键状态, altKey:alt 键状态}",
                     "shift: Boolean, 指示用户是否按下了Shift键.",
@@ -7668,7 +7736,7 @@ _.set(xui.Locale,["cn","app"], {
               $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getClassName:{
@@ -7680,7 +7748,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             hoverPop:{
@@ -7788,7 +7856,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Function",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7907,7 +7975,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7931,7 +7999,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7955,7 +8023,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7979,7 +8047,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8003,7 +8071,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [必需参数] : nonnegative Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                $snippet:[
                     "var id='xui.temp.ui19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8027,7 +8095,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 非负 Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8051,7 +8119,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 显示(display)属性的CSS值.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8075,7 +8143,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8099,7 +8167,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui27'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8117,7 +8185,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getPosition:{
@@ -8135,7 +8203,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui28'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8159,7 +8227,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8183,7 +8251,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui45'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8201,7 +8269,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDisableClickEffect:{
@@ -8213,7 +8281,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDisableHoverEffect:{
@@ -8225,7 +8293,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDisabled:{
@@ -8243,7 +8311,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui47'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8261,7 +8329,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean, 默认为[false].",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDefaultFocus:{
@@ -8273,7 +8341,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean, 默认为[false].",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHoverPop:{
@@ -8285,7 +8353,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 弹出目标的别名，弹出目标必须要在当前控件的 host 中.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHoverPopType:{
@@ -8297,7 +8365,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDock:{
@@ -8315,7 +8383,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui51'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8340,7 +8408,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui53'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8372,7 +8440,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : {left:Number,right:Number,top:Number,bottom:Number}.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui61'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8404,7 +8472,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui72'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8430,7 +8498,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui76'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8451,6 +8519,33 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            setDockMinH:{
+                $desc:"设置停靠的最小高度.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"overflow:visible;border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'height'}));"+
+                    "_.asyRun(function(){btn.setDockMinH(100);xui(id).height(80);},1000);"+
+                    "_.asyRun(function(){btn.setDockMinH(50);xui(id).height(50);},2000);"+
+                    "}"
+                ]
+            },
+            getDockMaxH:{
+                $desc:"获取停靠的最大高度",
+                $rtn:"Number"
+            },
+            setDockMaxH:{
+                $desc:"设置停靠的最大高度.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
             getDockMinW:{
                 $desc:"获取停靠的最小宽度",
                 $rtn:"Number",
@@ -8461,27 +8556,12 @@ _.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-            setDockMinH:{
-                $desc:"设置停靠的最小高度.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"overflow:visible;border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'height'}));"+
-                    "_.asyRun(function(){btn.setDockMinH(100);xui(id).height(80);},1000);"+
-                    "_.asyRun(function(){btn.setDockMinH(50);xui(id).height(50);},2000);"+
-                    "}"
-                ]
-            },
             setDockMinW:{
                 $desc:"设置停靠的最小宽度.",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui82'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8489,6 +8569,18 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){btn.setDockMinW(300);xui(id).width(200);},1000);"+
                     "_.asyRun(function(){btn.setDockMinW(50);xui(id).width(100);},2000);"+
                     "}"
+                ]
+            },
+            getDockMaxW:{
+                $desc:"获取停靠的最大宽度",
+                $rtn:"Number"
+            },
+            setDockMaxW:{
+                $desc:"设置停靠的最大宽度.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
                 ]
             },
             getShowEffects:{
@@ -8500,7 +8592,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String or Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHideEffects:{
@@ -8512,7 +8604,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String or Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getRotate:{
@@ -8524,7 +8616,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 0~360",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDomId:{
@@ -8695,7 +8787,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDestroy:{
                 $desc:"在控件被销毁前触发,如果返回false,控件销毁的动作将被取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.b1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8708,13 +8800,13 @@ _.set(xui.Locale,["cn","app"], {
             afterDestroy:{
                 $desc:"在控件被销毁后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             onDestroy:{
                 $desc:"当控件被销毁时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.b1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8727,7 +8819,7 @@ _.set(xui.Locale,["cn","app"], {
             onContextmenu:{
                 $desc:"当根dom元素的 contextmenu 激活时会激活本事件. 如果返回 false, 系统默认的 contextmenu 会被屏蔽(opera下无效).",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "item: Object, 鼠标点击节点所对应的item对象."
@@ -8742,19 +8834,19 @@ _.set(xui.Locale,["cn","app"], {
             onCreated:{
                 $desc:'在控件生成的时候触发.',
                 $paras:[
-                   "profile : xui.UIProfile, 当前控件的配置对象."
+                   $profile
                 ]
             },
             beforeRender:{
                 $desc:"当控件被渲染前(生成DOM节点)调用. 如返回 false, 渲染事件取消.",
                 $paras:[
-                   "profile : xui.UIProfile, 当前控件的配置对象."
+                   $profile
                 ]
             },
             onRender:{
                 $desc:"当控件被渲染时(生成DOM节点)调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.b2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8767,7 +8859,7 @@ _.set(xui.Locale,["cn","app"], {
             onLayout:{
                 $desc:"当控件被重新布局的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.b3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\"><div id='+id+'1 style=\"height:20px;border:solid 1px;\"></div><div id='+id+'2 style=\"height:20px;border:solid 1px;\"></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8782,7 +8874,7 @@ _.set(xui.Locale,["cn","app"], {
             onResize:{
                 $desc:"控件被改变大小的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "width : Number, 目标宽",
                     "height : Number, 目标高"
                 ],
@@ -8798,7 +8890,7 @@ _.set(xui.Locale,["cn","app"], {
             onMove:{
                 $desc:"控件被改变位置的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "left : Number, 目标左边值",
                     "top : Number, 目标上边值",
                     "right : Number, 目标右边值",
@@ -8816,7 +8908,7 @@ _.set(xui.Locale,["cn","app"], {
             onDock:{
                 $desc:"控件被dock机制改变大小或位置的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "region : Object"
                 ],
                 $snippet:[
@@ -8831,7 +8923,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePropertyChanged:{
                 $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "name : String, 属性名",
                     "value : Object, 新属性值",
                     "ovalue : Objecgt, 原来的属性值"
@@ -8848,7 +8940,7 @@ _.set(xui.Locale,["cn","app"], {
             afterPropertyChanged:{
                 $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "name : String, 属性名",
                     "value : Object, 新属性值",
                     "ovalue : Objecgt, 原来的属性值"
@@ -8865,7 +8957,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeAppend:{
                 $desc:"当向控件添加子控件前触发,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "child : xui.UI, 添加的子控件."
                 ],
                 $snippet:[
@@ -8880,7 +8972,7 @@ _.set(xui.Locale,["cn","app"], {
             afterAppend:{
                 $desc:"当向控件添加子控件后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "child : xui.UI, 添加的子控件."
                 ],
                 $snippet:[
@@ -8895,7 +8987,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeRemove:{
                 $desc:"当从控件中移除子控件前触发,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "child : xui.UIProfile, 移除的子控件.",
                     "subId : String, 子控件在父控件的容器标识",
                     "bdestroy : Boolean, 是否在移除后被销毁"
@@ -8912,7 +9004,7 @@ _.set(xui.Locale,["cn","app"], {
             afterRemove:{
                 $desc:"当从控件中移除子控件后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "child : xui.UIProfile, 移除的子控件.",
                     "subId : String, 子控件在父控件的容器标识",
                     "bdestroy : Boolean, 是否在移除后被销毁"
@@ -8929,7 +9021,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowTips:{
                 $desc:"当控件显示tips时调用. 如返回false将会阻止系统默认的工具信息显示",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "src: String, 事件所属DOM元素的xid.",
                     "pos : Object, {left:Number, top:Number}"
                 ],
@@ -8960,7 +9052,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getNormalStatus:{
@@ -8972,7 +9064,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHoverStatus:{
@@ -8984,7 +9076,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getActiveStatus:{
@@ -8996,7 +9088,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getFocusStatus:{
@@ -9008,7 +9100,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [必需参数] : Object, 键值对 .",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             }
         }
@@ -9037,7 +9129,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.w2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9061,7 +9153,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.w4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9085,7 +9177,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.w6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9103,7 +9195,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. {forceVisible:/*Boolean*/,forceMovable:/*Boolean*/,singleDir:/*Boolean*/,vertical:/*Boolean*/,horizontal:/*Boolean*/,minHeight:/*Number*/,minWidth:/*Number*/,maxHeight:/*Number*/,maxWidth:/*Number*/,handlerSize:/*Number*/,handlerOffset:/*Number*/}",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             }
         }
@@ -9126,7 +9218,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getAjaxAutoLoad:{
@@ -9138,7 +9230,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHtml:{
@@ -9156,7 +9248,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, Html代码",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.div2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9168,7 +9260,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -9207,7 +9299,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 文本内容.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.link2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9231,7 +9323,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 值.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.link4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9255,7 +9347,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, the href.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.link6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9269,7 +9361,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当用户单击超链接时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素."            ],
                 $snippet:[
                     "var id='xui.temp.link7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9303,7 +9395,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getAjaxAutoLoad:{
@@ -9315,7 +9407,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHtml:{
@@ -9333,7 +9425,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, the html string.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9357,7 +9449,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 背景的CSS字符串.",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9381,7 +9473,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9393,7 +9485,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -9424,7 +9516,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9448,7 +9540,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 字体大小.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9472,7 +9564,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9496,7 +9588,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9520,7 +9612,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top', 'middle' or 'bottom'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9544,7 +9636,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9568,7 +9660,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标url路径.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9592,7 +9684,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9604,7 +9696,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -9628,7 +9720,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getCaptionTpl :{
@@ -9647,7 +9739,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb1-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9673,7 +9765,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [必需参数] : nonnegative Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                $snippet:[
                     "var id='xui.temp.pb3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9709,7 +9801,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.SLabel2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9733,7 +9825,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.SLabel8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9745,7 +9837,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -9787,7 +9879,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9805,7 +9897,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标url路径.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getImagePos :{
@@ -9817,7 +9909,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getHAlign :{
@@ -9835,7 +9927,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sbtn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9847,7 +9939,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -9877,7 +9969,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getCmdList :{
@@ -9895,7 +9987,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rich'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:300px;width:400px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9940,7 +10032,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.scbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9958,7 +10050,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标url路径.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getImagePos :{
@@ -9970,13 +10062,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的显示位置.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             onChecked:{
                 $desc:"Fired when SCheckBox is checked.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "value : String, 按下或弹起."
                 ],
@@ -10039,7 +10131,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10063,7 +10155,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'normal', 'drop' 或 'status'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10087,7 +10179,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10111,7 +10203,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top', 'middle' or 'bottom'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10135,7 +10227,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String,  image path.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10159,7 +10251,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10172,7 +10264,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "value : Boolean, 值."
@@ -10186,7 +10278,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickDrop:{
                 $desc:"当鼠标单击drop按钮时调用（当按钮的 type 为'drop'时才有效）.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -10199,7 +10291,7 @@ _.set(xui.Locale,["cn","app"], {
             onChecked:{
                 $desc:"在按钮按下时触发（当按钮的 type 为'status'时才有效）.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "value : Boolean, 按下或弹起."
                 ],
@@ -10223,7 +10315,7 @@ _.set(xui.Locale,["cn","app"], {
             onChecked:{
                 $desc:"Fired when CheckBox is checked.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "value : Boolean, 按下或弹起."
                 ],
@@ -10269,7 +10361,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10287,7 +10379,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."                ]
+                    $force                ]
             },
             getHAlign :{
                 $desc:"获取标签水平对齐方式",
@@ -10298,7 +10390,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getMultiLines:{
@@ -10316,7 +10408,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10348,7 +10440,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 格式模式",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10372,7 +10464,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10397,7 +10489,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10423,7 +10515,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10449,7 +10541,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10474,7 +10566,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10492,7 +10584,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getType:{
@@ -10510,7 +10602,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'input' or 'password'. 默认为 'input'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input20-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10528,7 +10620,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 最大长度.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getLabelSize:{
@@ -10540,7 +10632,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getLabelPos:{
@@ -10552,7 +10644,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : left, right, top, bottom 之一.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getLabelGap:{
@@ -10564,7 +10656,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getLabelCaption:{
@@ -10576,7 +10668,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getLabelHAlign:{
@@ -10588,13 +10680,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             onLabelClick:{
                 $desc:"在单击标签的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10602,7 +10694,7 @@ _.set(xui.Locale,["cn","app"], {
             onLabelDblClick:{
                 $desc:"在双击标签的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10610,7 +10702,7 @@ _.set(xui.Locale,["cn","app"], {
             onLabelActive:{
                 $desc:"当鼠标在标签上按下时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10618,7 +10710,7 @@ _.set(xui.Locale,["cn","app"], {
             onBlur:{
                 $desc:"当输入框失去焦点时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.input20-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10630,7 +10722,7 @@ _.set(xui.Locale,["cn","app"], {
             onFocus:{
                 $desc:"当输入框得到焦点时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.input20-3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10642,13 +10734,13 @@ _.set(xui.Locale,["cn","app"], {
             onCancel:{
                 $desc:"按ESC键触发本事件,表示本次编辑无效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             beforeFormatCheck:{
                 $desc:"在输入框做有效性检查时调用. 返回false可以阻止有效性的检查.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "value: String, 需要做有效性检查的值."
                 ],
                 $snippet:[
@@ -10661,7 +10753,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeFormatMark:{
                 $desc:"在设置有效的格式模式前调用. 如果返回false, 将阻止格式模式设置.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "formatErr: Boolean, 是否格式有错误."
                 ],
                 $snippet:[
@@ -10706,7 +10798,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.TextEditor10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10720,7 +10812,7 @@ _.set(xui.Locale,["cn","app"], {
             onChange:{
                 $desc:"当改变文字时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oV : String, 旧值.",
                     "nV : String, 新值."
                 ],
@@ -10778,7 +10870,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10802,7 +10894,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, image url.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grp4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10826,7 +10918,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 图标的位置(CSS值).",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grp6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10850,7 +10942,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.fs4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10874,7 +10966,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.fs4-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10888,7 +10980,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeExpand:{
                 $desc:"在编组框打开前调用.如返回 false, 编组框不会打开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.fs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10901,7 +10993,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeFold:{
                 $desc:"当编组框收缩前调用.如返回 false, 编组框不会收缩.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.fs6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10920,7 +11012,7 @@ _.set(xui.Locale,["cn","app"], {
             onIniPanelView:{
                 $desc:"当Panel初始化时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.fs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10933,7 +11025,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -10958,7 +11050,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean, 是否只读.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getCaption:{
@@ -10970,7 +11062,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 文本内容.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $memo:"在只读状态下,用作临时显示用"
             },
@@ -11028,7 +11120,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置下拉框类型.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'none'代表是普通的输入框,'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,'helpinput'代表帮助框,'cmd'代表按钮,'cmdbox'代表命令框,'popbox'代表弹出框,'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,'currency'代表货币,'number'代表数字,'spin'代表是spin输入框. 默认为 'combobox'.",                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    "value [必需参数] : 'none'代表是普通的输入框,'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,'helpinput'代表帮助框,'cmd'代表按钮,'cmdbox'代表命令框,'popbox'代表弹出框,'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,'currency'代表货币,'number'代表数字,'spin'代表是spin输入框. 默认为 'combobox'.",                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11053,7 +11145,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项目数组.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11071,7 +11163,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number, 高",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDropListWidth:{
@@ -11083,7 +11175,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number, 宽",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getListKey:{
@@ -11103,7 +11195,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 列表键",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11123,7 +11215,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDateEditorTpl:{
@@ -11135,7 +11227,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getGroupingSeparator:{
@@ -11147,7 +11239,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDecimalSeparator:{
@@ -11159,7 +11251,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getForceFillZero:{
@@ -11171,7 +11263,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getPopCtrlProp:{
@@ -11183,7 +11275,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $memo:"需要在控件产生前调用"
             },
@@ -11200,7 +11292,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $memo:"需要在控件产生前调用"
             },
@@ -11213,7 +11305,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 必须是[^1-9.,]之外的，并且带有*号的字符串",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getNumberTpl:{
@@ -11225,7 +11317,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 必须是[^1-9.,-]之外的，并且带有*号的字符串",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getCommandBtn:{
@@ -11243,7 +11335,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11267,7 +11359,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11291,7 +11383,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11315,7 +11407,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11339,7 +11431,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11363,7 +11455,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 对应的 CSS 值.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11387,7 +11479,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 对应的 CSS 值.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11399,7 +11491,7 @@ _.set(xui.Locale,["cn","app"], {
             onFileDlgOpen:{
                 $desc:"当上载文件选择对话框打开时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "src : String, 事件源的 xid."
                 ],
                 $snippet:[
@@ -11412,7 +11504,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeComboPop:{
                 $desc:"当命令按钮按下时（弹出窗口弹出前）调用.如返false,系统默认的弹出窗口不会出现.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "pos : Object, 鼠标位置.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -11427,7 +11519,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePopShow:{
                 $desc:"在弹出窗口显示前调用.如返false,弹出窗口不会显示.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "popCtl : xui.UIProfile, 弹出窗口对象."
                 ]
             },
@@ -11448,7 +11540,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击控件pop按钮时调用(只对 'popbox' 或 'getter'类型的有效).",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
                     "value: String, 控件的显示值."
@@ -11457,7 +11549,7 @@ _.set(xui.Locale,["cn","app"], {
             onCommand:{
                 $desc:"当command按钮按下时调用. 只对带有保存按钮的多选框有效",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "src : String, 按钮 DOM 元素的xid."
                 ],
                 $snippet:[
@@ -11492,7 +11584,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'top','bottom','left' or 'right'. 默认为 'top'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11518,7 +11610,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11542,7 +11634,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'top' or 'bottom'. 默认为 'top'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11566,7 +11658,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11605,7 +11697,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             }
         }
@@ -11754,7 +11846,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在颜色框关闭前调用. 返回false可以阻止颜色框关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.clr9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11787,7 +11879,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getFirstDayOfWeek:{
@@ -11799,7 +11891,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 0-6表示周日到周六",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getOffDays:{
@@ -11811,7 +11903,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 由0到6组成的字符串.0-6表示周日到周六",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHideWeekLabels:{
@@ -11823,7 +11915,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDateInputFormat:{
@@ -11835,7 +11927,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 只能是 yyyy-mm-dd/mm-dd-yyyy/dd-mm-yyyy 之一",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getCloseBtn:{
@@ -11872,7 +11964,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"当用户单击关闭或取消按钮时调用. 返回false可阻止日期选择器被关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.dp3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11919,7 +12011,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在关闭选择器前调用. 返回false将阻止选择器关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.tp3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11954,7 +12046,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11978,7 +12070,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number, 步长整数值",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12002,7 +12094,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12026,7 +12118,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12050,7 +12142,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12085,7 +12177,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12109,7 +12201,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12133,7 +12225,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12157,7 +12249,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12181,7 +12273,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : nonnegative Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12205,7 +12297,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12270,7 +12362,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.list5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12294,7 +12386,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none' 为不选, 'multi'为多选, 'multibycheckbox'表示可多选并且只能点击checkbox来选中 or 'single'为单选.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.list7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12312,7 +12404,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getBorderType:{
@@ -12324,7 +12416,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getItemRow:{
@@ -12336,7 +12428,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getTagCmds:{
@@ -12348,7 +12440,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项数组.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getOptBtn:{
@@ -12360,13 +12452,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             onItemSelected:{
                 $desc:"当列表项被选择时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -12382,7 +12474,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClick:{
                 $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12391,7 +12483,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在单击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12400,7 +12492,7 @@ _.set(xui.Locale,["cn","app"], {
             afterClick:{
                 $desc:"在单击条目后触发该事件",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12409,7 +12501,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12424,7 +12516,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当鼠标单击选项按钮的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -12433,7 +12525,7 @@ _.set(xui.Locale,["cn","app"], {
             onCmd:{
                 $desc:"当用户单击内部按钮的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "cmdKey: String, 命令的键值.",
                     "e : Event, DOM事件元素.",
@@ -12480,7 +12572,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.llist2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12498,7 +12590,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 'none','left','right'",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getItemAlign:{
@@ -12510,7 +12602,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getItemWidth:{
@@ -12522,13 +12614,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             onItemClick:{
                 $desc:"当某个超链接队列项被单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -12573,7 +12665,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getErrImg:{
@@ -12585,7 +12677,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getAutoItemSize:{
@@ -12597,7 +12689,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getImgHeight:{
@@ -12615,7 +12707,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12639,7 +12731,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.da4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12663,7 +12755,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12687,7 +12779,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12711,7 +12803,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12735,7 +12827,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12778,7 +12870,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getAutoItemSize:{
@@ -12790,7 +12882,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getItemWidth:{
@@ -12808,7 +12900,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12832,7 +12924,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12856,7 +12948,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12880,7 +12972,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12940,7 +13032,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12958,7 +13050,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getPopBtn :{
@@ -12976,7 +13068,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel38'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13000,7 +13092,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13018,7 +13110,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getRefreshBtn :{
@@ -13030,7 +13122,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getToggleBtn :{
@@ -13048,7 +13140,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13072,7 +13164,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13096,7 +13188,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String, 图标的url.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13120,7 +13212,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13144,7 +13236,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13162,13 +13254,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             beforeExpand:{
                 $desc:"在面板打开前调用.如返回 false, 面板不会打开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.panel9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13181,7 +13273,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeFold:{
                 $desc:"当面板收缩时调用.如返回 false, 面板不会打开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.panel10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13200,7 +13292,7 @@ _.set(xui.Locale,["cn","app"], {
             onIniPanelView:{
                 $desc:"当面板初始化时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.panel11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13213,7 +13305,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickBar:{
                 $desc:"当单击标题栏时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "src: String, 事件所属DOM元素的xid."
                 ],
                 $snippet:[
@@ -13226,7 +13318,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePop:{
                 $desc:"在面板被弹出前调用. 返回false可阻止面板被弹出.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -13235,7 +13327,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在面板被关闭前调用. 返回false可阻止面板被关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.panel13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13247,19 +13339,19 @@ _.set(xui.Locale,["cn","app"], {
             onShowInfo:{
                 $desc:"在用户单击帮助按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             onRefresh:{
                 $desc:"在用户单击刷新按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             onShowOptions :{
                 $desc:"当用户单击选项按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -13273,7 +13365,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -13317,7 +13409,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, caption字符串.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13341,7 +13433,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 下一页的显示字符串.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13365,7 +13457,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 前一页显示字符串.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13389,7 +13481,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 文字显示模板字符串.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13413,7 +13505,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, URL模板字符串.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13427,7 +13519,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"当鼠标单击一个按钮时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "page : Number, 目标页码."
                 ],
                 $snippet:[
@@ -13439,7 +13531,7 @@ _.set(xui.Locale,["cn","app"], {
             onPageSet:{
                 $desc:"当调用 setPage 函数时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "page : Number, 新页码.",
                    "opage : Number, 旧页码."
                 ]
@@ -13497,7 +13589,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lo3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13573,7 +13665,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                      "item: Object, 当前容器对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -13623,14 +13715,14 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             onColResize:{
                 $desc:"行改变大小时触发.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "sizes: Array. 每行的大小.",
                 ]
             },
@@ -13638,7 +13730,7 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"内部子容器重新排列时触发.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "type : String.",
                     "panel : xui.UIProfile.",
                     "size : Number."
@@ -13761,7 +13853,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13779,7 +13871,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 'left', 'center' or 'right'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getItemWidth:{
@@ -13791,7 +13883,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getLazyAppend :{
@@ -13803,7 +13895,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getNoPanel :{
@@ -13821,7 +13913,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13839,7 +13931,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getDropKeysPanel :{
@@ -13857,7 +13949,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13913,7 +14005,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'single'表示可单选, 'multi'表示可多选. 默认为'single'",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             addPanel:{
@@ -13977,7 +14069,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePagePop:{
                 $desc:"当用户点击POP按钮前调用. 返回false可以阻止页面POP.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 当前标签项.",
                     "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
                     "e : Event, DOM事件元素.",
@@ -13987,7 +14079,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePageClose:{
                 $desc:"当用户关闭某个标签项之前调用. 返回false可以阻止标签项被关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 当前标签项.",
                     "src : String, 事件所在DOM的xid."
                 ],
@@ -14001,7 +14093,7 @@ _.set(xui.Locale,["cn","app"], {
             afterPageClose:{
                 $desc:"当用户关闭某个标签项之后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 当前标签项."
                 ],
                 $snippet:[
@@ -14014,7 +14106,7 @@ _.set(xui.Locale,["cn","app"], {
             onItemSelected:{
                 $desc:"当某个标签项被选择时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 被选择的标签项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -14029,7 +14121,7 @@ _.set(xui.Locale,["cn","app"], {
             onCaptionActive:{
                 $desc:"当用户单击当前标签项的标签头时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 当前标签项.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -14044,7 +14136,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当用户单击option按钮时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 当前标签项.",
                     "e: Event, 事件对象.",
                     "src: 事件发生的DOM元素的xid."
@@ -14059,7 +14151,7 @@ _.set(xui.Locale,["cn","app"], {
             onIniPanelView:{
                 $desc:"当每个页的容器面板初始化时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 当前标签项."
                 ],
                 $snippet:[
@@ -14073,7 +14165,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                      "item: Object, 当前容器对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -14117,7 +14209,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none','inset','outset',或 'flat'.",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getPadding:{
@@ -14129,7 +14221,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getRequired:{
@@ -14141,7 +14233,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getTagCount:{
@@ -14153,7 +14245,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Integer",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getTagMaxlength:{
@@ -14165,7 +14257,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Integer",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getTagInputWidth:{
@@ -14177,7 +14269,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Integer",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getTagInputHeight:{
@@ -14189,7 +14281,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Integer",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getTagSpacing:{
@@ -14201,7 +14293,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Integer",
-                    "force [可选参数] : 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getValueFormat:{
@@ -14213,7 +14305,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getValueSeparator:{
@@ -14264,7 +14356,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [必需参数] : Number, 非负整数.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             setHeight:{
@@ -14272,13 +14364,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 非负 Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             onDblclick:{
                 $desc:"在双击Calendar的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "index: Nubmer, calendar天的序号.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -14325,7 +14417,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'left'代表左对齐, 'center'代表居中对齐, 'right'代表右对齐.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tool2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14349,7 +14441,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tool4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14390,7 +14482,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在工具栏按钮项被单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item : Object, 工具栏按钮子项对象.",
                     "group : Object, 工具栏按钮项所在组对象.",
                     "e : Event, DOM事件元素.",
@@ -14464,7 +14556,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pm3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14492,7 +14584,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pm5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14592,7 +14684,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 父对象id",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getAutoShowTime:{
@@ -14612,7 +14704,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.menu3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14655,7 +14747,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.menu5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14888,7 +14980,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getAjaxAutoLoad:{
@@ -14900,7 +14992,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getCaption:{
@@ -14915,7 +15007,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());_.asyRun(function(){dlg.setCaption('c cc c');},1000);"
@@ -14943,7 +15035,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCloseBtn());_.asyRun(function(){dlg.setCloseBtn(false);},1000);_.asyRun(function(){dlg.close();},2000);"
@@ -14962,7 +15054,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getMinBtn:{
@@ -14977,7 +15069,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());_.asyRun(function(){dlg.setMinBtn(false);},1000);"
@@ -14995,7 +15087,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMaxBtn());_.asyRun(function(){dlg.setMaxBtn(false);},1000);"
@@ -15013,7 +15105,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());_.asyRun(function(){dlg.setPinBtn(false);},1000);"
@@ -15028,7 +15120,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getLandBtn:{
@@ -15043,7 +15135,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getLandBtn());_.asyRun(function(){dlg.setLandBtn(true);},1000);"
@@ -15061,7 +15153,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getOptBtn());_.asyRun(function(){dlg.setOptBtn(true);},1000);"
@@ -15076,7 +15168,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getRefreshBtn :{
@@ -15088,7 +15180,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getMovable:{
@@ -15103,7 +15195,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());_.asyRun(function(){dlg.setMovable(false);},1000);"
@@ -15121,7 +15213,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] :String,  image path.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());_.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
@@ -15139,7 +15231,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, corresponding CSS value.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());_.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
@@ -15157,7 +15249,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
@@ -15175,7 +15267,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 可以是'normal'(通常), 'min'(最小话) or 'max'(最大化).",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setStatus('max');alert(dlg.getStatus());},1000);"
@@ -15195,7 +15287,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); "+
@@ -15217,7 +15309,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); "+
@@ -15240,7 +15332,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.{left:Number,top:Number,width:Number,height:Number}",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var dl=(new xui.UI.Dialog);"+
@@ -15263,7 +15355,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"当对话框关闭时调用. 返回false可以阻止对话框关闭.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var dlg=new xui.UI.Dialog; "+
@@ -15275,19 +15367,19 @@ _.set(xui.Locale,["cn","app"], {
             onShowInfo:{
                 $desc:"在用户单击帮助按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             onRefresh:{
                 $desc:"在用户单击刷新按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             onShowOptions :{
                 $desc:"在用户单击选项按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -15300,7 +15392,7 @@ _.set(xui.Locale,["cn","app"], {
             onLand:{
                 $desc:"在用户单击LAND按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15308,13 +15400,13 @@ _.set(xui.Locale,["cn","app"], {
             onActivated:{
                 $desc:"在对话框被激活时(获得焦点)调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             beforeStatusChanged:{
                 $desc:"当对话框状态在最大、最小或普通状态之间改变前调用. 返回false可以阻止状态该变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldStatus: String, 改变之前的状态, min/max/normal",
                     "newStatus: String, 改变之后的状态, min/max/normal"
                 ]
@@ -15322,7 +15414,7 @@ _.set(xui.Locale,["cn","app"], {
             afterStatusChanged:{
                 $desc:"当对话框状态在最大、最小或普通状态之间改变后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "oldStatus: String, 改变之前的状态, min/max/normal",
                     "newStatus: String, 改变之后的状态, min/max/normal"
                 ]
@@ -15330,14 +15422,14 @@ _.set(xui.Locale,["cn","app"], {
             beforePin:{
                 $desc:"在顶针按钮点击之前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "value: Boolean, 顶针状态."
                 ]
             },
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15362,7 +15454,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getNodeName:{
@@ -15374,7 +15466,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getAttributes:{
@@ -15386,13 +15478,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 键值对.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15428,7 +15520,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getOverflow:{
@@ -15440,13 +15532,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'auto','hidden','visible','' ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"当鼠标单击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15477,7 +15569,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 图片高度（像素）",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15501,7 +15593,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15519,7 +15611,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getActiveItem:{
@@ -15531,7 +15623,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getAlt:{
@@ -15549,7 +15641,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img6-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15574,7 +15666,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15593,7 +15685,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getRate:{
@@ -15610,7 +15702,7 @@ _.set(xui.Locale,["cn","app"], {
             onError:{
                 $desc:"当图像文件无法获取（文件地址不存在等情况）调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.img15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15623,7 +15715,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeLoad:{
                 $desc:"在图像装载前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.img16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15636,7 +15728,7 @@ _.set(xui.Locale,["cn","app"], {
             afterLoad:{
                 $desc:"当图像装载后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "path : String, 图片的文件路径.",
                     "width : Number, 图片宽",
                     "height : Number, 图片高"
@@ -15652,7 +15744,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在click图片的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -15660,7 +15752,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击图片的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -15693,7 +15785,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.fl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15737,7 +15829,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当用户单击选项按钮时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -15754,7 +15846,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"当某个文件夹项需要填充内容时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "callback : Function, 填充完成后的回调函数."
                 ],
@@ -15821,7 +15913,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15848,7 +15940,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : 'none','combobox','listbox','file','getter','helpinput','cmd','cmdbox','currency','number','popbox','time','date' or 'color'. 默认为 'none'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15877,7 +15969,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15905,7 +15997,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15933,7 +16025,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15961,7 +16053,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15989,7 +16081,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16004,7 +16096,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"在需要内容填充的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "callback : Function, 回调函数."
                 ],
@@ -16020,7 +16112,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeOptionAdded:{
                 $desc:"在添加选项之前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "value: String."
                 ],
                 $snippet:[
@@ -16037,7 +16129,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeOptionChanged:{
                 $desc:"在更新选项前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "value: String."
                 ],
@@ -16056,7 +16148,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeOptionRemoved:{
                 $desc:"在移除选项前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ],
                 $snippet:[
                     "var id='xui.temp.pool43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16073,7 +16165,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeTitleChanged:{
                 $desc:"在更新标题前触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "value: String."
                 ],
                 $snippet:[
@@ -16091,7 +16183,7 @@ _.set(xui.Locale,["cn","app"], {
             onCustomEdit:{
                 $desc:"在显示内部编辑器时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "node: Element, 相应的DOM元素.",
                     "flag: Number, 1:编辑; 2:添加; other:编辑标题.",
                     "value: String.",
@@ -16149,7 +16241,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16168,7 +16260,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getTagCmds:{
@@ -16180,7 +16272,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项数组.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getGroup :{
@@ -16199,7 +16291,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16226,7 +16318,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16246,7 +16338,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getIniFold :{
@@ -16265,7 +16357,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16292,7 +16384,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选. 默认为'single'",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16312,7 +16404,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getSingleOpen:{
@@ -16332,7 +16424,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16400,7 +16492,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"在父节点展开时,需要子节点数据时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "callback : Function, 回调函数."
                 ],
@@ -16416,7 +16508,7 @@ _.set(xui.Locale,["cn","app"], {
             onItemSelected:{
                 $desc:"在某个节点被单击时调用时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -16433,7 +16525,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClick:{
                 $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16442,7 +16534,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclick:{
                 $desc:"在双击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16451,7 +16543,7 @@ _.set(xui.Locale,["cn","app"], {
             onClick:{
                 $desc:"在单击条目的时候触发该事件.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16460,7 +16552,7 @@ _.set(xui.Locale,["cn","app"], {
             afterClick:{
                 $desc:"在单击条目后触发该事件",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e: Event, 事件对象.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16469,14 +16561,14 @@ _.set(xui.Locale,["cn","app"], {
             beforeExpand:{
                 $desc:"在某个节点展开前调用. 如返回 false,节点将不会展开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象."
                 ]
             },
             beforeFold:{
                 $desc:"在某个节点折叠前调用. 如返回 false,节点将不会展开.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象."
                 ]
             },
@@ -16489,7 +16581,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当鼠标单击选项按钮的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -16498,7 +16590,7 @@ _.set(xui.Locale,["cn","app"], {
             onCmd:{
                 $desc:"当用户单击内部按钮的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "cmdKey: String, 命令的键值.",
                     "e : Event, DOM事件元素.",
@@ -16523,7 +16615,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             }
         }
@@ -16582,7 +16674,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 可以是'cell', 'row' 或 'none'. 默认为'row'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16662,7 +16754,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getNumberTpl:{
@@ -16674,7 +16766,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 必须是无数字的，并且带有*号的字符串",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getAltRowsBg :{
@@ -16694,7 +16786,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16714,7 +16806,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getAnimCollapse :{
@@ -16734,7 +16826,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16808,7 +16900,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid9.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16836,7 +16928,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16864,7 +16956,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16892,7 +16984,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16920,7 +17012,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16948,7 +17040,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16976,7 +17068,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid17-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17004,7 +17096,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid17-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17032,7 +17124,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17041,6 +17133,30 @@ _.set(xui.Locale,["cn","app"], {
                     "o.setRowHeight(40); alert(o.getRowHeight());"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            getFreezedColumn:{
+                $desc:"获取冻结列.",
+                $rtn:"Number"
+            },
+            setFreezedColumn :{
+                $desc:"设置冻结列.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getFreezedRow:{
+                $desc:"获取冻结行.",
+                $rtn:"Number"
+            },
+            setFreezedRow:{
+                $desc:"设置冻结行.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
                 ]
             },
             getIniFold :{
@@ -17060,7 +17176,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17088,7 +17204,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17116,7 +17232,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid125'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17144,7 +17260,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none', 'single' or 'multi'. 默认为 'single'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid127'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17164,7 +17280,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             insertRows:{
@@ -17341,7 +17457,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17371,8 +17487,8 @@ _.set(xui.Locale,["cn","app"], {
                 $desc:"设置表格的所有行.",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    "value [必需参数] : Array.",
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17381,6 +17497,18 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){o.setRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}]); alert(o.getRows().length)});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            getRawData :{
+                $desc:"获取表格的键值对数据",
+                $rtn:"Array"
+            },
+            setRawData :{
+                $desc:"设置表格的键值对数据.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array. [{col1:v1,col2:v1}]",
+                    $force
                 ]
             },
             getHeader :{
@@ -17405,7 +17533,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17425,7 +17553,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array, 项数组.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             setGrpCols :{
@@ -17433,7 +17561,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getGrpCols :{
@@ -17576,7 +17704,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. 键值对",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getRowNumbered :{
@@ -17596,7 +17724,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid38'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17616,7 +17744,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getShowHeader :{
@@ -17636,7 +17764,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17656,7 +17784,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getColOptions:{
@@ -17668,7 +17796,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getTreeMode:{
@@ -17680,7 +17808,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 'none','inhandler' or 'infirstcell'",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHotRowMode:{
@@ -17692,7 +17820,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. 'none'[没有热行模式], 'auto'[热行自动显示或隐藏] 或 'show'[热行始终显示] 之一.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             getHotRowNumber:{
@@ -17704,7 +17832,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             resetGridValue:{
@@ -17818,7 +17946,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeCellActive:{
                 $desc:"在单元格激活前被调用. 返回false将阻止单元格被激活.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : 单元格对象."
                 ],
                 $snippet:[
@@ -17834,14 +17962,14 @@ _.set(xui.Locale,["cn","app"], {
             onBodyLayout:{
                 $desc:"在表格主体界面布局完成后触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "trigger : String, 触发事件类型."
                 ]
             },
             beforeRowActive:{
                 $desc:"在行激活前被调用. 返回false将阻止行被激活.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row : Object, 行对象."
                 ],
                 $snippet:[
@@ -17857,7 +17985,7 @@ _.set(xui.Locale,["cn","app"], {
             afterCellActive:{
                 $desc:"在单元格激活后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象."
                 ],
                 $snippet:[
@@ -17873,7 +18001,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeCellKeydown:{
                 $desc:"在单元格键盘事件前被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "keys : Object, 参见xui.Event.getKey函数"
                 ]
@@ -17881,7 +18009,7 @@ _.set(xui.Locale,["cn","app"], {
             afterCellFocused:{
                 $desc:"在单元格获得焦点后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "row : Object, 单元格的行对象"
                 ]
@@ -17889,7 +18017,7 @@ _.set(xui.Locale,["cn","app"], {
             onBeginEdit:{
                 $desc:"在编辑器显示前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -17897,7 +18025,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeEditApply:{
                 $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "options: Object. 要更新的内容",
                     "editor: Object, 编辑器对象.",
@@ -17907,7 +18035,7 @@ _.set(xui.Locale,["cn","app"], {
             onEndEdit:{
                 $desc:"在编辑器消失前调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "editor: Object, 编辑器对象."
                 ]
@@ -17915,7 +18043,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeIniEditor:{
                 $desc:"在单元格编辑之前调用. 如果返回false,默认的功能会被禁止.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "cellNode : xui.Dom, 单元格的Dom对象"
                 ]
@@ -17923,7 +18051,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeInitHotRow:{
                 $desc:"在Hot Row初始化之前调用.[当hotRowMode不为'none'] 如果返回false,默认的功能会被禁止.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "row : Object, 单元格的行对象"
                 ]
@@ -17931,13 +18059,13 @@ _.set(xui.Locale,["cn","app"], {
             onInitHotRow:{
                 $desc:"当[热行]需要数据初始化时调用, 需要返回初始化的行数据.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象."
+                    $profile
                 ]
             },
             beforeHotRowAdded:{
                 $desc:"在[热行]被加到Grid前调用. 如果返回[true], [热行]被加入; 如果返回[false],[热行]被删除; 如果返回cell，[热行]保留，并且cell获得焦点; 如果返回[null],没有影响.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row : Object. 行对象",
                     "leaveGrid : Booean. 是否触发事件的光标在Grid之外."
                 ]
@@ -17945,21 +18073,21 @@ _.set(xui.Locale,["cn","app"], {
             afterHotRowAdded:{
                 $desc:"在[热行]被加到Grid后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row : Object. 行对象"
                 ]
             },
             onRowDirtied:{
                 $desc:"当行被改变后调用，[异步调用].",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row : Object. 行对象"
                 ]
             },
             afterRowActive:{
                 $desc:"在行被激活后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row : Object, 行对象."
                 ],
                 $snippet:[
@@ -17975,7 +18103,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeColMoved:{
                 $desc:"在改变列位置前被调用. 返回false将阻止列位置被改变.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "colId : String, 被移动的列id.",
                     "toId : String, 基准列id,移动的列将放在该列之前."
                 ],
@@ -17993,7 +18121,7 @@ _.set(xui.Locale,["cn","app"], {
             afterColMoved:{
                 $desc:"在改变列位置后被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "colId : String, 被移动的列id.",
                     "toId : String, 基准列id,移动的列将放在该列之前."
                 ],
@@ -18011,21 +18139,21 @@ _.set(xui.Locale,["cn","app"], {
             beforeColSorted:{
                 $desc:"在对列排序前调用.返回false将阻止列排序.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "col : Object, 被排序的列."
                 ]
             },
             afterColSorted:{
                 $desc:"在对列排序后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "col : Object, 被排序的列."
                 ]
             },
             beforeColShowHide:{
                 $desc:"在显示或隐藏列前调用.返回false将阻止列显示或隐藏.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "colId : String, 被影响的列.",
                     "flag: Boolean, true->显示; false->隐藏"
                 ]
@@ -18033,7 +18161,7 @@ _.set(xui.Locale,["cn","app"], {
             afterColShowHide:{
                 $desc:"在显示或隐藏列后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "colId : String, 被影响的列.",
                     "flag: Boolean, true->显示; false->隐藏"
                 ]
@@ -18041,7 +18169,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeColResized:{
                 $desc:"在从界面改变列宽度前调用，返回false表示阻止改变列宽.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "colId : String, 所影响的列id.",
                     "width: Number, 列宽"
                 ]
@@ -18049,7 +18177,7 @@ _.set(xui.Locale,["cn","app"], {
             afterColResized:{
                 $desc:"在从界面改变列宽度后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "col : Object, 所影响的列id.",
                     "width: Number, 列宽"
                 ]
@@ -18057,7 +18185,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeRowResized:{
                 $desc:"在从界面改变行的高度前调用，返回false表示阻止改变行高.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "rowId : String, 所影响的行id.",
                     "height: Number, 高"
                 ]
@@ -18065,7 +18193,7 @@ _.set(xui.Locale,["cn","app"], {
             afterRowResized:{
                 $desc:"在从界面改变行的高度后调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "rowId : String, 所影响的行id.",
                     "height: Number, 高"
                 ]
@@ -18073,7 +18201,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeColDrag:{
                 $desc:"在拖动列之前被调用. 返回false将阻止列拖动.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "colId : String, 列id."
                 ],
                 $snippet:[
@@ -18097,7 +18225,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"在父行被展开,需要子行数据是被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row : Object, 父行对象.",
                     "callback : Function, 回调函数."
                 ],
@@ -18113,7 +18241,7 @@ _.set(xui.Locale,["cn","app"], {
             onRowSelected:{
                 $desc:"在行被选择时被调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row: Object, 行对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid.",
@@ -18131,7 +18259,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclickRow:{
                 $desc:"在行被双击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row: Object, 行对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18148,7 +18276,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeComboPop :{
                 $desc:"当单元格的编辑控件Pop按钮被单击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "pos: Object, 鼠标位置.",
@@ -18168,7 +18296,7 @@ _.set(xui.Locale,["cn","app"], {
             beforePopShow :{
                 $desc:"在单元格的编辑控件的下拉框被显示前调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "popCtl : xui.UIProfile, 弹出窗口对象."
@@ -18177,7 +18305,7 @@ _.set(xui.Locale,["cn","app"], {
             afterPopShow :{
                 $desc:"在单元格的编辑控件的下拉框被显示后调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "popCtl : xui.UIProfile, 弹出窗口对象."
@@ -18186,7 +18314,7 @@ _.set(xui.Locale,["cn","app"], {
             onCommand :{
                 $desc:"在单元格的编辑控件的命令按钮被点击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "src : String, 按钮 DOM 元素的xid."
@@ -18195,7 +18323,7 @@ _.set(xui.Locale,["cn","app"], {
             onEditorclick :{
                 $desc:"在单元格的编辑控件被点击时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
                     "src : String, 按钮 DOM 元素的xid."
@@ -18204,7 +18332,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickGridHandler:{
                 $desc:"当点击列头和行头的共同区域时触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -18212,7 +18340,7 @@ _.set(xui.Locale,["cn","app"], {
             onRowHover:{
                 $desc:"当鼠标经过某行的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row: Object,  row 对象.",
                     "hover : Boolean, 进入或离开",
                     "e : Event, DOM事件元素.",
@@ -18222,7 +18350,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickHeader:{
                 $desc:"当点击某列标题的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "col: Object,  列对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18231,7 +18359,7 @@ _.set(xui.Locale,["cn","app"], {
             onCmd:{
                 $desc:"当用户单击内部按钮的时候调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "item: Object, 子项对象.",
                     "cmdKey: String, 命令的键值.",
                     "e : Event, DOM事件元素.",
@@ -18241,7 +18369,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickRow:{
                 $desc:"当点击某行的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row: Object,  row 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18250,7 +18378,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickRowHandler:{
                 $desc:"当点击某行手柄的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "row: Object,  row 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18259,7 +18387,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickCell:{
                 $desc:"当点击一个cell(当cell不在编辑状态时)的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object,  cell 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18276,7 +18404,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclickCell:{
                 $desc:"当双击一个cell(当cell不在编辑状态时)的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell: Object,  cell 对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18293,7 +18421,7 @@ _.set(xui.Locale,["cn","app"], {
            beforeIniEditorr: {
                 $desc:"在单元格由展示状态变为编辑状态时调用(将编辑器附着在单元格上). 返回false或自定义编辑器会阻止默认的编辑器出现.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "cellNode: xui.Dom, 单元格节点",
                     "pNode: xui.Dom, 编辑器的容器节点"
@@ -18310,7 +18438,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeCellUpdated: {
                 $desc:"在单元格的值被更新前调用. 返回false将阻止单元格值被更新.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object,  cell 对象.",
                     "hash : Object, 将要更新的键值对."
                 ],
@@ -18327,7 +18455,7 @@ _.set(xui.Locale,["cn","app"], {
             afterCellUpdated: {
                 $desc:"在单元格的值被更新后调用",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "cell : Object, 单元格对象.",
                     "hash : Object, 更新的键值对."
                 ],
@@ -18376,7 +18504,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $memo:"设置此项不会自动刷新界面,应该在界面显示以前调用."
             },
@@ -18436,7 +18564,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18528,7 +18656,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18554,7 +18682,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18581,7 +18709,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18609,7 +18737,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Date Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18636,7 +18764,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Date Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18663,7 +18791,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Date Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18690,7 +18818,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Date Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl27'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18716,7 +18844,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl29'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18742,7 +18870,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18768,7 +18896,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18794,7 +18922,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18820,7 +18948,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, '10 ms','100 ms','1 s','10 s', '1 n','5 n', '10 n', '30 n', '1 h','2 h', '6 h', '1 d', '1 w', '15 d', '1 m', '1 q', '1 y', '1 de' or '1 c'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl37'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18846,7 +18974,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl39'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18885,7 +19013,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeDragTask:{
                 $desc:"在用户拖动任务前触发. 返回false可以阻止用户拖动.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "task : Object, 任务对象.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18901,7 +19029,7 @@ _.set(xui.Locale,["cn","app"], {
             beforeClose:{
                 $desc:"在关闭本控件之前触发,如果返回false,关闭动作会被取消.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "src: String, 事件所属DOM元素的xid."
                 ],
                 $snippet:[
@@ -18915,7 +19043,7 @@ _.set(xui.Locale,["cn","app"], {
             onShowOptions :{
                 $desc:"当鼠标单击选项按钮的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ],
@@ -18930,7 +19058,7 @@ _.set(xui.Locale,["cn","app"], {
             onClickTask:{
                 $desc:"当鼠标单击任务的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "task : Object, the task Object.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18947,7 +19075,7 @@ _.set(xui.Locale,["cn","app"], {
             onDblclickTask:{
                 $desc:"当鼠标双击任务的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "task : Object, the task Object.",
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
@@ -18956,7 +19084,7 @@ _.set(xui.Locale,["cn","app"], {
             onGetContent:{
                 $desc:"当TimeLine需要加入内容的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "from : Date, 开始时间.",
                     "to : Date, 结束时间",
                     "minMs : Number, 显示任务的最小毫秒数（忽略低于这个数的任务）.",
@@ -18974,14 +19102,14 @@ _.set(xui.Locale,["cn","app"], {
             beforeNewTask:{
                 $desc:"在新加入任务之前触发. 如果返回false,任务不会被加入.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "task: Object, 任务对象."
                 ]
             },
             beforeTaskUpdated:{
                 $desc:"在任务更新之前触发. 如果返回false,任务不会被更新.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "task: Object, 任务对象.",
                     "from : Date, 任务开始时间.",
                     "to: Date, 任务结束时间."
@@ -18990,7 +19118,7 @@ _.set(xui.Locale,["cn","app"], {
             onStartDateChanged:{
                 $desc:"在开始时间改变的时候触发.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "odate: Date, 改变之前的date.",
                     "date : Date, 改变之后的date."
                 ]
@@ -19019,7 +19147,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getFlashvars:{
@@ -19031,7 +19159,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getFlash:{
@@ -19047,7 +19175,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             getCover:{
@@ -19059,7 +19187,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ]
             },
             refreshFlash:{
@@ -19100,7 +19228,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. ",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $memo:"请参见 FusionChartsXT 所支持的图标类型"
             },
@@ -19114,7 +19242,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为[false]."
+                    $force
                 ],
                 $memo:"请参见 FusionChartsXT 的 setChartAttribute 函数"
             },
@@ -19292,7 +19420,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             }
         }
@@ -19406,7 +19534,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getSvgTag:{
@@ -19418,13 +19546,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"当单击控件时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -19529,7 +19657,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left','25%','center','75%','right','outterleft','outterright'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getVAlign :{
@@ -19541,13 +19669,13 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"当单击控件时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -19555,7 +19683,7 @@ _.set(xui.Locale,["cn","app"], {
             onTextClick:{
                 $desc:"当单击控件文字时调用.",
                 $paras:[
-                    "profile : xui.UIProfile, 当前控件的配置对象.",
+                    $profile,
                     "e : Event, DOM事件元素.",
                     "src: String, 事件所属DOM元素的xid."
                 ]
@@ -19629,7 +19757,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getType:{
@@ -19641,7 +19769,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'straight','bezier','flowchart', 默认为 'straight'.",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getFromObj:{
@@ -19653,7 +19781,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 与链接器在同一画布上的对象别名",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getFromPoint:{
@@ -19665,7 +19793,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left','top','right','bottom'之一",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getToObj:{
@@ -19677,7 +19805,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 与链接器在同一画布上的对象别名",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getToPoint:{
@@ -19689,7 +19817,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left','top','right','bottom'之一",
-                    "force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值 默认为 [false]."
+                    $force
                 ]
             },
             getAttr:{
@@ -19719,19 +19847,27 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'tag':'附加值',
             'tagVar':'附加对象',
             'dataBinder':'数据绑定器',
-            'dataField':'绑定绑定键',
+            'dataField':'数据绑定键',
             "propBinder":"属性绑定",
             'name':'字段名字',
             'desc':'组件描述'
         },
-       'xui_absForm' : {
+       'xui_absContainer' : {
             'dragKey':'拖拽标识',
             'dropKeys':'丢下标识',
             panelBgClr:'容器背景色',
             panelBgImg:'容器背景图像',
             panelBgImgPos:'背景图像偏移',
             panelBgImgRepeat:'背景图像重复',
-            panelBgImgAttachment:'背景图像附着'
+            panelBgImgAttachment:'背景图像附着',
+            conDockPadding:'容器停靠边距',
+            conDockSpacing:'容器停靠间隔',
+            conDockFlexFill:'容器停靠次轴柔性',
+            conDockFlowStretch:'容器停靠主轴延展',
+            formMethod:'表单提交方法',
+            formTarget:'表单提交目标',
+            formAction:'表单提交动作',
+            formEnctype:'表单提交加密类型'
         },
         'xui_absList' : {
             'listKey':'列表键',
@@ -19749,7 +19885,10 @@ _.set(xui.Locale,["cn","doc","propname"], {
             interval:"定时间隔(ms)"
         },
         'xui_DataBinder' : {
-            'data':'绑定的数据',
+            'name':'绑定器唯一名',
+            'data':'绑定的数据'
+        },
+        'xui_APICaller' : {
             'queryURL':'远程服务地址',
             'queryUserName':'服务登陆账号',
             'queryPassword':'服务登陆密码',
@@ -19757,13 +19896,18 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'queryMethod':'请求服务方式',
             'queryAsync':'异步请求方式',
             'requestType':'数据请求类型',
-            'responseType':'接收数据类型',
+            'responseType':'数据响应类型',
             'queryArgs':'数据请求参数',
-            'tokenParams':'Token附加参数',
+            'oAuth2Token':'身份验证令牌',
+            'queryHeader':"头信息",
+            'fakeCookies':"仿Cookies",
             'queryOptions':'自定义调用选项',
             'proxyType':'调用代理种类',
             'name':'绑定器唯一名',
             "proxyInvoker":"调用触发",
+            "avoidCache":"避免缓存",
+            'requestDataSource':"请求数据源",
+            'responseDataTarget':"数据响应目标",
             "requestId":"数据请求ID"
         },
         'xui_UI_CSSBox':{
@@ -19784,13 +19928,16 @@ _.set(xui.Locale,["cn","doc","propname"], {
             hoverPop:"悬停弹出对象",
             hoverPopType:"悬停弹出类型",
             'dock':'停靠类型',
-            'dockFlowStretch':'停靠延展',
+            'dockFlowStretch':'停靠主轴延展',
+            'dockIgnoreFlex':'忽略停靠次轴柔性',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
             'dockMargin':'停靠外补丁',
             'dockFloat':'停靠漂浮',
             'dockMinW':'停靠最小宽度',
+            'dockMaxW':'停靠最大宽度',
             'dockMinH':'停靠最小高度',
+            'dockMaxH':'停靠最大高度',
              rotate:"旋转角度",
              showEffects:"出现动画特效",
              hideEffects:"消失动画特效",
@@ -20162,6 +20309,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_TreeGrid' : {
             activeRow:"活动行",
             activeCell:"活动单元格",
+            freezedColumn:"冻结列",
+            freezedRow:"冻结行",
             'rowMap':"活动行键值对",
             'directInput':'直接编辑状态',
             'currencyTpl':'货币显示模板',
@@ -20185,9 +20334,10 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'colResizer':'拖动改变列宽',
             'colSortable':'可排序列',
             'colMovable':'可移动列',
-            'header':'表头对象',
             'grpCols':'表头分组对象',
-            'rows':'表格内容',
+            'header':'表格头数据',
+            'rows':'表格行数据',
+            'rawData':'表格键值对数据',
             'tagCmds':"命令按钮集",
             'activeMode':'焦点活动模式',
             'rowOptions':'行自定义参数',
@@ -20312,7 +20462,9 @@ _.set(xui.Locale,["cn","doc","eventname"],{
         'xui_Module':{
             beforeCreated:"部件生成前",
             onLoadBaseClass:"加载基础类",
+            onLoadBaseClassErr:"加载基础类出错",
             onLoadRequiredClass:"加载必须类",
+            onLoadRequiredClassErr:"加载必须类出错",
             onIniResource:"初始化资源",
             beforeIniComponents:"初始化控件前",
             afterIniComponents:"初始化控件后",
@@ -20322,7 +20474,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
         },
         'xui_absObj' : {
         },
-       'xui_absForm' : {
+       'xui_absContainer' : {
             onHotKeydown:"热键下按",
             onHotKeypress:"热键按下",
             onHotKeyup:"热键抬起",
@@ -20339,7 +20491,12 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             beforeDrop:"丢下之前",
             onDrop:"丢下",
             afterDrop:"丢下之后",
-            onDragStop:"拖拽停止"
+            onDragStop:"拖拽停止",
+            beforeInputAlert:"输入验证提示前",
+            beforeFormReset:"表单重置前",
+            afterFormReset:"表单重置后",
+            beforeFormSubmit:"表单提交前",
+            afterFormSubmit:"表单提交后"
         },
         'xui_absList' : {
             beforeIniEditor:"初始化编辑器前",
@@ -20363,16 +20520,15 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onEnd:"当定时结束"
         },
         'xui_DataBinder' : {
-            onData:"数据获得成功",
-            onError:"数据获得失败",
             beforeUpdateDataToUI:"将数据更新到绑定控件",
             afterUpdateDataFromUI:"从绑定控件获得数据",
+            beforeInputAlert:"在输入验证提示前"
+         },
+        'xui_APICaller' : {
+            onData:"数据获得成功",
+            onError:"数据获得失败",
             beforeInvoke:"远程调用之前",
-            afterInvoke:"远程调用之后",
-            beforeRead:"远程读之前",
-            afterRead:"远程读之后",
-            beforeWrite:"远程写之前",
-            afterWrite:"远程写之后"
+            afterInvoke:"远程调用之后"
          },
         'xui_UI' : {
             beforeAppend:"界面加载前",
@@ -20710,6 +20866,6 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onAnnotationClick:'点击注释',
             onFusionChartsEvent:"FC事件触发"
         }
-});
+    });
 
 })();

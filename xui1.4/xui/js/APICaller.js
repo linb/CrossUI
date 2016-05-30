@@ -100,7 +100,7 @@ Class("xui.APICaller","xui.absObj",{
                             }
                             break;
                         case "form":
-                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
                                 if(!t.checkValid() || !t.checkRequired()){
                                     return;
                                 }else{
@@ -120,6 +120,13 @@ Class("xui.APICaller","xui.absObj",{
 
             // for auto adjusting options
             var rMap={header:{}};
+            if(!_.isEmpty(queryHeader)){
+                _.merge(rMap.header, queryHeader);
+            }
+            if(queryOptions.header && !_.isEmpty(queryOptions.header)){
+                _.merge(rMap.header, queryOptions.header);
+                delete queryOptions.header;
+            }
             if(responseType=='SOAP'||requestType=='SOAP'){
                 // for wsdl
                 if(!con.WDSLCache)con.WDSLCache={};
@@ -211,13 +218,7 @@ Class("xui.APICaller","xui.absObj",{
                 options.onEnd=onEnd;
             if(!("onStart" in options))
                 options.onStart=onStart;
-            if(!_.isEmpty(queryHeader)){
-                if(!_.isEmpty(queryOptions.header)){
-                    _.merge(queryOptions.header, queryHeader, 'without');
-                }else{
-                    queryOptions.header = queryHeader;
-                }
-            }
+
             _.merge(options, queryOptions);
 
             _.merge(options, rMap, 'all');
@@ -244,7 +245,7 @@ Class("xui.APICaller","xui.absObj",{
                             xui.Cookies.remove(k);
                         }
                     });
-                    xui.Cookies.set(prop.fakeCookies);
+                    xui.Cookies.set(prop.fakeCookies,1,"/");
                 }
             }
             if(!_.isEmpty(prop.fakeCookies)){
@@ -290,7 +291,7 @@ Class("xui.APICaller","xui.absObj",{
                                 }
                                 break;
                             case "form":
-                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absForm'] && t.getRootNode()){
+                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
                                     t.setFormValues(data);
                                 }
                                 break;

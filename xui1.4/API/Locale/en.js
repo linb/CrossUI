@@ -1,7 +1,7 @@
 _.set(xui.Locale,["en","app"], {
     en:'English',
     cn:'Chinese',
-    apititle:"CrossUI 1.3 - API Documentation",
+    apititle:"CrossUI 1.4 - API Documentation",
 
     search:'Search',
     lQ1:'Search API',
@@ -35,6 +35,8 @@ _.set(xui.Locale,["en","app"], {
             "flag  [Optional]: Boolean, for remove event only. to indicate if remove all related event."
         ]
     };
+    var $force="force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false].";
+    vaf $profile="profile : xui.UIProfile. The current control's profile object";
     /*
     $desc string
     $paras array
@@ -4477,7 +4479,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getName:{
@@ -4489,7 +4491,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTag:{
@@ -4507,7 +4509,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4525,7 +4527,7 @@ _.set(xui.Locale,["en","app"], {
                  $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             reBindProp:{
@@ -4550,7 +4552,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5132,7 +5134,7 @@ _.set(xui.Locale,["en","app"], {
                 "    onIniResource:function(){order.push('onIniResource'); xui.log('onIniResource');},"+
                 "    beforeIniComponents:function(){order.push('beforeIniComponents'); xui.log('beforeIniComponents');},"+
                 "    afterIniComponents:function(){order.push('afterIniComponents'); xui.log('afterIniComponents');},"+
-                "    onLoadReqiredClass:function(c,t,key){order.push('onLoadReqiredClass: '+key); xui.log('onLoadReqiredClass: '+key);},"+
+                "    onLoadRequiredClass:function(c,t,key){order.push('onLoadRequiredClass: '+key); xui.log('onLoadRequiredClass: '+key);},"+
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
                 "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
@@ -5180,9 +5182,9 @@ _.set(xui.Locale,["en","app"], {
                 "                module._info.push('afterIniComponents');" +
                 "                xui.log('afterIniComponents');" +
                 "            }," +
-                "            onLoadReqiredClass : function(module, t, key){" +
-                "                module._info.push('onLoadReqiredClass: ' + key);" +
-                "                xui.log('onLoadReqiredClass: ' + key);" +
+                "            onLoadRequiredClass : function(module, t, key){" +
+                "                module._info.push('onLoadRequiredClass: ' + key);" +
+                "                xui.log('onLoadRequiredClass: ' + key);" +
                 "            }," +
                 "            onReady : function(module){" +
                 "                module._info.push('onReady');" +
@@ -5231,7 +5233,7 @@ _.set(xui.Locale,["en","app"], {
                 "            onIniResource : '_trace'," +
                 "            beforeIniComponents : '_trace'," +
                 "            afterIniComponents : '_trace'," +
-                "            onLoadReqiredClass : '_trace'," +
+                "            onLoadRequiredClass : '_trace'," +
                 "            onReady : '_trace'," +
                 "            onRender : '_trace'," +
                 "        }," +
@@ -5302,9 +5304,6 @@ _.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
-            dataBindLoadType:{
-                $desc:"DataBinder type. one of 'none, sync, async'. Default is [none]"
-            },
             autoDestroy:{
                 $desc:"To determine whether the first inner UI control's detory will trigger module's destroy or not.",
                 $rtn:"Boolean"
@@ -5608,7 +5607,7 @@ _.set(xui.Locale,["en","app"], {
             beforeCreated:{
                 $desc:'Fired before module is created.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5616,7 +5615,7 @@ _.set(xui.Locale,["en","app"], {
             onCreated:{
                 $desc:'Fired when module is created.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5624,28 +5623,37 @@ _.set(xui.Locale,["en","app"], {
             beforeShow:{
                 $desc:'Fired before module is showed.',
                 $paras:[
-                    'module : xui.Module .'
+                    'module : xui.Module.'
                 ]
             },
             afterShow:{
                 $desc:'Fired after module is showed.',
                 $paras:[
-                    'module : xui.Module .'
+                    'module : xui.Module.'
                 ]
             },
             onLoadBaseClass:{
                 $desc:'Fired when module loads base classes.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.',
+                    'uri: String, base class uri',
                     'key: String, base class name.'
                 ],
                 $memo:'See constructor.'
             },
+            onLoadBaseClassErr:{
+                $desc:'Fired when module failed to load base Classes.',
+                $paras:[
+                    'module : xui.Module.',
+                    'threadid : String, thread id.',
+                    'key: String, class name.'
+                ]
+            },
             onIniResource:{
                 $desc:'Fired when module loads resources.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.',
                     'key: String, base class name.'
                 ],
@@ -5654,7 +5662,7 @@ _.set(xui.Locale,["en","app"], {
             beforeIniComponents:{
                 $desc:'Fired beofre module Object initializes inner components.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5662,7 +5670,7 @@ _.set(xui.Locale,["en","app"], {
             afterIniComponents:{
                 $desc:'Fired after module Object initializes inner components.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5670,16 +5678,25 @@ _.set(xui.Locale,["en","app"], {
             onLoadRequiredClass:{
                 $desc:'Fired when module loads requried Classes.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.',
+                    "url: String, class url",
                     'key: String, class name.'
                 ],
                 $memo:'See constructor.'
             },
+            onLoadRequiredClassErr:{
+                $desc:'Fired when module failed to load requried Classes.',
+                $paras:[
+                    'module : xui.Module.',
+                    'threadid : String, thread id.',
+                    'key: String, class name.'
+                ]
+            },
             onReady:{
                 $desc:'Fired when module is ready.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5687,7 +5704,7 @@ _.set(xui.Locale,["en","app"], {
             onRender:{
                 $desc:'Fired when module is added to DOM.',
                 $paras:[
-                    'module : xui.Module .',
+                    'module : xui.Module.',
                     'threadid : String, thread id.'
                 ],
                 $memo:'See constructor.'
@@ -5851,7 +5868,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self].",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onTime:{
@@ -5884,12 +5901,309 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    _.set(xui.Locale,["en","doc","xui","DataBinder"], {
+    _.set(xui.Locale,["en","doc","xui","APICaller"], {
         KEY:{$desc:"Class Name"},
-        $desc:"xui.DataBinder Class",
+        $desc:"xui.APICaller Class",
         WDSLCache:{
             $desc:"SOAP's WDSL cache."
         },
+        constructor:{
+            $desc:"Creates a APICaller Object."
+        },
+        destroyAll:{
+            $desc:"To destroy all xui.WDSLCache objects.",
+            $snippet:[
+                "//xui.WDSLCache.destroyAll()"
+            ]
+        },
+        getFromName:{
+            $desc:"To get a xui.WDSLCache Object from it's name.",
+            $rtn:'xui.WDSLCache.',
+            $paras:[
+                "name [Required] : String, the WDSLCache name."
+            ]
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            setHost:{
+                $desc:"Sets the host Object and alias.",
+                $rtn:'[self]',
+                $paras:[
+                    "host [Optional : Object, the host Object.",
+                    "alias [Optional : String, the alias value."
+                ]
+            },
+            destroy:{
+                $desc:"To destroy the current Object.",
+                $memo:"Usually, we do not need to call this function manually."
+            },
+            setName:{
+                $desc:"Sets name property.",
+                $rtn:'[self]',
+                $paras:[
+                    "value [Required] : String, name string"
+                ],
+                $memo:"To see the 'getValue' snippets. "
+            },
+            getName:{
+                $desc:"Returns name property.",
+                $rtn:'String',
+                $memo:"To see the 'getValue' snippets. "
+            },
+            getAvoidCache:{
+                $desc:"To determine whether will add a random parameter or not.",
+                $rtn:'[self]'
+            },
+            setAvoidCache:{
+                $desc:"Specifies whether adding a random parameter or not.",
+                $rtn:'[self]',
+                $paras:[
+                    "value [Required] : Boolean"
+                ]
+            },
+            getQueryURL:{
+                $desc:"Gets the Web API URL.",
+                $rtn:"String"
+            },
+            setQueryURL:{
+                $desc:"Sets the Web API URL.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getQueryUserName:{
+                $desc:"Gets the Web API query user name.",
+                $rtn:"String"
+            },
+            setQueryUserName:{
+                $desc:"Sets the Web API query user name.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getQueryPassword:{
+                $desc:"Gets the Web API query password.",
+                $rtn:"String"
+            },
+            setQueryPassword:{
+                $desc:"Sets the Web API query password.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getQueryMethod:{
+                $desc:"Gets the query method for the Web API.",
+                $rtn:"String"
+            },
+            setQueryMethod:{
+                $desc:"Sets the query method for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String. 'auto','GET' or 'POST', default value is 'auto.",
+                    $force
+                ]
+            },
+            getQueryAsync:{
+                $desc:"To determine whether the  query action for the Web API is asynchronous or not.",
+                $rtn:"Boolean"
+            },
+            setQueryAsync:{
+                $desc:"Specifys whether the query action for the Web API is asynchronous or not.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    $force
+                ]
+            },
+            getFakeCookies:{
+                $desc:"Gets the fake Cookies.",
+                $rtn:"Object"
+            },
+            setFakeCookies:{
+                $desc:"Sets the fake Cookies.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    $force
+                ]
+            },
+            getQueryHeader:{
+                $desc:"Gets the request Header for this query",
+                $rtn:"Object"
+            },
+            setQueryHeader:{
+                $desc:"Sets the request Header for this query.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    $force
+                ]
+            },
+            getRequestDataSource:{
+                $desc:"Gets the datasource for request data.",
+                $rtn:"Array"
+            },
+            setRequestDataSource:{
+                $desc:"Sets the datasource for request data.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Array. [{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    $force
+                ]
+            },
+            getResponseDataTarget:{
+                $desc:"Gets the target to show the response data.",
+                $rtn:"Array"
+            },
+            setResponseDataTarget:{
+                $desc:"Sets the target to show the response data.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Array.  [{bindertype:'alert',path:'xx'},{bindertype:'log',path:'xx'},{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    $force
+                ]
+            },
+            getQueryArgs:{
+                $desc:"Gets the arguments for the Web API.",
+                $rtn:"Object"
+            },
+            setQueryArgs:{
+                $desc:"Sets the arguments for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Object.",
+                    $force
+                ]
+            },
+            getOAuth2Token:{
+                $desc:"Gets the OAuth2Token for the Web API.",
+                $rtn:"String"
+            },
+            setOAuth2Token:{
+                $desc:"Sets the OAuth2Token for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getQueryOptions:{
+                $desc:"Gets options[a set of key/value pairs that configure the request] for the Web API.",
+                $rtn:"Object"
+            },
+            setQueryOptions:{
+                $desc:"Sets options[a set of key/value pairs that configure the request] for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : Object.",
+                    $force
+                ]
+            },
+            getProxyType:{
+                $desc:"Gets the proxy type for the Web API.",
+                $rtn:"String"
+            },
+            setProxyType:{
+                $desc:"Sets the proxy type for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String. auto/Ajax/JSONP/IAjax\u00D6\u00AE\u00D2\u00BB,\u00C4\u00AC\u00C9\u008F\u00CE\u00AAauto.",
+                    $force
+                ]
+            },
+            getRequestId:{
+                $desc:"Gets the the Web API's request id.",
+                $rtn:"String"
+            },
+            setRequestId:{
+                $desc:"Sets the the Web API's request id.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String. A custom request Id",
+                    $force
+                ]
+            },
+            getRequestType:{
+                $desc:"Gets the request data type for the Web API.",
+                $rtn:"String"
+            },
+            setRequestType:{
+                $desc:"Sets the request data type for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String. HTTP,JSON,XML,SOAP \u00D6\u00AE\u00D2\u00BB",
+                    $force
+                ]
+            },
+            getResponseType:{
+                $desc:"Gets the response data type for the Web API.",
+                $rtn:"String"
+            },
+            setResponseType:{
+                $desc:"Sets the response data type for the Web API.",
+                $rtn:"[self].",
+                $paras:[
+                    "value [Required] : String. JSON,XML,SOAP \u00D6\u00AE\u00D2\u00BB",
+                    $force
+                ]
+            },
+            invoke:{
+                $desc:"To invoke the remoting call.",
+                $rtn:"[xui.absIO]",
+                $paras:[
+                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
+                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
+                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
+                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
+                    "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
+                    "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
+                    "options [Optional]: Object, a set of key/value pairs that configure the request."
+                ]
+            },
+            beforeInvoke:{
+                $desc:"Fired before invoke function is called. If returns false, invoke function will be ignored.",
+                $rtn:"Object",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "requestId : String"
+                ]
+            },
+            onData:{
+                $desc:"Fired when data returns.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
+                ]
+            },
+            onError:{
+                $desc:"Fired when error raises.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
+                ]
+            },
+            afterInvoke:{
+                $desc:"Fired after invoke function is called.",
+                $paras:[
+                    "profile : xui.Profile.",
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
+                ]
+            }
+        }
+    });
+
+    _.set(xui.Locale,["en","doc","xui","DataBinder"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.DataBinder Class",
         constructor:{
             $desc:"Creates a databinder Object."
         },
@@ -5993,150 +6307,6 @@ _.set(xui.Locale,["en","app"], {
                     "value [Optional] : Object, value, only when the parameter 'key' was specified."
                 ]
             },
-            getQueryURL:{
-                $desc:"[Deprecated] Gets the remoting data source's query URL.",
-                $rtn:"String"
-            },
-            setQueryURL:{
-                $desc:"[Deprecated] Sets the remoting data source's query URL.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getQueryUserName:{
-                $desc:"[Deprecated] Gets the remoting data source's query user name.",
-                $rtn:"String"
-            },
-            setQueryUserName:{
-                $desc:"[Deprecated] Sets the remoting data source's query user name.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getQueryPassword:{
-                $desc:"[Deprecated] Gets the remoting data source's query password.",
-                $rtn:"String"
-            },
-            setQueryPassword:{
-                $desc:"[Deprecated] Sets the remoting data source's query password.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getQueryMethod:{
-                $desc:"[Deprecated] Gets the query method for this remoting call.",
-                $rtn:"String"
-            },
-            setQueryMethod:{
-                $desc:"[Deprecated] Sets the query method for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String. 'auto','GET' or 'POST', default value is 'auto.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getQueryAsync:{
-                $desc:"[Deprecated] To determine whether the  query action for this remoting call is asynchronous or not.",
-                $rtn:"Boolean"
-            },
-            setQueryAsync:{
-                $desc:"[Deprecated] Specifys whether the query action for this remoting call is asynchronous or not.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getQueryArgs:{
-                $desc:"[Deprecated] Gets the arguments for this remoting call.",
-                $rtn:"Object"
-            },
-            setQueryArgs:{
-                $desc:"[Deprecated] Sets the arguments for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getBearerToken:{
-                $desc:"[Deprecated] Gets the token parameters for this remoting call.",
-                $rtn:"Object"
-            },
-            setBearerToken:{
-                $desc:"[Deprecated] Sets the token parameters for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getQueryOptions:{
-                $desc:"[Deprecated] Gets options[a set of key/value pairs that configure the request] for this remoting call.",
-                $rtn:"Object"
-            },
-            setQueryOptions:{
-                $desc:"[Deprecated] Sets options[a set of key/value pairs that configure the request] for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getProxyType:{
-                $desc:"[Deprecated] Gets the proxy type for this remoting call.",
-                $rtn:"String"
-            },
-            setProxyType:{
-                $desc:"[Deprecated] Sets the proxy type for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String. auto/Ajax/JSONP/IAjax\u00D6\u00AE\u00D2\u00BB,\u00C4\u00AC\u00C9\u008F\u00CE\u00AAauto.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getRequestId:{
-                $desc:"[Deprecated] Gets the this remoting call's request id.",
-                $rtn:"String"
-            },
-            setRequestId:{
-                $desc:"[Deprecated] Sets the this remoting call's request id.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String. A custom request Id",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getRequestType:{
-                $desc:"[Deprecated] Gets the request data type for this remoting call.",
-                $rtn:"String"
-            },
-            setRequestType:{
-                $desc:"[Deprecated] Sets the request data type for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String. HTTP,JSON,XML,SOAP \u00D6\u00AE\u00D2\u00BB",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
-            getResponseType:{
-                $desc:"[Deprecated] Gets the response data type for this remoting call.",
-                $rtn:"String"
-            },
-            setResponseType:{
-                $desc:"[Deprecated] Sets the response data type for this remoting call.",
-                $rtn:"[self].",
-                $paras:[
-                    "value [Required] : String. JSON,XML,SOAP \u00D6\u00AE\u00D2\u00BB",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ]
-            },
             updateDataToUI:{
                 $desc:"Updates data from the inner data to the bound UI.",
                 $rtn:"[self]",
@@ -6157,45 +6327,6 @@ _.set(xui.Locale,["en","app"], {
                     "ignoreAlert[Optional] : Boolean, Don't show alert info.",
                 ]
             },
-            invoke:{
-                $desc:"[Deprecated] To invoke the remoting call.",
-                $rtn:"[xui.absIO]",
-                $paras:[
-                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
-                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
-                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
-                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
-                    "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
-                    "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
-                    "options [Optional]: Object, a set of key/value pairs that configure the request."
-                ]
-            },
-            'read':{
-                $desc:"[Deprecated] To invoke the remoting call for data reading.",
-                $rtn:"[xui.absIO]",
-                $paras:[
-                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
-                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
-                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
-                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
-                    "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
-                    "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
-                    "options [Optional]: Object, a set of key/value pairs that configure the request."
-                ]
-            },
-            'write':{
-                $desc:"[Deprecated] To invoke the remoting call for data writing.",
-                $rtn:"[xui.absIO]",
-                $paras:[
-                    "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully.",
-                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails.",
-                    "onStart [Optional]: Function(threadid:String).  onStart function for the call.",
-                    "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call.",
-                    "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'.",
-                    "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
-                    "options [Optional]: Object, a set of key/value pairs that configure the request."
-                ]
-            },
 
             beforeUpdateDataToUI:{
                 $desc:"Fired before updateDataToUI function is called. For adjusting data. This event function can return adjusted data.",
@@ -6212,72 +6343,9 @@ _.set(xui.Locale,["en","app"], {
                     "profile : xui.Profile.",
                     "dataFromUI : Object, the data object from UI."
                 ]
-            },
-            beforeInvoke:{
-                $desc:"[Deprecated] Fired before invoke function is called. If returns false, invoke function will be ignored.",
-                $rtn:"Object",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "requestId : String"
-                ]
-            },
-            onData:{
-                $desc:"[Deprecated] Fired when data returns.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call",
-                    "requestId : String"
-                ]
-            },
-            onError:{
-                $desc:"[Deprecated] Fired when error raises.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call",
-                    "requestId : String"
-                ]
-            },
-            afterInvoke:{
-                $desc:"[Deprecated] Fired after invoke function is called.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call",
-                    "requestId : String"
-                ]
-            },
-            beforeRead:{
-                $desc:"[Deprecated] Fired before read function is called. If returns false, read function will be ignored.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "requestId : String"
-                ]
-            },
-            afterRead:{
-                $desc:"[Deprecated] Fired after read function is called.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call",
-                    "requestId : String"
-                ]
-            },
-            beforeWrite:{
-                $desc:"[Deprecated] Fired before write function is called. If returns false, write function will be ignored.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "requestId : String"
-                ]
-            },
-            afterWrite:{
-                $desc:"[Deprecated] Fired after write function is called.",
-                $paras:[
-                    "profile : xui.Profile.",
-                    "rspData : Object, the data from remoting call",
-                    "requestId : String"
-                ]
             }
         }
     });
-
     _.set(xui.Locale,["en","doc","xui","Tips"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Tips Class(static)",
@@ -6494,7 +6562,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.absl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6573,7 +6641,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the list key.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.abs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6628,7 +6696,7 @@ _.set(xui.Locale,["en","app"], {
             beforeIniEditor:{
                 $desc:"Fired before the cell switch to edit mode. If returns false, the default edit action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object. item object.",
                     "captionNode : xui.Dom, caption's dom object."
                 ]
@@ -6636,7 +6704,7 @@ _.set(xui.Locale,["en","app"], {
             onBeginEdit:{
                 $desc:"Fired when the item's editor is showed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object. item object.",
                     "editor: Object, the editor object."
                 ]
@@ -6644,7 +6712,7 @@ _.set(xui.Locale,["en","app"], {
             beforeEditApply:{
                 $desc:"Fired before the item's editor apply changed. If returns false, the activation will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object. item object.",
                     "caption: String. updated content",
                     "editor: Object, the editor object.",
@@ -6654,7 +6722,7 @@ _.set(xui.Locale,["en","app"], {
             onEndEdit:{
                 $desc:"Fired when the item's editor is hidden.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object. item object.",
                     "editor: Object, the editor object."
                 ]
@@ -6673,7 +6741,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getShowDirtyMark:{
@@ -6705,7 +6773,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDataBinder:{
@@ -6723,7 +6791,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.absv2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6747,7 +6815,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.absv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6864,7 +6932,7 @@ _.set(xui.Locale,["en","app"], {
             beforeUIValueSet:{
                 $desc:"Fired before setUIValue is called. If returns false, setUIValue function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldValue : String, old UIValue.",
                     "newValue : String, new UIValue.",
                     "force : Boolean, force to call or not.",
@@ -6884,7 +6952,7 @@ _.set(xui.Locale,["en","app"], {
             afterUIValueSet:{
                 $desc:"Fired after setUIValue is called.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldValue :String, old UIValue.",
                     "newValue : String, new UIValue.",
                     "force : Boolean, force to call or not.",
@@ -6904,7 +6972,7 @@ _.set(xui.Locale,["en","app"], {
             onChange:{
                 $desc:"Fired when control's UI value is changed!",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldValue :String, old UIValue.",
                     "newValue : String, new UIValue.",
                     "force : Boolean, force to call or not.",
@@ -6914,7 +6982,7 @@ _.set(xui.Locale,["en","app"], {
             onValueChange:{
                 $desc:"Fired when control's inner value is changed!",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldValue :String,  old Value.",
                     "newValue : String, new Value.",
                     "force : Boolean, force to call or not.",
@@ -6924,7 +6992,7 @@ _.set(xui.Locale,["en","app"], {
             beforeValueSet:{
                 $desc:"Fired before setValue is called. If returns false, setValue function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldValue : String, old Value.",
                     "newValue : String, new Value.",
                     "force : Boolean, force to call or not.",
@@ -6944,7 +7012,7 @@ _.set(xui.Locale,["en","app"], {
             afterValueSet:{
                 $desc:"Fired after setValue is called.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldValue : String, old Value.",
                     "newValue : String, new Value.",
                     "force : Boolean, force to call or not.",
@@ -6966,7 +7034,7 @@ _.set(xui.Locale,["en","app"], {
             beforeDirtyMark:{
                 $desc:"Fired when before _setDirtyMark is called.If returns false, the inner dirtyMark function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                      "dirty : Boolean, it's dirty or not."
                 ],
                 $snippet:[
@@ -6981,7 +7049,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absForm"], {
+    _.set(xui.Locale,["en","doc","xui","absContainer"], {
         prototype:{
             getDragKey:{
                 $desc:"Gets the dragKey property value on the first UIProfile",
@@ -7094,7 +7162,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPanelBgCrl:{
@@ -7106,7 +7174,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPanelBgImg:{
@@ -7118,7 +7186,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPanelBgImgPos:{
@@ -7130,7 +7198,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPanelBgImgRepeat:{
@@ -7142,7 +7210,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPanelBgImgAttachment:{
@@ -7154,14 +7222,14 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
 
             onHotKeydown:{
                 $desc:"Fired when keyboard is down.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "keyboard : Object, keyboard object.",
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
@@ -7179,7 +7247,7 @@ _.set(xui.Locale,["en","app"], {
             onHotKeyup:{
                 $desc:"Fired when keyboard is up.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "keyboard : Object, keyboard object.",
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
@@ -7197,7 +7265,7 @@ _.set(xui.Locale,["en","app"], {
             onHotKeypress:{
                 $desc:"Fired when keyboard is pressed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "keyboard : Object, keyboard object.",
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
@@ -7215,7 +7283,7 @@ _.set(xui.Locale,["en","app"], {
             onDragEnter:{
                 $desc:"Fired when the user drags the Object to a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7240,7 +7308,7 @@ _.set(xui.Locale,["en","app"], {
             onDragLeave:{
                 $desc:"Fired when the user drags the Object leave a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7266,7 +7334,7 @@ _.set(xui.Locale,["en","app"], {
             onDrop:{
                 $desc:"Fired when the user drop the Object to a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7291,7 +7359,7 @@ _.set(xui.Locale,["en","app"], {
             beforeDrop:{
                 $desc:"Fired before the user drop the Object to a valid drop target. If returns false, onDrop and afteDrop will not be triggered.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7302,7 +7370,7 @@ _.set(xui.Locale,["en","app"], {
             afterDrop:{
                 $desc:"Fired after the user drop the Object to a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7313,7 +7381,7 @@ _.set(xui.Locale,["en","app"], {
             onDropMarkClear:{
                 $desc:"Fired when the user drags the Object leave a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7338,7 +7406,7 @@ _.set(xui.Locale,["en","app"], {
             onDropMarkShow:{
                 $desc:"Fired when the user drags the Object to a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7363,7 +7431,7 @@ _.set(xui.Locale,["en","app"], {
             onDropTest:{
                 $desc:"Fired when the user drags the Object to a valid drop target.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
                     "dragKey : String, the DragDrop key.",
@@ -7388,7 +7456,7 @@ _.set(xui.Locale,["en","app"], {
             onStartDrag:{
                 $desc:"Triggered when the user start to drag.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -7404,7 +7472,7 @@ _.set(xui.Locale,["en","app"], {
             onGetDragData:{
                 $desc:"Fired when the user start to drag.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -7419,7 +7487,7 @@ _.set(xui.Locale,["en","app"], {
             onDragstop:{
                 $desc:"Fired when the user stop the dragging process.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -7435,7 +7503,7 @@ _.set(xui.Locale,["en","app"], {
             beforeClickEffect:{
                 $desc:"Fired when the user click the specified element. If returns false, the default click effect will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object, the data item Object.",
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
@@ -7451,7 +7519,7 @@ _.set(xui.Locale,["en","app"], {
             beforeHoverEffect:{
                 $desc:"Fired when the mouse hover the specified element. If returns false, the default mouse hover effect will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object, the data item Object.",
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid.",
@@ -7467,7 +7535,7 @@ _.set(xui.Locale,["en","app"], {
             beforeNextFocus:{
                 $desc:"Fired when the mouse hover the specified element. If returns false, the default 'set focus to the next' action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "k : Object, {key:keycode string, type: event type, ctrlKey:ctrl status, shiftKey:shift status, altKey:alt status}",
                     "shift: Boolean, Shift keyboard is pressed or not.",
@@ -7646,7 +7714,7 @@ _.set(xui.Locale,["en","app"], {
               $rtn:"[self]",
               $paras:[
                   "value [Required] : Boolean.",
-                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                  $force
               ]
             },
             getClassName:{
@@ -7658,7 +7726,7 @@ _.set(xui.Locale,["en","app"], {
               $rtn:"[self]",
               $paras:[
                   "value [Required] : String.",
-                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                  $force
               ]
             },
             hoverPop:{
@@ -7766,7 +7834,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Function",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7885,7 +7953,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7909,7 +7977,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7933,7 +8001,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7957,7 +8025,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7981,7 +8049,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                $snippet:[
                     "var id='xui.temp.ui19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8005,7 +8073,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : nonnegative Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8029,7 +8097,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8053,7 +8121,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8077,7 +8145,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui27'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8095,7 +8163,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPosition:{
@@ -8113,7 +8181,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui28'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8137,7 +8205,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8161,7 +8229,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui45'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8179,7 +8247,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDisableClickEffect:{
@@ -8191,7 +8259,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDisableHoverEffect:{
@@ -8203,7 +8271,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDisabled:{
@@ -8221,7 +8289,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui47'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8239,7 +8307,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean, default is [false]",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDefaultFocus:{
@@ -8251,7 +8319,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean, default is [false]",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHoverPop:{
@@ -8263,7 +8331,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the pop target's alias, which has to be in the same host.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHoverPopType:{
@@ -8275,7 +8343,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'. Default is 'outer'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDock:{
@@ -8293,7 +8361,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui51'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8318,7 +8386,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui53'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8350,7 +8418,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : {left:Number,right:Number,top:Number,bottom:Number}.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui61'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8382,7 +8450,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui72'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8408,7 +8476,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui76'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8429,6 +8497,33 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            setDockMinH:{
+                $desc:"Sets dock minimal height on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"overflow:visible;border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'height'}));"+
+                    "_.asyRun(function(){btn.setDockMinH(100);xui(id).height(80);},1000);"+
+                    "_.asyRun(function(){btn.setDockMinH(50);xui(id).height(50);},2000);"+
+                    "}"
+                ]
+            },
+            getDockMaxH:{
+                $desc:"Gets dock max height on the first UIProfile",
+                $rtn:"Number"
+            },
+            setDockMaxH:{
+                $desc:"Sets dock max height on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
             getDockMinW:{
                 $desc:"Gets dock minimal width on the first UIProfile",
                 $rtn:"Number",
@@ -8439,27 +8534,12 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            setDockMinH:{
-                $desc:"Sets dock minimal height on the each UIProfile.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
-                ],
-                $snippet:[
-                    "var id='xui.temp.ui81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"overflow:visible;border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'height'}));"+
-                    "_.asyRun(function(){btn.setDockMinH(100);xui(id).height(80);},1000);"+
-                    "_.asyRun(function(){btn.setDockMinH(50);xui(id).height(50);},2000);"+
-                    "}"
-                ]
-            },
             setDockMinW:{
                 $desc:"Sets dock minimal width on the each UIProfile.",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ui82'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8467,6 +8547,18 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){btn.setDockMinW(300);xui(id).width(200);},1000);"+
                     "_.asyRun(function(){btn.setDockMinW(50);xui(id).width(100);},2000);"+
                     "}"
+                ]
+            },
+            getDockMaxW:{
+                $desc:"Gets dock max width on the first UIProfile",
+                $rtn:"Number"
+            },
+            setDockMaxW:{
+                $desc:"Sets dock max width on the each UIProfile.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
                 ]
             },
             getShowEffects:{
@@ -8478,7 +8570,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String or Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHideEffects:{
@@ -8490,7 +8582,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String or Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getRotate:{
@@ -8502,7 +8594,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number. 0~360",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDomId:{
@@ -8705,7 +8797,7 @@ _.set(xui.Locale,["en","app"], {
             onContextmenu:{
                 $desc:"Fired when the root element's contextmenu event was fired. If returns false, the default contextmenu will be blocked(not in opera).",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid.",
                     "item: Object, the corresponding item object."
@@ -8754,7 +8846,7 @@ _.set(xui.Locale,["en","app"], {
             onResize:{
                 $desc:"Fired when the control was resized.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "width : Number, the control's width",
                     "height : Number, the control's height"
                 ],
@@ -8770,7 +8862,7 @@ _.set(xui.Locale,["en","app"], {
             onMove:{
                 $desc:"Fired when the control was moved.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "left : Number, the control's left value",
                     "top : Number, the control's top value",
                     "right : Number, the control's right value",
@@ -8788,7 +8880,7 @@ _.set(xui.Locale,["en","app"], {
             onDock:{
                 $desc:"Fired when the control was resized or repositioned by docking mechanism.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "region : Object"
                 ],
                 $snippet:[
@@ -8803,7 +8895,7 @@ _.set(xui.Locale,["en","app"], {
             beforePropertyChanged:{
                 $desc:"Fired before the UIProfile's property is going to be changed. If returns false, destroy function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "name : String, property name",
                     "value : Object, property new value",
                     "ovalue : Objecgt, property old value"
@@ -8820,7 +8912,7 @@ _.set(xui.Locale,["en","app"], {
             afterPropertyChanged:{
                 $desc:"Fired before the UIProfile's property was changed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "name : String, property name",
                     "value : Object, property new value",
                     "ovalue : Objecgt, property old value"
@@ -8837,7 +8929,7 @@ _.set(xui.Locale,["en","app"], {
             beforeAppend:{
                 $desc:"Fired before any ctrl was appended. If returns false, append function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "child : xui.UI, to be appended."
                 ],
                 $snippet:[
@@ -8852,7 +8944,7 @@ _.set(xui.Locale,["en","app"], {
             afterAppend:{
                 $desc:"Fired after any ctrl was appended.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "child : xui.UI, to be appended."
                 ],
                 $snippet:[
@@ -8867,7 +8959,7 @@ _.set(xui.Locale,["en","app"], {
             beforeRemove:{
                 $desc:"Fired before any ctrl was removed. If returns false, remove function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "child : xui.UIProfile, to be removed.",
                     "subId : String, container's id",
                     "bdestroy : Boolean, to be destroyed or not"
@@ -8884,7 +8976,7 @@ _.set(xui.Locale,["en","app"], {
             afterRemove:{
                  $desc:"Fired after any ctrl was removed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "child : xui.UIProfile, to be removed.",
                     "subId : String, container's id",
                     "bdestroy : Boolean, to be destroyed or not"
@@ -8901,7 +8993,7 @@ _.set(xui.Locale,["en","app"], {
             onShowTips:{
                 $desc:"Fired when xui.Tips shows tips. If it returns false, will stop the system default tips.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "src : String, the event source DOM element's xid.",
                     "pos : Object, {left:Number, top:Number}"
                 ],
@@ -8932,7 +9024,7 @@ _.set(xui.Locale,["en","app"], {
               $rtn:"[self]",
               $paras:[
                   "value [Required] : String.",
-                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                  $force
               ]
             },
             getNormalStatus:{
@@ -8944,7 +9036,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHoverStatus:{
@@ -8956,7 +9048,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getActiveStatus:{
@@ -8968,7 +9060,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getFocusStatus:{
@@ -8980,7 +9072,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self],",
                 $paras:[
                     "value [Required] : Object, key/value pairs.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             }
         }
@@ -9009,7 +9101,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.w2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9033,7 +9125,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.w4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9057,7 +9149,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.w6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9075,7 +9167,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object. {forceVisible:/*Boolean*/,forceMovable:/*Boolean*/,singleDir:/*Boolean*/,vertical:/*Boolean*/,horizontal:/*Boolean*/,minHeight:/*Number*/,minWidth:/*Number*/,maxHeight:/*Number*/,maxWidth:/*Number*/,handlerSize:/*Number*/,handlerOffset:/*Number*/}",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             }
         }
@@ -9098,7 +9190,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAjaxAutoLoad:{
@@ -9110,7 +9202,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHtml:{
@@ -9128,7 +9220,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the html string.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.div2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9146,13 +9238,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -9191,7 +9283,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the caption.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.link2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9215,7 +9307,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the target.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.link4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9239,7 +9331,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the href.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.link6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9253,7 +9345,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object"
                 ],
                 $snippet:[
@@ -9294,7 +9386,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the html string.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9318,7 +9410,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the background string.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9342,7 +9434,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none','inset','outset','groove'or 'ridge'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9371,7 +9463,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAjaxAutoLoad:{
@@ -9383,7 +9475,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHtml:{
@@ -9401,7 +9493,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9425,7 +9517,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9449,7 +9541,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none','inset','outset','groove'or 'ridge'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.blk6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9461,7 +9553,7 @@ _.set(xui.Locale,["en","app"], {
             onClickPanel:{
                 $desc:"Fired when user click the panel.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -9492,7 +9584,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9516,7 +9608,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9540,7 +9632,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9564,7 +9656,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9588,7 +9680,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'top', 'middle' or 'bottom'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9612,7 +9704,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9636,7 +9728,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9660,7 +9752,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lbl16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9672,7 +9764,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -9696,7 +9788,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'vertical' or 'horizontal'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCaptionTpl :{
@@ -9715,7 +9807,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb1-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9741,7 +9833,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                $snippet:[
                     "var id='xui.temp.pb3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9777,7 +9869,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.SLabel2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9801,7 +9893,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.SLabel8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9813,7 +9905,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -9854,7 +9946,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.Sbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9872,7 +9964,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getImagePos :{
@@ -9884,7 +9976,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHAlign :{
@@ -9902,7 +9994,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.Sbtn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9915,7 +10007,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ],
@@ -9945,7 +10037,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCmdList :{
@@ -9963,7 +10055,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rich'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:300px;width:400px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10008,7 +10100,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.Scbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10044,7 +10136,7 @@ _.set(xui.Locale,["en","app"], {
             onChecked:{
                 $desc:"Fired when CheckBox is checked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "value : Boolean, the value."
                 ],
@@ -10105,7 +10197,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10129,7 +10221,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'normal', 'drop' or 'status'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10153,7 +10245,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10177,7 +10269,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'top', 'middle' or 'bottom'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10201,7 +10293,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10225,7 +10317,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.btn16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10238,7 +10330,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element",
                     "value : Object."
@@ -10252,7 +10344,7 @@ _.set(xui.Locale,["en","app"], {
             onClickDrop:{
                 $desc:"Fired when user click the drop button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element",
                     "value : Object."
@@ -10266,7 +10358,7 @@ _.set(xui.Locale,["en","app"], {
             onChecked:{
                 $desc:"Fired when button is checked. xui.UI.Button Object has this event handler only when button type is 'status'.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "value : Boolean, the value."
                 ],
@@ -10290,7 +10382,7 @@ _.set(xui.Locale,["en","app"], {
             onChecked:{
                 $desc:"Fired when CheckBox is checked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "value : Boolean, the value."
                 ],
@@ -10336,7 +10428,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10354,7 +10446,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHAlign :{
@@ -10366,7 +10458,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getMultiLines:{
@@ -10384,7 +10476,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10416,7 +10508,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10440,7 +10532,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10465,7 +10557,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10491,7 +10583,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10517,7 +10609,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10542,7 +10634,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10559,7 +10651,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'input' or 'password'. Default is 'input'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getType:{
@@ -10577,7 +10669,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'input' or 'password'. Default is 'input'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.input20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10595,7 +10687,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : the maxlength number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getLabelSize:{
@@ -10607,7 +10699,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getLabelPos:{
@@ -10619,7 +10711,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getLabelGap:{
@@ -10631,7 +10723,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getLabelCaption:{
@@ -10643,7 +10735,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getLabelHAlign:{
@@ -10655,13 +10747,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onLabelClick:{
                 $desc:"Fired when user click the label.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
@@ -10669,7 +10761,7 @@ _.set(xui.Locale,["en","app"], {
             onLabelDblClick:{
                 $desc:"Fired when user double click the label.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
@@ -10677,7 +10769,7 @@ _.set(xui.Locale,["en","app"], {
             onLabelActive:{
                 $desc:"Fired when user mousedown the label.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
@@ -10709,7 +10801,7 @@ _.set(xui.Locale,["en","app"], {
             onChange:{
                 $desc:"Fired before input value is changed!",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "value: String, the value."
                 ],
                 $snippet:[
@@ -10728,7 +10820,7 @@ _.set(xui.Locale,["en","app"], {
             beforeFormatCheck:{
                 $desc:"Fired before validating value format. If returns false, the inner formatCheck function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "value: String, the value need to be checked."
                 ],
                 $snippet:[
@@ -10741,7 +10833,7 @@ _.set(xui.Locale,["en","app"], {
             beforeFormatMark:{
                 $desc:"Fired before the UIProfile sets the format mark. If returns false, the inner formatMark function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "formatErr: Boolean, is the format error."
                 ],
                 $snippet:[
@@ -10786,7 +10878,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.TextEditor10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10800,7 +10892,7 @@ _.set(xui.Locale,["en","app"], {
             onChange:{
                 $desc:"Fired when end user changes text in this editor.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oV : String, the old value.",
                     "nV : String, the new value."
                 ],
@@ -10858,7 +10950,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10882,7 +10974,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grp4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10906,7 +10998,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grp6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10930,7 +11022,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.fs4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10954,7 +11046,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.fs4-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11013,7 +11105,7 @@ _.set(xui.Locale,["en","app"], {
             onClickPanel:{
                 $desc:"Fired when user click the panel.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -11038,7 +11130,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean, readonly or not.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCaption:{
@@ -11050,7 +11142,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the caption.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $memo:"Only for readonly mode, for showing text temporarily."
             },
@@ -11109,7 +11201,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'none','combobox','listbox','file','getter','currency','number','helpinput','cmd','cmdbox','popbox','time','date', 'datetime','color' or 'spin'. Default is 'combobox'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11134,7 +11226,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11152,7 +11244,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDropListWidth:{
@@ -11164,7 +11256,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getListKey:{
@@ -11184,7 +11276,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the lisk key.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11204,7 +11296,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean",
-                    "force [Optional] : Boolean, Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDateEditorTpl:{
@@ -11216,7 +11308,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getGroupingSeparator:{
@@ -11228,7 +11320,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDecimalSeparator:{
@@ -11240,7 +11332,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getForceFillZero:{
@@ -11252,7 +11344,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPopCtrlProp:{
@@ -11264,7 +11356,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $memo:"You have to use this function before the UIProfile is rendered."
             },
@@ -11281,7 +11373,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $memo:"You have to use this function before the UIProfile is rendered."
             },
@@ -11294,7 +11386,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. Must be a string with a '*' and no number char.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getNumberTpl:{
@@ -11306,7 +11398,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. Must be a string with a '*' and no number char.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCommandBtn:{
@@ -11324,7 +11416,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11348,7 +11440,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11372,7 +11464,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11396,7 +11488,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11420,7 +11512,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11444,7 +11536,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11468,7 +11560,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11480,7 +11572,7 @@ _.set(xui.Locale,["en","app"], {
             onFileDlgOpen:{
                 $desc:"Fired when the file upload dialog is open.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "src : String, the event source DOM element's xid."
                 ],
                 $snippet:[
@@ -11493,7 +11585,7 @@ _.set(xui.Locale,["en","app"], {
             beforeComboPop:{
                 $desc:"Fired before the pop-up window is created. If returns false, the default pop window will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "pos : the mouse position.",
                     "e : Event.Dom event object",
                     "src : String, the event source DOM element's xid."
@@ -11508,28 +11600,28 @@ _.set(xui.Locale,["en","app"], {
             beforePopShow:{
                 $desc:"Fired before the pop-up window shows. If returns false, the default pop action won't show.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "popCtl : xui.UIProfile, pop-up window UI Control."
                 ]
             },
             afterPopShow:{
                 $desc:"Fired after the pop-up window shows.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "popCtl : xui.UI, pop-up window UI Control."
                 ]
             },
             afterPopHide:{
                 $desc:"Fired after the pop-up window hides.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "popCtl : xui.UI, pop-up window UI Control."
                 ]
             },
             onClick:{
                 $desc:"Fired when the control's pop button is clicked. (Only for 'popbox' or 'getter' type).",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid.",
                     "value: String, control's UI value."
@@ -11538,7 +11630,7 @@ _.set(xui.Locale,["en","app"], {
             onCommand:{
                 $desc:"Fired when the command button is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "src : String, the event source DOM element's xid."
                 ],
                 $snippet:[
@@ -11573,7 +11665,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'top','bottom','left' or 'right'. Default is 'top'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11599,7 +11691,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'. Default is 'left'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11623,7 +11715,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'top' or 'bottom'. Default is 'top'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11647,7 +11739,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11686,7 +11778,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             }
         }
@@ -11868,7 +11960,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getFirstDayOfWeek:{
@@ -11880,7 +11972,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number. 0-6 represents Sunday to Saturday.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getOffDays:{
@@ -11892,7 +11984,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 6 characters('0,'1','2','3','4','5','6') only. 0-6 represents Sunday to Saturday",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHideWeekLabels:{
@@ -11904,7 +11996,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDateInputFormat:{
@@ -11916,7 +12008,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.  'yyyy-mm-dd' or 'mm-dd-yyyy' or 'dd-mm-yyyy'. ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCloseBtn:{
@@ -12035,7 +12127,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'vertical' or 'horizontal'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12059,7 +12151,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number, steps value(integer)",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12083,7 +12175,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12107,7 +12199,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12131,7 +12223,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.sl11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12166,7 +12258,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12190,7 +12282,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12214,7 +12306,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12238,7 +12330,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12262,7 +12354,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : nonnegative Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12286,7 +12378,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.rg12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12351,7 +12443,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.list5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12375,7 +12467,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none', 'multi', 'multibycheckbox', or 'single'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.list7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12393,7 +12485,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getBorderType:{
@@ -12405,7 +12497,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none','inset','outset','groove'or 'ridge'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getItemRow:{
@@ -12417,7 +12509,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagCmds:{
@@ -12429,7 +12521,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getOptBtn:{
@@ -12441,13 +12533,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onItemSelected:{
                 $desc:"Fired when list item is selected.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid.",
@@ -12463,7 +12555,7 @@ _.set(xui.Locale,["en","app"], {
             beforeClick:{
                 $desc:"Fired before a list item was clicked. If returns false, click function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -12472,7 +12564,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when a list item was clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -12481,7 +12573,7 @@ _.set(xui.Locale,["en","app"], {
             afterClick:{
                 $desc:"Fired after a list item was clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -12490,7 +12582,7 @@ _.set(xui.Locale,["en","app"], {
             onDblclick:{
                 $desc:"Fired when list item was dblclicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -12505,7 +12597,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -12514,7 +12606,7 @@ _.set(xui.Locale,["en","app"], {
             onCmd:{
                 $desc:"Fired when an inner command is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "cmdKey: String, the command key.",
                     "e: Event, DOM event Object.",
@@ -12561,7 +12653,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.llist2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12579,7 +12671,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'none','left','right'",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getItemAlign:{
@@ -12591,7 +12683,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getItemWidth:{
@@ -12603,13 +12695,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onItemClick:{
                 $desc:"Fired when list item is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -12654,7 +12746,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getErrImg:{
@@ -12666,7 +12758,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAutoItemSize:{
@@ -12678,7 +12770,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getImgHeight:{
@@ -12696,7 +12788,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12720,7 +12812,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.da4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12744,7 +12836,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12768,7 +12860,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12792,7 +12884,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12816,7 +12908,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12859,7 +12951,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAutoItemSize:{
@@ -12871,7 +12963,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getItemWidth:{
@@ -12889,7 +12981,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12913,7 +13005,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12937,7 +13029,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12961,7 +13053,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13021,7 +13113,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13039,7 +13131,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPopBtn :{
@@ -13057,7 +13149,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel38'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13081,7 +13173,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13099,7 +13191,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getRefreshBtn :{
@@ -13111,7 +13203,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getToggleBtn :{
@@ -13129,7 +13221,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13153,7 +13245,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13177,7 +13269,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13201,7 +13293,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13225,7 +13317,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.panel8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13243,7 +13335,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none','inset','outset','groove'or 'ridge'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             beforeExpand:{
@@ -13294,7 +13386,7 @@ _.set(xui.Locale,["en","app"], {
             onClickBar:{
                 $desc:"Fired when panel handler is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "src: the related DOM element."
                 ],
                 $snippet:[
@@ -13307,7 +13399,7 @@ _.set(xui.Locale,["en","app"], {
             beforePop:{
                 $desc:"Fired before user click pop button. If returns false, pop function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "options : Object. the following keys: parent, host, properties, events, host, theme, CS, CC, CB, CF",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -13340,7 +13432,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -13354,7 +13446,7 @@ _.set(xui.Locale,["en","app"], {
             onClickPanel:{
                 $desc:"Fired when user click the panel.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -13399,7 +13491,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the caption.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13423,7 +13515,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the NextMark.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13447,7 +13539,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the PrevMark.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13471,7 +13563,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the TextTpl.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13495,7 +13587,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, the UriTpl.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pb10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13509,7 +13601,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"onClick event handler.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "page : Numer, the target page."
                 ],
                 $snippet:[
@@ -13521,7 +13613,7 @@ _.set(xui.Locale,["en","app"], {
             onPageSet:{
                 $desc:"onPage changed event handler.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "page : Numer, the new page number.",
                     "opage : Numer, the old page number."
                 ]
@@ -13579,7 +13671,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'vertical' or 'horizontal'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.lo3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13654,7 +13746,7 @@ _.set(xui.Locale,["en","app"], {
             onClickPanel:{
                 $desc:"Fired when user click the panel.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, item Object.",
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
@@ -13704,14 +13796,14 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onColResize:{
                 $desc:"Fired when cols were resized.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "sizes: Array. cols' size array."
                 ]
             },
@@ -13719,7 +13811,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Fired when inner panels relayout.",
                 $rtn:"[self]",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "type : String.",
                     "panel : xui.UIProfile.",
                     "size : Number."
@@ -13842,7 +13934,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13860,7 +13952,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getItemWidth:{
@@ -13872,7 +13964,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getLazyAppend:{
@@ -13884,7 +13976,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getNoPanel :{
@@ -13902,7 +13994,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13920,7 +14012,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getDropKeysPanel :{
@@ -13938,7 +14030,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13994,7 +14086,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'single' or 'multi'. Default is 'single'",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             addPanel:{
@@ -14058,7 +14150,7 @@ _.set(xui.Locale,["en","app"], {
             beforePagePop:{
                 $desc:"Fired before user clicked the pop button. If returns false, the tab won't be poped.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, the current item.",
                     "options : Object. the following keys: parent, host, properties, events, host, theme, CS, CC, CB, CF",
                     "e: Event, DOM event Object.",
@@ -14068,7 +14160,7 @@ _.set(xui.Locale,["en","app"], {
             beforePageClose:{
                 $desc:"Fired before user clicked the close button on a tab. If returns false, the tab won't be closed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, the current item.",
                     "value : Object."
                 ],
@@ -14082,7 +14174,7 @@ _.set(xui.Locale,["en","app"], {
             afterPageClose:{
                 $desc:"Fired after user clicked the close button on a tab.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, the current item."
                 ],
                 $snippet:[
@@ -14095,7 +14187,7 @@ _.set(xui.Locale,["en","app"], {
             onItemSelected:{
                 $desc:"Fired when a tab is selected.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -14110,7 +14202,7 @@ _.set(xui.Locale,["en","app"], {
             onCaptionActive:{
                 $desc:"Fired when user click the current tab's caption.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -14125,7 +14217,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -14140,7 +14232,7 @@ _.set(xui.Locale,["en","app"], {
             onIniPanelView:{
                 $desc:"Fired on panel is initialized.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, item Object."
                 ],
                 $snippet:[
@@ -14154,7 +14246,7 @@ _.set(xui.Locale,["en","app"], {
             onClickPanel:{
                 $desc:"Fired when user click the panel.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, item Object.",
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
@@ -14198,7 +14290,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none','inset','outset' or 'flat'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getPadding:{
@@ -14210,7 +14302,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getRequired:{
@@ -14222,7 +14314,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagCount:{
@@ -14234,7 +14326,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Integer",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagMaxlength:{
@@ -14246,7 +14338,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Integer",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagInputWidth:{
@@ -14258,7 +14350,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Integer",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagInputHeight:{
@@ -14270,7 +14362,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Integer",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagSpacing:{
@@ -14282,7 +14374,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Integer",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getValueFormat:{
@@ -14294,7 +14386,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getValueSeparator:{
@@ -14345,7 +14437,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             setHeight:{
@@ -14353,13 +14445,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                  $paras:[
                     "value [Required] : nonnegative Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onDblclick:{
                 $desc:"Fired when image is dblclicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "index: Nubmer, day index.",
                     "e: Event, the DOM event Object.",
                     "src : Element.xui id or Dom Element"
@@ -14405,7 +14497,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left', 'center' or 'right'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tool2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14429,7 +14521,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tool4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14470,7 +14562,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when an tool bar item is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item : Object.",
                     "group : Object.",
                     "e : Event.Dom event object",
@@ -14544,7 +14636,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pm3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">Click blank to pop up menu.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14572,7 +14664,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pm5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">Click blank to pop up menu.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14672,7 +14764,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAutoShowTime:{
@@ -14692,7 +14784,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.menu3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14735,7 +14827,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.menu5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14789,7 +14881,7 @@ _.set(xui.Locale,["en","app"], {
             onShowSubMenu:{
                 $desc:"Fired when a sub menu is showed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "popProfile: xui.UIProfile, the current popmenu's profile.",
                     "item : Object.",
                     "src : Element.xui id or Dom Element"
@@ -14967,7 +15059,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAjaxAutoLoad:{
@@ -14979,7 +15071,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCaption:{
@@ -14994,7 +15086,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());_.asyRun(function(){dlg.setCaption('c cc c');},1000);"
@@ -15012,7 +15104,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCloseBtn());_.asyRun(function(){dlg.setCloseBtn(false);},1000);_.asyRun(function(){dlg.close();},2000);"
@@ -15040,7 +15132,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());_.asyRun(function(){dlg.setMinBtn(false);},1000);"
@@ -15055,7 +15147,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getMaxBtn:{
@@ -15070,7 +15162,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMaxBtn());_.asyRun(function(){dlg.setMaxBtn(false);},1000);"
@@ -15088,7 +15180,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());_.asyRun(function(){dlg.setPinBtn(false);},1000);"
@@ -15103,7 +15195,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                      "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
               ]
             },
             getLandBtn:{
@@ -15118,7 +15210,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getLandBtn());_.asyRun(function(){dlg.setLandBtn(true);},1000);"
@@ -15136,7 +15228,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getOptBtn());_.asyRun(function(){dlg.setOptBtn(true);},1000);"
@@ -15151,7 +15243,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getRefreshBtn :{
@@ -15163,7 +15255,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getMovable:{
@@ -15178,7 +15270,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());_.asyRun(function(){dlg.setMovable(false);},1000);"
@@ -15196,7 +15288,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] :String,  image path.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());_.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
@@ -15214,7 +15306,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, corresponding CSS value.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());_.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
@@ -15232,7 +15324,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
@@ -15250,7 +15342,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'normal', 'min' or 'max'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setStatus('max');alert(dlg.getStatus());},1000);"
@@ -15270,7 +15362,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); "+
@@ -15292,7 +15384,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); "+
@@ -15315,7 +15407,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.{left:Number,top:Number,width:Number,height:Number}",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var dl=(new xui.UI.Dialog);"+
@@ -15362,7 +15454,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -15375,7 +15467,7 @@ _.set(xui.Locale,["en","app"], {
             onLand:{
                 $desc:"Fired when user click the land button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
@@ -15389,7 +15481,7 @@ _.set(xui.Locale,["en","app"], {
             beforeStatusChanged:{
                 $desc:"Fired before user change the dialog's status.  If returns false, the status will not be changed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldStatus: String, the old status, min/max/normal",
                     "newStatus: String, the new status, min/max/normal"
                 ]
@@ -15397,7 +15489,7 @@ _.set(xui.Locale,["en","app"], {
             afterStatusChanged:{
                 $desc:"Fired after the dialog status was changed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "oldStatus: String, the old status, min/max/normal",
                     "newStatus: String, the new status, min/max/normal"
                 ]
@@ -15405,14 +15497,14 @@ _.set(xui.Locale,["en","app"], {
             beforePin:{
                 $desc:"Fired before user click the pin button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "value: Boolean, pin status."
                 ]
             },
             onClickPanel:{
                 $desc:"Fired when user click the panel.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -15437,7 +15529,7 @@ _.set(xui.Locale,["en","app"], {
               $rtn:"[self]",
               $paras:[
                   "value [Required] : String.",
-                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                  $force
               ]
             },
             getNodeName:{
@@ -15449,7 +15541,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAttributes:{
@@ -15461,13 +15553,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : key/value pairs.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"Fired when user click it.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -15503,7 +15595,7 @@ _.set(xui.Locale,["en","app"], {
               $rtn:"[self]",
               $paras:[
                   "value [Required] : String.",
-                  "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                  $force
               ]
             },
             getOverflow:{
@@ -15515,13 +15607,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'auto','hidden','visible','' ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"Fired when clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -15552,7 +15644,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15576,7 +15668,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15594,7 +15686,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getActiveItem:{
@@ -15606,7 +15698,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAlt:{
@@ -15624,7 +15716,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img6-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15649,7 +15741,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.img6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15668,7 +15760,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getRate:{
@@ -15711,7 +15803,7 @@ _.set(xui.Locale,["en","app"], {
             afterLoad:{
                 $desc:"Fired after the image is loaded successfully.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "path : String, src path.",
                     "width : Number, image width",
                     "height : Number, image height"
@@ -15727,7 +15819,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when image is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -15735,7 +15827,7 @@ _.set(xui.Locale,["en","app"], {
             onDblclick:{
                 $desc:"Fired when image is dblclicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
@@ -15768,7 +15860,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.fl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15812,7 +15904,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "e: DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -15828,7 +15920,7 @@ _.set(xui.Locale,["en","app"], {
             onGetContent:{
                 $desc:"Fired when the UI need to build inner content.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "callback : Function, callback function."
                 ],
@@ -15895,7 +15987,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15922,7 +16014,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : 'none','combobox','listbox','file','getter','currency','number','helpinput','cmd','cmdbox','popbox','time','date' or 'color'. Default is 'none'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15951,7 +16043,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15979,7 +16071,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16007,7 +16099,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16035,7 +16127,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16063,7 +16155,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.pool20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16078,7 +16170,7 @@ _.set(xui.Locale,["en","app"], {
             onGetContent:{
                 $desc:"Fired when the UI need to build inner content.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "callback : Function, callback function."
                 ],
@@ -16094,7 +16186,7 @@ _.set(xui.Locale,["en","app"], {
             beforeOptionAdded:{
                 $desc:"Fired wbefore a new item will be added.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "value: String."
                 ],
                 $snippet:[
@@ -16111,7 +16203,7 @@ _.set(xui.Locale,["en","app"], {
             beforeOptionChanged:{
                 $desc:"Fired a specified item will be changed",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "value: String."
                 ],
@@ -16147,7 +16239,7 @@ _.set(xui.Locale,["en","app"], {
             beforeTitleChanged:{
                 $desc:"Fired before the title will be changed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "value: String."
                 ],
                 $snippet:[
@@ -16222,7 +16314,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16241,7 +16333,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTagCmds:{
@@ -16253,7 +16345,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getGroup :{
@@ -16272,7 +16364,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16299,7 +16391,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16319,7 +16411,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getIniFold :{
@@ -16338,7 +16430,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16365,7 +16457,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none', 'single' or 'multi'. Default is 'single'",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16385,7 +16477,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getSingleOpen:{
@@ -16405,7 +16497,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tb12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16472,7 +16564,7 @@ _.set(xui.Locale,["en","app"], {
             onGetContent:{
                 $desc:"Fired when the UI needs to build a sub items.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "callback : Function, callback function."
                 ],
@@ -16488,7 +16580,7 @@ _.set(xui.Locale,["en","app"], {
             onItemSelected:{
                 $desc:"Fired when a specified item is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid.",
@@ -16505,7 +16597,7 @@ _.set(xui.Locale,["en","app"], {
             beforeClick:{
                 $desc:"Fired before a list item was clicked. If returns false, click function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -16514,7 +16606,7 @@ _.set(xui.Locale,["en","app"], {
             onClick:{
                 $desc:"Fired when a list item was clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -16523,7 +16615,7 @@ _.set(xui.Locale,["en","app"], {
             onDblclick:{
                 $desc:"Fired when list item was dblclicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -16532,7 +16624,7 @@ _.set(xui.Locale,["en","app"], {
             afterClick:{
                 $desc:"Fired after a list item was clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -16541,14 +16633,14 @@ _.set(xui.Locale,["en","app"], {
             beforeExpand:{
                 $desc:"Fired before a node expands. If returns false, function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object."
                 ]
             },
             beforeFold:{
                 $desc:"Fired before a node collapses. If returns false, function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object."
                 ]
             },
@@ -16561,7 +16653,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: list item Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -16570,7 +16662,7 @@ _.set(xui.Locale,["en","app"], {
             onCmd:{
                 $desc:"Fired when an inner command is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "cmdKey: String, the command key.",
                     "e: Event, DOM event Object.",
@@ -16596,7 +16688,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             }
         }
@@ -16656,7 +16748,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'cell', 'row' or 'none'.Default is 'row'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16736,7 +16828,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. Must be a string with a '*' and be not in [^1-9.,].",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getNumberTpl:{
@@ -16748,7 +16840,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. Must be a string with a '*' and be not in [^1-9.,-].",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAltRowsBg :{
@@ -16768,7 +16860,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16788,7 +16880,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAnimCollapse :{
@@ -16808,7 +16900,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16882,7 +16974,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid9.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16910,7 +17002,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16938,7 +17030,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16966,7 +17058,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16994,7 +17086,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17022,7 +17114,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17050,7 +17142,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid17-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17078,7 +17170,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid17-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17106,7 +17198,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17115,6 +17207,30 @@ _.set(xui.Locale,["en","app"], {
                     "o.setRowHeight(40); alert(o.getRowHeight());"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            getFreezedColumn:{
+                $desc:"Gets the freezed column.",
+                $rtn:"Number"
+            },
+            setFreezedColumn :{
+                $desc:"Sets the freezed column.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getFreezedRow:{
+                $desc:"Gets the freezed row.",
+                $rtn:"Number"
+            },
+            setFreezedRow:{
+                $desc:"Sets the freezed row.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
                 ]
             },
             getIniFold :{
@@ -17134,7 +17250,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17162,7 +17278,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17190,7 +17306,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid125'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17218,7 +17334,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'none', 'single' or 'multi'. Default is 'single'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid127'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17238,7 +17354,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             insertRows:{
@@ -17415,7 +17531,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17446,7 +17562,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17455,6 +17571,18 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){o.setRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}]); alert(o.getRows().length)});"+
                     "xui(id).prepend(o);"+
                     "}"
+                ]
+            },
+            getRawData :{
+                $desc:"Gets the grid's raw data.",
+                $rtn:"Array"
+            },
+            setRawData :{
+                $desc:"Sets the grid's raw data.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Array. [{col1:v1,col2:v1}]",
+                    $force
                 ]
             },
             getHeader :{
@@ -17479,7 +17607,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17499,7 +17627,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array, the items.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             setGrpCols :{
@@ -17507,7 +17635,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getGrpCols :{
@@ -17650,7 +17778,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.  key/value paires",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getRowNumbered :{
@@ -17670,7 +17798,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid38'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17690,7 +17818,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'focus', 'sharp', 'hover' or 'inline'. ",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getShowHeader :{
@@ -17710,7 +17838,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.grid40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17730,7 +17858,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getColOptions:{
@@ -17742,7 +17870,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getTreeMode:{
@@ -17754,7 +17882,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'none','inhandler' or 'infirstcell'",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHotRowMode:{
@@ -17766,7 +17894,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. 'none'[no hot row], 'auto'[auto show or hide] or 'show'[always show].",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getHotRowNumber:{
@@ -17778,7 +17906,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             resetGridValue:{
@@ -17891,7 +18019,7 @@ _.set(xui.Locale,["en","app"], {
             beforeCellActive:{
                 $desc:"Fired before the cell is activated. If returns false, the activation will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object."
                 ],
                 $snippet:[
@@ -17907,14 +18035,14 @@ _.set(xui.Locale,["en","app"], {
             onBodyLayout:{
                 $desc:"Fired when the grid boy completing layout.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "trigger : String, trigger type."
                 ]
             },
             beforeRowActive:{
                 $desc:"Fired before the row is activated. If returns false, the activation will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row : Object."
                 ],
                 $snippet:[
@@ -17930,7 +18058,7 @@ _.set(xui.Locale,["en","app"], {
             afterCellActive:{
                 $desc:"Fired after the cell is activated.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object."
                 ],
                 $snippet:[
@@ -17946,7 +18074,7 @@ _.set(xui.Locale,["en","app"], {
             beforeCellKeydown:{
                 $desc:"Fired before cell keyboard event.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object, cell object.",
                     "keys : Object, Please refer to xui.Event.getKey "
                 ]
@@ -17954,7 +18082,7 @@ _.set(xui.Locale,["en","app"], {
             afterCellFocused:{
                 $desc:"Fired after the cell is focused.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object. cell object.",
                     "row : Object, cell's row object."
                 ]
@@ -17962,7 +18090,7 @@ _.set(xui.Locale,["en","app"], {
             onBeginEdit:{
                 $desc:"Fired when the cell's editor is showed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object. cell object.",
                     "editor: Object, the editor object."
                 ]
@@ -17970,7 +18098,7 @@ _.set(xui.Locale,["en","app"], {
             beforeEditApply:{
                 $desc:"Fired before the cell's editor apply changed. If returns false, the activation will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object. cell object.",
                     "options: Object. updated content",
                     "editor: Object, the editor object.",
@@ -17980,7 +18108,7 @@ _.set(xui.Locale,["en","app"], {
             onEndEdit:{
                 $desc:"Fired when the cell's editor is hidden.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object. cell object.",
                     "editor: Object, the editor object."
                 ]
@@ -17988,7 +18116,7 @@ _.set(xui.Locale,["en","app"], {
             beforeIniEditor:{
                 $desc:"Fired before the cell switch to edit mode. If returns false, the default edit action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object. cell object.",
                     "cellNode : xui.Dom, cell's dom object.",
                     "pNode : xui.Dom, the Editor's parent Node."
@@ -17997,7 +18125,7 @@ _.set(xui.Locale,["en","app"], {
             beforeInitHotRow:{
                 $desc:"Fired before the hot row initialization.[when hotRowMode is not 'none'] If returns false, the default edit action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object. cell object.",
                     "row : Object, cell's row object."
                 ]
@@ -18011,7 +18139,7 @@ _.set(xui.Locale,["en","app"], {
             beforeHotRowAdded:{
                 $desc:"Fired before the hot row is added. If it returns true, the new row will be added; if it returns false, the hot row will be removed; if it returns cell, the new row will not be added, and the cell in the hot row will be focused; if it returns [null], do nothing.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row : Object. row object",
                     "leaveGrid : Booean. to determine the event cursor leaves grid or not."
                 ]
@@ -18019,21 +18147,21 @@ _.set(xui.Locale,["en","app"], {
             afterHotRowAdded:{
                 $desc:"Fired after the hot row is added.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row : Object. row object"
                 ]
             },
             onRowDirtied:{
                 $desc:"Fired when the row is dirtied in asynchronous mode.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row : Object. row object"
                 ]
             },
             afterRowActive:{
                 $desc:"Fired after the row is activated.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row : Object."
                 ],
                 $snippet:[
@@ -18049,7 +18177,7 @@ _.set(xui.Locale,["en","app"], {
             beforeColMoved:{
                 $desc:"Fired before the column is moved. If returns false, the move action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "colId : String, the moved column id.",
                     "toId : String, [colId] will be moved to the front of which column."
                 ],
@@ -18067,7 +18195,7 @@ _.set(xui.Locale,["en","app"], {
             afterColMoved:{
                 $desc:"Fired after the column is moved.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "colId : String, the moved column id.",
                     "toId : String, [colId] will be moved to the front of which column."
                 ],
@@ -18085,21 +18213,21 @@ _.set(xui.Locale,["en","app"], {
             beforeColSorted:{
                 $desc:"Fired before the column is sorted. If returns false, the sort action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "col : Object, the column header object."
                 ]
             },
             afterColSorted:{
                 $desc:"Fired after the column is sorted.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "col : Object, the column header object."
                 ]
             },
             beforeColShowHide:{
                 $desc:"Fired before the column is hidden or showed. If returns false, the action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "colId : String, the target col id.",
                     "flag: Boolean, true->show; false->hide"
                 ]
@@ -18107,7 +18235,7 @@ _.set(xui.Locale,["en","app"], {
             afterColShowHide:{
                 $desc:"Fired after the column is hidden or showed.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "colId : String, the target col id.",
                     "flag: Boolean, true->show; false->hide"
                 ]
@@ -18115,7 +18243,7 @@ _.set(xui.Locale,["en","app"], {
             beforeColResized:{
                 $desc:"Fired before the column's width is modified. If returns false, the action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "colId : String, the target col id.",
                     "width: Number, col width"
                 ]
@@ -18123,7 +18251,7 @@ _.set(xui.Locale,["en","app"], {
             afterColResized:{
                 $desc:"Fired after the column's width is modified.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "col : Object, the target col id.",
                     "width: Number, col width"
                 ]
@@ -18131,7 +18259,7 @@ _.set(xui.Locale,["en","app"], {
             beforeRowResized:{
                 $desc:"Fired before the row's height is modified. If returns false, the action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "rowId : String, the target row id.",
                     "height: Number, row height"
                 ]
@@ -18139,7 +18267,7 @@ _.set(xui.Locale,["en","app"], {
             afterRowResized:{
                 $desc:"Fired after the row's height is modified.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "rowId : String, the target row id.",
                     "height: Number, row height"
                 ]
@@ -18147,7 +18275,7 @@ _.set(xui.Locale,["en","app"], {
             beforeColDrag:{
                 $desc:"Fired before the column is draged. If returns false, the drag action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "colId : String, the column id."
                 ],
                 $snippet:[
@@ -18171,7 +18299,7 @@ _.set(xui.Locale,["en","app"], {
             onGetContent:{
                 $desc:"Fired when treegrid need to get content to build a set of sub rows.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row : Object, the parent row.",
                     "callback : Function, callback function."
                 ],
@@ -18187,7 +18315,7 @@ _.set(xui.Locale,["en","app"], {
             onRowSelected:{
                 $desc:"Fired when a row is selected.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row:  Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid.",
@@ -18205,7 +18333,7 @@ _.set(xui.Locale,["en","app"], {
             onDblclickRow:{
                 $desc:"Fired when a row is dblclicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row: Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -18222,7 +18350,7 @@ _.set(xui.Locale,["en","app"], {
             beforeComboPop :{
                 $desc:"Fired when a cell's editor pop button is clicked. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
                     "pos: Object, the click event mouse position.",
@@ -18242,7 +18370,7 @@ _.set(xui.Locale,["en","app"], {
             beforePopShow :{
                 $desc:"Fired before cell's editor drop window is showed. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color'.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
                     "popCtl : xui.UIProfile, pop-up window UI Control."
@@ -18251,7 +18379,7 @@ _.set(xui.Locale,["en","app"], {
             afterPopShow :{
                 $desc:"Fired after cell's editor drop window is showed. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color'.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
                     "popCtl : xui.UIProfile, pop-up window UI Control."
@@ -18260,7 +18388,7 @@ _.set(xui.Locale,["en","app"], {
             onCommand :{
                 $desc:"Fired when a cell's editor command button is clicked. Cell type must in 'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
                     "src : String, command button's xid."
@@ -18269,7 +18397,7 @@ _.set(xui.Locale,["en","app"], {
             onEditorClick:{
                 $desc:"Fired when a cell's editor is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
                     "src : String, command button's xid."
@@ -18278,7 +18406,7 @@ _.set(xui.Locale,["en","app"], {
             onClickGridHandler:{
                 $desc:"Fired when the left/top cell is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ]
@@ -18286,7 +18414,7 @@ _.set(xui.Locale,["en","app"], {
             onRowHover:{
                 $desc:"Fired when mouse hover a row.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row: Object,  row Object.",
                     "hover : Boolean, mouse over or out",
                     "e : Event, the DOM event Object.",
@@ -18296,7 +18424,7 @@ _.set(xui.Locale,["en","app"], {
             onClickHeader:{
                 $desc:"Fired when a column header is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "col: Object,  column Object.",
                     "e : Event, the DOM event Object.",
                     "src: String, the event source DOM element's xid."
@@ -18305,7 +18433,7 @@ _.set(xui.Locale,["en","app"], {
             onCmd:{
                 $desc:"Fired when an inner command is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "item: Object, list item Object.",
                     "cmdKey: String, the command key.",
                     "e: Event, DOM event Object.",
@@ -18315,7 +18443,7 @@ _.set(xui.Locale,["en","app"], {
             onClickRow:{
                 $desc:"Fired when a row is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row: Object,  row Object.",
                     "e : Event, the DOM event Object.",
                     "src: String, the event source DOM element's xid."
@@ -18324,7 +18452,7 @@ _.set(xui.Locale,["en","app"], {
             onClickRowHandler:{
                 $desc:"Fired when a row handler is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "row: Object,  row Object.",
                     "e : Event, the DOM event Object.",
                     "src: String, the event source DOM element's xid."
@@ -18333,7 +18461,7 @@ _.set(xui.Locale,["en","app"], {
             onClickCell:{
                 $desc:"Fired when a cell(type is 'label/button' or not editable) is clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -18350,7 +18478,7 @@ _.set(xui.Locale,["en","app"], {
             onDblclickCell:{
                 $desc:"Fired when a cell(type is 'label/button' or not editable) is double clicked.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell: Object.",
                     "e: Event, the DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -18367,7 +18495,7 @@ _.set(xui.Locale,["en","app"], {
             beforeIniEditor: {
                 $desc:"Fired before a specified cell will be changed to edit mode(attach an editor to it). If returns [false] or the customized editor, that action will be cancelled.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object.",
                     "cellNode: xui.Dom, the cell's node"
                 ],
@@ -18383,7 +18511,7 @@ _.set(xui.Locale,["en","app"], {
             beforeCellUpdated: {
                 $desc:"Fired before a specified cell is update. If returns false, the update action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell :Object, the cell Object.",
                     "options : Object, the keys/values to be updated.",
                     "isHotRow : Boolean. Is the cell in the hot row. "
@@ -18401,7 +18529,7 @@ _.set(xui.Locale,["en","app"], {
             afterCellUpdated: {
                 $desc:"Fired before a specified cell is update. If returns false, the update action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "cell : Object, the cell Object.",
                     "options : Object, the keys/values to be updated.",
                     "isHotRow : Boolean. Is the cell in the hot row. "
@@ -18451,7 +18579,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $memo:"Setting this property cant trigger UI refreshing. So, set it before the UI was rendered."
             },
@@ -18511,7 +18639,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18603,7 +18731,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18629,7 +18757,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18656,7 +18784,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18684,7 +18812,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Date Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18711,7 +18839,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Date Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18738,7 +18866,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Date Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18765,7 +18893,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Date Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl27'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18791,7 +18919,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl29'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18817,7 +18945,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18843,7 +18971,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18869,7 +18997,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18895,7 +19023,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, '10 ms','100 ms','1 s','10 s', '1 n','5 n', '10 n', '30 n', '1 h','2 h', '6 h', '1 d', '1 w', '15 d', '1 m', '1 q', '1 y', '1 de' or '1 c'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl37'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18921,7 +19049,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Number.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.tl39'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18960,7 +19088,7 @@ _.set(xui.Locale,["en","app"], {
             beforeDragTask:{
                 $desc:"Fired before user start to drag a task. If returns false, the defalut drag action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "task : Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -18976,7 +19104,7 @@ _.set(xui.Locale,["en","app"], {
             beforeClose:{
                 $desc:"Fired before user click close button. If returns false, close function will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "src : String, the event source DOM element's xid."
                 ],
                 $snippet:[
@@ -18990,7 +19118,7 @@ _.set(xui.Locale,["en","app"], {
             onShowOptions :{
                 $desc:"Fired when user click the option button.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
                 ],
@@ -19005,7 +19133,7 @@ _.set(xui.Locale,["en","app"], {
             onClickTask:{
                 $desc:"Fired when user click the task block.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "task :  Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -19022,7 +19150,7 @@ _.set(xui.Locale,["en","app"], {
             onDblclickTask:{
                 $desc:"Fired when user double click the task block.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "task :  Object.",
                     "e: Event, DOM event Object.",
                     "src : String, the event source DOM element's xid."
@@ -19031,7 +19159,7 @@ _.set(xui.Locale,["en","app"], {
             onGetContent:{
                 $desc:"Fired when the UI need to build new tasks.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "from : Date, the 'from' time.",
                     "to : Date, the 'to' time.",
                     "minMs : Number, the min ms count.",
@@ -19049,14 +19177,14 @@ _.set(xui.Locale,["en","app"], {
             beforeNewTask:{
                 $desc:"Fired before a specified task is added. If returns false, the action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "task: Object, task object."
                 ]
             },
             beforeTaskUpdated:{
                 $desc:"Fired before a specified task is updated. If returns false, the action will be ignored.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "task: Object, task Object.",
                     "from : Date, the 'from' time.",
                     "to: Date, the 'to' time."
@@ -19065,7 +19193,7 @@ _.set(xui.Locale,["en","app"], {
             onStartDateChanged:{
                 $desc:"Fired when start date is updated.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "odate: Date, the old date.",
                     "date : Date, the new date."
                 ]
@@ -19094,7 +19222,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getFlashvars:{
@@ -19106,7 +19234,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Object.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getCover:{
@@ -19118,7 +19246,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getFlash:{
@@ -19134,7 +19262,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             refreshFlash:{
@@ -19363,7 +19491,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             }
 
@@ -19478,7 +19606,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getSvgTag:{
@@ -19490,13 +19618,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"onClick event handler.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element xui id."
                 ]
@@ -19602,7 +19730,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left','25%','center','75%','right','outterleft','outterright'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getVAlign :{
@@ -19614,13 +19742,13 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             onClick:{
                 $desc:"onClick event handler.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element xui id."
                 ]
@@ -19628,7 +19756,7 @@ _.set(xui.Locale,["en","app"], {
             onTextClick:{
                 $desc:"onClick event handler for text element.",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object",
+                    $profile,
                     "e : Event.Dom event object",
                     "src : Element xui id."
                 ]
@@ -19702,7 +19830,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Boolean.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getType:{
@@ -19714,7 +19842,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'straight','bezier','flowchart'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getFromObj:{
@@ -19726,7 +19854,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, object alias.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getFromPoint:{
@@ -19738,7 +19866,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left','top','right','bottom'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getToObj:{
@@ -19750,7 +19878,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, object alias.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getToPoint:{
@@ -19762,7 +19890,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String, 'left','top','right','bottom'.",
-                    "force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]."
+                    $force
                 ]
             },
             getAttr:{

@@ -236,6 +236,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                         ops.sub=null;
                     }
                     _.asyRun(function(){
+                        if(tg.isDestroyed())return;
                         tg.updateRow(rowId, ops);
                         // must get
                         row = tg.getRowbyRowId(rowId);
@@ -267,6 +268,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                             xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
                                 tg.updateCellByRowCol(id, "value", "{"+('new' + ++ns._index)+":"+row.cells[1].value+"}", false, true);
                                 _.asyRun(function(){
+                                    if(tg.isDestroyed())return;
                                     tg.editCellbyRowCol(id, "value");
                                 },200);
                             },function(type){ 
@@ -274,6 +276,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                                 var id=row.id;
                                 tg.updateCellByRowCol(id, "value", "["+row.cells[1].value+"]", false, true);
                                 _.asyRun(function(){
+                                    if(tg.isDestroyed())return;
                                     tg.editCellbyRowCol(id,"value");
                                 },200);
                             },'As a Hash','As an Array');
@@ -300,6 +303,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
             }
             if( nid ){
                 _.asyRun(function(){
+                    if(tg.isDestroyed())return;
                     tg.editCellbyRowCol(nid+'', type=='array'?"value":"key");
                 });
             }
