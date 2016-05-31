@@ -1,5 +1,5 @@
 CONF={
-    //Dynamic Injector Mechanism for xui.ComFactory
+    //Dynamic Injector Mechanism for xui.ModuleFactory
     ModuleFactoryProfile:{
         module1:{
             cls:'App.Module1',

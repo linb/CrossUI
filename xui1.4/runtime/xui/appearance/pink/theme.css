@@ -110,7 +110,7 @@ html, .xui-uibg-base{
 }
 
 /*common*/
-.xui-ui-inputdisabled, .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
+.xui-ui-inputdisabled,   .xui-ui-itemdisabled,  .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
    background-color:#eee;
 }
 /* other

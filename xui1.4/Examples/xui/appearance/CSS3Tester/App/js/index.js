@@ -22,28 +22,28 @@ Class('App', 'xui.Com',{
         events : {"onReady":"_com_onready"},
         _com_onready : function (com, threadid){
             var ns=this,tag=ns.ctl_tabs2;
-            xui.ComFactory.getCom("App.Support",function(){
+            xui.getModule("App.Support",function(){
                 tag.append(this, "Support");
             });
-            xui.ComFactory.getCom("App.Transform",function(){
+            xui.getModule("App.Transform",function(){
                 tag.append(this, "Transform");
             });
-            xui.ComFactory.getCom("App.BorderRadius",function(){
+            xui.getModule("App.BorderRadius",function(){
                 tag.append(this, "BorderRadius");
             });
-            xui.ComFactory.getCom("App.TextShadow",function(){
+            xui.getModule("App.TextShadow",function(){
                 tag.append(this, "TextShadow");
             });
-            xui.ComFactory.getCom("App.BoxShadow",function(){
+            xui.getModule("App.BoxShadow",function(){
                 tag.append(this, "BoxShadow");
             });
-            xui.ComFactory.getCom("App.RGBA",function(){
+            xui.getModule("App.RGBA",function(){
                 tag.append(this, "rgba");
             });
-            xui.ComFactory.getCom("App.Transition",function(){
+            xui.getModule("App.Transition",function(){
                 tag.append(this, "Transition");
             });
-            xui.ComFactory.getCom("App.Gradients",function(){
+            xui.getModule("App.Gradients",function(){
                 tag.append(this, "Gradients");
             });        
         },

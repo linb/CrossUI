@@ -3430,6 +3430,7 @@ type:4
         getEmptyDiv:function(sequence){
             var i=1,id,rt,style,o,t,count=0,doc=document,body=doc.body,ini=function(o){
                 o.id=id;
+                // position:relative; is for text wrap bug
                 xui([o]).attr('style','position:relative;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
             };
             sequence=sequence || 1;

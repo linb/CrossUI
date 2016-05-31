@@ -7225,6 +7225,86 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getConDockPadding:{
+                $desc:"Gets the inner docking padding px for this container.",
+                $rtn:"Object"
+            },
+            setConDockPadding:{
+                $desc:"To specify the inner docking padding px for this container.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object. {left:,top:,bottom:right}",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui751'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,height:200,conDockPadding:{left:10,top:20,right:10,bottom:20},conDockSpacing:{width:10,height:20}}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'fill',capton:'fill'}));"+
+                    "}"
+                ]
+            },
+            getConDockSpacing:{
+                $desc:"Gets the inner docking spacing px for this container.",
+                $rtn:"Object"
+            },
+            setConDockSpacing:{
+                $desc:"To specify the inner docking spacing px for this container.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Object. {width:,height:}",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui751'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,height:200,conDockPadding:{left:10,top:20,right:10,bottom:20},conDockSpacing:{width:10,height:20}}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'fill',capton:'fill'}));"+
+                    "}"
+                ]
+            },
+            getConDockFlexFill:{
+                $desc:"To determine whether the children docking controls are flex fill(cross axis) or not .",
+                $rtn:"Object"
+            },
+            setConDockFlexFill:{
+                $desc:"To specify whether the children docking controls are flex fill(cross axis) or not .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockFlexFill:'both'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:true',dockIgnoreFlexFill:true}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "}"
+                ]
+            },
+            getConDockStretch:{
+                $desc:"To determine the children docking controls' stretch parameter.",
+                $rtn:"String"
+            },
+            setConDockStretch:{
+                $desc:"To specify the children docking controls' stretch parameter.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockStretch:'0.25'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'25%'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'25%'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:0.5}));"+
+                    "}"
+                ]
+            }, 
 
             onHotKeydown:{
                 $desc:"Fired when keyboard is down.",
@@ -7546,6 +7626,46 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).append(new xui.UI.Button({position:'relative'})).append(new xui.UI.Button({position:'relative'})).append(btn=new xui.UI.Button({position:'relative'})).append(new xui.UI.Button({position:'relative'}));"+
                     "btn.beforeNextFocus(function(){return false;});"+
                     "}"
+                ]
+            },
+            beforeInputAlert:{
+                $desc:"Fired before one of controls in form will show the 'invalid' or 'required' alert window. If returns false, the default action will be ignored.",
+                $paras:[
+                    $profile,
+                    "ctrlPrf : xui.UIProfile, the input control's profile object.",
+                    "type : String, alert type. invalid or required"
+                ]
+            },
+            beforeFormReset:{
+                $desc:"Fired before the form reset. If returns false, the default action will be ignored.",
+                $paras:[
+                    $profile,
+                    "elems : xui.absValue, All input controls.",
+                    "subId: String, the id of sub container"
+                ]
+            },
+            afterFormReset:{
+                $desc:"Fired after the form reset.",
+                $paras:[
+                    $profile,
+                    "elems : xui.absValue, All input controls.",
+                    "subId: String, the id of sub container"
+                ]
+            },
+            beforeFormSubmit:{
+                $desc:"Fired before the form submit. If returns false, the default action will be ignored.",
+                $paras:[
+                    $profile,
+                    "data : Ojbect, the submit data.",
+                    "subId: String, the id of sub container"
+                ]
+            },
+            afterFormSubmit:{
+                $desc:"Fired after the form submit.",
+                $paras:[
+                    $profile,
+                    "data : Ojbect, the submit data.",
+                    "subId: String, 子容器id"
                 ]
             }
         }
@@ -8487,6 +8607,47 @@ _.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getDockStretch:{
+                $desc:"Gets the dock stretch parameter on the dock cross axis.",
+                $rtn:"String"
+            },
+            setDockStretch:{
+                $desc:"Sets the stretch parameter on the dock cross axis. (It will cover the parent container's 'conDockStretch')",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:'0.5'}));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'top',caption:'25%',dockStretch:'0.25'}));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'top',caption:'25%',dockStretch:'0.25'}));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'top',caption:'fixed',dockStretch:'fixed'}));"+
+                    "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'top',caption:'100%',dockStretch:'stretch'}));"+
+                    "}"
+                ]
+            }, 
+            getDockIgnoreFlexFill:{
+                $desc:"To determine whether to ignore the conDockFlexFill property of the parent's container.",
+                $rtn:"String"
+            },
+            setDockIgnoreFlexFill:{
+                $desc:"To specify whether to ignore the conDockFlexFill property of the parent's container.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockFlexFill:'both'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:true'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "}"
+                ]
+            }, 
             getDockMinH:{
                 $desc:"Gets dock minimal height on the first UIProfile",
                 $rtn:"Number",
@@ -10957,6 +11118,18 @@ _.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
                     "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getHAlign :{
+                $desc:"Gets horizontal alignment.",
+                $rtn:"String"
+            },
+            setHAlign :{
+                $desc:"Sets horizontal alignment.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'.",
+                    $force
                 ]
             },
             getImage :{

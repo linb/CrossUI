@@ -6,36 +6,54 @@ Class('App', 'xui.Com',{
             
             append(
                 (new xui.DataBinder)
-                .setHost(host,"databinder_json")
-                .setDataSourceType("remoting")
-                .setQueryURL("http://ajax.googleapis.com/ajax/services/search/web")
-                .setQueryArgs({"v":"1.0", "q":"CrossUI"})
-                .setName("databinder_json")
-                .afterRead("_databinder_1_afterread")
+                .setHost(host, "db_json")
+                .setName("db_json")
             );
             
             append(
                 (new xui.DataBinder)
-                .setHost(host,"databinder_xmlrpc")
-                .setDataSourceType("remoting")
+                .setHost(host, "db_xmlrpc")
+                .setName("db_json")
+            );
+            
+            append(
+                (new xui.DataBinder)
+                .setHost(host, "db_soap")
+                .setName("db_json")
+            );
+
+            append(
+                (new xui.APICaller)
+                .setHost(host,"apicaller_json")
+                .setQueryURL("http://ajax.googleapis.com/ajax/services/search/web")
+                .setQueryArgs({"v":"1.0", "q":"CrossUI"})
+                .setName("apicaller_json")
+                .setResponseDataTarget([{type:'databinder',name:'db_json'}])
+                .afterInvoke("_apicaller_1_afterInvoke")
+            );
+            
+            append(
+                (new xui.APICaller)
+                .setHost(host,"apicaller_xmlrpc")
                 .setQueryURL("../../../backend/test/rpc/server.php")
                 .setRequestType("XML")
                 .setResponseType("XML")
                 .setQueryArgs({"methodName":"passThrough", "params":[2790, 1290320.2323, null, "Hello world ☺", "Hello world2", new Date(2011,4,9,18,4,15,586), {"Color":"Red", "Truth":true}, [1, 2, 3, 4]]})
-                .setName("databinder_xmlrpc")
-                .afterRead("_databinder_xmlrpc_afterread")
+                .setName("apicaller_xmlrpc")
+                .setResponseDataTarget([{type:'databinder',name:'db_xmlrpc'}])
+                .afterInvoke("_apicaller_xmlrpc_afterInvoke")
             );
             
             append(
-                (new xui.DataBinder)
-                .setHost(host,"databinder_soap")
-                .setDataSourceType("remoting")
+                (new xui.APICaller)
+                .setHost(host,"apicaller_soap")
                 .setQueryURL("../../../backend/test/soap/soap.php")
                 .setRequestType("SOAP")
                 .setResponseType("SOAP")
                 .setQueryArgs({"methodName":"getUserInfo", "params":{"bgin":"3", "limit":"323"}})
-                .setName("databinder_soap")
-                .afterRead("_databinder_soap_afterread")
+                .setName("apicaller_soap")
+                .setResponseDataTarget([{type:'databinder',name:'db_soap'}])
+                .afterInvoke("_apicaller_soap_afterInvoke")
             );
             
             append(
@@ -45,7 +63,7 @@ Class('App', 'xui.Com',{
                 .setTop(40)
                 .setWidth(650)
                 .setHeight(80)
-                .setCaption("DataBinder for <strong>google search API (JSON service)</strong>")
+                .setCaption("apicaller for <strong>google search API (JSON service)</strong>")
                 .setToggleBtn(false)
             );
             
@@ -70,7 +88,7 @@ Class('App', 'xui.Com',{
             host.ctl_group1.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input1")
-                .setDataBinder("databinder_json")
+                .setDataBinder("db_json")
                 .setDataField("returnurls")
                 .setLeft(180)
                 .setTop(20)
@@ -80,7 +98,7 @@ Class('App', 'xui.Com',{
             host.ctl_group1.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input11")
-                .setDataBinder("databinder_json")
+                .setDataBinder("db_json")
                 .setDataField("topurl")
                 .setLeft(440)
                 .setTop(20)
@@ -94,7 +112,7 @@ Class('App', 'xui.Com',{
                 .setTop(140)
                 .setWidth(650)
                 .setHeight(80)
-                .setCaption("DataBinder for local <strong>XMLRPC service</strong>")
+                .setCaption("apicaller for local <strong>XMLRPC service</strong>")
                 .setToggleBtn(false)
             );
             
@@ -119,7 +137,7 @@ Class('App', 'xui.Com',{
             host.ctl_group15.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input20")
-                .setDataBinder("databinder_xmlrpc")
+                .setDataBinder("db_xmlrpc")
                 .setDataField("r1")
                 .setLeft(180)
                 .setTop(20)
@@ -129,7 +147,7 @@ Class('App', 'xui.Com',{
             host.ctl_group15.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input21")
-                .setDataBinder("databinder_xmlrpc")
+                .setDataBinder("db_xmlrpc")
                 .setDataField("r2")
                 .setLeft(440)
                 .setTop(20)
@@ -143,7 +161,7 @@ Class('App', 'xui.Com',{
                 .setTop(240)
                 .setWidth(650)
                 .setHeight(80)
-                .setCaption("DataBinder for local <strong>SOAP service</strong>")
+                .setCaption("apicaller for local <strong>SOAP service</strong>")
                 .setToggleBtn(false)
             );
             
@@ -168,7 +186,7 @@ Class('App', 'xui.Com',{
             host.ctl_group26.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input42")
-                .setDataBinder("databinder_soap")
+                .setDataBinder("db_soap")
                 .setDataField("user")
                 .setLeft(180)
                 .setTop(20)
@@ -178,7 +196,7 @@ Class('App', 'xui.Com',{
             host.ctl_group26.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input43")
-                .setDataBinder("databinder_soap")
+                .setDataBinder("db_soap")
                 .setDataField("msg")
                 .setLeft(440)
                 .setTop(20)
@@ -188,20 +206,30 @@ Class('App', 'xui.Com',{
             return children;
             // ]]Code created by CrossUI RAD Tools
         },
-        _databinder_1_afterread : function (profile, rspData) {
+        events:{onReady:'_onready'},
+        _onready:function(){
+            this.apicaller_json.invoke();
+            this.apicaller_xmlrpc.invoke();
+            this.apicaller_soap.invoke();
+        },
+        _apicaller_1_afterInvoke : function (profile, rspData) {
+            if(!_.isHash(rspData)){
+                alert(rspData+"");
+                return;
+            }
             var rst=_.get(rspData,["responseData","results"]);
             return {
                 returnurls:rst.length,
                 topurl:rst[0].url
             };
         },
-        _databinder_xmlrpc_afterread : function (profile, rspData) {
+        _apicaller_xmlrpc_afterInvoke : function (profile, rspData) {
             return {
                 r1: rspData.result[0],
                 r2: rspData.result[3]
             };
         },
-        _databinder_soap_afterread : function (profile, rspData) {
+        _apicaller_soap_afterInvoke : function (profile, rspData) {
             return rspData.result;
         }
     }

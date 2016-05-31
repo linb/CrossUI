@@ -577,7 +577,7 @@ _.merge(_,{
     isArr:function(target)   {return _._to.call(target)==='[object Array]'},
     isReg:function(target)   {return _._to.call(target)==='[object RegExp]'},
     isStr:function(target)   {return _._to.call(target)==='[object String]'},
-    isArguments:function(target)   {return _._to.call(target)==='[object Arguments]' || _._has.call(target,"callee")},
+    isArguments:function(target)   {return target && (_._to.call(target)==='[object Arguments]' || _._has.call(target,"callee"))},
     isElem:function(target) {return !!(target && target.nodeType === 1)},
     isNaN:function(target) {return typeof target == 'number' && target != +target;},
     //for handling String

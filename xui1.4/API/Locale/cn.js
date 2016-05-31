@@ -7247,7 +7247,86 @@ _.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
-
+            getConDockPadding:{
+                $desc:"得到容器中子控件停靠的内留白.",
+                $rtn:"Object"
+            },
+            setConDockPadding:{
+                $desc:"设置容器中子控件停靠的内留白.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object. {left:,top:,bottom:right}",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui751'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,height:200,conDockPadding:{left:10,top:20,right:10,bottom:20},conDockSpacing:{width:10,height:20}}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'fill',capton:'fill'}));"+
+                    "}"
+                ]
+            },
+            getConDockSpacing:{
+                $desc:"得到容器中子控件停靠的间距.",
+                $rtn:"Object"
+            },
+            setConDockSpacing:{
+                $desc:"设置容器中子控件停靠的间距.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Object. {width:,height:}",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui751'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,height:200,conDockPadding:{left:10,top:20,right:10,bottom:20},conDockSpacing:{width:10,height:20}}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',capton:'top'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'fill',capton:'fill'}));"+
+                    "}"
+                ]
+            },
+            getConDockFlexFill:{
+                $desc:"得到容器中子控件停靠是否应用柔性填充（次轴方向）.",
+                $rtn:"Object"
+            },
+            setConDockFlexFill:{
+                $desc:"设置容器中子控件停靠是否应用柔性填充（次轴方向）.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockFlexFill:'both'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:true',dockIgnoreFlexFill:true}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "}"
+                ]
+            },
+            getConDockStretch:{
+                $desc:"得到容器中子控件停靠的延展（主轴方向）参数",
+                $rtn:"String"
+            },
+            setConDockStretch:{
+                $desc:"设置容器中子控件停靠的延展（主轴方向）参数. 子容器的dockStretch参数可以覆盖本选项功能.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockStretch:'0.25'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'25%'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'25%'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:0.5}));"+
+                    "}"
+                ]
+            }, 
             onHotKeydown:{
                 $desc:"当热键按下时被调用.",
                 $paras:[
@@ -7568,6 +7647,46 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).append(new xui.UI.Button({position:'relative'})).append(new xui.UI.Button({position:'relative'})).append(btn=new xui.UI.Button({position:'relative'})).append(new xui.UI.Button({position:'relative'}));"+
                     "btn.beforeNextFocus(function(){return false;});"+
                     "}"
+                ]
+            },
+            beforeInputAlert:{
+                $desc:"在容器表单中的一个控件出现警示框前调用. 返回false可以阻止警示框弹出.",
+                $paras:[
+                    $profile,
+                    "ctrlPrf : xui.UIProfile, 引起警示的输入控件.",
+                    "type : String, 警示类型. invalid or required"
+                ]
+            },
+            beforeFormReset:{
+                $desc:"在容器表单重置前调用. 返回false可以阻止表单重置.",
+                $paras:[
+                    $profile,
+                    "elems : xui.absValue, 所有输入控件.",
+                    "subId: String, 子容器id"
+                ]
+            },
+            afterFormReset:{
+                $desc:"在容器表单重置后调用.",
+                $paras:[
+                    $profile,
+                    "elems : xui.absValue, 所有输入控件.",
+                    "subId: String, 子容器id"
+                ]
+            },
+            beforeFormSubmit:{
+                $desc:"在容器表单提交前调用. 返回false可以阻止表单重置.",
+                $paras:[
+                    $profile,
+                    "data : Ojbect, 要提交的数据.",
+                    "subId: String, 子容器id"
+                ]
+            },
+            afterFormSubmit:{
+                $desc:"在容器表单提交后调用. ",
+                $paras:[
+                    $profile,
+                    "data : Ojbect, 要提交的数据.",
+                    "subId: String, 子容器id"
                 ]
             }
         }
@@ -8508,7 +8627,47 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){btn.setDockIgnore(false);xui(id).width(400);},3000);"+
                     "}"
                 ]
+            }, 
+            getDockStretch:{
+                $desc:"得到停靠延展（主轴方向）参数",
+                $rtn:"String"
             },
+            setDockStretch:{
+                $desc:"设置停靠延展（主轴方向）参数，会覆盖父容器的conDockStretch设置）",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockStretch:'0.25'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'25%'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'25%'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:0.5}));"+
+                    "}"
+                ]
+            }, 
+            getDockIgnoreFlexFill:{
+                $desc:"得到停靠次轴方向的柔性忽略",
+                $rtn:"String"
+            },
+            setDockIgnoreFlexFill:{
+                $desc:"设置停靠次轴方向的柔性忽略（会忽略父容器的conDockFlexFill设置",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ],
+                $snippet:[
+                    "var id='xui.temp.ui750'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var block;xui(id).prepend(block=new xui.UI.Block({width:200,conDockFlexFill:'both'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:true',dockIgnoreFlexFill:true}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
+                    "}"
+                ]
+            }, 
             getDockMinH:{
                 $desc:"获取停靠的最小高度",
                 $rtn:"Number",
@@ -10877,6 +11036,18 @@ _.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
                     "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getHAlign :{
+                $desc:"获取标签水平对齐方式",
+                $rtn:"String"
+            },
+            setHAlign :{
+                $desc:"设置标签水平对齐方式.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'.",
+                    $force
                 ]
             },
             getImage :{
@@ -19862,8 +20033,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             panelBgImgAttachment:'背景图像附着',
             conDockPadding:'容器停靠边距',
             conDockSpacing:'容器停靠间隔',
-            conDockFlexFill:'容器停靠次轴柔性',
-            conDockFlowStretch:'容器停靠主轴延展',
+            conDockFlexFill:'容器停靠柔性填充',
+            conDockStretch:'容器停靠延展',
             formMethod:'表单提交方法',
             formTarget:'表单提交目标',
             formAction:'表单提交动作',
@@ -19928,8 +20099,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             hoverPop:"悬停弹出对象",
             hoverPopType:"悬停弹出类型",
             'dock':'停靠类型',
-            'dockFlowStretch':'停靠主轴延展',
-            'dockIgnoreFlex':'忽略停靠次轴柔性',
+            'dockStretch':'停靠延展',
+            'dockIgnoreFlexFill':'停靠柔性填充忽略',
             'dockIgnore':'停靠忽略',
             'dockOrder':'停靠顺序',
             'dockMargin':'停靠外补丁',
@@ -20119,6 +20290,7 @@ _.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Group' : {
             'caption':'标题',
+            'hAlign':'水平对齐方式',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
             'image':'图像路径',
@@ -20867,5 +21039,4 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onFusionChartsEvent:"FC事件触发"
         }
     });
-
 })();

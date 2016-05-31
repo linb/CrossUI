@@ -42,7 +42,7 @@ Class('App.SubModule1', 'xui.Com',{
         events:{"onCreated":"_beforecreated", "onReady":"_onready"}, 
         iniExComs:function(com, threadid){
             //use newCom
-            xui.ComFactory.newCom('App.Module3' ,function(){
+            xui.newModule('App.Module3' ,function(){
                 this.show(null,null,null,threadid);
             },threadid);
         },

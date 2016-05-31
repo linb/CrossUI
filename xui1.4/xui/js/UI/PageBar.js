@@ -301,6 +301,8 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             dataBinder:null,
             readonly:null,
             autoTips:false,
+            dirtyMark:false,
+            showDirtyMark:false,
             caption:{
                 ini:' Page: ',
                 action:function(v){

@@ -88,7 +88,7 @@ Class("xui.APICaller","xui.absObj",{
             if(requestDataSource&&requestDataSource.length){
                 for(var i in requestDataSource){
                     var o=requestDataSource[i],t;
-                    switch(o.bindertype){
+                    switch(o.type){
                         case "databinder":
                             if(t = xui.DataBinder.getFromName(o.name)){
                                 if(!t.updateDataFromUI()){
@@ -258,13 +258,6 @@ Class("xui.APICaller","xui.absObj",{
             }
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
                 var mapb;
-
-                // Normally, Gives a change to modify the "rspData" format for XML
-                if(prf.afterInvoke){
-                    mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                    if(_.isSet(mapb))rspData=mapb;
-                    mapb=null;
-                }
                 // ensure to json
                 if(!_.isHash(rspData) && !_.isStr(rspData)){
                     if(responseType=="XML")
@@ -272,11 +265,17 @@ Class("xui.APICaller","xui.absObj",{
                     else if(responseType=="SOAP")
                         rspData=xui.SOAP.parseResponse(rspData, queryArgs.methodName, con.WDSLCache[queryURL]);
                 }
+                // Normally, Gives a change to modify the "rspData"
+                if(prf.afterInvoke){
+                    mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                    if(_.isSet(mapb))rspData=mapb;
+                    mapb=null;
+                }
 
                 if(responseDataTarget&&responseDataTarget.length){
                     _.arr.each(responseDataTarget, function(o){
                         var data = o.path?_.get(rspData,o.path.split('.')):rspData,t;
-                        switch(o.bindertype){
+                        switch(o.type){
                             case "alert":
                                 data = _.stringify(data);
                                 if(xui.Coder)data=xui.Coder.formatText(data);
@@ -306,7 +305,7 @@ Class("xui.APICaller","xui.absObj",{
 
                 if(responseDataTarget&&responseDataTarget.length){
                     _.arr.each(responseDataTarget, function(o, t){
-                        switch(o.bindertype){
+                        switch(o.type){
                             case "alert":
                                 rspData = _.stringify(rspData);
                                 if(xui.Coder)rspData=xui.Coder.formatText(rspData);

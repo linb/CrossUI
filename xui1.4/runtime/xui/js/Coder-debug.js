@@ -324,8 +324,8 @@ Class("xui.Coder", null,{
                         [/[\x02\;]/.source, function(a,i){return a[i]+'\n'+space[deep]}],
                         [/(\,)([\x03\x04\w_\-]+\:)/.source, function(a,i){return a[i+1]+'\n'+space[deep]+a[i+2]}],
                         [/\x01/.source, function(a,i){return '\n'+space[deep]+a[i]}],
-                        [/[\}]\s*[\,]*/.source, function(a,i){return '\n'+space[--deep]+a[i]}],
-                        [/[\}]\s*[\;]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep]}]
+                        [/[\}]\s*[\,]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
+                        [/[\}]\s*[\;]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }]
                     ];
                     if(type!='css'){
                         arr.push([/for\s*\([\w ]+\sin\s/.source, "$0"],

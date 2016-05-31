@@ -57,8 +57,7 @@ Class("xui.DataBinder","xui.absObj",{
         },
 
         isDirtied:function(){
-            var prf=this.get(0),
-                elems=prf.constructor._getBoundElems(prf);
+            var elems=this.constructor._getBoundElems(this.get(0));
             for(var i=0,l=elems.length;i<l;i++){
                 var profile=elems[i],ins;
                 if(profile.box["xui.absValue"]){

@@ -5,18 +5,18 @@ Class('App', 'xui.Com',{
         _onready:function () {
             SPA=this;
             //set com factory profile
-            xui.ComFactory.setProfile(CONF.ModuleFactoryProfile);
+            xui.ModuleFactory.setProfile(CONF.ModuleFactoryProfile);
         }, 
         _button9_onclick:function (profile, e, value) {
             var host=this;
-            xui.ComFactory.getCom('module1',function(){
+            xui.getModule('module1',function(){
                 var ns=this;
                 host.div16.append(ns.getUIComponents(),false);
             });
         }, 
         _button10_onclick:function (profile, e, value) {
             var host=this;
-            xui.ComFactory.getCom('App.Module2',function(){
+            xui.getModule('App.Module2',function(){
                 var ns=this;
                 host.div17.append(ns.panelMain,false);
             });
@@ -92,7 +92,7 @@ Class('App', 'xui.Com',{
         }, 
         _button3_onclick:function (profile, e, value) {
             var host=this;
-            xui.ComFactory.newCom('App.Module3' ,function(){
+            xui.newModule('App.Module3' ,function(){
                 this.show(xui([document.body]));
             });
         }

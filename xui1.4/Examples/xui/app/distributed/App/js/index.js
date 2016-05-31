@@ -72,7 +72,7 @@ Class('App', 'xui.Com',{
         }, 
         _button9_onclick:function (profile, e, value) {
             var host=this;
-            xui.ComFactory.getCom('App.Module1',function(){
+            xui.getModule('App.Module1',function(){
                 var ns=this;
                 host.div16.append(ns.getUIComponents(),false);
             });

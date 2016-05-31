@@ -13,7 +13,7 @@ Class('App', 'xui.Com',{
                 .setWidth(540)
                 .setHeight(370)
                 .setZIndex(1)
-                .setCaption("Group, Preview and Summery")
+                .setCaption("Group")
             );
 
             host.panel4.append((new xui.UI.TreeGrid)
@@ -30,13 +30,11 @@ Class('App', 'xui.Com',{
             this.treegrid
             .setHeader(['col1','col2','col3','col4'])
             .setRows([
-                {caption:'cap1',cells:['11','12','13','14'],summary:'summary',preview:'<h5>preview 1</h5><p>the preview message1 will displayed here</p>'},
-                {caption:'cap2',cells:['21','22','23','24'],summary:'summary',preview:'<h5>preview 2</h5><p>the preview message2 will displayed here</p>'},
+                {caption:'cap1',cells:['11','12','13','14']},
+                {caption:'cap2',cells:['21','22','23','24']},
                 {id:'grp1',
                     group:true,
                     caption:'group layer 1',
-                    summary:'summary',
-                    preview:'preview',
                     renderer : function(row){return "<span style='width:16px;height:16px;background:url(img/img.gif) left -32px;vertical-align:middle;'></span>"+row.caption},
                     sub:[
                         {caption:'cap3',cells:['11-11','12-11','13-11','14-11']},

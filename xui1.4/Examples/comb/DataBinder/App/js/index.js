@@ -1,40 +1,44 @@
 Class('App', 'xui.Com',{
     Instance:{
         iniComponents : function(){
-            // [[Code created by CrossUI RAD Tools
+            // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
-
+            
             append(
-                (new xui.DataBinder())
+                xui.create("xui.DataBinder")
                 .setHost(host,"databinder_1")
-                .setTagVar({})
-                .setDataSourceType("remoting")
-                .setQueryURL("data.js")
-                .setProxyType("Ajax")
                 .setName("databinder_1")
+                .setData({
+                    "ctl_input1" : "",
+                    "ctl_comboinput2" : "",
+                    "ctl_input9" : "",
+                    "Name" : "",
+                    "Gender" : "",
+                    "Memo" : ""
+                }
+                )
                 .afterUpdateDataFromUI("_databinder_1_afterupdatedatafromui")
-                .afterInvoke("_databinder_1_afterinvoke")
-                .afterRead("_databinder_1_afterread")
             );
-
+            
             append(
-                (new xui.UI.Panel())
+                xui.create("xui.UI.Panel")
                 .setHost(host,"ctl_panel3")
                 .setDock("none")
                 .setLeft(20)
                 .setTop(10)
-                .setWidth(620)
-                .setHeight(510)
+                .setWidth(610)
+                .setHeight(400)
                 .setZIndex(1)
                 .setOverflow("hidden")
                 .setCaption("DataBinder OverView")
                 .setCustomStyle({
                     "PANEL" : "background-color:#fff;"
-                })
+                }
+                )
             );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.Group())
+                xui.create("xui.UI.Group")
                 .setHost(host,"ctl_group1")
                 .setLeft(61)
                 .setTop(33)
@@ -46,101 +50,69 @@ Class('App', 'xui.Com',{
                     "KEY" : {
                         "font-weight" : "bold"
                     }
-                })
+                }
+                )
                 );
-
+            
             host.ctl_group1.append(
-                (new xui.UI.Input())
+                xui.create("xui.UI.Input")
                 .setHost(host,"ctl_input1")
                 .setDataBinder("databinder_1")
                 .setDataField("Name")
-                .setLeft(70)
+                .setRequired(true)
+                .setLeft(3)
                 .setTop(10)
-                .setLabelCaption("ctl_input1")
+                .setWidth(187)
+                .setLabelSize(80)
+                .setLabelCaption("Name")
                 );
-
+            
             host.ctl_group1.append(
-                (new xui.UI.ComboInput())
+                xui.create("xui.UI.ComboInput")
                 .setHost(host,"ctl_comboinput2")
                 .setDataBinder("databinder_1")
                 .setDataField("Gender")
-                .setLeft(270)
+                .setLeft(203)
                 .setTop(10)
-                .setWidth(80)
-                .setLabelCaption("ctl_comboinput2")
+                .setWidth(147)
+                .setLabelSize(80)
+                .setLabelCaption("Gender")
                 .setType("listbox")
                 .setItems([{
                     "id" : "male",
                     "caption" : "Male"
-                },{
+                },
+                {
                     "id" : "female",
                     "caption" : "Female"
                 }])
+                .setCaption("ctl_comboinput2")
                 );
-
+            
             host.ctl_group1.append(
-                (new xui.UI.SLabel())
-                .setHost(host,"ctl_slabel1")
-                .setLeft(20)
-                .setTop(14)
-                .setCaption("Name")
-                );
-
-            host.ctl_group1.append(
-                (new xui.UI.SLabel())
-                .setHost(host,"ctl_slabel2")
-                .setLeft(220)
-                .setTop(12)
-                .setHeight(19)
-                .setCaption("Gender")
-                );
-
-            host.ctl_group1.append(
-                (new xui.UI.Input())
+                xui.create("xui.UI.Input")
                 .setHost(host,"ctl_input9")
                 .setDataBinder("databinder_1")
                 .setDataField("Memo")
-                .setLeft(70)
+                .setLeft(3)
                 .setTop(40)
-                .setWidth(280)
-                .setLabelCaption("ctl_input1")
+                .setWidth(347)
+                .setLabelSize(80)
+                .setLabelCaption("Memo")
                 );
-
-            host.ctl_group1.append(
-                (new xui.UI.SLabel())
-                .setHost(host,"ctl_slabel13")
-                .setLeft(20)
-                .setTop(44)
-                .setCaption("Memo")
-                );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SVGPaper())
+                xui.create("xui.UI.SVGPaper")
                 .setHost(host,"ctl_svgpaper1")
                 .setLeft(0)
                 .setTop(0)
                 .setWidth(578)
-                .setHeight(458)
+                .setHeight(349)
                 .setZIndex(0)
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.UI.Span())
-                .setHost(host,"ctl_span2")
-                .setLeft(173)
-                .setTop(408)
-                .setWidth(232)
-                .setHeight(33)
-                .setHtml("<div style=\"text-align: center;\">The remoting data source ( Optional )</div><div style=\"text-align: center;\">JSON / SOAP / XML RPC ...</div>")
-                .setCustomStyle({
-                    "KEY" : {
-                        "font-weight" : "bold"
-                    }
-                })
-                );
-
-            host.ctl_svgpaper1.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_updateValue")
                 .setLeft(460)
                 .setTop(46)
@@ -148,9 +120,9 @@ Class('App', 'xui.Com',{
                 .setCaption("updateValue")
                 .onClick("_ctl_updatevalue_onclick")
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_checkValue")
                 .setLeft(460)
                 .setTop(76)
@@ -158,9 +130,9 @@ Class('App', 'xui.Com',{
                 .setCaption("checkValue")
                 .onClick("_ctl_checkvalue_onclick")
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_getDirtied")
                 .setLeft(460)
                 .setTop(106)
@@ -168,29 +140,9 @@ Class('App', 'xui.Com',{
                 .setCaption("getDirtied")
                 .onClick("_ctl_getdirtied_onclick")
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.UI.Span())
-                .setHost(host,"ctl_span37")
-                .setLeft(40)
-                .setTop(344)
-                .setWidth(160)
-                .setHeight(40)
-                .setHtml("Get data from remoting service, set to inner data, and reflect to bound UI controls")
-                );
-
-            host.ctl_svgpaper1.append(
-                (new xui.UI.Span())
-                .setHost(host,"ctl_span38")
-                .setLeft(340)
-                .setTop(360)
-                .setWidth(100)
-                .setHeight(20)
-                .setHtml("onData / onError")
-                );
-
-            host.ctl_svgpaper1.append(
-                (new xui.UI.Span())
+                xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span39")
                 .setLeft(66)
                 .setTop(303)
@@ -198,23 +150,24 @@ Class('App', 'xui.Com',{
                 .setHeight(20)
                 .setHtml("onData / onError")
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.rect())
+                xui.create("xui.svg.rect")
                 .setHost(host,"ctl_rect2")
                 .setSvgTag("Shapes:Rect")
                 .setAttr({
                     "x" : 30,
                     "y" : 170,
                     "width" : 510,
-                    "height" : 220,
+                    "height" : 154,
                     "stroke" : "#004A7F",
                     "fill" : "#ffffff"
-                })
+                }
+                )
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.path())
+                xui.create("xui.svg.path")
                 .setHost(host,"ctl_path1")
                 .setSvgTag("Shapes:Line")
                 .setAttr({
@@ -224,11 +177,12 @@ Class('App', 'xui.Com',{
                     "stroke-width" : 2,
                     "arrow-end" : "open-narrow-short",
                     "arrow-start" : "oval-midium-midium"
-                })
+                }
+                )
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.path())
+                xui.create("xui.svg.path")
                 .setHost(host,"ctl_path3")
                 .setSvgTag("Shapes:Line")
                 .setAttr({
@@ -238,25 +192,12 @@ Class('App', 'xui.Com',{
                     "stroke-width" : 2,
                     "arrow-end" : "open-narrow-short",
                     "arrow-start" : "oval-midium-midium"
-                })
+                }
+                )
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.rect())
-                .setHost(host,"ctl_rect3")
-                .setSvgTag("Shapes:Rect")
-                .setAttr({
-                    "x" : 30,
-                    "y" : 400,
-                    "width" : 510,
-                    "height" : 40,
-                    "stroke" : "#A52A2A",
-                    "fill" : "252-#FFC579:0-#FFAF46:100-#FB9D23:50"
-                })
-                );
-
-            host.ctl_svgpaper1.append(
-                (new xui.svg.path())
+                xui.create("xui.svg.path")
                 .setHost(host,"ctl_path4")
                 .setSvgTag("Shapes:Line")
                 .setAttr({
@@ -266,11 +207,12 @@ Class('App', 'xui.Com',{
                     "stroke-width" : 2,
                     "arrow-end" : "open-narrow-short",
                     "arrow-start" : "oval-midium-midium"
-                })
+                }
+                )
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.path())
+                xui.create("xui.svg.path")
                 .setHost(host,"ctl_path5")
                 .setSvgTag("Shapes:Line")
                 .setAttr({
@@ -280,25 +222,12 @@ Class('App', 'xui.Com',{
                     "stroke-width" : 2,
                     "arrow-end" : "open-narrow-short",
                     "arrow-start" : "oval-midium-midium"
-                })
+                }
+                )
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.path())
-                .setHost(host,"ctl_path6")
-                .setSvgTag("Shapes:Bezier")
-                .setAttr({
-                    "path" : "M,115,341C,148,541,285,287,290,131",
-                    "stroke" : "#004A7F",
-                    "stroke-width" : 2,
-                    "fill" : "none",
-                    "arrow-start" : "oval-midium-midium",
-                    "arrow-end" : "open-narrow-short"
-                })
-                );
-
-            host.ctl_svgpaper1.append(
-                (new xui.svg.rect())
+                xui.create("xui.svg.rect")
                 .setHost(host,"ctl_rect4")
                 .setSvgTag("Shapes:Rect")
                 .setAttr({
@@ -308,130 +237,82 @@ Class('App', 'xui.Com',{
                     "height" : 130,
                     "stroke" : "#004A7F",
                     "fill" : "#ffffff"
-                })
+                }
+                )
                 );
-
+            
             host.ctl_svgpaper1.append(
-                (new xui.svg.path())
-                .setHost(host,"ctl_path7")
-                .setSvgTag("Shapes:Bezier")
-                .setAttr({
-                    "path" : "M,305,340C,321,452,344,398,362,379",
-                    "stroke" : "#004A7F",
-                    "stroke-width" : 2,
-                    "fill" : "none",
-                    "arrow-start" : "oval-midium-midium",
-                    "arrow-end" : "open-narrow-short"
-                })
+                xui.create("xui.UI.SButton")
+                .setHost(host,"xui_ui_sbutton31")
+                .setLeft(460)
+                .setTop(136)
+                .setWidth(76)
+                .setCaption("checkRequired")
+                .onClick("_xui_ui_sbutton31_onclick")
                 );
-
-            host.ctl_svgpaper1.append(
-                (new xui.svg.path())
-                .setHost(host,"ctl_path8")
-                .setSvgTag("Shapes:Bezier")
-                .setAttr({
-                    "path" : "M,457,340C,441,452,418,398,400,379",
-                    "stroke" : "#004A7F",
-                    "stroke-width" : 2,
-                    "fill" : "none",
-                    "arrow-start" : "oval-midium-midium",
-                    "arrow-end" : "open-narrow-short"
-                })
-                );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_updateDataToUI")
                 .setLeft(128)
                 .setTop(198)
                 .setCaption("updateDataToUI")
                 .onClick("_ctl_updatedatatoui_onclick")
                 );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_updateDataFromUI")
                 .setLeft(338)
                 .setTop(198)
                 .setCaption("updateDataFromUI")
                 .onClick("_ctl_updatedatafromui_onclick")
                 );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_getData")
                 .setLeft(469)
                 .setTop(278)
                 .setCaption("getData")
                 .onClick("_ctl_getdata_onclick")
                 );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SButton())
+                xui.create("xui.UI.SButton")
                 .setHost(host,"ctl_setData")
                 .setLeft(51)
                 .setTop(278)
                 .setCaption("setData")
                 .onClick("_ctl_setdata_onclick")
                 );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SButton())
-                .setHost(host,"ctl_read")
-                .setLeft(95)
-                .setTop(318)
-                .setCaption("read")
-                .onClick("_ctl_read_onclick")
-                );
-
-            host.ctl_panel3.append(
-                (new xui.UI.Input())
+                xui.create("xui.UI.Input")
                 .setHost(host,"innerData")
-                .setDisabled(true)
                 .setLeft(168)
                 .setTop(248)
                 .setWidth(250)
                 .setHeight(65)
                 .setMultiLines(true)
                 );
-
+            
             host.ctl_panel3.append(
-                (new xui.UI.SLabel())
+                xui.create("xui.UI.SLabel")
                 .setHost(host,"ctl_slabel7")
                 .setLeft(275)
                 .setTop(235)
                 .setCaption("Inner Data")
                 );
-
-            host.ctl_panel3.append(
-                (new xui.UI.SButton())
-                .setHost(host,"ctl_sbutton29")
-                .setDisabled(true)
-                .setLeft(278)
-                .setTop(318)
-                .setCaption("invoke")
-                .onClick("_ctl_read_onclick")
-                );
-
-            host.ctl_panel3.append(
-                (new xui.UI.SButton())
-                .setHost(host,"ctl_sbutton30")
-                .setDisabled(true)
-                .setLeft(438)
-                .setTop(318)
-                .setCaption("write")
-                .onClick("_ctl_read_onclick")
-                );
-
+            
             return children;
-            // ]]Code created by CrossUI RAD Tools
+            // ]]Code created by CrossUI RAD Studio
         },
 
         customAppend : function(parent, subId, left, top){
             // "return false"
             return false;
         },
-        events : {},
         _ctl_updatevalue_onclick : function (profile, e, src, value) {
             this.databinder_1.updateValue();
             xui.message("Values are updated and reflected onto UI.");
@@ -488,18 +369,11 @@ Class('App', 'xui.Com',{
                 return data;
             });
         },
-        _databinder_1_afterread : function (profile, data) {
-            // you can adjust data here
-            if(data && data.Name){
-                data.Name = data.Name.split(" ")[0];
-            }
-            return data;
-        },
         _databinder_1_afterupdatedatafromui : function (profile, dataFromUI){
             this.innerData.setValue(_.stringify(dataFromUI),true);
         },
-        _databinder_1_afterinvoke : function (profile,rspData){
-            this.innerData.setValue(_.stringify(rspData),true);
+        _xui_ui_sbutton31_onclick:function (profile, e, src){
+            this.databinder_1.checkRequired();
         }
     }
 });

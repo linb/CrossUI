@@ -2608,12 +2608,12 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 color: '#909090'
             },
-            'input:disabled, button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled *, .xui-ui-itemdisabled *':{
+            'input:disabled, button:disabled, a:disabled,  .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled *, .xui-ui-itemdisabled *':{
                 $order:2,
                 cursor:'not-allowed',
                 color: '#808080'
             },
-            'input:disabled, button:disabled, a:disabled, .xui-ui-disabled,  .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
+            'input:disabled, button:disabled, a:disabled,  .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
                 $order:3,
                 'background-color':'#eee'
             },
@@ -3396,11 +3396,15 @@ Class("xui.UI",  "xui.absObj", {
 
                             if(prf.afterFormSubmit)prf.boxing().afterFormSubmit(prf, data, subId);
                         },
+                        // use refrence to keep the Class's function mark
                         _e1:function(profile, item, e, src, type){},
                         _e2:function(profile, keyboard, e, src){},
                         _e3:function(profile, e, shiftKey, src){},
                         _e4:function(profile, e, src, dragKey, dragData, item){},
-                        _e5:function(profile, e, src){}
+                        _e5:function(profile, e, src){},
+                        _e6:function(profile, ctrlPrf, type){},
+                        _e7:function(profile, elems, subId){},
+                        _e8:function(profile, data, subId){}
                     },
                     Static:{
                         $abstract:true,
@@ -3496,7 +3500,7 @@ Class("xui.UI",  "xui.absObj", {
                                     this.boxing().adjustDock(true);
                                 }
                             },
-                            conDockFlowStretch:{
+                            conDockStretch:{
                                 ini:"",
                                 combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5','0.25,0.5,0.25'],
                                 action:function(){
@@ -3516,18 +3520,15 @@ Class("xui.UI",  "xui.absObj", {
                                 ini:'application/x-www-form-urlencoded',
                                 listbox:['application/x-www-form-urlencoded','multipart/form-data','text/plain']
                             }
-                        },
-                        EventHandlers:{
-                            beforeInputAlert:function(profile, ctrlPrf, type){},
-                            beforeFormReset:function(profile, elems, subId){},
-                            afterFormReset:function(profile, elems, subId){},
-                            beforeFormSubmit:function(profile, data, subId){},
-                            afterFormSubmit:function(profile, data, subId){},
                         }
                     }
                 });
             var src=xui.absContainer.prototype;
-
+            // form
+            hls.beforeInputAlert=src._e6;
+            hls.beforeFormReset=hls.afterFormReset=src._e7;
+            hls.beforeFormSubmit=hls.afterFormSubmit=src._e8;
+            
             if(hash.HoverEffected){
                 _.each(hash.HoverEffected,function(o,i){
                     t=map[i]?hash:(hash[i]||(hash[i]={}));
@@ -3674,7 +3675,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                _.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockFlowStretch,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
+                _.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
                     var f='get'+_.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+_.str.initial(o);
@@ -4262,7 +4263,7 @@ Class("xui.UI",  "xui.absObj", {
             dockMaxH:0,
 
             // to stop conDockFlexFill
-            dockIgnoreFlex:{
+            dockIgnoreFlexFill:{
                 ini:false,
                 action:function(v){
                     var self=this;
@@ -4271,16 +4272,16 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
             // for top/left/right/bottom only
-            // "" can be reset by container's conDockFlowStretch
-            dockFlowStretch:{
+            // "" can be reset by container's conDockStretch
+            dockStretch:{
                 ini:"",
                 combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5'],
                 set:function(value){
                     var o=this, t=o.properties;
-                    t.dockFlowStretch=value;
+                    t.dockStretch=value;
                     if(t.dock == "fill"||t.dock == "cover"||t.dock == "width"||t.dock == "height"){
                         if(value!='forward'&&value!='rearward'&&value!='stretch'){
-                            t.dockFlowStretch="stretch";
+                            t.dockStretch="stretch";
                         }
                     }
                     if(o.rendered && t.dock!='none'){
@@ -4659,7 +4660,7 @@ Class("xui.UI",  "xui.absObj", {
                                 conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
                                 conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
                                 conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
-                                conDockFlowStretch=(pprop && ('conDockFlowStretch' in pprop))?pprop.conDockFlowStretch.split(/[,;\s]+/):[],
+                                conDockStretch=(pprop && ('conDockStretch' in pprop))?pprop.conDockStretch.split(/[,;\s]+/):[],
                                 perW=conDockFlexFill=="width"||conDockFlexFill=="both",
                                 perH=conDockFlexFill=="height"||conDockFlexFill=="both",
                                 node=isWin?xui.win:xui(pid);
@@ -4722,7 +4723,7 @@ Class("xui.UI",  "xui.absObj", {
                                         target = me[key];
                                         if(target.length){
                                             for(i=0;o=target[i++];){
-                                                if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
+                                                if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
@@ -4750,7 +4751,7 @@ Class("xui.UI",  "xui.absObj", {
                                             target = me[key];
                                             if(target.length){
                                                 for(i=0;o=target[i++];){
-                                                    if(!o.properties.dockIgnore && o.properties.dockIgnoreFlex){
+                                                    if(!o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
                                                             innerW -= adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width());
@@ -4759,7 +4760,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     }
                                                 }
                                                 for(i=0;o=target[i++];){
-                                                    if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
+                                                    if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
                                                             node.width(adjustMM(o.properties,"W",Math.min(1, (parseFloat(o.properties.width) || node.width()) / wSum) * innerW));
@@ -4776,7 +4777,7 @@ Class("xui.UI",  "xui.absObj", {
                                             target = me[key];
                                             if(target.length){
                                                 for(i=0;o=target[i++];){
-                                                    if(!o.properties.dockIgnore && o.properties.dockIgnoreFlex){
+                                                    if(!o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
                                                             innerH -= adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height());
@@ -4785,7 +4786,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     }
                                                 }
                                                 for(i=0;o=target[i++];){
-                                                    if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
+                                                    if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
                                                             node.height(adjustMM(o.properties,"H",Math.min(1, (parseFloat(o.properties.height) || node.height())/ hSum) * innerH));
@@ -4795,28 +4796,28 @@ Class("xui.UI",  "xui.absObj", {
                                             }
                                         }
                                     }
-                                    if(perW)pprf._conDockFlexFillW=1;
-                                    if(perH)pprf._conDockFlexFillH=1;
+                                    if(pprf&&perW)pprf._conDockFlexFillW=1;
+                                    if(pprf&&perH)pprf._conDockFlexFillH=1;
                                 }
                                 if(conDockFlexFill!="both"){
                                     for(k=0;key=arr[k++];){
                                         target = me[key];
                                         if(target.length){
                                             for(i=0;o=target[i++];){
-                                                if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlex)){
+                                                if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                     var node = o.getRoot();
-                                                    if(pprf._conDockFlexFillW && !perW && (key=='left'||key=='right'||key=='width')){
+                                                    if(pprf&&pprf._conDockFlexFillW && !perW && (key=='left'||key=='right'||key=='width')){
                                                         node.width(o.properties.width) ;
                                                     }
-                                                    if(pprf._conDockFlexFillH && !perH && (key=='top'||key=='bottom'||key=='height')){
+                                                    if(pprf&&pprf._conDockFlexFillH && !perH && (key=='top'||key=='bottom'||key=='height')){
                                                         node.height(o.properties.height);
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    if(!perW)delete pprf._conDockFlexFillW;
-                                    if(!perH)delete pprf._conDockFlexFillH;
+                                    if(pprf&&!perW)delete pprf._conDockFlexFillW;
+                                    if(pprf&&!perH)delete pprf._conDockFlexFillH;
                                 }
 
                                 // repos && resize
@@ -4831,7 +4832,7 @@ Class("xui.UI",  "xui.absObj", {
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
                                             if(!o.properties.dockIgnore){
-                                                rePos(o, ii++, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockFlowStretch);
+                                                rePos(o, ii++, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockStretch);
                                             }
                                         }
                                     }
@@ -4909,14 +4910,14 @@ Class("xui.UI",  "xui.absObj", {
                             f[key]=[];
                         });
                         f.dockall=[];
-                        f.rePos=function(profile, index, obj, value, id, w, h, spaceW, spaceH, conDockFlowStretch){
+                        f.rePos=function(profile, index, obj, value, id, w, h, spaceW, spaceH, conDockStretch){
                             //if $dockid input, and not the specific node, return
                             var flag=false;
                             if(id && profile.$xid!=id)flag=true;
                             var prop = profile.properties,
                                 flt=prop.dockFloat,
                                 margin = prop.dockMargin,
-                                stretch=prop.dockFlowStretch,
+                                stretch=prop.dockStretch,
                                 sStart,sEnd,noStretch,pct,isCover,
                                 tempW=0,tempH=0,
                                 node = profile.getRoot(),
@@ -4944,7 +4945,7 @@ Class("xui.UI",  "xui.absObj", {
                                     break;
                                 default:                                    
                                     // flow stretch can be copy from container
-                                    stretch = stretch || ((value=="width"||value=="height")?"":conDockFlowStretch[index % conDockFlowStretch.length]) || "stretch";
+                                    stretch = stretch || ((value=="width"||value=="height")?"":conDockStretch[index % conDockStretch.length]) || "stretch";
 
                                     // width/height support 3 only:
                                     if(value=="width" || value=="height"){
@@ -6441,7 +6442,7 @@ Class("xui.absValue", "xui.absObj",{
                     if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
-            dirtyMark:false,
+            dirtyMark:true,
             showDirtyMark:true
         },
         // for item in box array
@@ -7162,7 +7163,7 @@ new function(){
                 hoverPop:null,
                 hoverPopType:null,
                 dock:null,
-                dockFlowStretch:null,
+                dockStretch:null,
                 renderer:null,
                 display:null,
                 html:null,
@@ -7175,7 +7176,7 @@ new function(){
                 disableTips:null,
                 disabled:null,
                 defaultFocus:null,
-                dockFlowStretch:null,
+                dockStretch:null,
                 dockIgnore:null,
                 dockOrder:null,
                 dockMargin:null,
@@ -7427,7 +7428,7 @@ new function(){
                 if(!key)self._properties={};
                 else if(typeof key=='string') self._properties[key]=value;
                 else _.merge(self._properties, key, 'all');
-                return self;
+                return this;
             },
             getProperties:function(key){
                 var self=this.get(0);
@@ -7443,7 +7444,7 @@ new function(){
                     self._events[key]=value;
                 else
                     _.merge(self._events, key, 'all');
-                return self;
+                return this;
             },
             getEvents:function(key){
                 var self=this.get(0);
@@ -7494,7 +7495,7 @@ new function(){
                 hoverPop:null,
                 hoverPopType:null,
                 dock:null,
-                dockFlowStretch:null,
+                dockStretch:null,
                 renderer:null,
                 html:null,
                 disableClickEffect:null,
@@ -7502,7 +7503,7 @@ new function(){
                 disableTips:null,
                 disabled:null,
                 defaultFocus:null,
-                dockFlowStretch:null,
+                dockStretch:null,
                 dockIgnore:null,
                 dockOrder:null,
                 dockMargin:null,

@@ -19,7 +19,7 @@ Class('App', 'xui.Com',{
                 .setDockOrder("2")
                 .setDockMargin({"left":20, "right":20, "top":20, "bottom":0})
                 .setBorder(true)
-                .setHtml("dock : top ; dockOder : 2 ; dockMaring : {left:20,top:20,bottom:0,right:20}")
+                .setHtml("dock : top ; dockOder : 2 ; dockMargin : {left:20,top:20,bottom:0,right:20}")
                 .setBorderType("none")
             );
             

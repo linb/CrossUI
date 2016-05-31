@@ -74,6 +74,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 .onCmd("_tg_oncmd")
                 .beforeIniEditor("_tg_beforeIniEditor")
                 .onBeginEdit("_tg_onEdit")
+                .beforeRowActive('_tg_beforerowactive')
                 .beforeCellUpdated("_tg_beforecellupdated")
             );
             
@@ -250,7 +251,13 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     alert('Text format is not valid!');
                     return false;
                 }
+                _.asyRun(function(){
+                    ns.fireEvent("onchange", [ns]);
+                },100);
             }
+        },
+        _tg_beforerowactive:function(){
+            return false;
         },
         _tg_oncmd:function (profile, row, cmdkey, e, src){
             var ns = this, 
@@ -312,8 +319,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         events:{
             onRender:function(module){
-                module.tg.updateHeader("key", module.properties.keyCaption||"key");
-                module.tg.updateHeader("value", module.properties.valueCaption||"value");
+                module.tg.updateHeader("key", xui.adjustRes(module.properties.keyCaption)||"key");
+                module.tg.updateHeader("value", xui.adjustRes(module.properties.valueCaption)||"value");
                 module.tg.updateHeader("value", {type:module.properties.bigFont?'textarea':'input'});
                 
                 if('value' in module.properties) module.setValue(module.properties.value);
@@ -322,8 +329,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         propSetAction:function(prop){
             var module=this;
             if(module.renderId && module.tg && module.tg.getRootNode()){
-                if('keyCaption' in prop) module.tg.updateHeader("key", prop.keyCaption||"");
-                if('valueCaption' in prop) module.tg.updateHeader("value", prop.valueCaption||"");
+                if('keyCaption' in prop) module.tg.updateHeader("key", xui.adjustRes(prop.keyCaption)||"");
+                if('valueCaption' in prop) module.tg.updateHeader("value", xui.adjustRes(prop.valueCaption)||"");
                 if('bigFont' in prop) module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
 
                 if('value' in prop) module.setValue(prop.value);

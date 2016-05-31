@@ -82,7 +82,7 @@ Class('App', 'xui.Com',{
         _tg_ondblclickrow:function (p,row, e, src) {
             this._activeRow = row;
             var self=this;
-            xui.ComFactory.newCom('App.Dlg' ,function(){
+            xui.newModule('App.Dlg' ,function(){
                 this.$parent=self;
                 this
                     .setProperties({

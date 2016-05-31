@@ -115,7 +115,7 @@ Class('App', 'xui.Com',{
             var tabs=SPA.tabs,id=item.id;
             if(!tabs.getItemByItemId(id)){
                 tabs.insertItems([{id:id,caption:id,closeBtn:true}], null, false);
-                xui.ComFactory.newCom('App.Table' ,function(){
+                xui.newModule('App.Table' ,function(){
                     var page=this;
                     page.onClose=function(){
                         tabs.removeItems([id]);

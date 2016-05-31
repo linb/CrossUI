@@ -36,7 +36,6 @@ Class('App', 'xui.Com',{
                 .setDock("fill")
                 .setLeft(30)
                 .setTop(60)
-                .setCmds([])
                 .onGetContent("_treebar3_ongetcontent")
             );
             
@@ -56,7 +55,7 @@ Class('App', 'xui.Com',{
             case 'arr':
                 return [{id:'suba',caption:'sub item a'}, {id:'subb',caption:'sub item b'}];
             case 'com':
-                xui.ComFactory.newCom('App.ACom',function(err, com, threadid){
+                xui.newModule('App.ACom',function(err, com, threadid){
                     this.create(function(err, com, threadid){
                         callback(com.getUIComponents());
                     },threadid)
