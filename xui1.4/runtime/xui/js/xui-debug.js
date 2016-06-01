@@ -11845,7 +11845,7 @@ type:4
             var i=1,id,rt,style,o,t,count=0,doc=document,body=doc.body,ini=function(o){
                 o.id=id;
                 // position:relative; is for text wrap bug
-                xui([o]).attr('style','position:relative;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
+                xui([o]).attr('style','position:absolute;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
             };
             sequence=sequence || 1;
             while(1){
@@ -19203,6 +19203,8 @@ Class("xui.UI",  "xui.absObj", {
 
             //must use empty div for RenderTriggers
             var matrix=xui.Dom.getEmptyDiv().get(0), r=[];
+            // for control size
+            matrix.style.position='relative';
             matrix.innerHTML=str;
             //add event handlers
             this.$addEventsHanlder(profile, matrix);
@@ -25858,7 +25860,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 profile.proxy = xui.Dom.getEmptyDiv();
                 profile.proxy
                     .html(' ',false)
-                    .css({border:'1px dashed',visibility:'visible'})
+                    .css({border:'1px dashed',visibility:'visible',position:'absolute'})
                     .offset(pos)
                     .width(w)
                     .height(h)

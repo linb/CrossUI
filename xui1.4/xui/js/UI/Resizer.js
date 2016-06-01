@@ -823,7 +823,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 profile.proxy = xui.Dom.getEmptyDiv();
                 profile.proxy
                     .html(' ',false)
-                    .css({border:'1px dashed',visibility:'visible'})
+                    .css({border:'1px dashed',visibility:'visible',position:'absolute'})
                     .offset(pos)
                     .width(w)
                     .height(h)

@@ -2711,6 +2711,8 @@ Class("xui.UI",  "xui.absObj", {
 
             //must use empty div for RenderTriggers
             var matrix=xui.Dom.getEmptyDiv().get(0), r=[];
+            // for control size
+            matrix.style.position='relative';
             matrix.innerHTML=str;
             //add event handlers
             this.$addEventsHanlder(profile, matrix);

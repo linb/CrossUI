@@ -3431,7 +3431,7 @@ type:4
             var i=1,id,rt,style,o,t,count=0,doc=document,body=doc.body,ini=function(o){
                 o.id=id;
                 // position:relative; is for text wrap bug
-                xui([o]).attr('style','position:relative;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
+                xui([o]).attr('style','position:absolute;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
             };
             sequence=sequence || 1;
             while(1){
