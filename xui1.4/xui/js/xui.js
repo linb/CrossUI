@@ -896,6 +896,7 @@ _.merge(xui,{
         thread:{},
         SC:{},
         clsByURI:{},
+        fetching:{},
         hookKey:{},
         hookKeyUp:{},
         snipScript:{},
@@ -1243,6 +1244,7 @@ _.merge(xui,{
         options=options||{};
         var isPath=/\.js$/i.test(uri), 
             c=xui.$cache.clsByURI,
+            f=xui.$cache.fetching,
             cls,t;
          if(!isPath){
              // special path( dont use any dynamic
@@ -1253,54 +1255,78 @@ _.merge(xui,{
         if(!force && (isPath?((t=c[uri]) && t.$xui$):(t=xui.SC.get(cls))))
             _.tryF(onSuccess,[uri,cls],t);
         else{
-            if(xui.absIO.isCrossDomain(uri)){
-                Class._ignoreNSCache=1;Class._last=null;
-                xui.JSONP(uri,_()+"-"+xui.JSONP.uid,function(){
-                    if(Class._last)t=c[uri]=Class._last;
-                    Class._ignoreNSCache=Class._last=null;
-                    if(t)_.tryF(onSuccess, [uri,t.KEY],t);
-                    else _.tryF(onFail,  _.toArr(arguments));
-                    var s=xui.getClassName(uri);
-                    if(t&&t.KEY!=s){
-                        var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                        _.tryF(onAlert, [msg, uri, s, t.KEY]);
-                        _.asyRun(function(){
-                            throw msg;
-                        });
-                    }
-                },function(){
+            // For fetching one class multiple times
+            if(!f[uri]){
+                f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
+                if(xui.absIO.isCrossDomain(uri)){
                     Class._ignoreNSCache=1;Class._last=null;
-                    _.tryF(onFail, _.toArr(arguments));
-                },threadid,{rspType:'script'}).start();
+                    xui.JSONP(uri,_()+"-"+xui.JSONP.uid,function(){
+                        if(Class._last)t=c[uri]=Class._last;
+                        Class._ignoreNSCache=Class._last=null;
+                        if(t){for(var i in onSuccess)_.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i in onFail)_.tryF(onFail[i],  _.toArr(arguments));}
+                        var s=xui.getClassName(uri);
+                        if(t&&t.KEY!=s){
+                            var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            for(var i in onAlert)_.tryF(onAlert[i], [msg, uri, s, t.KEY]);
+                            _.asyRun(function(){
+                                throw msg;
+                            });
+                        }
+                        // for Thread.group in fetchClasses
+                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                    },function(){
+                        Class._ignoreNSCache=1;Class._last=null;
+                        for(var i in onFail)_.tryF(onFail[i], _.toArr(arguments));
+                        // for Thread.group in fetchClasses
+                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                    },threadid,{rspType:'script'}).start();
+                }else{
+                    xui.Ajax(uri,_()+"-"+xui.Ajax.uid,function(rsp){
+                        Class._ignoreNSCache=Class._last=null;
+                        var scriptnode;
+                        var s=xui.getClassName(uri);
+                        try{scriptnode=_.exec(rsp, s)}
+                        catch(e){for(var i in onFail)_.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
+                        if(Class._last)t=c[uri]=Class._last;
+                        Class._last=null;
+                        if(t){for(var i in onSuccess)_.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i in onFail)_.tryF(onFail[i],  _.toArr(arguments));}
+                        if(t&&t.KEY!=s){
+                            var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            for(var i in onAlert)_.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
+                            _.asyRun(function(){
+                                throw msg;
+                            });
+                        }
+                        // for Thread.group in fetchClasses
+                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                    },function(){
+                        Class._last=null;
+                        for(var i in onFail)_.tryF(onFail[i], _.toArr(arguments));
+                        // for Thread.group in fetchClasses
+                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                    },threadid,{rspType:'text',asy:true}).start();
+                }
             }else{
-                xui.Ajax(uri,_()+"-"+xui.Ajax.uid,function(rsp){
-                    Class._ignoreNSCache=Class._last=null;
-                    var scriptnode;
-                    var s=xui.getClassName(uri);
-                    try{scriptnode=_.exec(rsp, s)}
-                    catch(e){_.tryF(onFail,[e.name + ": " + e.message]);Class._last=null;}
-                    if(Class._last)t=c[uri]=Class._last;
-                    Class._last=null;
-                    if(t)_.tryF(onSuccess, [uri,t.KEY],t);
-                    else _.tryF(onFail, _.toArr(arguments));
-                    if(t&&t.KEY!=s){
-                        var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                        _.tryF(onAlert, [msg, uri, s,  t.KEY]);
-                        _.asyRun(function(){
-                            throw msg;
-                        });
-                    }
-                },function(){
-                    Class._last=null;
-                    _.tryF(onFail, _.toArr(arguments));
-                },threadid,{rspType:'text',asy:true}).start();
+                if(onSuccess)f[uri][0].push(onSuccess);
+                if(onFail)f[uri][1].push(onFail);
+                if(onAlert)f[uri][2].push(onAlert);
+                if(threadid){
+                    f[uri][3].push(threadid);
+                    xui.Thread(threadid).suspend();
+                }
             }
         }
     },
     fetchClasses:function(uris, onEnd, onSuccess, onFail, onAlert, force, threadid, options){
         var hash={}, f=function(uri,i,hash){
-            hash[i]=xui.Thread(null,[function(threadid){
-                xui.fetchClass(uri, onSuccess, onFail, onAlert, force, threadid, options);
+            hash[i]=xui.Thread(null,[function(tid){
+                xui.fetchClass(uri, onSuccess, onFail, onAlert, force, tid, options);
             }]);
         };
         for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
@@ -1558,10 +1584,10 @@ _.merge(xui,{
                     o = new xui.UI.MoudluePlaceHolder();
                     xui.require(tag,function(module){
                          if(module&&module["xui.Module"]){
-                             var m=new module();
-                             m.create(function(){
-                                 o.replaceWithModule(m);
-                             });
+                            var m=new module();
+                            m.create(function(){
+                                o.replaceWithModule(m);
+                            });
                          }
                      }); 
                 }
