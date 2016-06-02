@@ -100,7 +100,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                       //date
                         /^new Date\([0-9 \,]*\)$/i.test(v) ? ['date', _.serialize(_.unserialize(v))] :
                       //function
-                        /^((function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))$/i.test(v) ? ['function',v] :
+                        /^((\s*function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))\s*$/i.test(v) ? ['function',v] :
                       //hash
                         /^\{[\s\S]*\}$/.test(v) ? ['hash',_.stringify(_.unserialize(v))] :
                       //array

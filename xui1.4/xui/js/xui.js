@@ -3838,7 +3838,7 @@ Class('xui.Profile','xui.absProfile',{
 
             // try to clear parent host
             var o;
-            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 delete ns.host[ns.alias];
             }
 

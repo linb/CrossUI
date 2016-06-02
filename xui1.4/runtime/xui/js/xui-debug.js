@@ -3838,7 +3838,7 @@ Class('xui.Profile','xui.absProfile',{
 
             // try to clear parent host
             var o;
-            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 delete ns.host[ns.alias];
             }
 
@@ -16689,7 +16689,7 @@ Class("xui.Tips", null,{
 
             // try to clear parent host
             var o;
-            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && o.length===1){
+            if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 delete ns.host[ns.alias];
             }
 
@@ -19891,7 +19891,7 @@ Class("xui.UI",  "xui.absObj", {
                                 return;
                             }
                             var prf=ns.get(0),
-                              p = prf.properties,
+                              p = prf.properties, f,
                               data = ns.getFormValues(subId),
                               apicaller;
                             // call before event
@@ -19902,15 +19902,30 @@ Class("xui.UI",  "xui.absObj", {
                             if(!ignoreAlert && !ns.checkRequired()){
                                 return;
                             }
-                            // try to get APICaller
-                            if(xui.APICaller && _.arr.indexOf(['_blank','_self','_parent','_top'],p.formTarget)==-1) {
-                                apicaller = xui.APICaller.getFromName(p.formTarget);
+                            if(p.formTarget=="Alert"){
+                                data = _.stringify(data);
+                                if(xui.Coder && xui.Coder.formatText)
+                                    data = xui.Coder.formatText(data);
+                                alert(data);
+                            }else if(/^\s*\{[^}]+\}\s*$/.test(p.formTarget)){
+                                f=xui.adjustVar(p.formTarget);
+                                f(data);
+                            }else if(/^((\s*function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))\s*$/.test(p.formTarget)){
+                                if(f=_.unserialize(p.formTarget)){
+                                    f(data);
+                                }
                             }
-                            if(apicaller){
-                                apicaller.setQueryArgs(data);
-                                apicaller.invoke();
-                            }else{
-                                xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
+                            else{
+                                // try to get APICaller
+                                if(xui.APICaller && _.arr.indexOf(['_blank','_self','_parent','_top'],p.formTarget)==-1) {
+                                    apicaller = xui.APICaller.getFromName(p.formTarget);
+                                }
+                                if(apicaller){
+                                    apicaller.setQueryArgs(data);
+                                    apicaller.invoke();
+                                }else{
+                                    xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
+                                }
                             }
                             // update UI 
                             ns.getFormElements().updateValue();
@@ -20033,8 +20048,8 @@ Class("xui.UI",  "xui.absObj", {
                                 listbox:['get','post']
                             },
                             formTarget:{
-                                ini:'_blank',
-                                combobox:['_blank','_self','_parent','_top','[framename]']
+                                ini:'Alert',
+                                combobox:['Alert','_blank','_self','_parent','_top','[framename]','[APICaller]','function(d){xui.log(d)}']
                             },
                            formAction:"",
                            formEnctype:{
