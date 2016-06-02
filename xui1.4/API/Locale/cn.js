@@ -10131,6 +10131,30 @@ _.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getFrameStyle:{
+                $desc:"得到内部iFrame的附加css样式.",
+                $rtn:"String"
+            },
+            setFrameStyle:{
+                $desc:"设置内部iFrame的附加css样式.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getCmdFilter:{
+                $desc:"得到过滤掉的控件中命令按钮.",
+                $rtn:"String"
+            },
+            setCmdFilter:{
+                $desc:"设置过滤掉的控件中命令按钮.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 设置'font1;font2'是隐藏font1和font2.",
+                    $force
+                ]
+            },
             getCmdList :{
                 $desc:"得到控件中命令按钮的出现和排列方式.",
                 $rtn:"String",
@@ -10153,6 +10177,113 @@ _.set(xui.Locale,["cn","app"], {
                     "var rich;xui(id).prepend(rich=new xui.UI.RichEditor);"+
                     "_.asyRun(function(){rich.setCmdList('font1;font2;font3;font4'); alert(rich.getCmdList ())},1000)"+
                     "}"
+                ]
+            },
+            getLabelSize:{
+                $desc:"获取标签的大小",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"获取标签的位置",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"设置标签的位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : left, right, top, bottom 之一.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"获取标签与输入框的距离",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"获取标签的文字",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"设置标签的文字.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"获取标签的水平对齐方式.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"设置按标签的水平对齐方式 .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"在单击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"在双击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"当鼠标在标签上按下时调用.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onReady:{
+                $desc:"当内部Frame准备好.",
+                $paras:[
+                    $profile
+                ]
+            },
+            onUpdateToolbar:{
+                $desc:"当命令按钮更新状态.",
+                $paras:[
+                    $profile,
+                    "etype: String,  事件类型",
+                    "doc: Object, 内部frame的document对象"
+                ]
+            },
+            onInnerEvent:{
+                $desc:"当命令按钮更新状态.",
+                $paras:[
+                    $profile,
+                    "type : String,  事件类型",
+                    "node : Element, 相应的DOM元素.",
+                    "e : Event, DOM事件元素."
                 ]
             }
         }
@@ -11732,8 +11863,7 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-
-
+ 
     _.set(xui.Locale,["cn","doc","xui","UI","Stacks"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Stacks 类",
@@ -11869,6 +11999,90 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Boolean.",
                     $force
+                ]
+            },
+            getLabelSize:{
+                $desc:"获取标签的大小",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"获取标签的位置",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"设置标签的位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : left, right, top, bottom 之一.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"获取标签与输入框的距离",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"获取标签的文字",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"设置标签的文字.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"获取标签的水平对齐方式.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"设置按标签的水平对齐方式 .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"在单击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"在双击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"当鼠标在标签上按下时调用.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             }
         }
@@ -12321,6 +12535,90 @@ _.set(xui.Locale,["cn","app"], {
                     "_.asyRun(function(){o.setIsRange(false); alert(o.getIsRange()); },1000);"+
                     "}"
                 ]
+            },
+            getLabelSize:{
+                $desc:"获取标签的大小",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"获取标签的位置",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"设置标签的位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : left, right, top, bottom 之一.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"获取标签与输入框的距离",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"获取标签的文字",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"设置标签的文字.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"获取标签的水平对齐方式.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"设置按标签的水平对齐方式 .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"在单击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"在双击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"当鼠标在标签上按下时调用.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
             }
         }
     });
@@ -12626,6 +12924,90 @@ _.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getLabelSize:{
+                $desc:"获取标签的大小",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"获取标签的位置",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"设置标签的位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : left, right, top, bottom 之一.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"获取标签与输入框的距离",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"获取标签的文字",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"设置标签的文字.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"获取标签的水平对齐方式.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"设置按标签的水平对齐方式 .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"在单击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"在双击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"当鼠标在标签上按下时调用.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
             onItemSelected:{
                 $desc:"当列表项被选择时调用.",
                 $paras:[
@@ -12786,6 +13168,90 @@ _.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数] : Number.",
                     $force
+                ]
+            },
+            getLabelSize:{
+                $desc:"获取标签的大小",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"获取标签的位置",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"设置标签的位置.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : left, right, top, bottom 之一.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"获取标签与输入框的距离",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"获取标签的文字",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"设置标签的文字.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"获取标签的水平对齐方式.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"设置按标签的水平对齐方式 .",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"在单击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"在双击标签的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"当鼠标在标签上按下时调用.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid."
                 ]
             },
             onItemClick:{
@@ -20173,8 +20639,8 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'tipsOK':'有效提示文本',
             'dynCheck':'动态校验',
             'selectOnFocus':'自动选择文本',
-            'labelSize':'标签大小',
             'placeholder':'空白提示文字',
+            'labelSize':'标签大小',
             'labelPos':'标签位置',
             'labelCaption':'标签文字',
             'labelGap':'标签距离',
@@ -20342,11 +20808,23 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'type':'类型',
             'isRange':'双滑块',
             'showIncreaseHandle':'显示增加按钮',
-            'showDecreaseHandle':'显示减小按钮'
+            'showDecreaseHandle':'显示减小按钮',
+            'labelSize':'标签大小',
+            'labelPos':'标签位置',
+            'labelCaption':'标签文字',
+            'labelGap':'标签距离',
+            'labelHAlign':'标签水平对齐'
         },
         'xui_UI_RichEditor' : {
             'frameTemplate':'编辑器HTML模板',
-            'cmdList':'命令按钮列表'
+            'frameStyle':'编辑器CSS样式',
+            'cmdList':'命令按钮列表',
+            'cmdFilter':'命令按钮过滤',
+            'labelSize':'标签大小',
+            'labelPos':'标签位置',
+            'labelCaption':'标签文字',
+            'labelGap':'标签距离',
+            'labelHAlign':'标签水平对齐'
         },
         'xui_UI_ColorPicker' : {
             'barDisplay':'标题栏',
@@ -20374,7 +20852,12 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'maxHeight':'最大高度',
             'itemRow':'单项独占行',
             'tagCmds':"命令按钮集",
-            'optBtn':'显示选项按钮'
+            'optBtn':'显示选项按钮',
+            'labelSize':'标签大小',
+            'labelPos':'标签位置',
+            'labelCaption':'标签文字',
+            'labelGap':'标签距离',
+            'labelHAlign':'标签水平对齐'
         },
         'xui_UI_Gallery' : {
             'itemMargin':'画廊项外补丁',
@@ -20396,13 +20879,23 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'loadingImg':'加载中图片'
         },
         'xui_UI_RadioBox' : {
-            'checkBox':'多选框样式'
+            'checkBox':'多选框样式',
+            'labelSize':'标签大小',
+            'labelPos':'标签位置',
+            'labelCaption':'标签文字',
+            'labelGap':'标签距离',
+            'labelHAlign':'标签水平对齐'
         },
         'xui_UI_StatusButtons' : {
             'itemMargin':'按钮外补丁',
             'itemWidth':'按钮宽度',
             'itemAlign':'文字对齐方式',
-            'itemLinker':'链接样式'
+            'itemLinker':'链接样式',
+            'labelSize':'标签大小',
+            'labelPos':'标签位置',
+            'labelCaption':'标签文字',
+            'labelGap':'标签距离',
+            'labelHAlign':'标签水平对齐'
         },
         'xui_UI_Poll' : {
             'title':'标题内容',
@@ -20788,6 +21281,7 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onChecked:"改变选中状态"
         },
         'xui_UI_Element' : {
+            onClick:"鼠标点击"
         },
         'xui_UI_HTMLButton' : {
             onClick:"鼠标点击"
@@ -20843,8 +21337,17 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onMediaEvent:"媒体事件"
         },
         'xui_UI_Slider' : {
+              onLabelActive:"激活标签",
+              onLabelClick:"点击标签",
+              onLabelDblClick:"双击标签"
         },
         'xui_UI_RichEditor' : {
+              onLabelActive:"激活标签",
+              onLabelClick:"点击标签",
+              onLabelDblClick:"双击标签",
+              onReady:"当IFrame准备好",
+              onUpdateToolbar:"当工具栏更新触发",
+              onInnerEvent:"当内部事件触发"
         },
         'xui_UI_ColorPicker' : {
             beforeClose:"窗口关闭前"
@@ -20865,15 +21368,24 @@ _.set(xui.Locale,["cn","doc","eventname"],{
               onDblclick:"鼠标双击",
               onShowOptions:"点击选项按钮",
               onItemSelected :"选中条目",
-              onCmd:"点击命令按钮"
+              onCmd:"点击命令按钮",
+              onLabelActive:"激活标签",
+              onLabelClick:"点击标签",
+              onLabelDblClick:"双击标签"
         },
         'xui_UI_Gallery' : {
         },
         'xui_UI_IconList' : {
         },
         'xui_UI_RadioBox' : {
+              onLabelActive:"激活标签",
+              onLabelClick:"点击标签",
+              onLabelDblClick:"双击标签"
         },
         'xui_UI_StatusButtons' : {
+              onLabelActive:"激活标签",
+              onLabelClick:"点击标签",
+              onLabelDblClick:"双击标签"
         },
         'xui_UI_Poll' : {
             beforeOptionAdded:"添加选项前",

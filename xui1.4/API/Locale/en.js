@@ -36,7 +36,7 @@ _.set(xui.Locale,["en","app"], {
         ]
     };
     var $force="force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false].";
-    vaf $profile="profile : xui.UIProfile. The current control's profile object";
+    var $profile="profile : xui.UIProfile. The current control's profile object";
     /*
     $desc string
     $paras array
@@ -10201,6 +10201,30 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getFrameStyle:{
+                $desc:"Gets the control's inner iframe css style.",
+                $rtn:"String"
+            },
+            setFrameStyle:{
+                $desc:"Sets the control's inner iframe css style.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getCmdFilter:{
+                $desc:"Gets the filter of control's command list.",
+                $rtn:"String"
+            },
+            setCmdFilter:{
+                $desc:"Sets the filter of control's command list.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. 'font1;font2': to hide font1 and font2 command buttons.",
+                    $force
+                ]
+            },
             getCmdList :{
                 $desc:"Gets the control's command list.",
                 $rtn:"String",
@@ -10223,6 +10247,113 @@ _.set(xui.Locale,["en","app"], {
                     "var rich;xui(id).prepend(rich=new xui.UI.RichEditor);"+
                     "_.asyRun(function(){rich.setCmdList('font1;font2;font3;font4'); alert(rich.getCmdList ())},1000)"+
                     "}"
+                ]
+            },
+            getLabelSize:{
+                $desc:"Gets the label's size",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"Sets the label's size.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"Gets the label's positoin.",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"Sets the label's positoin.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"Gets the gap between the label and the input.",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"Sets the the gap between label and input.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"Gets the label's caption.",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"Sets the label's caption.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"Gets the label's horizontal alignment.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"Sets the label's horizontal alignment.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"Fired when user click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"Fired when user double click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"Fired when user mousedown the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onReady:{
+                $desc:"When the inner frame is ready.",
+                $paras:[
+                    $profile
+                ]
+            },
+            onUpdateToolbar:{
+                $desc:"When trying to modify the toolbar",
+                $paras:[
+                    $profile,
+                    "etype: String,  event type",
+                    "doc: Object, the inner frame's document object"
+                ]
+            },
+            onInnerEvent:{
+                $desc:"When the inner frame fired an event.",
+                $paras:[
+                    $profile,
+                    "type : String,  event type",
+                    "node: Element, the corresponding Caption DOM element.",
+                    "e: Event, DOM event Object."
                 ]
             }
         }
@@ -11953,6 +12084,90 @@ _.set(xui.Locale,["en","app"], {
                     "value [Required] : Boolean.",
                     $force
                 ]
+            },
+            getLabelSize:{
+                $desc:"Gets the label's size",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"Sets the label's size.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"Gets the label's positoin.",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"Sets the label's positoin.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"Gets the gap between the label and the input.",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"Sets the the gap between label and input.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"Gets the label's caption.",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"Sets the label's caption.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"Gets the label's horizontal alignment.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"Sets the label's horizontal alignment.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"Fired when user click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"Fired when user double click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"Fired when user mousedown the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
             }
         }
     });
@@ -12404,6 +12619,90 @@ _.set(xui.Locale,["en","app"], {
                     "_.asyRun(function(){o.setIsRange(false); alert(o.getIsRange()); },1000);"+
                     "}"
                 ]
+            },
+            getLabelSize:{
+                $desc:"Gets the label's size",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"Sets the label's size.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"Gets the label's positoin.",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"Sets the label's positoin.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"Gets the gap between the label and the input.",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"Sets the the gap between label and input.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"Gets the label's caption.",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"Sets the label's caption.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"Gets the label's horizontal alignment.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"Sets the label's horizontal alignment.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"Fired when user click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"Fired when user double click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"Fired when user mousedown the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
             }
         }
     });
@@ -12709,6 +13008,90 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getLabelSize:{
+                $desc:"Gets the label's size",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"Sets the label's size.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"Gets the label's positoin.",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"Sets the label's positoin.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"Gets the gap between the label and the input.",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"Sets the the gap between label and input.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"Gets the label's caption.",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"Sets the label's caption.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"Gets the label's horizontal alignment.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"Sets the label's horizontal alignment.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"Fired when user click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"Fired when user double click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"Fired when user mousedown the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
             onItemSelected:{
                 $desc:"Fired when list item is selected.",
                 $paras:[
@@ -12869,6 +13252,90 @@ _.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required] : Number.",
                     $force
+                ]
+            },
+            getLabelSize:{
+                $desc:"Gets the label's size",
+                $rtn:"Number"
+            },
+            setLabelSize:{
+                $desc:"Sets the label's size.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelPos:{
+                $desc:"Gets the label's positoin.",
+                $rtn:"String"
+            },
+            setLabelPos:{
+                $desc:"Sets the label's positoin.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : left, right, top, bottom \u00D6\u00AE\u00D2\u00BB.",
+                    $force
+                ]
+            },
+            getLabelGap:{
+                $desc:"Gets the gap between the label and the input.",
+                $rtn:"Number"
+            },
+            setLabelGap:{
+                $desc:"Sets the the gap between label and input.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number.",
+                    $force
+                ]
+            },
+            getLabelCaption:{
+                $desc:"Gets the label's caption.",
+                $rtn:"String"
+            },
+            setLabelCaption:{
+                $desc:"Sets the label's caption.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String.",
+                    $force
+                ]
+            },
+            getLabelHAlign:{
+                $desc:"Gets the label's horizontal alignment.",
+                $rtn:"String"
+            },
+            setLabelHAlign:{
+                $desc:"Sets the label's horizontal alignment.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'. \u00C4\u00AC\u00C9\u008F\u00CE\u00AA 'left'.",
+                    $force
+                ]
+            },
+            onLabelClick:{
+                $desc:"Fired when user click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelDblClick:{
+                $desc:"Fired when user double click the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
+                ]
+            },
+            onLabelActive:{
+                $desc:"Fired when user mousedown the label.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid."
                 ]
             },
             onItemClick:{

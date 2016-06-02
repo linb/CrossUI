@@ -369,6 +369,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         item = profile.getItemByDom(src),
                         itemId =profile.getSubId(src),
                         box = profile.boxing();
+                    if(!item)return;
 
                     if(prop.disabled|| item.disabled)return false;
                     if(prop.readonly|| item.readonly)return false;
