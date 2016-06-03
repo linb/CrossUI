@@ -2009,7 +2009,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows2._fgrpcell':{
                     GCELL:{
                         $order:0,
-                        style:'{rowHandlerDisplay};{_row0DfW};',
+                        style:'{_row0DfW};',
                         className:'{cellCls}',
                         GCELLA:{
                             tabindex: '{_tabindex}',
@@ -2357,12 +2357,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'CELLS1, CELLS2':{
                 overflow:'visible'
             },
-            'CELLS1-group FCELL':{
+            'CELLS1-group FCELL, CELLS2-group FCELL':{
                 'border-right':0,
                 'padding-right':'1px',
                 overflow:'visible'
             },
-            'CELLS1-group FCELLCAPTION, CELLS1-group CELLA, CELLS1-group ROWNUM':{
+            'CELLS1-group FCELLCAPTION, CELLS1-group CELLA, CELLS1-group ROWNUM, CELLS2-group FCELLCAPTION, CELLS2-group CELLA':{
                 'font-weight':'bold',
                 color:'#3764A0',
                 overflow:'visible'
@@ -5709,7 +5709,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 baseNode = profile.getSubNode('SCROLL' + row._region + col._region),
                 //baseNode = profile.getSubNode('BORDER'),
                 cellNode = profile.getSubNode('CELL', cellId),
-                capNode = prop.treeMode=='infirstcell' && profile.getSubNode('CELLCAPTION', cellId);
+                toggleNode = prop.treeMode=='infirstcell' && profile.getSubNode('ROWTOGGLE', cellId);
+
+            // only for first cell and, shown toggle 
+            if(toggleNode.isEmpty() || !toggleNode.get(0).clientWidth){
+                toggleNode=null;
+            }
 
             if(!inline){
                 //clear the prev editor
@@ -6110,21 +6115,22 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         var absPos=cellNode.offset(null, baseNode),
                             size = cellNode.cssSize(),
-                            absPos2 = capNode?capNode.offset(null, cellNode):null;
-
+                            absPos2 = toggleNode?toggleNode.offset(null, cellNode):null,
+                            w2 = toggleNode?toggleNode.width():null;
+                        if(absPos2)absPos2.left+=w2;
                         // too small
-                        if(  capNode && (absPos2.left > size.width - 8))return;
+                        if(  toggleNode && (absPos2.left > size.width - 8))return;
 
                         //show editor
                         if(type=='textarea'){
-                            editor.setWidth(Math.max(200,size.width  - (capNode?absPos2.left:0)  +3)).setHeight(Math.max(100,size.height+2))
+                            editor.setWidth(Math.max(200,size.width  - (toggleNode?absPos2.left:0)  +3)).setHeight(Math.max(100,size.height+2))
                             .reLayout(true,true)
                             .reBoxing()
                             .popToTop(cellNode, 4, baseNode);
                         }else{
-                            //**capNode
-                            editor.setWidth(size.width  - (capNode?absPos2.left:0)  +3).setHeight(size.height+2).reLayout(true);
-                            editor.reBoxing().show((absPos.left + (capNode?absPos2.left:0) -1) + 'px',(absPos.top-1) + 'px');
+                            //**toggleNode
+                            editor.setWidth(size.width  - (toggleNode?absPos2.left:0)  +3).setHeight(size.height+2).reLayout(true);
+                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0) -1) + 'px',(absPos.top-1) + 'px');
                         }
 
                         var expand,
