@@ -1424,14 +1424,16 @@ _.merge(xui,{
         return pre + key.join('\/') + (tag||'\/');
     },
     getClassName:function(uri){
-        var a=uri.split(/\/js\//g),
-            b,c,n=a.length;
-        if(n>=2){
-            // get the last one: any/js/any/App/js/index.js
-            b=a[n-2].split(/\//g);
-            b=b[b.length-1];
-            a=a[n-1].replace(/\.js$/i,"");
-            return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
+        if(uri&&_.isStr(uri)){
+            var a=uri.split(/\/js\//g),
+                b,c,n=a.length;
+            if(n>=2){
+                // get the last one: any/js/any/App/js/index.js
+                b=a[n-2].split(/\//g);
+                b=b[b.length-1];
+                a=a[n-1].replace(/\.js$/i,"");
+                return (b+(a?".":"")+a.replace(/\//g,".")).replace(/^([^.]+)\.index$/,'$1');
+            }
         }
     },
     log:_.fun(),
