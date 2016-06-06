@@ -1048,7 +1048,7 @@ if(xui.browser.ie){
         _adjust:function(dialog,caption, content, left, top){
             caption = caption ||'';
             if(!_.isSet(content)){
-                content = caption;
+                content = xui.adjustRes(caption);
                 caption = "";
             }
 
