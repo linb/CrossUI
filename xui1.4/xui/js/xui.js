@@ -3997,20 +3997,7 @@ Class('xui.absObj',"xui.absBox",{
                 }
             },
             dataField:{
-                ini:'',
-                set:function(value){
-                    var profile=this,t,
-                        p=profile.properties,
-                        ovalue=p.dataField;
-                    p.dataField=value;
-
-                    if(!p.dataBinder)return;
-                    // set control value 2
-                    var db=xui.DataBinder.getFromName(p.dataBinder);
-                    if(db && (t=db.get(0)) && (t=t.properties.data) && _.isSet(t=t[value]))
-                        //p.value=t;
-                        profile.boxing().setValue(t,true,'datafield');
-                }
+                ini:''
             }
         },
         get:function(index){

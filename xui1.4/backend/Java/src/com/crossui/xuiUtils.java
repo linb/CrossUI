@@ -78,7 +78,7 @@ public class xuiUtils {
 		        strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
 		    }
 			else if (oCallback.indexOf(":") != -1){
-		        strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'"+oCallback+"'.replace( /([^:]+:\/\/[^\/]+).*/, '$1'));</script>";
+		        strResponse = "<script type='text' id='json'>" + strResponse + "</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'" + oCallback.replaceFirst("([^:]+://[^/]+).*", "$1") + "');</script>";
 			}
 			else{
 		        strResponse = callbackValue + '(' + strResponse + ')';

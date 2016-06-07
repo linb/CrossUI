@@ -114,7 +114,7 @@ Class("xui.DataBinder","xui.absObj",{
             else
                 _.arr.each(this.constructor._getBoundElems(this.get(0)),function(profile){
                     var p=profile.properties;
-                    if((p.name||p.dataField||profile.alias)==key){
+                    if((p.dataField||p.name||profile.alias)==key){
                         r=profile.boxing();
                         return false;
                     }
@@ -134,9 +134,9 @@ Class("xui.DataBinder","xui.absObj",{
                 // v and uv can be object(Date,Number)
                 if(!dirtied || (uv+" ")!==(b.getValue()+" ")){
                     if(withCaption && b.getCaption){
-                        hash[p.name || p.dataField || profile.alias]={value:uv,caption:b.getCaption()};
+                        hash[p.dataField || p.name || profile.alias]={value:uv,caption:b.getCaption()};
                     }else{
-                        hash[p.name || p.dataField || profile.alias]=uv;
+                        hash[p.dataField || p.name || profile.alias]=uv;
                     }
                 }
             });
@@ -207,7 +207,7 @@ Class("xui.DataBinder","xui.absObj",{
             _.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 var p=profile.properties,
                       eh=profile.box.$EventHandlers,
-                      t=p.name || p.dataField || profile.alias;
+                      t=p.dataField || p.name || profile.alias;
                 if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
                     var b = profile.boxing(),cap,
                         // for absValue, maybe return array
@@ -308,7 +308,7 @@ Class("xui.DataBinder","xui.absObj",{
             _.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 p=profile.properties;
                 eh=profile.box.$EventHandlers;
-                t=p.name || p.dataField || profile.alias;
+                t=p.dataField || p.name || profile.alias;
                 if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
                     // need reset?
                     if(map && t in map){
@@ -401,47 +401,17 @@ Class("xui.DataBinder","xui.absObj",{
         },
         _bind:function(name, profile){
             if(!name)return;
-            var t,v,b,o=this._pool[name];
+            var o=this._pool[name];
             if(!o){
                 b=new xui.DataBinder();
                 b.setName(name);
                 o=b.get(0);
-            }else{
-                b=o.boxing();
             }
-            var map=o.properties.data;
             if(profile){
-                if(_.arr.indexOf(o._n,profile)==-1)
+                if(_.arr.indexOf(o._n,profile)==-1){
                     //use link for 'destroy UIProfile' trigger 'auto unbind function '
                     profile.link(o._n, 'databinder.'+name);
-
-                // update now
-                var arr=[],t;
-                // for container
-                if(profile.behavior.PanelKeys){
-                     xui.absValue.pack(profile.boxing().getChildren(null, true)).each(function(p){
-                        arr.push(p);
-                    });
                 }
-                // for absValue
-                else if(profile.box['xui.absValue']){
-                    arr.push(profile);
-                }
-                arr = _.arr.removeDuplicate(arr);
-                var a1=[],a2=[];
-                _.each(arr,function(p){
-                    if(t=p.properties.name || p.properties.dataField || p.alias){
-                        if(map && t in map)
-                            a1.push(t);
-                        else
-                            a2.push(t);
-                    }
-                });
-                if(a1.length)
-                    b.updateDataToUI(null, a1, true);
-                if(a2.length)
-                    b.updateDataFromUI(false,false,false,null,a2,true,true);
-
             }
         },
         _unBind:function(name, profile){

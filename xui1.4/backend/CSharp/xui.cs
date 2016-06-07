@@ -98,11 +98,13 @@ namespace xuiService
                         + JsonConvert.ExportToString(hResponse)
                         + "</script><script type='text/javascript'>window.name=document.getElementById('json').innerHTML;</script>";
                 }
-				else if (oCallback.IndexOf(":") != -1){
+				else if (sCallback.IndexOf(":") != -1){
                     context.Response.ContentType = "text/html";
                     strOut = "<script type='text' id='json'>"
                         + JsonConvert.ExportToString(hResponse)
-                        + "</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'"+oCallback+"'.replace( /([^:]+:\/\/[^\/]+).*/, '$1'));</script>";
+                        + "</script><script type='text/javascript'>parent.postMessage(document.getElementById('json').innerHTML,'"
+                        + sCallback 
+                        + "'.replace( /([^:]+://[^/]+).*/, '$1'));</script>";
                 }
 				else
                 {
