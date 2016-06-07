@@ -4306,7 +4306,6 @@ Class('xui.absObj',"xui.absBox",{
                   prf=this.get(0),
                   oldAlias=prf.alias;
             
-            prf.host=host;
             alias=alias||prf.alias;
 
             if(oldAlias){
@@ -4322,6 +4321,7 @@ Class('xui.absObj',"xui.absBox",{
                 prf.box._syncAlias(prf,oldAlias,alias);
             }
 
+            if(host)prf.host=host;
             if(prf.host && prf.host!==prf){
                 prf.host[alias]=self;
                 if(prf.host._ctrlpool)
