@@ -249,8 +249,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             self.each(function(profile){
                 if(!profile.boxing().getUIValue()){
-                    var i;
-                    profile.boxing().fireItemClickEvent((i=profile.properties.items[0]) && i.id);
+                    _.asyRun(function(){
+                        if(!profile || !profile.renderId || !profile.properties || !profile.properties.items.length)return;
+                        var i;
+                        profile.boxing().fireItemClickEvent((i=profile.properties.items[0]) && i.id);
+                    });
                 }
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel){
                     var t=profile.getRootNode().style;
