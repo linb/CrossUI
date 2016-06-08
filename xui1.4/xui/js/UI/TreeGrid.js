@@ -5712,7 +5712,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 toggleNode = prop.treeMode=='infirstcell' && profile.getSubNode('ROWTOGGLE', cellId);
 
             // only for first cell and, shown toggle 
-            if(toggleNode.isEmpty() || !toggleNode.get(0).clientWidth){
+            if(toggleNode && (toggleNode.isEmpty() || !toggleNode.get(0).clientWidth)){
                 toggleNode=null;
             }
 
