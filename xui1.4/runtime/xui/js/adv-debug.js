@@ -765,7 +765,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             DraggableKeys:['HANDLE'],
             HoverEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
             ClickEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
-            ITEM:{onClick:null,onMousedown:null},
+            ITEM:{onClick:null},
             ITEMS:{onMousedown:null,onDrag:null,onDragstop:null},
             HANDLE:{
                 onClick:function(profile, e, src){

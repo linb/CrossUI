@@ -200,9 +200,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         ////
         fireItemClickEvent:function(subId){
             var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
-            if(ev.__realtouch)ev.__simulatedMousedown=1;
-            node.onMousedown(true).onMouseup(true);
-            if(ev.__realtouch)ev.__simulatedMousedown=0;
+            node.onClick(true);
+
+            //if(ev.__realtouch)ev.__simulatedMousedown=1;
+            //node.onMousedown(true).onMouseup(true);
+            //if(ev.__realtouch)ev.__simulatedMousedown=0;
             return this;
         },
         /* insert some views to pageView widgets
@@ -568,15 +570,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             HoverEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP',LEFT:"LEFT",RIGHT:"RIGHT",DROP:"DROP"},
             ClickEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
             onSize:xui.UI.$onSize,
-            OPT:{
-                onMousedown:function(){
-                    return false;
-                },
-                onClick:function(profile, e, src){
-                    profile.boxing().onShowOptions(profile, profile.getItemByDom(src), e, src);
-                    return false;
-                }
-            },
             CAPTION:{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
@@ -594,9 +587,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEM:{
                 onClick:function(profile, e, src){
-                    return false;
-                },
-                onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return false;
                     var t;
                     if((t=xui.Event.getSrc(e).parentNode) && t.id && (profile.getKey(t.id))==profile.keys.CMDS)return false;
@@ -611,7 +601,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(prop.readonly || item.readonly)return false;
 
                     //for some input onblur event
-                    profile.getSubNode('HANDLE', itemId).focus();
+                    //profile.getSubNode('HANDLE', itemId).focus();
 
                     if(dm.hasOwnProperty("selMode") &&
                         dm.hasOwnProperty("noPanel") &&
@@ -659,13 +649,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             },
             HANDLE:{
-                onClick:function(profile, e, src){
-                    return xui.Event.getKey(e).shiftKey;
-                },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey;
                     if(key==' '||key=='enter'){
-                        profile.getSubNode('ITEM',profile.getSubId(src)).onMousedown();
+                        profile.getSubNode('ITEM',profile.getSubId(src)).onClick();
                         return false;
                     }
 
@@ -709,10 +696,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     }
                 }
             },
-            CLOSE:{
-                onMousedown:function(){
+            OPT:{
+                onClick:function(profile, e, src){
+                    profile.boxing().onShowOptions(profile, profile.getItemByDom(src), e, src);
                     return false;
-                },
+                }
+            },
+            CLOSE:{
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
                         item = profile.getItemByDom(src),
@@ -745,12 +735,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     var t=profile.getRootNode().style;
                     xui.UI.$tryResize(profile, t.width, t.height,true);
                     t=null;
+
+                    return false;
                 }
             },
             POP:{
-                onMousedown:function(){
-                    return false;
-                },
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
                         item = profile.getItemByDom(src),
@@ -801,6 +790,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         }
                         profile.boxing().removeChildren(id).removeItems(id);
                     }
+                    return false;
                 }
             },
             ITEMS:{
