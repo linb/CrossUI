@@ -22,6 +22,8 @@ Class=function(key, pkey, obj){
     obj=obj||{};
     //exists?
     if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
+    //clear SC
+    if(t=_.get(w,['xui','$cache','SC']))delete t[key];
 
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
@@ -131,9 +133,11 @@ Class=function(key, pkey, obj){
     _.tryF(_this.$End, [], _this);
 
     _.breakO([obj.Static, obj.Instance, obj],2);
-
-    _c[key]=_c.length;
-    _c.push(key);
+    
+    if(!(key in _c)){
+        _c[key]=_c.length;
+        _c.push(key);
+    }
 
     //return Class
     return self._last=_this;
@@ -1286,7 +1290,7 @@ _.merge(xui,{
                     },threadid,{rspType:'script'}).start();
                 }else{
                     xui.Ajax(uri,xui.$rand+"="+_.rand(),function(rsp){
-                        Class._ignoreNSCache=Class._last=null;
+                        Class._ignoreNSCache=1;Class._last=null;
                         var scriptnode;
                         var s=xui.getClassName(uri);
                         try{scriptnode=_.exec(rsp, s)}
@@ -1306,7 +1310,7 @@ _.merge(xui,{
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
-                        Class._last=null;
+                        Class._ignoreNSCache=Class._last=null;
                         for(var i in onFail)_.tryF(onFail[i], _.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
@@ -1355,7 +1359,13 @@ _.merge(xui,{
                     // if it's module, collect required class in iniComponents
                     if(t && t['xui.Module'] && (t=t.prototype&&t.prototype.iniComponents)){
                         _.fun.body(t).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                            if(!xui.SC.get(b))a2.push(b);
+                            if(!(a=xui.SC.get(b))){
+                                a2.push(b);
+                                a=null;
+                            }
+                           // if(force && a && a['xui.Module']){
+                           //     a2.push(b);
+                           // }
                         });
                     }
                 }

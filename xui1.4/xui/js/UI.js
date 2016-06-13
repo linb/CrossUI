@@ -1090,7 +1090,9 @@ Class("xui.UI",  "xui.absObj", {
                 }
                 //save related id
                 $xid=o.$xid;
-                serialId=o.serialId;
+                serialId=o.serialId,
+                mcls = o.moduleClass,
+                mxid = o.moduleXid;
 
                 var ar=o.$afterRefresh;
 
@@ -1142,6 +1144,8 @@ Class("xui.UI",  "xui.absObj", {
                 delete o.destroyed;
                 o.$xid=$xid;
                 o.serialId=serialId;
+                o.moduleClass=mcls;
+                o.moduleXid=mxid;
 
                 //create
                 var n=new box(o).render();

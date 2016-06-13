@@ -101,7 +101,7 @@ Class('xui.Module','xui.absProfile',{
         }
         //
         self._links={};
-        self.link(self.constructor._cache, "self")
+        self.link(self.constructor._cache, "self");
         self.link(xui.Module._cache, "xui.module");
         self.link(xui._pool,'xui');
         
@@ -464,16 +464,22 @@ Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
-        refresh:function(){
+        refresh:function(newCls){
+            if(newCls){
+                this.constructor=this.Class=this.box=newCls;
+            }
             var paras, b, p, s, fun, autoDestroy, 
                 o=this,
                 inm, firstUI,
+                // for builder project module updating
                 box=o.box,
                 host=o.host,
                 alias=o.alias,
                 $xid=o.$xid,
-                rt = o.$refreshTrigger;
-                
+                rt = o.$refreshTrigger,
+                mcls = o.moduleClass,
+                mxid = o.moduleXid;
+
             if(!o.renderId)return;
             if((inm=o.getUIComponents()).isEmpty())return;
             firstUI = inm.get(0);
@@ -496,6 +502,8 @@ Class('xui.Module','xui.absProfile',{
             // notice: remove destroyed here
             delete o.destroyed;
             o.$xid=$xid;
+            o.moduleClass=mcls;
+            o.moduleXid=mxid;
 
             //create
             var n = new box(o);
@@ -1023,6 +1031,35 @@ Class('xui.Module','xui.absProfile',{
     Static:{
         // fake absValue
         "xui.absValue":true,
+        refresh:function(code){
+            var m=this,keep={
+                '$children':m.$children,
+                _cache:m._cache,
+                _nameId:m._nameId,
+                _namePool:m._namePool
+            },
+            key=m.KEY,
+            path=key.split("."),
+            n;
+            // clear cache
+            if(s=_.get(window,['xui','$cache','SC']))delete s[key];
+            _.set(window, path);
+            // rebuild
+            _.exec(code);
+            // the new one
+            n=_.get(window, path);
+            // merge new to old
+            _.merge(m,n,function(o,i){return n.hasOwnProperty(i);});
+            _.merge(m.prototype, n.prototype,function(o,i){return n.prototype.hasOwnProperty(i);});
+            // restore those
+            _.merge(m,keep,'all');
+            // break new
+            _.breakO(n.prototype,1);
+            _.breakO(n,1);
+            // restore namespace
+            _.set(window, path, m);
+            return m;
+        },
         pickAlias:function(){
             return xui.absObj.$pickAlias(this);
         },
