@@ -155,8 +155,18 @@ Class('xui.Module','xui.absProfile',{
             var ui=this.getRoot();
             if(!ui.isEmpty())return ui.get(0);
         },
-        getModule:function(){
-            return this;
+        getModule:function(top){
+            var getUpperModule=function(module){
+                // if it's a inner module
+                if(module.moduleClass && module.moduleXid){
+                    var pm = xui.SC.get(module.moduleClass);
+                    if(pm && (pm = pm.getInstance(module.moduleXid))){
+                        return getUpperModule(pm);    
+                    }         
+                }
+                return module;
+            };
+            return top?getUpperModule(this):this;
         },
         // ]]] 
         /*
@@ -502,12 +512,13 @@ Class('xui.Module','xui.absProfile',{
             // notice: remove destroyed here
             delete o.destroyed;
             o.$xid=$xid;
-            o.moduleClass=mcls;
-            o.moduleXid=mxid;
 
             //create
             var n = new box(o);
             if(host)n.setHost(host,alias);
+
+            n.moduleClass=mcls;
+            n.moduleXid=mxid;
 
             n.create(function(){
                 //add to parent, and trigger RenderTrigger
@@ -1005,8 +1016,13 @@ Class('xui.Module','xui.absProfile',{
             self.destroyed=true;
             if(ns && ns.length)
                 _.arr.each(ns, function(o){
-                    if(o && o.box)
+                    if(o && o.box){
                         o.boxing().destroy();
+                        var m=o.getModule();
+                        if(m && m!=self && !m.destroyed && m.destroy){
+                            m.destroy();
+                        }
+                    }
                 },null,true);
             if(ns && ns.length)
                 self._nodes.length=0;

@@ -772,9 +772,9 @@ Class("xui.UI",  "xui.absObj", {
         getTheme:function(){
             return this.get(0) && this.get(0).theme;
         },
-        getModule:function(){
+        getModule:function(top){
             var prf=this.get(0);
-            if(prf)return prf.getModule();
+            if(prf)return prf.getModule(top);
         },
         destroy:function(ignoreEffects, purgeNow){
             var ns=this;

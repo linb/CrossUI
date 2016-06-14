@@ -3753,11 +3753,23 @@ Class('xui.absProfile',null,{
             self._links={};
             return self;
         },
-        getModule:function(){
-            var prf=this,t;
+        getModule:function(top){
+            var prf=this, getUpperModule=function(module){
+                    // if it's a inner module
+                    if(module.moduleClass && module.moduleXid){
+                        var pm = xui.SC.get(module.moduleClass);
+                        if(pm && (pm = pm.getInstance(module.moduleXid))){
+                            return getUpperModule(pm);    
+                        }         
+                    }
+                    return module;
+                },t;
+
             if(prf.moduleClass&&prf.moduleXid){
                 if(t=xui.SC.get(prf.moduleClass)){
-                    return t.getInstance(prf.moduleXid);
+                    if(t=t.getInstance(prf.moduleXid)){
+                        return top?getUpperModule(t):t;
+                    }
                 }
             }
         },
