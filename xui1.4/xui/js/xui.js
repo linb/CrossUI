@@ -1597,10 +1597,14 @@ _.merge(xui,{
                     o = new xui.UI.MoudluePlaceHolder();
                     xui.require(tag,function(module){
                          if(module&&module["xui.Module"]){
-                            var m=new module();
-                            m.create(function(){
-                                o.replaceWithModule(m);
-                            });
+                            if(o.get(0).renderId){
+                                var m=new module();
+                                m.create(function(){
+                                    o.replaceWithModule(m);
+                                });
+                            }else{
+                                o.get(0)._module = new module();
+                            }
                          }
                      }); 
                 }

@@ -75,26 +75,37 @@ Class('xui.Module','xui.absProfile',{
         self._cache=[];
     },
     Constructor:function(properties, events, host){
+        var self=this,opt,alias;
+
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
         upper=null;
 
-        var self=this,opt,alias;
+        // for refresh itself
+        if(properties && properties.constructor==self.constructor){
+             self=properties;
+             properties = self.properties || {};
+             events = self.events || {};
+             alias = self.alias;
+             host = self.host;
+        }else{
+        	if(properties && properties.key && properties["xui.Module"]){
+	             opt=properties;
+	             properties = (opt && opt.properties) || {};
+	             events = (opt && opt.events) || {};
+	             alias = opt.alias;
+	             host = opt.host;
+	        }else{
+	            properties = properties || (self.properties?_.clone(self.properties):{});
+	            events = events || (self.events?_.clone(self.events):{});
+	        }
+	    }
+        
 
         self.Class=self.constructor;
         self.box=self.constructor;
         self.key=self.KEY;
 
-        if(properties && properties.key && properties["xui.Module"]){
-             opt=properties;
-             properties = (opt && opt.properties) || {};
-             events = (opt && opt.events) || {};
-             alias = opt.alias;
-             host = opt.host;
-        }else{
-            properties = properties || (self.properties?_.clone(self.properties):{});
-            events = events || (self.events?_.clone(self.events):{});
-        }
         if(!alias)alias =self.constructor.pickAlias();
         if(!_.isEmpty(self.constructor.$DataModel)){
             _.merge( properties, _.clone(self.constructor.$DataModel),'without');
@@ -120,6 +131,8 @@ Class('xui.Module','xui.absProfile',{
         self.setProperties(properties);
 
         self._innerCall('initialize');
+
+        return self;
     },
     Instance:{
         autoDestroy:true,
@@ -156,7 +169,7 @@ Class('xui.Module','xui.absProfile',{
             if(!ui.isEmpty())return ui.get(0);
         },
         getModule:function(top){
-            var getUpperModule=function(module){
+        	var getUpperModule=function(module){
                 // if it's a inner module
                 if(module.moduleClass && module.moduleXid){
                     var pm = xui.SC.get(module.moduleClass);
@@ -193,12 +206,20 @@ Class('xui.Module','xui.absProfile',{
         // ]]] 
         */
         _toDomElems:function(){
-            var ns=this;
+            var ns=this, innerUI=ns.getUIComponents();
             if(!ns.created)
                 // create synchronously
                 ns.create(null,false)
             ns.render();
-            return ns.getUIComponents()._toDomElems();
+
+            // force to create and render the first layer inner modules
+            innerUI.each(function(o,i){
+            	if((o=o.getModule()) && o!=ns){
+            		o._toDomElems();
+            	}
+            });
+
+            return innerUI._toDomElems();
         },
         setAlias:function(alias){
             return xui.absObj.prototype._setHostAlias.call(this, null, alias);
@@ -500,7 +521,7 @@ Class('xui.Module','xui.absProfile',{
             //keep parent
             if(b=!!firstUI.parent){
                 p=firstUI.parent.boxing();
-                paras=firstUI.childrenId;
+                childId=firstUI.childrenId;
             }else{
                 p=firstUI.parent();
             }
@@ -512,28 +533,28 @@ Class('xui.Module','xui.absProfile',{
             // notice: remove destroyed here
             delete o.destroyed;
             o.$xid=$xid;
-
             //create
-            var n = new box(o);
-            if(host)n.setHost(host,alias);
+            new box(o);
+            if(host)o.setHost(host,alias);
 
-            n.moduleClass=mcls;
-            n.moduleXid=mxid;
+            // must here
+            o.moduleClass=mcls;
+            o.moduleXid=mxid;
 
-            n.create(function(){
+            o.create(function(){
+            	var f=function(){
+            		//TODO: to reset parent nodes
+
+	                //for functions like: UI refresh itself
+	                if(rt)rt.call(rt.target, o);            		
+            	};
                 //add to parent, and trigger RenderTrigger
-                if(b)
-                    p.append(n,paras);
-                else if(!p.isEmpty())
-                    p.append(n);
-
-                //for functions like: UI refresh itself
-                if(rt)
-                    rt.call(rt.target, n);
+                if(b)o.show(f,p,childId);
+                else if(!p.isEmpty())o.show(f,p);
             });
 
-            if(_.isSet(autoDestroy&&n.host&&n.host['xui.Module'])){
-                n.host.autoDestroy=autoDestroy;
+            if(_.isSet(autoDestroy&&o.host&&o.host['xui.Module'])){
+                o.host.autoDestroy=autoDestroy;
             }
             return this;
         },
@@ -1016,13 +1037,8 @@ Class('xui.Module','xui.absProfile',{
             self.destroyed=true;
             if(ns && ns.length)
                 _.arr.each(ns, function(o){
-                    if(o && o.box){
+                    if(o && o.box)
                         o.boxing().destroy();
-                        var m=o.getModule();
-                        if(m && m!=self && !m.destroyed && m.destroy){
-                            m.destroy();
-                        }
-                    }
                 },null,true);
             if(ns && ns.length)
                 self._nodes.length=0;

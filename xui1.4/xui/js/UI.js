@@ -7438,6 +7438,15 @@ new function(){
 
     Class(u+".MoudluePlaceHolder", u+".Div",{
         Instance:{
+            destroy:function(ignoreEffects, purgeNow){
+                var o=this.get(0);
+                (o.$afterDestroy=(o.$afterDestroy||{}))["destroyAttachedModule"]=function(){
+                    if(!this._replaced && this._module){
+                        this._module.destroy();
+                    }
+                };   
+                return arguments.callee.upper.apply(this,[ignoreEffects, purgeNow]);
+            },
             adjustDock:null,
             draggable:null,
             busy:null,
@@ -7477,7 +7486,7 @@ new function(){
                     prf=self.get(0), 
                     m,t,parent,subId;
                 
-                if(!prf || prf.destroyed || prf._replaced)return;
+                if(!prf || prf.destroyed || prf._replaced || !prf.getRootNode())return;
                 prf._replaced=1;
 
                 if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);
@@ -7493,14 +7502,27 @@ new function(){
                 }
                 if(parent = prf.parent){
                     subId = prf.childrenId;
-                    parent.boxing().append(module, subId);
+                    module.show(function(){
+                        if(prf.$afterReplaced)prf.$afterReplaced.call(module);
+                        // Avoid being removed from host 
+                        prf.alias=null;
+                        prf._module=null;
+                        prf.boxing().destroy();
+                    },parent,subId);
                 }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                    parent.append(module);
+                    module.show(function(){
+                        if(prf.$afterReplaced)prf.$afterReplaced.call(module);
+                        // Avoid being removed from host 
+                        prf.alias=null;
+                        prf._module=null;
+                        prf.boxing().destroy();
+                    },parent);
                 }
 
                 if(prf.$afterReplaced)prf.$afterReplaced.call(module);
                 // Avoid being removed from host 
                 prf.alias=null;
+                prf._module=null;
                 self.destroy();
             }
         },
@@ -7555,34 +7577,8 @@ new function(){
             },
             // for parent UIProfile toHtml case
             RenderTrigger:function(){
-                var prf=this, self=prf.boxing(), module=prf._module, parent, subId;
-                // try it now
-                if(module){
-                    if(prf&&prf._replaced)return;
-                    prf._replaced=1;
-                    if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);
-                    // host and alias
-                    module.setHost(prf.host, prf.alias);
-                    if(parent = module.parent){
-                        subId = module.childrenId;
-                        module.show(function(){
-                            if(prf.$afterReplaced)prf.$afterReplaced.call(module);
-                            if(self){
-                                // Avoid being removed from host 
-                                prf.alias=null;
-                                self.destroy();
-                            }
-                        },parent,subId);
-                    }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                        module.show(function(){
-                            if(prf.$afterReplaced)prf.$afterReplaced.call(module);
-                            if(self){
-                                // Avoid being removed from host 
-                                prf.alias=null;
-                                self.destroy();
-                            }
-                        },parent);
-                    }
+                if(!prf._replaced && prf._module){
+                    this.replaceWithModule(prf._module);
                 }
             }
         }
