@@ -77,20 +77,30 @@ Class('xui.Module','xui.absProfile',{
     Constructor:function(properties, events, host){
         var self=this,opt,alias;
 
+        // If it's a older moudle object, set xid first
+		if(properties && properties.constructor==self.constructor){
+			if(properties.$xid){
+				self.$xid = properties.$xid;
+			}
+		}
+
         var upper=arguments.callee.upper;
-        if(upper)upper.call(this);
+        if(upper)upper.call(self);
         upper=null;
 
-        // for refresh itself
+        // If it's a older moudle object, refresh itself
         if(properties && properties.constructor==self.constructor){
-             self=properties;
-             properties = self.properties || {};
-             events = self.events || {};
-             alias = self.alias;
-             host = self.host;
+        	 var oldm = properties; 
+             
+             events = oldm.events || {};
+             alias = oldm.alias;
+             host = oldm.host;
+             properties = oldm.properties || {};
+             
+             self=oldm;
         }else{
         	if(properties && properties.key && properties["xui.Module"]){
-	             opt=properties;
+	             var opt=properties;
 	             properties = (opt && opt.properties) || {};
 	             events = (opt && opt.events) || {};
 	             alias = opt.alias;
@@ -495,10 +505,7 @@ Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
-        refresh:function(newCls){
-            if(newCls){
-                this.constructor=this.Class=this.box=newCls;
-            }
+        refresh:function(){
             var paras, b, p, s, fun, autoDestroy, 
                 o=this,
                 inm, firstUI,
@@ -525,9 +532,10 @@ Class('xui.Module','xui.absProfile',{
             }else{
                 p=firstUI.parent();
             }
+
             //unserialize
             s = o.serialize(false, true);
-            o.destroy();
+            o.destroy(true);
             //set back
             _.merge(o,s,'all');
             // notice: remove destroyed here
@@ -542,9 +550,7 @@ Class('xui.Module','xui.absProfile',{
             o.moduleXid=mxid;
 
             o.create(function(){
-            	var f=function(){
-            		//TODO: to reset parent nodes
-
+            	var f=function(t,m){
 	                //for functions like: UI refresh itself
 	                if(rt)rt.call(rt.target, o);            		
             	};
@@ -1025,8 +1031,9 @@ Class('xui.Module','xui.absProfile',{
         isDestroyed:function(){
             return !!this.destroyed;
         },
-        destroy:function(){
+        destroy:function(keepStructure){
             var self=this,con=self.constructor,ns=self._nodes;
+            if(self.destroyed)return;
             
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
@@ -1034,21 +1041,27 @@ Class('xui.Module','xui.absProfile',{
             }
 
             //set once
-            self.destroyed=true;
+            if(!keepStructure){
+            	self.destroyed=true;
+            }
             if(ns && ns.length)
                 _.arr.each(ns, function(o){
                     if(o && o.box)
                         o.boxing().destroy();
                 },null,true);
+
             if(ns && ns.length)
                 self._nodes.length=0;
-            self._ctrlpool=null;
+            if(!keepStructure){
+            	self._ctrlpool=null;
+            }
             
             delete con._namePool[self.alias];
             self.unLinkAll();
 
-            _.breakO(self);
-            self.destroy=function(){};
+            if(!keepStructure){
+	            _.breakO(self);
+	        }
             //afterDestroy
             if(self.$afterDestroy){
                 _.each(self.$afterDestroy,function(f){
@@ -1057,7 +1070,9 @@ Class('xui.Module','xui.absProfile',{
                 _.breakO(self.$afterDestroy,2);
             }
             //set again
-            self.destroyed=true;
+            if(!keepStructure){
+            	self.destroyed=true;
+            }
         }
     },
     Static:{

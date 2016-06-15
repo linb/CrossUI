@@ -164,16 +164,16 @@ _.merge=function(target, source, type){
     }
     switch(type){
         case 'fun':
-            for(i in source)if(true===f(source[i],i))target[i]=source[i];
+            for(i in source)if(source.hasOwnProperty(i) && true===f(source[i],i))target[i]=source[i];
             break;
         case 'all':
-            for(i in source)target[i]=source[i];
+            for(i in source)if(source.hasOwnProperty(i))target[i]=source[i];
             break;
         case 'with':
-            for(i in source)if(i in target)target[i]=source[i];
+            for(i in source)if(source.hasOwnProperty(i) && target.hasOwnProperty(i))target[i]=source[i];
             break;
         default:
-            for(i in source)if(!(i in target))target[i]=source[i];
+            for(i in source)if(source.hasOwnProperty(i) && !target.hasOwnProperty(i))target[i]=source[i];
     }
     return target;
 };
