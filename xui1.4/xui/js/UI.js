@@ -1081,11 +1081,10 @@ Class("xui.UI",  "xui.absObj", {
 
                 box=o.box;
                 
-                var autoDestroy,
-                    host=o.host,
+                var host=o.host,
                     alias=o.alias;
-                if(o.host&&o.host['xui.Module']&&o.host.autoDestroy){
-                    o.host.autoDestroy=false;
+                if(o.host&&o.host['xui.Module']){
+                    o.host.$ignoreAutoDestroy=true;
                 }
                 //save related id
                 $xid=o.$xid;
@@ -1188,8 +1187,8 @@ Class("xui.UI",  "xui.absObj", {
                     n.get(0).$afterRefresh=ar;
                     ar(n.get(0));
                 }
-                if(_.isSet(autoDestroy&&n.host&&n.host['xui.Module'])){
-                    n.host.autoDestroy=autoDestroy;
+                if(n.host&&n.host['xui.Module']){
+                    delete n.host.$ignoreAutoDestroy;
                 }
             });
         },
