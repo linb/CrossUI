@@ -7575,6 +7575,7 @@ new function(){
             },
             // for parent UIProfile toHtml case
             RenderTrigger:function(){
+                var prf=this;
                 if(!prf._replaced && prf._module){
                     this.replaceWithModule(prf._module);
                 }
