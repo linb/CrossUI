@@ -2827,10 +2827,10 @@ Class('xui.absIO',null,{
         _if:function(doc,id,onLoad){
             var ie8=xui.browser.ie && xui.browser.ver<9,
                 scr=ie8
-                    ? ("<iframe "+(id?("name='"+"xui_IAajax_"+id+"'"):"")+(onLoad?(" onload='xui.XDMI._o(\""+id+"\")'"):"")+">")
+                    ? ("<iframe "+(id?("name='"+"xui_xdmi:"+id+"'"):"")+(onLoad?(" onload='xui.XDMI._o(\""+id+"\")'"):"")+">")
                     : "iframe";
             var n=doc.createElement(scr),w;
-            if(id)n.id=n.name="xui_IAajax_"+id;
+            if(id)n.id=n.name="xui_xdmi:"+id;
             if(!ie8 && onLoad)n.onload=onLoad;
             n.style.display = "none";
             doc.body.appendChild(n);
@@ -3179,13 +3179,26 @@ Class('xui.XDMI','xui.absIO',{
             if (w['postMessage']) {
                 self._msgcb=function(e){
                     if(!self.node)return;
-                    var o=e.data,t,obj;
+                    var o=e.data,
+                        source=e.source.name,
+                        src=source && source.split(":")[1],
+                        t,obj;
+                    if(source && (src+"")!==(self.id+"")){
+                        return;
+                    }
                     o=self.rspType=="json"?(obj=_.unserialize(o))===false?o:obj:o;
-                    if(t=c._pool[self.id]){
+                    if(o && o.xui_xdmi_id && (o.xui_xdmi_id+"")!==(self.id+"")){
+                        return;
+                    }
+                    if(o && (t=c._pool[self.id])){
                         for(var i=0,l=t.length;i<l;i++){
                             t[i]._response=o;
                             t[i]._onResponse();
                         }
+                    }else{
+                        //clear first
+                        self._clear();
+                        self._onError(new Error("XDMI return value formatting error"));                        
                     }
                 };
                  if (w.addEventListener) w.addEventListener('message', self._msgcb, false);
@@ -3219,7 +3232,7 @@ Class('xui.XDMI','xui.absIO',{
                         }
 
                         var data;
-                        if(("xui_IAajax_"+self.id)==w.name){
+                        if(("xui_xdmi:"+self.id)==w.name){
                             //clear first
                             self._clear();
                             self._onError(new Error('XDMI no return value'));
@@ -3256,7 +3269,7 @@ Class('xui.XDMI','xui.absIO',{
 
             form.action=self.uri;
             form.method=self.method;
-            form.target="xui_IAajax_"+id;
+            form.target="xui_xdmi:"+id;
 
             k=self.query||{};
             var file,files=[];
@@ -3311,7 +3324,7 @@ Class('xui.XDMI','xui.absIO',{
                 _pool[id].length=0;
                 delete _pool[id];
             }
-            if (n&&w.postMessage) {
+            if (n&&w['postMessage']) {
                  if (w.removeEventListener) w.removeEventListener('message', self._msgcb, false);
                  else w.detachEvent('onmessage', self._msgcb);
                  self._msgcb=null;
@@ -3387,7 +3400,7 @@ Class('xui.XDMI','xui.absIO',{
         customQS:function(obj){
             var s=this,c=s.constructor,t=c.callback,w=window;
             obj[t]='window.name';
-            if(window.postMessage)
+            if(window['postMessage'])
                 obj[t]=obj.parentDomain=w.location.origin || (w.location.protocol + "//" + w.location.hostname + (w.location.port ? ':' + w.location.port: ''));
             else
                 obj[t]='window.name';
