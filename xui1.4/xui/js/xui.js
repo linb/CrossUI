@@ -156,7 +156,7 @@ linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
   type:'all', 'with', 'without'[default], or function <return true will trigger merge>
   return: merged target
 */
-_.merge=function(target, source, type){
+_.merge=function(target, source, type, force){
     var i,f;
     if(typeof type == "function"){
         f=type;
@@ -164,16 +164,16 @@ _.merge=function(target, source, type){
     }
     switch(type){
         case 'fun':
-            for(i in source)if(source.hasOwnProperty(i) && true===f(source[i],i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)) && true===f(source[i],i))target[i]=source[i];
             break;
         case 'all':
-            for(i in source)if(source.hasOwnProperty(i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)))target[i]=source[i];
             break;
         case 'with':
-            for(i in source)if(source.hasOwnProperty(i) && target.hasOwnProperty(i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)) && target.hasOwnProperty(i))target[i]=source[i];
             break;
         default:
-            for(i in source)if(source.hasOwnProperty(i) && !target.hasOwnProperty(i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)) && !target.hasOwnProperty(i))target[i]=source[i];
     }
     return target;
 };
