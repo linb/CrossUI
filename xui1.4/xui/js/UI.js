@@ -7438,6 +7438,7 @@ new function(){
         Instance:{
             destroy:function(ignoreEffects, purgeNow){
                 var o=this.get(0);
+                if(!o)return;
                 (o.$afterDestroy=(o.$afterDestroy||{}))["destroyAttachedModule"]=function(){
                     if(!this._replaced && this._module){
                         this._module.destroy();
