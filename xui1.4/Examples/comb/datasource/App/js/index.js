@@ -25,11 +25,10 @@ Class('App', 'xui.Com',{
             append(
                 (new xui.APICaller)
                 .setHost(host,"apicaller_json")
-                .setQueryURL("http://ajax.googleapis.com/ajax/services/search/web")
-                .setQueryArgs({"v":"1.0", "q":"CrossUI"})
+                .setQueryURL("http://jsonip.com")
+                .setQueryArgs({})
                 .setName("apicaller_json")
                 .setResponseDataTarget([{type:'databinder',name:'db_json'}])
-                .afterInvoke("_apicaller_1_afterInvoke")
             );
             
             append(
@@ -63,7 +62,7 @@ Class('App', 'xui.Com',{
                 .setTop(40)
                 .setWidth(650)
                 .setHeight(80)
-                .setCaption("apicaller for <strong>google search API (JSON service)</strong>")
+                .setCaption("apicaller for <strong>http://jsonip.com</strong>")
                 .setToggleBtn(false)
             );
             
@@ -73,7 +72,7 @@ Class('App', 'xui.Com',{
                 .setLeft(30)
                 .setTop(24)
                 .setWidth(124)
-                .setCaption("results count :")
+                .setCaption("Your IP :")
             );
             
             host.ctl_group1.append(
@@ -82,27 +81,27 @@ Class('App', 'xui.Com',{
                 .setLeft(310)
                 .setTop(24)
                 .setWidth(124)
-                .setCaption("the top url is :")
+                .setCaption("Got IP from :")
             );
             
             host.ctl_group1.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input1")
                 .setDataBinder("db_json")
-                .setDataField("returnurls")
+                .setDataField("ip")
                 .setLeft(180)
                 .setTop(20)
-                .setLabelCaption("ctl_input1")
+                .setLabelCaption("ip")
             );
             
             host.ctl_group1.append(
                 (new xui.UI.Input)
                 .setHost(host,"ctl_input11")
                 .setDataBinder("db_json")
-                .setDataField("topurl")
+                .setDataField("Pro!")
                 .setLeft(440)
                 .setTop(20)
-                .setLabelCaption("ctl_input1")
+                .setLabelCaption("from")
             );
             
             append(
