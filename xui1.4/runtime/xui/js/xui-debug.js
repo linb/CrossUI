@@ -156,7 +156,7 @@ linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
   type:'all', 'with', 'without'[default], or function <return true will trigger merge>
   return: merged target
 */
-_.merge=function(target, source, type){
+_.merge=function(target, source, type, force){
     var i,f;
     if(typeof type == "function"){
         f=type;
@@ -164,16 +164,16 @@ _.merge=function(target, source, type){
     }
     switch(type){
         case 'fun':
-            for(i in source)if(source.hasOwnProperty(i) && true===f(source[i],i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)) && true===f(source[i],i))target[i]=source[i];
             break;
         case 'all':
-            for(i in source)if(source.hasOwnProperty(i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)))target[i]=source[i];
             break;
         case 'with':
-            for(i in source)if(source.hasOwnProperty(i) && target.hasOwnProperty(i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)) && target.hasOwnProperty(i))target[i]=source[i];
             break;
         default:
-            for(i in source)if(source.hasOwnProperty(i) && !target.hasOwnProperty(i))target[i]=source[i];
+            for(i in source)if((force||source.hasOwnProperty(i)) && !target.hasOwnProperty(i))target[i]=source[i];
     }
     return target;
 };
@@ -14116,11 +14116,13 @@ Class('xui.Module','xui.absProfile',{
             return this;
         },
         get:function(name){
-        	var i,a,s,ca = document.cookie.split( "; " ),hash={};
+        	var i,a,s,ca = document.cookie.split( "; " ),hash={},unserialize=function(v){
+                return  /^\s*\{[\s\S]*\}$/.test(v) ? _.unserialize(v) : /^\s*\[[\s\S]*\]$/.test(v) ? _.unserialize(v) : v;
+            };
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
     	        s=a[1]?unescape(a[1]):'';
-    	        hash[a[0]]=_.unserialize(s)||s;
+    	        hash[a[0]] = unserialize(s)||s;
         		if(name && a[0]==escape(name))
         		    return hash[a[0]];
         	}

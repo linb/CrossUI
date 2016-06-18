@@ -14154,7 +14154,7 @@ return /******/ (function(modules) { // webpackBootstrap
             if((el=prf._elset)&&el.length){
                 el[0]._.dirty=1;
                 bbox={};
-                _.merge(bbox,el[0]._getBBox(withTransform!==false));
+                _.merge(bbox,el[0]._getBBox(withTransform!==false),'all',true);
                 for(var i=1,l=el.length,t;i<l;i++){
                    if(!(el[i].type=='text' && ('hAlign' in prf.box.$DataModel))){
                         el[i]._.dirty=1;
@@ -17006,7 +17006,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
                             attr.y=bbn.y;
                             el.attr(bbn);
                         }else{
-                            _.merge(bbn, el._getBBox(true));
+                            _.merge(bbn, el._getBBox(true),'all',true);
                             if('x' in bb)bbn.x+=bb.x-bbo.x;
                             if('y' in bb)bbn.y+=bb.y-bbo.y;
                             if('width' in bb)bbn.width+=bb.width-bbo.width;
@@ -17016,7 +17016,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
                     });
                 }else{
                     if(!prf._init_bbox)prf._init_bbox={};
-                    _.merge(prf._init_bbox,bb,'all');
+                    _.merge(prf._init_bbox,bb,'all',true);
                 }
             });
         }

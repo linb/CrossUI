@@ -14,11 +14,13 @@ Class("xui.Cookies", null,{
             return this;
         },
         get:function(name){
-        	var i,a,s,ca = document.cookie.split( "; " ),hash={};
+        	var i,a,s,ca = document.cookie.split( "; " ),hash={},unserialize=function(v){
+                return  /^\s*\{[\s\S]*\}$/.test(v) ? _.unserialize(v) : /^\s*\[[\s\S]*\]$/.test(v) ? _.unserialize(v) : v;
+            };
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
     	        s=a[1]?unescape(a[1]):'';
-    	        hash[a[0]]=_.unserialize(s)||s;
+    	        hash[a[0]] = unserialize(s)||s;
         		if(name && a[0]==escape(name))
         		    return hash[a[0]];
         	}
