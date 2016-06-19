@@ -6690,143 +6690,7 @@ new function(){
         }
     });
 
-    Class(u+".SButton", u,{
-        Instance:{
-            activate:function(){
-                this.getSubNode('FOCUS').focus();
-                return this;
-            }
-        },
-        Static:{
-            Templates:{
-                className:'xui-ui-unselectable {_clsName} {_className}',
-                style:'{_style}',
-                BTN:{
-                    className:'xui-ui-btn',
-                    BTNI:{
-                        className:'xui-ui-btni',
-                        BTNC:{
-                            className:'xui-ui-btnc',
-                            FOCUS:{
-                                tabindex: '{tabindex}',
-                                style:"{_align}",
-                                ICON:{
-                                    $order:1,
-                                    className:'xui-ui-icon {imageClass}',
-                                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
-                                },
-                                CAPTION:{
-                                    $order:2,
-                                    text:'{caption}'
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            Appearances:{
-                BTN:{
-                    overflow:'hidden'
-                },
-                'KEY-auto BTN, KEY-auto BTNI, KEY-auto BTNC, KEY-auto FOCUS':{
-                    $order:1,
-                    display:xui.$inlineBlock
-                },
-                'BTN,BTNI,BTNC':{
-                    display:'block'
-                },
-                'KEY FOCUS':{
-                    cursor:'pointer',
-                    'font-size':'12px',
-                    'text-align':'center',
-                    display:'block'
-                },
-                CAPTION:{
-                    'vertical-align':xui.browser.ie6?'baseline':'middle',
-                    display:'inline'
-                }
-            },
-            Behaviors:{
-                HoverEffected:{BTN:['BTN']},
-                ClickEffected:{BTN:['BTN']},
-                NavKeys:{FOCUS:1},
-                onClick:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return false;
-                    profile.getSubNode('FOCUS').focus();
-                    if(profile.onClick)
-                        return profile.boxing().onClick(profile, e, src);
-                },
-                onKeydown:function(profile, e, src){
-                    var keys=xui.Event.getKey(e), key = keys.key;
-                    if(key==' '||key=='enter'){
-                        profile.getSubNode('BTN').afterMousedown();
-                        profile.__fakeclick=1;
-                    }
-                },
-                onKeyup:function(profile, e, src){
-                    var keys=xui.Event.getKey(e), key = keys.key;
-                    if(key==' '||key=='enter'){
-                        profile.getSubNode('BTN').afterMouseup();
-                        if(profile.__fakeclick)
-                            xui.use(src).onClick();
-                    }
-                    delete profile.__fakeclick;
-                }
-            },
-            DataModel:{
-                image:{
-                   format:'image',
-                    action: function(value){
-                        this.getSubNode('ICON')
-                            .css('display',value?'':'none')
-                            .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
-                    }
-                },
-                imagePos:{
-                    action: function(value){
-                        this.getSubNode('ICON')
-                            .css('backgroundPosition', value);
-                    }
-                },
-                caption:{
-                    ini:undefined,
-                    action: function(v){
-                        v=(_.isSet(v)?v:"")+"";
-                        this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
-                    }
-                },
-                hAlign:{
-                    ini:'center',
-                    listbox:['left','center','right'],
-                    action: function(v){
-                        this.getSubNode('FOCUS').css('textAlign',v);
-                    }
-                },
-                width:{
-                    ini:'auto',
-                    action:function(value){
-                        if(value=='auto'){
-                            this.getRoot().width('auto').tagClass('-auto');
-                        }else
-                            this.getRoot().width(value).tagClass('-auto',false);
-                    }
-                },
-                height:{
-                    readonly:true
-                }
-            },
-            EventHandlers:{
-                onClick:function(profile, e, src){}
-            },
-            _prepareData:function(profile, data){
-                data=arguments.callee.upper.call(this, profile,data);
-                data._align = 'text-align:'+data.hAlign+';';
-                data._clsName=parseInt(data.width,10)?'':profile.getClass('KEY','-auto');
-                return data;
-            }
-        }
-    });
+
     
     Class(u+".SCheckBox", [u,"xui.absValue"],{
         Instance:{
@@ -6846,7 +6710,7 @@ new function(){
         },
         Static:{
             Templates:{
-                className:'{_clsName} {_className}',
+                className:'{_className}',
                 style:'{_style}',
                 FOCUS:{
                     tabindex: '{tabindex}',
@@ -7024,13 +6888,15 @@ new function(){
                 tagName:'button',
                 // dont set class to HTML Element
                 className:'xui-wrapper {_className}',
-                style:'{_style};',
+                style:'cursor:pointer;{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
             },
             DataModel:{
                 nodeName:null,
                 tabindex:1,
+                width:'auto',
+                height:'auto',
                 disabled:{
                     ini:false,
                     action: function(v){
@@ -7045,16 +6911,70 @@ new function(){
             },
             Behaviors:{
                 HoverEffected:{KEY:'KEY'}
-            },
-            Appearances:{
-                KEY:{
-                    'line-height':'auto',
-                    'cursor':'pointer'
+            } 
+        }
+    });
+    Class(u+".ImageButton", u+".HTMLButton",{
+        Static:{
+            Templates:{
+                _NativeElement:true,
+                tagName:'button',
+                // dont set class to HTML Element
+                className:'xui-ui-unselectable {_className}',
+                style:'cursor:pointer;{_style};{_align}',
+                tabindex: '{tabindex}',
+                ICON:{
+                    $order:1,
+                    className:'xui-ui-icon {imageClass}',
+                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                },
+                CAPTION:{
+                    $order:2,
+                    text:'{caption}'
                 }
+            },
+            DataModel:{
+                html:null,
+                image:{
+                    format:'image',
+                    action: function(value){
+                        this.getSubNode('ICON')
+                            .css('display',value?'':'none')
+                            .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
+                    }
+                },
+                imagePos:{
+                    action: function(value){
+                        this.getSubNode('ICON')
+                            .css('backgroundPosition', value);
+                    }
+                },
+                caption:{
+                    ini:undefined,
+                    action: function(v){
+                        v=(_.isSet(v)?v:"")+"";
+                        this.getSubNode('CAPTION').html(xui.adjustRes(v,0,1));
+                    }
+                },
+                hAlign:{
+                    ini:'center',
+                    listbox:['left','center','right'],
+                    action: function(v){
+                        this.getRoot().css('textAlign',v);
+                    }
+                }
+            },
+            _prepareData:function(profile, data){
+                data=arguments.callee.upper.call(this, profile,data);
+                data._align = 'text-align:'+data.hAlign+';';
+                return data;
             }
         }
     });
-    
+    // compitable
+    xui.UI.SButton = xui.UI.ImageButton;
+
+
     Class(u+".Span", u,{
         Static:{
             Templates:{
