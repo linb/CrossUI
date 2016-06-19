@@ -75,10 +75,8 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(202)
                 .setWidth(232)
                 .setHeight(42)
-                .setBorder(true)
                 .setCaption("<strong>label</strong> (left/bottom)")
                 .setHAlign("left")
-                .setVAlign("bottom")
             );
             
             host.group2.append((new xui.UI.Label)
@@ -87,7 +85,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(50)
                 .setWidth(224)
                 .setHeight(32)
-                .setBorder(true)
                 .setCaption("label with border")
             );
             
@@ -97,8 +94,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(50)
                 .setWidth(110)
                 .setHeight(117)
-                .setBorder(true)
-                .setResizer(true)
                 .setCaption("resizable label")
                 .setHAlign("center")
             );
@@ -109,7 +104,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(50)
                 .setWidth(224)
                 .setHeight(32)
-                .setBorder(true)
                 .setCaption("label (exStyle:'cursor:pointer')")
                 .setCustomStyle({"KEY":"cursor:pointer"})
             );
@@ -120,7 +114,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(94)
                 .setWidth(224)
                 .setHeight(32)
-                .setBorder(true)
                 .setCaption("label with image")
                 .setImage("img/demo.gif")
             );
@@ -132,7 +125,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setWidth(280)
                 .setHeight(50)
                 .setZIndex("2")
-                .setBorder(true)
                 .setCaption("label (zIndex:2)")
             );
             
@@ -162,7 +154,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(158)
                 .setWidth(232)
                 .setHeight(32)
-                .setBorder(true)
                 .setCaption("<strong>label</strong> (center/middle)")
                 .setHAlign("center")
             );
@@ -173,7 +164,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setTop(94)
                 .setWidth(224)
                 .setHeight(32)
-                .setBorder(true)
                 .setCaption("label with border&shadow")
             );
             
@@ -184,7 +174,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setWidth(280)
                 .setHeight(42)
                 .setZIndex("2")
-                .setBorder(true)
                 .setCaption("label (set background in onRender event)")
                 .onRender("_label12_onrender")
             );
