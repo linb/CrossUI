@@ -24133,7 +24133,7 @@ new function(){
                         // Avoid being removed from host 
                         prf.alias=null;
                         prf._module=null;
-                        prf.boxing().destroy();
+                        if(prf.box)prf.boxing().destroy();
                     },parent,subId);
                 }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
                     module.show(function(){
@@ -24141,7 +24141,7 @@ new function(){
                         // Avoid being removed from host 
                         prf.alias=null;
                         prf._module=null;
-                        prf.boxing().destroy();
+                        if(prf.box)prf.boxing().destroy();
                     },parent);
                 }
 
@@ -24204,8 +24204,8 @@ new function(){
             // for parent UIProfile toHtml case
             RenderTrigger:function(){
                 var prf=this;
-                if(!prf._replaced && prf._module){
-                    this.replaceWithModule(prf._module);
+                if(prf && !prf._replaced && prf._module){
+                    prf.boxing().replaceWithModule(prf._module);
                 }
             }
         }
