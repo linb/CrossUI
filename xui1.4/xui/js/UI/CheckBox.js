@@ -1,5 +1,14 @@
-Class("xui.UI.CheckBox", "xui.UI.Button",{
+
+Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
+    Initialize:function(){
+        // compitable
+        xui.UI.SCheckBox = xui.UI.CheckBox;
+    },
     Instance:{
+        activate:function(){
+            this.getSubNode('FOCUS').focus();
+            return this;
+        },
         _setCtrlValue:function(value){
             return this.each(function(profile){
                profile.getSubNode('MARK').tagClass('-checked', !!value);
@@ -10,76 +19,52 @@ Class("xui.UI.CheckBox", "xui.UI.Button",{
             return arguments.callee.upper.apply(this,['CAPTION']);
         }
     },
-    Initialize:function(){
-        //modify default template for shell
-        var t = this.getTemplate();
-        _.merge(t.FRAME.FOCUS.TB.TR.TD.BOX,{
-            MARK:{
-                $order:0,
-                className:'xui-uicmd-check'
-            }
-        },'all');
-        this.setTemplate(t);
-    },
     Static:{
+        Templates:{
+            className:'{_className}',
+            style:'{_style}',
+            FOCUS:{
+                tabindex: '{tabindex}',
+                MARK:{
+                    $order:0,
+                    className:'xui-uicmd-check'
+                },
+                ICON:{
+                    $order:1,
+                    className:'xui-ui-icon {imageClass}',
+                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                },
+                CAPTION:{
+                    $order:2,
+                    text:'{caption}'
+                }
+            }
+        },
         Appearances:{
             KEY:{
-                'font-size':'12px',
-                'line-height':'14px',
-                border:0,
-                cursor:'pointer'
+                overflow:'visible'
             },
-            BORDER:{},
-            /*a*/
             FOCUS:{
-                overflow:'hidden',
-                display:'block',
-                position:'absolute',
-                left:0,
-                top:0,
-                'z-index':'200',
-                width:'100%',
-                height:'100%',
-                'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
-            },
-            /*span*/
-            BOX:{
-                display:xui.$inlineBlock,
-                zoom:xui.browser.ie6?1:null,
-                'font-size':'12px',
-                'line-height':'14px',
-                overflow:'hidden',
+                cursor:'default',
                 'vertical-align':'middle',
-                'white-space':'nowrap'
-            },
-            TD:{
-                background:'transparent'
-            },
-            TDR:{
-                background:'transparent'
-            },
-            TDL:{
-                background:'transparent'
+                padding:'2px 0',
+                'font-size':'12px',
+                'line-height':'22px'
             },
             CAPTION:{
-                display:'inline',
-                'white-space':'normal',
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                cursor:'pointer',
-                zoom:xui.browser.ie?0:null
+                'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },
         Behaviors:{
             HoverEffected:{KEY:'MARK'},
             ClickEffected:{KEY:'MARK'},
+            NavKeys:{FOCUS:1},
             onClick:function(profile, e, src){
                 var p=profile.properties,b=profile.boxing();
-                if(p.disabled || p.readonly)return false;
-                //onClick event
+                if(p.disabled)return false;
+                if(p.readonly)return false;
                 b.setUIValue(!p.$UIvalue,null,null,'click');
-
-                if(profile.onChecked)b.onChecked(profile, p.$UIvalue);
+                if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
                 profile.getSubNode('FOCUS').focus();
             },
             FOCUS:{
@@ -93,14 +78,31 @@ Class("xui.UI.CheckBox", "xui.UI.Button",{
             }
         },
         DataModel:{
-            type:null,
             value:false,
-            hAlign:'left',
-            _customBorder:false,
-            border:false
+            image:{
+                format:'image',
+                action: function(value){
+                    this.getSubNode('ICON')
+                        .css('display',value?'':'none')
+                        .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
+                }
+            },
+            imagePos:{
+                action: function(value){
+                    this.getSubNode('ICON')
+                        .css('backgroundPosition', value);
+                }
+            },
+            caption:{
+                ini:undefined,
+                action: function(v){
+                    v=(_.isSet(v)?v:"")+"";
+                    this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
+                }
+            }
         },
         EventHandlers:{
-            onClick:null
+            onChecked:function(profile, e, value){}
         },
         _ensureValue:function(profile, value){
             return !!value;
