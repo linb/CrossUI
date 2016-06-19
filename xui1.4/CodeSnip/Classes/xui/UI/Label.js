@@ -152,7 +152,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setWidth(224)
                 .setHeight(22)
                 .setCaption("label with shadow text")
-                .setShadowText(true)
                 .setFontSize("16px")
                 .setFontWeight("bold")
             );
@@ -175,7 +174,6 @@ Class('App.xui_UI_Label', 'xui.Com',{
                 .setWidth(224)
                 .setHeight(32)
                 .setBorder(true)
-                .setShadow(true)
                 .setCaption("label with border&shadow")
             );
             

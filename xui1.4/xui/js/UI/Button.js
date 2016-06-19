@@ -255,8 +255,8 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:['BORDER']},
-            ClickEffected:{KEY:['BORDER']},
+            HoverEffected:{KEY:['BORDER','TDR']},
+            ClickEffected:{KEY:['BORDER','TDR']},
             NavKeys:{FOCUS:1},
             onClick:function(profile, e, src){
                 var p=profile.properties;

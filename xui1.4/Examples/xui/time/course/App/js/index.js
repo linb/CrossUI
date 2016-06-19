@@ -82,7 +82,6 @@ Class('App', 'xui.Com',{
                 .setWidth(480)
                 .setHeight(30)
                 .setCaption("Mr. xxx, welcom to training online management")
-                .setShadowText(true)
                 .setHAlign("left")
                 .setFontSize("14px")
                 .setFontWeight("bold")
