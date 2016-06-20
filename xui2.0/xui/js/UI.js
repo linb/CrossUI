@@ -920,7 +920,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:12px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
+                        node=profile.$busy=xui.create('<div class="xui-node-div" style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
                         xui([node.get(0)]).css({opacity:0.5});
                     }
                     node=profile.$busy;
@@ -1838,8 +1838,7 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'top',
                 overflow:'hidden',
                 'background-position':'right top',
-                'padding-right':'4px',
-                'font-size':'12px'
+                'padding-right':'4px'
             },
             '.xui-ui-btn *':{
                 cursor:'pointer'
@@ -2265,7 +2264,6 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1,
-                'background-image': xui.UI.$bg('bar_vertical.gif', '', true),
                 'background-repeat':'no-repeat', 
                 'background-position': 'left top'
             },
@@ -2329,7 +2327,6 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0,
                 'z-index':1,
                 overflow:'visible',
-                'background-image': xui.UI.$bg('bar_horizontal.gif', '', true),
                 'background-repeat':'repeat-y', 
                 'background-position': '-595px top'
             },
@@ -2337,7 +2334,6 @@ Class("xui.UI",  "xui.absObj", {
                 'padding-right':'4px',
                 'font-size':0,
                 'line-height':0,
-                'background-image': xui.UI.$bg('container_right.gif', '', true),
                 'background-repeat':'repeat-y', 
                 'background-position': 'right top'
             },
@@ -2436,7 +2432,6 @@ Class("xui.UI",  "xui.absObj", {
                 'font-family':'arial,helvetica,clean,sans-serif',
                 'font-style':'normal',
                 'font-weight':'normal',
-                'font-size':'12px',
                 'vertical-align':'middle'
             },
             '.xui-uiw-shell':{
@@ -2502,7 +2497,8 @@ Class("xui.UI",  "xui.absObj", {
                 border:'solid 1px #648cb4'
             },
             '.xui-uiborder-flat':{
-                border:'solid 1px #648cb4'
+                border:'solid 1px #648cb4',
+                'border-radius':'4px'
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
@@ -2544,35 +2540,57 @@ Class("xui.UI",  "xui.absObj", {
                 'border-style':'solid',
                 'border-width':'0 1px 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-right-color':'#648cb4'
+                'border-right-color':'#648cb4' 
             },
             '.xui-uiborder-lt':{
                 'border-style':'solid',
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-top-color':'#c8e1fa'
+                'border-top-color':'#c8e1fa',
+                'border-radius':'4px 0 0 0'
+            },
+            '.xui-uiborder-rt':{
+                'border-style':'solid',
+                'border-width':'1px 1px 0 0',
+                'border-right-color':'#648cb4',
+                'border-top-color':'#c8e1fa',
+                'border-radius':'0 4px 0 0'
             },
             '.xui-uiborder-rb':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#648cb4',
-                'border-bottom-color':'#648cb4'
+                'border-bottom-color':'#648cb4',
+                'border-radius':'0 0 4px 0'
+            },
+            '.xui-uiborder-lb':{
+                'border-style':'solid',
+                'border-width':'0 0 1px 1px ',
+                'border-left-color':'#c8e1fa',
+                'border-bottom-color':'#648cb4',
+                'border-radius':'0 0 0 4px'
             },
             '.xui-uiborder-rb2':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#A2BBD9',
-                'border-bottom-color':'#A2BBD9'
+                'border-bottom-color':'#A2BBD9',
+                'border-radius':'0 0 4px 0'
+            },
+            '.xui-uiborder-radius':{
+                'border-radius':'4px'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa'
+                'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa',
+                'border-radius':'4px'
             },
             '.xui-uiborder-inset':{
                 $order:9,
                 border:'solid 1px',
-                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4'
+                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
+                'border-radius':'4px'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -6593,8 +6611,6 @@ new function(){
         Static:{
             Appearances:{
                 KEY:{
-                   'font-size':xui.browser.ie?'12px':null,
-                   'line-height':xui.browser.ie?'14px':null,
                    cursor:'pointer'
                 }
             },

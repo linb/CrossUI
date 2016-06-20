@@ -250,8 +250,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'background-repeat': 'repeat-x'
             },            
             CAPTION:{
-                'font-size':'12px',
-                'line-height':'14px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },

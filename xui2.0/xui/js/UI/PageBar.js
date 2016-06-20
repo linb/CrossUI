@@ -206,7 +206,6 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         },
         Appearances:{
             LABEL:{
-                'font-size':'12px',
                 padding:'3px 6px 0 6px',
                 'vertical-align':'top',                
                 'white-space':'nowrap'

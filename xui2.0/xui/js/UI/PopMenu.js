@@ -336,7 +336,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         $initRootHidden:true,
         Appearances:{
             KEY:{
-                'font-size':'12px',
                 visibility:'hidden'
             },
             POOL:{
@@ -348,7 +347,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOX:{
                 overflow:'hidden',
                 position:'relative',
-                'font-size':'12px',
                 'z-index':'3'
             },
             BORDER:{

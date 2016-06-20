@@ -136,7 +136,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             },
             COMMENT:{
                 display:'block',
-                'font-size':'12px',
                 margin:'2px',
                 'text-align':'center'
             }

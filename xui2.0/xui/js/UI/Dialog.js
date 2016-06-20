@@ -152,6 +152,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         var ns=this, t=ns.getTemplate();
         _.merge(t.FRAME.BORDER,{
             tabindex: '{tabindex}',
+            className: 'xui-uiborder-radius',
             TABSTOP1:{$order:-1},
             TBAR:{
                 tagName:'div',
@@ -167,18 +168,18 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         tagName:'tr',
                         TBARTDL:{
                             tagName:'td',
-                            className:'xui-uibar-tdl'
+                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                         },
                         TBARTDM:{
                             $order:1,
                             width:'100%',
                             tagName:'td',
-                            className:'xui-uibar-tdm'
+                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                         },
                         TBARTDR:{
                             $order:2,
                             tagName:'td',
-                            className:'xui-uibar-tdr'
+                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                         }
                     }
                 },
@@ -251,10 +252,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             MAIN:{
                 $order:2,
                 tagName:'div',
-                className:'xui-uicon-main',
+                className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                 MAINI:{
                     tagName:'div',
-                    className:'xui-uibg-bar xui-uicon-maini',
+                    className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
@@ -277,18 +278,18 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         tagName:'tr',
                         BBARTDL:{
                             tagName:'td',
-                            className:'xui-uibar-tdl'
+                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                         },
                         BBARTDM:{
                             $order:1,
                             width:'100%',
                             tagName:'td',
-                            className:'xui-uibar-tdm'
+                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                         },
                         BBARTDR:{
                             $order:2,
                             tagName:'td',
-                            className:'xui-uibar-tdr'
+                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                         }
                     }
                 }
@@ -303,7 +304,6 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         xui.prompt=ns.prompt;
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'
@@ -316,14 +316,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 display:'inline',
                 position:'absolute'
             },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
+            },
             PANEL:{
                 position:'relative',
-                overflow:'auto',
-                'font-size':'12px',
-                'line-height':'auto'
+                overflow:'auto'
             },
             CAPTION:{
-                'font-size':'12px',
                 display:'inline',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },

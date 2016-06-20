@@ -90,8 +90,6 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                 width:'316px'
             },
             'CAPTION, IND1, TAIL, MIN':{
-                'font-size':'12px',
-                'line-height':'14px'
             },
             RULER:{
                 $order:1,

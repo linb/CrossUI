@@ -537,8 +537,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
-                'vertical-align':'middle',
-                'font-size':'12px'
+                'vertical-align':'middle'
             },
             RULER:{
                 height:'18px',

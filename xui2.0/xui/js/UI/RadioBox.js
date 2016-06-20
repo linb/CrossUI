@@ -41,8 +41,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                zoom:xui.browser.ie?1:null,
                cursor:'pointer',
                overflow:'hidden',
-               'vertical-align':'middle',
-               'font-size':'12px'
+               'vertical-align':'middle'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'

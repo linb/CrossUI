@@ -137,13 +137,13 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         }
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Templates:{
             tagName:'div',
             style:'{_style}',
             className:'{_className}',
             BORDER:{
                 tagName:'div',
+                className: 'xui-uiborder-radius',
                 style:'height:{_bHeight}px;width:{_bWidth}px;',
                 POOL:{
                     tagName:'div',
@@ -164,18 +164,18 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                             tagName:'tr',
                             TBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             TBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             TBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -206,10 +206,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         MAINC:{
                             className:'xui-uiborder-flat xui-uibg-base',
                             tagName:'div',
@@ -273,9 +273,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 TAIL:{
                     $order:4,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     TIPS:{
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         style:'z-index:2;{_tipsdisplay};',
                         tagName:'div'
                     }
@@ -296,18 +296,18 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -950,6 +950,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             onDblclickTask:function(profile, task, e, src){}
         },
         Appearances:{
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
+            },
             MAINI:{
                 'padding-top':'4px'
             },
@@ -1034,8 +1038,6 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             TIPS:{
                 position:'relative',
                 height:'14px',
-                'font-size':'12px',
-                'line-height':'14px',
                 'text-align':'center'
             },
             ACTIVE:{

@@ -203,15 +203,13 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         },
         Appearances:{
             KEY:{
-                'font-size':'12px'
             },
             LABEL:{
                'z-index':1,
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             EXTRA:{
                 display:'none'
@@ -227,7 +225,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 zoom:xui.browser.ie?1:null,
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
-                'font-size':'12px',
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{

@@ -8374,9 +8374,9 @@ Class('xui.Event',null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
-            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em;vertical-align:middle;}"+
-            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;font-size:12px;}"+
+            css=".xui-node{margin:0;padding:0;font-size:12px;line-height:1.22em;-webkit-text-size-adjust:none;}"+
+            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
+            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
@@ -8394,7 +8394,7 @@ Class('xui.Event',null,{
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
-            ".xui-node-span, .xui-node-div{border:0;font-size:12px;}"+
+            ".xui-node-span, .xui-node-div{border:0;}"+
             ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
             (b.gek
                 ? b.ver<3 
@@ -17544,7 +17544,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;font-size:12px;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
+                        node=profile.$busy=xui.create('<div class="xui-node-div" style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
                         xui([node.get(0)]).css({opacity:0.5});
                     }
                     node=profile.$busy;
@@ -18462,8 +18462,7 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'top',
                 overflow:'hidden',
                 'background-position':'right top',
-                'padding-right':'4px',
-                'font-size':'12px'
+                'padding-right':'4px'
             },
             '.xui-ui-btn *':{
                 cursor:'pointer'
@@ -18889,7 +18888,6 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1,
-                'background-image': xui.UI.$bg('bar_vertical.gif', '', true),
                 'background-repeat':'no-repeat', 
                 'background-position': 'left top'
             },
@@ -18953,7 +18951,6 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0,
                 'z-index':1,
                 overflow:'visible',
-                'background-image': xui.UI.$bg('bar_horizontal.gif', '', true),
                 'background-repeat':'repeat-y', 
                 'background-position': '-595px top'
             },
@@ -18961,7 +18958,6 @@ Class("xui.UI",  "xui.absObj", {
                 'padding-right':'4px',
                 'font-size':0,
                 'line-height':0,
-                'background-image': xui.UI.$bg('container_right.gif', '', true),
                 'background-repeat':'repeat-y', 
                 'background-position': 'right top'
             },
@@ -19060,7 +19056,6 @@ Class("xui.UI",  "xui.absObj", {
                 'font-family':'arial,helvetica,clean,sans-serif',
                 'font-style':'normal',
                 'font-weight':'normal',
-                'font-size':'12px',
                 'vertical-align':'middle'
             },
             '.xui-uiw-shell':{
@@ -19126,7 +19121,8 @@ Class("xui.UI",  "xui.absObj", {
                 border:'solid 1px #648cb4'
             },
             '.xui-uiborder-flat':{
-                border:'solid 1px #648cb4'
+                border:'solid 1px #648cb4',
+                'border-radius':'4px'
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
@@ -19168,35 +19164,57 @@ Class("xui.UI",  "xui.absObj", {
                 'border-style':'solid',
                 'border-width':'0 1px 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-right-color':'#648cb4'
+                'border-right-color':'#648cb4' 
             },
             '.xui-uiborder-lt':{
                 'border-style':'solid',
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-top-color':'#c8e1fa'
+                'border-top-color':'#c8e1fa',
+                'border-radius':'4px 0 0 0'
+            },
+            '.xui-uiborder-rt':{
+                'border-style':'solid',
+                'border-width':'1px 1px 0 0',
+                'border-right-color':'#648cb4',
+                'border-top-color':'#c8e1fa',
+                'border-radius':'0 4px 0 0'
             },
             '.xui-uiborder-rb':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#648cb4',
-                'border-bottom-color':'#648cb4'
+                'border-bottom-color':'#648cb4',
+                'border-radius':'0 0 4px 0'
+            },
+            '.xui-uiborder-lb':{
+                'border-style':'solid',
+                'border-width':'0 0 1px 1px ',
+                'border-left-color':'#c8e1fa',
+                'border-bottom-color':'#648cb4',
+                'border-radius':'0 0 0 4px'
             },
             '.xui-uiborder-rb2':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#A2BBD9',
-                'border-bottom-color':'#A2BBD9'
+                'border-bottom-color':'#A2BBD9',
+                'border-radius':'0 0 4px 0'
+            },
+            '.xui-uiborder-radius':{
+                'border-radius':'4px'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa'
+                'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa',
+                'border-radius':'4px'
             },
             '.xui-uiborder-inset':{
                 $order:9,
                 border:'solid 1px',
-                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4'
+                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
+                'border-radius':'4px'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -23217,8 +23235,6 @@ new function(){
         Static:{
             Appearances:{
                 KEY:{
-                   'font-size':xui.browser.ie?'12px':null,
-                   'line-height':xui.browser.ie?'14px':null,
                    cursor:'pointer'
                 }
             },
@@ -24834,7 +24850,6 @@ Class("xui.UI.Shadow","xui.UI",{
                     if(xui.Dom.css3Support("boxShadow")){
                         size=parseInt(d._shadowSize*3/4,10);
                         node.css("boxShadow",size+"px "+size+"px "+size+"px #9f9f9f");
-                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","#9f9f9f");
                     }else{
                         if(node.$getShadow())return;
                         o.$shadow=node.addShadow({shadowSize:d._shadowSize});
@@ -24846,7 +24861,6 @@ Class("xui.UI.Shadow","xui.UI",{
                     var node = o.getSubNode('BORDER');
                     if(xui.Dom.css3Support("boxShadow")){
                         node.css("boxShadow","");
-                        if(o.box._shadowRB)o.getSubNode(o.box._shadowRB).css("background-color","transparent");
                     }else{
                         if(!node.$getShadow())return;
                         node.removeShadow();
@@ -26525,8 +26539,6 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
     Static:{
         Appearances:{
             KEY:{
-                'font-size':'12px',
-                'line-height':'14px',
                 cursor:'pointer'
             },
             BORDER:{
@@ -26677,9 +26689,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             CAPTION:{
                 cursor:'pointer',
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                display:'inline',
-                'font-size':'12px',
-                'line-height':'14px'
+                display:'inline'
             }
         },
         Behaviors:{
@@ -26879,9 +26889,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             FOCUS:{
                 cursor:'default',
                 'vertical-align':'middle',
-                padding:'2px 0',
-                'font-size':'12px',
-                'line-height':'22px'
+                padding:'2px 0'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
@@ -27015,8 +27023,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             BOX:{
                 position:'absolute',
@@ -27766,8 +27773,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             WRAP:{
                 left:0,
@@ -27800,7 +27806,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                margin:0,
 
                'margin-top':xui.browser.ie?'-1px':null,
-               'font-size':'12px',
                position:'relative',
                //give default size
                width:'102px',
@@ -28904,8 +28909,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             EDITOR:{
                 position:'absolute',
@@ -30439,7 +30443,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top:0,
                 right:0,
                 cursor:'pointer',
-                'font-size':'12px',
                 overflow:'hidden'
             },
             'KEY-type-number INPUT, KEY-type-spin INPUT, KEY-type-currency INPUT':{
@@ -31480,10 +31483,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 display:'none'
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
-                'font-size':'12px',
-                'line-height':'18px'
+                'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },
 
@@ -31727,10 +31727,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
+                className: 'xui-uiborder-radius',
                 BAR:{
                     tagName:'div',
                     className:'{classBar}',
-                    BART:{
+                    TBART:{
                         cellpadding:"0",
                         cellspacing:"0",
                         width:'100%',
@@ -31741,18 +31742,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'tr',
                             BARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             BARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             BARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -31772,10 +31773,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CON:{
                             $order:1,
                             tagName:'div',
@@ -31847,10 +31848,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -31888,18 +31889,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -31911,7 +31912,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _radius:84,
         _square:100,
         _bigRadius:97,
-        _shadowRB:"BBARTDR",
         DataModel:{
             height:{
                 ini:'auto',
@@ -31954,6 +31954,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         Appearances:{
             KEY:{
+            },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
             },
             MAINI:{
                 padding:'4px 5px 4px 0'
@@ -32736,11 +32740,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
+                className: 'xui-uiborder-radius',
                 BAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
-                    BART:{
+                    TBART:{
                         cellpadding:"0",
                         cellspacing:"0",
                         width:'100%',
@@ -32751,18 +32756,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'tr',
                             BARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             BARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             BARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -32812,10 +32817,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uicon-maini xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CON:{
                             tagName:'div',
                             className:'xui-uiborder-inset',
@@ -32832,10 +32837,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CAPTION:{
                             tagName:'div',
                             style:'{_nocap}',
@@ -32905,18 +32910,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -32925,10 +32930,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         });
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'
+            },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
             },
             BORDER:{
                 overflow: 'visible',
@@ -33051,7 +33059,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             CAPTION:{
                 padding:'4px 0 0 0',
                 'text-align':'center',
-                'font-size':'12px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             MAINI:{
@@ -33063,8 +33070,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             TD:{
                 $order:1,
-                'text-align':'center',
-                'font-size': '12px'
+                'text-align':'center'
             },
             'TD-checked':{
                 $order:4,
@@ -33073,8 +33079,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'W,H':{
                 $order:3,
                 'vertical-align':'middle',
-                'text-align':'center',
-                'font-size': '12px'
+                'text-align':'center'
             }
         },
         Behaviors:{
@@ -33592,11 +33597,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             style:'{_style};height:auto;',
             BORDER:{
                 tagName : 'div',
-                BAR:{
+                className: 'xui-uiborder-radius',
+                BART:{
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
-                    BART:{
+                    TBART:{
                         cellpadding:"0",
                         cellspacing:"0",
                         width:'100%',
@@ -33607,18 +33613,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'tr',
                             BARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             BARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             BARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -33663,10 +33669,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CONH:{
                             tagName:'div',
                             className:'xui-uiborder-inset',
@@ -33683,10 +33689,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -33720,18 +33726,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -33740,7 +33746,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         });
     },
     Static:{
-        _shadowRB:"BBARTDR",
         _excls:'xuiex-timepicker xui-uitd',
         _excls2:'xuiex-timepicker xui-uitd xui-uitd-alt ',
         _excls3:'xuiex-timepicker3 xui-uitd',
@@ -33774,6 +33779,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         Appearances:{
             KEY:{
+            },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
             },
             MAINI:{
                 'padding-top':'4px'
@@ -33871,17 +33880,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'text-align':'center'
             },
             CAPTION:{
-                'font-size':'12px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             '.xuiex-timepicker':{
-                'font-size':"12px",
                 width:'24px',
                 height:'16px',
                 'text-align':'center'
             },
             '.xuiex-timepicker3':{
-                'font-size':"12px",
                 width:'20px',
                 height:'16px',
                 'text-align':'center',
@@ -34335,15 +34341,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         Appearances:{
             KEY:{
-                'font-size':'12px'
             },
             LABEL:{
                'z-index':1,
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             EXTRA:{
                 display:'none'
@@ -34359,7 +34363,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 zoom:xui.browser.ie?1:null,
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
-                'font-size':'12px',
                 position:'relative'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
@@ -35009,7 +35012,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             COMMENT:{
                 display:'block',
-                'font-size':'12px',
                 margin:'2px',
                 'text-align':'center'
             }
@@ -35325,17 +35327,17 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         }
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Templates:{
             tagName : 'div',
             style:'{_style}',
             className:'{_className}',
             BORDER:{
                 tagName:'div',
+                className: 'xui-uiborder-radius',
                 TBAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
-                    BART:{
+                    TBART:{
                         cellpadding:"0",
                         cellspacing:"0",
                         width:'100%',
@@ -35347,18 +35349,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             tagName:'tr',
                             BARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             BARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             BARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -35414,11 +35416,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
@@ -35444,18 +35446,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -35470,6 +35472,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             'KEY BORDER':{
                 zoom:xui.browser.ie6?1:null
             },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
+            },
             PANEL:{
                 position:'relative',
                 left:0,
@@ -35479,7 +35485,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 zoom:xui.browser.ie6?1:null
             },
             CAPTION:{
-                'font-size':'12px',
                 cursor:'pointer',
                 display:'inline',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
@@ -36033,7 +36038,6 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         },
         Appearances:{
             LABEL:{
-                'font-size':'12px',
                 padding:'3px 6px 0 6px',
                 'vertical-align':'top',                
                 'white-space':'nowrap'
@@ -36783,8 +36787,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
-                'vertical-align':'middle',
-                'font-size':'12px'
+                'vertical-align':'middle'
             },
             RULER:{
                 height:'18px',
@@ -37748,7 +37751,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
                 'vertical-align':'middle',
-                'font-size':'12px',
                 margin:'1px'
             }
         },
@@ -37937,8 +37939,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                zoom:xui.browser.ie?1:null,
                cursor:'pointer',
                overflow:'hidden',
-               'vertical-align':'middle',
-               'font-size':'12px'
+               'vertical-align':'middle'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
@@ -38091,9 +38092,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
-                'vertical-align':'middle',
-                'font-size':'12px',
-                'line-height':'14px'
+                'vertical-align':'middle'
             },
             "ITEM-none CAPTION":{
                 padding:'1px 4px'
@@ -39207,7 +39206,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                zoom:xui.browser.ie?1:null,
                position:'relative',
                display:'block',
-               'font-size':'12px',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
@@ -39827,7 +39825,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         $initRootHidden:true,
         Appearances:{
             KEY:{
-                'font-size':'12px',
                 visibility:'hidden'
             },
             POOL:{
@@ -39839,7 +39836,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOX:{
                 overflow:'hidden',
                 position:'relative',
-                'font-size':'12px',
                 'z-index':'3'
             },
             BORDER:{
@@ -40570,8 +40566,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'background-repeat': 'repeat-x'
             },            
             CAPTION:{
-                'font-size':'12px',
-                'line-height':'14px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },
@@ -41027,8 +41021,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             'LABEL, CAPTION':{
                 'vertical-align':'middle',
                 'margin-left':'2px',
-                'margin-right':'2px',
-                 'font-size':'12px'
+                'margin-right':'2px'
             },
             LABEL:{
                 cursor:'default',
@@ -44515,9 +44508,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //for ie height change trigger
                 'overflow-y': xui.browser.ie ?'hidden':'',
                 position:'relative',
-                'white-space': 'nowrap',
-                'font-size':'12px',
-                'line-height':'18px'
+                'white-space': 'nowrap' 
             },
             'HCELLS1, HCELLS2, GRPCELLBOX1, GRPCELLBOX2':{
                 overflow:'visible'
@@ -44626,8 +44617,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'border-right':'1px solid #A2BBD9',
                'border-bottom':'1px solid #A2BBD9',
                padding:0,
-               'vertical-align':'bottom',
-                'font-size':'12px'
+               'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
                'background-image': xui.UI.$bg('head_mouseover.gif', ''),
@@ -44653,15 +44643,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'border-right':'1px solid #A2BBD9',
                 position:'relative',
                 overflow:xui.browser.ie6?'hidden':'',
-                'font-size':'12px',
-                'line-height':'20px',
                 'vertical-align':'top'
             },
             "LHCELL, LCELL":{
                 height:'100%',
                 position:'relative',
-                'font-size':'12px',
-                'line-height':'20px',
                 'vertical-align':'top'
             },
             'ALT':{
@@ -49157,6 +49143,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         var ns=this, t=ns.getTemplate();
         _.merge(t.FRAME.BORDER,{
             tabindex: '{tabindex}',
+            className: 'xui-uiborder-radius',
             TABSTOP1:{$order:-1},
             TBAR:{
                 tagName:'div',
@@ -49172,18 +49159,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:'tr',
                         TBARTDL:{
                             tagName:'td',
-                            className:'xui-uibar-tdl'
+                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                         },
                         TBARTDM:{
                             $order:1,
                             width:'100%',
                             tagName:'td',
-                            className:'xui-uibar-tdm'
+                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                         },
                         TBARTDR:{
                             $order:2,
                             tagName:'td',
-                            className:'xui-uibar-tdr'
+                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                         }
                     }
                 },
@@ -49256,10 +49243,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             MAIN:{
                 $order:2,
                 tagName:'div',
-                className:'xui-uicon-main',
+                className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                 MAINI:{
                     tagName:'div',
-                    className:'xui-uibg-bar xui-uicon-maini',
+                    className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
@@ -49282,18 +49269,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:'tr',
                         BBARTDL:{
                             tagName:'td',
-                            className:'xui-uibar-tdl'
+                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                         },
                         BBARTDM:{
                             $order:1,
                             width:'100%',
                             tagName:'td',
-                            className:'xui-uibar-tdm'
+                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                         },
                         BBARTDR:{
                             $order:2,
                             tagName:'td',
-                            className:'xui-uibar-tdr'
+                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                         }
                     }
                 }
@@ -49308,7 +49295,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         xui.prompt=ns.prompt;
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Appearances:{
             KEY:{
                 overflow:'visible'
@@ -49321,14 +49307,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'inline',
                 position:'absolute'
             },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
+            },
             PANEL:{
                 position:'relative',
-                overflow:'auto',
-                'font-size':'12px',
-                'line-height':'auto'
+                overflow:'auto'
             },
             CAPTION:{
-                'font-size':'12px',
                 display:'inline',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },

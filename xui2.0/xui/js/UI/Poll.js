@@ -299,7 +299,6 @@ Class("xui.UI.Poll", "xui.UI.List",{
         _ITEMKEY:'OUTER',
         Appearances:{
             KEY:{
-                'font-size':'12px',
                 zoom:xui.browser.ie?1:null
             },
             'TITLE, ITEMS, TAIL':{

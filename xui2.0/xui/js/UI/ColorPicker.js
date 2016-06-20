@@ -82,10 +82,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
+                className: 'xui-uiborder-radius',
                 BAR:{
                     tagName:'div',
                     className:'{classBar}',
-                    BART:{
+                    TBART:{
                         cellpadding:"0",
                         cellspacing:"0",
                         width:'100%',
@@ -96,18 +97,18 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                             tagName:'tr',
                             BARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             BARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             BARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -127,10 +128,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CON:{
                             $order:1,
                             tagName:'div',
@@ -202,10 +203,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -243,18 +244,18 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -266,7 +267,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
         _radius:84,
         _square:100,
         _bigRadius:97,
-        _shadowRB:"BBARTDR",
         DataModel:{
             height:{
                 ini:'auto',
@@ -309,6 +309,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
         },
         Appearances:{
             KEY:{
+            },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
             },
             MAINI:{
                 padding:'4px 5px 4px 0'

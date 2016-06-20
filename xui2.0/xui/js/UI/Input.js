@@ -155,8 +155,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             WRAP:{
                 left:0,
@@ -189,7 +188,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                margin:0,
 
                'margin-top':xui.browser.ie?'-1px':null,
-               'font-size':'12px',
                position:'relative',
                //give default size
                width:'102px',

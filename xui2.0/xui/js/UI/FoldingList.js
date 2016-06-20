@@ -259,7 +259,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             },
             TITLE:{
                 $order:1,
-                height:'26px',
                 display:'block',
                 position:'relative',
                 'white-space':'nowrap',
@@ -283,7 +282,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 color:'#666',
                 cursor:'pointer',
                 'white-space':'nowrap',
-            	font: 'bold 12px arial,sans-serif',
             	color: '#00681C'
             },
             'ITEM-checked CAP1':{
@@ -293,7 +291,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             TLEFT:{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
-                position:'absolute',
+                position:'relative',
                 left:'4px',
                 top:'2px',
 

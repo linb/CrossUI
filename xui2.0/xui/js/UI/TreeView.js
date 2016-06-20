@@ -30,7 +30,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                zoom:xui.browser.ie?1:null,
                position:'relative',
                display:'block',
-               'font-size':'12px',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },

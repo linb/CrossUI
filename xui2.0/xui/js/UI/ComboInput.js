@@ -663,7 +663,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top:0,
                 right:0,
                 cursor:'pointer',
-                'font-size':'12px',
                 overflow:'hidden'
             },
             'KEY-type-number INPUT, KEY-type-spin INPUT, KEY-type-currency INPUT':{

@@ -47,9 +47,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             FOCUS:{
                 cursor:'default',
                 'vertical-align':'middle',
-                padding:'2px 0',
-                'font-size':'12px',
-                'line-height':'22px'
+                padding:'2px 0'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'

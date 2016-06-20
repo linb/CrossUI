@@ -97,8 +97,6 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
     Static:{
         Appearances:{
             KEY:{
-                'font-size':'12px',
-                'line-height':'14px',
                 cursor:'pointer'
             },
             BORDER:{
@@ -249,9 +247,7 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             CAPTION:{
                 cursor:'pointer',
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                display:'inline',
-                'font-size':'12px',
-                'line-height':'14px'
+                display:'inline'
             }
         },
         Behaviors:{

@@ -57,9 +57,6 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                 'z-index':'10'
             },
             INPUT:{
-                'font-family': 'Courier New, Courier, monospace',
-                'font-size':'12px',
-                'line-height':'14px',
                 position:'absolute',
                 'background-color':'#fff',
                 left:0,
@@ -73,8 +70,6 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                 resize:'none'
             },
             'BAK1, BAK2':{
-                'font-family': 'Courier New, Courier, monospace',
-                'font-size':'12px',
                 position:'absolute',
                 visibility:'hidden',
                 left:'-10000px',
@@ -706,7 +701,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
             TITLE:{
                 $order:1,
-                height:'26px',
                 display:'block',
                 position:'relative',
                 'white-space':'nowrap',
@@ -733,7 +727,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 color:'#666',
                 cursor:'pointer',
                 'white-space':'nowrap',
-            	font: '12px arial,sans-serif',
             	color: '#00681C'
             },
             'ITEM-checked CAPTION':{
@@ -743,7 +736,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             TLEFT:{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
-                position:'absolute',
+                position:'relative',
                 left:'4px',
                 top:'2px',
                 padding:"0 0 0 4px",
@@ -1649,13 +1642,13 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         }
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Templates:{
             tagName:'div',
             style:'{_style}',
             className:'{_className}',
             BORDER:{
                 tagName:'div',
+                className: 'xui-uiborder-radius',
                 style:'height:{_bHeight}px;width:{_bWidth}px;',
                 POOL:{
                     tagName:'div',
@@ -1676,18 +1669,18 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                             tagName:'tr',
                             TBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             TBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             TBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -1718,10 +1711,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         MAINC:{
                             className:'xui-uiborder-flat xui-uibg-base',
                             tagName:'div',
@@ -1785,9 +1778,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 TAIL:{
                     $order:4,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     TIPS:{
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         style:'z-index:2;{_tipsdisplay};',
                         tagName:'div'
                     }
@@ -1808,18 +1801,18 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -2462,6 +2455,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             onDblclickTask:function(profile, task, e, src){}
         },
         Appearances:{
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
+            },
             MAINI:{
                 'padding-top':'4px'
             },
@@ -2546,8 +2543,6 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             TIPS:{
                 position:'relative',
                 height:'14px',
-                'font-size':'12px',
-                'line-height':'14px',
                 'text-align':'center'
             },
             ACTIVE:{
@@ -3581,7 +3576,6 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         },
         Appearances:{
             KEY:{
-                'font-size':'12px'
             },
             ITEMS:{
                 position:'relative',
@@ -4106,7 +4100,6 @@ Class("xui.UI.Poll", "xui.UI.List",{
         _ITEMKEY:'OUTER',
         Appearances:{
             KEY:{
-                'font-size':'12px',
                 zoom:xui.browser.ie?1:null
             },
             'TITLE, ITEMS, TAIL':{
@@ -4602,7 +4595,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             },
             TITLE:{
                 $order:1,
-                height:'26px',
                 display:'block',
                 position:'relative',
                 'white-space':'nowrap',
@@ -4626,7 +4618,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 color:'#666',
                 cursor:'pointer',
                 'white-space':'nowrap',
-            	font: 'bold 12px arial,sans-serif',
             	color: '#00681C'
             },
             'ITEM-checked CAP1':{
@@ -4636,7 +4627,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             TLEFT:{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
-                position:'absolute',
+                position:'relative',
                 left:'4px',
                 top:'2px',
 
@@ -4820,8 +4811,6 @@ Class("xui.UI.Range", ["xui.UI","xui.absValue"],{
                 width:'316px'
             },
             'CAPTION, IND1, TAIL, MIN':{
-                'font-size':'12px',
-                'line-height':'14px'
             },
             RULER:{
                 $order:1,

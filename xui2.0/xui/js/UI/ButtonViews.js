@@ -96,7 +96,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
                 'vertical-align':'middle',
-                'font-size':'12px',
                 margin:'1px'
             }
         },

@@ -104,9 +104,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
-                'vertical-align':'middle',
-                'font-size':'12px',
-                'line-height':'14px'
+                'vertical-align':'middle'
             },
             "ITEM-none CAPTION":{
                 padding:'1px 4px'

@@ -54,7 +54,6 @@ Class("xui.UI.TagEditor", ['xui.UI',"xui.absValue"], {
         },
         Appearances:{
             KEY:{
-                'font-size':'12px'
             },
             ITEMS:{
                 position:'relative',

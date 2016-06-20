@@ -289,8 +289,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             'LABEL, CAPTION':{
                 'vertical-align':'middle',
                 'margin-left':'2px',
-                'margin-right':'2px',
-                 'font-size':'12px'
+                'margin-right':'2px'
             },
             LABEL:{
                 cursor:'default',

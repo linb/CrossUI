@@ -42,17 +42,17 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         }
     },
     Static:{
-        _shadowRB:"BBARTDR",
         Templates:{
             tagName : 'div',
             style:'{_style}',
             className:'{_className}',
             BORDER:{
                 tagName:'div',
+                className: 'xui-uiborder-radius',
                 TBAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
-                    BART:{
+                    TBART:{
                         cellpadding:"0",
                         cellspacing:"0",
                         width:'100%',
@@ -64,18 +64,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             tagName:'tr',
                             BARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
                             },
                             BARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
                             },
                             BARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                             }
                         }
                     },
@@ -131,11 +131,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main',
+                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
                     style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini',
+                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
@@ -161,18 +161,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             tagName:'tr',
                             BBARTDL:{
                                 tagName:'td',
-                                className:'xui-uibar-tdl'
+                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                             },
                             BBARTDM:{
                                 $order:1,
                                 width:'100%',
                                 tagName:'td',
-                                className:'xui-uibar-tdm'
+                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                             },
                             BBARTDR:{
                                 $order:2,
                                 tagName:'td',
-                                className:'xui-uibar-tdr'
+                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                             }
                         }
                     }
@@ -187,6 +187,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             'KEY BORDER':{
                 zoom:xui.browser.ie6?1:null
             },
+            'TBART, BBART':{
+                'border-spacing':0,
+                'border-collapse':'separate'
+            },
             PANEL:{
                 position:'relative',
                 left:0,
@@ -196,7 +200,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 zoom:xui.browser.ie6?1:null
             },
             CAPTION:{
-                'font-size':'12px',
                 cursor:'pointer',
                 display:'inline',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'

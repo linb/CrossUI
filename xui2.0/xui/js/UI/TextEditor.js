@@ -57,9 +57,6 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                 'z-index':'10'
             },
             INPUT:{
-                'font-family': 'Courier New, Courier, monospace',
-                'font-size':'12px',
-                'line-height':'14px',
                 position:'absolute',
                 'background-color':'#fff',
                 left:0,
@@ -73,8 +70,6 @@ Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
                 resize:'none'
             },
             'BAK1, BAK2':{
-                'font-family': 'Courier New, Courier, monospace',
-                'font-size':'12px',
                 position:'absolute',
                 visibility:'hidden',
                 left:'-10000px',

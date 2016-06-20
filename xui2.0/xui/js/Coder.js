@@ -1,13 +1,13 @@
 Class("xui.Coder", null,{
     Initialize:function(){
         xui.CSS.addStyleSheet(
-            '.sh {font-family: "Courier New" , Courier, mono;font-size: 12px;border: 1px solid #92D1E4;background:#fff;}'+
+            '.sh {font-family: "Courier New" , Courier, mono;border: 1px solid #92D1E4;background:#fff;}'+
             '.sh .sh-con{padding-bottom:3px;background-color: #fff;}'+
             '.sh .sh-cmd{padding: 3px 8px 3px 8px;font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;color: silver;border-bottom: 1px solid #EBEADB;}'+
-            '.sh .sh-cmd a{font-size: 12px;color: blue;text-decoration: none;margin-right: 10px;}'+
+            '.sh .sh-cmd a{color: blue;text-decoration: none;margin-right: 10px;}'+
             '.sh .sh-cmd a:hover{color: red;}'+
             '.sh .cmd-ruler{width:25px;}'+
-            '.sh .sh-toggle{width:16px;cursor:pointer;font-size:14px;color:blue;vertical-align:baseline;}'+
+            '.sh .sh-toggle{width:16px;cursor:pointer;font-size:120%;color:blue;vertical-align:baseline;}'+
             '.sh ol{color: #FF97A9; margin: 0px 0px 0px 45px; padding: 0; border-bottom: 1px solid #EBEADB; }'+
             '.sh ol li{color: #000157;border-left: 3px solid #6CE26C;padding-left: 10px;line-height: 14px;list-style: decimal none;margin:0;/*border-bottom: 1px dashed #E2E2E2;*/}'+
             '.sh-con span{vertical-align:inherit;'+(xui.browser.ie?'zoom:0;':'')+'}'+

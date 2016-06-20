@@ -2347,9 +2347,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //for ie height change trigger
                 'overflow-y': xui.browser.ie ?'hidden':'',
                 position:'relative',
-                'white-space': 'nowrap',
-                'font-size':'12px',
-                'line-height':'18px'
+                'white-space': 'nowrap' 
             },
             'HCELLS1, HCELLS2, GRPCELLBOX1, GRPCELLBOX2':{
                 overflow:'visible'
@@ -2458,8 +2456,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'border-right':'1px solid #A2BBD9',
                'border-bottom':'1px solid #A2BBD9',
                padding:0,
-               'vertical-align':'bottom',
-                'font-size':'12px'
+               'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
                'background-image': xui.UI.$bg('head_mouseover.gif', ''),
@@ -2485,15 +2482,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'border-right':'1px solid #A2BBD9',
                 position:'relative',
                 overflow:xui.browser.ie6?'hidden':'',
-                'font-size':'12px',
-                'line-height':'20px',
                 'vertical-align':'top'
             },
             "LHCELL, LCELL":{
                 height:'100%',
                 position:'relative',
-                'font-size':'12px',
-                'line-height':'20px',
                 'vertical-align':'top'
             },
             'ALT':{

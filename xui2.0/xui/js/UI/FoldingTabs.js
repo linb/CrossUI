@@ -300,7 +300,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
             TITLE:{
                 $order:1,
-                height:'26px',
                 display:'block',
                 position:'relative',
                 'white-space':'nowrap',
@@ -327,7 +326,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 color:'#666',
                 cursor:'pointer',
                 'white-space':'nowrap',
-            	font: '12px arial,sans-serif',
             	color: '#00681C'
             },
             'ITEM-checked CAPTION':{
@@ -337,7 +335,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             TLEFT:{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
-                position:'absolute',
+                position:'relative',
                 left:'4px',
                 top:'2px',
                 padding:"0 0 0 4px",

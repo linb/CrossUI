@@ -72,8 +72,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px',
-               'font-size':'12px'
+               'padding-top':'4px'
             },
             BOX:{
                 position:'absolute',
