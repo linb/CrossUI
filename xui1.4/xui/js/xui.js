@@ -3175,24 +3175,29 @@ Class('xui.XDMI','xui.absIO',{
             else
                 c._pool[id]=[self];
 
+            //create form
+            var a=c._if(document,id, onload);
+            self.node=a[0];
+            self.frm=a[1];
+            //create form
+            form = self.form = document.createElement('form');
+            form.style.display='none';
+
             // use postmessage
             if (w['postMessage']) {
                 self._msgcb=function(e){
                     if(!self.node)return;
-                    var o=e.data,
-                        source=e.source.name,
-                        src=source && source.split(":")[1],
-                        t,obj;
-                    if(source && (src+"")!==(self.id+"")){
+                    // only take self message
+                    if(e.source!==self.frm){
                         return;
                     }
-                    o=self.rspType=="json"?(obj=_.unserialize(o))===false?o:obj:o;
-                    if(o && o.xui_xdmi_id && (o.xui_xdmi_id+"")!==(self.id+"")){
-                        return;
+                    e=e.data;
+                    if(self.rspType=="json"){
+                        e = _.unserialize(e) || e;
                     }
-                    if(o && (t=c._pool[self.id])){
+                    if(e && (t=c._pool[self.id])){
                         for(var i=0,l=t.length;i<l;i++){
-                            t[i]._response=o;
+                            t[i]._response=e;
                             t[i]._onResponse();
                         }
                     }else{
@@ -3254,14 +3259,6 @@ Class('xui.XDMI','xui.absIO',{
                     })();
                 };
             }
-
-            //create form
-            var a=c._if(document,id, onload);
-            self.node=a[0];
-            self.frm=a[1];
-            //create form
-            form = self.form = document.createElement('form');
-            form.style.display='none';
 
             var uri=self.uri;
             if(self.method!='POST')
