@@ -7,6 +7,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         delete t.LIST.DROP;
         delete t.LIST;
         delete t.PNAELS;
+        t.$submap.items.ITEM.className = 'xui-uibarbg xui-uiborder-tb ';
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
@@ -29,9 +30,6 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 display:'block',
                 position:'absolute',
                 cursor:'pointer',
-                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -380px',
                 width:'100%',
                 left:0
             },
@@ -43,19 +41,20 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 display:'block'
             },
             'ITEM-mouseover':{
-                $order:1,
-                'background-position' : 'right -410px'
+                $order:1
+            },
+            'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
+                $order:2
+            },
+            'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
+                $order:2
             },
             'ITEM-mousedown, ITEM-checked':{
-                $order:2,
-                'background-position' : 'right -440px'
+                $order:3
             },
             HANDLE:{
                 cursor:'pointer',
                 display:'block',
-                'font-size':'12px',
-                height:'100%',
-                height:'18px',
                 'padding':'5px 8px',
                 'white-space':'nowrap'
             },
@@ -103,14 +102,14 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     obj.cssRegion({bottom:'auto',top:t1});
 
                     // offsetHeight maybe not set here
-                    t1 += obj.height();
+                    t1 += obj.offsetHeight();
                     if(o.id == key)return false;
                 });
                 _.arr.each(t.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({top:'auto',bottom:t2});
-                    t2+= obj.height();
+                    t2+= obj.offsetHeight();
                 },null,true);
 
                 temp = height - t1 - t2;

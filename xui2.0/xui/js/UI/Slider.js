@@ -36,6 +36,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 RULER:{
                     $order:1,
                     tagName:'div',
+                    className:'xui-uiborder-flat',
                     RULERLEFT:{},
                     RULERRIGHT:{}
                 },
@@ -123,32 +124,27 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'BOX-h IND, BOX-h RULER':{
                 'z-index':1,
                 top:'50%',
-                height:'6px',
-                'margin-top':'-3px'
+                height:'2px',
+                'margin-top':'-2px'
             },
             'BOX-h RULER, BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
-                'background-repeat':'repeat-x'
             },
             'BOX-h RULER':{
-                $order:2,
-                'background-position':'left -482px'
+                $order:2
             },
             'BOX-h RULERLEFT, BOX-h RULERRIGHT':{
                 'z-index':1,
-                height:'6px',
-                width:'5px'
+                height:'2px',
+                width:'2px'
             },
             'BOX-h RULERLEFT':{
                 $order:2,
-                'background-position':'left -474px',
-                left:'-4px',
+                left:'-2px',
                 top:0
             },
             'BOX-h RULERRIGHT':{
                 $order:2,
-                'background-position':'left -490px',
-                right:'-4px',
+                right:'-2px',
                 top:0
             },
             'BOX-h IND1,BOX-h IND2':{
@@ -160,7 +156,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'e-resize',
-                'margin-top':'-6px'
+                'margin-top':'-7px'
             },
             'BOX-h IND1-mouseover,BOX-h IND2-mouseover':{
                 $order:2,
@@ -216,33 +212,28 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $order:10,
                 'z-index':1,
                 left:'50%',
-                width:'6px',
-                'margin-left':'-3px'
+                width:'2px',
+                'margin-left':'-2px'
             },
             'BOX-v RULER, BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-                'background-image': xui.UI.$bg('bar_horizontal.gif', '',true),
-                'background-repeat':'repeat-y'
             },
             'BOX-v RULER':{
-                $order:10,
-                'background-position':'-482px top'
+                $order:10
             },
             'BOX-v RULERLEFT, BOX-v RULERRIGHT':{
                 $order:10,
                 'z-index':1,
-                width:'6px',
-                height:'5px'
+                width:'2px',
+                height:'2px'
             },
             'BOX-v RULERLEFT':{
                 $order:12,
-                'background-position':'-490px top',
-                top:'-4px',
+                top:'-2px',
                 left:0
             },
             'BOX-v RULERRIGHT':{
                 $order:12,
-                'background-position':'-474px top',
-                bottom:'-4px',
+                bottom:'-2px',
                 left:0
             },
             'BOX-v IND1,BOX-v IND2':{
@@ -254,7 +245,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'n-resize',
-                'margin-left':'-6px'
+                'margin-left':'-7px'
             },
             'BOX-v IND1-mouseover,BOX-v IND2-mouseover':{
                 $order:11,

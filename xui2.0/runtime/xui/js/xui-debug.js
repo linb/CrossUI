@@ -1,5 +1,5 @@
 /*!
-* CrossUI(xui) JavaScript Library v1.4
+* CrossUI(xui) JavaScript Library v2.0
 * http://crossui.com
 * 
 * Copyright ( 2004 ~ present) CrossUI.com
@@ -3175,24 +3175,29 @@ Class('xui.XDMI','xui.absIO',{
             else
                 c._pool[id]=[self];
 
+            //create form
+            var a=c._if(document,id, onload);
+            self.node=a[0];
+            self.frm=a[1];
+            //create form
+            form = self.form = document.createElement('form');
+            form.style.display='none';
+
             // use postmessage
             if (w['postMessage']) {
                 self._msgcb=function(e){
                     if(!self.node)return;
-                    var o=e.data,
-                        source=e.source.name,
-                        src=source && source.split(":")[1],
-                        t,obj;
-                    if(source && (src+"")!==(self.id+"")){
+                    // only take self message
+                    if(e.source!==self.frm){
                         return;
                     }
-                    o=self.rspType=="json"?(obj=_.unserialize(o))===false?o:obj:o;
-                    if(o && o.xui_xdmi_id && (o.xui_xdmi_id+"")!==(self.id+"")){
-                        return;
+                    e=e.data;
+                    if(self.rspType=="json"){
+                        e = _.unserialize(e) || e;
                     }
-                    if(o && (t=c._pool[self.id])){
+                    if(e && (t=c._pool[self.id])){
                         for(var i=0,l=t.length;i<l;i++){
-                            t[i]._response=o;
+                            t[i]._response=e;
                             t[i]._onResponse();
                         }
                     }else{
@@ -3254,14 +3259,6 @@ Class('xui.XDMI','xui.absIO',{
                     })();
                 };
             }
-
-            //create form
-            var a=c._if(document,id, onload);
-            self.node=a[0];
-            self.frm=a[1];
-            //create form
-            form = self.form = document.createElement('form');
-            form.style.display='none';
 
             var uri=self.uri;
             if(self.method!='POST')
@@ -26213,6 +26210,7 @@ Class("xui.UI.Label", "xui.UI",{
     },    
     Static:{
         Templates:{
+            tagName:"label",
             className:'{_className}',
             style:'{_style};text-align:{hAlign}',
             ICON:{
@@ -26222,6 +26220,7 @@ Class("xui.UI.Label", "xui.UI",{
             },
             CAPTION:{
                 text : '{caption}',
+                style:'{_fc}{_fw}{_fs}',
                 $order:1
             }
         },
@@ -26259,14 +26258,23 @@ Class("xui.UI.Label", "xui.UI",{
                     this.getRoot().css('textAlign',v);
                 }
             },
-            'fontSize':{
+            'fontColor':{
+                ini:'',
+                type:"color",
                 action: function(value){
-                    this.getRoot().css('fontSize', value);
+                    this.getSubNode("CAPTION").css('color', value);
+                }
+            },
+            'fontSize':{
+                combobox:["","14px","18px","24px","34px"],
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontSize', value);
                 }
             },
             'fontWeight':{
+                combobox:["","normal","bolder","bold","lighter","100","200","300","400","500","600","700","800","900"],
                 action: function(value){
-                    this.getRoot().css('fontWeight', value);
+                    this.getSubNode("CAPTION").css('fontWeight', value);
                 }
             }            
         },
@@ -26282,15 +26290,13 @@ Class("xui.UI.Label", "xui.UI",{
         EventHandlers:{
             onClick:function(profile, e, src){}
         },
-        RenderTrigger:function(){
-            var p = this.properties, o=this.boxing();
-            if(p.fontSize)o.setFontSize(p.fontSize,true);
-            if(p.fontWeight)o.setFontWeight(p.fontWeight,true);
-        },
-        LayoutTrigger:function(){
-            var p = this.properties, o=this.boxing(),s=p.shadowText;
-            if(p.hAlign!='left' || s)o.setHAlign(p.hAlign,true);
-        }
+        _prepareData:function(profile, data){
+            data=arguments.callee.upper.call(this, profile,data);
+            data._fs = 'font-size:' + data.fontSize + ';';
+            data._fw = 'font-weight:' + data.fontWeight + ';';
+            data._fc = 'color:' + data.fontColor + ';';
+            return data;
+        }        
     }
 });
 Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
@@ -26677,8 +26683,8 @@ Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:['BORDER']},
-            ClickEffected:{KEY:['BORDER']},
+            HoverEffected:{KEY:['BORDER','TDR']},
+            ClickEffected:{KEY:['BORDER','TDR']},
             NavKeys:{FOCUS:1},
             onClick:function(profile, e, src){
                 var p=profile.properties;
@@ -26973,6 +26979,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 RULER:{
                     $order:1,
                     tagName:'div',
+                    className:'xui-uiborder-flat',
                     RULERLEFT:{},
                     RULERRIGHT:{}
                 },
@@ -27060,32 +27067,27 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'BOX-h IND, BOX-h RULER':{
                 'z-index':1,
                 top:'50%',
-                height:'6px',
-                'margin-top':'-3px'
+                height:'2px',
+                'margin-top':'-2px'
             },
             'BOX-h RULER, BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
-                'background-repeat':'repeat-x'
             },
             'BOX-h RULER':{
-                $order:2,
-                'background-position':'left -482px'
+                $order:2
             },
             'BOX-h RULERLEFT, BOX-h RULERRIGHT':{
                 'z-index':1,
-                height:'6px',
-                width:'5px'
+                height:'2px',
+                width:'2px'
             },
             'BOX-h RULERLEFT':{
                 $order:2,
-                'background-position':'left -474px',
-                left:'-4px',
+                left:'-2px',
                 top:0
             },
             'BOX-h RULERRIGHT':{
                 $order:2,
-                'background-position':'left -490px',
-                right:'-4px',
+                right:'-2px',
                 top:0
             },
             'BOX-h IND1,BOX-h IND2':{
@@ -27097,7 +27099,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'e-resize',
-                'margin-top':'-6px'
+                'margin-top':'-7px'
             },
             'BOX-h IND1-mouseover,BOX-h IND2-mouseover':{
                 $order:2,
@@ -27153,33 +27155,28 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $order:10,
                 'z-index':1,
                 left:'50%',
-                width:'6px',
-                'margin-left':'-3px'
+                width:'2px',
+                'margin-left':'-2px'
             },
             'BOX-v RULER, BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-                'background-image': xui.UI.$bg('bar_horizontal.gif', '',true),
-                'background-repeat':'repeat-y'
             },
             'BOX-v RULER':{
-                $order:10,
-                'background-position':'-482px top'
+                $order:10
             },
             'BOX-v RULERLEFT, BOX-v RULERRIGHT':{
                 $order:10,
                 'z-index':1,
-                width:'6px',
-                height:'5px'
+                width:'2px',
+                height:'2px'
             },
             'BOX-v RULERLEFT':{
                 $order:12,
-                'background-position':'-490px top',
-                top:'-4px',
+                top:'-2px',
                 left:0
             },
             'BOX-v RULERRIGHT':{
                 $order:12,
-                'background-position':'-474px top',
-                bottom:'-4px',
+                bottom:'-2px',
                 left:0
             },
             'BOX-v IND1,BOX-v IND2':{
@@ -27191,7 +27188,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'n-resize',
-                'margin-left':'-6px'
+                'margin-left':'-7px'
             },
             'BOX-v IND1-mouseover,BOX-v IND2-mouseover':{
                 $order:11,
@@ -37528,6 +37525,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         delete t.LIST.DROP;
         delete t.LIST;
         delete t.PNAELS;
+        t.$submap.items.ITEM.className = 'xui-uibarbg xui-uiborder-tb ';
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
@@ -37550,9 +37548,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 cursor:'pointer',
-                'background-image': xui.UI.$bg('bar_vertical.gif', '',true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -380px',
                 width:'100%',
                 left:0
             },
@@ -37564,19 +37559,20 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 display:'block'
             },
             'ITEM-mouseover':{
-                $order:1,
-                'background-position' : 'right -410px'
+                $order:1
+            },
+            'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
+                $order:2
+            },
+            'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
+                $order:2
             },
             'ITEM-mousedown, ITEM-checked':{
-                $order:2,
-                'background-position' : 'right -440px'
+                $order:3
             },
             HANDLE:{
                 cursor:'pointer',
                 display:'block',
-                'font-size':'12px',
-                height:'100%',
-                height:'18px',
                 'padding':'5px 8px',
                 'white-space':'nowrap'
             },
@@ -37624,14 +37620,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     obj.cssRegion({bottom:'auto',top:t1});
 
                     // offsetHeight maybe not set here
-                    t1 += obj.height();
+                    t1 += obj.offsetHeight();
                     if(o.id == key)return false;
                 });
                 _.arr.each(t.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({top:'auto',bottom:t2});
-                    t2+= obj.height();
+                    t2+= obj.offsetHeight();
                 },null,true);
 
                 temp = height - t1 - t2;
@@ -38524,28 +38520,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               'font-size':'12px',
                padding:'1px 4px',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'BAR-GROUP':{
                 $order:2,
-                'border-top': 'none',
-                'border-bottom': 'none',
-                padding:'5px 4px',
-                height:'18px',
-                'background-image': xui.UI.$bg('bar_vertical.gif','', true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -380px'
+                'background-color':'#CCE4FC',
+                'cursor': 'default;'
             },
             'BAR-GROUP-mouseover':{
-                $order:3,
-                'background-position': 'left -410px'
+                $order:3
             },
             'BAR-GROUP-expand':{
-                $order:4,
-                'background-position': 'left -440px'
+                $order:4
+            },
+            'BAR-GROUP-expand-mouseover':{
+                $order:5
             },
             SUB:{
                 overflow:'hidden',

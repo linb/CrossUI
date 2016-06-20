@@ -377,10 +377,8 @@ html, .xui-uibg-base{
     background-image: url(Public/icons.gif);
 }
 .xui-slider-box-h .xui-slider-ruler, .xui-slider-box-h .xui-slider-rulerleft, .xui-slider-box-h .xui-slider-rulerright{
-    background-image: url(Public/bar_vertical.gif);
 }
 .xui-slider-box-v .xui-slider-ruler, .xui-slider-box-v .xui-slider-rulerleft, .xui-slider-box-v .xui-slider-rulerright{
-    background-image: url(Public/bar_horizontal.gif);
 }
 
 /*xui.UI.TreeBar*/
@@ -391,8 +389,13 @@ html, .xui-uibg-base{
 .xui-treebar-bar-checked{
 }
 .xui-treebar-bar-group{
-    background-image: url(Public/bar_vertical.gif);
-    height:17px;
+	background-color:#E1F5FE;
+}
+.xui-treebar-bar-group-mouseover{
+}
+.xui-treebar-bar-group-expand{
+}
+.xui-treebar-bar-group-expand-mouseover{
 }
 .xui-treebar-checked{
     background-image: url(Public/icons.gif);
@@ -450,13 +453,9 @@ html, .xui-uibg-base{
     top:5px;
 }
 .xui-stacks-item{
-    background-image: url(Public/bar_vertical.gif);
 }
 .xui-stacks-handle{
-    height:17px;
 }
-
-
 
 /*xui.UI.Panel*/
 .xui-panel-panel{

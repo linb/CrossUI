@@ -357,28 +357,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               'font-size':'12px',
                padding:'1px 4px',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             'BAR-GROUP':{
                 $order:2,
-                'border-top': 'none',
-                'border-bottom': 'none',
-                padding:'5px 4px',
-                height:'18px',
-                'background-image': xui.UI.$bg('bar_vertical.gif','', true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -380px'
+                'background-color':'#CCE4FC',
+                'cursor': 'default;'
             },
             'BAR-GROUP-mouseover':{
-                $order:3,
-                'background-position': 'left -410px'
+                $order:3
             },
             'BAR-GROUP-expand':{
-                $order:4,
-                'background-position': 'left -440px'
+                $order:4
+            },
+            'BAR-GROUP-expand-mouseover':{
+                $order:5
             },
             SUB:{
                 overflow:'hidden',
