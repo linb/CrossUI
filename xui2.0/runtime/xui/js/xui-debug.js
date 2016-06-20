@@ -44251,7 +44251,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{caption}"
                             }
                         }
-                    },
+                    }
                 },
                 'rows.cells.input':{
                     CELL:{
