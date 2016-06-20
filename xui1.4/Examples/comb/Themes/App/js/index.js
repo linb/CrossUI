@@ -1299,7 +1299,9 @@ Class('App', 'xui.Com',{
                 .setHost(host,"label5")
                 .setLeft(610)
                 .setTop(90)
+                .setShadow(true)
                 .setCaption("adv label")
+                .setShadowText(true)
                 .setFontSize("14px")
                 , "1");
             
@@ -1328,6 +1330,7 @@ Class('App', 'xui.Com',{
                 .setTop(370)
                 .setWidth(200)
                 .setHeight(62)
+                .setShadow(true)
                 .setCaption("<p>adv button</p>")
                 .setImage("img/demo.gif")
                 , "1");
@@ -1487,6 +1490,7 @@ Class('App', 'xui.Com',{
                 .setTop(440)
                 .setWidth(150)
                 .setHeight(30)
+                .setShadow(true)
                 .setCaption("adv checkbox")
                 .setImage("img/demo.gif")
                 , "1");

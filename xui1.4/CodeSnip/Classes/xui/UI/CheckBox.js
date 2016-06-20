@@ -30,6 +30,8 @@ Class('App.xui_UI_CheckBox', 'xui.Com',{
                 .setTop(90)
                 .setWidth(250)
                 .setHeight(30)
+                .setShadow(true)
+                .setResizer(true)
                 .setCaption("a advanced checkbox with shadow")
             );
             
@@ -58,7 +60,10 @@ Class('App.xui_UI_CheckBox', 'xui.Com',{
                 .setTop(140)
                 .setWidth(250)
                 .setHeight(27)
+                .setBorder(true)
+                .setResizer(true)
                 .setCaption("Right Alignment")
+                .setHAlign("right")
             );
             
             host.group2.append((new xui.UI.CheckBox)
@@ -67,6 +72,7 @@ Class('App.xui_UI_CheckBox', 'xui.Com',{
                 .setTop(10)
                 .setWidth(250)
                 .setHeight(27)
+                .setBorder(true)
                 .setCaption("a advanced checkbox with border")
             );
             
