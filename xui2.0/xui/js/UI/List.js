@@ -225,26 +225,25 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 zoom:xui.browser.ie?1:null,
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
-                position:'relative'
+                position:'relative',
+                'border-radius':'3px'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-               'background-image':xui.UI.$bg('item.gif', ''),
-               'background-repeat':'repeat-x'
             },
             'ITEM-mouseover':{
                 $order:1,
-                'background-position': 'left -51px',
-                'background-color':'#FAD200'
+                'background-color':'#FCDD7A',
+                'border-color':'#DCB400'
             },
             'ITEM-mousedown':{
                 $order:2,
-                'background-position': 'left -101px',
-                'background-color':'#F5D22D'
+                'background-color':'#FAD200',
+                'border-color':'#DCB400'
             },
             'ITEM-checked':{
                 $order:2,
-                'background-position': 'left top',
-                'background-color':'#AAD2FA'
+                'background-color':'#CBE4FC',
+                'border-color':'#AAD2FA'
             },
             MARK:{
                $order:1,

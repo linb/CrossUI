@@ -2209,7 +2209,7 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-bginput":{
                 background: "#fff"
             },
-            /*
+/*
             ".xui-uirowbg":{
                 "background-color":"#FFF"
             },
@@ -2233,7 +2233,8 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-uirowbg-hot":{
                 $order:6,
                 "background-color":"#FFE97F"
-            },*/
+            },
+*/
             ".xui-uitd":{
                 "background-color": "#F9F9FB"
             },
@@ -2263,9 +2264,7 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
-                $order:1,
-                'background-repeat':'no-repeat', 
-                'background-position': 'left top'
+                $order:1
             },
 //uibar-top
             /*set table height for ff2, set uibar height for performance*/
@@ -2275,34 +2274,26 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
                 'padding-left':'4px',
-                height:'100%',
-                'background-position': '0 0'
+                height:'100%'
             },
             '.xui-uibar-top .xui-uibar-tdm':{
-                $order:1,
-                'background-position': '0 -30px',
-                'background-repeat': 'repeat-x'
+                $order:1
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
-                'padding-left':'4px',
-                'background-position': 'right -60px'
+                'padding-left':'4px'
             },
             '.xui-uibar-top-focus .xui-uibar-tdl':{
                 $order:2,
                 'padding-left':'4px',
-                height:'100%',
-                'background-position': 'left -90px'
+                height:'100%'
             },
             '.xui-uibar-top-focus .xui-uibar-tdm':{
-                $order:2,
-                'background-position': 'left -120px',
-                'background-repeat': 'repeat-x'
+                $order:2
             },
             '.xui-uibar-top-focus .xui-uibar-tdr':{
                 $order:2,
-                'padding-left':'4px',
-                'background-position': 'right -150px'
+                'padding-left':'4px'
             },
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
@@ -2326,16 +2317,12 @@ Class("xui.UI",  "xui.absObj", {
                 'font-size':0,
                 'line-height':0,
                 'z-index':1,
-                overflow:'visible',
-                'background-repeat':'repeat-y', 
-                'background-position': '-595px top'
+                overflow:'visible'
             },
             '.xui-uicon-maini':{
                 'padding-right':'4px',
                 'font-size':0,
-                'line-height':0,
-                'background-repeat':'repeat-y', 
-                'background-position': 'right top'
+                'line-height':0
             },
 //uibar-bottom
             '.xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t':{
@@ -2344,18 +2331,14 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
                 'padding-left':'4px',
-                height:'100%',
-                'background-position': 'left -189px'
+                height:'100%'
             },
             '.xui-uibar-bottom .xui-uibar-tdm':{
-                $order:1,
-                'background-position': 'left -211px',
-                'background-repeat': 'repeat-x'
+                $order:1
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
-                'padding-left':'4px',
-                'background-position': 'right -233px'
+                'padding-left':'4px'
             },
 //uibar-top-s
             '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
@@ -2365,18 +2348,14 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
                 height:'100%',
-                'padding-left':'4px',
-                'background-position': 'left -2`61px'
+                'padding-left':'4px'
             },
             '.xui-uibar-top-s .xui-uibar-tdm':{
-                $order:3,
-                'background-position': 'left -283px',
-                'background-repeat': 'repeat-x'
+                $order:3
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
-                'padding-left':'4px',
-                'background-position': 'right -305px'
+                'padding-left':'4px'
             },
             '.xui-uibar-top-s .xui-uibar-cmdl':{
                 $order:3,
@@ -2394,18 +2373,14 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
                 height:'100%',
-                'padding-left':'4px',
-                'background-position': 'left -327px'
+                'padding-left':'4px'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdm':{
-                $order:3,
-                'background-position': 'left -349px',
-                'background-repeat': 'repeat-x'
+                $order:3
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
-                'padding-left':'4px',
-                'background-position': 'right -371px'
+                'padding-left':'4px'
             }
         })
         + xui.UI.buildCSSText({
@@ -2496,10 +2471,6 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-hiddenborder-mousedown,.xui-hiddenborder-checed':{
                 border:'solid 1px #648cb4'
             },
-            '.xui-uiborder-flat':{
-                border:'solid 1px #648cb4',
-                'border-radius':'4px'
-            },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
                 'border-left-width':'1px',
@@ -2547,50 +2518,54 @@ Class("xui.UI",  "xui.absObj", {
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
                 'border-top-color':'#c8e1fa',
-                'border-radius':'4px 0 0 0'
+                'border-radius':'6px 0 0 0'
             },
             '.xui-uiborder-rt':{
                 'border-style':'solid',
                 'border-width':'1px 1px 0 0',
                 'border-right-color':'#648cb4',
                 'border-top-color':'#c8e1fa',
-                'border-radius':'0 4px 0 0'
+                'border-radius':'0 6px 0 0'
             },
             '.xui-uiborder-rb':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#648cb4',
                 'border-bottom-color':'#648cb4',
-                'border-radius':'0 0 4px 0'
+                'border-radius':'0 0 6px 0'
             },
             '.xui-uiborder-lb':{
                 'border-style':'solid',
                 'border-width':'0 0 1px 1px ',
                 'border-left-color':'#c8e1fa',
                 'border-bottom-color':'#648cb4',
-                'border-radius':'0 0 0 4px'
+                'border-radius':'0 0 0 6px'
             },
             '.xui-uiborder-rb2':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#A2BBD9',
                 'border-bottom-color':'#A2BBD9',
-                'border-radius':'0 0 4px 0'
+                'border-radius':'0 0 6px 0'
             },
             '.xui-uiborder-radius':{
-                'border-radius':'4px'
+                'border-radius':'6px'
+            },
+            '.xui-uiborder-flat':{
+                border:'solid 1px #648cb4',
+                'border-radius':'3px'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
                 'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa',
-                'border-radius':'4px'
+                'border-radius':'3px'
             },
             '.xui-uiborder-inset':{
                 $order:9,
                 border:'solid 1px',
                 'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
-                'border-radius':'4px'
+                'border-radius':'3px'
             },
             '.xui-uiborder-none':{
                 $order:10,

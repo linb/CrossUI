@@ -227,6 +227,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
              BOX:{
                 tagName:'div',
                 className:"xui-uibg-base",
+                BOXBGBAR:{
+                    tabName:'div'
+                },
                  ITEMS:{
                     tagName:'div',
                     text:"{items}"
@@ -356,10 +359,16 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 top:0,
                 left:0,
-                overflow:'hidden',
-               'background-image':xui.UI.$bg('bg.gif', ''),
-               'background-repeat':'repeat-y',
-               'background-position':'left top'
+                overflow:'hidden'
+            },
+            BOXBGBAR:{
+                'z-index':-1,
+                position:'absolute',
+                'background-color':'#CCE4FC',
+                left:0,
+                top:0,
+                width:'22px',
+                height:'100%'
             },
             'ITEMS-inline ITEM':{
                 $order:5,

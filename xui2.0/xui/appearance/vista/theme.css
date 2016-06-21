@@ -184,13 +184,42 @@ html, .xui-uibg-base{
 .xui-uicmd-toggle, .xui-uicmd-toggle2{
     background-image: url(Public/icons.gif);
 }
+/*uibar*/
 .xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td{
-    background-image: url(Public/bar_vertical.gif);
+    background-color:transparent;
+		border:none;
+		background-image: url(Public/bar_vertical.gif);
+	  background-repeat: no-repeat;
+		background-position:  left top;
+}
+.xui-uicon-main, .xui-uicon-maini{
+		border:none;
 }
 /*set table height for ff2, set uibar height for performance*/
 .xui-uibar-top, .xui-uibar-top .xui-uibar-t{
     height:25px;
 }
+.xui-uibar-top .xui-uibar-tdl{
+		background-position: 0 0;
+}
+.xui-uibar-top .xui-uibar-tdm{
+		background-position: 0 -30px;
+		background-repeat: repeat-x;
+}
+.xui-uibar-top .xui-uibar-tdr{
+		background-position: right -60px;
+}
+.xui-uibar-top-focus .xui-uibar-tdl{
+		background-position: left -90px;
+},
+.xui-uibar-top-focus .xui-uibar-tdm{
+		background-position: left -120px;
+		background-repeat: repeat-x;
+}
+.xui-uibar-top-focus .xui-uibar-tdr{
+		background-position: right -150px;
+}
+
 .xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t{
     height:6px;
 }
@@ -201,9 +230,48 @@ html, .xui-uibg-base{
 }*/
 .xui-uicon-main{
     background-image: url(Public/bar_horizontal.gif);
+	  background-repeat: repeat-y;
+	  background-position: -595px top;
 }
 .xui-uicon-maini{
     background-image: url(Public/container_right.gif);
+    background-repeat: repeat-y; 
+		background-position: right top;
+}
+
+
+.xui-uibar-bottom .xui-uibar-tdl{
+		background-position: left -189px;
+}
+.xui-uibar-bottom .xui-uibar-tdm{
+		background-position: left -211px;
+		background-repeat: repeat-x;
+}
+.xui-uibar-bottom .xui-uibar-tdr{
+		background-position: right -233px;
+}
+
+.xui-uibar-top-s .xui-uibar-tdl{
+		background-position: left -261px;
+},
+.xui-uibar-top-s .xui-uibar-tdm{
+		background-position: left -283px;
+		background-repeat: repeat-x;
+},
+.xui-uibar-top-s .xui-uibar-tdr{
+		background-position: right -305px;
+}
+
+.xui-uibar-bottom-s .xui-uibar-tdl{
+		background-position: left -327px;
+}
+.xui-uibar-bottom-s .xui-uibar-tdm{
+		background-position: left -349px;
+		background-repeat: repeat-x;
+}
+.xui-uibar-bottom-s .xui-uibar-tdr{
+		padding-left:4px;
+		background-position: right -371px;
 }
 
 /** widgets **/
@@ -364,7 +432,21 @@ html, .xui-uibg-base{
 /*xui.UI.List*/
 .xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{
     background-image: url(List/item.gif);
+    background-repeat:repeat-x;
 }
+.xui-list-item-mouseover{
+		background-position: left -51px;
+		background-color: #FAD200;
+}
+.xui-list-item-mousedown{
+		background-position: left -101px;
+		background-color:#F5D22D;
+}
+.xui-list-item-checked{
+		background-position:left top;
+		background-color:#AAD2FA;
+}
+
 .xui-list-mark{
     background-image: url(Public/icons.gif);
 }
@@ -462,8 +544,8 @@ html, .xui-uibg-base{
 }
 
 /*xui.UI.PopMenu*/
-.xui-popmenu-items{
-    background-image:url(PopMenu/bg.gif);
+.xui-popmenu-boxbgbar{
+    background-color:#B4DCF0;
 }
 .xui-popmenu-itemsplit{
     background-image:url(Public/split_horizontal.gif);
