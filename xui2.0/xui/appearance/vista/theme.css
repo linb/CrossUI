@@ -548,6 +548,10 @@ html, .xui-uibg-base{
     background-color:#B4DCF0;
 }
 .xui-popmenu-itemsplit{
+		border: none;
+    padding:2px 0;
+	  background-repeat:repeat-x;
+	  background-position:left top;
     background-image:url(Public/split_horizontal.gif);
 }
 .xui-popmenu-checkbox, .xui-popmenu-checkbox-checked, .xui-popmenu-top, .xui-popmenu-bottom,  .xui-popmenu-sub

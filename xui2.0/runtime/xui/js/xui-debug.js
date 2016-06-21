@@ -26351,9 +26351,6 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 height:0,
                 left:0,
                 top:0,
-                'background-image':xui.UI.$bg('bar.gif', ''),
-                'background-repeat':'repeat-x',
-                'background-position':'left top',
                 'background-color':'#96E115'
             }
         });
@@ -39715,7 +39712,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
              },
             'items.split':{
                 ITEMSPLIT:{
-                    style:"{_itemDisplay}"
+                    style:"{_itemDisplay}",
+                    className:'xui-uiborder-t'
                 }
             },
             'items.button':{
@@ -39854,11 +39852,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'white-space': 'nowrap',
                 'font-size':'1px',
                 'line-height':'1px',
-                padding:'2px 0',
-                margin:'2px 2px 2px 26px',
-               'background-image':xui.UI.$bg('split_horizontal.gif', '', true),
-               'background-repeat':'repeat-x',
-               'background-position':'left top'
+                margin:'2px 2px 2px 26px'
             },
             ICON:{
                 margin:0

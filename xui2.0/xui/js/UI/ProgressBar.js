@@ -61,9 +61,6 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 height:0,
                 left:0,
                 top:0,
-                'background-image':xui.UI.$bg('bar.gif', ''),
-                'background-repeat':'repeat-x',
-                'background-position':'left top',
                 'background-color':'#96E115'
             }
         });
