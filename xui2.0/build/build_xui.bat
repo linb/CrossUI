@@ -132,9 +132,7 @@ copy %relPath%xui\js\UI\TextEditor.js /b ^
 + %relPath%xui\js\UI\ColLayout.js /b ^
 + %relPath%xui\js\UI\TimeLine.js /b ^
 +  %relPath%xui\js\UI\TagEditor.js /b ^
-+ %relPath%xui\js\UI\Poll.js /b ^
 + %relPath%xui\js\UI\FoldingList.js /b ^
-+ %relPath%xui\js\UI\Range.js /b  ^
 + %relPath%xui\js\UI\Calendar.js /b ^
 + %relPath%xui\js\ThirdParty\raphael.js /b ^
 + %relPath%xui\js\svg.js /b ^

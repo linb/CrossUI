@@ -253,46 +253,7 @@ Class('App', 'xui.Com',{
                 .setHeight(190)
                 , "6");
             
-            host.ctl_pane54.append(
-                (new xui.UI.Poll())
-                .setHost(host,"ctl_poll41")
-                .setItems([{
-                    "id" : "1",
-                    "caption" : "option 1",
-                    "percent" : 0.2
-                },{
-                    "id" : "2",
-                    "caption" : "option 2",
-                    "toggle" : true,
-                    "percent" : 0.5,
-                    "text" : "detail 1"
-                },{
-                    "id" : "3",
-                    "caption" : "option 3",
-                    "toggle" : true,
-                    "percent" : 0.8,
-                    "text" : "detail 2"
-                },{
-                    "id" : "4",
-                    "caption" : "option 4",
-                    "percent" : 0.4
-                },{
-                    "id" : "5",
-                    "caption" : "option 5",
-                    "percent" : 0.9
-                }])
-                .setDock("fill")
-                .setTagCmds([{
-                    "id" : "Refresh",
-                    "caption" : "Refresh",
-                    "type" : "button"
-                },{
-                    "id" : "Remove",
-                    "caption" : "Remove",
-                    "type" : "button"
-                }])
-                );
-            
+
             host.tabs2.append(
                 (new xui.UI.Pane())
                 .setHost(host,"ctl_pane55")
@@ -767,13 +728,7 @@ Class('App', 'xui.Com',{
                 .setOptBtn(true)
                 , "5");
             
-            host.tabs2.append(
-                (new xui.UI.Range())
-                .setHost(host,"range1")
-                .setLeft(440)
-                .setTop(10)
-                .setValue("10:60")
-                , "5");
+
             
             host.tabs2.append(
                 (new xui.UI.StatusButtons())
@@ -832,51 +787,7 @@ Class('App', 'xui.Com',{
                 }])
                 , "5");
             
-            host.tabs2.append(
-                (new xui.UI.Poll())
-                .setHost(host,"poll2")
-                .setItems([{
-                    "id" : "1",
-                    "caption" : "option 1",
-                    "percent" : 0.2
-                },{
-                    "id" : "2",
-                    "caption" : "option 2",
-                    "toggle" : true,
-                    "percent" : 0.5,
-                    "text" : "detail 1"
-                },{
-                    "id" : "3",
-                    "caption" : "option 3",
-                    "toggle" : true,
-                    "percent" : 0.8,
-                    "text" : "detail 2"
-                },{
-                    "id" : "4",
-                    "caption" : "option 4",
-                    "percent" : 0.4
-                },{
-                    "id" : "5",
-                    "caption" : "option 5",
-                    "percent" : 0.9
-                }])
-                .setLeft(440)
-                .setTop(240)
-                .setWidth(310)
-                .setHeight(210)
-                .setSelMode("multi")
-                .setTagCmds([{
-                    "id" : "cmd1",
-                    "caption" : "cmd 1",
-                    "type" : "button"
-                },{
-                    "id" : "cmd2",
-                    "caption" : "cmd 2",
-                    "type" : "button"
-                }])
-                .setValue("")
-                , "5");
-            
+
             host.tabs2.append(
                 (new xui.UI.Calendar())
                 .setHost(host,"calendar1")

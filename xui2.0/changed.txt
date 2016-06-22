@@ -1,12 +1,1 @@
-1) Separated xui.APICaller from xui.DataBinder
-2) Added Form-functions(submit/reset) to any Container
-3) Remvoed xui.UI.Tag
-4) Added xui.UI.HiddrenInput Control
-5) Added conDockPadding / conDockSpacing / conDockFlexFill / conDockStretch for docker container
-6) Added dockStretch / dockIgnoreFlex / dockMaxW / dockMaxH for docker
-7) Modify xui.Com to xui.Module; xui.ComFactory to xui.ModuleFactory
-8) Add freezedColumn / freezedRow property to xui.UI.TreeGrid
-
-Updated Raphael to 2.2
-
-Version 1.4 will be the last version to be compatible with IE678.
+1) Removed Some advanced widgets( Range/Poll ) 

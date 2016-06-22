@@ -618,14 +618,14 @@ html, .xui-uibg-base{
     width:4px;
 }
 .xui-toolbar-item{
-    padding:'0px'
+    padding:0px
 }
 .xui-toolbar-split{
     border: none;
-    background-image: url(Public/split_vertical.gif);
     width: 6px;
+    background-image: url(Public/split_vertical.gif);
     background-position:left top;
-    background-repeat:repeat-y
+    background-repeat:repeat-y;
 }
 .xui-toolbar-drop{
     background-image: url(Button/drop.gif);
@@ -719,19 +719,14 @@ html, .xui-uibg-base{
 .xui-statusbuttons-item-right{
     background-image: url(Public/icons.gif);
 }
- 
-/*xui.UI.Poll*/
-.xui-poll-progress, .xui-poll-progressi{
-    background-image: url(Public/icons.gif);
-}
 
 /*xui.UI.FoldingList*/
 /*xui.UI.FoldingTabs*/
 .xui-foldinglist-item,
 .xui-foldingtabs-item{
-		border: 0;
-		border-radius: 0;
-		box-shadow: none;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
 }
 .xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr,
 .xui-foldingtabs-hl, .xui-foldingtabs-hr, .xui-foldingtabs-tl, .xui-foldingtabs-tr{
@@ -740,48 +735,49 @@ html, .xui-uibg-base{
 }
 .xui-foldinglist-item-prechecked .xui-foldinglist-hl,
 .xui-foldingtabs-item-prechecked .xui-foldingtabs-hl{
-		background-position: left top;
- }
+	background-position: left top;
+}
 .xui-foldinglist-item-prechecked .xui-foldinglist-hr,
 .xui-foldingtabs-item-prechecked .xui-foldingtabs-hr{
-		background-position: right top;
- }
+	background-position: right top;
+}
 .xui-foldinglist-hl,
 .xui-foldingtabs-hl{
-		background-position: left -37px;
+	background-position: left -37px;
 }
 .xui-foldinglist-hr,
 .xui-foldingtabs-hr{
-		background-position: right -37px;
+	background-position: right -37px;
 }
 .xui-foldinglist-tl,
 .xui-foldingtabs-tl{
-		background-position: left bottom;
+	background-position: left bottom;
 }
 .xui-foldinglist-tr,
 .xui-foldingtabs-tr{
-		background-position: right bottom;
+	background-position: right bottom;
 }
 .xui-foldinglist-head,
 .xui-foldingtabs-head{
     background-image: url(FoldingList/border_top.gif);
-		background-repeat:repeat-x;
-		background-position:left top;
+	background-repeat:repeat-x;
+	background-position:left top;
 }
 .xui-foldinglist-tail,
 .xui-foldingtabs-tail{
+    height:6px;
     background-image: url(FoldingList/border_bottom.gif);
-		background-repeat:repeat-x;
-		background-position:left bottom;
+	background-repeat:repeat-x;
+	background-position:left bottom;
 } 
 .xui-foldinglist-body, 
 .xui-foldingtabs-body{
-		border-right: solid 1px #CCC;
+	border-right: solid 1px #CCC;
 }
 .xui-foldinglist-bodyi, 
 .xui-foldingtabs-bodyi{
-		background-repeat:repeat-y;
-		background-position:left top;
+	background-repeat:repeat-y;
+	background-position:left top;
     background-image: url(FoldingList/border_left.gif);
 } 
 
@@ -801,23 +797,6 @@ html, .xui-uibg-base{
 .xui-timeline-biglabel, .xui-timeline-smalllabel {
 }
 .xui-timeline-biglabel div, .xui-timeline-smalllabel div{
-}
-
-/*xui.UI.Range*/
-.xui-range-ruler{
-    background-image: url(Range/bg.gif);
-    _filter: '';
-}
-.xui-range-ruler1{
-   background-image: url(Range/bg.gif);
-    _filter: '';
-}
-.xui-range-ruler3{
-    background-image: url(Range/front.gif);
-    _filter: '';
-}
-.xui-range-ind1, .xui-range-ind2{
-    background-image: url(Public/icons.gif);
 }
 
 

@@ -649,10 +649,6 @@ background-image: url(Public/button.gif);
     background-image: url(Public/icons.gif);
 }
 
-/*xui.UI.Poll*/
-.xui-poll-progress, .xui-poll-progressi{
-    background-image: url(Public/icons.gif);
-}
 /*xui.UI.FoldingList*/
 .xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr{
     background-image: url(FoldingList/corner.gif);
@@ -694,20 +690,6 @@ background-image: url(Public/button.gif);
 .xui-timeline-biglabel, .xui-timeline-smalllabel {
 }
 .xui-timeline-biglabel div, .xui-timeline-smalllabel div{
-}
-
-/*xui.UI.Range*/
-.xui-range-ruler{
-    background-image: url(Range/bg.png);
-}
-.xui-range-ruler1{
-    background-image: url(Range/bg.png);
-}
-.xui-range-ruler3{
-    background-image: url(Range/front.png);
-}
-.xui-range-ind1, .xui-range-ind2{
-    background-image: url(Public/icons.gif);
 }
 
 
