@@ -621,7 +621,11 @@ html, .xui-uibg-base{
     padding:'0px'
 }
 .xui-toolbar-split{
+    border: none;
     background-image: url(Public/split_vertical.gif);
+    width: 6px;
+    background-position:left top;
+    background-repeat:repeat-y
 }
 .xui-toolbar-drop{
     background-image: url(Button/drop.gif);

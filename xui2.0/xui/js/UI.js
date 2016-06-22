@@ -2545,8 +2545,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#A2BBD9',
-                'border-bottom-color':'#A2BBD9',
-                'border-radius':'0 0 6px 0'
+                'border-bottom-color':'#A2BBD9'
             },
             '.xui-uiborder-radius':{
                 'border-radius':'6px'

@@ -159,7 +159,10 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         IBWRAP:{
                             tagName:'div',
                             SPLIT:{
-                                style:'{splitDisplay}'
+                                style:'{splitDisplay}',
+                                className:"xui-uiborder-lr",
+                                // for auto height
+                                text:'&nbsp;'
                             },
                             LABEL:{
                                 style:'{labelDisplay}',
@@ -254,12 +257,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             'SPLIT':{
                 $order:1,
-                width:'6px',
-                height:'15px',
+                width:'0px',
                 'vertical-align':'middle',
-                'background-image': xui.UI.$bg('split_vertical.gif', '', true),
-                'background-position':'left top',
-                'background-repeat':'repeat-y'
+                margin: '0 2px'
             },
             BTN:{
                 'padding-right':'3px'
