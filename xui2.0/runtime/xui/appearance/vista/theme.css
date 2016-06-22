@@ -724,33 +724,68 @@ html, .xui-uibg-base{
 .xui-poll-progress, .xui-poll-progressi{
     background-image: url(Public/icons.gif);
 }
-/*xui.UI.FoldingList*/
-.xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr{
-    background-image: url(FoldingList/corner.gif);
-}
-.xui-foldinglist-head{
-    background-image: url(FoldingList/border_top.gif);
-}
-.xui-foldinglist-tail{
-    background-image: url(FoldingList/border_bottom.gif);
-}
-.xui-foldinglist-cmds, .xui-foldinglist-body, .xui-foldinglist-bodyi{
-    background-image: url(FoldingList/border_left.gif);
-}
 
+/*xui.UI.FoldingList*/
 /*xui.UI.FoldingTabs*/
+.xui-foldinglist-item,
+.xui-foldingtabs-item{
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+}
+.xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr,
 .xui-foldingtabs-hl, .xui-foldingtabs-hr, .xui-foldingtabs-tl, .xui-foldingtabs-tr{
     background-image: url(FoldingList/corner.gif);
+    background-repeat: no-repeat;
 }
-.xui-foldingtabs-handle{
+.xui-foldinglist-item-prechecked .xui-foldinglist-hl,
+.xui-foldingtabs-item-prechecked .xui-foldingtabs-hl{
+		background-position: left top;
+ }
+.xui-foldinglist-item-prechecked .xui-foldinglist-hr,
+.xui-foldingtabs-item-prechecked .xui-foldingtabs-hr{
+		background-position: right top;
+ }
+.xui-foldinglist-hl,
+.xui-foldingtabs-hl{
+		background-position: left -37px;
+}
+.xui-foldinglist-hr,
+.xui-foldingtabs-hr{
+		background-position: right -37px;
+}
+.xui-foldinglist-tl,
+.xui-foldingtabs-tl{
+		background-position: left bottom;
+}
+.xui-foldinglist-tr,
+.xui-foldingtabs-tr{
+		background-position: right bottom;
+}
+.xui-foldinglist-head,
+.xui-foldingtabs-head{
     background-image: url(FoldingList/border_top.gif);
+		background-repeat:repeat-x;
+		background-position:left top;
 }
+.xui-foldinglist-tail,
 .xui-foldingtabs-tail{
     background-image: url(FoldingList/border_bottom.gif);
+		background-repeat:repeat-x;
+		background-position:left bottom;
+} 
+.xui-foldinglist-body, 
+.xui-foldingtabs-body{
+		border-right: solid 1px #CCC;
 }
-.xui-foldinglist-body, .xui-foldinglist-bodyi{
+.xui-foldinglist-bodyi, 
+.xui-foldingtabs-bodyi{
+		background-repeat:repeat-y;
+		background-position:left top;
     background-image: url(FoldingList/border_left.gif);
-}
+} 
+
+
 /*xui.UI.TimeLine*/
 .xui-timeline-items{
     background-image: url(TimeLine/bars.gif);

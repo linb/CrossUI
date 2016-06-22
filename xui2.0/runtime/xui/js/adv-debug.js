@@ -500,7 +500,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         tagName : 'div',
                         className:'{_checked} {_precheked} {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
-                        HANDLE:{
+                        HEAD:{
                             tagName : 'div',
                             HL:{tagName : 'div'},
                             HR:{tagName : 'div'},
@@ -594,16 +594,18 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
             ITEM:{
-                border:0,
                 //for ie6 bug
                 zoom:xui.browser.ie?1:null,
                 'margin-top':'-9px',
                 padding:0,
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative',
-                overflow:'hidden'
+                overflow:'hidden',
+                border: 'solid 1px #ccc',
+                'border-radius': '6px',
+                'box-shadow': '-1px -1px 2px #ddd'
             },
-            'HANDLE, BODY, BODYI, PANEL, TAIL':{
+            'HEAD, BODY, BODYI, PANEL, TAIL':{
                 position:'relative'
             },
 
@@ -614,19 +616,12 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
             BODY:{
                 display:'none',
-                'border-right': 'solid 1px #CCC',
                 zoom:xui.browser.ie?1:null,
                 position:'relative',
-                overflow:'auto',
-                'background-image':xui.UI.$bg('border_left.gif', '','FoldingList'),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
+                overflow:'auto'
             },
             BODYI:{
-                padding:'0 8px',
-                'background-image':xui.UI.$bg('border_left.gif', '','FoldingList'),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
+                padding:'0 8px'
             },
             PANEL:{
                 overflow:'auto',
@@ -648,20 +643,16 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 position:'absolute',
                 'font-size':0,
                 'line-height':0,
-                width:'8px',
-                'background-image':xui.UI.$bg('corner.gif', '','FoldingList'),
-                'background-repeat':'no-repeat'
+                width:'8px'
             },
             'HL, HR':{
                 height:'30px'
             },
             'ITEM-prechecked HL':{
-                $order:1,
-                'background-position': 'left top'
+                $order:1
             },
             'ITEM-prechecked HR':{
-                $order:1,
-                'background-position': 'right top'
+                $order:1
             },
             'TL, TR':{
                 height:'20px'
@@ -669,34 +660,27 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             HL:{
                 $order:1,
                 top:0,
-                left:0,
-                'background-position': 'left -37px'
+                left:0
             },
             HR:{
                 $order:1,
                 top:0,
-                right:0,
-                'background-position': 'right -37px'
+                right:0
             },
             TL:{
                 $order:1,
                 bottom:0,
-                left:0,
-                'background-position': 'left bottom'
+                left:0
             },
             TR:{
                 $order:1,
                 bottom:0,
-                right:0,
-                'background-position': 'right bottom'
+                right:0
             },
-            HANDLE:{
+            HEAD:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'background-image':xui.UI.$bg('border_top.gif', '','FoldingList'),
-                'background-repeat':'repeat-x',
                 'background-color':'#fff',
-                'background-position':'left top',
                 overflow:'hidden'
             },
             TITLE:{
@@ -704,7 +688,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 display:'block',
                 position:'relative',
                 'white-space':'nowrap',
-                overflow:'hidden'
+                overflow:'hidden',
+                padding:'2px 4px'
             },
             'BODY, BODYI, PANEL':{
                 'font-size':0,
@@ -713,11 +698,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             TAIL:{
                 'font-size':0,
                 'line-height':0,
-                height:'5px',
-                'background-image':xui.UI.$bg('border_bottom.gif', '','FoldingList'),
-                'background-repeat':'repeat-x',
-                'background-color':'#EEE',
-                'background-position':'left bottom'
+                height:'3px',
+                'background-color':'#EEE'
             },
             'CAPTION, MESSAGE':{
                 padding:'3px',
@@ -755,12 +737,12 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             }
         },
         Behaviors:{
-            DraggableKeys:['HANDLE'],
+            DraggableKeys:['HEAD'],
             HoverEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
             ClickEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
             ITEM:{onClick:null},
             ITEMS:{onMousedown:null,onDrag:null,onDragstop:null},
-            HANDLE:{
+            HEAD:{
                 onClick:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
 
@@ -813,7 +795,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey;
                     if(key==' '||key=='enter'){
-                        profile.getSubNode('HANDLE',profile.getSubId(src)).onClick();
+                        profile.getSubNode('HEAD',profile.getSubId(src)).onClick();
                         return false;
                     }
                 }
@@ -4416,6 +4398,11 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                                 $order:0,
                                 className:'xui-uicmd-toggle {_tlgchecked}'
                             },
+                            LTAGCMDS:{
+                                $order:2,
+                                tagName:'span',
+                                text:"{ltagCmds}"
+                            },
                             CAP1:{
                                 $order:1,
                                 text:'{title}'
@@ -4429,11 +4416,11 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                                 $order:0,
                                 text:'{caption}'
                             },
-                            OPT:{
-                                $order:1,
-                                className:'xui-uicmd-opt',
-                                style:'{_opt}'
-                            }
+                            TAGCMDS:{
+                                $order:60,
+                                tagName:'span',
+                                text:"{rtagCmds}"
+                            } 
                         }/*,
                         TCLEAR:{
                             $order:2,
@@ -4449,11 +4436,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                         $order:0,
                         tagName : 'div',
                         text:'{_body}'
-                    },
-                    TAGCMDS:{
-                        $order:1,
-                        tagName : 'div',
-                        text:"{tagCmds}"
                     }
                 },
                 TAIL:{
@@ -4480,49 +4462,28 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
             ITEM:{
-                border:0,
                 //for ie6 bug
                 zoom:xui.browser.ie?1:null,
                 'margin-top':'-9px',
                 padding:0,
                 'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative',
-                overflow:'hidden'
+                overflow:'hidden',
+                border: 'solid 1px #ccc',
+                'border-radius': '6px',
+                'box-shadow': '-1px -1px 2px #ddd'
             },
             'HEAD, BODY, BODYI, TAIL':{
                 position:'relative'
             },
-
-            CMDS:{
-                'font-size':0,
-                'line-height':0,
-                padding:'2px 0 0 4px',
-                'text-align':'right',
-                position:'relative',
-                'background-image':xui.UI.$bg('border_left.gif', ''),
-                'background-repeat':'repeat-y',
-                'background-position':'left top',
-                'background-color':'#EEE',
-                zoom:xui.browser.ie?1:null
-            },
-            CMD:{
-                margin:'2px 4px 2px 4px'
-            },
             BODY:{
                 display:'none',
-                'border-right': 'solid 1px #CCC',
                 zoom:xui.browser.ie?1:null,
                 position:'relative',
-                overflow:'auto',
-                'background-image':xui.UI.$bg('border_left.gif', ''),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
+                overflow:'auto'
             },
             BODYI:{
                 padding:'2px 8px 0 8px',
-                'background-image':xui.UI.$bg('border_left.gif', ''),
-                'background-repeat':'repeat-y',
-                'background-position':'left top',
                 position:'relative'
             },
             'BODY, BODYI':{
@@ -4542,20 +4503,16 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'absolute',
                 'font-size':0,
                 'line-height':0,
-                width:'8px',
-                'background-image':xui.UI.$bg('corner.gif', ''),
-                'background-repeat':'no-repeat'
+                width:'8px'
             },
             'HL, HR':{
                 height:'30px'
             },
             'ITEM-prechecked HL':{
-                $order:1,
-                'background-position': 'left top'
+                $order:1
             },
             'ITEM-prechecked HR':{
-                $order:1,
-                'background-position': 'right top'
+                $order:1
             },
             'TL, TR':{
                 height:'20px'
@@ -4563,34 +4520,27 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             HL:{
                 $order:1,
                 top:0,
-                left:0,
-                'background-position': 'left -37px'
+                left:0
             },
             HR:{
                 $order:1,
                 top:0,
-                right:0,
-                'background-position': 'right -37px'
+                right:0
             },
             TL:{
                 $order:1,
                 bottom:0,
-                left:0,
-                'background-position': 'left bottom'
+                left:0
             },
             TR:{
                 $order:1,
                 bottom:0,
-                right:0,
-                'background-position': 'right bottom'
+                right:0
             },
             HEAD:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'background-image':xui.UI.$bg('border_top.gif', ''),
-                'background-repeat':'repeat-x',
                 'background-color':'#fff',
-                'background-position':'left top',
                 overflow:'hidden'
             },
             TITLE:{
@@ -4598,17 +4548,15 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 display:'block',
                 position:'relative',
                 'white-space':'nowrap',
-                overflow:'hidden'
+                overflow:'hidden',
+                padding:'2px 4px'
             },
             TAIL:{
                 'font-size':0,
                 'line-height':0,
                 position:'relative',
-                height:'5px',
-                'background-image':xui.UI.$bg('border_bottom.gif', ''),
-                'background-repeat':'repeat-x',
-                'background-color':'#EEE',
-                'background-position':'left bottom'
+                height:'3px',
+                'background-color':'#EEE'
             },
             'CAP1, CAP2':{
                 padding:'3px',
@@ -4667,9 +4615,9 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }
         },
         DataModel:({
-            value:null,
-            borderType:null,
-            activeLast:false
+            value: null,
+            borderType: null,
+            activeLast: true
         }),
         EventHandlers:{
             onGetContent:function(profile,item,onEnd){},
@@ -4703,7 +4651,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 item._capDisplay=dpn;
             else
                 item.caption = item.caption.replace(/</g,"&lt;");
-            item._opt = item.optBtn?'':dpn;
             item._body= item._body || 'Loading...'
 
             if(item._show){
@@ -4714,7 +4661,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             this._prepareCmds(profile, item);
         },
         _buildBody:function(profile,item){
-            return item.text?'<pre>'+item.text.replace(/</g,"&lt;")+'</pre>':'';
+            return item.text?'<pre class="xui-node xui-node-div">'+item.text.replace(/</g,"&lt;")+'</pre>':'';
         },
         _onresize:function(){}
     }

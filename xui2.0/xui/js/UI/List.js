@@ -154,7 +154,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             $order:60,
                             tagName:'span',
                             text:"{rtagCmds}"
-                        }    
+                        } 
                     }
                 },
                 'items.ltagCmds':function(profile,template,v,tag,result){

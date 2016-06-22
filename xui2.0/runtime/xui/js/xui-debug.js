@@ -34263,7 +34263,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $order:60,
                             tagName:'span',
                             text:"{rtagCmds}"
-                        }    
+                        } 
                     }
                 },
                 'items.ltagCmds':function(profile,template,v,tag,result){
