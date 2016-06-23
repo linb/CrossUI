@@ -259,7 +259,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 //'float':'left',
                 position:'relative',
                 left:'4px',
-                top:'2px',
 
                 'white-space':'nowrap',
                 overflow:'hidden'

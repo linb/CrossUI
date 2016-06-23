@@ -319,7 +319,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 //'float':'left',
                 position:'relative',
                 left:'4px',
-                top:'2px',
                 padding:"0 0 0 4px",
                 'white-space':'nowrap',
                 overflow:'hidden'

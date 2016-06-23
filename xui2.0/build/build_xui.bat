@@ -118,6 +118,13 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\UI\Layout.js /b  ^
 + %relPath%xui\js\UI\TreeGrid.js /b ^
 + %relPath%xui\js\UI\Dialog.js /b ^
++ %relPath%xui\js\UI\TextEditor.js /b ^
++ %relPath%xui\js\UI\FoldingList.js /b ^
++ %relPath%xui\js\UI\FoldingTabs.js /b ^
++ %relPath%xui\js\UI\ColLayout.js /b ^
++ %relPath%xui\js\ThirdParty\raphael.js /b ^
++ %relPath%xui\js\svg.js /b ^
++ %relPath%xui\js\UI\SVGPaper.js /b ^
 xui.js
 
 java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%allPath% xui.js  --charset utf-8
@@ -127,18 +134,10 @@ copy xui.js  %outPath%xui\js%debugPath%
 rem ==================
 rem for adv code
 rem ==================
-copy %relPath%xui\js\UI\TextEditor.js /b ^
-+ %relPath%xui\js\UI\FoldingTabs.js /b ^
-+ %relPath%xui\js\UI\ColLayout.js /b ^
-+ %relPath%xui\js\UI\TimeLine.js /b ^
-+  %relPath%xui\js\UI\TagEditor.js /b ^
-+ %relPath%xui\js\UI\FoldingList.js /b ^
+copy %relPath%xui\js\UI\TimeLine.js /b ^
 + %relPath%xui\js\UI\Calendar.js /b ^
-+ %relPath%xui\js\ThirdParty\raphael.js /b ^
-+ %relPath%xui\js\svg.js /b ^
-+ %relPath%xui\js\UI\SVGPaper.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
-+  %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
++ %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.widgets.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.powercharts.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.carbon.js /b ^
