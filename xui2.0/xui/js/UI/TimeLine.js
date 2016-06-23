@@ -1038,6 +1038,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             TIPS:{
                 position:'relative',
                 height:'14px',
+                'padding-top':'2px',
                 'text-align':'center'
             },
             ACTIVE:{
@@ -1454,12 +1455,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         _rr:/\<[^>]*\>/g,
         _setTips:function(profile, text, force){
             if(!force && profile.pauseA)return;
-            var t,s='$dd_tooltip';
-            text=text.replace(this._rr,'');
-            if(t = profile[s] || (profile[s] = profile.getSubNode('TIPS').get(0).childNodes[0])){
-                if(t.nodeValue!=text)t.nodeValue=text;
-            }else
-                profile.getSubNode('TIPS').get(0).innerHTML=text;
+            text="<span class='xui-node xui-node-span'>"+text.replace(this._rr,'')+"</span>";
+            profile.getSubNode('TIPS').get(0).innerHTML=text;
         },
         _getX:function(profile, time){
             var t=profile.properties,d=new Date;

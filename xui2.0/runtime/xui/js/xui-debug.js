@@ -36289,13 +36289,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
 
                     if(!prop.noHandler && lastV)
-                        _.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
+                        _.tryF(profile.box._adjustScroll,[profile,null,lastV],profile.box);
                 }else{
                     fold(uiv, arr1);
                     expand(value, arr2);
                     
                     if(!prop.noHandler && arr2.length)
-                        _.tryF(profile.box._adjustScroll,[profile,value],profile.box);
+                        _.tryF(profile.box._adjustScroll,[profile,null,value],profile.box);
                 }
 
                 if(arr1.length){
@@ -36547,27 +36547,33 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             style:'{_style};',
             className:'{_className}',
             LIST:{
-                $order:0,
+                $order:1,
                 tagName : 'div',
                 style:'{_liststyle}',
+                LISTBG:{
+                     $order:0
+                },
+                LEFT:{
+                    className:'xui-ui-unselectable xui-uibg-base',
+                    text:'&#10094'
+                },
+                RIGHT:{
+                    className:'xui-ui-unselectable xui-uibg-base',
+                    text:'&#10095'
+                },
+                DROP:{
+                    className:'xui-ui-unselectable xui-uibg-base',
+                    text:'&#9660'
+                },
                 ITEMS:{
                     tagName : 'div',
                     className:'xui-ui-unselectable',
                     text:"{items}",
                     style:'{HAlign}'
-                },
-                LEFT:{
-                    className:'xui-ui-unselectable'
-                },
-                RIGHT:{
-                    className:'xui-ui-unselectable'
-                },
-                DROP:{
-                    className:'xui-ui-unselectable'
                 }
             },
             PNAELS:{
-                $order:1,
+                $order:2,
                 tagName:'text',
                 text:'{panels}'
             },
@@ -36637,62 +36643,46 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 position:'relative',
                 overflow:'hidden',
                 left:0,
-                width:'100%',
-                'background-image': xui.UI.$bg('line.gif', ''),
-                'background-repeat':'repeat-x',
-                'background-position':'center bottom'
+                width:'100%'
+            },
+            LISTBG:{
+                position:'absolute',
+                overflow:'hidden',
+                left:0,
+                bottom:0,
+                height:'1px',
+                'background-color':'#FAD600',
+                'border-top':'solid 1px #C87800',
+                'border-bottom':'solid 1px #C87800',
+                width:'100%'                
+            },
+            'LEFT, RIGHT, DROP':{
+                cursor:'pointer',
+                display:'none',
+                position:'absolute',
+                top:0,
+                width:'16px',
+                'z-index':'10',
+                'font-size':'120%',
+                'text-align':'center',
+                color:'#888888'
+             },
+            "LEFT-mouseover, RIGHT-mouseover, DROP-mouseover":{
+                color:'#444444'
             },
             LEFT:{
-                cursor:'pointer',
-                display:'none',
-                position:'absolute',
-                top:0,
-                left:0,
-                height:'26px',
-                width:'16px',
-                'z-index':'10',
-                'background-image': xui.UI.$bg('cmds.png', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'left top'
-            },
-            "LEFT-mouseover":{
-                'background-image': xui.UI.$bg('cmds.png', ''),
-                'background-position':'-16px top'
+                left:0
             },
             RIGHT:{
-                cursor:'pointer',
-                display:'none',
-                position:'absolute',
-                top:0,
                 right:"16px",
-                height:'26px',
-                width:'16px',
-                'z-index':'10',
-                'background-image': xui.UI.$bg('cmds.png', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'-32px top'
-            },
-            "RIGHT-mouseover":{
-                'background-image': xui.UI.$bg('cmds.png', ''),
-                'background-position':'-48px top'
+                width:'16px'
             },
             DROP:{
-                cursor:'pointer',
-                display:'none',
-                position:'absolute',
-                top:0,
                 right:0,
-                height:'26px',
                 width:'16px',
-                'z-index':'10',
-                'background-image': xui.UI.$bg('cmds.png', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'-64px top'
+                'font-size':'85%',
             },
-            "DROP-mouseover":{
-                'background-image': xui.UI.$bg('cmds.png', ''),
-                'background-position':'-80px top'
-            },
+
             ITEMS:{
                 padding:'1px 0 2px 0',
                 position:'relative',
@@ -37408,7 +37398,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             item = profile.getItemByItemId(key);
             var o = profile.boxing().getPanel(key),
                 l=profile.getSubNode('LIST'),
-                listH;
+                listH=null;
 
             if(!o || o.isEmpty())return;
 
@@ -37431,22 +37421,23 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(width && item._w!=width){
                 l.width(item._w=width);
                 if(!t.noHandler){
-                    this._adjustScroll(profile);
+                    this._adjustScroll(profile,listH);
                 }
                 wc=width;
             }
             if(hc||wc)o.height(hc).onSize();
         },
 
-        _adjustScroll:function(profile, itemid){
+        _adjustScroll:function(profile, listH,itemid){
             // SCROLL
             var list = profile.getSubNode('LIST'),
-                w=list.offsetWidth(),
+                w=profile.getRoot().offsetWidth(),
                 items = profile.getSubNode('ITEMS'),
                 l=items.left(),
                 left =  profile.getSubNode('LEFT'),
                 right =  profile.getSubNode('RIGHT'),
                 drop =  profile.getSubNode('DROP'),
+                bgh = profile.getSubNode('LISTBG').offsetHeight(),
                 wi=0,
                 sl=0,sw=0;
             items.children().each(function(item){
@@ -37482,11 +37473,21 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
                 items.css('cursor','move');
             }
-
-
+            
+            var ll=0, lr=0;
             left.css('display', profile._$scroll_r ? 'block' : 'none');
+            ll += profile._$scroll_r?left.width():0;
+
             right.css('display', profile._$scroll_l ? 'block' : 'none');
+            lr += profile._$scroll_l?left.width():0;
             drop.css('display', (profile._$scroll_l||profile._$scroll_r) ? 'block' : 'none');
+            lr += (profile._$scroll_r||profile._$scroll_l)?drop.width():0;
+
+            if(listH){
+                left.css('line-height', (listH-bgh)+'px');
+                right.css('line-height', (listH-bgh)+'px');
+                drop.css('line-height', (listH-bgh)+'px');
+            }
         }
     }
 });Class("xui.UI.Stacks", "xui.UI.Tabs",{
@@ -43900,7 +43901,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 COLLIST:{
                     tagName:'div',
-                    className:"xui-uiborder-rb"
+                    className:"xui-uiborder-r xui-uiborder-b",
+                    CLDROP:{
+                        text:"&#9745"
+                    }
                 },
                 ARROW:{}
             },
@@ -44366,9 +44370,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
-                'background-image':  xui.UI.$bg('head.gif'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden',
@@ -44421,10 +44422,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'pointer',
-                visibility:'hidden',
-                'background-image': xui.UI.$bg('collist.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'center bottom'
+                visibility:'hidden'
+            },
+            CLDROP:{
+                position:'absolute',
+                right:'2px',
+                bottom:'2px',
+                cursor:'pointer'
             },
             'BODY11, BODY12, BODY21, BODY22':{
                 overflow:'visible',
@@ -44584,9 +44588,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               'background-image': xui.UI.$bg('head.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#CAE3FF',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -44596,9 +44597,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
-               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#FFF1A0'
             },
             'ROW1, ROW2':{

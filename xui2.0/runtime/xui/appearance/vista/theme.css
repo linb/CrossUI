@@ -515,14 +515,40 @@ html, .xui-uibg-base{
 .xui-tabs-items{
     padding:0 0 3px 0;
 }
-.xui-tabs-list{
+.xui-tabs-listbg{
+	  height:4px;
+		border:0;
+		background-color:transparent;
     background-image: url(Tabs/line.gif);
+		background-repeat:repeat-x;
+		background-position:center bottom;
 }
 .xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
     background-image: url(ToolBar/button.png);
 }
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop, .xui-tabs-left-mouseover, .xui-tabs-right-mouseover, .xui-tabs-drop-mouseover{
+		height:26px;
     background-image: url(Tabs/cmds.png);
+		background-repeat:no-repeat;
+		background-position:left top;
+}
+.xui-tabs-left{
+		background-position:left top;
+}
+.xui-tabs-left-mouseover{
+		background-position:-16px top;
+}
+.xui-tabs-right{
+		background-position:-32px top;
+}
+.xui-tabs-right-mouseover{
+		background-position:-48px top;
+},
+.xui-tabs-drop{
+		background-position:-64px top;
+}
+.xui-tabs-drop-mouseover{
+		background-position:-80px top;
 }
 
 /*xui.UI.ButtonViews*/
@@ -666,14 +692,11 @@ html, .xui-uibg-base{
 .xui-treegrid-mark, .xui-treegrid-arrow{
     background-image: url(Public/icons.gif);
 }
-.xui-treegrid-collist {
-    background-image: url(TreeGrid/collist.gif);
-}
 .xui-treegrid-sort, .xui-treegrid-checkbox, .xui-treegrid-checkbox-checked{
     background-image: url(Public/icons.gif);
 }
 
-.xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
+.xui-treegrid-header1, .xui-treegrid-header2, .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
 }
 .xui-treegrid-fhcell, .xui-treegrid-hcell{

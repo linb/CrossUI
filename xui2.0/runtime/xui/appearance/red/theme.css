@@ -594,14 +594,11 @@ background-image: url(Public/button.gif);
 .xui-treegrid-mark, .xui-treegrid-arrow{
     background-image: url(Public/icons.gif);
 }
-.xui-treegrid-collist {
-    background-image: url(TreeGrid/collist.gif);
-}
 .xui-treegrid-sort, .xui-treegrid-checkbox, .xui-treegrid-checkbox-checked{
     background-image: url(Public/icons.gif);
 }
 
-.xui-treegrid-header, .xui-treegrid-fhcell, .xui-treegrid-hcell{
+.xui-treegrid-header1, .xui-treegrid-header2, .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #FF7751 url(TreeGrid/head.gif) repeat-x left top;
 }
 .xui-treegrid-fhcell, .xui-treegrid-hcell{

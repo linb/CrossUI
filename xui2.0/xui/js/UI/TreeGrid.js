@@ -1763,7 +1763,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 COLLIST:{
                     tagName:'div',
-                    className:"xui-uiborder-rb"
+                    className:"xui-uiborder-r xui-uiborder-b",
+                    CLDROP:{
+                        text:"&#9745"
+                    }
                 },
                 ARROW:{}
             },
@@ -2229,9 +2232,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
-                'background-image':  xui.UI.$bg('head.gif'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden',
@@ -2284,10 +2284,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'pointer',
-                visibility:'hidden',
-                'background-image': xui.UI.$bg('collist.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'center bottom'
+                visibility:'hidden'
+            },
+            CLDROP:{
+                position:'absolute',
+                right:'2px',
+                bottom:'2px',
+                cursor:'pointer'
             },
             'BODY11, BODY12, BODY21, BODY22':{
                 overflow:'visible',
@@ -2447,9 +2450,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               'background-image': xui.UI.$bg('head.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#CAE3FF',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -2459,9 +2459,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
-               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#FFF1A0'
             },
             'ROW1, ROW2':{
