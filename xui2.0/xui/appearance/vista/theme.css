@@ -516,39 +516,38 @@ html, .xui-uibg-base{
     padding:0 0 3px 0;
 }
 .xui-tabs-listbg{
-	  height:4px;
-		border:0;
-		background-color:transparent;
+    height:4px;
+    border:0;
+    background-color:transparent;
     background-image: url(Tabs/line.gif);
-		background-repeat:repeat-x;
-		background-position:center bottom;
+    background-repeat:repeat-x;
+    background-position:center bottom;
 }
 .xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
     background-image: url(ToolBar/button.png);
 }
-.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop, .xui-tabs-left-mouseover, .xui-tabs-right-mouseover, .xui-tabs-drop-mouseover{
-		height:26px;
+.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
+    height:26px;
     background-image: url(Tabs/cmds.png);
-		background-repeat:no-repeat;
-		background-position:left top;
+    background-repeat:no-repeat;
 }
 .xui-tabs-left{
-		background-position:left top;
+    background-position:left top;
 }
 .xui-tabs-left-mouseover{
-		background-position:-16px top;
+    background-position:-16px top;
 }
 .xui-tabs-right{
-		background-position:-32px top;
+    background-position:-32px top;
 }
 .xui-tabs-right-mouseover{
-		background-position:-48px top;
-},
+    background-position:-48px top;
+}
 .xui-tabs-drop{
-		background-position:-64px top;
+    background-position:-64px top;
 }
 .xui-tabs-drop-mouseover{
-		background-position:-80px top;
+    background-position:-80px top;
 }
 
 /*xui.UI.ButtonViews*/

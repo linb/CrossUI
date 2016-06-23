@@ -302,7 +302,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     flag=false;
                 }else{
                     if(asy!==false && node.nextSibling)
-                        profile.$scrollTobottom=_.asyRun(arguments.callee, 600, [node.nextSibling], this);
+                        profile.$scrollTobottom=_.asyRun(arguments.callee, 1000, [node.nextSibling], this);
                 }
                 profile.getSubNode('LEFT').css('display','block');
                 return flag;
@@ -320,7 +320,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     flag=false;
                 }else{
                     if(asy!==false && node.previousSibling)
-                        profile.$scrollToTop=_.asyRun(arguments.callee, 600, [node.previousSibling], this);
+                        profile.$scrollToTop=_.asyRun(arguments.callee, 1000, [node.previousSibling], this);
                 }
                 profile.getSubNode('RIGHT').css('display','block');
             }
