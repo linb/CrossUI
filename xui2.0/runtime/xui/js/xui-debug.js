@@ -36513,32 +36513,38 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         _scrollToBottom:function(node, asy){
             var profile=this.get(0),
                 o = profile.getSubNode('ITEMS'),
-                w = profile.getSubNode('LIST').width();
+                w = profile.getSubNode('LIST').width(),
+                flag;
             if(node){
                 o.left(w-(node.offsetLeft+node.offsetWidth));
                 if(!node.nextSibling){
                     profile.getSubNode('RIGHT').css('display','none');
+                    flag=false;
                 }else{
                     if(asy!==false && node.nextSibling)
                         profile.$scrollTobottom=_.asyRun(arguments.callee, 600, [node.nextSibling], this);
                 }
                 profile.getSubNode('LEFT').css('display','block');
+                return flag;
             }
 
         },
         _scrollToTop:function(node, asy){
             var profile=this.get(0),
-                o = profile.getSubNode('ITEMS');
+                o = profile.getSubNode('ITEMS'),
+                flag;
             if(node){
                 o.left(-node.offsetLeft);
                 if(!node.previousSibling){
                     profile.getSubNode('LEFT').css('display','none');
+                    flag=false;
                 }else{
                     if(asy!==false && node.previousSibling)
                         profile.$scrollToTop=_.asyRun(arguments.callee, 600, [node.previousSibling], this);
                 }
                 profile.getSubNode('RIGHT').css('display','block');
             }
+            return flag;
         }
     },
     Static:{
@@ -37034,7 +37040,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
                      xui(src).css('display','block');
                      if(pnode=pnode.get(0)){
-                        profile.boxing()._scrollToTop(pnode);
+                        if(false===profile.boxing()._scrollToTop(pnode)){
+                            return;
+                        }
                      }
                      xui(src).css('display','block');
                 },
@@ -37063,8 +37071,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         node=d.elementFromPoint(pos.left,pos.top),
                         pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
                      xui(src).css('display','block');
-                     if((pnode=pnode.get(0)) && (pnode=pnode.nextSibling)){
-                        profile.boxing()._scrollToBottom(pnode);
+                     if(pnode=pnode.get(0)){
+                        if(false===profile.boxing()._scrollToBottom(pnode)){
+                            return;
+                        }
                      }
                 },
                 onMouseout:function(profile, e, src){
@@ -43901,10 +43911,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 COLLIST:{
                     tagName:'div',
-                    className:"xui-uiborder-r xui-uiborder-b",
-                    CLDROP:{
-                        text:"&#9745"
-                    }
+                    className:"xui-uiborder-rb"
                 },
                 ARROW:{}
             },
@@ -44370,6 +44377,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
+                'background-image':  xui.UI.$bg('head.gif'),
+                'background-repeat':'repeat-x',
+                'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden',
@@ -44422,13 +44432,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'pointer',
-                visibility:'hidden'
-            },
-            CLDROP:{
-                position:'absolute',
-                right:'2px',
-                bottom:'2px',
-                cursor:'pointer'
+                visibility:'hidden',
+                'background-image': xui.UI.$bg('collist.gif', ''),
+                'background-repeat':'no-repeat',
+                'background-position':'center bottom'
             },
             'BODY11, BODY12, BODY21, BODY22':{
                 overflow:'visible',
@@ -44588,6 +44595,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
+               'background-image': xui.UI.$bg('head.gif', ''),
+               'background-repeat':'repeat-x',
+               'background-position':'left top',
                'background-color':'#CAE3FF',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -44597,6 +44607,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
+               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
+               'background-repeat':'repeat-x',
+               'background-position':'left top',
                'background-color':'#FFF1A0'
             },
             'ROW1, ROW2':{

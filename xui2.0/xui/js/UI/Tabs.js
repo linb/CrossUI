@@ -293,32 +293,38 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         _scrollToBottom:function(node, asy){
             var profile=this.get(0),
                 o = profile.getSubNode('ITEMS'),
-                w = profile.getSubNode('LIST').width();
+                w = profile.getSubNode('LIST').width(),
+                flag;
             if(node){
                 o.left(w-(node.offsetLeft+node.offsetWidth));
                 if(!node.nextSibling){
                     profile.getSubNode('RIGHT').css('display','none');
+                    flag=false;
                 }else{
                     if(asy!==false && node.nextSibling)
                         profile.$scrollTobottom=_.asyRun(arguments.callee, 600, [node.nextSibling], this);
                 }
                 profile.getSubNode('LEFT').css('display','block');
+                return flag;
             }
 
         },
         _scrollToTop:function(node, asy){
             var profile=this.get(0),
-                o = profile.getSubNode('ITEMS');
+                o = profile.getSubNode('ITEMS'),
+                flag;
             if(node){
                 o.left(-node.offsetLeft);
                 if(!node.previousSibling){
                     profile.getSubNode('LEFT').css('display','none');
+                    flag=false;
                 }else{
                     if(asy!==false && node.previousSibling)
                         profile.$scrollToTop=_.asyRun(arguments.callee, 600, [node.previousSibling], this);
                 }
                 profile.getSubNode('RIGHT').css('display','block');
             }
+            return flag;
         }
     },
     Static:{
@@ -814,7 +820,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
                      xui(src).css('display','block');
                      if(pnode=pnode.get(0)){
-                        profile.boxing()._scrollToTop(pnode);
+                        if(false===profile.boxing()._scrollToTop(pnode)){
+                            return;
+                        }
                      }
                      xui(src).css('display','block');
                 },
@@ -843,8 +851,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         node=d.elementFromPoint(pos.left,pos.top),
                         pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
                      xui(src).css('display','block');
-                     if((pnode=pnode.get(0)) && (pnode=pnode.nextSibling)){
-                        profile.boxing()._scrollToBottom(pnode);
+                     if(pnode=pnode.get(0)){
+                        if(false===profile.boxing()._scrollToBottom(pnode)){
+                            return;
+                        }
                      }
                 },
                 onMouseout:function(profile, e, src){
