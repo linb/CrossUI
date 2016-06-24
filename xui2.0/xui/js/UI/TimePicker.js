@@ -157,17 +157,10 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                             text : '{caption}'
                         },
                         SET:{
+                            tagName:'button',
                             className:'xui-ui-btn',
-                            SETI:{
-                                className:'xui-ui-btni',
-                                SETC:{
-                                    className:'xui-ui-btnc',
-                                    SETA:{
-                                        tabindex: '{tabindex}',
-                                        text:"{_set}"
-                                    }
-                                }
-                            }
+                            tabindex: '{tabindex}',
+                            text:"{_set}"
                         }
                     }
                 },

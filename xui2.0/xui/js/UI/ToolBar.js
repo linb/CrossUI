@@ -169,33 +169,26 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                 text:'{label}'
                             },
                             BTN:{
+                                tagName:'button',
                                 className:'xui-ui-btn {itemcls} {itemClass}',
                                 style:'{itemStyle} {boxDisplay}',
-                                BTNI:{
-                                    className:'xui-ui-btni',
-                                    BTNC:{
-                                        className:'xui-ui-btnc',
-                                        BOX:{
-                                            tabindex: '{_tabindex}',
-                                            BOXWRAP:{
-                                                tagName:'div',
-                                                RULER:{},
-                                                ICON:{
-                                                    $order:1,
-                                                    className:'xui-ui-icon {imageClass}',
-                                                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
-                                                },
-                                                CAPTION:{
-                                                    $order:2,
-                                                    text : '{caption}',
-                                                    style:'{captionDisplay}'
-                                                },
-                                                DROP:{
-                                                    $order:3,
-                                                    style:'{dropDisplay}'
-                                                }
-                                            }
-                                        }
+                                tabindex: '{_tabindex}',
+                                BOXWRAP:{
+                                    tagName:'div',
+                                    RULER:{},
+                                    ICON:{
+                                        $order:1,
+                                        className:'xui-ui-icon {imageClass}',
+                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
+                                    },
+                                    CAPTION:{
+                                        $order:2,
+                                        text : '{caption}',
+                                        style:'{captionDisplay}'
+                                    },
+                                    DROP:{
+                                        $order:3,
+                                        style:'{dropDisplay}'
                                     }
                                 }
                             }
@@ -249,11 +242,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'vertical-align':'middle'
             },
             ITEM:{
-                'vertical-align':'middle',
-                padding:'0px 1px'
-            },
-            'BTNC a':{
-                padding:0
+                'vertical-align': 'middle',
+                padding: '0px 1px',
+                margin: '0 2px'
             },
             'SPLIT':{
                 $order:1,
@@ -263,9 +254,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             BTN:{
                 'padding-right':'3px'
-            },
-            BTNI:{
-                'padding-left':'3px'
             },
             DROP:{
                 width:'14px',

@@ -8389,7 +8389,7 @@ Class('xui.Event',null,{
             ".xui-node-input,.xui-node-textarea,.xui-node-select{cursor:text;font-family:inherit;font-size:inherit;font-weight:inherit;"+(b.ie?"font-size:100%;":"")+"}"+
             ".xui-node-del,.xui-node-ins{text-decoration:none;}"+
             ".xui-node-pre,.xui-node-code,.xui-node-kbd,.xui-node-samp,.xui-node-tt{font-family:monospace;"+(b.ie?"font-size:108%;":"")+"line-height:100%;}"+
-            ".xui-node-select,.xui-node-input,.xui-node-button,.xui-node-textarea{font:99% arial,helvetica,clean,sans-serif;border-width:1px;}"+
+            ".xui-node-select,.xui-node-input,.xui-node-textarea{font:99% arial,helvetica,clean,sans-serif;border-width:1px;}"+
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
@@ -15750,10 +15750,11 @@ Class("xui.Tips", null,{
 
         //for: span(display:-moz-inline-box) cant wrap in firefox
         xui.CSS.addStyleSheet(
-            ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;} "+
+            ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
             ".xui-tips-i{font-size:12px;overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
-            ".xui-tips-c {padding:1px 2px 2px 2px;}"
+            ".xui-tips-c{padding:1px 2px 2px 2px;}"+
+            ".xui-tips .xui-tips-c{border-radius:1px;}"
         , this.KEY);
 
         xui.doc
@@ -18451,73 +18452,44 @@ Class("xui.UI",  "xui.absObj", {
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
             },
-            '.xui-ui-btn, .xui-ui-btni, .xui-ui-btnc':{
-                height:'22px',
-                'line-height':'22px',
-                background:xui.UI.$bg('button.gif', 'no-repeat', true)
+            ".xui-ui-btn":{
+                padding: "3px",
+                color: "#333",
+                'text-decoration': 'none',
+                cursor: 'pointer',
+                display: 'inline-block',
+                'text-align': 'center',
+                'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
+                'line-height': '1',
+                'border': 'solid 1px #999',
+                'border-radius': '3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                
+                // for IE6
+                '*width_1':'auto',
+                '*overflow':'visible',
+                '*width_2':1,
+                // for IE78
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD')",
+                background_1: "linear-gradient(top,  #FFF,  #DDD)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
+                background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
+                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)"
             },
-            '.xui-ui-btn':{
-                $order:1,
-                'white-space': 'nowrap',
-                'vertical-align':'top',
-                overflow:'hidden',
-                'background-position':'right top',
-                'padding-right':'4px'
+            ".xui-ui-btn:hover":{
+                'border-color': '#666'
             },
-            '.xui-ui-btn *':{
-                cursor:'pointer'
-            },
-            '.xui-ui-btnc button, .xui-ui-btnc a':{
-                display:xui.$inlineBlock,
-                zoom:xui.browser.ie?1:null,
-                background:'transparent',
-                border:0,
-                margin:0,
-                padding:0
-            },
-            '.xui-ui-btnc a':{
-                padding:'0 4px'
-            },
-            '.xui-ui-btnc a, .xui-ui-btnc span, .xui-ui-btnc button':{
-                'line-height':'22px'
-            },
-            '.xui-ui-btni':{
-                $order:1,
-                'background-position':'left -60px',
-                'padding-left':'4px',
-                'vertical-align':'top',
-                overflow:'hidden'
-            },
-            '.xui-ui-btnc':{
-                $order:1,
-                'background-position':'left -30px',
-                'background-repeat': 'repeat-x',
-                'vertical-align':'top'
-            },
-            '.xui-ui-btn-mouseover, .xui-ui-btn-focus':{
-                $order:2,
-                'background-position':'right -90px'
-            },
-            '.xui-ui-btn-mouseover .xui-ui-btni, .xui-ui-btn-focus .xui-ui-btni':{
-                $order:2,
-                'background-position':'left -150px'
-            },
-            '.xui-ui-btn-mouseover .xui-ui-btnc, .xui-ui-btn-focus .xui-ui-btnc':{
-                $order:2,
-                'background-position':'left -120px'
-            },
-            '.xui-ui-btn-mousedown, .xui-ui-btn-checked':{
-                $order:3,
-                'background-position':'right -180px'
-            },
-            '.xui-ui-btn-mousedown .xui-ui-btni, .xui-ui-btn-checked .xui-ui-btni':{
-                $order:3,
-                'background-position':'left -240px'
-            },
-            '.xui-ui-btn-mousedown .xui-ui-btnc, .xui-ui-btn-checked .xui-ui-btnc':{
-                $order:3,
-                'background-position':'left -210px'
-            },
+            ".xui-ui-btn:active, .xui-ui-btn-checked":{
+                // for IE78
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF')",
+                background_1: 'linear-gradient(top,  #DDD,  #FFF)',
+                background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
+                background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
+                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)'
+            },            
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'16px',
@@ -20537,6 +20509,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(j.charAt(0)=='$')continue;
                     //neglect '' or null
                     if((v=o[j])||o[j]===0){
+                        j=j.replace(/_[0-9]+$/,'');
                         //put string dir
                         switch(typeof v){
                         case 'string':
@@ -23345,10 +23318,9 @@ new function(){
         },
         Static:{
             Templates:{
-                _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-wrapper {_className}',
+                className:'xui-wrapper xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -23378,10 +23350,9 @@ new function(){
     Class(u+".ImageButton", u+".HTMLButton",{
         Static:{
             Templates:{
-                _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-ui-unselectable {_className}',
+                className:'xui-ui-unselectable xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
                 ICON:{
@@ -31764,16 +31735,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                         text:data
                                     },
                                     TRANS:{
+                                        tagName:"button",
                                         className:'xui-ui-btn',
-                                        TRANSI:{
-                                            className:'xui-ui-btni',
-                                            TRANSC:{
-                                                className:'xui-ui-btnc',
-                                                TRANSA:{
-                                                    tabindex: '{tabindex}',
-                                                    text:"{_transparent}"
-                                                }
-                                            }
+                                        tabindex: '{tabindex}',
+                                        TRANSA:{
+                                            text:"{_transparent}"
                                         }
                                     },
                                     EXAM:{
@@ -31827,16 +31793,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             text : '{caption}'
                         },
                         SET:{
+                            tagName:"button",
                             className:'xui-ui-btn',
-                            SETI:{
-                                className:'xui-ui-btni',
-                                SETC:{
-                                    className:'xui-ui-btnc',
-                                    SETA:{
-                                        tabindex: '{tabindex}',
-                                        text:"{_set}"
-                                    }
-                                }
+                            tabindex: '{tabindex}',
+                            SETA:{
+                                text:"{_set}"
                             }
                         },
                         TOGGLE:{
@@ -32852,16 +32813,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                              title:"{_todaytitle}"
                         },
                         SET:{
+                            tagName:"button",
                             className:'xui-ui-btn',
-                            SETI:{
-                                className:'xui-ui-btni',
-                                SETC:{
-                                    className:'xui-ui-btnc',
-                                    SETA:{
-                                        tabindex: '{tabindex}',
-                                        text:"{_set}"
-                                    }
-                                }
+                            tabindex: '{tabindex}',
+                            SETA:{
+                                text:"{_set}"
                             }
                         }
                     }
@@ -33668,17 +33624,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             text : '{caption}'
                         },
                         SET:{
+                            tagName:'button',
                             className:'xui-ui-btn',
-                            SETI:{
-                                className:'xui-ui-btni',
-                                SETC:{
-                                    className:'xui-ui-btnc',
-                                    SETA:{
-                                        tabindex: '{tabindex}',
-                                        text:"{_set}"
-                                    }
-                                }
-                            }
+                            tabindex: '{tabindex}',
+                            text:"{_set}"
                         }
                     }
                 },
@@ -35823,9 +35772,9 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     last = fun(profile, 'LAST'),
 
                     change = function(n,i,j,k){
-                        if(i)n.first(3).attr('href',prop.uriTpl.replace('*',i));
+                        if(i)n.attr('href',prop.uriTpl.replace('*',i));
                         if(_.isSet(j))
-                            n.first(3).html(prop.textTpl.replace('*',j),false);
+                            n.html(prop.textTpl.replace('*',j),false);
                         
                         if(_.isSet(k))
                             n.get(0)._real_page=k;
@@ -35900,110 +35849,54 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             FIRST:{
                 $order:1,
+                tagName:"a",
                 className:'xui-ui-btn',
-                FIRSTI:{
-                    className:'xui-ui-btni',
-                    FIRSTC:{
-                        className:'xui-ui-btnc',
-                        FIRSTA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                href:'#',
+                tabindex: '{tabindex}'
             },
             PREM:{
                 $order:2,
                 className:'xui-ui-btn',
-                PREMI:{
-                    className:'xui-ui-btni',
-                    PREMC:{
-                        className:'xui-ui-btnc',
-                        PREMA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             },
             PREV:{
                 $order:3,
                 className:'xui-ui-btn',
-                PREVI:{
-                    className:'xui-ui-btni',
-                    PREVC:{
-                        className:'xui-ui-btnc',
-                        PREVA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}',
-                            text:'{prevMark}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}',
+                text:'{prevMark}'
             },
             CUR:{
                 $order:4,
                 className:'xui-ui-btn xui-ui-btn-focus',
-                CURI:{
-                    className:'xui-ui-btni',
-                    CURC:{
-                        className:'xui-ui-btnc',
-                        CURA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             },
             NEXT:{
                 $order:5,
                 className:'xui-ui-btn',
-                NEXTI:{
-                    className:'xui-ui-btni',
-                    NEXTC:{
-                        className:'xui-ui-btnc',
-                        NEXTA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}',
-                            text:'{nextMark}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}',
+                text:'{nextMark}'
             },
             NEXTM:{
                 $order:6,
                 className:'xui-ui-btn',
-                NEXTMI:{
-                    className:'xui-ui-btni',
-                    NEXTMC:{
-                        className:'xui-ui-btnc',
-                        NEXTMA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             },
             LAST:{
                 $order:7,
                 className:'xui-ui-btn',
-                LASTI:{
-                    className:'xui-ui-btni',
-                    LASTC:{
-                        className:'xui-ui-btnc',
-                        LASTA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             }
         },
         Appearances:{
@@ -36048,7 +35941,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     o.setBlurTrigger(profile.key+":"+profile.$xid, null);
                     profile.getSubNode('POOL').append(o);
                     if(r.tagName.toLowerCase()=='a' || ((r=r.firstChild)&&(r.tagName.toLowerCase()=='a')) || ((r=r.firstChild)&&(r.tagName.toLowerCase()=='a')) || ((r=r.firstChild)&&(r.tagName.toLowerCase()=='a')))
-                        return profile.box._click(profile,r.parentNode.parentNode.parentNode);
+                        return profile.box._click(profile,r);
                 }
             },
             FIRST:{
@@ -36152,7 +36045,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             if(profile.properties.disabled)return false;
             var b=profile.boxing(),
                 a=(profile.properties.$UIValue||"").split(':'),
-                nv=parseInt(xui(src).first(3).attr('href').split('#')[1],10)||a[1]||a[0];
+                nv=parseInt(xui(src).attr('href').split('#')[1],10)||a[1]||a[0];
 
             var r = b.onClick(nv);
 
@@ -36201,7 +36094,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             var _id=profile.keys.POPI+':'+profile.serialId+':';
             while(n<l){
                 //margin-top for ie6
-                a.push('<span style="margin-top:3px;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn"><span class="xui-node xui-node-span xui-ui-btni"><span class="xui-node xui-node-span xui-ui-btnc"><a class="xui-node xui-node-a" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a></span></span></span>')
+                a.push('<a style="margin-top:3px;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
                 n=n+m;
             }
             pop.width('auto');
@@ -36522,7 +36415,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     flag=false;
                 }else{
                     if(asy!==false && node.nextSibling)
-                        profile.$scrollTobottom=_.asyRun(arguments.callee, 600, [node.nextSibling], this);
+                        profile.$scrollTobottom=_.asyRun(arguments.callee, 1000, [node.nextSibling], this);
                 }
                 profile.getSubNode('LEFT').css('display','block');
                 return flag;
@@ -36540,7 +36433,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     flag=false;
                 }else{
                     if(asy!==false && node.previousSibling)
-                        profile.$scrollToTop=_.asyRun(arguments.callee, 600, [node.previousSibling], this);
+                        profile.$scrollToTop=_.asyRun(arguments.callee, 1000, [node.previousSibling], this);
                 }
                 profile.getSubNode('RIGHT').css('display','block');
             }
@@ -36666,27 +36559,26 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                top:0,
-                width:'16px',
+                top:'1px',
+                width:'15px',
                 'z-index':'10',
-                'font-size':'120%',
+                'font-size':'18px',
                 'text-align':'center',
-                color:'#888888'
+                color:'#888888',
+                border:'solid 1px #888888'
              },
             "LEFT-mouseover, RIGHT-mouseover, DROP-mouseover":{
                 color:'#444444'
             },
             LEFT:{
-                left:0
+                left:0                
             },
             RIGHT:{
-                right:"16px",
-                width:'16px'
+                right:"16px"
             },
             DROP:{
                 right:0,
-                width:'16px',
-                'font-size':'85%',
+                'font-size':'8pt'
             },
 
             ITEMS:{
@@ -36702,52 +36594,44 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 'padding-right':'6px',
                 'vertical-align':'top',
-                'background-image': xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'right -540px'
+                'margin':'0 2px',
+                'border-left':'solid 1px #C87800',
+                'border-top':'solid 1px #C87800',
+                'border-right':'solid 1px #C87800',
+                'border-radius':'6px 6px 0 0'
             },
             'ITEM-mouseover':{
                 $order:1,
-                'background-position' : 'right -690px'
+                'background-color':'#FAFB84'
             },
             'ITEM-mousedown, ITEM-checked':{
                 $order:2,
-                'background-position' : 'right -840px'
+                'background-color':'#FAD600'
             },
             ITEMI:{
                 $order:0,
                 'padding-left':'6px',
                 //keep this same with ITEM
-                'vertical-align':'top',
-                'background-image': xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -640px'
+                'vertical-align':'top'
             },
             'ITEM-mouseover ITEMI':{
-                $order:1,
-                'background-position' : 'left -790px'
+                $order:1
             },
             'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
-                $order:2,
-                'background-position' : 'left -940px'
+                $order:2
             },
             ITEMC:{
                 $order:0,
                 padding:'5px 0 3px 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
-                'text-align': 'center',
-                'background-image': xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -590px'
+                'text-align': 'center'
             },
             'ITEM-mouseover ITEMC':{
-                $order:1,
-                'background-position' : 'left -740px'
+                $order:1
             },
             'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
-                $order:2,
-                'background-position' : 'left -890px'
+                $order:2
             },
             HANDLE:{
                 display:xui.$inlineBlock,
@@ -37411,17 +37295,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 listH=null;
 
             if(!o || o.isEmpty())return;
-
+            
+            if(!t.noHandler){
+                listH = l.get(0).offsetHeight ||
+                    //for opear 9.0 get height bug, get offsetheight in firefox is slow
+                    l.offsetHeight();
+            }
             var hc=null,wc=null;
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
                 if(height && height!='auto'){
                     if(!t.noHandler){
-                        listH = l.get(0).offsetHeight ||
-                            //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                            l.offsetHeight();
-    
                         height = height-listH;
                     }
                     if(height>0)hc=height;
@@ -37494,9 +37379,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             lr += (profile._$scroll_r||profile._$scroll_l)?drop.width():0;
 
             if(listH){
-                left.css('line-height', (listH-bgh)+'px');
-                right.css('line-height', (listH-bgh)+'px');
-                drop.css('line-height', (listH-bgh)+'px');
+                listH = (listH - bgh -2) + "px";
+                left.css('line-height',  listH );
+                right.css('line-height', listH );
+                drop.css('line-height',  listH );
             }
         }
     }
@@ -40888,33 +40774,26 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                 text:'{label}'
                             },
                             BTN:{
+                                tagName:'button',
                                 className:'xui-ui-btn {itemcls} {itemClass}',
                                 style:'{itemStyle} {boxDisplay}',
-                                BTNI:{
-                                    className:'xui-ui-btni',
-                                    BTNC:{
-                                        className:'xui-ui-btnc',
-                                        BOX:{
-                                            tabindex: '{_tabindex}',
-                                            BOXWRAP:{
-                                                tagName:'div',
-                                                RULER:{},
-                                                ICON:{
-                                                    $order:1,
-                                                    className:'xui-ui-icon {imageClass}',
-                                                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
-                                                },
-                                                CAPTION:{
-                                                    $order:2,
-                                                    text : '{caption}',
-                                                    style:'{captionDisplay}'
-                                                },
-                                                DROP:{
-                                                    $order:3,
-                                                    style:'{dropDisplay}'
-                                                }
-                                            }
-                                        }
+                                tabindex: '{_tabindex}',
+                                BOXWRAP:{
+                                    tagName:'div',
+                                    RULER:{},
+                                    ICON:{
+                                        $order:1,
+                                        className:'xui-ui-icon {imageClass}',
+                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
+                                    },
+                                    CAPTION:{
+                                        $order:2,
+                                        text : '{caption}',
+                                        style:'{captionDisplay}'
+                                    },
+                                    DROP:{
+                                        $order:3,
+                                        style:'{dropDisplay}'
                                     }
                                 }
                             }
@@ -40968,11 +40847,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'vertical-align':'middle'
             },
             ITEM:{
-                'vertical-align':'middle',
-                padding:'0px 1px'
-            },
-            'BTNC a':{
-                padding:0
+                'vertical-align': 'middle',
+                padding: '0px 1px',
+                margin: '0 2px'
             },
             'SPLIT':{
                 $order:1,
@@ -40982,9 +40859,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             BTN:{
                 'padding-right':'3px'
-            },
-            BTNI:{
-                'padding-left':'3px'
             },
             DROP:{
                 width:'14px',

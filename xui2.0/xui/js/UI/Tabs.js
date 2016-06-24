@@ -446,27 +446,26 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                top:0,
-                width:'16px',
+                top:'1px',
+                width:'15px',
                 'z-index':'10',
-                'font-size':'120%',
+                'font-size':'18px',
                 'text-align':'center',
-                color:'#888888'
+                color:'#888888',
+                border:'solid 1px #888888'
              },
             "LEFT-mouseover, RIGHT-mouseover, DROP-mouseover":{
                 color:'#444444'
             },
             LEFT:{
-                left:0
+                left:0                
             },
             RIGHT:{
-                right:"16px",
-                width:'16px'
+                right:"16px"
             },
             DROP:{
                 right:0,
-                width:'16px',
-                'font-size':'85%',
+                'font-size':'8pt'
             },
 
             ITEMS:{
@@ -482,52 +481,44 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 'padding-right':'6px',
                 'vertical-align':'top',
-                'background-image': xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'right -540px'
+                'margin':'0 2px',
+                'border-left':'solid 1px #C87800',
+                'border-top':'solid 1px #C87800',
+                'border-right':'solid 1px #C87800',
+                'border-radius':'6px 6px 0 0'
             },
             'ITEM-mouseover':{
                 $order:1,
-                'background-position' : 'right -690px'
+                'background-color':'#FAFB84'
             },
             'ITEM-mousedown, ITEM-checked':{
                 $order:2,
-                'background-position' : 'right -840px'
+                'background-color':'#FAD600'
             },
             ITEMI:{
                 $order:0,
                 'padding-left':'6px',
                 //keep this same with ITEM
-                'vertical-align':'top',
-                'background-image': xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -640px'
+                'vertical-align':'top'
             },
             'ITEM-mouseover ITEMI':{
-                $order:1,
-                'background-position' : 'left -790px'
+                $order:1
             },
             'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
-                $order:2,
-                'background-position' : 'left -940px'
+                $order:2
             },
             ITEMC:{
                 $order:0,
                 padding:'5px 0 3px 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
-                'text-align': 'center',
-                'background-image': xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -590px'
+                'text-align': 'center'
             },
             'ITEM-mouseover ITEMC':{
-                $order:1,
-                'background-position' : 'left -740px'
+                $order:1
             },
             'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
-                $order:2,
-                'background-position' : 'left -890px'
+                $order:2
             },
             HANDLE:{
                 display:xui.$inlineBlock,
@@ -1191,17 +1182,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 listH=null;
 
             if(!o || o.isEmpty())return;
-
+            
+            if(!t.noHandler){
+                listH = l.get(0).offsetHeight ||
+                    //for opear 9.0 get height bug, get offsetheight in firefox is slow
+                    l.offsetHeight();
+            }
             var hc=null,wc=null;
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
                 if(height && height!='auto'){
                     if(!t.noHandler){
-                        listH = l.get(0).offsetHeight ||
-                            //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                            l.offsetHeight();
-    
                         height = height-listH;
                     }
                     if(height>0)hc=height;
@@ -1274,9 +1266,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             lr += (profile._$scroll_r||profile._$scroll_l)?drop.width():0;
 
             if(listH){
-                left.css('line-height', (listH-bgh)+'px');
-                right.css('line-height', (listH-bgh)+'px');
-                drop.css('line-height', (listH-bgh)+'px');
+                listH = (listH - bgh -2) + "px";
+                left.css('line-height',  listH );
+                right.css('line-height', listH );
+                drop.css('line-height',  listH );
             }
         }
     }

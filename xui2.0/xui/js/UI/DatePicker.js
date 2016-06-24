@@ -199,16 +199,11 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                              title:"{_todaytitle}"
                         },
                         SET:{
+                            tagName:"button",
                             className:'xui-ui-btn',
-                            SETI:{
-                                className:'xui-ui-btni',
-                                SETC:{
-                                    className:'xui-ui-btnc',
-                                    SETA:{
-                                        tabindex: '{tabindex}',
-                                        text:"{_set}"
-                                    }
-                                }
+                            tabindex: '{tabindex}',
+                            SETA:{
+                                text:"{_set}"
                             }
                         }
                     }

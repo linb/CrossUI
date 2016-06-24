@@ -338,7 +338,7 @@ Class("xui.CSS", null,{
             ".xui-node-input,.xui-node-textarea,.xui-node-select{cursor:text;font-family:inherit;font-size:inherit;font-weight:inherit;"+(b.ie?"font-size:100%;":"")+"}"+
             ".xui-node-del,.xui-node-ins{text-decoration:none;}"+
             ".xui-node-pre,.xui-node-code,.xui-node-kbd,.xui-node-samp,.xui-node-tt{font-family:monospace;"+(b.ie?"font-size:108%;":"")+"line-height:100%;}"+
-            ".xui-node-select,.xui-node-input,.xui-node-button,.xui-node-textarea{font:99% arial,helvetica,clean,sans-serif;border-width:1px;}"+
+            ".xui-node-select,.xui-node-input,.xui-node-textarea{font:99% arial,helvetica,clean,sans-serif;border-width:1px;}"+
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+

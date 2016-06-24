@@ -1827,73 +1827,44 @@ Class("xui.UI",  "xui.absObj", {
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
             },
-            '.xui-ui-btn, .xui-ui-btni, .xui-ui-btnc':{
-                height:'22px',
-                'line-height':'22px',
-                background:xui.UI.$bg('button.gif', 'no-repeat', true)
+            ".xui-ui-btn":{
+                padding: "3px",
+                color: "#333",
+                'text-decoration': 'none',
+                cursor: 'pointer',
+                display: 'inline-block',
+                'text-align': 'center',
+                'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
+                'line-height': '1',
+                'border': 'solid 1px #999',
+                'border-radius': '3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                
+                // for IE6
+                '*width_1':'auto',
+                '*overflow':'visible',
+                '*width_2':1,
+                // for IE78
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD')",
+                background_1: "linear-gradient(top,  #FFF,  #DDD)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
+                background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
+                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)"
             },
-            '.xui-ui-btn':{
-                $order:1,
-                'white-space': 'nowrap',
-                'vertical-align':'top',
-                overflow:'hidden',
-                'background-position':'right top',
-                'padding-right':'4px'
+            ".xui-ui-btn:hover":{
+                'border-color': '#666'
             },
-            '.xui-ui-btn *':{
-                cursor:'pointer'
-            },
-            '.xui-ui-btnc button, .xui-ui-btnc a':{
-                display:xui.$inlineBlock,
-                zoom:xui.browser.ie?1:null,
-                background:'transparent',
-                border:0,
-                margin:0,
-                padding:0
-            },
-            '.xui-ui-btnc a':{
-                padding:'0 4px'
-            },
-            '.xui-ui-btnc a, .xui-ui-btnc span, .xui-ui-btnc button':{
-                'line-height':'22px'
-            },
-            '.xui-ui-btni':{
-                $order:1,
-                'background-position':'left -60px',
-                'padding-left':'4px',
-                'vertical-align':'top',
-                overflow:'hidden'
-            },
-            '.xui-ui-btnc':{
-                $order:1,
-                'background-position':'left -30px',
-                'background-repeat': 'repeat-x',
-                'vertical-align':'top'
-            },
-            '.xui-ui-btn-mouseover, .xui-ui-btn-focus':{
-                $order:2,
-                'background-position':'right -90px'
-            },
-            '.xui-ui-btn-mouseover .xui-ui-btni, .xui-ui-btn-focus .xui-ui-btni':{
-                $order:2,
-                'background-position':'left -150px'
-            },
-            '.xui-ui-btn-mouseover .xui-ui-btnc, .xui-ui-btn-focus .xui-ui-btnc':{
-                $order:2,
-                'background-position':'left -120px'
-            },
-            '.xui-ui-btn-mousedown, .xui-ui-btn-checked':{
-                $order:3,
-                'background-position':'right -180px'
-            },
-            '.xui-ui-btn-mousedown .xui-ui-btni, .xui-ui-btn-checked .xui-ui-btni':{
-                $order:3,
-                'background-position':'left -240px'
-            },
-            '.xui-ui-btn-mousedown .xui-ui-btnc, .xui-ui-btn-checked .xui-ui-btnc':{
-                $order:3,
-                'background-position':'left -210px'
-            },
+            ".xui-ui-btn:active, .xui-ui-btn-checked":{
+                // for IE78
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF')",
+                background_1: 'linear-gradient(top,  #DDD,  #FFF)',
+                background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
+                background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
+                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)'
+            },            
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'16px',
@@ -3913,6 +3884,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(j.charAt(0)=='$')continue;
                     //neglect '' or null
                     if((v=o[j])||o[j]===0){
+                        j=j.replace(/_[0-9]+$/,'');
                         //put string dir
                         switch(typeof v){
                         case 'string':
@@ -6721,10 +6693,9 @@ new function(){
         },
         Static:{
             Templates:{
-                _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-wrapper {_className}',
+                className:'xui-wrapper xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -6754,10 +6725,9 @@ new function(){
     Class(u+".ImageButton", u+".HTMLButton",{
         Static:{
             Templates:{
-                _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-ui-unselectable {_className}',
+                className:'xui-ui-unselectable xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
                 ICON:{

@@ -21,9 +21,9 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     last = fun(profile, 'LAST'),
 
                     change = function(n,i,j,k){
-                        if(i)n.first(3).attr('href',prop.uriTpl.replace('*',i));
+                        if(i)n.attr('href',prop.uriTpl.replace('*',i));
                         if(_.isSet(j))
-                            n.first(3).html(prop.textTpl.replace('*',j),false);
+                            n.html(prop.textTpl.replace('*',j),false);
                         
                         if(_.isSet(k))
                             n.get(0)._real_page=k;
@@ -98,110 +98,54 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             FIRST:{
                 $order:1,
+                tagName:"a",
                 className:'xui-ui-btn',
-                FIRSTI:{
-                    className:'xui-ui-btni',
-                    FIRSTC:{
-                        className:'xui-ui-btnc',
-                        FIRSTA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                href:'#',
+                tabindex: '{tabindex}'
             },
             PREM:{
                 $order:2,
                 className:'xui-ui-btn',
-                PREMI:{
-                    className:'xui-ui-btni',
-                    PREMC:{
-                        className:'xui-ui-btnc',
-                        PREMA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             },
             PREV:{
                 $order:3,
                 className:'xui-ui-btn',
-                PREVI:{
-                    className:'xui-ui-btni',
-                    PREVC:{
-                        className:'xui-ui-btnc',
-                        PREVA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}',
-                            text:'{prevMark}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}',
+                text:'{prevMark}'
             },
             CUR:{
                 $order:4,
                 className:'xui-ui-btn xui-ui-btn-focus',
-                CURI:{
-                    className:'xui-ui-btni',
-                    CURC:{
-                        className:'xui-ui-btnc',
-                        CURA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             },
             NEXT:{
                 $order:5,
                 className:'xui-ui-btn',
-                NEXTI:{
-                    className:'xui-ui-btni',
-                    NEXTC:{
-                        className:'xui-ui-btnc',
-                        NEXTA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}',
-                            text:'{nextMark}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}',
+                text:'{nextMark}'
             },
             NEXTM:{
                 $order:6,
                 className:'xui-ui-btn',
-                NEXTMI:{
-                    className:'xui-ui-btni',
-                    NEXTMC:{
-                        className:'xui-ui-btnc',
-                        NEXTMA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             },
             LAST:{
                 $order:7,
                 className:'xui-ui-btn',
-                LASTI:{
-                    className:'xui-ui-btni',
-                    LASTC:{
-                        className:'xui-ui-btnc',
-                        LASTA:{
-                            tagName:'a',
-                            href:'#',
-                            tabindex: '{tabindex}'
-                        }
-                    }
-                }
+                tagName:'a',
+                href:'#',
+                tabindex: '{tabindex}'
             }
         },
         Appearances:{
@@ -246,7 +190,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     o.setBlurTrigger(profile.key+":"+profile.$xid, null);
                     profile.getSubNode('POOL').append(o);
                     if(r.tagName.toLowerCase()=='a' || ((r=r.firstChild)&&(r.tagName.toLowerCase()=='a')) || ((r=r.firstChild)&&(r.tagName.toLowerCase()=='a')) || ((r=r.firstChild)&&(r.tagName.toLowerCase()=='a')))
-                        return profile.box._click(profile,r.parentNode.parentNode.parentNode);
+                        return profile.box._click(profile,r);
                 }
             },
             FIRST:{
@@ -350,7 +294,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             if(profile.properties.disabled)return false;
             var b=profile.boxing(),
                 a=(profile.properties.$UIValue||"").split(':'),
-                nv=parseInt(xui(src).first(3).attr('href').split('#')[1],10)||a[1]||a[0];
+                nv=parseInt(xui(src).attr('href').split('#')[1],10)||a[1]||a[0];
 
             var r = b.onClick(nv);
 
@@ -399,7 +343,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             var _id=profile.keys.POPI+':'+profile.serialId+':';
             while(n<l){
                 //margin-top for ie6
-                a.push('<span style="margin-top:3px;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn"><span class="xui-node xui-node-span xui-ui-btni"><span class="xui-node xui-node-span xui-ui-btnc"><a class="xui-node xui-node-a" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a></span></span></span>')
+                a.push('<a style="margin-top:3px;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
                 n=n+m;
             }
             pop.width('auto');

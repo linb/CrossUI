@@ -148,16 +148,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                         text:data
                                     },
                                     TRANS:{
+                                        tagName:"button",
                                         className:'xui-ui-btn',
-                                        TRANSI:{
-                                            className:'xui-ui-btni',
-                                            TRANSC:{
-                                                className:'xui-ui-btnc',
-                                                TRANSA:{
-                                                    tabindex: '{tabindex}',
-                                                    text:"{_transparent}"
-                                                }
-                                            }
+                                        tabindex: '{tabindex}',
+                                        TRANSA:{
+                                            text:"{_transparent}"
                                         }
                                     },
                                     EXAM:{
@@ -211,16 +206,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                             text : '{caption}'
                         },
                         SET:{
+                            tagName:"button",
                             className:'xui-ui-btn',
-                            SETI:{
-                                className:'xui-ui-btni',
-                                SETC:{
-                                    className:'xui-ui-btnc',
-                                    SETA:{
-                                        tabindex: '{tabindex}',
-                                        text:"{_set}"
-                                    }
-                                }
+                            tabindex: '{tabindex}',
+                            SETA:{
+                                text:"{_set}"
                             }
                         },
                         TOGGLE:{
