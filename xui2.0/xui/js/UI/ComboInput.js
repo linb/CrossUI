@@ -682,8 +682,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
                 background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
                 // for IE6789
-                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
-                //"filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                "-ms-filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
             },
             'RBTN,SBTN,BTN':{
                 display:'block',

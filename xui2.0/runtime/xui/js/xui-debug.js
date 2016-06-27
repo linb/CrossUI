@@ -18477,9 +18477,8 @@ Class("xui.UI",  "xui.absObj", {
                 background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
                 background_4: "-o-linear-gradient(top,  #FFF,  #DDD)",
                 // for IE6789
-                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
-                //'-ms-filter': "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
-                //"filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
+                '-ms-filter': "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
+                "filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)"
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
@@ -18490,29 +18489,23 @@ Class("xui.UI",  "xui.absObj", {
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
                 background_4: '-o-linear-gradient(top,  #DDD,  #FFF)',
                 // for IE6789
-                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
-                //'-ms-filter':"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
-                //"filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
+                '-ms-filter':"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
+                "filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)"
             },
             ".xui-ui-input":{
                 background:'#fff',
                '-moz-box-shadow': 'inset 2px 2px 2px #EEEEEE',
                '-webkit-box-shadow': 'inset 2px 2px 2px #EEEEEE',
-               'box-shadow': 'inset 2px 2px 2px #EEEEEE',
-                // for IE6789
-                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+               'box-shadow': 'inset 2px 2px 2px #EEEEEE'
             },
             '.xui-ui-shadow':{
                 '-moz-box-shadow': '3px 3px 4px #9f9f9f',
                 '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
                 'box-shadow': '3px 3px 4px #9f9f9f',
-                // for IE6789
-                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
-
                 /* For IE 8 */
-                //'-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
                 /* For IE 5.5 - 7 */
-                //'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')"
              },
             '.xui-ui-image':{
                 'vertical-align':'middle',
@@ -19438,13 +19431,6 @@ Class("xui.UI",  "xui.absObj", {
                 var p=xui.ini.path + 'appearance/default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" + path;
                 //_.asyRun(function(){new Image().src=p;});
                 return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+p+'",sizingMethod="crop")';
-            }
-        },
-        $ieHtc:function(){
-            return function(key){
-                var a= 'url(' + xui.ini.path + 'appearance/PIE.htc' +') ';
-                console.log(a);
-                return a;
             }
         },
        /* deep template function
@@ -29673,8 +29659,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
                 background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
                 // for IE6789
-                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
-                //"filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                "-ms-filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
