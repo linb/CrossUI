@@ -677,12 +677,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
-                // for IE6789
-                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
                 background_1: "linear-gradient(top,  #FFF 50%,  #EEE)",
                 background_2: "-webkit-gradient(linear, 0% 50%, 0% 100%, from(#FFF), to(#EEE))",
                 background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
-                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)"
+                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+                //"filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -1526,7 +1527,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
 
             /*for ie6 bug*/
-            if((profile.$shadow||profile.$resizer) && xui.browser.ie){
+            if((profile.$resizer) && xui.browser.ie){
                 o.ieRemedy();
             }
 

@@ -11684,7 +11684,6 @@ type:4
                     if(name2)node.style[name2]=value;
                     if(name3)node.style[name3]=value;
                     if(name4)node.style[name4]=value;
-
                 }
             }else
                 for(var i in name)
@@ -18472,35 +18471,49 @@ Class("xui.UI",  "xui.absObj", {
                 '*width_1':'auto',
                 '*overflow':'visible',
                 '*width_2':1,
-                // for IE6789
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
+
                 background_1: "linear-gradient(top,  #FFF,  #DDD)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
                 background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
-                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)"
+                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)",
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+                //'-ms-filter': "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
+                //"filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
             },
             ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
-                // for IE6789
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
                 background_1: 'linear-gradient(top,  #DDD,  #FFF)',
                 background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
-                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)'
+                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)',
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+                //'-ms-filter':"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
+                //"filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
             },
             ".xui-ui-input":{
                 background:'#fff',
-                // for IE6789
-                'filter': 'progid:DXImageTransform.Microsoft.Blur(PixelRadius=2,MakeShadow=true,ShadowOpacity=0.30)',
-                '-ms-filter': 'progid:DXImageTransform.Microsoft.Blur(PixelRadius=2,MakeShadow=true,ShadowOpacity=0.30)',
-                'zoom': '1',
-
                '-moz-box-shadow': 'inset 2px 2px 2px #EEEEEE',
                '-webkit-box-shadow': 'inset 2px 2px 2px #EEEEEE',
-               'box-shadow': 'inset 2px 2px 2px #EEEEEE'           
+               'box-shadow': 'inset 2px 2px 2px #EEEEEE',
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
             },
+            '.xui-ui-shadow':{
+                '-moz-box-shadow': '3px 3px 4px #9f9f9f',
+                '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
+                'box-shadow': '3px 3px 4px #9f9f9f',
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+
+                /* For IE 8 */
+                //'-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                /* For IE 5.5 - 7 */
+                //'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+             },
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'16px',
@@ -19427,7 +19440,13 @@ Class("xui.UI",  "xui.absObj", {
                 return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+p+'",sizingMethod="crop")';
             }
         },
-
+        $ieHtc:function(){
+            return function(key){
+                var a= 'url(' + xui.ini.path + 'appearance/PIE.htc' +') ';
+                console.log(a);
+                return a;
+            }
+        },
        /* deep template function
           template: string
           properties: hash
@@ -23142,6 +23161,13 @@ new function(){
                 width:100,
                 height:100,
                 border:'deprecated',
+                shadow:{
+                    ini:false,
+                    action: function(v){
+                        if(v) this.getSubNode('BORDER').addClass('xui-ui-shadow');
+                        else this.getSubNode('BORDER').removeClass('xui-ui-shadow');
+                    }
+                },
                 //hide props
                 $hborder:0,
                 $vborder:0
@@ -23154,8 +23180,8 @@ new function(){
 
                 if((!self.$noR) && p.resizer && o.setResizer)
                     o.setResizer(p.resizer,true);
-                if((!self.$noS) && p.shadow && o._shadow)
-                    o._shadow();
+                if((!self.$noS) && p.shadow && o.setShadow)
+                    o.setShadow(true,true);
             },
             _onresize:function(profile,width,height){
                 var t = profile.properties,
@@ -23183,7 +23209,7 @@ new function(){
                 o.cssRegion(region);
 
                 /*for ie6 bug*/
-                if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+                if((profile.$resizer) && xui.browser.ie)o.ieRemedy();
 
                 return region;
             }
@@ -24628,165 +24654,6 @@ new function(){
                 if(height)H5.attr("height", height);
             }
         }
-    }
-});//shadow class, add a plugin to xui.Dom
-Class("xui.UI.Shadow","xui.UI",{
-    Instance:{
-        _attachTo:function(obj){
-            //to xui.Dom
-            obj=obj.reBoxing();
-            var self=this;
-            //set target first
-            self.get(0)._target=obj.get(0);
-            // add dom for dom node
-            obj.append(self);
-            return obj;
-        }
-    },
-    Initialize:function(){
-        //for xui.Dom
-        _.each({
-            addShadow :function(properties){
-                return new xui.UI.Shadow(properties)._attachTo(xui([this.get(0)]));
-            },
-            $getShadow:function(){
-                var s=this.get(0),b;
-                _.arr.each(xui.UI.Shadow._cache,function(o){
-                    if(o._target==s){b=o;return false;}
-                });
-                return b && b.boxing();
-            },
-            removeShadow:function(){
-                var s = this.get();
-                _.arr.each(xui.UI.Shadow._cache,function(o){
-                    if(o && o.renderId && o._target)
-                        if(_.arr.indexOf(s,xui(o._target).get(0))!=-1)
-                            o.boxing().destroy(true);
-                });
-                return this;
-            }
-        },function(o,i){
-            xui.Dom.plugIn(i,o);
-        });
-        //for xui.UI.Widget
-        _.each({
-            _shadow:function(key){
-                return this.each(function(o){
-                    var d=o.properties,node = o.getSubNode(d._customShadow||'BORDER'),size;
-                    if(xui.Dom.css3Support("boxShadow")){
-                        size=parseInt(d._shadowSize*3/4,10);
-                        node.css("boxShadow",size+"px "+size+"px "+size+"px #9f9f9f");
-                    }else{
-                        if(node.$getShadow())return;
-                        o.$shadow=node.addShadow({shadowSize:d._shadowSize});
-                    }
-                });
-            },
-            _unShadow:function(){
-                return this.each(function(o){
-                    var node = o.getSubNode('BORDER');
-                    if(xui.Dom.css3Support("boxShadow")){
-                        node.css("boxShadow","");
-                    }else{
-                        if(!node.$getShadow())return;
-                        node.removeShadow();
-                        delete o.$shadow;
-                    }
-                });
-            }
-        },function(o,i){
-            xui.UI.Widget.plugIn(i,o);
-        });
-        xui.UI.Widget.setDataModel({
-            shadow:{
-                ini:false,
-                action: function(v){
-                    var b=this.boxing();
-                    if(v)b._shadow();
-                    else b._unShadow();
-                }
-            },
-            _shadowSize:this.SIZE
-        });
-    },
-    Static:{
-        // In IE<=8, it has to use png to simulate box-shadow
-        SIZE:(xui.browser.ie&&xui.browser.ver<=8)?8:4,
-        Templates:{
-            tagName:'div',
-            R:{
-                tagName: 'div',
-                style:'top:{shadowOffset}px;width:{shadowSize}px;right:-{pos}px;'
-            },
-            RB:{
-                tagName: 'div',
-                style:'height:{rbsize}px;width:{rbsize}px;right:-{pos}px;bottom:-{pos}px;'
-            },
-            B:{
-                tagName: 'div',
-                style: 'left:{shadowOffset}px;height:{shadowSize}px;bottom:-{pos}px;'
-            }
-        },
-        Appearances:{
-            KEY:{
-               width:0,
-               height:0,
-               display:xui.browser.ie6?'inline':null,
-               'font-size':xui.browser.ie6?0:null,
-               'line-height':xui.browser.ie6?0:null
-            },
-            'B, RB, R':{
-                position:'absolute',
-                display:'block',
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null,
-                'z-index':'-1'
-            },
-            B:{
-                left:0,
-                width:'100%',
-                background: xui.browser.ie6 ? '' : xui.UI.$bg('bottom.png', 'repeat-x left bottom'),
-                _filter: xui.UI.$ieBg('bottom.png')
-            },
-            RB:{
-                background: xui.browser.ie6?'':xui.UI.$bg('right_bottom.png', 'left top'),
-                _filter: xui.UI.$ieBg('right_bottom.png')
-            },
-            R:{
-                top:0,
-                height:'100%',
-                background: xui.browser.ie6?'': xui.UI.$bg('right.png', 'repeat-y right top'),
-                _filter: xui.UI.$ieBg('right.png')
-            }
-        },
-        DataModel:{
-            shadowSize:{
-                ini:8,
-                action: function(value){
-                    var self=this,
-                    shadowOffset =self.properties.shadowOffset;
-                    self.getSubNode('R').cssRegion({width:value,top:shadowOffset,right:-value-shadowOffset});
-                    self.getSubNode('RB').cssRegion({width:value,height:value,right:-value-shadowOffset+1,bottom:-value-shadowOffset+1});
-                self.getSubNode('B').cssRegion({height:value,left:shadowOffset,bottom:-value-shadowOffset});
-                }
-            },
-            shadowOffset:{
-                ini:0,
-                action: function(value){
-                    this.boxing().setShadowSize(this.properties.shadowSize, true);
-                }
-            }
-        },
-        _prepareData:function(profile){
-            var t = arguments.callee.upper.call(this, profile);
-            t.pos = (parseInt(t.shadowSize,10)||0) + (parseInt(t.shadowOffset,10)||0);
-            t.rbsize=t.shadowSize+4;
-            return t;
-        },
-        LayoutTrigger:function(){
-            // refresh height for IE6
-            if(xui.browser.ie) this.getRoot().ieRemedy()
-        } 
     }
 });//resizer class, add a plug in to xui.Dom
 Class("xui.UI.Resizer","xui.UI",{
@@ -27466,7 +27333,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         },
         DataModel:{
             selectable:true,
-           // _customShadow:'BOX',
             border:false,
 
             tipsErr:'',
@@ -27962,7 +27828,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 });
 
             /*for ie6 bug*/
-            if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+            if((profile.$resizer) && xui.browser.ie)o.ieRemedy();
         }
     }
 });Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
@@ -29802,12 +29668,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
-                // for IE6789
-                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
                 background_1: "linear-gradient(top,  #FFF 50%,  #EEE)",
                 background_2: "-webkit-gradient(linear, 0% 50%, 0% 100%, from(#FFF), to(#EEE))",
                 background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
-                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)"
+                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+                //"filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -30651,7 +30518,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
 
             /*for ie6 bug*/
-            if((profile.$shadow||profile.$resizer) && xui.browser.ie){
+            if((profile.$resizer) && xui.browser.ie){
                 o.ieRemedy();
             }
 
@@ -49006,9 +48873,6 @@ if(xui.browser.ie){
             if(t.resizer && profile.$resizer)
                 ins._unResizer();
 
-            if(t.shadow)
-                ins._unShadow(false);
-
             //set it before resize
             t.status='min';
 
@@ -49056,11 +48920,7 @@ if(xui.browser.ie){
             }
 
             if(t.resizer && profile.$resizer)
-                ins._unResizer();
-
-            if(t.shadow && (parseInt(t.dockMargin.right,10)<xui.UI.Shadow.SIZE||parseInt(t.dockMargin.bottom)<xui.UI.Shadow.SIZE))
-                //ins.setShadow(false);
-                ins._unShadow(false);
+                ins._unResizer(); 
 
             t.status='max';
 
@@ -49099,9 +48959,6 @@ if(xui.browser.ie){
             if(t.pinBtn)
                 profile.getSubNode('PIN').setInlineBlock();
 
-            if(t.shadow)
-                ins._shadow();
-
             if(t.resizer && !t.pinned){
                     ins._resizer();
             }
@@ -49117,9 +48974,6 @@ if(xui.browser.ie){
             ins=profile.boxing();
             profile.getSubNodes(['PANEL','STATUS']).css('display','block');
             profile.getSubNode('MIN').setInlineBlock();
-
-            if(t.shadow)
-                ins._shadow();
 
             if(t.resizer && !t.pinned){
                     ins._resizer();

@@ -786,9 +786,6 @@ if(xui.browser.ie){
             if(t.resizer && profile.$resizer)
                 ins._unResizer();
 
-            if(t.shadow)
-                ins._unShadow(false);
-
             //set it before resize
             t.status='min';
 
@@ -836,11 +833,7 @@ if(xui.browser.ie){
             }
 
             if(t.resizer && profile.$resizer)
-                ins._unResizer();
-
-            if(t.shadow && (parseInt(t.dockMargin.right,10)<xui.UI.Shadow.SIZE||parseInt(t.dockMargin.bottom)<xui.UI.Shadow.SIZE))
-                //ins.setShadow(false);
-                ins._unShadow(false);
+                ins._unResizer(); 
 
             t.status='max';
 
@@ -879,9 +872,6 @@ if(xui.browser.ie){
             if(t.pinBtn)
                 profile.getSubNode('PIN').setInlineBlock();
 
-            if(t.shadow)
-                ins._shadow();
-
             if(t.resizer && !t.pinned){
                     ins._resizer();
             }
@@ -897,9 +887,6 @@ if(xui.browser.ie){
             ins=profile.boxing();
             profile.getSubNodes(['PANEL','STATUS']).css('display','block');
             profile.getSubNode('MIN').setInlineBlock();
-
-            if(t.shadow)
-                ins._shadow();
 
             if(t.resizer && !t.pinned){
                     ins._resizer();

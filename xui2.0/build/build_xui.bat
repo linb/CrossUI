@@ -83,7 +83,6 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\UI\Flash.js /b ^
 + %relPath%xui\js\UI\Audio.js /b ^
 + %relPath%xui\js\UI\Video.js /b ^
-+ %relPath%xui\js\UI\Shadow.js /b ^
 + %relPath%xui\js\UI\Resizer.js /b  ^
 + %relPath%xui\js\UI\Block.js /b ^
 + %relPath%xui\js\UI\Label.js /b ^

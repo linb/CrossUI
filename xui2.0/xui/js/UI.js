@@ -1847,31 +1847,49 @@ Class("xui.UI",  "xui.absObj", {
                 '*width_1':'auto',
                 '*overflow':'visible',
                 '*width_2':1,
-                // for IE6789
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
+
                 background_1: "linear-gradient(top,  #FFF,  #DDD)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
                 background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
-                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)"
+                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)",
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+                //'-ms-filter': "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
+                //"filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
             },
             ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
-                // for IE6789
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
                 background_1: 'linear-gradient(top,  #DDD,  #FFF)',
                 background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
-                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)'
+                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)',
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+                //'-ms-filter':"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
+                //"filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
             },
             ".xui-ui-input":{
                 background:'#fff',
-
                '-moz-box-shadow': 'inset 2px 2px 2px #EEEEEE',
                '-webkit-box-shadow': 'inset 2px 2px 2px #EEEEEE',
-               'box-shadow': 'inset 2px 2px 2px #EEEEEE'           
+               'box-shadow': 'inset 2px 2px 2px #EEEEEE',
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
             },
+            '.xui-ui-shadow':{
+                '-moz-box-shadow': '3px 3px 4px #9f9f9f',
+                '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
+                'box-shadow': '3px 3px 4px #9f9f9f',
+                // for IE6789
+                behavior: (xui.browser.ie && xui.browser.ver<10)?xui.UI.$ieHtc():null
+
+                /* For IE 8 */
+                //'-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                /* For IE 5.5 - 7 */
+                //'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+             },
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'16px',
@@ -2798,7 +2816,11 @@ Class("xui.UI",  "xui.absObj", {
                 return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+p+'",sizingMethod="crop")';
             }
         },
-
+        $ieHtc:function(){
+            return function(key){
+                return 'url(' + xui.ini.path + 'appearance/PIE.htc' +') ';
+            }
+        },
        /* deep template function
           template: string
           properties: hash
@@ -6513,6 +6535,13 @@ new function(){
                 width:100,
                 height:100,
                 border:'deprecated',
+                shadow:{
+                    ini:false,
+                    action: function(v){
+                        if(v) this.getSubNode('BORDER').addClass('xui-ui-shadow');
+                        else this.getSubNode('BORDER').removeClass('xui-ui-shadow');
+                    }
+                },
                 //hide props
                 $hborder:0,
                 $vborder:0
@@ -6525,8 +6554,8 @@ new function(){
 
                 if((!self.$noR) && p.resizer && o.setResizer)
                     o.setResizer(p.resizer,true);
-                if((!self.$noS) && p.shadow && o._shadow)
-                    o._shadow();
+                if((!self.$noS) && p.shadow && o.setShadow)
+                    o.setShadow(true,true);
             },
             _onresize:function(profile,width,height){
                 var t = profile.properties,
@@ -6554,7 +6583,7 @@ new function(){
                 o.cssRegion(region);
 
                 /*for ie6 bug*/
-                if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+                if((profile.$resizer) && xui.browser.ie)o.ieRemedy();
 
                 return region;
             }

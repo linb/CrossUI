@@ -3248,7 +3248,6 @@ type:4
                     if(name2)node.style[name2]=value;
                     if(name3)node.style[name3]=value;
                     if(name4)node.style[name4]=value;
-
                 }
             }else
                 for(var i in name)

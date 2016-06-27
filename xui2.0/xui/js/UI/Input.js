@@ -425,7 +425,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         DataModel:{
             selectable:true,
-           // _customShadow:'BOX',
             border:false,
 
             tipsErr:'',
@@ -921,7 +920,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 });
 
             /*for ie6 bug*/
-            if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+            if((profile.$resizer) && xui.browser.ie)o.ieRemedy();
         }
     }
 });
