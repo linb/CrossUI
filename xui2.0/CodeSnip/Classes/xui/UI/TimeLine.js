@@ -19,7 +19,6 @@ Class('App.xui_UI_TimeLine', 'xui.Com',{
                 .setTop(80)
                 .setWidth(420)
                 .setHeight(304)
-                .setBorder(true)
                 .setResizer(true)
                 .setCustomStyle({"PANEL":"background:#fff;"})
             );

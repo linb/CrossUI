@@ -10,7 +10,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(20)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -28,7 +27,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(20)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -46,7 +44,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(190)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -63,7 +60,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(190)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -81,7 +77,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(190)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -99,7 +94,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(20)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -116,7 +110,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(20)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 
@@ -133,7 +126,6 @@ Class('App.xui_UI_ButtonViews', 'xui.Com',{
                 .setTop(190)
                 .setWidth(170)
                 .setHeight(152)
-                .setBorder(true)
                 .setResizer(true)
             );
 

@@ -25,7 +25,6 @@ Class('App.xui_UI_ProgressBar', 'xui.Com',{
                 .setLeft(50)
                 .setTop(160)
                 .setHeight(20)
-                .setBorder(true)
                 .setShadow(true)
                 .setResizer(true)
                 .setFillBG("blue")

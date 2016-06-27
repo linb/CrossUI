@@ -22,7 +22,6 @@ Class('App.xui_UI_MenuBar', 'xui.Com',{
                 .setTop(20)
                 .setWidth(520)
                 .setHeight(120)
-                .setBorder(true)
                 .setResizer(true)
             );
             
@@ -39,7 +38,6 @@ Class('App.xui_UI_MenuBar', 'xui.Com',{
                 .setTop(160)
                 .setWidth(520)
                 .setHeight(120)
-                .setBorder(true)
                 .setResizer(true)
             );
             

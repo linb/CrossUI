@@ -15,7 +15,6 @@ Class('App.xui_UI_ToolBar', 'xui.Com',{
                 .setWidth(520)
                 .setHeight(320)
                 .setResizer(true)
-                .setBorder(true)
             );
             
             host.block1.append((new xui.UI.ToolBar)

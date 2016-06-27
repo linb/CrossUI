@@ -10,7 +10,6 @@ Class('App.xui_UI_Calendar', 'xui.Com',{
                 .setTop(80)
                 .setWidth(340)
                 .setHeight(304)
-                .setBorder(true)
                 .setResizer(true)
                 .setCustomStyle({"PANEL":"background:#fff;"})
             );

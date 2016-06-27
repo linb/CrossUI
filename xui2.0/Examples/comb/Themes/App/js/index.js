@@ -693,7 +693,6 @@ Class('App', 'xui.Com',{
                 .setTop(10)
                 .setWidth(40)
                 .setHeight(40)
-                .setBorder(true)
                 .setBorderType("none")
                 , "a");
             

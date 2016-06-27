@@ -465,15 +465,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     },
     /*Initialize*/
     Initialize:function(){
-        this.addTemplateKeys(['FILE','BTN','TOP','MID','RBTN','R1','R1T','R1B','R2','R2T','R2B']);
+        this.addTemplateKeys(['FILE','BTN','MID','RBTN','R1','R1B','R2','R2B']);
         //modify default template for shell
         var t = this.getTemplate();
         _.merge(t.FRAME.BORDER,{
             SBTN:{
                 $order:50,
-                className:'xui-ui-unselectable',
+                tagName:'button',
+                className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
-                STOP:{},
                 SMID:{
                     className:"{_commandCls} {btncls}"
                 }
@@ -677,10 +677,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
-                'background-image':xui.UI.$bg('inputbgb.gif', '',"Input"),
-                'background-repeat':'repeat-x',
-                'background-position':'left bottom',
-                'background-color':'#fff'
+                // for IE6789
+                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                background_1: "linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_2: "-webkit-gradient(linear, 0% 50%, 0% 100%, from(#FFF), to(#EEE))",
+                background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)"
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -696,16 +698,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:2,
                 'z-index':'6'
             },
-            'SBTN,BTN,R1,R2':{
-                'margin-top':'2px'
-            },
-            'R1, R2, BTN, SBTN, STOP, TOP, R1T, R2T, R1B, R2B, SMID,MID':{
-                'background-image': xui.UI.$bg('bg.gif')
-            },
-            'SBTN, BTN':{
-                $order:1,
-                'background-position':'left bottom'
-            },
             'R1,R2':{
                 $order:1,
                 display:'block',
@@ -714,44 +706,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 width:'16px',
                 position:'absolute',
-                height:'50%',
-                'background-position':'left bottom',
-                'margin-top':'2px'
+                height:'50%'
             },
+            'R1B, R2B, SMID, MID':{
+                'background-image': xui.UI.$bg('bg.gif')                
+            },            
             R1:{
                 top:0
             },
             R2:{
-                bottom:'-2px'
-            },
-
-            'BTN-mouseover, SBTN-mouseover, R1-mouseover, R2-mouseover':{
-                $order:2,
-                'background-position': '-16px bottom'
-            },
-            'BTN-mousedown, SBTN-mousedown, R1-mousedown, R2-mousedown':{
-                $order:3,
-                'background-position': '-32px bottom'
-            },
-            'STOP, TOP, R1T, R2T':{
-                $order:1,
-                cursor:'pointer',
-                width:'16px',
-                'font-size':0,
-                'line-height':0,
-                position:'absolute',
-                top:'-2px',
-                left:0,
-                height:'4px',
-                'background-position':'left -104px'
-            },
-            'BTN-mouseover TOP,SBTN-mouseover STOP, R1-mouseover R1T, R2-mouseover R2T':{
-                $order:2,
-                'background-position': '-16px -104px'
-            },
-            'BTN-mousedown TOP,SBTN-mousedown STOP, R1-mousedown R1T, R2-mousedown R2T':{
-                $order:3,
-                'background-position': '-32px -104px'
+                bottom:0
             },
             'R1B,R2B':{
                 cursor:'pointer',
@@ -823,8 +787,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
         _objectProp:{popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
-            HoverEffected:{BOX:'BOX',BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
-            ClickEffected:{BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
+            HoverEffected:{BOX:'BOX'},
             FILE:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
@@ -1346,11 +1309,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-ui-unselectable',
                         style:"{rDisplay}",
                         R1:{
-                            R1T:{},
+                            tagName:'button',
+                            className:'xui-ui-btn',
                             R1B:{}
                         },
                         R2:{
-                            R2T:{},
+                            tagName:'button',
+                            className:'xui-ui-btn',
                             R2B:{}
                         }
                     };
@@ -1372,9 +1337,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 default:
                     t.BTN={
                         $order:20,
-                        className:'xui-ui-unselectable',
+                        tagName:'button',
+                        className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
-                        TOP:{},
                         MID:{
                             style:'{_btnStyle}'
                         }
@@ -1539,29 +1504,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             iL += (iW||0) + $hborder*2;
             if(functionbtn){
                 if(iH2!==null)
-                    functionbtn.style.height=Math.max(0,iH2-2) + px;
+                    functionbtn.style.height=Math.max(0,iH2) + px;
                 if(iW!==null)
                     functionbtn.style.left=iL + px;
                 functionbtn.style.top=iT + px;
 
                if(iH2!==null && t.type=='spin'){
                     if(iH2/2-2>0){
-                        f('R1').style.height=(iH2/2-2)+px;
-                        f('R2').style.height=(iH2/2-2)+px;
+                        f('R1').style.height=(iH2/2)+px;
+                        f('R2').style.height=(iH2/2)+px;
                     }
                 }
                 iL += bw1;
             }
             if(commandbtn){
                 if(iH2!==null)
-                    commandbtn.style.height=Math.max(0,iH2-2) + px;
+                    commandbtn.style.height=Math.max(0,iH2) + px;
                 if(iW!==null)
                     commandbtn.style.left=iL + px;
                 commandbtn.style.top=iT + px;
             }
 
             /*for ie6 bug*/
-            if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie){
+            if((profile.$shadow||profile.$resizer) && xui.browser.ie){
                 o.ieRemedy();
             }
 

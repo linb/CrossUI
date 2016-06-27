@@ -1847,24 +1847,31 @@ Class("xui.UI",  "xui.absObj", {
                 '*width_1':'auto',
                 '*overflow':'visible',
                 '*width_2':1,
-                // for IE78
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD')",
+                // for IE6789
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
                 background_1: "linear-gradient(top,  #FFF,  #DDD)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
                 background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
                 background_4: "-o-linear-gradient(top,  #FFF,  #DDD)"
             },
-            ".xui-ui-btn:hover":{
+            ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
             },
-            ".xui-ui-btn:active, .xui-ui-btn-checked":{
-                // for IE78
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF')",
+            ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+                // for IE6789
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
                 background_1: 'linear-gradient(top,  #DDD,  #FFF)',
                 background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
                 background_4: '-o-linear-gradient(top,  #DDD,  #FFF)'
-            },            
+            },
+            ".xui-ui-input":{
+                background:'#fff',
+
+               '-moz-box-shadow': 'inset 2px 2px 2px #EEEEEE',
+               '-webkit-box-shadow': 'inset 2px 2px 2px #EEEEEE',
+               'box-shadow': 'inset 2px 2px 2px #EEEEEE'           
+            },
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'16px',
@@ -6196,7 +6203,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(!profile.renderId)return;
                 var properties = profile.properties,
                     flag=properties.value !== properties.$UIvalue,
-                    o=profile.getSubNode(key||"KEY"),
+                    o=profile.getSubNode(key||profile.box.DIRYMARKCON||"KEY"),
                     d=xui.UI.$css_tag_dirty;
                 if(profile._dirtyFlag!==flag){
                     if(properties.dirtyMark && properties.showDirtyMark){
@@ -6505,6 +6512,7 @@ new function(){
             DataModel:{
                 width:100,
                 height:100,
+                border:'deprecated',
                 //hide props
                 $hborder:0,
                 $vborder:0
@@ -6696,10 +6704,16 @@ new function(){
                 tagName:'button',
                 // dont set class to HTML Element
                 className:'xui-wrapper xui-ui-btn {_className}',
-                style:'cursor:pointer;{_style};',
+                style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
             },
+            Appearances:{
+                KEY:{
+                    cursor:'pointer',
+                    padding:'3px 5px'
+                }
+            },            
             DataModel:{
                 nodeName:null,
                 tabindex:1,
@@ -6722,14 +6736,58 @@ new function(){
             } 
         }
     });
-    Class(u+".ImageButton", u+".HTMLButton",{
+    Class(u+".Button", [u+".HTMLButton","xui.absValue"],{
+        Initialize:function(){
+            // compitable
+            xui.UI.SButton = xui.UI.Button;
+            var key="xui.UI.SButton";
+            xui.absBox.$type[key.replace("xui.UI.","").replace("xui.","")]=xui.absBox.$type[key]=key;
+        },
+        Instance:{
+            activate:function(){
+                this.getRoot().focus();
+                return this;
+            },
+            _setCtrlValue:function(value){
+                if(_.isNull(value) || !_.isDefined(value))value=false;
+                return this.each(function(profile){
+                    var pp=profile.properties;
+                    if(pp.type!='status')return;
+                    profile.getRoot().tagClass('-checked', value);
+                });
+            },
+            resetValue:function(value){
+                this.each(function(p){
+                    if(p.properties.type=='drop')
+                        p.boxing().setCaption("",true);
+                });
+                var upper=arguments.callee.upper,
+                    rtn=upper.apply(this,_.toArr(arguments));
+                upper=null;
+                return rtn;
+            },
+            setUIValue:function(value, force){
+                this.each(function(profile){
+                    var p=profile.properties;
+                    if(p.$UIvalue!==value && p.type=='drop')
+                        profile.boxing().setCaption("",true);
+                });
+                var upper=arguments.callee.upper,
+                    rtn=upper.apply(this,_.toArr(arguments));
+                upper=null;
+                return rtn;
+            }
+        },
         Static:{
+            DIRYMARKCON:"DM",
             Templates:{
                 tagName:'button',
                 // dont set class to HTML Element
                 className:'xui-ui-unselectable xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
+                DM:{
+                },
                 ICON:{
                     $order:1,
                     className:'xui-ui-icon {imageClass}',
@@ -6738,7 +6796,74 @@ new function(){
                 CAPTION:{
                     $order:2,
                     text:'{caption}'
+                },
+                DROP:{
+                    $order:2,
+                    style:'{_dropCls}',
+                    text:'&#9660'
+                },
+                CLEAR:{style:'clear:both;display:none;'}
+            },
+            Appearances:{
+                DM:{
+                    position:'absolute',
+                    left:0,
+                    top:0,
+                    width:'8px',
+                    height:'8px'
+                },
+                DROP:{
+                    'vertical-align': 'middle',                    
+                    'float': 'right',
+                    'font-size':'12px',
+                    'padding-left':'4px',
+                    color:'#888'
+                },
+                'DROP-mouseover':{
+                    $order:11,
+                    color:'#444'
+                },
+                'DROP-mousedown':{
+                    $order:12,
+                    'padding-top':'1px'
                 }
+            },            
+            Behaviors:{
+                HoverEffected:{KEY:['KEY','DROP']},
+                NavKeys:{KEY:1},
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    var b=profile.boxing();
+                    if(p.type=='status'){
+                        if(p.readonly)return false;
+                        b.setUIValue(!p.$UIvalue,null,null,'click');
+                        if(profile.onChecked)
+                            b.onChecked(profile, e, p.$UIvalue);
+                    }
+                    //onClick event
+                    if(profile.onClick)
+                        return b.onClick(profile, e, src, p.$UIvalue);
+                    if(p.type=='drop' && profile.onClickDrop)
+                        return b.onClickDrop(profile, e, src, p.$UIvalue);
+
+                },
+                onKeydown:function(profile, e, src){
+                    var keys=xui.Event.getKey(e), key = keys.key;
+                    if(key==' '||key=='enter'){
+                        profile.getSubNode('KEY').afterMousedown();
+                        profile.__fakeclick=1;
+                    }
+                },
+                onKeyup:function(profile, e, src){
+                    var keys=xui.Event.getKey(e), key = keys.key;
+                    if(key==' '||key=='enter'){
+                        profile.getSubNode('KEY').afterMouseup();
+                        if(profile.__fakeclick)
+                            xui.use(src).onClick();
+                    }
+                    delete profile.__fakeclick;
+                }      
             },
             DataModel:{
                 html:null,
@@ -6769,17 +6894,56 @@ new function(){
                     action: function(v){
                         this.getRoot().css('textAlign',v);
                     }
+                },
+                vAlign:{
+                    ini:'middle',
+                    listbox:['top','middle','bottom'],
+                    action: function(v){
+                        //todo
+                    }
+                },                
+                value:{
+                    ini:false
+                },
+                type:{
+                    ini:'normal',
+                    listbox:['normal','status','drop'],
+                    action:function(value){
+                        var self=this,
+                            root=self.getRoot(),
+                            drop=self.getSubNode('DROP');
+                        if(value=='drop')
+                            drop.css('display','');
+                        else
+                            drop.css('display','none');
+                    }
                 }
             },
-            _prepareData:function(profile, data){
-                data=arguments.callee.upper.call(this, profile,data);
+            _ensureValue:function(profile,value){
+                if(profile.properties.type=="status")
+                    return !!value;
+                else
+                    return value;
+            },
+            _prepareData:function(profile){
+                var data=arguments.callee.upper.call(this, profile);
                 data._align = 'text-align:'+data.hAlign+';';
+                data._dropCls = data.type=='drop'?'':'display:none';
                 return data;
+            },
+            RenderTrigger:function(){
+                var self=this,p = self.properties, o=self.boxing();
+                //set value later
+                if(p.type=='status' && p.value)
+                    o.setValue(true, true, 'render');
+            },
+            EventHandlers:{
+                onClick:function(profile, e, src, value){},
+                onClickDrop:function(profile, e, src, value){},
+                onChecked:function(profile, e, value){}
             }
         }
     });
-    // compitable
-    xui.UI.SButton = xui.UI.ImageButton;
 
     Class(u+".Span", u,{
         Static:{

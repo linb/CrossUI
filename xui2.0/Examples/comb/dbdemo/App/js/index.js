@@ -12,7 +12,6 @@ Class('App', 'xui.Com',{
                .setTop(50)
                .setWidth(260)
                .setHeight(290)
-               .setBorder(true)
             );
             
             host.block3.append((new xui.UI.TreeGrid)

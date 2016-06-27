@@ -64,7 +64,6 @@ Class('App', 'xui.Com',{
                 .setTop(300)
                 .setWidth(400)
                 .setHeight(130)
-                .setBorder(true)
                 .setResizer(true)
                 .setDropKeys("panel")
                 .onDrop("_block1_ondrop")

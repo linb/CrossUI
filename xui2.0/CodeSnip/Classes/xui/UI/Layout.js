@@ -10,7 +10,6 @@ Class('App.xui_UI_Layout', 'xui.Com',{
                 .setTop(10)
                 .setWidth(256)
                 .setHeight(206)
-                .setBorder(true)
                 .setResizer(true)
             );
             
@@ -34,7 +33,6 @@ Class('App.xui_UI_Layout', 'xui.Com',{
                 .setTop(10)
                 .setWidth(338)
                 .setHeight(208)
-                .setBorder(true)
                 .setResizer(true)
             );
             
@@ -84,7 +82,6 @@ Class('App.xui_UI_Layout', 'xui.Com',{
                 .setTop(230)
                 .setWidth(624)
                 .setHeight(300)
-                .setBorder(true)
                 .setResizer(true)
             );
             

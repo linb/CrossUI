@@ -8,7 +8,6 @@ Class('App', 'xui.Com',{
                 .setHost(host,"Block13")
                 .setDock("right")
                 .setWidth(80)
-                .setBorder(true)
                 .setHtml("dock : right")
                 .setBorderType("none")
             );
@@ -18,7 +17,6 @@ Class('App', 'xui.Com',{
                 .setDock("top")
                 .setDockOrder("2")
                 .setDockMargin({"left":20, "right":20, "top":20, "bottom":0})
-                .setBorder(true)
                 .setHtml("dock : top ; dockOder : 2 ; dockMargin : {left:20,top:20,bottom:0,right:20}")
                 .setBorderType("none")
             );
@@ -27,7 +25,6 @@ Class('App', 'xui.Com',{
                 .setHost(host,"Block14")
                 .setDock("bottom")
                 .setHeight(60)
-                .setBorder(true)
                 .setHtml("dock : bottom")
                 .setBorderType("none")
             );
@@ -39,7 +36,6 @@ Class('App', 'xui.Com',{
                 .setTop(249)
                 .setWidth(130)
                 .setHeight(78)
-                .setBorder(true)
                 .setHtml("dock : middle")
                 .setBorderType("none")
             );
@@ -51,7 +47,6 @@ Class('App', 'xui.Com',{
                 .setTop(282)
                 .setWidth(210)
                 .setHeight(88)
-                .setBorder(true)
                 .setHtml("dock : origin(both center and middle)")
                 .setBorderType("none")
             );
@@ -64,7 +59,6 @@ Class('App', 'xui.Com',{
                 .setWidth(140)
                 .setHeight(60)
                 .setZIndex("20")
-                .setBorder(true)
                 .setHtml("dock : center")
                 .setBorderType("none")
             );
@@ -75,7 +69,6 @@ Class('App', 'xui.Com',{
                 .setTop(420)
                 .setWidth(180)
                 .setHeight(70)
-                .setBorder(true)
                 .setHtml("dock : none")
                 .setBorderType("none")
             );
@@ -86,7 +79,6 @@ Class('App', 'xui.Com',{
                 .setTop(120)
                 .setWidth(190)
                 .setHeight(30)
-                .setBorder(true)
                 .setBorderType("none")
             );
             
@@ -94,7 +86,6 @@ Class('App', 'xui.Com',{
                 .setHost(host,"Block10")
                 .setDock("top")
                 .setHeight(30)
-                .setBorder(true)
                 .setHtml("dock : top")
                 .setBorderType("none")
             );
@@ -104,7 +95,6 @@ Class('App', 'xui.Com',{
                 .setDock("width")
                 .setTop(180)
                 .setHeight(80)
-                .setBorder(true)
                 .setHtml("dock : width")
                 .setBorderType("none")
             );
@@ -116,7 +106,6 @@ Class('App', 'xui.Com',{
                 .setLeft(530)
                 .setWidth(180)
                 .setZIndex("30")
-                .setBorder(true)
                 .setHtml("dock : height ; dockMinH : 500")
                 .setBorderType("none")
             );
@@ -125,7 +114,6 @@ Class('App', 'xui.Com',{
                 .setHost(host,"Block12")
                 .setDock("left")
                 .setWidth(70)
-                .setBorder(true)
                 .setHtml("dock : left")
                 .setBorderType("none")
             );

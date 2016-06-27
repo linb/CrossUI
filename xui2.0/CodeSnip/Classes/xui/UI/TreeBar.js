@@ -16,7 +16,6 @@ Class('App.xui_UI_TreeBar', 'xui.Com',{
                 .setTop(20)
                 .setWidth(250)
                 .setHeight(140)
-                .setBorder(true)
                 .setResizer(true)
             );
             
@@ -77,7 +76,6 @@ Class('App.xui_UI_TreeBar', 'xui.Com',{
                 .setTop(180)
                 .setWidth(250)
                 .setHeight(140)
-                .setBorder(true)
                 .setResizer(true)
             );
             

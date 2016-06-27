@@ -9,7 +9,6 @@ Class('App.xui_UI_Dialog', 'xui.Com',{
                 .setHost(host,"Block2")
                 .setDock("top")
                 .setHeight(32)
-                .setBorder(true)
                 .setBorderType("none")
             );
             

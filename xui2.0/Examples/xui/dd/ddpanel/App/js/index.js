@@ -157,7 +157,6 @@ Class('App', 'xui.Com',{
                 .setTop(170)
                 .setWidth(256)
                 .setHeight(88)
-                .setBorder(true)
                 .setDropKeys("iAny")
                 .onDrop("__ondrop")
             );

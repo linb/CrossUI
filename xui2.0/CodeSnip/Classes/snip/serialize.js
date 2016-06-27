@@ -28,7 +28,6 @@ Class('App.snip_serialize', 'xui.Com',{
                 .setTop(32)
                 .setWidth(152)
                 .setHeight(96)
-                .setBorder(true)
             );
 
             host.Group1.append((new xui.UI.Block)
@@ -37,7 +36,6 @@ Class('App.snip_serialize', 'xui.Com',{
                 .setTop(32)
                 .setWidth(152)
                 .setHeight(96)
-                .setBorder(true)
             );
 
             host.Block11.append((new xui.UI.Button)
@@ -89,7 +87,6 @@ Class('App.snip_serialize', 'xui.Com',{
                 .setTop(32)
                 .setWidth(152)
                 .setHeight(96)
-                .setBorder(true)
             );
 
             host.Group2.append((new xui.UI.Button)
@@ -107,7 +104,6 @@ Class('App.snip_serialize', 'xui.Com',{
                 .setTop(32)
                 .setWidth(152)
                 .setHeight(96)
-                .setBorder(true)
             );
 
             host.Block21.append((new xui.UI.Group)
@@ -159,7 +155,6 @@ Class('App.snip_serialize', 'xui.Com',{
                 .setTop(32)
                 .setWidth(152)
                 .setHeight(96)
-                .setBorder(true)
             );
 
             host.Group3.append((new xui.UI.Button)
@@ -177,7 +172,6 @@ Class('App.snip_serialize', 'xui.Com',{
                 .setTop(32)
                 .setWidth(152)
                 .setHeight(96)
-                .setBorder(true)
             );
 
             host.Block31.append((new xui.UI.Tabs)

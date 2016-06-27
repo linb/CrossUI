@@ -176,10 +176,10 @@ html, .xui-uibg-base{
     background: -moz-linear-gradient(top,  #E7F1F6,  #2DB8E5);
     background: -o-linear-gradient(top,  #E7F1F6,  #2DB8E5);  
 }
-.xui-ui-btn:hover{
+.xui-ui-btn:hover, .xui-ui-btn-mouseover{
     border-color:#717171;
 }
-.xui-ui-btn:active, .xui-ui-btn-checked{
+.xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked{
     -filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2DB8E5', endColorstr='#E7F1F6');
     background: linear-gradient(top,  #2DB8E5,  #E7F1F6);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#2DB8E5), to(#E7F1F6));
@@ -292,156 +292,18 @@ html, .xui-uibg-base{
 
 /** widgets **/
 
-/*xui.UI.Button [[[colors]]]*/
-.xui-button-border{
-    background-color:#DDDDDD;
-}
-.xui-button-border-mouseover{
-    background-color:#D0E5F1;
-}
-.xui-button-border-mousedown, .xui-button-border-checked{
-    background-color:#98D1EF;
-}
-.xui-button-drop{
-    background-image: url(Button/drop.gif);
-}
-.xui-button-b-t, .xui-button-b-b{
-    height:10px;
-    background-image: url(Button/vertical.gif);
-}
-.xui-button-border-mouseover .xui-button-b-t, .xui-button-border-mouseover .xui-button-b-b{
-    background-image: url(Button/vertical_mouseover.gif);
-}
-.xui-button-border-checked .xui-button-b-t, .xui-button-border-checked .xui-button-b-b, .xui-button-border-mousedown .xui-button-b-t, .xui-button-border-mousedown .xui-button-b-b{
-    background-image: url(Button/vertical_mousedown.gif);
-}
-.xui-button-b-l, .xui-button-b-r{
-    width:4px;
-    background-image: url(Button/horizontal.gif);
-}
-.xui-button-border-mouseover .xui-button-b-l, .xui-button-border-mouseover .xui-button-b-r{
-    background-image: url(Button/horizontal_mouseover.gif);
-}
-.xui-button-border-checked .xui-button-b-l, .xui-button-border-checked .xui-button-b-r, .xui-button-border-mousedown .xui-button-b-l, .xui-button-border-mousedown .xui-button-b-r{
-    background-image: url(Button/horizontal_mousedown.gif);
-}
-.xui-button-b-lt, .xui-button-b-rt, .xui-button-b-rb, .xui-button-b-lb{
-    height:10px;
-    width:4px;
-    background-image: url(Button/corner.gif);
-}
-.xui-button-border-mouseover .xui-button-b-lt, .xui-button-border-mouseover .xui-button-b-rt, .xui-button-border-mouseover .xui-button-b-rb, .xui-button-border-mouseover .xui-button-b-lb{
-    background-image: url(Button/corner_mouseover.gif);
-}
-.xui-button-border-checked .xui-button-b-lt, .xui-button-border-checked .xui-button-b-rt, .xui-button-border-checked .xui-button-b-rb, .xui-button-border-checked .xui-button-b-lb, .xui-button-border-mousedown .xui-button-b-lt, .xui-button-border-mousedown .xui-button-b-rt, .xui-button-border-mousedown .xui-button-b-rb, .xui-button-border-mousedown .xui-button-b-lb{
-    background-image: url(Button/corner_mousedown.gif);
-}
-
-.xui-button-b-t{
-    top:-1px;
-}
-.xui-button-b-b{
-    bottom:-1px;
-}
-.xui-button-b-l{
-    left:-1px;
-}
-.xui-button-b-r{
-    right:-1px;
-}
-.xui-button-b-lt{
-    left:-1px;
-    top:-1px;
-}
-.xui-button-b-rt{
-    right:-1px;
-    top:-1px;
-}
-.xui-button-b-rb{
-    right:-1px;
-    bottom:-1px;
-}
-.xui-button-b-lb{
-    left:-1px;
-    bottom:-1px;
-}
-
 /*xui.UI.Input [[[colors]]]*/
 /*xui.UI.ComboInput*/
 .xui-input-box, .xui-comboinput-box{
     background-image: url(Input/inputbg.gif);
     border: solid 1px #C6C9CF;
+    background-repeat:repeat-x;
 }
 .xui-input-box-focus, .xui-input-box-mouseover, .xui-comboinput-box-focus, .xui-comboinput-box-mouseover{
     border-color:#5C93BC;
 }
-.xui-comboinput-r1, .xui-comboinput-r2, .xui-comboinput-btn, .xui-comboinput-sbtn, .xui-comboinput-stop, .xui-comboinput-top,.xui-comboinput-r1t, .xui-comboinput-r2t, .xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid{
+.xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid{
     background-image: url(ComboInput/bg.gif);
-}
-.xui-input-b-t, .xui-input-b-b,
-.xui-comboinput-b-t, .xui-comboinput-b-b{
-    height:2px;
-    background-image: url(Input/vertical.gif);
-}
-.xui-input-box-mouseover .xui-input-b-t, .xui-input-box-mouseover .xui-input-b-b,
-.xui-input-box-focus .xui-input-b-t, .xui-input-box-focus .xui-input-b-b,
-.xui-comboinput-box-mouseover .xui-comboinput-b-t, .xui-comboinput-box-mouseover .xui-comboinput-b-b,
-.xui-comboinput-box-focus .xui-comboinput-b-t, .xui-comboinput-box-focus .xui-comboinput-b-b{
-    background-image: url(Input/vertical_mouseover.gif);
-}
-.xui-input-b-l, .xui-input-b-r,
-.xui-comboinput-b-l, .xui-comboinput-b-r{
-    width:2px;
-    background-image: url(Input/horizontal.gif);
-}
-.xui-input-box-mouseover .xui-input-b-l, .xui-input-box-mouseover .xui-input-b-r,
-.xui-input-box-focus .xui-input-b-l, .xui-input-box-focus .xui-input-b-r,
-.xui-comboinput-box-mouseover .xui-comboinput-b-l, .xui-comboinput-box-mouseover .xui-comboinput-b-r,
-.xui-comboinput-box-focus .xui-comboinput-b-l, .xui-comboinput-box-focus .xui-comboinput-b-r
-{
-    background-image: url(Input/horizontal_mouseover.gif);
-}
-.xui-input-b-lt, .xui-input-b-rt, .xui-input-b-rb, .xui-input-b-lb,
-.xui-comboinput-b-lt, .xui-comboinput-b-rt, .xui-comboinput-b-rb, .xui-comboinput-b-lb
-{
-    height:2px;
-    width:2px;
-    background-image: url(Input/corner.gif);
-}
-.xui-input-box-mouseover .xui-input-b-lt, .xui-input-box-mouseover .xui-input-b-rt, .xui-input-box-mouseover .xui-input-b-rb, .xui-input-box-mouseover .xui-input-b-lb,
-.xui-input-box-focus .xui-input-b-lt, .xui-input-box-focus .xui-input-b-rt, .xui-input-box-focus .xui-input-b-rb, .xui-input-box-focus .xui-input-b-lb,
-.xui-comboinput-box-mouseover .xui-comboinput-b-lt, .xui-comboinput-box-mouseover .xui-comboinput-b-rt, .xui-comboinput-box-mouseover .xui-comboinput-b-rb, .xui-comboinput-box-mouseover .xui-comboinput-b-lb,
-.xui-comboinput-box-focus .xui-comboinput-b-lt, .xui-comboinput-box-focus .xui-comboinput-b-rt, .xui-comboinput-box-focus .xui-comboinput-b-rb, .xui-comboinput-box-focus .xui-comboinput-b-lb
-{
-    background-image: url(Input/corner_mouseover.gif);
-}
-.xui-input-b-t, .xui-comboinput-b-t{
-    top:-1px;
-}
-.xui-input-b-b, .xui-comboinput-b-b{
-    bottom:-1px;
-}
-.xui-input-b-l, .xui-comboinput-b-l{
-    left:-1px;
-}
-.xui-input-b-r, .xui-comboinput-b-r{
-    right:-1px;
-}
-.xui-input-b-lt, .xui-comboinput-b-lt{
-    left:-1px;
-    top:-1px;
-}
-.xui-input-b-rt, .xui-comboinput-b-rt{
-    right:-1px;
-    top:-1px;
-}
-.xui-input-b-rb, .xui-comboinput-b-rb{
-    right:-1px;
-    bottom:-1px;
-}
-.xui-input-b-lb, .xui-comboinput-b-lb{
-    left:-1px;
-    bottom:-1px;
 }
 
 

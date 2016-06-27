@@ -9278,7 +9278,7 @@ _.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.w1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Widget()).setBorder(true));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Widget()));"+
                     "_.asyRun(function(){alert(o.getBorder())});"+
                     "}"
                 ]
@@ -9292,7 +9292,7 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.w2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Widget()).setBorder(true));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Widget()));"+
                     "_.asyRun(function(){alert(o.getBorder())});"+
                     "}"
                 ]
@@ -9588,7 +9588,7 @@ _.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Block).setBorder(true).setHtml('<span>a</span>'));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Block).setHtml('<span>a</span>'));"+
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
@@ -9902,112 +9902,6 @@ _.set(xui.Locale,["cn","app"], {
         }
     });
 
-
-    _.set(xui.Locale,["cn","doc","xui","UI","ImageButton"], {
-        KEY:{$desc:"本类名"},
-        $desc:"xui.UI.ImageButton 类",
-        constructor:{
-            $desc:"生成一个xui.UI.ImageButton对象."
-        },
-        prototype:{
-            KEY:{$desc:"本类名"},
-            activate:{
-                $desc:"激活控件(获得焦点).",
-                $rtn:"[self]",
-                $snippet:[
-                    "var id='xui.temp.sbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton);"+
-                    "_.asyRun(function(){btn.activate();},1000);"+
-                    "}"
-                ]
-            },
-            getCaption :{
-                $desc:"获取按钮标题文字.",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.sbtn1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
-                    "}"
-                ]
-            },
-            setCaption :{
-                $desc:"设置按钮标题文字.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String.",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.sbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
-                    "}"
-                ]
-            },
-            getImage :{
-                $desc:"获取图标url路径",
-                $rtn:"String"
-            },
-            setImage :{
-                $desc:"设置图标url路径.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] :String, 图标url路径.",
-                    $force
-                ]
-            },
-            getImagePos :{
-                $desc:"获取图标的图像偏移属性",
-                $rtn:"String"
-            },
-            setImagePos :{
-                $desc:"设置图标的图像偏移属性.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 图标的显示位置.",
-                    $force
-                ]
-            },
-            getHAlign :{
-                $desc:"获取水平对齐方式.",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.sbtn7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton({border:true,width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
-                    "}"
-                ]
-            },
-            setHAlign :{
-                $desc:"设置水平对齐方式.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'.",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.sbtn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton({border:true,width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
-                    "}"
-                ]
-            },
-            onClick:{
-                $desc:"当鼠标单击时调用.",
-                $paras:[
-                    $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
-                ],
-                $snippet:[
-                    "var id='xui.temp.sbtn17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "xui(id).prepend((new xui.UI.ImageButton()).onClick(function(profile){alert(profile.properties.caption)}));"+
-                    "}"
-                ]
-            }
-        }
-    });
 
     _.set(xui.Locale,["cn","doc","xui","UI","RichEditor"], {
         KEY:{$desc:"本类名"},
@@ -10460,19 +10354,6 @@ _.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.btn17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui(id).prepend((new xui.UI.Button()).onClick(function(profile){alert(profile.properties.caption)}));"+
-                    "}"
-                ]
-            },
-            onClickDrop:{
-                $desc:"当鼠标单击drop按钮时调用（当按钮的 type 为'drop'时才有效）.",
-                $paras:[
-                    $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
-                ],
-                $snippet:[
-                    "var id='xui.temp.btn17-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "xui(id).prepend((new xui.UI.Button({type:'drop'})).onClick(function(profile){alert('clicked button')}).onClickDrop(function(profile){alert('clicked drop button')}));"+
                     "}"
                 ]
             },
@@ -19941,12 +19822,6 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'caption':'超链接文本',
             'href':'超链接锚点',
             'target':'目标窗口'
-        },
-        'xui_UI_ImageButton' : {
-            'image':'图像路径',
-            'imagePos':'图像背景偏移',
-            'caption':'按钮标题文字',
-            'hAlign':'水平对齐方式'
         },
         'xui_UI_CheckBox' : {
             'image':'图像路径',

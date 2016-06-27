@@ -1763,7 +1763,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 COLLIST:{
                     tagName:'div',
-                    className:"xui-uiborder-rb"
+                    className:"xui-uiborder-r xui-uiborder-b",
+                    text:'&#9660'
                 },
                 ARROW:{}
             },
@@ -2285,9 +2286,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 cursor:'pointer',
                 visibility:'hidden',
-                'background-image': xui.UI.$bg('collist.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'center bottom'
+                'font-size':'12px',
+                color:'#888'
             },
             'BODY11, BODY12, BODY21, BODY22':{
                 overflow:'visible',

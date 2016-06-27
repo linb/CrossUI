@@ -9,7 +9,6 @@ Class('App.xui_UI_Block', 'xui.Com',{
                 .setHost(host,"block3")
                 .setLeft(320)
                 .setTop(60)
-                .setBorder(true)
                 .setShadow(true)
                 .setHtml("shadow")
                 .setBorderType("none")
@@ -20,7 +19,6 @@ Class('App.xui_UI_Block', 'xui.Com',{
                 .setHost(host,"block2")
                 .setLeft(170)
                 .setTop(60)
-                .setBorder(true)
                 .setHtml("border")
                 .setBorderType("none")
             );

@@ -449,7 +449,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 top:'1px',
                 width:'15px',
                 'z-index':'10',
-                'font-size':'18px',
+                'font-size':'13pt',
                 'text-align':'center',
                 color:'#888888',
                 border:'solid 1px #888888'
@@ -465,7 +465,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             DROP:{
                 right:0,
-                'font-size':'8pt'
+                'font-size':'12px'
             },
 
             ITEMS:{

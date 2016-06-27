@@ -114,6 +114,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 text:'{labelCaption}'
             },
             BOX:{
+                className:'xui-ui-input',
                 WRAP:{
                     tagName : 'div',
                     INPUT:{
@@ -167,10 +168,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 left:0,
                 top:0,
                 position:'absolute',
-                'background-image':xui.UI.$bg('inputbg.gif', '','Input'),
-                'background-repeat':'repeat-x',
                 'background-color':'#fff',
                 'border':'solid 1px #B5B8C8',
+                'border-radius': '3px',
                 'z-index':10
             },
             'BOX-focus, BOX-mouseover':{
@@ -210,91 +210,13 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 'background-position':'left -244px',
                 'z-index':'50'
             },
-            //border<<<
             '.setting-xui-input':{
                 'border-style':'solid',
                 'border-top-width':'1px',
                 'border-bottom-width':'1px',
                 'border-left-width':'1px',
                 'border-right-width':'1px'
-            },
-            'KEY-b-t':{
-                height:'2px',
-                top:'-1px',
-                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top'
-            },
-            'KEY-b-b':{
-                height:'2px',
-                bottom:'-1px',
-                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
-                'background-repeat':'repeat-x',
-                'background-position':'left bottom'
-            },
-            'BOX-focus KEY-b-t, BOX-focus KEY-b-b, BOX-mouseover KEY-b-t, BOX-mouseover KEY-b-b':{
-                $order:1,
-                'background-image':xui.UI.$bg('vertical_mouseover.gif','','Input')
-            },
-            'KEY-b-l':{
-                width:'2px',
-                left:'-1px',
-                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
-            },
-            'KEY-b-r':{
-               width:'2px',
-               right:'-1px',
-                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
-                'background-repeat':'repeat-y',
-                'background-position':'right top'
-            },
-            'BOX-focus KEY-b-l, BOX-focus KEY-b-r, BOX-mouseover KEY-b-l, BOX-mouseover KEY-b-r':{
-                $order:1,
-                'background-image': xui.UI.$bg('horizontal_mouseover.gif','','Input')
-            },
-            'KEY-b-lt':{
-                width:'2px',
-                height:'2px',
-               left:'-1px',
-               top:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'left top'
-            },
-            'KEY-b-rt':{
-               width:'2px',
-               height:'2px',
-               right:'-1px',
-               top:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'right top'
-            },
-            'KEY-b-rb':{
-                width:'2px',
-                height:'2px',
-                right:'-1px',
-                bottom:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'right bottom'
-            },
-            'KEY-b-lb':{
-                width:'2px',
-                height:'2px',
-                left:'-1px',
-                bottom:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'left bottom'
-            },
-            'BOX-focus KEY-b-lt, BOX-focus KEY-b-rt, BOX-focus KEY-b-rb, BOX-focus KEY-b-lb, BOX-mouseover KEY-b-lt, BOX-mouseover KEY-b-rt, BOX-mouseover KEY-b-rb, BOX-mouseover KEY-b-lb':{
-                $order:1,
-                'background-image': xui.UI.$bg('corner_mouseover.gif','','Input')
             }
-            //border>>>
         },
         Behaviors:{
             HoverEffected:{BOX:['BOX']},
@@ -944,62 +866,62 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             });
         },
         _onresize:function(profile,width,height){
-                var $hborder=1, $vborder=1,
-                    toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
-                    loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
-                    roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
+            var $hborder=1, $vborder=1,
+                toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
+                loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
+                roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
 
-                var t = profile.properties,
-                    o = profile.getSubNode('BOX'),
+            var t = profile.properties,
+                o = profile.getSubNode('BOX'),
 
-                    label = profile.getSubNode('LABEL'),
-                    labelSize=t.labelSize||0,
-                    labelGap=t.labelGap||0,
-                    labelPos=t.labelPos || 'left',
+                label = profile.getSubNode('LABEL'),
+                labelSize=t.labelSize||0,
+                labelGap=t.labelGap||0,
+                labelPos=t.labelPos || 'left',
 
-                    v1=profile.getSubNode('INPUT'),
-                    ww=width,
-                    hh=height,
-                    left=Math.max(0, (t.$b_lw||0)-$hborder),
-                    top=Math.max(0, (t.$b_tw||0)-$vborder);
-                if(null!==ww){
-                    ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
-                    /*for ie6 bug*/
-                    /*for example, if single number, 100% width will add 1*/
-                    /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
-                }
-                if(null!==hh){
-                    hh -=Math.max($vborder*2, (t.$b_lw||0) + (t.$b_rw||0));
-
-                    if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
-                    /*for ie6 bug*/
-                    if(xui.browser.ie6&&null===width)o.ieRemedy();
-                }
-
-                o.cssRegion({
-                    left:left + (labelPos=='left'?labelSize:0),
-                    top:top + (labelPos=='top'?labelSize:0),
-                    width:ww===null?null:Math.max(0,(ww - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
-                    height:hh===null?null:Math.max(0,(hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
-                });
-                
-                if(labelSize)
-                    label.cssRegion({
-                        left:ww===null?null:Math.max(0,labelPos=='right'?(ww-labelSize+labelGap):0),
-                        top: height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                        width:ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),
-                        height:height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
-                    });
-
-                if(ww||hh)
-                    v1.cssSize({
-                        width:ww?Math.max(0,(ww-loff-roff-((labelPos=='left'||labelPos=='right')?labelSize:0))):null,
-                        height:hh?Math.max(0,(hh-toff-((labelPos=='top'||labelPos=='bottom')?labelSize:0))):null
-                    });
-
+                v1=profile.getSubNode('INPUT'),
+                ww=width,
+                hh=height,
+                left=Math.max(0, (t.$b_lw||0)-$hborder),
+                top=Math.max(0, (t.$b_tw||0)-$vborder);
+            if(null!==ww){
+                ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
                 /*for ie6 bug*/
-                if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+                /*for example, if single number, 100% width will add 1*/
+                /*for example, if single number, attached shadow will overlap*/
+                if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
+            }
+            if(null!==hh){
+                hh -=Math.max($vborder*2, (t.$b_lw||0) + (t.$b_rw||0));
+
+                if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
+                /*for ie6 bug*/
+                if(xui.browser.ie6&&null===width)o.ieRemedy();
+            }
+
+            o.cssRegion({
+                left:left + (labelPos=='left'?labelSize:0),
+                top:top + (labelPos=='top'?labelSize:0),
+                width:ww===null?null:Math.max(0,(ww - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
+                height:hh===null?null:Math.max(0,(hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+            });
+            
+            if(labelSize)
+                label.cssRegion({
+                    left:ww===null?null:Math.max(0,labelPos=='right'?(ww-labelSize+labelGap):0),
+                    top: height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
+                    width:ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),
+                    height:height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                });
+
+            if(ww||hh)
+                v1.cssSize({
+                    width:ww?Math.max(0,(ww-loff-roff-((labelPos=='left'||labelPos=='right')?labelSize:0))):null,
+                    height:hh?Math.max(0,(hh-toff-((labelPos=='top'||labelPos=='bottom')?labelSize:0))):null
+                });
+
+            /*for ie6 bug*/
+            if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
         }
     }
 });

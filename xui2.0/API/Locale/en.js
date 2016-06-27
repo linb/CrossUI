@@ -9252,7 +9252,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.w1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Widget()).setBorder(true));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Widget()));"+
                     "_.asyRun(function(){alert(o.getBorder())});"+
                     "}"
                 ]
@@ -9266,7 +9266,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.w2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Widget()).setBorder(true));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Widget()));"+
                     "_.asyRun(function(){alert(o.getBorder())});"+
                     "}"
                 ]
@@ -9551,7 +9551,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Block).setBorder(true).setHtml('<span>a</span>'));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Block).setHtml('<span>a</span>'));"+
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
@@ -9658,7 +9658,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=(new xui.UI.Block).setBorder(true).setHtml('<span>a</span>'));"+
+                    "var o;xui(id).prepend(o=(new xui.UI.Block).setHtml('<span>a</span>'));"+
                     "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
@@ -9967,113 +9967,6 @@ _.set(xui.Locale,["en","app"], {
                     $profile,
                     "e : Event.Dom event object",
                     "src : Element.xui id or Dom Element"
-                ]
-            }
-        }
-    });
-
-    _.set(xui.Locale,["en","doc","xui","UI","ImageButton"], {
-        KEY:{$desc:"Class Name"},
-        $desc:"xui.UI.ImageButton Class",
-        constructor:{
-            $desc:"Creates a xui.UI.ImageButton Object."
-        },
-        prototype:{
-            KEY:{$desc:"Class Name"},
-            activate:{
-                $desc:"Activates it(set focus).",
-                $rtn:"[self]",
-                $snippet:[
-                    "var id='xui.temp.sbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton);"+
-                    "_.asyRun(function(){btn.activate();},1000);"+
-                    "}"
-                ]
-            },
-            getCaption :{
-                $desc:"Gets this button caption text.",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.Sbtn1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
-                    "}"
-                ]
-            },
-            setCaption :{
-                $desc:"Sets caption text to this button.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String.",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.Sbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
-                    "}"
-                ]
-            },
-            getImage :{
-                $desc:"Gets image url.",
-                $rtn:"String"
-            },
-            setImage :{
-                $desc:"Sets image url.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] :String,  image path.",
-                    $force
-                ]
-            },
-            getImagePos :{
-                $desc:"Gets image postion.",
-                $rtn:"String"
-            },
-            setImagePos :{
-                $desc:"Sets image image postion.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, corresponding CSS value.",
-                    $force
-                ]
-            },
-            getHAlign :{
-                $desc:"Gets horizontal alignment.",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.Sbtn7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton({border:true,width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
-                    "}"
-                ]
-            },
-            setHAlign :{
-                $desc:"Sets horizontal alignment.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, 'left', 'center' or 'right'.",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.Sbtn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.ImageButton({border:true,width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
-                    "}"
-                ]
-            },
-
-            onClick:{
-                $desc:"Fired when user click it.",
-                $paras:[
-                    $profile,
-                    "e : Event.Dom event object",
-                    "src : Element.xui id or Dom Element"
-                ],
-                $snippet:[
-                    "var id='xui.temp.Sbtn17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "xui(id).prepend((new xui.UI.ImageButton()).onClick(function(profile){alert(profile.properties.caption)}));"+
-                    "}"
                 ]
             }
         }

@@ -38,7 +38,6 @@ Class('App', 'xui.Com',{
                 .setLeft(30)
                 .setTop(300)
                 .setWidth(220)
-                .setBorder(true)
             );
             
             host.block3.append(
@@ -82,7 +81,6 @@ Class('App', 'xui.Com',{
                 .setTop(170)
                 .setWidth(220)
                 .setHeight(240)
-                .setBorder(true)
             );
             
             host.ctl_block4.append(

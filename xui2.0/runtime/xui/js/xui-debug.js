@@ -18472,24 +18472,35 @@ Class("xui.UI",  "xui.absObj", {
                 '*width_1':'auto',
                 '*overflow':'visible',
                 '*width_2':1,
-                // for IE78
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD')",
+                // for IE6789
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
                 background_1: "linear-gradient(top,  #FFF,  #DDD)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
                 background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
                 background_4: "-o-linear-gradient(top,  #FFF,  #DDD)"
             },
-            ".xui-ui-btn:hover":{
+            ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
             },
-            ".xui-ui-btn:active, .xui-ui-btn-checked":{
-                // for IE78
-                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF')",
+            ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+                // for IE6789
+                "-filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
                 background_1: 'linear-gradient(top,  #DDD,  #FFF)',
                 background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
                 background_4: '-o-linear-gradient(top,  #DDD,  #FFF)'
-            },            
+            },
+            ".xui-ui-input":{
+                background:'#fff',
+                // for IE6789
+                'filter': 'progid:DXImageTransform.Microsoft.Blur(PixelRadius=2,MakeShadow=true,ShadowOpacity=0.30)',
+                '-ms-filter': 'progid:DXImageTransform.Microsoft.Blur(PixelRadius=2,MakeShadow=true,ShadowOpacity=0.30)',
+                'zoom': '1',
+
+               '-moz-box-shadow': 'inset 2px 2px 2px #EEEEEE',
+               '-webkit-box-shadow': 'inset 2px 2px 2px #EEEEEE',
+               'box-shadow': 'inset 2px 2px 2px #EEEEEE'           
+            },
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'16px',
@@ -22821,7 +22832,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(!profile.renderId)return;
                 var properties = profile.properties,
                     flag=properties.value !== properties.$UIvalue,
-                    o=profile.getSubNode(key||"KEY"),
+                    o=profile.getSubNode(key||profile.box.DIRYMARKCON||"KEY"),
                     d=xui.UI.$css_tag_dirty;
                 if(profile._dirtyFlag!==flag){
                     if(properties.dirtyMark && properties.showDirtyMark){
@@ -23130,6 +23141,7 @@ new function(){
             DataModel:{
                 width:100,
                 height:100,
+                border:'deprecated',
                 //hide props
                 $hborder:0,
                 $vborder:0
@@ -23321,10 +23333,16 @@ new function(){
                 tagName:'button',
                 // dont set class to HTML Element
                 className:'xui-wrapper xui-ui-btn {_className}',
-                style:'cursor:pointer;{_style};',
+                style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
             },
+            Appearances:{
+                KEY:{
+                    cursor:'pointer',
+                    padding:'3px 5px'
+                }
+            },            
             DataModel:{
                 nodeName:null,
                 tabindex:1,
@@ -23347,14 +23365,58 @@ new function(){
             } 
         }
     });
-    Class(u+".ImageButton", u+".HTMLButton",{
+    Class(u+".Button", [u+".HTMLButton","xui.absValue"],{
+        Initialize:function(){
+            // compitable
+            xui.UI.SButton = xui.UI.Button;
+            var key="xui.UI.SButton";
+            xui.absBox.$type[key.replace("xui.UI.","").replace("xui.","")]=xui.absBox.$type[key]=key;
+        },
+        Instance:{
+            activate:function(){
+                this.getRoot().focus();
+                return this;
+            },
+            _setCtrlValue:function(value){
+                if(_.isNull(value) || !_.isDefined(value))value=false;
+                return this.each(function(profile){
+                    var pp=profile.properties;
+                    if(pp.type!='status')return;
+                    profile.getRoot().tagClass('-checked', value);
+                });
+            },
+            resetValue:function(value){
+                this.each(function(p){
+                    if(p.properties.type=='drop')
+                        p.boxing().setCaption("",true);
+                });
+                var upper=arguments.callee.upper,
+                    rtn=upper.apply(this,_.toArr(arguments));
+                upper=null;
+                return rtn;
+            },
+            setUIValue:function(value, force){
+                this.each(function(profile){
+                    var p=profile.properties;
+                    if(p.$UIvalue!==value && p.type=='drop')
+                        profile.boxing().setCaption("",true);
+                });
+                var upper=arguments.callee.upper,
+                    rtn=upper.apply(this,_.toArr(arguments));
+                upper=null;
+                return rtn;
+            }
+        },
         Static:{
+            DIRYMARKCON:"DM",
             Templates:{
                 tagName:'button',
                 // dont set class to HTML Element
                 className:'xui-ui-unselectable xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
+                DM:{
+                },
                 ICON:{
                     $order:1,
                     className:'xui-ui-icon {imageClass}',
@@ -23363,7 +23425,74 @@ new function(){
                 CAPTION:{
                     $order:2,
                     text:'{caption}'
+                },
+                DROP:{
+                    $order:2,
+                    style:'{_dropCls}',
+                    text:'&#9660'
+                },
+                CLEAR:{style:'clear:both;display:none;'}
+            },
+            Appearances:{
+                DM:{
+                    position:'absolute',
+                    left:0,
+                    top:0,
+                    width:'8px',
+                    height:'8px'
+                },
+                DROP:{
+                    'vertical-align': 'middle',                    
+                    'float': 'right',
+                    'font-size':'12px',
+                    'padding-left':'4px',
+                    color:'#888'
+                },
+                'DROP-mouseover':{
+                    $order:11,
+                    color:'#444'
+                },
+                'DROP-mousedown':{
+                    $order:12,
+                    'padding-top':'1px'
                 }
+            },            
+            Behaviors:{
+                HoverEffected:{KEY:['KEY','DROP']},
+                NavKeys:{KEY:1},
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    var b=profile.boxing();
+                    if(p.type=='status'){
+                        if(p.readonly)return false;
+                        b.setUIValue(!p.$UIvalue,null,null,'click');
+                        if(profile.onChecked)
+                            b.onChecked(profile, e, p.$UIvalue);
+                    }
+                    //onClick event
+                    if(profile.onClick)
+                        return b.onClick(profile, e, src, p.$UIvalue);
+                    if(p.type=='drop' && profile.onClickDrop)
+                        return b.onClickDrop(profile, e, src, p.$UIvalue);
+
+                },
+                onKeydown:function(profile, e, src){
+                    var keys=xui.Event.getKey(e), key = keys.key;
+                    if(key==' '||key=='enter'){
+                        profile.getSubNode('KEY').afterMousedown();
+                        profile.__fakeclick=1;
+                    }
+                },
+                onKeyup:function(profile, e, src){
+                    var keys=xui.Event.getKey(e), key = keys.key;
+                    if(key==' '||key=='enter'){
+                        profile.getSubNode('KEY').afterMouseup();
+                        if(profile.__fakeclick)
+                            xui.use(src).onClick();
+                    }
+                    delete profile.__fakeclick;
+                }      
             },
             DataModel:{
                 html:null,
@@ -23394,17 +23523,56 @@ new function(){
                     action: function(v){
                         this.getRoot().css('textAlign',v);
                     }
+                },
+                vAlign:{
+                    ini:'middle',
+                    listbox:['top','middle','bottom'],
+                    action: function(v){
+                        //todo
+                    }
+                },                
+                value:{
+                    ini:false
+                },
+                type:{
+                    ini:'normal',
+                    listbox:['normal','status','drop'],
+                    action:function(value){
+                        var self=this,
+                            root=self.getRoot(),
+                            drop=self.getSubNode('DROP');
+                        if(value=='drop')
+                            drop.css('display','');
+                        else
+                            drop.css('display','none');
+                    }
                 }
             },
-            _prepareData:function(profile, data){
-                data=arguments.callee.upper.call(this, profile,data);
+            _ensureValue:function(profile,value){
+                if(profile.properties.type=="status")
+                    return !!value;
+                else
+                    return value;
+            },
+            _prepareData:function(profile){
+                var data=arguments.callee.upper.call(this, profile);
                 data._align = 'text-align:'+data.hAlign+';';
+                data._dropCls = data.type=='drop'?'':'display:none';
                 return data;
+            },
+            RenderTrigger:function(){
+                var self=this,p = self.properties, o=self.boxing();
+                //set value later
+                if(p.type=='status' && p.value)
+                    o.setValue(true, true, 'render');
+            },
+            EventHandlers:{
+                onClick:function(profile, e, src, value){},
+                onClickDrop:function(profile, e, src, value){},
+                onChecked:function(profile, e, value){}
             }
         }
     });
-    // compitable
-    xui.UI.SButton = xui.UI.ImageButton;
 
     Class(u+".Span", u,{
         Static:{
@@ -24459,293 +24627,6 @@ new function(){
                 if(width)H5.attr("width", width);
                 if(height)H5.attr("height", height);
             }
-        }
-    }
-});//add/get/remove border to a dom node(display:block;position:absolute) / or a widget inherite from xui.UI.Widget
-Class("xui.UI.Border","xui.UI",{
-    Instance:{
-        _attachTo:function(target, eventTrigger){
-            var self=this, v=self.get(0), t;
-            //add to dom
-            target.append(self);
-            //save id
-            v.$edgeId = xui(target).id();
-            v.$tieId = eventTrigger;
-            v.$attached=true;
-            //add event
-            if(t=v.properties)
-                if(v.properties.borderActive){
-                    var tag='tag', n=v.domId;
-                    if(xui(eventTrigger).get(0))
-                        xui(eventTrigger).afterMouseover(function(p,e){
-                            if(p.properties.disabled)return;
-                            var profile=xui.$cache.profileMap[n];
-                            _.tryF(profile.behavior.TAG.afterMouseover,[profile,e,profile.getRootNode()],this);
-                        },tag).afterMouseout(function(p,e){
-                            if(p.properties.disabled)return;
-                            var profile=xui.$cache.profileMap[n];
-                            _.tryF(profile.behavior.TAG.afterMouseout,[profile,e,profile.getRootNode()],this);
-                        },tag).afterMousedown(function(p,e){
-                            if(p.properties.disabled)return;
-                            var profile=xui.$cache.profileMap[n];
-                            _.tryF(profile.behavior.TAG.afterMousedown,[profile,e,profile.getRootNode()],this);
-                        },tag).afterMouseup(function(p,e){
-                            if(p.properties.disabled)return;
-                            var profile=xui.$cache.profileMap[n];
-                            _.tryF(profile.behavior.TAG.afterMouseup,[profile,e,profile.getRootNode()],this);
-                        },tag);
-                }
-            return target;
-        },
-        _detach:function(){
-            var self=this, v=self.get(0),n,t,nl=null,tag='tag';
-            delete v.$attached;
-            if(n=v.$tieId)
-                if(n=xui.Dom.byId(n))
-                    xui(n).afterMouseover(nl,tag).afterMouseout(nl,tag).afterMousedown(nl,tag).afterMouseup(nl,tag);
-            return self;
-        }
-    },
-    Initialize:function(){
-
-        //for xui.Dom
-        _.each({
-            addBorder :function(properties){
-                var target = xui([this.get(0)]), eventTrigger=arguments[1]||target.id();
-                return new xui.UI.Border(properties)._attachTo(target, eventTrigger);
-            },
-            $getBorder:function(){
-                var s = this.id(), b;
-                _.arr.each(xui.UI.Border._cache,function(o){
-                    if(o.$edgeId==s){b=o;return false;}
-                });
-                return b && b.boxing();
-            },
-            removeBorder:function(){
-                var s = this.id();
-                _.arr.each(xui.UI.Border._cache,function(o){
-                    if(o.$edgeId==s)
-                        o.boxing()._detach().destroy(true);
-                });
-                return this;
-            }
-        },function(o,i){
-            xui.Dom.plugIn(i,o);
-        });
-        //for xui.UI.Widget
-        _.each({
-            _border:function(properties,flag){
-                return this.each(function(o){
-                    var t=o.properties,target = o.getSubNode(t._customBorder||'BORDER'),k;
-
-                    if(!properties)properties={};
-
-                    if(t._customBorder)
-                        k=(properties._bkey=o.getClass('KEY'));
-                    else k='xui-border';
-                        
-                    var key='setting-'+k, sk;
-                    sk='borderLeftWidth';
-                    t.$b_lw=xui.UI.$getCSSValue(key,sk);
-                    sk='borderRightWidth';
-                    t.$b_rw=xui.UI.$getCSSValue(key,sk);
-                    sk='borderTopWidth';
-                    t.$b_tw=xui.UI.$getCSSValue(key,sk);
-                    sk='borderBottomWidth';
-                    t.$b_bw=xui.UI.$getCSSValue(key,sk);
-
-                    if(flag!==false){
-                        if(target.$getBorder())return;
-                        o.$border=target.addBorder(properties);
-                        o.clearCache().boxing().reLayout();
-                    }
-                });
-            },
-            _unBorder:function(){
-                return this.each(function(o){
-                    var target = o.getSubNode('BORDER'),t=o.properties;
-                    if(!target.$getBorder())return;
-                    target.removeBorder()
-
-                    delete o.$border;
-
-                    delete t.$b_lw;
-                    delete t.$b_rw;
-                    delete t.$b_tw;
-                    delete t.$b_bw;
-                    o.clearCache().boxing().reLayout();
-                });
-            }
-        },function(o,i){
-            xui.UI.Widget.plugIn(i,o);
-        });
-        xui.UI.Widget.setDataModel({
-            border:{
-                ini:false,
-                action: function(v){
-                    var b=this.boxing();
-                    if(v)
-                        b._border();
-                    else
-                        b._unBorder();
-                }
-            }
-        });
-    },
-    Static:{
-        Templates:{
-            tagName:'div',
-            TAG:{},
-            T:{className:'{cls_t}'},
-            RT:{className:'{cls_rt}',$order:1},
-            R:{className:'{cls_r}'},
-            RB:{className:'{cls_rb}',$order:1},
-            B:{className:'{cls_b}'},
-            LB:{className:'{cls_lb}',$order:1},
-            L:{className:'{cls_l}'},
-            LT:{className:'{cls_lt}',$order:1}
-        },
-        Appearances:{
-            KEY:{
-                //don't use width/height to trigger hasLayout in IE6
-                width:0,
-                height:0,
-                display:xui.browser.ie6?'inline':null,
-                'font-size':0,
-                'line-height':0
-            },
-            'TAG,T, RT, R, RB, B, LB, L, LT':{
-                position:'absolute',
-                display:'block',
-                'font-size':0,
-                'line-height':0
-            },
-            '.setting-xui-border':{
-                'border-style':'solid',
-                'border-top-width':'1px',
-                'border-bottom-width':'1px',
-                'border-left-width':'1px',
-                'border-right-width':'1px'
-            },
-            T:{
-                width:'100%',
-                left:0,
-                top:'-1px',
-                height:'3px',
-                'background-image':xui.UI.$bg('vertical.gif', ''),
-                'background-repeat':'repeat-x',
-                'background-position':'left top'
-            },
-            B:{
-                width:'100%',
-                left:0,
-                bottom:'-1px',
-                height:'3px',
-                'background-image':xui.UI.$bg('vertical.gif', ''),
-                'background-repeat':'repeat-x',
-                'background-position':'left bottom'
-            },
-            L:{
-                height:'100%',
-                top:0,
-                left:'-1px',
-                width:'3px',
-                'background-image':xui.UI.$bg('horizontal.gif', ''),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
-            },
-            R:{
-               height:'100%',
-               top:0,
-               right:'-1px',
-               width:'3px',
-                'background-image':xui.UI.$bg('horizontal.gif', ''),
-                'background-repeat':'repeat-y',
-                'background-position':'right top'
-            },
-            LT:{
-                top:'-1px',
-                left:'-1px',
-                width:'3px',
-                height:'3px',
-                'background-image':xui.UI.$bg('corner.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'left top'
-            },
-            RT:{
-               top:'-1px',
-               right:'-1px',
-               width:'3px',
-               height:'3px',
-                'background-image':xui.UI.$bg('corner.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'right top'
-            },
-            RB:{
-                right:'-1px',
-                bottom:'-1px',
-                width:'3px',
-                height:'3px',
-                'background-image':xui.UI.$bg('corner.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'right bottom'
-            },
-            LB:{
-                left:'-1px',
-                bottom:'-1px',
-                width:'3px',
-                height:'3px',
-                'background-image':xui.UI.$bg('corner.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'left bottom'
-            }/*,
-            'KEY-mouseover T, KEY-mouseover B':{
-                $order:1,
-                'background-image':xui.UI.$bg('vertical_mouseover.gif')
-            },
-            'KEY-checked T, KEY-checked B, KEY-mousedown T, KEY-mousedown B':{
-                $order:2,
-                'background-image':xui.UI.$bg('vertical_mousedown.gif')
-            },
-            'KEY-mouseover L, KEY-mouseover R':{
-                $order:1,
-                'background-image': xui.UI.$bg('horizontal_mouseover.gif')
-            },
-            'KEY-checked L, KEY-checked R, KEY-mousedown L, KEY-mousedown R':{
-                $order:2,
-                'background-image': xui.UI.$bg('horizontal_mousedown.gif')
-            },
-            'KEY-mouseover LT, KEY-mouseover RT, KEY-mouseover RB, KEY-mouseover LB':{
-                $order:1,
-                'background-image': xui.UI.$bg('corner_mouseover.gif')
-            },
-            'KEY-checked LT, KEY-checked RT, KEY-checked RB, KEY-checked LB, KEY-mousedown LT, KEY-mousedown RT, KEY-mousedown RB, KEY-mousedown LB':{
-                $order:2,
-                'background-image': xui.UI.$bg('corner_mousedown.gif')
-            }*/
-        },
-        Behaviors:{
-            HoverEffected:{TAG:'KEY'},
-            ClickEffected:{TAG:'KEY'}
-        },
-        DataModel:{
-            _bkey:"",
-            borderActive:false
-        },
-        _prepareData:function(profile){
-            var data = arguments.callee.upper.call(this, profile),
-                pk=profile.properties._bkey;
-
-            data.cls_t = pk?pk+"-b-t":"";
-            data.cls_rt = pk?pk+"-b-rt":"";
-            data.cls_r = pk?pk+"-b-r":"";
-            data.cls_rb = pk?pk+"-b-rb":"";
-            data.cls_b = pk?pk+"-b-b":"";
-            data.cls_lb = pk?pk+"-b-lb":"";
-            data.cls_l = pk?pk+"-b-l":"";
-            data.cls_lt = pk?pk+"-b-lt":"";
-
-            return data;
         }
     }
 });//shadow class, add a plugin to xui.Dom
@@ -26382,407 +26263,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     }
 });
 
-Class("xui.UI.Button", ["xui.UI.Widget","xui.absValue"],{
-    Instance:{
-        activate:function(){
-            this.getSubNode('FOCUS').focus();
-            return this;
-        },
-        _setCtrlValue:function(value){
-            if(_.isNull(value) || !_.isDefined(value))value=false;
-            return this.each(function(profile){
-                var pp=profile.properties;
-                if(pp.type!='status')return;
-                profile.getSubNode('BORDER').tagClass('-checked', value);
 
-                if(pp.border){
-                    var b = profile.getSubNode('BORDER').$getBorder();
-                    if(b)b.get(0).getRoot().tagClass('-checked', value);
-                }
-            });
-        },
-        _setDirtyMark:function(){
-            return arguments.callee.upper.apply(this,['FOCUS']);
-        },
-        resetValue:function(value){
-            this.each(function(p){
-                if(p.properties.type=='drop')
-                    p.boxing().setCaption("",true);
-            });
-            var upper=arguments.callee.upper,
-                rtn=upper.apply(this,_.toArr(arguments));
-            upper=null;
-            return rtn;
-        },
-        setUIValue:function(value, force){
-            this.each(function(profile){
-                var p=profile.properties;
-                if(p.$UIvalue!==value && p.type=='drop')
-                    profile.boxing().setCaption("",true);
-            });
-            var upper=arguments.callee.upper,
-                rtn=upper.apply(this,_.toArr(arguments));
-            upper=null;
-            return rtn;
-        }
-    },
-    Initialize:function(){
-        this.addTemplateKeys(['DROP']);
-        //modify default template for shell
-        var t = this.getTemplate();
-        _.merge(t.FRAME,{
-            FOCUS:{
-                $order:2,
-                className:"xui-ui-unselectable",
-                tabindex: '{tabindex}',
-                TB:{
-                    cellpadding:"0",
-                    cellspacing:"0",
-                    width:'100%',
-                    height:'100%',
-                    border:'0',
-                    tagName:'table',
-                    TR:{
-                        tagName:'tr',
-                        TDL:{
-                            tagName:'td'
-                        },
-                        TD:{
-                            $order:1,
-                            align:'{hAlign}',
-                            valign:'{vAlign}',
-                            tagName:'td',
-                            width:'100%',
-                            height:'100%',
-                            BOX:{
-                                ICON:{
-                                    $order:1,
-                                    className:'xui-ui-icon {imageClass}',
-                                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
-                                },
-                                CAPTION:{
-                                    $order:2,
-                                    text: '{caption}'
-                                }
-                            }
-                        },
-                        TDR:{
-                            $order:2,
-                            tagName:'td',
-                            className:'{dropCls}',
-                            TDRI:{}
-                        }
-                    }
-                }
-            }
-        },'all');
-        this.setTemplate(t);
-    },
-    Static:{
-        Appearances:{
-            KEY:{
-                cursor:'pointer'
-            },
-            BORDER:{
-                'font-size':0,
-                'line-height':0,
-                'background-color':'#D2D7DF'
-            },
-            'BORDER-mouseover':{
-                $order:2,
-                'background-color':'#F7D928'
-            },
-            'BORDER-mousedown, BORDER-checked':{
-                $order:2,
-                'background-color':'#F9E56A'
-            },
-            'DROP':{
-                $order:10,
-                'background-image':xui.UI.$bg('drop.gif', '','Button'),
-                'background-repeat':'no-repeat',
-                'background-position':'left bottom',
-                'padding-left':'16px'
-            },
-            'DROP-mouseover':{
-                $order:11,
-                'background-position':'-16px bottom'
-            },
-            'DROP-mousedown':{
-                $order:12,
-                'background-position':'right bottom'
-            },
-            'TDR,TDL':{
-                'padding-left':'6px'
-            },
-//border<<<
-            '.setting-xui-button':{
-                'border-top-width':'1px',
-                'border-bottom-width':'1px',
-                'border-left-width':'1px',
-                'border-right-width':'1px'
-            },
-            'KEY-b-t':{
-                top:'-1px',
-                height:'10px',
-                'background-image':xui.UI.$bg('vertical.gif', '','Button'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top'
-            },
-            'KEY-b-b':{
-                bottom:'-1px',
-                height:'10px',
-                'background-image':xui.UI.$bg('vertical.gif', '','Button'),
-                'background-repeat':'repeat-x',
-                'background-position':'left bottom'
-            },
-            'BORDER-mouseover KEY-b-t, BORDER-mouseover KEY-b-b':{
-                $order:1,
-                'background-image':xui.UI.$bg('vertical_mouseover.gif','','Button')
-            },
-            'BORDER-checked KEY-b-t, BORDER-checked KEY-b-b, BORDER-mousedown KEY-b-t, BORDER-mousedown KEY-b-b':{
-                $order:2,
-                'background-image':xui.UI.$bg('vertical_mousedown.gif','','Button')
-            },
-            'KEY-b-l':{
-                left:'-1px',
-                width:'4px',
-                'background-image':xui.UI.$bg('horizontal.gif', '','Button'),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
-            },
-            'KEY-b-r':{
-               right:'-1px',
-               width:'4px',
-                'background-image':xui.UI.$bg('horizontal.gif', '','Button'),
-                'background-repeat':'repeat-y',
-                'background-position':'right top'
-            },
-            'BORDER-mouseover KEY-b-l, BORDER-mouseover KEY-b-r':{
-                $order:1,
-                'background-image': xui.UI.$bg('horizontal_mouseover.gif','','Button')
-            },
-            'BORDER-checked KEY-b-l, BORDER-checked KEY-b-r, BORDER-mousedown KEY-b-l, BORDER-mousedown KEY-b-r':{
-                $order:2,
-                'background-image': xui.UI.$bg('horizontal_mousedown.gif','','Button')
-            },
-            'KEY-b-lt':{
-                top:'-1px',
-                left:'-1px',
-                width:'4px',
-                height:'10px',
-                'background-image':xui.UI.$bg('corner.gif', '','Button'),
-                'background-repeat':'no-repeat',
-                'background-position':'left top'
-            },
-            'KEY-b-rt':{
-               top:'-1px',
-               right:'-1px',
-               width:'4px',
-               height:'10px',
-                'background-image':xui.UI.$bg('corner.gif', '','Button'),
-                'background-repeat':'no-repeat',
-                'background-position':'right top'
-            },
-            'KEY-b-rb':{
-                right:'-1px',
-                bottom:'-1px',
-                width:'4px',
-                height:'10px',
-                'background-image':xui.UI.$bg('corner.gif', '','Button'),
-                'background-repeat':'no-repeat',
-                'background-position':'right bottom'
-            },
-            'KEY-b-lb':{
-                left:'-1px',
-                bottom:'-1px',
-                width:'4px',
-                height:'10px',
-                'background-image':xui.UI.$bg('corner.gif', '','Button'),
-                'background-repeat':'no-repeat',
-                'background-position':'left bottom'
-            },
-            'BORDER-mouseover KEY-b-lt, BORDER-mouseover KEY-b-rt, BORDER-mouseover KEY-b-rb, BORDER-mouseover KEY-b-lb':{
-                $order:1,
-                'background-image': xui.UI.$bg('corner_mouseover.gif','','Button')
-            },
-            'BORDER-checked KEY-b-lt, BORDER-checked KEY-b-rt, BORDER-checked KEY-b-rb, BORDER-checked KEY-b-lb, BORDER-mousedown KEY-b-lt, BORDER-mousedown KEY-b-rt, BORDER-mousedown KEY-b-rb, BORDER-mousedown KEY-b-lb':{
-                $order:2,
-                'background-image' : xui.UI.$bg('corner_mousedown.gif','','Button')
-            },
-//border>>>
-            /*a*/
-            FOCUS:{
-                overflow:'hidden',
-                display:'block',
-                left:0,
-                top:0,
-                'z-index':'20',
-                width:'100%',
-                height:'100%',
-                position:'absolute',
-                'outline-offset':'-1px',
-                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
-            },
-            /*span*/
-            BOX:{
-                display:'inline',
-                'white-space':'nowrap'
-            },
-            CAPTION:{
-                cursor:'pointer',
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                display:'inline'
-            }
-        },
-        Behaviors:{
-            HoverEffected:{KEY:['BORDER','TDR']},
-            ClickEffected:{KEY:['BORDER','TDR']},
-            NavKeys:{FOCUS:1},
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-
-                //before event
-                profile.getSubNode('FOCUS').focus();
-
-                var b=profile.boxing();
-
-                if(p.type=='status'){
-                    if(p.readonly)return false;
-                    
-                    b.setUIValue(!p.$UIvalue,null,null,'click');
-                    if(profile.onChecked)
-                        b.onChecked(profile, e, p.$UIvalue);
-                }
-
-                //onClick event
-                if(profile.onClick)
-                    return b.onClick(profile, e, src, p.$UIvalue);
-            },
-            onKeydown:function(profile, e, src){
-                var keys=xui.Event.getKey(e), key = keys.key;
-                if(key==' '||key=='enter'){
-                    profile.getSubNode('KEY').afterMousedown();
-                    profile.__fakeclick=1;
-                }
-            },
-            onKeyup:function(profile, e, src){
-                var keys=xui.Event.getKey(e), key = keys.key;
-                if(key==' '||key=='enter'){
-                    profile.getSubNode('KEY').afterMouseup();
-                    if(profile.__fakeclick)
-                        xui.use(src).onClick();
-                }
-                delete profile.__fakeclick;
-            },
-            TDR:{
-                onMousedown:function(profile,e,src){
-                    if(profile.properties.type!='drop')return;
-                    xui.use(src).addClass(profile.getClass('DROP','-mousedown'));
-                    return false;
-                },
-                onMouseup:function(profile,e,src){
-                    if(profile.properties.type!='drop')return;
-                    xui.use(src).removeClass(profile.getClass('DROP','-mousedown'));
-                    return false;
-                },
-                onMouseover:function(profile,e,src){
-                    if(profile.properties.type!='drop')return;
-                    xui.use(src).addClass(profile.getClass('DROP','-mouseover'));
-                },                
-                onMouseout:function(profile,e,src){
-                    if(profile.properties.type!='drop')return;
-                    xui.use(src).removeClass(profile.getClass('DROP','-mouseover')).removeClass(profile.getClass('DROP','-mousedown'));
-                },
-                onClick:function(profile, e, src){
-                    if(profile.properties.type!='drop')return;
-                    profile.boxing().onClickDrop(profile, e, src);
-                    return false;
-                }
-            }
-        },
-        DataModel:{
-            caption:{
-                ini:undefined,
-                // ui update function when setCaption
-                action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
-                    this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
-                }
-            },
-            image:{
-               format:'image',
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
-                }
-            },
-            imagePos:{
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('backgroundPosition', value);
-                }
-            },
-            hAlign:{
-                ini:'center',
-                listbox:['left','center','right'],
-                action: function(v){
-                    this.getSubNode('TD').attr('align',v);
-                }
-            },
-            vAlign:{
-                ini:'middle',
-                listbox:['top','middle','bottom'],
-                action: function(v){
-                    this.getSubNode('TD').attr('valign',v);
-                }
-            },
-            value:false,
-            type:{
-                ini:'normal',
-                listbox:['normal','status','drop'],
-                action:function(value){
-                    var self=this,
-                        root=self.getRoot(),
-                        tdr=self.getSubNode('TDR'),
-                        drop=self.getClass('DROP');
-                    if(value=='drop')
-                        tdr.addClass(drop);
-                    else
-                        tdr.removeClass(drop);
-                    self.box._onresize(self);
-                }
-            },
-            width:120,
-            height:22,
-            _customBorder:'BORDER',
-            border:true
-        },
-        _ensureValue:function(profile,value){
-            if(profile.properties.type=="status")
-                return !!value;
-            else
-                return value;
-        },
-        _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile);
-            data.dropCls = data.type=='drop'?profile.getClass('DROP'):'';
-            return data;
-        },
-        RenderTrigger:function(){
-            var self=this,p = self.properties, o=self.boxing();
-            //set value later
-            if(p.type=='status' && p.value)
-                o.setValue(true, true, 'render');
-        },
-        EventHandlers:{
-            onClick:function(profile, e, src, value){},
-            onClickDrop:function(profile, e, src){},
-            onChecked:function(profile, e, value){}
-        }
-    }
-});
 Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         // compitable
@@ -27674,6 +27155,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 text:'{labelCaption}'
             },
             BOX:{
+                className:'xui-ui-input',
                 WRAP:{
                     tagName : 'div',
                     INPUT:{
@@ -27727,10 +27209,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 position:'absolute',
-                'background-image':xui.UI.$bg('inputbg.gif', '','Input'),
-                'background-repeat':'repeat-x',
                 'background-color':'#fff',
                 'border':'solid 1px #B5B8C8',
+                'border-radius': '3px',
                 'z-index':10
             },
             'BOX-focus, BOX-mouseover':{
@@ -27770,91 +27251,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 'background-position':'left -244px',
                 'z-index':'50'
             },
-            //border<<<
             '.setting-xui-input':{
                 'border-style':'solid',
                 'border-top-width':'1px',
                 'border-bottom-width':'1px',
                 'border-left-width':'1px',
                 'border-right-width':'1px'
-            },
-            'KEY-b-t':{
-                height:'2px',
-                top:'-1px',
-                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top'
-            },
-            'KEY-b-b':{
-                height:'2px',
-                bottom:'-1px',
-                'background-image':xui.UI.$bg('vertical.gif', '','Input'),
-                'background-repeat':'repeat-x',
-                'background-position':'left bottom'
-            },
-            'BOX-focus KEY-b-t, BOX-focus KEY-b-b, BOX-mouseover KEY-b-t, BOX-mouseover KEY-b-b':{
-                $order:1,
-                'background-image':xui.UI.$bg('vertical_mouseover.gif','','Input')
-            },
-            'KEY-b-l':{
-                width:'2px',
-                left:'-1px',
-                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
-                'background-repeat':'repeat-y',
-                'background-position':'left top'
-            },
-            'KEY-b-r':{
-               width:'2px',
-               right:'-1px',
-                'background-image':xui.UI.$bg('horizontal.gif', '','Input'),
-                'background-repeat':'repeat-y',
-                'background-position':'right top'
-            },
-            'BOX-focus KEY-b-l, BOX-focus KEY-b-r, BOX-mouseover KEY-b-l, BOX-mouseover KEY-b-r':{
-                $order:1,
-                'background-image': xui.UI.$bg('horizontal_mouseover.gif','','Input')
-            },
-            'KEY-b-lt':{
-                width:'2px',
-                height:'2px',
-               left:'-1px',
-               top:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'left top'
-            },
-            'KEY-b-rt':{
-               width:'2px',
-               height:'2px',
-               right:'-1px',
-               top:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'right top'
-            },
-            'KEY-b-rb':{
-                width:'2px',
-                height:'2px',
-                right:'-1px',
-                bottom:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'right bottom'
-            },
-            'KEY-b-lb':{
-                width:'2px',
-                height:'2px',
-                left:'-1px',
-                bottom:'-1px',
-                'background-image':xui.UI.$bg('corner.gif', '','Input'),
-                'background-repeat':'no-repeat',
-                'background-position':'left bottom'
-            },
-            'BOX-focus KEY-b-lt, BOX-focus KEY-b-rt, BOX-focus KEY-b-rb, BOX-focus KEY-b-lb, BOX-mouseover KEY-b-lt, BOX-mouseover KEY-b-rt, BOX-mouseover KEY-b-rb, BOX-mouseover KEY-b-lb':{
-                $order:1,
-                'background-image': xui.UI.$bg('corner_mouseover.gif','','Input')
             }
-            //border>>>
         },
         Behaviors:{
             HoverEffected:{BOX:['BOX']},
@@ -28504,62 +27907,62 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             });
         },
         _onresize:function(profile,width,height){
-                var $hborder=1, $vborder=1,
-                    toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
-                    loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
-                    roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
+            var $hborder=1, $vborder=1,
+                toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
+                loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
+                roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
 
-                var t = profile.properties,
-                    o = profile.getSubNode('BOX'),
+            var t = profile.properties,
+                o = profile.getSubNode('BOX'),
 
-                    label = profile.getSubNode('LABEL'),
-                    labelSize=t.labelSize||0,
-                    labelGap=t.labelGap||0,
-                    labelPos=t.labelPos || 'left',
+                label = profile.getSubNode('LABEL'),
+                labelSize=t.labelSize||0,
+                labelGap=t.labelGap||0,
+                labelPos=t.labelPos || 'left',
 
-                    v1=profile.getSubNode('INPUT'),
-                    ww=width,
-                    hh=height,
-                    left=Math.max(0, (t.$b_lw||0)-$hborder),
-                    top=Math.max(0, (t.$b_tw||0)-$vborder);
-                if(null!==ww){
-                    ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
-                    /*for ie6 bug*/
-                    /*for example, if single number, 100% width will add 1*/
-                    /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
-                }
-                if(null!==hh){
-                    hh -=Math.max($vborder*2, (t.$b_lw||0) + (t.$b_rw||0));
-
-                    if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
-                    /*for ie6 bug*/
-                    if(xui.browser.ie6&&null===width)o.ieRemedy();
-                }
-
-                o.cssRegion({
-                    left:left + (labelPos=='left'?labelSize:0),
-                    top:top + (labelPos=='top'?labelSize:0),
-                    width:ww===null?null:Math.max(0,(ww - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
-                    height:hh===null?null:Math.max(0,(hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
-                });
-                
-                if(labelSize)
-                    label.cssRegion({
-                        left:ww===null?null:Math.max(0,labelPos=='right'?(ww-labelSize+labelGap):0),
-                        top: height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                        width:ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),
-                        height:height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
-                    });
-
-                if(ww||hh)
-                    v1.cssSize({
-                        width:ww?Math.max(0,(ww-loff-roff-((labelPos=='left'||labelPos=='right')?labelSize:0))):null,
-                        height:hh?Math.max(0,(hh-toff-((labelPos=='top'||labelPos=='bottom')?labelSize:0))):null
-                    });
-
+                v1=profile.getSubNode('INPUT'),
+                ww=width,
+                hh=height,
+                left=Math.max(0, (t.$b_lw||0)-$hborder),
+                top=Math.max(0, (t.$b_tw||0)-$vborder);
+            if(null!==ww){
+                ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
                 /*for ie6 bug*/
-                if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
+                /*for example, if single number, 100% width will add 1*/
+                /*for example, if single number, attached shadow will overlap*/
+                if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
+            }
+            if(null!==hh){
+                hh -=Math.max($vborder*2, (t.$b_lw||0) + (t.$b_rw||0));
+
+                if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
+                /*for ie6 bug*/
+                if(xui.browser.ie6&&null===width)o.ieRemedy();
+            }
+
+            o.cssRegion({
+                left:left + (labelPos=='left'?labelSize:0),
+                top:top + (labelPos=='top'?labelSize:0),
+                width:ww===null?null:Math.max(0,(ww - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
+                height:hh===null?null:Math.max(0,(hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+            });
+            
+            if(labelSize)
+                label.cssRegion({
+                    left:ww===null?null:Math.max(0,labelPos=='right'?(ww-labelSize+labelGap):0),
+                    top: height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
+                    width:ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),
+                    height:height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                });
+
+            if(ww||hh)
+                v1.cssSize({
+                    width:ww?Math.max(0,(ww-loff-roff-((labelPos=='left'||labelPos=='right')?labelSize:0))):null,
+                    height:hh?Math.max(0,(hh-toff-((labelPos=='top'||labelPos=='bottom')?labelSize:0))):null
+                });
+
+            /*for ie6 bug*/
+            if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
         }
     }
 });Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
@@ -30187,15 +29590,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     },
     /*Initialize*/
     Initialize:function(){
-        this.addTemplateKeys(['FILE','BTN','TOP','MID','RBTN','R1','R1T','R1B','R2','R2T','R2B']);
+        this.addTemplateKeys(['FILE','BTN','MID','RBTN','R1','R1B','R2','R2B']);
         //modify default template for shell
         var t = this.getTemplate();
         _.merge(t.FRAME.BORDER,{
             SBTN:{
                 $order:50,
-                className:'xui-ui-unselectable',
+                tagName:'button',
+                className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
-                STOP:{},
                 SMID:{
                     className:"{_commandCls} {btncls}"
                 }
@@ -30399,10 +29802,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
                 $order:4,
-                'background-image':xui.UI.$bg('inputbgb.gif', '',"Input"),
-                'background-repeat':'repeat-x',
-                'background-position':'left bottom',
-                'background-color':'#fff'
+                // for IE6789
+                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                background_1: "linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_2: "-webkit-gradient(linear, 0% 50%, 0% 100%, from(#FFF), to(#EEE))",
+                background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)"
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -30418,16 +29823,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:2,
                 'z-index':'6'
             },
-            'SBTN,BTN,R1,R2':{
-                'margin-top':'2px'
-            },
-            'R1, R2, BTN, SBTN, STOP, TOP, R1T, R2T, R1B, R2B, SMID,MID':{
-                'background-image': xui.UI.$bg('bg.gif')
-            },
-            'SBTN, BTN':{
-                $order:1,
-                'background-position':'left bottom'
-            },
             'R1,R2':{
                 $order:1,
                 display:'block',
@@ -30436,44 +29831,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 width:'16px',
                 position:'absolute',
-                height:'50%',
-                'background-position':'left bottom',
-                'margin-top':'2px'
+                height:'50%'
             },
+            'R1B, R2B, SMID, MID':{
+                'background-image': xui.UI.$bg('bg.gif')                
+            },            
             R1:{
                 top:0
             },
             R2:{
-                bottom:'-2px'
-            },
-
-            'BTN-mouseover, SBTN-mouseover, R1-mouseover, R2-mouseover':{
-                $order:2,
-                'background-position': '-16px bottom'
-            },
-            'BTN-mousedown, SBTN-mousedown, R1-mousedown, R2-mousedown':{
-                $order:3,
-                'background-position': '-32px bottom'
-            },
-            'STOP, TOP, R1T, R2T':{
-                $order:1,
-                cursor:'pointer',
-                width:'16px',
-                'font-size':0,
-                'line-height':0,
-                position:'absolute',
-                top:'-2px',
-                left:0,
-                height:'4px',
-                'background-position':'left -104px'
-            },
-            'BTN-mouseover TOP,SBTN-mouseover STOP, R1-mouseover R1T, R2-mouseover R2T':{
-                $order:2,
-                'background-position': '-16px -104px'
-            },
-            'BTN-mousedown TOP,SBTN-mousedown STOP, R1-mousedown R1T, R2-mousedown R2T':{
-                $order:3,
-                'background-position': '-32px -104px'
+                bottom:0
             },
             'R1B,R2B':{
                 cursor:'pointer',
@@ -30545,8 +29912,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
         _objectProp:{popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
-            HoverEffected:{BOX:'BOX',BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
-            ClickEffected:{BTN:'BTN',SBTN:'SBTN',R1:'R1',R2:'R2'},
+            HoverEffected:{BOX:'BOX'},
             FILE:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
@@ -31068,11 +30434,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-ui-unselectable',
                         style:"{rDisplay}",
                         R1:{
-                            R1T:{},
+                            tagName:'button',
+                            className:'xui-ui-btn',
                             R1B:{}
                         },
                         R2:{
-                            R2T:{},
+                            tagName:'button',
+                            className:'xui-ui-btn',
                             R2B:{}
                         }
                     };
@@ -31094,9 +30462,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 default:
                     t.BTN={
                         $order:20,
-                        className:'xui-ui-unselectable',
+                        tagName:'button',
+                        className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
-                        TOP:{},
                         MID:{
                             style:'{_btnStyle}'
                         }
@@ -31261,29 +30629,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             iL += (iW||0) + $hborder*2;
             if(functionbtn){
                 if(iH2!==null)
-                    functionbtn.style.height=Math.max(0,iH2-2) + px;
+                    functionbtn.style.height=Math.max(0,iH2) + px;
                 if(iW!==null)
                     functionbtn.style.left=iL + px;
                 functionbtn.style.top=iT + px;
 
                if(iH2!==null && t.type=='spin'){
                     if(iH2/2-2>0){
-                        f('R1').style.height=(iH2/2-2)+px;
-                        f('R2').style.height=(iH2/2-2)+px;
+                        f('R1').style.height=(iH2/2)+px;
+                        f('R2').style.height=(iH2/2)+px;
                     }
                 }
                 iL += bw1;
             }
             if(commandbtn){
                 if(iH2!==null)
-                    commandbtn.style.height=Math.max(0,iH2-2) + px;
+                    commandbtn.style.height=Math.max(0,iH2) + px;
                 if(iW!==null)
                     commandbtn.style.left=iL + px;
                 commandbtn.style.top=iT + px;
             }
 
             /*for ie6 bug*/
-            if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie){
+            if((profile.$shadow||profile.$resizer) && xui.browser.ie){
                 o.ieRemedy();
             }
 
@@ -36562,7 +35930,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 top:'1px',
                 width:'15px',
                 'z-index':'10',
-                'font-size':'18px',
+                'font-size':'13pt',
                 'text-align':'center',
                 color:'#888888',
                 border:'solid 1px #888888'
@@ -36578,7 +35946,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             DROP:{
                 right:0,
-                'font-size':'8pt'
+                'font-size':'12px'
             },
 
             ITEMS:{
@@ -43785,7 +43153,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 COLLIST:{
                     tagName:'div',
-                    className:"xui-uiborder-rb"
+                    className:"xui-uiborder-r xui-uiborder-b",
+                    text:'&#9660'
                 },
                 ARROW:{}
             },
@@ -44307,9 +43676,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 cursor:'pointer',
                 visibility:'hidden',
-                'background-image': xui.UI.$bg('collist.gif', ''),
-                'background-repeat':'no-repeat',
-                'background-position':'center bottom'
+                'font-size':'12px',
+                color:'#888'
             },
             'BODY11, BODY12, BODY21, BODY22':{
                 overflow:'visible',

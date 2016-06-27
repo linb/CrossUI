@@ -63,7 +63,6 @@ Class('App', 'xui.Com',{
                 .setDock("top")
                 .setHeight("30")
                 .setBorderType('none')
-                .setBorder(true)
                 .setHtml('<div style="text-align:center;font-size:20px;line-height:28px;">CrossUI Code Snippets</div>')
             );
             

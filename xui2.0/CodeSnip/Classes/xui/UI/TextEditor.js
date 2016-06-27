@@ -10,7 +10,6 @@ Class('App.xui_UI_TextEditor', 'xui.Com',{
                 .setTop(60)
                 .setWidth(228)
                 .setHeight(206)
-                .setBorder(true)
                 .setValue("//tab: add 4 space\n//shift+tab: remove 4 space\n//enter: auto head spaces\n// { + enter: auto head spaces(add 4 more)\n// } : remove 4 spaces\n\nvar function(){\n    var a=2;\n}")
                 .onChange("_texteditor3_onchange")
             );
@@ -21,7 +20,6 @@ Class('App.xui_UI_TextEditor', 'xui.Com',{
                 .setTop(60)
                 .setWidth(228)
                 .setHeight(206)
-                .setBorder(true)
                 .setReadonly(true)
                 .setValue("var function(){\n    //readonly\n}")
             );
