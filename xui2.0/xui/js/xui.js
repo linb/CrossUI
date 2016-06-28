@@ -2115,46 +2115,45 @@ new function(){
 /*serialize/unserialize
 */
 new function(){
-    var
-    M ={
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
-        '\"' : '\\"',
-        '\\': '\\\\',
-        '/': '\\/',
-        '\x0B': '\\u000b'
-    },
-    H={'@window':'window','@this':'this'},
-    // A1/A2 for avoiding IE's lastIndex problem
-    A1=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/ : /[\\\"\x00-\x1f\x7f-\xff]/,
-    A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
-    D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
-    E=function(t,i,a,v,m,n,p){
-        for(i in t)
-            if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
-                m=v[8]&&v[8].charAt(0);
-                if(m!='Z')n=(m=='-'?-1:1)*((+v[9]||0)*60)+(+v[10]||0);
-                else n=0;
-                m=new Date(+v[1],+v[2]-1,+v[3],+v[4],+v[5],+v[6],+v[7]||0);
-                n+=m.getTimezoneOffset();
-                if(n)m.setTime(m.getTime()+n*60000);
-                t[i]=m;
-            }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
-        return t;
-    },
-    R=function(n){return n<10?'0'+n:n},
+    var M ={
+            '\b': '\\b',
+            '\t': '\\t',
+            '\n': '\\n',
+            '\f': '\\f',
+            '\r': '\\r',
+            '\"' : '\\"',
+            '\\': '\\\\',
+            '/': '\\/',
+            '\x0B': '\\u000b'
+        },
+        H={'@window':'window','@this':'this'},
+        // A1/A2 for avoiding IE's lastIndex problem
+        A1=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/ : /[\\\"\x00-\x1f\x7f-\xff]/,
+        A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
+        D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
+        E=function(t,i,a,v,m,n,p){
+            for(i in t)
+                if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
+                    m=v[8]&&v[8].charAt(0);
+                    if(m!='Z')n=(m=='-'?-1:1)*((+v[9]||0)*60)+(+v[10]||0);
+                    else n=0;
+                    m=new Date(+v[1],+v[2]-1,+v[3],+v[4],+v[5],+v[6],+v[7]||0);
+                    n+=m.getTimezoneOffset();
+                    if(n)m.setTime(m.getTime()+n*60000);
+                    t[i]=m;
+                }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
+            return t;
+        },
 
-    F='function',
-    N='number',
-    L='boolean',
-    S='string',
-    O='object',
-    T={},
-    MS=function(x,s){return '.'+((s=x[s]())?s<10?'00'+s:s<100?'0'+s:s:'000')},
-    Z=(function(a,b){a=-(new Date).getTimezoneOffset()/60; b=a>0?'+':'-'; a=''+Math.abs(a); return b+(a.length==1?'0':'')+a+'00'})();
+        F='function',
+        N='number',
+        L='boolean',
+        S='string',
+        O='object',
+        T={},
+        PS=function(v,n){return ("000"+(v||0)).slice(-n)},
+        Z=(function(a,b){a=-(new Date).getTimezoneOffset()/60; b=a>0?'+':'-'; a=''+Math.abs(a); return b+(a.length==1?'0':'')+a+'00'})();
+
     T['undefined']=function(){return 'null'};
     T[L]=function(x){return String(x)};
     T[N]=function(x){return ((x||x===0)&&isFinite(x))?String(x):'null'};
@@ -2174,7 +2173,7 @@ new function(){
             + '"'
     };
     T[O]=function(x,filter,dateformat,deep,max){
-        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1});
+        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1});
         deep=deep||1;
         max=max||0;
         if(deep>xui.SERIALIZEMAXLAYER||max>xui.SERIALIZEMAXSIZE)return '"too much recursion!"';
@@ -2203,22 +2202,22 @@ new function(){
                 a[2]=']';
             }else if(_.isDate(x)){
                 if(dateformat=='utc')
-                    return '"'+ x.getUTCFullYear() + '-' +
-                        R(x.getUTCMonth() + 1) + '-' +
-                         R(x.getUTCDate()) + 'T' +
-                         R(x.getUTCHours()) + ':' +
-                         R(x.getUTCMinutes()) + ':' +
-                         R(x.getUTCSeconds()) +
-                         MS(x,'getUTCMilliseconds')+
+                    return '"'+ PS(x.getUTCFullYear(),4) + '-' +
+                         PS(x.getUTCMonth() + 1,2) + '-' +
+                         PS(x.getUTCDate(),2) + 'T' +
+                         PS(x.getUTCHours(),2) + ':' +
+                         PS(x.getUTCMinutes(),2) + ':' +
+                         PS(x.getUTCSeconds(),2) + '.' +
+                         PS(x.getUTCMilliseconds(),3)+
                          'Z"';
                 else if(dateformat=='gmt')
-                    return '"'+ x.getFullYear() + '-' +
-                        R(x.getMonth() + 1) + '-' +
-                         R(x.getDate()) + 'T' +
-                         R(x.getHours()) + ':' +
-                         R(x.getMinutes()) + ':' +
-                         R(x.getSeconds()) +
-                         MS(x,'getMilliseconds')+
+                    return '"'+ PS(x.getFullYear(),4) + '-' +
+                         PS(x.getMonth() + 1,2) + '-' +
+                         PS(x.getDate(),2) + 'T' +
+                         PS(x.getHours(),2) + ':' +
+                         PS(x.getMinutes(),2) + ':' +
+                         PS(x.getSeconds(),2) + '.' +
+                         PS(x.getMilliseconds(),3)+
                          Z+'"';
                 else
                     return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
@@ -2265,12 +2264,22 @@ new function(){
     _.stringify = function(obj,filter,dateformat){
         return _.fromUTF8(_.serialize(obj,filter,dateformat));
     };
+    // for safe global
+    var safeW;
     //unserialize string to object
     _.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
         if(!str)return false;
         try{
-            str='({_:'+str+'})';
+            if(!safeW){
+                var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
+                document.body.appendChild(ifr);
+                w=frames[frames.length-1].window;
+                safeW={};
+                for(var i in w)safeW[i]=null;
+                document.body.removeChild(ifr);                
+            }
+            str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
             str=eval(str);
             if(dateformat||(xui&&xui.$dateFormat))E(str);
             str=str._;

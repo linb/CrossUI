@@ -197,7 +197,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 zoom:xui.browser.ie?1:null,
                 'margin-top':'-9px',
                 padding:0,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative',
                 overflow:'hidden',
                 border: 'solid 1px #ccc',

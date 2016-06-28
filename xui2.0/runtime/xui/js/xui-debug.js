@@ -2115,46 +2115,45 @@ new function(){
 /*serialize/unserialize
 */
 new function(){
-    var
-    M ={
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
-        '\"' : '\\"',
-        '\\': '\\\\',
-        '/': '\\/',
-        '\x0B': '\\u000b'
-    },
-    H={'@window':'window','@this':'this'},
-    // A1/A2 for avoiding IE's lastIndex problem
-    A1=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/ : /[\\\"\x00-\x1f\x7f-\xff]/,
-    A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
-    D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
-    E=function(t,i,a,v,m,n,p){
-        for(i in t)
-            if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
-                m=v[8]&&v[8].charAt(0);
-                if(m!='Z')n=(m=='-'?-1:1)*((+v[9]||0)*60)+(+v[10]||0);
-                else n=0;
-                m=new Date(+v[1],+v[2]-1,+v[3],+v[4],+v[5],+v[6],+v[7]||0);
-                n+=m.getTimezoneOffset();
-                if(n)m.setTime(m.getTime()+n*60000);
-                t[i]=m;
-            }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
-        return t;
-    },
-    R=function(n){return n<10?'0'+n:n},
+    var M ={
+            '\b': '\\b',
+            '\t': '\\t',
+            '\n': '\\n',
+            '\f': '\\f',
+            '\r': '\\r',
+            '\"' : '\\"',
+            '\\': '\\\\',
+            '/': '\\/',
+            '\x0B': '\\u000b'
+        },
+        H={'@window':'window','@this':'this'},
+        // A1/A2 for avoiding IE's lastIndex problem
+        A1=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/ : /[\\\"\x00-\x1f\x7f-\xff]/,
+        A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
+        D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
+        E=function(t,i,a,v,m,n,p){
+            for(i in t)
+                if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
+                    m=v[8]&&v[8].charAt(0);
+                    if(m!='Z')n=(m=='-'?-1:1)*((+v[9]||0)*60)+(+v[10]||0);
+                    else n=0;
+                    m=new Date(+v[1],+v[2]-1,+v[3],+v[4],+v[5],+v[6],+v[7]||0);
+                    n+=m.getTimezoneOffset();
+                    if(n)m.setTime(m.getTime()+n*60000);
+                    t[i]=m;
+                }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
+            return t;
+        },
 
-    F='function',
-    N='number',
-    L='boolean',
-    S='string',
-    O='object',
-    T={},
-    MS=function(x,s){return '.'+((s=x[s]())?s<10?'00'+s:s<100?'0'+s:s:'000')},
-    Z=(function(a,b){a=-(new Date).getTimezoneOffset()/60; b=a>0?'+':'-'; a=''+Math.abs(a); return b+(a.length==1?'0':'')+a+'00'})();
+        F='function',
+        N='number',
+        L='boolean',
+        S='string',
+        O='object',
+        T={},
+        PS=function(v,n){return ("000"+(v||0)).slice(-n)},
+        Z=(function(a,b){a=-(new Date).getTimezoneOffset()/60; b=a>0?'+':'-'; a=''+Math.abs(a); return b+(a.length==1?'0':'')+a+'00'})();
+
     T['undefined']=function(){return 'null'};
     T[L]=function(x){return String(x)};
     T[N]=function(x){return ((x||x===0)&&isFinite(x))?String(x):'null'};
@@ -2174,7 +2173,7 @@ new function(){
             + '"'
     };
     T[O]=function(x,filter,dateformat,deep,max){
-        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1});
+        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1});
         deep=deep||1;
         max=max||0;
         if(deep>xui.SERIALIZEMAXLAYER||max>xui.SERIALIZEMAXSIZE)return '"too much recursion!"';
@@ -2203,22 +2202,22 @@ new function(){
                 a[2]=']';
             }else if(_.isDate(x)){
                 if(dateformat=='utc')
-                    return '"'+ x.getUTCFullYear() + '-' +
-                        R(x.getUTCMonth() + 1) + '-' +
-                         R(x.getUTCDate()) + 'T' +
-                         R(x.getUTCHours()) + ':' +
-                         R(x.getUTCMinutes()) + ':' +
-                         R(x.getUTCSeconds()) +
-                         MS(x,'getUTCMilliseconds')+
+                    return '"'+ PS(x.getUTCFullYear(),4) + '-' +
+                         PS(x.getUTCMonth() + 1,2) + '-' +
+                         PS(x.getUTCDate(),2) + 'T' +
+                         PS(x.getUTCHours(),2) + ':' +
+                         PS(x.getUTCMinutes(),2) + ':' +
+                         PS(x.getUTCSeconds(),2) + '.' +
+                         PS(x.getUTCMilliseconds(),3)+
                          'Z"';
                 else if(dateformat=='gmt')
-                    return '"'+ x.getFullYear() + '-' +
-                        R(x.getMonth() + 1) + '-' +
-                         R(x.getDate()) + 'T' +
-                         R(x.getHours()) + ':' +
-                         R(x.getMinutes()) + ':' +
-                         R(x.getSeconds()) +
-                         MS(x,'getMilliseconds')+
+                    return '"'+ PS(x.getFullYear(),4) + '-' +
+                         PS(x.getMonth() + 1,2) + '-' +
+                         PS(x.getDate(),2) + 'T' +
+                         PS(x.getHours(),2) + ':' +
+                         PS(x.getMinutes(),2) + ':' +
+                         PS(x.getSeconds(),2) + '.' +
+                         PS(x.getMilliseconds(),3)+
                          Z+'"';
                 else
                     return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
@@ -2265,12 +2264,22 @@ new function(){
     _.stringify = function(obj,filter,dateformat){
         return _.fromUTF8(_.serialize(obj,filter,dateformat));
     };
+    // for safe global
+    var safeW;
     //unserialize string to object
     _.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
         if(!str)return false;
         try{
-            str='({_:'+str+'})';
+            if(!safeW){
+                var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
+                document.body.appendChild(ifr);
+                w=frames[frames.length-1].window;
+                safeW={};
+                for(var i in w)safeW[i]=null;
+                document.body.removeChild(ifr);                
+            }
+            str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
             str=eval(str);
             if(dateformat||(xui&&xui.$dateFormat))E(str);
             str=str._;
@@ -8394,7 +8403,7 @@ Class('xui.Event',null,{
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
-            ".xui-node-span, .xui-node-div{border:0;}"+
+            ".xui-node-span, .xui-node-div{border:0;} .xui-node-span:focus, .xui-node-div:focus{outline:0;}"+
             ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
             (b.gek
                 ? b.ver<3 
@@ -18466,6 +18475,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
+                'white-space':'nowrap',
                 
                 // for IE6
                 '*width_1':'auto',
@@ -18484,6 +18494,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-color': '#666'
             },
             ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+                $order:1,
                 background_1: 'linear-gradient(top,  #DDD,  #FFF)',
                 background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
@@ -18501,11 +18512,12 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-ui-shadow':{
                 '-moz-box-shadow': '3px 3px 4px #9f9f9f',
                 '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
-                'box-shadow': '3px 3px 4px #9f9f9f',
+                'box-shadow': '3px 3px 4px #9f9f9f'//,
+                // Igore shadow
                 /* For IE 8 */
-                '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                //'-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
                 /* For IE 5.5 - 7 */
-                'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')"
+                //'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')"
              },
             '.xui-ui-image':{
                 'vertical-align':'middle',
@@ -19130,8 +19142,8 @@ Class("xui.UI",  "xui.absObj", {
                 'border-style':'solid',
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-top-color':'#c8e1fa',
-                'border-radius':'6px 0 0 0'
+                'border-top-color':'#c8e1fa'//,
+                //'border-radius':'6px 0 0 0'
             },
             '.xui-uiborder-rt':{
                 'border-style':'solid',
@@ -19160,9 +19172,6 @@ Class("xui.UI",  "xui.absObj", {
                 'border-right-color':'#A2BBD9',
                 'border-bottom-color':'#A2BBD9'
             },
-            '.xui-uiborder-radius':{
-                'border-radius':'6px'
-            },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4',
                 'border-radius':'3px'
@@ -19178,6 +19187,10 @@ Class("xui.UI",  "xui.absObj", {
                 border:'solid 1px',
                 'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
                 'border-radius':'3px'
+            },
+            '.xui-uiborder-radius':{
+                $order:11,
+                'border-radius':'6px'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -23150,8 +23163,9 @@ new function(){
                 shadow:{
                     ini:false,
                     action: function(v){
-                        if(v) this.getSubNode('BORDER').addClass('xui-ui-shadow');
-                        else this.getSubNode('BORDER').removeClass('xui-ui-shadow');
+                        var node=(xui.browser.ie && xui.browser.ver <=8)?this.getRoot():this.getSubNode('BORDER');
+                        if(v) node.addClass('xui-ui-shadow');
+                        else node.removeClass('xui-ui-shadow');
                     }
                 },
                 //hide props
@@ -23817,7 +23831,7 @@ new function(){
             },
             Templates:{
                 tagName:'div',
-                className:'xui-nooutline {_className}',
+                className:'{_className}',
                 style:'{_style};{_panelstyle};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',
@@ -27038,7 +27052,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         _maskSpace:'_',
         Appearances:{
             KEY:{
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative'
             },
             BORDER:{
@@ -33461,7 +33474,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
+                        className:'xui-ui-btn xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -33502,7 +33515,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             ITEM:{
                 display:'block',
                 zoom:xui.browser.ie?1:null,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 position:'relative',
                 'border-radius':'3px'
@@ -35811,7 +35823,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEM:{
                 $order:0,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 'padding-right':'6px',
                 'vertical-align':'top',
@@ -36779,7 +36790,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 $order:0,
                 margin:'2px',
                 position:'relative',
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 'padding-right':'4px',
                 'vertical-align':'top',
@@ -37020,7 +37030,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         Appearances:{
             ITEM:{
                display:xui.$inlineBlock,
-               'font-family':' "Verdana", "Helvetica", "sans-serif"',
                border:0,
                padding:'4px',
                position:'relative',
@@ -37559,7 +37568,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
+                        className:'xui-ui-btn xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -37580,7 +37589,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         Appearances:{
             KEY: {
-                'font-family': 'Verdana, Helvetica, sans-serif',
                 'border':0
             },
             EXTRA:{
@@ -38158,7 +38166,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 backgroundPositionY:'',
                                 backgroundColor:'',
                                 backgroundAttachment:''
-                              });
+                              });
+
                         }else{
                             markNode.css('background','');
                         }
@@ -38295,23 +38304,25 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
+               'border-radius':'3px'
             },
             'BAR-mouseover, BAR-mousedown, BAR-checked':{
-               'background-image':xui.UI.$bg('item.gif','','List'),
-               'background-repeat':'repeat-x'
             },
             'BAR-mouseover':{
                 $order:1,
-                'background-position': 'left -51px'
+                'background-color':'#FCDD7A',
+                'border-color':'#DCB400'                
             },
             'BAR-mousedown':{
                 $order:2,
-                'background-position': 'left -101px'
+                'background-color':'#FAD200',
+                'border-color':'#DCB400'                
             },
             'BAR-checked':{
                 $order:2,
-                'background-position': 'left top'
+                'background-color':'#CBE4FC',
+                'border-color':'#AAD2FA'                
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,
@@ -38957,7 +38968,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 overflow:'visible',
                 'white-space': 'nowrap',
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 padding:'2px 20px 2px 2px',
                 outline:0
@@ -50032,7 +50042,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 zoom:xui.browser.ie?1:null,
                 'margin-top':'-9px',
                 padding:0,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative',
                 overflow:'hidden',
                 border: 'solid 1px #ccc',
@@ -50430,7 +50439,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 zoom:xui.browser.ie?1:null,
                 'margin-top':'-9px',
                 padding:0,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative',
                 overflow:'hidden',
                 border: 'solid 1px #ccc',

@@ -343,7 +343,7 @@ Class("xui.CSS", null,{
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
-            ".xui-node-span, .xui-node-div{border:0;}"+
+            ".xui-node-span, .xui-node-div{border:0;} .xui-node-span:focus, .xui-node-div:focus{outline:0;}"+
             ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
             (b.gek
                 ? b.ver<3 

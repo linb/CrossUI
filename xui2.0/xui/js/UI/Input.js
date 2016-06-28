@@ -144,7 +144,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         _maskSpace:'_',
         Appearances:{
             KEY:{
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 position:'relative'
             },
             BORDER:{

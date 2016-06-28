@@ -163,7 +163,7 @@ rem =======================
 
 set oPath=..\
 
-rem rd %oPath%%outPath% /S /Q
+rd %oPath%%outPath%xui /S /Q
 rem mkdir %oPath%%outPath%
 
 xcopy %outPath%*.* %oPath%%outPath% /E /Y

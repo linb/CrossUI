@@ -380,7 +380,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 overflow:'visible',
                 'white-space': 'nowrap',
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 padding:'2px 20px 2px 2px',
                 outline:0

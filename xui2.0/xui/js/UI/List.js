@@ -182,7 +182,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
+                        className:'xui-ui-btn xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -223,7 +223,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ITEM:{
                 display:'block',
                 zoom:xui.browser.ie?1:null,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 position:'relative',
                 'border-radius':'3px'

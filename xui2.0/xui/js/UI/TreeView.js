@@ -31,23 +31,25 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
+               'border-radius':'3px'
             },
             'BAR-mouseover, BAR-mousedown, BAR-checked':{
-               'background-image':xui.UI.$bg('item.gif','','List'),
-               'background-repeat':'repeat-x'
             },
             'BAR-mouseover':{
                 $order:1,
-                'background-position': 'left -51px'
+                'background-color':'#FCDD7A',
+                'border-color':'#DCB400'                
             },
             'BAR-mousedown':{
                 $order:2,
-                'background-position': 'left -101px'
+                'background-color':'#FAD200',
+                'border-color':'#DCB400'                
             },
             'BAR-checked':{
                 $order:2,
-                'background-position': 'left top'
+                'background-color':'#CBE4FC',
+                'border-color':'#AAD2FA'                
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,

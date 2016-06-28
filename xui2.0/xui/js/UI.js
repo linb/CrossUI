@@ -1842,6 +1842,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
+                'white-space':'nowrap',
                 
                 // for IE6
                 '*width_1':'auto',
@@ -1860,6 +1861,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-color': '#666'
             },
             ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+                $order:1,
                 background_1: 'linear-gradient(top,  #DDD,  #FFF)',
                 background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
@@ -1877,11 +1879,12 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-ui-shadow':{
                 '-moz-box-shadow': '3px 3px 4px #9f9f9f',
                 '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
-                'box-shadow': '3px 3px 4px #9f9f9f',
+                'box-shadow': '3px 3px 4px #9f9f9f'//,
+                // Igore shadow
                 /* For IE 8 */
-                '-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                //'-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
                 /* For IE 5.5 - 7 */
-                'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')"
+                //'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')"
              },
             '.xui-ui-image':{
                 'vertical-align':'middle',
@@ -2506,8 +2509,8 @@ Class("xui.UI",  "xui.absObj", {
                 'border-style':'solid',
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-top-color':'#c8e1fa',
-                'border-radius':'6px 0 0 0'
+                'border-top-color':'#c8e1fa'//,
+                //'border-radius':'6px 0 0 0'
             },
             '.xui-uiborder-rt':{
                 'border-style':'solid',
@@ -2536,9 +2539,6 @@ Class("xui.UI",  "xui.absObj", {
                 'border-right-color':'#A2BBD9',
                 'border-bottom-color':'#A2BBD9'
             },
-            '.xui-uiborder-radius':{
-                'border-radius':'6px'
-            },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4',
                 'border-radius':'3px'
@@ -2554,6 +2554,10 @@ Class("xui.UI",  "xui.absObj", {
                 border:'solid 1px',
                 'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
                 'border-radius':'3px'
+            },
+            '.xui-uiborder-radius':{
+                $order:11,
+                'border-radius':'6px'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -6526,8 +6530,9 @@ new function(){
                 shadow:{
                     ini:false,
                     action: function(v){
-                        if(v) this.getSubNode('BORDER').addClass('xui-ui-shadow');
-                        else this.getSubNode('BORDER').removeClass('xui-ui-shadow');
+                        var node=(xui.browser.ie && xui.browser.ver <=8)?this.getRoot():this.getSubNode('BORDER');
+                        if(v) node.addClass('xui-ui-shadow');
+                        else node.removeClass('xui-ui-shadow');
                     }
                 },
                 //hide props
@@ -7193,7 +7198,7 @@ new function(){
             },
             Templates:{
                 tagName:'div',
-                className:'xui-nooutline {_className}',
+                className:'{_className}',
                 style:'{_style};{_panelstyle};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',

@@ -477,7 +477,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEM:{
                 $order:0,
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 'padding-right':'6px',
                 'vertical-align':'top',

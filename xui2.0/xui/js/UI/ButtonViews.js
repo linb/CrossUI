@@ -36,7 +36,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 $order:0,
                 margin:'2px',
                 position:'relative',
-                'font-family': '"Verdana", "Helvetica", "sans-serif"',
                 cursor:'pointer',
                 'padding-right':'4px',
                 'vertical-align':'top',

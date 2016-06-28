@@ -309,7 +309,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
+                        className:'xui-ui-btn xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -330,7 +330,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         Appearances:{
             KEY: {
-                'font-family': 'Verdana, Helvetica, sans-serif',
                 'border':0
             },
             EXTRA:{
@@ -908,7 +907,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 backgroundPositionY:'',
                                 backgroundColor:'',
                                 backgroundAttachment:''
-                              });
+                              });
+
                         }else{
                             markNode.css('background','');
                         }

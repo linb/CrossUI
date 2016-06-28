@@ -381,12 +381,16 @@ html, .xui-uibg-base{
 }
 .xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
     background-image: url(List/item.gif);
+    background-repeat:repeat-x;
 }
 .xui-treeview-bar-mouseover{
+    background-position: left -51px;
 }
 .xui-treeview-bar-mousedown{
+    background-position: left -101px;
 }
 .xui-treeview-bar-checked{
+    background-position: left top;
 }
 
 /*xui.UI.Tabs*/

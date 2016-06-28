@@ -34,7 +34,6 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         Appearances:{
             ITEM:{
                display:xui.$inlineBlock,
-               'font-family':' "Verdana", "Helvetica", "sans-serif"',
                border:0,
                padding:'4px',
                position:'relative',
