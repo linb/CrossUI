@@ -62,33 +62,19 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
-                    TBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BARTR:{
-                            tagName:'tr',
-                            BARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                            },
-                            BARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                            },
-                            BARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                            }
-                        }
+                    BARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                    },
+                    BARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                    },
+                    BARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                     },
                     BARCMDL:{
+                        $order:3,
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         PRE2:{
@@ -118,6 +104,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         }
                     },
                     BARCMDR:{
+                        $order:4,
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
@@ -168,31 +155,16 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     $order:4,
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
-                    BBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BBARTR:{
-                            tagName:'tr',
-                            BBARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                            },
-                            BBARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                            },
-                            BBARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                            }
-                        }
+                    BBARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                    },
+                    BBARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                    },
+                    BBARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                     }
                 }
             }

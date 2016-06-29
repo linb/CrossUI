@@ -18465,7 +18465,8 @@ Class("xui.UI",  "xui.absObj", {
                 color: "#333",
                 'text-decoration': 'none',
                 cursor: 'pointer',
-                display: 'inline-block',
+                display:xui.$inlineBlock,
+                zoom:xui.browser.ie?1:null,
                 'text-align': 'center',
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'line-height': '1',
@@ -18478,17 +18479,17 @@ Class("xui.UI",  "xui.absObj", {
                 'white-space':'nowrap',
                 
                 // for IE6
-                '*width_1':'auto',
-                '*overflow':'visible',
-                '*width_2':1,
+                'width_1':(xui.browser.ie&&xui.browser.ver<7)?'auto':null,
+                'overflow':(xui.browser.ie&&xui.browser.ver<7)?'visible':null,
+                'width_2':(xui.browser.ie&&xui.browser.ver<7)?1:null,
 
                 background_1: "linear-gradient(top,  #FFF,  #DDD)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
                 background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
                 background_4: "-o-linear-gradient(top,  #FFF,  #DDD)",
                 // for IE6789
-                '-ms-filter': "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)",
-                "filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)"
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
@@ -18500,8 +18501,8 @@ Class("xui.UI",  "xui.absObj", {
                 background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
                 background_4: '-o-linear-gradient(top,  #DDD,  #FFF)',
                 // for IE6789
-                '-ms-filter':"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)",
-                "filter": "progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)"
+                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-input":{
                 background:'#fff',
@@ -18512,12 +18513,11 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-ui-shadow':{
                 '-moz-box-shadow': '3px 3px 4px #9f9f9f',
                 '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
-                'box-shadow': '3px 3px 4px #9f9f9f'//,
-                // Igore shadow
+                'box-shadow': '3px 3px 4px #9f9f9f',
                 /* For IE 8 */
-                //'-ms-filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')",
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')":null,
                 /* For IE 5.5 - 7 */
-                //'filter': "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')"
+                'filter': (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')":null
              },
             '.xui-ui-image':{
                 'vertical-align':'middle',
@@ -18893,32 +18893,38 @@ Class("xui.UI",  "xui.absObj", {
             },
 //uibar-top
             /*set table height for ff2, set uibar height for performance*/
-            '.xui-uibar-top, .xui-uibar-top .xui-uibar-t':{
+            '.xui-uibar-top':{
                 height:'29px'
             },
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
-                'padding-left':'4px',
+                position:'absolute',
+                width:'4px',
+                left:0,
+                top:0,
                 height:'100%'
             },
             '.xui-uibar-top .xui-uibar-tdm':{
-                $order:1
+                $order:1,
+                position:'absolute',
+                top:0,
+                left:'4px',
+                right:'4px',
+                height:'100%'
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
-                'padding-left':'4px'
-            },
-            '.xui-uibar-top-focus .xui-uibar-tdl':{
-                $order:2,
-                'padding-left':'4px',
+                position:'absolute',
+                width:'4px',
+                top:0,
+                right:0,
                 height:'100%'
             },
+            '.xui-uibar-top-focus .xui-uibar-tdl':{
+            },
             '.xui-uibar-top-focus .xui-uibar-tdm':{
-                $order:2
             },
             '.xui-uibar-top-focus .xui-uibar-tdr':{
-                $order:2,
-                'padding-left':'4px'
             },
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
@@ -18950,20 +18956,32 @@ Class("xui.UI",  "xui.absObj", {
                 'line-height':0
             },
 //uibar-bottom
-            '.xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t':{
+            '.xui-uibar-bottom':{
                 height:'12px'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
-                'padding-left':'4px',
+                position:'absolute',
+                width:'4px',
+                left:0,
+                bottom:0,
                 height:'100%'
             },
             '.xui-uibar-bottom .xui-uibar-tdm':{
-                $order:1
+                $order:1,
+                position:'absolute',
+                bottom:0,
+                left:'4px',
+                right:'4px',
+                height:'100%'                
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
-                'padding-left':'4px'
+                position:'absolute',
+                width:'4px',
+                right:0,
+                bottom:0,
+                height:'100%'
             },
 //uibar-top-s
             '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
@@ -18972,15 +18990,27 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
-                height:'100%',
-                'padding-left':'4px'
+                position:'absolute',
+                width:'4px',
+                left:0,
+                top:0,
+                height:'100%'
             },
             '.xui-uibar-top-s .xui-uibar-tdm':{
-                $order:3
+                $order:3,
+                position:'absolute',
+                top:0,
+                left:'4px',
+                right:'4px',
+                height:'100%'                
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
-                'padding-left':'4px'
+                position:'absolute',
+                width:'4px',
+                top:0,
+                right:0,
+                height:'100%'
             },
             '.xui-uibar-top-s .xui-uibar-cmdl':{
                 $order:3,
@@ -18991,21 +19021,33 @@ Class("xui.UI",  "xui.absObj", {
                 display:'none'
             },
 //uibar-bottom-s
-            '.xui-uibar-bottom-s, .xui-uibar-bottom-s .xui-uibar-t':{
+            '.xui-uibar-bottom-s':{
                 $order:3,
                 height:'6px'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
-                height:'100%',
-                'padding-left':'4px'
+                position:'absolute',
+                width:'4px',
+                left:0,
+                bottom:0,
+                height:'100%'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdm':{
-                $order:3
+                $order:3,
+                position:'absolute',
+                bottom:0,
+                left:'4px',
+                right:'4px',
+                height:'100%'                   
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
-                'padding-left':'4px'
+                position:'absolute',
+                width:'4px',
+                right:0,
+                bottom:0,
+                height:'100%'
             }
         })
         + xui.UI.buildCSSText({
@@ -19101,15 +19143,15 @@ Class("xui.UI",  "xui.absObj", {
                 'border-left-width':'1px',
                 'border-left-color':'#c8e1fa'
             },
-            '.xui-uiborder-t':{
-                'border-top-style':'solid',
-                'border-top-width':'1px',
-                'border-top-color':'#c8e1fa'
-            },
             '.xui-uiborder-r':{
                 'border-right-style':'solid',
                 'border-right-width':'1px',
                 'border-right-color':'#648cb4'
+            },
+            '.xui-uiborder-t':{
+                'border-top-style':'solid',
+                'border-top-width':'1px',
+                'border-top-color':'#c8e1fa'
             },
             '.xui-uiborder-b':{
                 'border-bottom-style':'solid',
@@ -19142,8 +19184,8 @@ Class("xui.UI",  "xui.absObj", {
                 'border-style':'solid',
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
-                'border-top-color':'#c8e1fa'//,
-                //'border-radius':'6px 0 0 0'
+                'border-top-color':'#c8e1fa',
+                'border-radius':'6px 0 0 0'
             },
             '.xui-uiborder-rt':{
                 'border-style':'solid',
@@ -23140,14 +23182,29 @@ new function(){
                 KEY:{
                     'font-size':xui.browser.ie?0:null,
                     'line-height':xui.browser.ie?0:null
+                },
+                IE67_SHADOW:{
+                    'z-index':'-1',
+                    position:'absolute',
+                    left:0,
+                    top:0,
+                    width:'100%',
+                    height:'100%',
+                    overflow:'visible'
                 }
             },
             Templates:{
                 className:'xui-uiw-shell {_className}',
                 style:'{_style}',
+
+                IE67_SHADOW:{
+                    className:'xui-uibg-bar'
+                },
                 FRAME:{
+                    $order:2,
                     className:'xui-uiw-frame ',
                     BORDER:{
+                        $order:1,
                         style:'width:{bWidth}px;height:{bHeight}px;',
                         className:'xui-uiw-border'
                     }
@@ -23163,7 +23220,7 @@ new function(){
                 shadow:{
                     ini:false,
                     action: function(v){
-                        var node=(xui.browser.ie && xui.browser.ver <=8)?this.getRoot():this.getSubNode('BORDER');
+                        var node=this.getSubNode((xui.browser.ie && xui.browser.ver <=8)?'IE67_SHADOW':'BORDER');
                         if(v) node.addClass('xui-ui-shadow');
                         else node.removeClass('xui-ui-shadow');
                     }
@@ -23185,7 +23242,7 @@ new function(){
             },
             _onresize:function(profile,width,height){
                 var t = profile.properties,
-                    o = profile.getSubNode('BORDER'),
+                    o = profile.getSubNodes(['BORDER','IE67_SHADOW']),
                     region,
                     ww=width,
                     hh=height,
@@ -23356,9 +23413,10 @@ new function(){
         },
         Static:{
             Templates:{
+                _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-wrapper xui-ui-btn {_className}',
+                className:'xui-wrapper {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -23434,14 +23492,15 @@ new function(){
             }
         },
         Static:{
-            DIRYMARKCON:"DM",
+            //for IE67 and dirtymark
+            DIRYMARKCON:"BACKGROUND",
             Templates:{
                 tagName:'button',
                 // dont set class to HTML Element
                 className:'xui-ui-unselectable xui-ui-btn {_className}',
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
-                DM:{
+                BACKGROUND:{
                 },
                 ICON:{
                     $order:1,
@@ -23453,19 +23512,24 @@ new function(){
                     text:'{caption}'
                 },
                 DROP:{
-                    $order:2,
+                    $order:3,
                     style:'{_dropCls}',
                     text:'&#9660'
                 },
-                CLEAR:{style:'clear:both;display:none;'}
+                CLEAR:{
+                    $order:4,
+                    style:'clear:both;display:none;'
+                }
             },
             Appearances:{
-                DM:{
+                //for IE67 and dirtymark
+                BACKGROUND:{
+                    'z-index':-1,
                     position:'absolute',
                     left:0,
                     top:0,
-                    width:'8px',
-                    height:'8px'
+                    width:'100%',
+                    height:'100%'
                 },
                 DROP:{
                     'vertical-align': 'middle',                    
@@ -29672,8 +29736,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
                 background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
                 // for IE6789
-                "filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
-                "-ms-filter": (xui.browser.ie&&xui.browser.ver<9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
+                "filter": (xui.browser.ie&&xui.browser.ver==9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                "-ms-filter": (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -30907,37 +30971,24 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 BAR:{
                     tagName:'div',
                     className:'{classBar}',
-                    TBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        className:'xui-uibar-t',
-                        tagName:'table',
-                        BARTR:{
-                            tagName:'tr',
-                            BARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                            },
-                            BARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                            },
-                            BARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                            }
-                        }
+                    BARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                    },
+                    BARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                    },
+                    BARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                     },
                     BARCMDL:{
+                        $order:3,
                         tagName: 'div',
                         className:'xui-uibar-cmdl'
                     },
                     BARCMDR:{
+                        $order:4,
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
@@ -31044,31 +31095,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     $order:4,
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
-                    BBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BBARTR:{
-                            tagName:'tr',
-                            BBARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                            },
-                            BBARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                            },
-                            BBARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                            }
-                        }
+                    BBARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                    },
+                    BBARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                    },
+                    BBARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                     }
                 }
             }
@@ -31911,33 +31947,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
-                    TBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        className:'xui-uibar-t',
-                        tagName:'table',
-                        BARTR:{
-                            tagName:'tr',
-                            BARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                            },
-                            BARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                            },
-                            BARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                            }
-                        }
+                    BARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                    },
+                    BARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                    },
+                    BARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                     },
                     BARCMDL:{
+                        $order:3,
                         tagName:'div',
                         className:'xui-uibar-cmdl',
                         PRE2:{
@@ -31972,6 +31994,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                     },
                     BARCMDR:{
+                        $order:4,                        
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
@@ -32061,29 +32084,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     BBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BBARTR:{
-                            tagName:'tr',
-                            BBARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                            },
-                            BBARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                            },
-                            BBARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb2'
-                            }
+                        BBARTDL:{
+                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                        },
+                        BBARTDM:{
+                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                        },
+                        BBARTDR:{
+                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                         }
                     }
                 }
@@ -32763,33 +32771,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
-                    TBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BARTR:{
-                            tagName:'tr',
-                            BARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                            },
-                            BARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                            },
-                            BARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                            }
-                        }
+                    BARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                    },
+                    BARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                    },
+                    BARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                     },
                     BARCMDL:{
+                        $order:3,
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         PRE2:{
@@ -32819,6 +32813,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                     },
                     BARCMDR:{
+                        $order:4,
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
@@ -32869,31 +32864,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     $order:4,
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
-                    BBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BBARTR:{
-                            tagName:'tr',
-                            BBARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                            },
-                            BBARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                            },
-                            BBARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                            }
-                        }
+                    BBARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                    },
+                    BBARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                    },
+                    BBARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                     }
                 }
             }
@@ -34489,34 +34469,19 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 TBAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
-                    TBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        height:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BARTR:{
-                            tagName:'tr',
-                            BARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                            },
-                            BARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                            },
-                            BARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                            }
-                        }
+                    BARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                    },
+                    BARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                    },
+                    BARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                     },
                     BARCMDL:{
+                        $order:3,
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         TOGGLE:{
@@ -34536,6 +34501,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         }
                     },
                     BARCMDR:{
+                        $order:4,
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         INFO:{
@@ -34587,31 +34553,16 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     style:"{_bbarDisplay}",
-                    BBART:{
-                        cellpadding:"0",
-                        cellspacing:"0",
-                        width:'100%',
-                        border:'0',
-                        tagName:'table',
-                        className:'xui-uibar-t',
-                        BBARTR:{
-                            tagName:'tr',
-                            BBARTDL:{
-                                tagName:'td',
-                                className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                            },
-                            BBARTDM:{
-                                $order:1,
-                                width:'100%',
-                                tagName:'td',
-                                className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                            },
-                            BBARTDR:{
-                                $order:2,
-                                tagName:'td',
-                                className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                            }
-                        }
+                    BBARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                    },
+                    BBARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                    },
+                    BBARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                     }
                 }
             }
@@ -48240,34 +48191,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             TBAR:{
                 tagName:'div',
                 className:'xui-uibar-top',
-                TBART:{
-                    cellpadding:"0",
-                    cellspacing:"0",
-                    width:'100%',
-                    border:'0',
-                    tagName:'table',
-                    className:'xui-uibar-t',
-                    TBARTR:{
-                        tagName:'tr',
-                        TBARTDL:{
-                            tagName:'td',
-                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                        },
-                        TBARTDM:{
-                            $order:1,
-                            width:'100%',
-                            tagName:'td',
-                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                        },
-                        TBARTDR:{
-                            $order:2,
-                            tagName:'td',
-                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                        }
-                    }
+                TBARTDL:{
+                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                },
+                TBARTDM:{
+                    $order:1,
+                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                },
+                TBARTDR:{
+                    $order:2,
+                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                 },
                 BARCMDL:{
-                    $order:1,
+                    $order:3,
                     tagName: 'div',
                     className:'xui-uibar-cmdl',
                     ICON:{
@@ -48282,7 +48218,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 BARCMDR:{
-                    $order:2,
+                    $order:4,
                     tagName: 'div',
                     className:'xui-uibar-cmdr',
                     INFO:{
@@ -48350,31 +48286,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 $order:3,
                 tagName:'div',
                 className:'xui-uibar-bottom',
-                BBART:{
-                    cellpadding:"0",
-                    cellspacing:"0",
-                    width:'100%',
-                    border:'0',
-                    tagName:'table',
-                    className:'xui-uibar-t',
-                    BBARTR:{
-                        tagName:'tr',
-                        BBARTDL:{
-                            tagName:'td',
-                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                        },
-                        BBARTDM:{
-                            $order:1,
-                            width:'100%',
-                            tagName:'td',
-                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                        },
-                        BBARTDR:{
-                            $order:2,
-                            tagName:'td',
-                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                        }
-                    }
+                BBARTDL:{
+                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                },
+                BBARTDM:{
+                    $order:1,
+                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                },
+                BBARTDR:{
+                    $order:2,
+                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                 }
             },
             TABSTOP2:{$order:9}

@@ -157,34 +157,19 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             TBAR:{
                 tagName:'div',
                 className:'xui-uibar-top',
-                TBART:{
-                    cellpadding:"0",
-                    cellspacing:"0",
-                    width:'100%',
-                    border:'0',
-                    tagName:'table',
-                    className:'xui-uibar-t',
-                    TBARTR:{
-                        tagName:'tr',
-                        TBARTDL:{
-                            tagName:'td',
-                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
-                        },
-                        TBARTDM:{
-                            $order:1,
-                            width:'100%',
-                            tagName:'td',
-                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
-                        },
-                        TBARTDR:{
-                            $order:2,
-                            tagName:'td',
-                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
-                        }
-                    }
+                TBARTDL:{
+                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                },
+                TBARTDM:{
+                    $order:1,
+                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                },
+                TBARTDR:{
+                    $order:2,
+                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
                 },
                 BARCMDL:{
-                    $order:1,
+                    $order:3,
                     tagName: 'div',
                     className:'xui-uibar-cmdl',
                     ICON:{
@@ -199,7 +184,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     }
                 },
                 BARCMDR:{
-                    $order:2,
+                    $order:4,
                     tagName: 'div',
                     className:'xui-uibar-cmdr',
                     INFO:{
@@ -267,31 +252,16 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 $order:3,
                 tagName:'div',
                 className:'xui-uibar-bottom',
-                BBART:{
-                    cellpadding:"0",
-                    cellspacing:"0",
-                    width:'100%',
-                    border:'0',
-                    tagName:'table',
-                    className:'xui-uibar-t',
-                    BBARTR:{
-                        tagName:'tr',
-                        BBARTDL:{
-                            tagName:'td',
-                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                        },
-                        BBARTDM:{
-                            $order:1,
-                            width:'100%',
-                            tagName:'td',
-                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                        },
-                        BBARTDR:{
-                            $order:2,
-                            tagName:'td',
-                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                        }
-                    }
+                BBARTDL:{
+                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                },
+                BBARTDM:{
+                    $order:1,
+                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                },
+                BBARTDR:{
+                    $order:2,
+                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                 }
             },
             TABSTOP2:{$order:9}

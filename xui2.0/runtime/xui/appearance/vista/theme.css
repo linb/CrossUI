@@ -170,7 +170,7 @@ html, .xui-uibg-base{
 }
 .xui-ui-btn{
     border-color:#8F8F8F;
-    -filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7F1F6', endColorstr='#2DB8E5');
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7F1F6', endColorstr='#2DB8E5');
     background: linear-gradient(top,  #E7F1F6,  #2DB8E5);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#E7F1F6), to(#2DB8E5));
     background: -moz-linear-gradient(top,  #E7F1F6,  #2DB8E5);
@@ -180,7 +180,7 @@ html, .xui-uibg-base{
     border-color:#717171;
 }
 .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked{
-    -filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2DB8E5', endColorstr='#E7F1F6');
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2DB8E5', endColorstr='#E7F1F6');
     background: linear-gradient(top,  #2DB8E5,  #E7F1F6);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#2DB8E5), to(#E7F1F6));
     background: -moz-linear-gradient(top,  #2DB8E5,  #E7F1F6);
@@ -201,93 +201,94 @@ html, .xui-uibg-base{
     background-image: url(Public/icons.gif);
 }
 /*uibar*/
-.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td{
-    background-color:transparent;
-		border:none;
-		background-image: url(Public/bar_vertical.gif);
-	  background-repeat: no-repeat;
-		background-position:  left top;
+.xui-uibar-top .xui-uibar-tdl, .xui-uibar-top .xui-uibar-tdm, .xui-uibar-top .xui-uibar-tdr, 
+.xui-uibar-top-s .xui-uibar-tdl, .xui-uibar-top-s .xui-uibar-tdm, .xui-uibar-top-s .xui-uibar-tdr, 
+.xui-uibar-bottom .xui-uibar-tdl, .xui-uibar-bottom .xui-uibar-tdm, .xui-uibar-bottom .xui-uibar-tdr,
+.xui-uibar-bottom-s .xui-uibar-tdl, .xui-uibar-bottom-s .xui-uibar-tdm, .xui-uibar-bottom-s .xui-uibar-tdr{
+    background-color: transparent;
+    border: none;
+    background-image: url(Public/bar_vertical.gif);
+    background-repeat: no-repeat;
+    background-position: left top;
 }
 .xui-uicon-main, .xui-uicon-maini{
-		border:none;
+	border:none;
 }
 /*set table height for ff2, set uibar height for performance*/
-.xui-uibar-top, .xui-uibar-top .xui-uibar-t{
+.xui-uibar-top{
     height:25px;
 }
 .xui-uibar-top .xui-uibar-tdl{
-		background-position: 0 0;
+	background-position: 0 0;
 }
 .xui-uibar-top .xui-uibar-tdm{
-		background-position: 0 -30px;
-		background-repeat: repeat-x;
+	background-position: 0 -30px;
+	background-repeat: repeat-x;
 }
 .xui-uibar-top .xui-uibar-tdr{
-		background-position: right -60px;
+	background-position: right -60px;
 }
 .xui-uibar-top-focus .xui-uibar-tdl{
-		background-position: left -90px;
+	background-position: left -90px;
 },
 .xui-uibar-top-focus .xui-uibar-tdm{
-		background-position: left -120px;
-		background-repeat: repeat-x;
+	background-position: left -120px;
+	background-repeat: repeat-x;
 }
 .xui-uibar-top-focus .xui-uibar-tdr{
-		background-position: right -150px;
+	background-position: right -150px;
 }
-
-.xui-uibar-bottom, .xui-uibar-bottom .xui-uibar-t{
-    height:6px;
-}
-.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t, .xui-uibar-bottom-s, .xui-uibar-bottom-s .xui-uibar-t{
+.xui-uibar-top-s, .xui-uibar-bottom-s{
     height:5px;
 }
 /*.xui-uibar-top .xui-uibar-cmdr{
 }*/
 .xui-uicon-main{
     background-image: url(Public/bar_horizontal.gif);
-	  background-repeat: repeat-y;
-	  background-position: -595px top;
+      background-repeat: repeat-y;
+      background-position: -595px top;
 }
 .xui-uicon-maini{
     background-image: url(Public/container_right.gif);
     background-repeat: repeat-y; 
-		background-position: right top;
+    background-position: right top;
 }
 
 
+.xui-uibar-bottom{
+    height:6px;
+}
 .xui-uibar-bottom .xui-uibar-tdl{
-		background-position: left -189px;
+	background-position: left -189px;
 }
 .xui-uibar-bottom .xui-uibar-tdm{
-		background-position: left -211px;
-		background-repeat: repeat-x;
+	background-position: left -211px;
+	background-repeat: repeat-x;
 }
 .xui-uibar-bottom .xui-uibar-tdr{
-		background-position: right -233px;
+	background-position: right -233px;
 }
 
 .xui-uibar-top-s .xui-uibar-tdl{
-		background-position: left -261px;
+	background-position: left -261px;
 },
 .xui-uibar-top-s .xui-uibar-tdm{
-		background-position: left -283px;
-		background-repeat: repeat-x;
+	background-position: left -283px;
+	background-repeat: repeat-x;
 },
 .xui-uibar-top-s .xui-uibar-tdr{
-		background-position: right -305px;
+	background-position: right -305px;
 }
 
 .xui-uibar-bottom-s .xui-uibar-tdl{
-		background-position: left -327px;
+	background-position: left -327px;
 }
 .xui-uibar-bottom-s .xui-uibar-tdm{
-		background-position: left -349px;
-		background-repeat: repeat-x;
+	background-position: left -349px;
+	background-repeat: repeat-x;
 }
 .xui-uibar-bottom-s .xui-uibar-tdr{
-		padding-left:4px;
-		background-position: right -371px;
+	background-position: right -371px;
 }
 
 /** widgets **/
