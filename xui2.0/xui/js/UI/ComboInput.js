@@ -679,11 +679,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 background_1: "linear-gradient(top,  #FFF 50%,  #EEE)",
                 background_2: "-webkit-gradient(linear, 0% 50%, 0% 100%, from(#FFF), to(#EEE))",
-                background_3: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
-                background_4: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_3: "-webkit-linear-gradient(top,  #FFF 50%,  #EEE)",           
+                background_4: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_5: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
+                background_6: "-ms-linear-gradient(top,  #FFF 50%,  #EEE)",
+
                 // for IE6789
-                "filter": (xui.browser.ie&&xui.browser.ver==9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
-                "-ms-filter": (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
+                "-ms-filter": (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
             },
             'RBTN,SBTN,BTN':{
                 display:'block',

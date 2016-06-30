@@ -373,7 +373,7 @@ Class("xui.CSS", null,{
                 (b.opr?"white-space: -o-pre-wrap;":"") + // Opera 7
                 (b.ie?"word-wrap: break-word;":"")+ // Internet Explorer 5.5+
            "}"+
-           ((b.ie && b.ver<=7)?"":(".xui-v-wrapper:before{content:'';height:100%;font-size:0;vertical-align:middle;}"+
+           ((b.ie && b.ver<=8)?"":(".xui-v-wrapper:before{content:'';height:100%;font-size:0;vertical-align:middle;}"+
            ".xui-v-wrapper > .xui-v-node{vertical-align:middle;}"+
            ".xui-v-top > .xui-v-wrapper:before{vertical-align:top;}"+
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+

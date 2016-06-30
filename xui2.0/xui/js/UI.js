@@ -1832,8 +1832,7 @@ Class("xui.UI",  "xui.absObj", {
                 color: "#333",
                 'text-decoration': 'none',
                 cursor: 'pointer',
-                display:xui.$inlineBlock,
-                zoom:xui.browser.ie?1:null,
+                display: xui.$inlineBlock,
                 'text-align': 'center',
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'line-height': '1',
@@ -1843,33 +1842,40 @@ Class("xui.UI",  "xui.absObj", {
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',
                 'white-space':'nowrap',
                 
+                zoom:xui.browser.ie?1:null,
                 // for IE6
-                'width_1':(xui.browser.ie&&xui.browser.ver<7)?'auto':null,
-                'overflow':(xui.browser.ie&&xui.browser.ver<7)?'visible':null,
-                'width_2':(xui.browser.ie&&xui.browser.ver<7)?1:null,
+                'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null,
+                'width_2':(xui.browser.ie&&xui.browser.ver<=6)?1:null,
 
                 background_1: "linear-gradient(top,  #FFF,  #DDD)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
-                background_3: "-moz-linear-gradient(top,  #FFF,  #DDD)",
-                background_4: "-o-linear-gradient(top,  #FFF,  #DDD)",
+                background_3: "-webkit-linear-gradient(top,  #FFF,  #DDD)",
+                background_4: "-moz-linear-gradient(top,  #FFF,  #DDD)",
+                background_5: "-o-linear-gradient(top,  #FFF,  #DDD)",
+                background_6: "-ms-linear-gradient(top,  #FFF,  #DDD)",
+
                 // for IE6789
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
             },
             ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
                 $order:1,
-                background_1: 'linear-gradient(top,  #DDD,  #FFF)',
-                background_2: '-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))',
-                background_3: '-moz-linear-gradient(top,  #DDD,  #FFF)',
-                background_4: '-o-linear-gradient(top,  #DDD,  #FFF)',
+                background_1: "linear-gradient(top,  #DDD,  #FFF)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))",
+                background_3: "-webkit-linear-gradient(top,  #DDD,  #FFF)",
+                background_4: "-moz-linear-gradient(top,  #DDD,  #FFF)",
+                background_5: "-o-linear-gradient(top,  #DDD,  #FFF)",
+                background_6: "-ms-linear-gradient(top,  #DDD,  #FFF)",
                 // for IE6789
                 '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-input":{
                 background:'#fff',
@@ -2277,7 +2283,8 @@ Class("xui.UI",  "xui.absObj", {
                 top:0,
                 left:'4px',
                 right:'4px',
-                height:'100%'
+                height:'100%',
+                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
@@ -2340,7 +2347,8 @@ Class("xui.UI",  "xui.absObj", {
                 bottom:0,
                 left:'4px',
                 right:'4px',
-                height:'100%'                
+                height:'100%',
+                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
@@ -2369,7 +2377,8 @@ Class("xui.UI",  "xui.absObj", {
                 top:0,
                 left:'4px',
                 right:'4px',
-                height:'100%'                
+                height:'100%',
+                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
@@ -2406,7 +2415,8 @@ Class("xui.UI",  "xui.absObj", {
                 bottom:0,
                 left:'4px',
                 right:'4px',
-                height:'100%'                   
+                height:'100%',
+                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
@@ -6900,9 +6910,8 @@ new function(){
                 },
                 DROP:{
                     'vertical-align': 'middle',                    
-                    'float': 'right',
                     'font-size':'12px',
-                    'padding-left':'4px',
+                    'padding-left':'8px',
                     color:'#888'
                 },
                 'DROP-mouseover':{

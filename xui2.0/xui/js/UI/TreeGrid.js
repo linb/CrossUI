@@ -2482,7 +2482,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'border-right':'1px solid #A2BBD9',
                 position:'relative',
                 overflow:xui.browser.ie6?'hidden':'',
-                'vertical-align':'top'
+                'vertical-align':'top',
+                display:xui.$inlineBlock
             },
             "LHCELL, LCELL":{
                 height:'100%',
