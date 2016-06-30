@@ -1022,7 +1022,7 @@ Class('xui.Dom','xui.absBox',{
 //                if(style.display=='none')style.display='';
 
                 //ie6 bug
-              /*  if(xui.browser.ie6){
+              /*  if(xui.browser.ie&&xui.browser.ver<=6){
                     t=style.wordWrap=='normal';
                     _.asyRun(function(){
                         style.wordWrap=t?'break-word':'normal'
@@ -1534,7 +1534,7 @@ Class('xui.Dom','xui.absBox',{
                     ns.css('display','-moz-inline-block').css('display','-moz-inline-box').css('display','inline-block');
                 else
                     ns.css('display','inline-block');
-            }else if(xui.browser.ie6)
+            }else if(xui.browser.ie&&xui.browser.ver<=6)
                 ns.css('display','inline-block').css({display:'inline',zoom:'1'});
             else
                 ns.css('display','inline-block');
@@ -2125,7 +2125,7 @@ type:4
         },
         //IE not trigger dimension change, when change height only in overflow=visible.
         ieRemedy:function(){
-            if(xui.browser.ie6){
+            if(xui.browser.ie&&xui.browser.ver<=6){
                 var a1=this.get(),a2=[],a3=[],l=a1.length;
                 //_.asyRun(function(){                    
                     for(var i=0;i<l;i++){
@@ -2188,7 +2188,7 @@ type:4
         },
         //for ie6
         fixPng:function(n){
-            if(xui.browser.ie6){
+            if(xui.browser.ie&&xui.browser.ver<=6){
                 if(n.nodeName=='IMG' && n.src.toLowerCase().search(/\.png$/) != -1){
                     n.style.height = n.height;
                     n.style.width = n.width;
@@ -3891,7 +3891,7 @@ type:4
             ? xui.browser.ver<3
                 ? ['-moz-inline-block', '-moz-inline-box','inline-block']
                 : 'inline-block'
-            : xui.browser.ie6
+            : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
                 : 'inline-block',
         //hot keys

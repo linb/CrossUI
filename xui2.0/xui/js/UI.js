@@ -2284,7 +2284,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'4px',
                 right:'4px',
                 height:'100%',
-                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
@@ -2348,7 +2348,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'4px',
                 right:'4px',
                 height:'100%',
-                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
@@ -2378,7 +2378,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'4px',
                 right:'4px',
                 height:'100%',
-                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
@@ -2416,7 +2416,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'4px',
                 right:'4px',
                 height:'100%',
-                width: xui.browser.ie6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
@@ -2456,7 +2456,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiw-shell':{
                 background:'transparent',
                 display:xui.$inlineBlock,
-                zoom:xui.browser.ie6?1:null,
+                zoom:xui.browser.ie&&xui.browser.ver<=6?1:null,
                 //overflow:'hidden',
                 /*opera must be 0 not 'none'*/
                 border:0,
@@ -3787,7 +3787,7 @@ Class("xui.UI",  "xui.absObj", {
                                 if(!r2.test(i)){
                                     arr[arr.length]=i;
                                     o=hash[i];
-                                    if(typeof o == 'object'){
+                                    if(o && typeof o == 'object'){
                                         tagNames[i]=o.tagName||'';
                                         arguments.callee(o, arr, tagNames);
                                     }
@@ -4616,7 +4616,7 @@ Class("xui.UI",  "xui.absObj", {
                 inMatrix='$inMatrix',
                 f,t,isWin,
                 //for ie6 1px bug
-                _adjust=function(v){return xui.browser.ie6?v-v%2:v}
+                _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v}
 
             if(isSVG){
                 var bbox=ins._getBBox();
@@ -6560,7 +6560,7 @@ new function(){
                     'font-size':xui.browser.ie?0:null,
                     'line-height':xui.browser.ie?0:null
                 },
-                IE67_SHADOW:{
+                IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
                     'z-index':'-1',
                     position:'absolute',
                     left:0,
@@ -6568,15 +6568,15 @@ new function(){
                     width:'100%',
                     height:'100%',
                     overflow:'visible'
-                }
+                }:null
             },
             Templates:{
                 className:'xui-uiw-shell {_className}',
                 style:'{_style}',
 
-                IE67_SHADOW:{
+                IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
                     className:'xui-uibg-bar'
-                },
+                }:null,
                 FRAME:{
                     $order:2,
                     className:'xui-uiw-frame ',
@@ -6597,9 +6597,15 @@ new function(){
                 shadow:{
                     ini:false,
                     action: function(v){
-                        var node=this.getSubNode((xui.browser.ie && xui.browser.ver <=8)?'IE67_SHADOW':'BORDER');
-                        if(v) node.addClass('xui-ui-shadow');
-                        else node.removeClass('xui-ui-shadow');
+                        if(xui.browser.ie && xui.browser.ver <=8){
+                            var node=this.getSubNode('IE67_SHADOW');
+                            if(v) node.addClass('xui-ui-shadow xui-uiborder-rb');
+                            else node.removeClass('xui-ui-shadow xui-uiborder-rb');
+                        }else{
+                            var node=this.getSubNode('BORDER');
+                            if(v) node.addClass('xui-ui-shadow');
+                            else node.removeClass('xui-ui-shadow');
+                        }
                     }
                 },
                 //hide props
@@ -6619,7 +6625,8 @@ new function(){
             },
             _onresize:function(profile,width,height){
                 var t = profile.properties,
-                    o = profile.getSubNodes(['BORDER','IE67_SHADOW']),
+                    o = profile.getSubNode('BORDER'),
+                    sd = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                     region,
                     ww=width,
                     hh=height,
@@ -6630,21 +6637,27 @@ new function(){
                     /*for ie6 bug*/
                     /*for example, if single number, 100% width will add 1*/
                     /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(parseInt(ww/2,10))*2;
                 }
                 if(hh&&'auto'!==hh){
                     hh -=Math.max((t.$vborder||0)*2, (t.$b_lw||0) + (t.$b_rw||0));
 
-                    if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(parseInt(hh/2,10))*2;
                     /*for ie6 bug*/
-                    if(xui.browser.ie6&&null===width)o.ieRemedy();
+                    if(xui.browser.ie&&xui.browser.ver<=6&&null===width){
+                        o.ieRemedy();
+                        if(sd)sd.ieRemedy();
+                    }
                 }
                 region={left:left,top:top,width:ww,height:hh};
                 o.cssRegion(region);
+                if(sd)sd.cssRegion(region);
 
                 /*for ie6 bug*/
-                if((profile.$resizer) && xui.browser.ie)o.ieRemedy();
-
+                if((profile.$resizer) && xui.browser.ie){
+                    o.ieRemedy();
+                    if(sd)sd.ieRemedy();
+                }
                 return region;
             }
         }

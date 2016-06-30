@@ -1373,7 +1373,9 @@ if(xui.browser.ie){
             }
 
             if(width)
-                isize.width=size.width-(parseInt(v6.css('paddingRight'),10)||0)-(parseInt(v5.css('paddingLeft'),10)||0);
+                isize.width=size.width
+                    - (parseInt(v6.css('paddingRight'),10)||0)  - (parseInt(v6.css('borderRightWidth'),10)||0)
+                    - (parseInt(v5.css('paddingLeft'),10)||0) - (parseInt(v5.css('borderLeftWidth'),10)||0);
             v2.cssSize(isize, true);
         }
     }
