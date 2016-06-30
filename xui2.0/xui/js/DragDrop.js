@@ -249,7 +249,7 @@ Class('xui.DragDrop',null,{
                 dragCursor:'move',
                 targetReposition:true,
 
-                dragIcon:xui.ini.path+'ondrag.gif',
+                dragIcon:xui.ini.path+'appearance/ondrag.gif',
                 magneticDistance:0,
                 xMagneticLines:[],
                 yMagneticLines:[],

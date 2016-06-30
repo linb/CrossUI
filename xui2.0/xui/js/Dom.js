@@ -2245,7 +2245,6 @@ type:4
                     a[a.length]=t;
             return a.length<=1?a:this._unique(a);
         },
-        _scrollBarSize:0,
         _getClass:function(o){
             return (typeof o.className=="string"&&o.className)
             || (typeof o.className.baseVal=="string"&&o.className.baseVal)
@@ -2261,6 +2260,7 @@ type:4
                 o.setAttribute(v);
             }
         },
+        _scrollBarSize:0,
         getScrollBarSize: function(force){
             var ns=this;
             if(force||!ns._scrollBarSize){
@@ -3885,6 +3885,15 @@ type:4
         xui.doc=xui(['!document'],false);
         xui.busy=xui.Dom.busy;
         xui.free=xui.Dom.free;
+
+        // support data uri?
+        var data = new Image();
+        data.onload = data.onerror = function(){
+            if(this.width != 1 || this.height != 1){
+                document.documentElement.className += " xui-nodatauri";
+            }
+        }
+        data.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
 
         xui.$inlineBlock=xui.browser.gek

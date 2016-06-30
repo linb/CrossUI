@@ -1765,11 +1765,11 @@ new function(){
     }
     _.merge(ini,{
         appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
-        img_bg: ini.path+'bg.gif',
-        img_busy: ini.path+'busy.gif',
-        img_icon: ini.path+'icon.png',
-        img_pic: ini.path+'picture.png',
-        img_blank:b.ie&&b.ver<=7?(ini.path+'bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+        img_bg: ini.path+'appearance/bg.gif',
+        img_busy: ini.path+'appearance/busy.gif',
+        img_icon: ini.path+'appearance/icon.png',
+        img_pic: ini.path+'appearance/picture.png',
+        img_blank:b.ie&&b.ver<=7?(ini.path+'appearance/bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
     },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';

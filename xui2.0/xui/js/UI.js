@@ -2851,16 +2851,20 @@ Class("xui.UI",  "xui.absObj", {
             if(arr && arr[0])return arr.pop();
             return this._ctrlId.next();
         },
-        $bg:function(path, paras, forceKey){
+        $bg:function(path, paras, forceKey, root){
             return function(key){
-                var p=xui.ini.path + 'appearance/default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" + path;
+                var p=xui.ini.path +
+                        (root?'appearance/':('appearance/default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" )) +
+                        path;
                 //_.asyRun(function(){new Image().src=p;});
                 return 'url(' + p +') '+ (paras||'');
             }
         },
-        $ieBg:function(path,  forceKey){
+        $ieBg:function(path,  forceKey, root){
             return function(key){
-                var p=xui.ini.path + 'appearance/default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" + path;
+                var p=xui.ini.path +
+                        (root?'appearance/':('default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" )) +
+                        path;
                 //_.asyRun(function(){new Image().src=p;});
                 return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+p+'",sizingMethod="crop")';
             }

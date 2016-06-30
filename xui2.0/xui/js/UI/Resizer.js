@@ -179,7 +179,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 'line-height':0,
 
                 //for ie
-                background: (xui.browser.ie&&!xui.browser.newie)?('url('+xui.ini.path+'bg.gif)'):'',
+                background: (xui.browser.ie&&!xui.browser.newie)?('url('+xui.ini.img_bg+')'):'',
                 /*for get top Index, when it's static*/
                 'z-index':60,
                 cursor:'move'
