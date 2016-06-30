@@ -41,7 +41,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 cls._updateDftTip(profile);
                 //dont update adv UI again, if adv value is the newest
                 if(p.advance && profile.$hexinadv != hexs){
-                    cls._updateMarks(profile, value, true, hsv[0]);
+                    profile._ColorWheel.color("#"+hexs);
                     delete profile.$hexinadv;
                 }
                 //from setUIValue/setValue
@@ -161,23 +161,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                             ADV:{
                                 $order:2,
                                 style:'{advDispay}',
-                                tagName:'div',
-                                ADVWHEEL:{
-                                    $order:0,
-                                    tagName:'div'
-                                },
-                                ADVCLR:{
-                                    $order:1,
-                                    tagName:'div'
-                                },
-                                ADVMARK1:{
-                                    $order:3,
-                                    tagName:'div'
-                                },
-                                ADVMARK2:{
-                                    $order:4,
-                                    tagName:'div'
-                                }
+                                tagName:'div'
                             }
                         }
                     }
@@ -224,6 +208,199 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 }
             }
         });
+
+        {
+            var ColorWheel = function (x, y, size, initcolor, element) {
+                size = size || 200;
+                var pi = Math.PI,
+                    w3 = 3 * size / 200,
+                    w1 = size / 200,
+                    fi = 1.6180339887,
+                    segments = pi * size / 5,
+                    size20 = size / 20,
+                    size2 = size / 2,
+                    padding = 2 * size / 200,
+                    t = this;
+
+                var H = 1, S = 1, B = 1, s = size - (size20 * 4);
+                var r = element ? Raphael(element, size, size) : Raphael(x, y, size, size),
+                    xy = s / 6 + size20 * 2 + padding,
+                    wh = s * 2 / 3 - padding * 2;
+                w1 < 2 && (w1 = 2);
+                w3 < 2 && (w3 = 2);
+
+
+                // ring drawing
+                var a = pi / 2 - pi * 2 / segments * 1.3,
+                    R = size2 - padding,
+                    R2 = size2 - padding - size20 * 2,
+                    path = ["M", size2, padding, "A", R, R, 0, 0, 1, R * Math.cos(a) + R + padding, R - R * Math.sin(a) + padding, "L", R2 * Math.cos(a) + R + padding, R - R2 * Math.sin(a) + padding, "A", R2, R2, 0, 0, 0, size2, padding + size20 * 2, "z"].join();
+                for (var i = 0; i < segments; i++) {
+                    r.path(path).attr({
+                        stroke: "none",
+                        fill: "hsb(" + i * (255 / segments) / 255 + ", 1, 0.78)",
+                        transform: "r" + [(360 / segments) * i, size2, size2]
+                    });
+                }
+
+                t.cursorhsb = r.set();
+                var h = size20 * 2 + 2;
+                t.cursorhsb.push(r.rect(size2 - h / fi / 2, padding - 1, h / fi, h, 3 * size / 200).attr({
+                    stroke: "#000",
+                    opacity: .5,
+                    "stroke-width": w3
+                }));
+                t.cursorhsb.push(t.cursorhsb[0].clone().attr({
+                    stroke: "#fff",
+                    opacity: 1,
+                    "stroke-width": w1
+                }));
+                t.ring = r.path(["M", size2, padding, "A", R, R, 0, 1, 1, size2 - 1, padding, "l1,0M", size2, padding + size20 * 2, "A", R2, R2, 0, 1, 1, size2 - 1, padding + size20 * 2, "l1,0"]).attr({
+                    fill: "#000",
+                    opacity: 0,
+                    stroke: "none"
+                });
+
+                // rect drawing
+                t.main = r.rect(xy, xy, wh, wh).attr({
+                    stroke: "none",
+                    fill: "#f00",
+                    opacity: 1
+                });
+                t.main.clone().attr({
+                    stroke: "none",
+                    fill: "0-#fff-#fff",
+                    opacity: 0
+                });
+                t.square = r.rect(xy - 1, xy - 1, wh + 2, wh + 2).attr({
+                    r: 2,
+                    stroke: "#fff",
+                    "stroke-width": w3,
+                    fill: "90-#000-#000",
+                    opacity: 0,
+                    cursor: "crosshair"
+                });
+                t.cursor = r.set();
+                t.cursor.push(r.circle(size2, size2, size20 / 2).attr({
+                    stroke: "#000",
+                    opacity: .5,
+                    "stroke-width": w3
+                }));
+                t.cursor.push(t.cursor[0].clone().attr({
+                    stroke: "#fff",
+                    opacity: 1,
+                    "stroke-width": w1
+                }));
+                t.H = t.S = t.B = 1;
+                t.raphael = r;
+                t.size2 = size2;
+                t.wh = wh;
+                t.x = x;
+                t.xy = xy;
+                t.y = y;
+
+                // events
+                t.ring.drag(function (dx, dy, x, y) {
+                    t.docOnMove(dx, dy, x, y);
+                }, function (x, y) {
+                    t.hsbOnTheMove = true;
+                    t.xx=t.x;
+                    t.yy=t.y;
+                    if(element){
+                        var pos=t.getOffset(element);
+                        t.xx += pos.x;
+                        t.yy += pos.y;
+                    }
+                    t.setH(x - t.xx - t.size2, y - t.yy - t.size2);
+                }, function () {
+                    t.hsbOnTheMove = false;
+                });
+                t.square.drag(function (dx, dy, x, y) {
+                    t.docOnMove(dx, dy, x, y);
+                }, function (x, y) {
+                    t.clrOnTheMove = true;
+                    t.xx=t.x;
+                    t.yy=t.y;
+                    if(element){
+                        var pos=t.getOffset(element);
+                        t.xx += pos.x;
+                        t.yy += pos.y;
+                    }
+                    t.setSB(x - t.xx, y - t.yy);
+                }, function () {
+                    t.clrOnTheMove = false;
+                });
+
+                t.color(initcolor || "#f00");
+            },
+            proto = ColorWheel.prototype;
+
+            proto.setH = function (x, y) {
+                var d = Raphael.angle(x, y, 0, 0),
+                    rd = Raphael.rad(d);
+                this.cursorhsb.attr({transform: "r" + [d + 90, this.size2, this.size2]});
+                this.H = (d + 90) / 360;
+                this.main.attr({fill: "hsb(" + this.H + ",1,1)"});
+                this.onchange && this.onchange(this.color());
+            };
+            proto.setSB = function (x, y) {
+                var me = this;
+                x < me.size2 - me.wh / 2 && (x = me.size2 - me.wh / 2);
+                x > me.size2 + me.wh / 2 && (x = me.size2 + me.wh / 2);
+                y < me.size2 - me.wh / 2 && (y = me.size2 - me.wh / 2);
+                y > me.size2 + me.wh / 2 && (y = me.size2 + me.wh / 2);
+                me.cursor.attr({cx: x, cy: y});
+                me.B = 1 - (y - me.xy) / me.wh;
+                me.S = (x - me.xy) / me.wh;
+                me.onchange && me.onchange(me.color());
+            };
+            proto.docOnMove = function (dx, dy, x, y) {
+                if (this.hsbOnTheMove) {
+                    this.setH(x - this.xx - this.size2, y - this.yy - this.size2);
+                }
+                if (this.clrOnTheMove) {
+                    this.setSB(x - this.xx, y - this.yy);
+                }
+            };
+            proto.remove = function () {
+                this.raphael.remove();
+                this.color = function () {
+                    return false;
+                };
+            };
+            proto.color = function (color) {
+                if (color) {
+                    color = Raphael.color(color);
+                    var d = color.h * 360;
+                    this.H = color.h;
+                    this.S = color.s;
+                    this.B = color.v;
+                    this.cursorhsb.attr({transform: "r" + [d, this.size2, this.size2]});
+                    this.main.attr({fill: "hsb(" + this.H + ",1,1)"});
+                    var x = this.S * this.wh + this.xy,
+                        y = (1 - this.B) * this.wh + this.xy;
+                    this.cursor.attr({cx: x, cy: y});
+                    return this;
+                } else {
+                    return Raphael.hsb2rgb(this.H, this.S, this.B).hex;
+                }
+            };
+            proto.getOffset = function (elem) {
+                var box = elem.getBoundingClientRect(),
+                    doc = elem.ownerDocument,
+                    body = doc.body,
+                    docElem = doc.documentElement,
+                    clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
+                    top  = box.top  + (window.pageYOffset || docElem.scrollTop || body.scrollTop ) - clientTop,
+                    left = box.left + (window.pageXOffset || docElem.scrollLeft || body.scrollLeft) - clientLeft;
+                return {
+                    y: top,
+                    x: left
+                };
+            };
+
+            ns._ColorWheel=ColorWheel;
+        }
     },
     Static:{
         _radius:84,
@@ -265,7 +442,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     ns.getSubNode('TOGGLE').tagClass("-adv", v);
                     ns.getRoot().width(v?410:210);
                     if(v)
-                        ns.box._updateMarks(ns,ns.properties.$UIvalue,true, ns.$hsv[0])
+                        ns._ColorWheel.color(ns.properties.$UIvalue);
                 }
             }
         },
@@ -366,28 +543,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             'ADV div':{
                 cursor:'crosshair',
                 position:'absolute'
-            },
-            ADVCLR:{
-                background: xui.browser.ie6?null:xui.UI.$bg('bg.png', 'no-repeat left top'),
-                _filter: xui.UI.$ieBg('bg.png'),
-                height:'101px',
-                left:'47px',
-                top:'47px',
-                width:'101px'
-            },
-            ADVWHEEL:{
-                background: xui.browser.ie6?null:xui.UI.$bg('clr.png', 'no-repeat left top'),
-                _filter: xui.UI.$ieBg('clr.png'),
-                height:'195px',
-                width:'195px'
-            },
-            'ADVMARK1, ADVMARK2':{
-                background:xui.browser.ie6?null:xui.UI.$bg('picker.png', 'no-repeat left top'),
-                _filter: xui.UI.$ieBg('picker.png'),
-                height:'16px',
-                margin:'-8px 0pt 0pt -8px',
-                overflow:'hidden',
-                width:'16px'
             },
             'LIST span':{
                 height: '12px',
@@ -606,72 +761,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     if(false===instance.beforeClose(profile)) return;
                     instance.destroy();
                 }
-            },
-            ADVWHEEL:{
-                beforeMousedown:function(p, e, src){
-                    var cls=p.box;
-                    cls._prepareAdv(p,e);
-                    cls._updateClrByPos(p,e,true);
-                    p.getSubNode('ADVMARK1').startDrag(e, {
-                        dragType:'none'
-                    });
-                }
-            },
-            ADVMARK1:{
-                beforeMousedown:function(p, e, src){
-                    var cls=p.box;
-                    cls._prepareAdv(p,e);
-                    cls._updateClrByPos(p,e,true);
-                    p.getSubNode('ADVMARK1').startDrag(e, {
-                        dragType:'none'
-                    });
-                },
-                onDrag:function(p, e, src){
-                    var cls=p.box;
-                    cls._updateClrByPos(p,e,true);
-                },
-                onDragstop:function(p, e, src){
-                    p.box._updateValueByPos(p, e);
-                },
-                onDblclick:function(p,e,src){
-                    p.box._updateValueByPos(p, e);
-                    p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true,null,'advdblclick');
-                }
-            },
-            ADVCLR:{
-                beforeMousedown:function(p, e, src){
-                    var cls=p.box;
-                    cls._prepareAdv(p,e);
-                    cls._updateClrByPos(p,e);
-                    p.getSubNode('ADVMARK2').startDrag(e, {
-                        dragType:'none'
-                    });
-                    return false;
-                }
-            },
-            ADVMARK2:{
-                beforeMousedown:function(p, e, src){
-                    var cls=p.box;
-                    cls._prepareAdv(p,e);
-                    cls._updateClrByPos(p,e);
-                    p.getSubNode('ADVMARK2').startDrag(e, {
-                        dragType:'none'
-                    });
-                    return false;
-                },
-                onDrag:function(p, e, src){
-                    var cls=p.box;
-                    cls._updateClrByPos(p, e);
-                },
-                onDragstop:function(p, e, src){
-                    p.box._updateValueByPos(p, e);
-                },
-                onDblclick:function(p,e,src){
-                    p.box._updateValueByPos(p, e);
-                    p.box._vC(p);
-                    p.boxing().setUIValue(p.$tempValue,true,null,'adv2dblclick');
-                }
             }
         },
         _vC:function(profile){
@@ -697,8 +786,18 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             beforeClose:function(profile, src){}
         },
         RenderTrigger:function(){
-            this.$onValueSet=this.$onUIValueSet=function(o,v){
+            var prf=this;
+            prf.$onValueSet=prf.$onUIValueSet=function(o,v){
                 this.box._setClrName(this,v);
+            };
+             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["svgcolor"]=function(){
+                 prf._ColorWheel.remove();
+                 prf._ColorWheel=null;
+             };
+            prf._ColorWheel=new prf.box._ColorWheel(0,0,195, '#'+prf.box._ensureValue(0,prf.properties.value), prf.getSubNode("ADV").get(0));
+            prf._ColorWheel.onchange=function(clr){
+                prf.$hexinadv=this.color().replace("#","");
+                prf.boxing().setUIValue(clr,true,null,'advdrag');
             };
         },
         _setClrName:function(profile,v){
@@ -789,7 +888,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             ex.html(p.$clrN2||'',false);
         },
         _to3:function(s){
-            if(!s)s="FFFFFF";
+            if(!s || s=="transparent")s="FFFFFF";
             return [s.substr(0, 2), s.substr(2, 2), s.substr(4, 2)];
         },
         //0...255 to 00...FF
@@ -813,79 +912,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 g=r[1];b=r[2];r=r[0];
             }
             return [f(r),f(g),f(b)];
-        },
-        _updateMarks:function(profile, hex, forcePos, hsv0){
-            var cls=this,
-                rgb=cls.hex2rgb(hex),
-                hsv=cls.rgb2hsv(rgb),
-                angle=(hsv[0]/360)*6.28,
-                clr=profile.getSubNode('ADVCLR');
-            if(forcePos){
-                var m1=profile.getSubNode('ADVMARK1'),
-                    m2=profile.getSubNode('ADVMARK2');
-                m1.cssPos({
-                  left: Math.round(Math.sin(angle)*cls._radius+cls._bigRadius),
-                  top: Math.round(-Math.cos(angle)*cls._radius+cls._bigRadius)
-                });
-                m2.cssPos({
-                  left: Math.round(cls._square*(hsv[1]-0.5)+cls._bigRadius),
-                  top: Math.round(cls._square*(0.5-hsv[2])+cls._bigRadius)
-                });
-            }
-
-            if(hsv0 !== undefined)
-                clr.css('backgroundColor', '#'+cls.rgb2hex(cls.hsv2rgb([hsv0, 1, 1])));
-            cls._setTempUI(profile, hex);
-        },
-        //flag:change h
-        _updateClrByPos:function(profile, e, flag){
-            var cls=this,
-                mPos=xui.Event.getPos(e),
-                pos=profile.$tpos,
-                left=mPos.left-pos.left,
-                top=mPos.top-pos.top,
-                angle,m1,m2,
-                h,s,v,hsv,rgb,hex;
-            ;
-            if(flag){
-                m1=profile.getSubNode('ADVMARK1');
-                angle=Math.atan2(left, -top);
-                m1.cssPos({
-                  left: Math.round(Math.sin(angle)*cls._radius+cls._bigRadius),
-                  top: Math.round(-Math.cos(angle)*cls._radius+cls._bigRadius)
-                });
-                h=Math.floor((angle/Math.PI)*180);
-                if(h<0)h +=360;
-                hsv=[h, profile.$hsv[1], profile.$hsv[2]];
-                rgb = cls.hsv2rgb(hsv);
-                hex = cls.rgb2hex(rgb);
-                cls._updateMarks(profile, profile.$t_hex=hex, false, h);
-            }else{
-                m2=profile.getSubNode('ADVMARK2');
-                s=Math.max(0, Math.min(1, (left/cls._square) + 0.5));
-                v=Math.max(0, Math.min(1, 0.5 - (top/cls._square)));
-                m2.cssPos({
-                  left: Math.round(cls._square*(s-0.5)+cls._bigRadius),
-                  top: Math.round(cls._square*(0.5-v)+cls._bigRadius)
-                });
-                hsv=[profile.$hsv[0], s, v];
-                rgb = cls.hsv2rgb(hsv);
-                hex = cls.rgb2hex(rgb);
-                cls._updateMarks(profile, profile.$t_hex=hex);
-            }
-
-        },
-        _updateValueByPos:function(profile, e){
-            //set the cur hex value of adv for preventing update adv UI again
-            profile.$hexinadv=profile.$t_hex;
-            profile.boxing()._setCtrlValue(profile.$tempValue=profile.$t_hex,false);
-            delete profile.$hexinadv;
-            profile.box._vC(profile);
-        },
-        _prepareAdv:function(profile,e){
-            var cls=this,
-                pos=profile.getSubNode('ADVWHEEL').offset();
-            profile.$tpos= { left:pos.left+cls._bigRadius, top:pos.top+cls._bigRadius };
         },
         _ensureValue:function(profile,v){
             var ns=this,me=arguments.callee,map=me.map||(me.map=(function(){
