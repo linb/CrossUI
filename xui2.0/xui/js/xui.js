@@ -1776,7 +1776,6 @@ new function(){
     data.onload = data.onerror = function(){
         var path=xui.ini.path+"appearance/_oldbrowser/";
         if(this.width != 1 || this.height != 1){
-            console.log('no');
             document.documentElement.className += " xui-nodatauri";
             _.merge(xui.ini,{
                 img_dd: path+'ondrag.gif',
@@ -1787,8 +1786,6 @@ new function(){
                 img_bg: path+'bg.gif',
                 img_blank: path+'bg.gif'
             },'without');
-        }else{
-            console.log('yes');
         }
         data.onload = data.onerror = null;
     };

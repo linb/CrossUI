@@ -205,9 +205,10 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         CMD:{
                             $order:1,
-                            tagName:'div',
+                            tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-ui-unselectable {cls3} '
+                            className:'xui-ui-unselectable {cls3} ',
+                            text:'{_origin}'
                         },
                         PANEL:{
                             tagName:'div',
@@ -299,8 +300,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0
             },
             'CMD-TOP, CMD-BOTTOM, CMD-LEFT, CMD-RIGHT':{
-               'background-image':xui.UI.$bg('icons.gif', '',true),
-               'background-repeat':'no-repeat'
+                    padding:0,
+                    'border-radius': '0px',
+                    '-moz-border-radius': '0px',
+                    '-webkit-border-radius': '0px',
+                    '-o-border-radius': '0px',
+                    '-ms-border-radius': '0px',
+                    '-khtml-border-radius': '0px'
             },
             'CMD-TOP':{
                 $order:1,
@@ -308,8 +314,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 bottom:0,
                 width:'40px',
-                height:'9px',
-                'background-position':'-360px -232px'
+                height:'9px'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -317,8 +322,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 top:0,
                 width:'40px',
-                height:'9px',
-                'background-position':'-360px -258px'
+                height:'9px'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -326,8 +330,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 right:0,
                 height:'40px',
-                width:'9px',
-                'background-position':'-310px -240px'
+                width:'9px'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -335,26 +338,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 left:0,
                 height:'40px',
-                width:'9px',
-                'background-position':'-336px -240px'
+                width:'9px'
             },
-            'CMD-TOP-mouseover':{
-                $order:2,
-                'background-position':'-360px -245px'
-            },
-            'CMD-BOTTOM-mouseover':{
-                $order:2,
-                'background-position':'-360px -271px'
-            },
-            'CMD-LEFT-mouseover':{
-                $order:2,
-                'background-position':'-323px -240px'
-            },
-            'CMD-RIGHT-mouseover':{
-                $order:2,
-                'background-position':'-349px -240px'
-            },
-
             'MOVE-MAIN':{
                 $order:5,
                 display:'none'
@@ -789,6 +774,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data.cls1  = profile.getClass('ITEM', '-' + pos );
                 data.cls2  = profile.getClass('MOVE', '-' + pos );
                 data.cls3  = profile.getClass('CMD', '-' + pos );
+
+                data._origin = pos=="top"?"+":pos=="bottom"?"+":pos=="left"?"+":pos=="right"?"+":"";
 
                 data.display = data.hidden?'display:none':'';
                 data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';

@@ -1766,7 +1766,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     className:"xui-uiborder-r xui-uiborder-b",
                     text:'&#9660'
                 },
-                ARROW:{}
+                ARROW:{
+                    text:'&#8613; '
+                }
             },
             $submap : {
                 /*the other header in table header*/
@@ -2275,9 +2277,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'none',
                 width:'14px',
                 height:'22px',
-                'background-image':  xui.UI.$bg('icons.gif','',true),
-                'background-repeat':'no-repeat',
-                'background-position':'-72px -270px'
+                color: '#3393D2',
+                'text-align': 'center',
+                'font-size': '20pt',
+                'text-shadow': '2px 2px 2px #ccc',
+                'margin-top': '-4px'
             },
             COLLIST:{
                 position:'absolute',

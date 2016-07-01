@@ -410,6 +410,11 @@ html, .xui-uibg-base{
     margin : 0;
     border : none;
     border-radius: 0px;
+		-moz-border-radius: 0;
+		-webkit-border-radius: 0,
+		-o-border-radius: 0;
+		-ms-border-radius: 0;
+		-khtml-border-radius: 0;
     background-color:transparent; 
     background-image: url(ToolBar/button.png);
     background-repeat:no-repeat;
@@ -446,6 +451,11 @@ html, .xui-uibg-base{
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
     border:none;
     border-radius: 0px;
+		-moz-border-radius: 0;
+		-webkit-border-radius: 0,
+		-o-border-radius: 0;
+		-ms-border-radius: 0;
+		-khtml-border-radius: 0;
     background-image: url(Tabs/cmds.png);
     background-repeat:no-repeat;
 }
@@ -516,26 +526,35 @@ html, .xui-uibg-base{
 
 .xui-layout-cmd-top, .xui-layout-cmd-bottom, .xui-layout-cmd-left, .xui-layout-cmd-right{
     background-image: url(Public/icons.gif);
+		background-repeat: no-repeat;
 }
 .xui-layout-cmd-top{
+		left:50%;
+		bottom:0;
     margin-left:-18px;
     width:35px;
     height:8px;
     background-position:-365px -232px;
 }
 .xui-layout-cmd-bottom{
+		left:50%;
+		top:0;
     margin-left:-18px;
     width:35px;
     height:8px;
     background-position:-365px -258px;
 }
 .xui-layout-cmd-left{
+		top:50%;
+		right:0;
     margin-top:-18px;
     height:35px;
     width:8px;
     background-position:-313px -242px;
 }
 .xui-layout-cmd-right{
+		top:50%;
+		left:0;
     margin-top:-18px;
     height:35px;
     width:8px;
@@ -603,7 +622,12 @@ html, .xui-uibg-base{
 }
 
 /*xui.UI.TreeGrid [[[colors]]]*/
-.xui-treegrid-mark, .xui-treegrid-arrow{
+.xui-treegrid-arrow{
+    background-image: url(Public/icons.gif);
+		background-repeat:no-repeat;
+    background-position:-72px -270px;
+}
+.xui-treegrid-mark{
     background-image: url(Public/icons.gif);
 }
 .xui-treegrid-sort, .xui-treegrid-checkbox, .xui-treegrid-checkbox-checked{
@@ -662,7 +686,14 @@ html, .xui-uibg-base{
 .xui-foldinglist-item,
 .xui-foldingtabs-item{
 	border: 0;
+
 	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0,
+	-o-border-radius: 0;
+	-ms-border-radius: 0;
+	-khtml-border-radius: 0;
+
 	box-shadow: none;
 }
 .xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr,

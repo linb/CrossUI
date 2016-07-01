@@ -1776,7 +1776,6 @@ new function(){
     data.onload = data.onerror = function(){
         var path=xui.ini.path+"appearance/_oldbrowser/";
         if(this.width != 1 || this.height != 1){
-            console.log('no');
             document.documentElement.className += " xui-nodatauri";
             _.merge(xui.ini,{
                 img_dd: path+'ondrag.gif',
@@ -1787,8 +1786,6 @@ new function(){
                 img_bg: path+'bg.gif',
                 img_blank: path+'bg.gif'
             },'without');
-        }else{
-            console.log('yes');
         }
         data.onload = data.onerror = null;
     };
@@ -40643,7 +40640,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         CMD:{
                             $order:1,
-                            tagName:'div',
+                            tagName:'button',
                             style:'{cmdDisplay}',
                             className:'xui-ui-unselectable {cls3} '
                         },
@@ -40737,8 +40734,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0
             },
             'CMD-TOP, CMD-BOTTOM, CMD-LEFT, CMD-RIGHT':{
-               'background-image':xui.UI.$bg('icons.gif', '',true),
-               'background-repeat':'no-repeat'
+                    padding:0,
+                    'border-radius': '0px',
+                    '-moz-border-radius': '0px',
+                    '-webkit-border-radius': '0px',
+                    '-o-border-radius': '0px',
+                    '-ms-border-radius': '0px',
+                    '-khtml-border-radius': '0px'
             },
             'CMD-TOP':{
                 $order:1,
@@ -40746,8 +40748,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 bottom:0,
                 width:'40px',
-                height:'9px',
-                'background-position':'-360px -232px'
+                height:'9px'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -40755,8 +40756,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 top:0,
                 width:'40px',
-                height:'9px',
-                'background-position':'-360px -258px'
+                height:'9px'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -40764,8 +40764,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 right:0,
                 height:'40px',
-                width:'9px',
-                'background-position':'-310px -240px'
+                width:'9px'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -40773,26 +40772,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 left:0,
                 height:'40px',
-                width:'9px',
-                'background-position':'-336px -240px'
+                width:'9px'
             },
-            'CMD-TOP-mouseover':{
-                $order:2,
-                'background-position':'-360px -245px'
-            },
-            'CMD-BOTTOM-mouseover':{
-                $order:2,
-                'background-position':'-360px -271px'
-            },
-            'CMD-LEFT-mouseover':{
-                $order:2,
-                'background-position':'-323px -240px'
-            },
-            'CMD-RIGHT-mouseover':{
-                $order:2,
-                'background-position':'-349px -240px'
-            },
-
             'MOVE-MAIN':{
                 $order:5,
                 display:'none'
@@ -43170,7 +43151,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     className:"xui-uiborder-r xui-uiborder-b",
                     text:'&#9660'
                 },
-                ARROW:{}
+                ARROW:{
+                    text:'&#8613; '
+                }
             },
             $submap : {
                 /*the other header in table header*/
@@ -43679,9 +43662,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'none',
                 width:'14px',
                 height:'22px',
-                'background-image':  xui.UI.$bg('icons.gif','',true),
-                'background-repeat':'no-repeat',
-                'background-position':'-72px -270px'
+                color: '#3393D2',
+                'text-align': 'center',
+                'font-size': '20pt',
+                'text-shadow': '2px 2px 2px #ccc',
+                'margin-top': '-4px'
             },
             COLLIST:{
                 position:'absolute',
