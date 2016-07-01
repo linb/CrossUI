@@ -53,7 +53,6 @@
                     {id:'xui.UI.TreeView', caption:'TreeView', image:_img_widgets, imagePos:'-464px -16px'}
                 ]},
                 {id:'xui.UI.absAdv',caption:'Advanced',group:true, image:_img_app, imagePos:'-48px -48px', sub:[
-                    {id:'xui.UI.TextEditor', caption:'TextEditor', image:_img_widgets, imagePos:'-128px top'},
                     {id:'xui.UI.FoldingList', caption:'FoldingList', image:_img_widgets, imagePos:'-32px -16px'},
                     {id:'xui.UI.Calendar', caption:'Calendar', image:_img_widgets, imagePos:'-496px top'},
                     {id:'xui.UI.TimeLine', caption:'TimeLine', image:_img_widgets, imagePos:'-528px top'}

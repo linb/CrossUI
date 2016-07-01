@@ -10904,66 +10904,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    _.set(xui.Locale,["en","doc","xui","UI","TextEditor"], {
-        KEY:{$desc:"Class Name"},
-        $desc:"xui.UI.TextEditor Class",
-        constructor:{
-            $desc:"Creates a xui.UI.TextEditor Object."
-        },
-        prototype:{
-            KEY:{$desc:"Class Name"},
-            activate:{
-                $desc:"Activates it(set focus).",
-                $rtn:"[self]",
-                $snippet:[
-                    "var id='xui.temp.TextEditor0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "_.asyRun(function(){o.activate();},1000)"+
-                    "}"
-                ]
-            },
-            getReadonly:{
-                $desc:"To determine whether editor is read-only or editable.",
-                $rtn:"Boolean",
-                $snippet:[
-                    "var id='xui.temp.TextEditor9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "alert(o.setReadonly(true).getReadonly())"+
-                    "}"
-                ]
-            },
-            setReadonly:{
-                $desc:"Sets editor read-only or editable.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : Boolean.",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.TextEditor10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "alert(o.setReadonly(true).getReadonly())"+
-                    "}"
-                ]
-            },
 
-
-            onChange:{
-                $desc:"Fired when end user changes text in this editor.",
-                $paras:[
-                    $profile,
-                    "oV : String, the old value.",
-                    "nV : String, the new value."
-                ],
-                $snippet:[
-                    "var id='xui.temp.input23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "o.onChange(function(p,o,n){xui.message(o.length+'=>'+n.length)});"+
-                    "}"
-                ]
-            }
-        }
-    });
     _.set(xui.Locale,["en","doc","xui","UI","Group"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Group Class",
@@ -12817,16 +12758,10 @@ _.set(xui.Locale,["en","app"], {
                 ]
             },
             getItemLinker:{
-                $desc:"Gets item's linker type.",
-                $rtn:"String"
+                $desc:"Deprecated"
             },
             setItemLinker:{
-                $desc:"Sets item's linker type.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String. 'none','left','right'",
-                    $force
-                ]
+                $desc:"Deprecated"
             },
             getItemAlign:{
                 $desc:"Gets item's text align.",

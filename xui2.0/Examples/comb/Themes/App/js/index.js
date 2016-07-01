@@ -1222,8 +1222,9 @@ Class('App', 'xui.Com',{
                 , "1");
             
             host.tabs2.append(
-                (new xui.UI.TextEditor())
+                (new xui.UI.Input())
                 .setHost(host,"texteditor4")
+                .setMultiLines(true)
                 .setLeft(20)
                 .setTop(50)
                 .setWidth(70)

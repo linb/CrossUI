@@ -363,8 +363,9 @@ Class('App', 'xui.Com',{
                 .setCaption("Notes")
             );
             
-            host.group1.append((new xui.UI.TextEditor)
+            host.group1.append((new xui.UI.Input)
                 .setHost(host,"texteditor8")
+                .setMultiLines(true)
                 .setDock("fill")
                 .setDockMargin({"left":0, "top":0, "right":0, "bottom":3})
                 .setPosition("relative")
@@ -522,23 +523,26 @@ Class('App', 'xui.Com',{
                 .setWidth(170)
             , 'a');
             
-            host.tabs2.append((new xui.UI.TextEditor)
+            host.tabs2.append((new xui.UI.Input)
                 .setHost(host,"tdt_customer_bill_addr")
+                .setMultiLines(true)
                 .setLeft(20)
                 .setTop(160)
                 .setWidth(280)
                 .setHeight(70)
             , 'a');
             
-            host.tabs2.append((new xui.UI.TextEditor)
+            host.tabs2.append((new xui.UI.Input)
                 .setHost(host,"texteditor19")
+                .setMultiLines(true)
                 .setLeft(330)
                 .setTop(140)
                 .setWidth(280)
             , 'a');
             
-            host.tabs2.append((new xui.UI.TextEditor)
+            host.tabs2.append((new xui.UI.Input)
                 .setHost(host,"tdt_customer_ship_addr")
+                .setMultiLines(true)
                 .setLeft(20)
                 .setTop(270)
                 .setWidth(280)

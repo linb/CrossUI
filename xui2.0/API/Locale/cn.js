@@ -10811,66 +10811,6 @@ _.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    _.set(xui.Locale,["cn","doc","xui","UI","TextEditor"], {
-        KEY:{$desc:"本类名"},
-        $desc:"xui.UI.TextEditor 类",
-        constructor:{
-            $desc:"生成一个xui.UI.TextEditor对象."
-        },
-        prototype:{
-            KEY:{$desc:"本类名"},
-            activate:{
-                $desc:"激活控件(获得焦点).",
-                $rtn:"[self]",
-                $snippet:[
-                    "var id='xui.temp.TextEditor0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "_.asyRun(function(){o.activate();},1000)"+
-                    "}"
-                ]
-            },
-            getReadonly:{
-                $desc:"判断编辑器是只读还是可编辑的.",
-                $rtn:"Boolean",
-                $snippet:[
-                    "var id='xui.temp.TextEditor9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "alert(o.setReadonly(true).getReadonly())"+
-                    "}"
-                ]
-            },
-            setReadonly:{
-                $desc:"设置编辑器是只读还是可编辑的.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Boolean.",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.TextEditor10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "alert(o.setReadonly(true).getReadonly())"+
-                    "}"
-                ]
-            },
-
-
-            onChange:{
-                $desc:"当改变文字时调用.",
-                $paras:[
-                    $profile,
-                    "oV : String, 旧值.",
-                    "nV : String, 新值."
-                ],
-                $snippet:[
-                    "var id='xui.temp.input23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.TextEditor({dock:'fill'}));"+
-                    "o.onChange(function(p,o,n){xui.message(o.length+'=>'+n.length)});"+
-                    "}"
-                ]
-            }
-        }
-    });
     _.set(xui.Locale,["cn","doc","xui","UI","Group"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Group 类",
@@ -12723,16 +12663,10 @@ _.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemLinker:{
-                $desc:"获取状态按钮的linker类型.",
-                $rtn:"String"
+                $desc:"Deprecated"
             },
             setItemLinker:{
-                $desc:"设置状态按钮的linker类型.",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String. 'none','left','right'",
-                    $force
-                ]
+                $desc:"Deprecated"
             },
             getItemAlign:{
                 $desc:"获取状态按钮的对齐方式.",
@@ -19815,9 +19749,6 @@ _.set(xui.Locale,["cn","doc","propname"], {
             'modal':'模式对话框',
             'status':'对话框状态'
         },
-        'xui_UI_TextEditor' : {
-
-        },
         'xui_UI_Link' : {
             'caption':'超链接文本',
             'href':'超链接锚点',
@@ -20359,9 +20290,6 @@ _.set(xui.Locale,["cn","doc","eventname"],{
             onShowInfo:"点击信息按钮",
             'onClickPanel':"点击容器",
             onShowOptions:"点击选项按钮"
-        },
-        'xui_UI_TextEditor' : {
-            onChange:"界面值变化"
         },
         'xui_UI_Link' : {
             onClick:"鼠标点击"

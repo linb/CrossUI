@@ -41,14 +41,25 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     value=profile.$Mask;
                 }
                 profile.$_inner=1;
-                profile.getSubNode('INPUT').attr('value',value+"");
+                if(profile.properties.multiLines){
+                    var node=profile.getSubNode('INPUT').get(0);
+                    if(node.value.replace(/(\r\n|\r)/g, "\n")!=(value+"").replace(/(\r\n|\r)/g, "\n")){
+                        var st=node.scrollTop;
+                        node.value=value;
+                        node.scrollTop=st;
+                    }
+                }else{
+                    profile.getSubNode('INPUT').attr('value',value+"");
+                }
                 delete profile.$_inner;
             });
         },
         _getCtrlValue:function(){
             var node=this.getSubNode('INPUT'),
                 v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
-            if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
+            if(/[\r\n\t]/.test(v)){
+                v=v.replace(/(\r\n|\r)/g, "\n").replace(/( +)(\n)/g, "$2").replace(/\t/g, "    ");
+            }
             if(this.get(0).$Mask && this.get(0).$Mask==v){
                 v="";
             }
@@ -126,7 +137,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         style:'{_css};{hAlign};'
                     }
                 }
-            }
+            },
+            BAK1:{},
+            BAK2:{tagName:'div'}
         },'all');
         t.FRAME.ERROR = {};
         this.setTemplate(t)
@@ -195,6 +208,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                'overflow-y':'auto',
                'overflow-x':'hidden',
                resize:'none'
+            },
+            'BAK1, BAK2':{
+                position:'absolute',
+                visibility:'hidden',
+                left:'-10000px',
+                top:'-10000px'
             },
             ERROR:{
                 width:'9px',
@@ -283,10 +302,85 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                                 b._changeMask(profile,xui.use(src).get(0),'');
                                 return false;
                         }
+                    }else if(m){
+                        var key = xui.Event.getKey(e),
+                        node=xui.use(src).get(0),
+                        k=key.key;
+                        switch(k){
+                            case 'tab':
+                                var r=xui.use(src).caret(),
+                                    sel=node.value.slice(r[0],r[1]);
+                                if(/(\n|\r)/.test(sel)){
+                                    //previous
+                                    str=node.value.slice(0,r[0]);
+                                    if(sel.charAt(0)!='\n' && sel.charAt(0)!='\r'){
+                                        //change sel
+                                        sel=str.slice(r[0]=str.lastIndexOf('\n'))+sel;
+                                    }
+                                    //
+                                    if(xui.browser.ie){
+                                        t= (t=str.match(/\r/g))?t.length:0;
+                                        r[0]-=t;
+                                        t= (t=(node.value.slice(0,r[1])).match(/\r/g))?t.length:0;
+                                        r[1]-=t;
+                                    }
+
+                                    //re caret
+                                    xui.use(src).caret(r[0],r[1]);
+
+                                    if(key.shiftKey){
+                                        sel=sel.replace(/(\n|\n\r)    /g,'$1');
+                                    }else{
+                                        sel=sel.replace(/(\n|\n\r)/g,'$1    ');
+                                    }
+                                    //insert
+                                    profile.box.insertAtCaret(profile,sel);
+
+                                    r[1]=r[0]+sel.length;
+                                    if(xui.browser.ie){
+                                        t= (t=sel.match(/\r/g))?t.length:0;
+                                        r[1]-=t;
+                                    }
+                                    //caret
+                                    xui.use(src).caret(r[0],r[1]);
+                                }else{
+                                    if(key.shiftKey){
+                                        xui.use(src).caret(r[0]-4,r[0]-4);
+                                        r[0]-=4;
+                                        r[1]-=4;
+                                    }else{
+                                        profile.box.insertAtCaret(profile,'    ');
+                                        r[0]+=4;
+                                        r[1]+=4;
+                                    }
+                                }
+                                profile.$pos=r;
+                                return false;
+                            case 'enter':
+                                var paras = profile.box.getParas(profile);
+                                str = paras[1];
+                                var len = str.length - _.str.ltrim(str).length;
+
+                                if(str.charAt(str.length-1)=="{")
+                                    len +=4;
+                                if(len){
+                                    profile.box.insertAtCaret(profile, '\n'+_.str.repeat(' ',len));
+                                    profile.$enter=true;
+                                    return false;
+                                }
+                                break;
+                            default:
+                                if(profile.tips){
+                                    profile.tips.destroy(true);
+                                    profile.tips=null;
+                                }
+                        }
+                        node=null;
                     }
                 },
                 onKeypress:function(profile, e, src){
                     var p=profile.properties,
+                    m=p.multiLines,
                     b=profile.box,
                     cls=profile.box,
                     map=cls._maskMap,
@@ -310,10 +404,47 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
                         cls._changeMask(profile,xui.use(src).get(0),k.key,true);
                         return false;
+                    }else if(m){
+                        var key = xui.Event.getKey(e), k=key.key;
+                        switch(k){
+                            case 'tab':
+                                if(xui.browser.opr)
+                                    _.asyRun(function(){
+                                        xui.use(src).caret(profile.$pos[0], profile.$pos[1]);
+                                    });
+                                return false;
+                            case 'enter':
+                                if(profile.$enter){
+                                    delete profile.$enter;
+                                    return false;
+                                }
+                            case '}':
+                                if(key.shiftKey){
+                                    var paras = profile.box.getParas(profile);
+                                    var
+                                    loc = paras[0],
+                                    str = paras[1],
+                                    pos=paras[2],
+                                    input=paras[3];
+                                    if(/ {4}$/.test(str)){
+                                        var st=xui(src).scrollTop();
+                                        input.value =
+                                            input.value.substr(0,loc).replace(/ {4}$/,'}') +
+                                            input.value.substr(loc, input.value.length);
+
+                                        profile.box.setCaretTo(input, loc - 4 + 1, st);
+
+                                        return false;
+                                    }
+                                }
+                                break;
+                        }
                     }
                 },
                 onKeyup:function(profile, e, src){
-                    var p=profile.properties,b=profile.box;
+                    var p=profile.properties,
+                        m=p.multiLines,
+                        b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
                         profile.boxing()._setCtrlValue(p.$UIvalue);
@@ -862,6 +993,95 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     profile.boxing().setUIValue(v,false,true,null,'asycheck');
                 }
             });
+        },
+        //for
+        insertAtCaret:function(profile, text) {
+            var input = profile.getSubNode('INPUT'),
+                scrollTop = input.scrollTop() || null,
+                ret;
+            //replace text
+            ret=input.caret(text);
+            //set cursor
+    	    this.setCaretTo(input.get(0), ret||0, scrollTop);
+    	},
+        //set cursor to textarea
+        setCaretTo:function(input, pos, scrollTop){
+            input.focus()
+            var s,c,h,o=xui([input]);
+
+            //opera not support scrollTop in textarea
+            if(_.isNumb(scrollTop))
+                o.scrollTop(scrollTop);
+
+            if(scrollTop===true){
+                if(o.get(0).tagName.toLowerCase() == 'textarea' && o.scrollHeight() !== o.offsetHeight()){
+                    s = o.attr('value').substr(0,pos);
+                    c = o.clone().id('').css({visibility:'hidden',position:'absolute',left:5000+'px'}).attr('value',s);
+                    xui('body').append(c);
+                    h = Math.max((c.scrollHeight() > c.offsetHeight()) ? c.scrollHeight() - 30 : 0,0);
+                    o.scrollTop(h);
+                    c.remove();
+                }
+            }
+            o.caret(pos,pos);
+        },
+        /*
+        return array
+        [0] char number before caret
+        [1] line number of caret
+        [2] absPos of caret
+        [3] text before caret
+        */
+        getParas:function(profile){
+            var o = profile.getSubNode('INPUT'), 
+                me=arguments.callee, 
+                reg = me.reg ||(me.reg=/\r\n/g),
+                v = o.get(0).value,
+                loc = o.caret();
+
+            if(loc[0]<0)loc[0]=0;
+
+            //for ie/opera
+            var l=0, m = v.substr(0,loc[0]).match(reg);
+            if(m)l=m.length;
+            v = v.replace(reg,'\n');
+            var txt = v.substr(0,loc[0]-l);
+
+            var
+            li = txt.lastIndexOf('\n') ,
+            line = txt.substr(li+1, loc[0]-li),
+            w=o.innerWidth(),
+            bak1 = profile.getSubNode('BAK1'),
+            bak2 = profile.getSubNode('BAK2')
+            ;
+            if(txt.charAt(txt.length-1)=='\n')txt+='*';
+
+            bak2.width(w);
+            var
+            x = bak1.html(line.replace(/ /g,'&nbsp;'),false).width(),
+            y = bak2.html(txt.replace(/\n/g,'<br />'),false).height() - o.scrollTop();
+
+            if(x>w){
+                bak2.html(line,false);
+                var lbak = line;
+                var bl = bak2.height();
+                while(lbak){
+                    //delete last words
+                    lbak=lbak.replace(/ [^ ]*$/,'');
+                    bak2.html(lbak,false);
+                    if(bak2.height()!=bl)break;
+                }
+                lbak = line.substr(lbak.length, line.length-lbak.length);
+                x = bak1.html(lbak,true).width();
+            }
+
+            bak1.html('',false);
+            bak2.html('',false);
+
+            var pos = profile.getRoot().offset();
+            pos.left+=x;
+            pos.top+=y;
+            return [loc[0],line,pos,o.get(0),txt];
         },
         _onresize:function(profile,width,height){
             var $hborder=1, $vborder=1,
