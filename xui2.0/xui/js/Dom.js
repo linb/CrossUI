@@ -3886,16 +3886,6 @@ type:4
         xui.busy=xui.Dom.busy;
         xui.free=xui.Dom.free;
 
-        // support data uri?
-        var data = new Image();
-        data.onload = data.onerror = function(){
-            if(this.width != 1 || this.height != 1){
-                document.documentElement.className += " xui-nodatauri";
-            }
-        }
-        data.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
-
-
         xui.$inlineBlock=xui.browser.gek
             ? xui.browser.ver<3
                 ? ['-moz-inline-block', '-moz-inline-box','inline-block']
