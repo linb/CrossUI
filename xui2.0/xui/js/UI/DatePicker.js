@@ -114,7 +114,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }

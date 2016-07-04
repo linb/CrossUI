@@ -178,7 +178,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     RULER:{},
                                     ICON:{
                                         $order:1,
-                                        className:'xui-ui-icon {imageClass}',
+                                        className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
                                     },
                                     CAPTION:{
@@ -188,6 +188,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     },
                                     DROP:{
                                         $order:3,
+                                        className:'xuicon xui-uicmd-arrowdrop',
                                         style:'{dropDisplay}'
                                     }
                                 }
@@ -228,7 +229,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
+                'background-image': xui.UI.$bg('handler.gif', '', true),
                 'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
@@ -253,23 +254,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 margin: '0 2px'
             },
             BTN:{
-                'padding-right':'3px'
-            },
-            DROP:{
-                width:'14px',
-                height:'16px',
-                'vertical-align':'middle',
-                'background-image': xui.UI.$bg('drop.gif', '', 'Button'),
-                'background-position':'left center',
-                'background-repeat':'no-repeat'
-            },
-            'BTN-mouseover DROP':{
-                $order:2,
-                'background-position':'-16px center'
-            },
-            'BTN-mousedown DROP, BTN-checked DROP':{
-                $order:2,
-                'background-position':'-32px center'
+                'padding':'2px'
             },
             BOX:{
                 height:'auto'

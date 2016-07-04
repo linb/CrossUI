@@ -43,10 +43,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 IND:{
                     $order:2,
                     IND1:{
+                        tagName:'button',
+                        className:'xui-ui-btn',
                         style:'{_showD}',
                         tabindex:'{tabindex}'
                     },
                     IND2:{
+                        tagName:'button',
+                        className:'xui-ui-btn',
                         style:'{_showD2}',
                         tabindex:'{tabindex}'
                     }
@@ -87,9 +91,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 height:'17px',
                 'margin-top':'-8px'
             },            
-            'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE, BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
+            'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE': {
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat'
+            },
+            'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
+                padding:0,
+                margin:0
             },
             'BOX-h DECREASE':{
                 $order:1,
@@ -145,25 +153,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $order:2,
                 right:'-2px',
                 top:0
-            },
-            'BOX-h IND1,BOX-h IND2':{
-                $order:1,
-                'z-index':2,
-                'background-position': '-21px -282px',
-                height:'18px',
-                width:'8px',
-                left:0,
-                top:0,
-                cursor:'e-resize',
-                'margin-top':'-7px'
-            },
-            'BOX-h IND1-mouseover,BOX-h IND2-mouseover':{
-                $order:2,
-                'background-position':'-31px -282px'
-            },
-            'BOX-h IND1-mousedown,BOX-h IND2-mousedown':{
-                $order:3,
-                'background-position':'-41px -282px'
             },
 
             'BOX-v DECREASE, BOX-v INCREASE':{
@@ -235,24 +224,25 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 bottom:'-2px',
                 left:0
             },
+            'BOX-h IND1,BOX-h IND2':{
+                $order:1,
+                'z-index':2,
+                height:'18px',
+                width:'8px',
+                left:0,
+                top:0,
+                cursor:'e-resize',
+                'margin-top':'-7px'
+            },
             'BOX-v IND1,BOX-v IND2':{
                 $order:10,
                 'z-index':2,
-                'background-position': 'left -272px',
                 width:'18px',
                 height:'8px',
                 left:0,
                 top:0,
                 cursor:'n-resize',
                 'margin-left':'-7px'
-            },
-            'BOX-v IND1-mouseover,BOX-v IND2-mouseover':{
-                $order:11,
-                'background-position':'left -282px'
-            },
-            'BOX-v IND1-mousedown,BOX-v IND2-mousedown':{
-                $order:12,
-                'background-position':'left -292px'
             }
         },
         Behaviors:{

@@ -19,6 +19,7 @@ mkdir %outPath%xui\js
 mkdir %outPath%xui\js\Module
 mkdir %outPath%xui\Locale
 mkdir %outPath%xui\appearance
+mkdir %outPath%xui\iconfont
 
 
 rem ==================
@@ -28,7 +29,7 @@ xcopy %relPath%xui\js\Module\*.* %outPath%xui\js\Module\ /E /Y
 
 xcopy %relPath%xui\appearance\*.* %outPath%xui\appearance\ /E /Y
 xcopy %relPath%xui\Locale\*.* %outPath%xui\Locale\ /E /Y
-
+xcopy %relPath%xui\iconfont\*.* %outPath%xui\iconfont\ /E /Y
 
 rem ==================
 rem for mini xui code

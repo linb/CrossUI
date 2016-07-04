@@ -68,13 +68,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         TOGGLE:{
-                            className: 'xui-uicmd-toggle {toggleCls}',
+                            className: 'xuicon xui-uicmd-toggle {toggleCls}',
                             style:'{toggleDisplay}',
                             $order:0
                         },
                         ICON:{
                             $order:0,
-                            className:'xui-ui-icon {imageClass}',
+                            className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION:{
@@ -88,27 +88,27 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         INFO:{
-                            className:'xui-uicmd-info',
+                            className:'xuicon xui-uicmd-info',
                             style:'{infoDisplay}',
                             $order:1
                         },
                         OPT:{
-                            className:'xui-uicmd-opt',
+                            className:'xuicon xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:1
                         },
                         POP:{
-                            className:'xui-uicmd-pop',
+                            className:'xuicon xui-uicmd-pop',
                             style:'{popDisplay}',
                             $order:2
                         },
                         REFRESH:{
-                            className:'xui-uicmd-refresh',
+                            className:'xuicon xui-uicmd-refresh',
                             style:'{refreshDisplay}',
                             $order:3
                         },
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}',
                             $order:4
                         }

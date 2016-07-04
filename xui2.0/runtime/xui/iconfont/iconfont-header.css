@@ -1,0 +1,36 @@
+
+@font-face {
+  font-family: "xuicon";
+  src: url('iconfont.eot?t=1467528113'); /* IE9*/
+  src: url('iconfont.eot?t=1467528113#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1467528113') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1467528113') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1467528113#xuicon') format('svg'); /* iOS 4.1- */
+}
+
+.xuicon {
+  font-family:"xuicon" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+  color: #444;
+  vertical-align:middle;
+  
+  width:16px;
+  height:16px;
+}
+.xuicon-mouseover{
+  color: #000;
+}
+.xuicon-mousedown{
+  color: #FF0000;
+}
+.xuicon-checked{
+  color: #FF0000;
+}
+
+
+.xui-ui-dirty:after { content: "\e668"; color:#ff0000; position:absolute; left:0; top:0;}
+.xui-uicmd-arrowdrop:after {content: "\e623"; }

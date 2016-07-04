@@ -1,0 +1,140 @@
+
+@font-face {
+  font-family: "xuicon";
+  src: url('iconfont.eot?t=1467528113'); /* IE9*/
+  src: url('iconfont.eot?t=1467528113#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1467528113') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1467528113') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1467528113#xuicon') format('svg'); /* iOS 4.1- */
+}
+
+.xuicon {
+  font-family:"xuicon" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+  color: #444;
+  vertical-align:middle;
+  
+  width:16px;
+  height:16px;
+}
+.xuicon-mouseover{
+  color: #000;
+}
+.xuicon-mousedown{
+  color: #FF0000;
+}
+.xuicon-checked{
+  color: #FF0000;
+}
+
+.xui-fangda:before { content: "\e61d"; }
+.xui-suoxiao:before { content: "\e61e"; }
+.xui-icon-bullet:before { content: "\e632"; }
+.xui-icon-minus:before { content: "\e606"; }
+.xui-icon-plus:before { content: "\e609"; }
+.xui-icon-star:before { content: "\e649"; }
+.xui-move:before { content: "\e64a"; }
+.xui-rili:before { content: "\e64b"; }
+.xui-icon-number:before { content: "\e633"; }
+.xui-uicmd-pop:before { content: "\e61f"; }
+.xui-add:before { content: "\e620"; }
+.xui-shubiaohuadong:before { content: "\e64d"; }
+.xui-shangyiye:before { content: "\e60a"; }
+.xui-question:before { content: "\e63d"; }
+.xui-spinner:before { content: "\e60b"; }
+.xui-icon-indent:before { content: "\e634"; }
+.xui-icon-outdent:before { content: "\e635"; }
+.xui-icon-strikethrough:before { content: "\e636"; }
+.xui-icon-inserthr:before { content: "\e637"; }
+.xui-icon-super:before { content: "\e638"; }
+.xui-icon-sub:before { content: "\e639"; }
+.xui-icon-alignjustify:before { content: "\e62b"; }
+.xui-icon-alignright:before { content: "\e646"; }
+.xui-upload:before { content: "\e624"; }
+.xui-icon-formatbrush:before { content: "\e63a"; }
+.xui-refresh:before { content: "\e625"; }
+.xui-icon-undo:before { content: "\e660"; }
+.xui-icon-refresh:before { content: "\e621"; }
+.xui-date:before { content: "\e626"; }
+.xui-lajitong:before { content: "\e60c"; }
+.xui-icon-alignleft:before { content: "\e647"; }
+.xui-uicmd-max:before { content: "\e60d"; }
+.xui-uicmd-restore:before { content: "\e60e"; }
+.xui-iconfont33:before { content: "\e60f"; }
+.xui-uicmd-empty:before { content: "\e64c"; }
+.xui-jianshao:before { content: "\e627"; }
+.xui-uicmd-pin:before { content: "\e628"; }
+.xui-icon-link:before { content: "\e63b"; }
+.xui-icon-forecolor:before { content: "\e63c"; }
+.xui-time:before { content: "\e64f"; }
+.xui-icon-aligncenter:before { content: "\e666"; }
+.xui-uicmd-check:before { content: "\e601"; }
+.xui-uicmd-check-checked:before { content: "\e608"; }
+.xui-uicmd-save:before { content: "\e629"; }
+.xui-uicmd-close:before { content: "\e62a"; }
+.xui-icon-arrowright:before { content: "\e652"; }
+.xui-icon-font:before { content: "\e63e"; }
+.xui-icon-bgcolor:before { content: "\e63f"; }
+.xui-mobile:before { content: "\e600"; }
+.xui-alarm:before { content: "\e602"; }
+.xui-icon-circledown:before { content: "\e603"; }
+.xui-icon-circleleft:before { content: "\e607"; }
+.xui-icon-circleright:before { content: "\e658"; }
+.xui-icon-circleup:before { content: "\e659"; }
+.xui-connection:before { content: "\e65a"; }
+.xui-uicmd-opt:before { content: "\e610"; }
+.xui-icon-italic:before { content: "\e640"; }
+.xui-icon-redo:before { content: "\e661"; }
+.xui-icon-bold:before { content: "\e641"; }
+.xui-icon-bigup:before { content: "\e650"; }
+.xui-angledoubledown:before { content: "\e65c"; }
+.xui-angledoubleleft:before { content: "\e65d"; }
+.xui-angledoubleright:before { content: "\e65e"; }
+.xui-angledoubleup:before { content: "\e65f"; }
+.xui-icon-breaklink:before { content: "\e642"; }
+.xui-icon-picture:before { content: "\e643"; }
+.xui-weibiaoti1:before { content: "\e62c"; }
+.xui-back:before { content: "\e62d"; }
+.xui-icon-formatclear:before { content: "\e644"; }
+.xui-colorboard:before { content: "\e62e"; }
+.xui-icon-stop:before { content: "\e651"; }
+.xui-shenglvehao:before { content: "\e62f"; }
+.xui-icon-dialog:before { content: "\e611"; }
+.xui-dakaiopen127:before { content: "\e612"; }
+.xui-dayinjiprinter60:before { content: "\e613"; }
+.xui-daohangnavigate2:before { content: "\e614"; }
+.xui-daohangnavigate3:before { content: "\e615"; }
+.xui-jianchacheck35:before { content: "\e616"; }
+.xui-icon-file:before { content: "\e617"; }
+.xui-uicmd-info:before { content: "\e618"; }
+.xui-xiaoliansmiley40:before { content: "\e65b"; }
+.xui-liebiaolist46:before { content: "\e619"; }
+.xui-icon-arrowup:before { content: "\e654"; }
+.xui-icon-folder:before { content: "\e622"; }
+.xui-zuidahua:before { content: "\e61a"; }
+.xui-icon-circle:before { content: "\e656"; }
+.xui-zuanshi:before { content: "\e657"; }
+.xui-zuixiaohua:before { content: "\e61b"; }
+.xui-icon-underline:before { content: "\e645"; }
+.xui-uicmd-radio:before { content: "\e604"; }
+.xui-uicmd-radio-checked:before { content: "\e605"; }
+.xui-windowrestore:before { content: "\e630"; }
+.xui-dialog-copy:before { content: "\e61c"; }
+.xui-uicmd-toggle:before { content: "\e662"; }
+.xui-uicmd-toggle-checked:before { content: "\e631"; }
+.xui-003arrowup:before { content: "\e663"; }
+.xui-004arrowdown:before { content: "\e664"; }
+.xui-icon-html:before { content: "\e665"; }
+.xui-icon-code:before { content: "\e648"; }
+.xui-uicmd-min:before { content: "\e667"; }
+.xui-icon-folderopen:before { content: "\e669"; }
+.xui-icon-arrowdown:before { content: "\e655"; }
+.xui-icon-arrowleft:before { content: "\e653"; }
+
+
+.xui-ui-dirty:after { content: "\e668"; color:#ff0000; position:absolute; left:0; top:0;}
+.xui-uicmd-arrowdrop:after {content: "\e623"; }

@@ -110,11 +110,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     tagName:'div',
                                     TOGGLE:{
                                         $order:0,
-                                        className:'xui-uicmd-toggle {_tlgchecked}'
+                                        className:'xuicon xui-uicmd-toggle {_tlgchecked}'
                                     },
                                     ICON:{
                                         $order:2,
-                                        className:'xui-ui-icon {imageClass}',
+                                        className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                                     },
                                     CAPTION:{
@@ -134,16 +134,16 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         $order:2,
                                         OPT:{
                                             $order:1,
-                                            className:'xui-uicmd-opt',
+                                            className:'xuicon xui-uicmd-opt',
                                             style:'{_opt}'
                                         },
                                         POP:{
-                                            className:'xui-uicmd-pop',
+                                            className:'xuicon xui-uicmd-pop',
                                             style:'{popDisplay}',
                                             $order:1
                                         },
                                         CLOSE:{
-                                            className:'xui-uicmd-close ',
+                                            className:'xuicon xui-uicmd-close ',
                                             style:'{closeDisplay}',
                                             $order:2
                                         }

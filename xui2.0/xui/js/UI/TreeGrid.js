@@ -546,11 +546,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             else{
                                 if(orow.value===orow._oValue){
                                     if(psdm)
-                                        node.removeClass('xui-ui-dirty');
+                                        node.removeClass('xuicon xui-ui-dirty');
                                     delete orow.dirty;
                                 }else{
                                     if(psdm)
-                                        node.addClass('xui-ui-dirty');
+                                        node.addClass('xuicon xui-ui-dirty');
                                     orow.dirty=true;
                                 }
                             }
@@ -1015,7 +1015,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 arr.push(profile.getSubNode('CELLA',row._serialId).get(0));
 
             if(prop.dirtyMark && prop.showDirtyMark)
-                xui(arr).removeClass('xui-ui-dirty');
+                xui(arr).removeClass('xuicon xui-ui-dirty');
         },
         resetColValue:function(colId){
             var profile=this.get(0),col=this.getHeaderByColId(colId),arr=[],prop=profile.properties;
@@ -1028,7 +1028,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
             if(prop.dirtyMark && prop.showDirtyMark)
-                xui(arr).removeClass('xui-ui-dirty');
+                xui(arr).removeClass('xuicon xui-ui-dirty');
         },
         getActiveRow:function(type){
             var ar,profile=this.get(0);
@@ -1487,7 +1487,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     delete v.dirty;
                 });
                 if(prop.dirtyMark && prop.showDirtyMark)
-                    profile.getSubNode('CELLA',true).removeClass('xui-ui-dirty');
+                    profile.getSubNode('CELLA',true).removeClass('xuicon xui-ui-dirty');
             })
         },
         getDirtied:function(rowId, colId){
@@ -1608,7 +1608,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     },
                                                     HFMARK:{
                                                         $order:2,
-                                                        className:"xui-uicmd-check",
+                                                        className:"xuicon xui-uicmd-check",
                                                         style:'{_rowMarkDisplay}'
                                                     },
                                                     GRIDCAPTION:{
@@ -1766,9 +1766,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     className:"xui-uiborder-r xui-uiborder-b",
                     text:'&#9660'
                 },
-                ARROW:{
-                    text:'&#8613; '
-                }
+                ARROW:{}
             },
             $submap : {
                 /*the other header in table header*/
@@ -1959,7 +1957,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'{_subClass}'
+                                className:'xuicon {_subClass}'
                             },
                             LTAGCMDS:{
                                 $order:1,
@@ -2025,7 +2023,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'{_subClass}'
+                                className:'xuicon {_subClass}'
                             },
                             FCELLCAPTION:{
                                 $order:5,
@@ -2078,7 +2076,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:2,
                                 style:'{_treeMode};',
-                                className:'{_subClass}'
+                                className:'xuicon {_subClass}'
                             },
                             CELLCAPTION:{
                                 $order:3,
@@ -2277,11 +2275,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'none',
                 width:'14px',
                 height:'22px',
-                color: '#3393D2',
-                'text-align': 'center',
-                'font-size': '20pt',
-                'text-shadow': '2px 2px 2px #ccc',
-                'margin-top': '-4px'
+                'background-image':  xui.UI.$bg('icons.gif','',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-72px -270px'
             },
             COLLIST:{
                 position:'absolute',
@@ -5488,11 +5484,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     else{
                         if(cell.value===cell._oValue){
                             if(psdm)
-                                node.removeClass('xui-ui-dirty');
+                                node.removeClass('xuicon xui-ui-dirty');
                             delete cell.dirty;
                         }else{
                             if(psdm)
-                                node.addClass('xui-ui-dirty');
+                                node.addClass('xuicon xui-ui-dirty');
                             cell.dirty=true;
                         }
                     }

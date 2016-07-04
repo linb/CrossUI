@@ -116,9 +116,6 @@ html, .xui-uibg-base{
 .xui-cover{}
 .xui-coverlabel{}
 */
-.xui-ui-dirty{
-    background-image: url('Public/icons.gif')
-}
 /*xui-border*/
 .xui-border-t{
     top:-3px;
@@ -187,19 +184,6 @@ html, .xui-uibg-base{
     background: -o-linear-gradient(top,  #2DB8E5,  #E7F1F6);  
 }
 
-.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
-.xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore,
-.xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add{
-    background-image: url(Public/icons.gif);
-}
-.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pin, .xui-uicmd-refresh,
-.xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-min, .xui-uicmd-max, .xui-uicmd-restore{
-    width:16px;
-    height:16px;
-}
-.xui-uicmd-toggle, .xui-uicmd-toggle2{
-    background-image: url(Public/icons.gif);
-}
 /*uibar*/
 .xui-uibar-top .xui-uibar-tdl, .xui-uibar-top .xui-uibar-tdm, .xui-uibar-top .xui-uibar-tdr, 
 .xui-uibar-top-s .xui-uibar-tdl, .xui-uibar-top-s .xui-uibar-tdm, .xui-uibar-top-s .xui-uibar-tdr, 
@@ -336,7 +320,48 @@ html, .xui-uibg-base{
 /*xui.UI.Slider*/
 .xui-slider-box-v .xui-slider-decrease, .xui-slider-box-v .xui-slider-increase, .xui-slider-box-h .xui-slider-decrease, .xui-slider-box-h .xui-slider-increase, .xui-slider-box-h .xui-slider-ind1, .xui-slider-box-h .xui-slider-ind2, .xui-slider-box-v .xui-slider-ind1, .xui-slider-box-v .xui-slider-ind2{
     background-image: url(Public/icons.gif);
+    background-repeat: no-repeat;
+    border: none;
 }
+.xui-slider-box-h .xui-slider-decrease{
+    left:0,
+    background-position: -80px -70px;
+}
+.xui-slider-box-h .xui-slider-increase{
+    right:0,
+    background-position: -100px -70px;
+}
+.xui-slider-box-h .xui-slider-decrease-mouseover{
+    background-position:-80px -90px;
+}
+.xui-slider-box-h .xui-slider-decrease-mousedown{
+    background-position: -80px -110px;
+}
+.xui-slider-box-h .xui-slider-increase-mouseover{
+    background-position: -100px -90px
+}
+.xui-slider-box-h .xui-slider-increase-mousedown{
+    background-position: -100px -110px
+}
+.xui-slider-box-h .xui-slider-ind1, .xui-slider-box--h .xui-slider-ind2{
+    background-position: -21px -282px;
+}
+.xui-slider-box-h .xui-slider-ind1-mouseover,.xui-slider-box-h .xui-slider-ind2-mouseover{
+    background-position: -31px -282px;
+}
+.xui-slider-box-h .xui-slider-ind1-mousedown,.xui-slider-box-h .xui-slider-ind2-mousedown{
+    background-position:-41px -282px;
+}
+.xui-slider-box-v .xui-slider-ind1,.xui-slider-box-v .xui-slider-ind2{
+    background-position: left -272px;
+},
+.xui-slider-box-v .xui-slider-ind1-mouseover,.xui-slider-box-v .xui-slider-ind2-mouseover{
+    background-position:left -282px;
+},
+.xui-slider-box-v .xui-slider-ind1-mousedown,.xui-slider-box-v .xui-slider-ind2-mousedown{
+    background-position:left -292px;
+}
+
 .xui-slider-box-h .xui-slider-ruler, .xui-slider-box-h .xui-slider-rulerleft, .xui-slider-box-h .xui-slider-rulerright{
 }
 .xui-slider-box-v .xui-slider-ruler, .xui-slider-box-v .xui-slider-rulerleft, .xui-slider-box-v .xui-slider-rulerright{
@@ -501,10 +526,10 @@ html, .xui-uibg-base{
     background-color:#B4DCF0;
 }
 .xui-popmenu-itemsplit{
-		border: none;
+    border: none;
     padding:2px 0;
-	  background-repeat:repeat-x;
-	  background-position:left top;
+    background-repeat:repeat-x;
+    background-position:left top;
     background-image:url(Public/split_horizontal.gif);
 }
 .xui-popmenu-checkbox, .xui-popmenu-checkbox-checked, .xui-popmenu-top, .xui-popmenu-bottom,  .xui-popmenu-sub
@@ -527,6 +552,7 @@ html, .xui-uibg-base{
 .xui-layout-cmd-top, .xui-layout-cmd-bottom, .xui-layout-cmd-left, .xui-layout-cmd-right{
     background-image: url(Public/icons.gif);
 		background-repeat: no-repeat;
+		border:0;
 }
 .xui-layout-cmd-top{
 		left:50%;
@@ -589,9 +615,7 @@ html, .xui-uibg-base{
     background-position:left top;
     background-repeat:repeat-y;
 }
-.xui-toolbar-drop{
-    background-image: url(Button/drop.gif);
-}
+
 
 .xui-menubar-item-mouseover,
 .xui-menubar-item-mouseover .xui-menubar-itemi,

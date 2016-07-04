@@ -76,12 +76,12 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     HANDLE:{
                         tabindex: '{tabindex}',
                         TOGGLE:{
-                            className: 'xui-uicmd-toggle2 {toggleCls2}',
+                            className: 'xuicon xui-uicmd-toggle2 {toggleCls2}',
                             style:"{toggleDispplay}"
                         },
                         ICON:{
                             $order:1,
-                            className:'xui-ui-icon {imageClass}',
+                            className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION : {

@@ -1898,272 +1898,9 @@ Class("xui.UI",  "xui.absObj", {
                 height:'16px',
                 'background-repeat':'no-repeat'
             },
-            '.xui-ui-icon':{
-                'vertical-align':'middle',
-                width:'16px',
-                height:'16px',
-                'background-repeat':'no-repeat',
-                'background-position' : 'center',
-                margin:'0 2px'
-            },
-            '.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-refresh, .xui-uicmd-toggle, .xui-uicmd-toggle2, .xui-uicmd-min, .xui-uicmd-max,.xui-uicmd-restore,.xui-uicmd-pin, .xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add, .xui-uicmd-remove':{
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat', 
-                'background-position': 'left top',
-                width:'16px',
-                height:'16px',
-                'margin-right':'2px',
-                cursor:'default',
-                'vertical-align':'middle'
-            },
-            '.xui-uicmd-info':{
-                $order:1,
-                'background-position' : '-320px 0'
-            },
-            '.xui-uicmd-info-mouseover':{
-                $order:2,
-                'background-position' : '-320px  -20px'
-            },
-            '.xui-uicmd-info-mousedown':{
-                $order:3,
-                'background-position' : '-320px  -40px'
-            },
-            '.xui-uicmd-opt':{
-                $order:1,
-                'background-position' : '0 0'
-            },
-            '.xui-uicmd-opt-mouseover':{
-                $order:2,
-                'background-position' : '0 -20px'
-            },
-            '.xui-uicmd-opt-mousedown':{
-                $order:3,
-                'background-position' : '0 -40px'
-            },
-            '.xui-uicmd-pop, .xui-uicmd-land':{
-                $order:1,
-                'background-position' : '-40px 0'
-            },
-            '.xui-uicmd-pop-mouseover, .xui-uicmd-land-mouseover':{
-                $order:2,
-                'background-position' : '-40px -20px'
-            },
-            '.xui-uicmd-pop-mousedown, .xui-uicmd-land-mousedown':{
-                $order:3,
-                'background-position' : '-40px -40px'
-            },
-            '.xui-uicmd-refresh':{
-                $order:1,
-                'background-position' : '-280px 0'
-            },
-            '.xui-uicmd-refresh-mouseover':{
-                $order:2,
-                'background-position' : '-280px -20px'
-            },
-            '.xui-uicmd-refresh-mousedown':{
-                $order:3,
-                'background-position' : '-280px -40px'
-            },
-            '.xui-uicmd-pin':{
-                $order:1,
-                'background-position' : '-80px 0'
-            },
-            '.xui-uicmd-pin-mouseover':{
-                $order:2,
-                'background-position': '-80px -20px'
-            },
-            '.xui-uicmd-pin-mousedown':{
-                $order:3,
-                'background-position': '-80px -40px'
-            },
-            '.xui-uicmd-pin-checked, .xui-uicmd-pin-checked-mouseover, .xui-uicmd-pin-checked-mousedown':{
-                $order:4,
-                'background-position':  '-80px -40px'
-            },
-            '.xui-uicmd-min':{
-                $order:1,
-                'background-position' : '-120px 0'
-            },
-            '.xui-uicmd-min-mouseover':{
-                $order:2,
-               'background-position': ' -120px -20px'
-            },
-            '.xui-uicmd-min-mousedown':{
-                $order:3,
-               'background-position':  '-120px -40px'
-            },
-            '.xui-uicmd-restore':{
-                $order:1,
-                'background-position' : '-160px 0'
-            },
-            '.xui-uicmd-restore-mouseover':{
-                $order:2,
-               'background-position':  '-160px -20px'
-            },
-            '.xui-uicmd-restore-mousedown':{
-                $order:3,
-               'background-position':  '-160px -40px'
-            },
-            '.xui-uicmd-max':{
-                $order:1,
-                'background-position' : '-200px 0'
-            },
-            '.xui-uicmd-max-mouseover':{
-                $order:2,
-               'background-position':  '-200px -20px'
-            },
-            '.xui-uicmd-max-mousedown':{
-                $order:3,
-               'background-position':  '-200px -40px'
-            },
-            '.xui-uicmd-close':{
-                $order:1,
-                'background-position' : '-240px 0'
-            },
-            '.xui-uicmd-close-mouseover':{
-                $order:2,
-                'background-position' : '-240px -20px'
-            },
-            '.xui-uicmd-close-mousedown':{
-                $order:3,
-                'background-position' : '-240px -40px'
-            },
-            '.xui-uicmd-check':{
-                $order:1,
-                margin:'0 4px 0 2px',
-                'background-position' : '-20px -70px'
-            },
-            '.xui-uicmd-check-mouseover':{
-                $order:2,
-                'background-position' : '-20px -90px'
-            },
-            '.xui-uicmd-check-mousedown':{
-                $order:3,
-                'background-position' : '-20px -110px'
-            },
-            '.xui-uicmd-check-checked':{
-                $order:4,
-                'background-position' : '0 -70px'
-            },
-            '.xui-uicmd-check-checked-mouseover':{
-                $order:5,
-                'background-position' : '0 -90px'
-            },
-            '.xui-uicmd-check-checked-mousedown':{
-                $order:6,
-                'background-position' : '0 -110px'
-            },
-            '.xui-uicmd-radio':{
-                $order:1,
-                margin:'0 4px 0 2px',
-                'background-position' : '-60px -70px'
-            },
-            '.xui-uicmd-radio-mouseover':{
-                $order:2,
-                'background-position' : '-60px -90px'
-            },
-            '.xui-uicmd-radio-mousedown':{
-                $order:3,
-                'background-position' : '-60px -110px'
-            },
-            '.xui-uicmd-radio-checked':{
-                $order:4,
-                'background-position' : '-40px -70px'
-            },
-            '.xui-uicmd-radio-checked-mouseover':{
-                $order:5,
-                'background-position' : '-40px -90px'
-            },
-            '.xui-uicmd-radio-checked-mousedown':{
-                $order:6,
-                'background-position' : '-40px -110px'
-            },
-            '.xui-uicmd-add':{
-                $order:1,
-               'background-position':'-56px -222px'
-            },
-           '.xui-uicmd-add-mouseover':{
-                $order:2,
-                'background-position':'-56px -222px'
-           },
-           '.xui-uicmd-add-mousedown':{
-                $order:3,
-                'background-position':'-56px -222px'
-           },
-            '.xui-uicmd-remove':{
-                $order:1,
-                'background-position': '-72px -222px'
-            },
-            '.xui-uicmd-remove-mouseover':{
-                $order:1,
-                'background-position': '-72px -222px'
-            },
-            '.xui-uicmd-remove-mousedown':{
-                $order:1,
-                'background-position': '-72px -222px'
-            },
-
-            '.xui-uicmd-toggle':{
-                $order:1,
-                'background-position': '-160px -70px'
-            },
-            '.xui-uicmd-toggle-mouseover':{
-                $order:2,
-                'background-position': '-160px -90px'
-            },
-            '.xui-uicmd-toggle-mousedown':{
-                $order:3,
-                'background-position': '-160px -110px'
-            },
-            '.xui-uicmd-toggle-checked':{
-                $order:4,
-                'background-position': '-180px -70px'
-            },
-            '.xui-uicmd-toggle-checked-mouseover':{
-                $order:5,
-                'background-position': '-180px -90px'
-            },
-            '.xui-uicmd-toggle-checked-mousedown':{
-                $order:6,
-                'background-position': '-180px -110px'
-            },
-            '.xui-uicmd-toggle2':{
-                $order:1,
-                'background-position': '-200px -70px'
-            },
-            '.xui-uicmd-toggle2-mouseover':{
-                $order:2,
-                'background-position': '-200px -90px'
-            },
-            '.xui-uicmd-toggle2-mousedown':{
-                $order:3,
-                'background-position': '-200px -110px'
-            },
-            '.xui-uicmd-toggle2-checked':{
-                $order:4,
-                'background-position': '-220px -70px'
-            },
-            '.xui-uicmd-toggle2-checked-mouseover':{
-                $order:5,
-                'background-position': '-220px -90px'
-            },
-            '.xui-uicmd-toggle2-checked-mousedown':{
-                $order:6,
-                'background-position': '-220px -110px'
-            },
             '.xui-uicmd-none, .xui-display-none':{
                 display:'none'
             },
-            '.xui-uicmd-empty':{
-                $order:1000,
-                width:'16px',
-                height:'16px',
-                'margin-right':'2px',
-                cursor:'default',
-                'vertical-align':'middle',
-                background:'none'
-            },
-
             ".xui-uitembg":{
                 "background-color":"#FFF",
                  "padding":"1px"
@@ -2633,10 +2370,7 @@ Class("xui.UI",  "xui.absObj", {
                 overflow:'hidden'
              },
             '.xui-ui-dirty':{
-                $order:1,
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat': 'no-repeat',
-                'background-position':'-390px -290px'
+                $order:1
             },
             // Firefox will ignore input:read-only
             'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
@@ -2719,8 +2453,8 @@ Class("xui.UI",  "xui.absObj", {
     Static:{
         $cache_css:'',
         $cache_css2:'',
-        $css_tag_dirty: "xui-ui-dirty",
-        $css_tag_invalid: "xui-ui-invalid",
+        $css_tag_dirty: "xuicon xui-ui-dirty",
+        $css_tag_invalid: "xuicon xui-ui-invalid",
         $tag_left:"{",
         $tag_right:"}",
         $tag_subId:"_serialId",
@@ -3925,6 +3659,8 @@ Class("xui.UI",  "xui.absObj", {
             if(cache2){
                 xui.CSS.addStyleSheet(cache2, 'xui.UI-CSS'+(self.$cssNo++),true);
                 xui.UI.$cache_css2='';
+
+                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon');
             }
         },
         buildCSSText:function(hash){
@@ -6895,10 +6631,11 @@ new function(){
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{
+                    className:'xuicon'
                 },
                 ICON:{
                     $order:1,
-                    className:'xui-ui-icon {imageClass}',
+                    className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                 },
                 CAPTION:{
@@ -6906,9 +6643,9 @@ new function(){
                     text:'{caption}'
                 },
                 DROP:{
-                    $order:3,
-                    style:'{_dropCls}',
-                    text:'&#9660'
+                    $order: 3,
+                    className: 'xuicon xui-uicmd-arrowdrop',
+                    style: '{_showDrop}'
                 },
                 CLEAR:{
                     $order:4,
@@ -6926,8 +6663,7 @@ new function(){
                     height:'100%'
                 },
                 DROP:{
-                    'vertical-align': 'middle',                    
-                    'font-size':'12px',
+                    'vertical-align': 'middle',
                     'padding-left':'8px',
                     color:'#888'
                 },
@@ -7022,12 +6758,13 @@ new function(){
                     listbox:['normal','status','drop'],
                     action:function(value){
                         var self=this,
-                            root=self.getRoot(),
                             drop=self.getSubNode('DROP');
-                        if(value=='drop')
+                        if(value=='drop'){
                             drop.css('display','');
-                        else
+                        }
+                        else{
                             drop.css('display','none');
+                        }
                     }
                 }
             },
@@ -7040,7 +6777,7 @@ new function(){
             _prepareData:function(profile){
                 var data=arguments.callee.upper.call(this, profile);
                 data._align = 'text-align:'+data.hAlign+';';
-                data._dropCls = data.type=='drop'?'':'display:none';
+                data._showDrop = data.type=='drop'?'':'display:none';
                 return data;
             },
             RenderTrigger:function(){

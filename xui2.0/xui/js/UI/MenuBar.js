@@ -139,7 +139,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                                     className:' {typeCls} {disabled}',
                                     ICON:{
                                         $order:1,
-                                        className:'xui-ui-icon {imageClass}',
+                                        className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                                     },
                                     CAPTION:{
@@ -179,7 +179,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
+                'background-image':xui.UI.$bg('handler.gif', '',true),
                 'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'

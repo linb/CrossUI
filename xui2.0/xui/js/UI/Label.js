@@ -10,7 +10,7 @@ Class("xui.UI.Label", "xui.UI",{
             style:'{_style};text-align:{hAlign}',
             ICON:{
                 $order:0,
-                className:'xui-ui-icon {imageClass}',
+                className:'xuicon {imageClass}',
                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
             },
             CAPTION:{

@@ -243,7 +243,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             TOGGLE:{
                                 $order:4,
-                                className:'{togglemark}'
+                                className:'xuicon {togglemark}'
                             },
                             LTAGCMDS:{
                                 $order:3,
@@ -252,11 +252,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             MARK:{
                                 $order:5,
+                                className:'xuicon',
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
                                 $order:6,
-                                className:'xui-ui-icon {imageClass}',
+                                className:'xuicon {imageClass}',
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{

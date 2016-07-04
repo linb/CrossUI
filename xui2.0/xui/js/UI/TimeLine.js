@@ -179,13 +179,13 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         OPT:{
-                            className:'xui-uicmd-opt',
+                            className:'xuicon xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:0
                         },
                         CLOSE:{
                             $order:4,
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -1119,7 +1119,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             HANDLER:{
                 position:'relative',
                 height:'7px',
-                'background-image': xui.ini.img_handler,
+                'background-image':xui.UI.$bg('handler.gif', '', true),
                 'background-repeat':'repeat'
             },
             TSKBAR:{

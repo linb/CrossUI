@@ -107,7 +107,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -385,15 +385,15 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 width:'16px'
             },
             ".xui-nodatauri ADVCLR":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clrbg.png', 'no-repeat left top',null,true),
+                background: xui.browser.ie6?null:xui.UI.$bg('bg.png', 'no-repeat left top',null,true),
                 _filter: xui.UI.$ieBg('bg.png',null,true)
             },
             ".xui-nodatauri ADVWHEEL":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clr.png', 'no-repeat left top',null,true),
+                background: xui.browser.ie6?null:xui.UI.$bg('clr.png', 'no-repeat left top',null,true),
                 _filter: xui.UI.$ieBg('clr.png',null,true)
             },
             '.xui-nodatauri ADVMARK1, .xui-nodatauri ADVMARK2':{
-                background:xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/picker.png', 'no-repeat left top',null,true),
+                background:xui.browser.ie6?null:xui.UI.$bg('picker.png', 'no-repeat left top',null,true),
                 _filter: xui.UI.$ieBg('picker.png',null,true)
             },
 

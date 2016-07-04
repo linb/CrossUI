@@ -378,7 +378,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         RULER:{},
                                         ICON:{
                                             $order:0,
-                                            className:'xui-ui-icon {imageClass}',
+                                            className:'xuicon {imageClass}',
                                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                                         },
                                         CAPTION:{
@@ -390,16 +390,16 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             $order:2,
                                             OPT:{
                                                 $order:1,
-                                                className:'xui-uicmd-opt',
+                                                className:'xuicon xui-uicmd-opt',
                                                 style:'{_opt}'
                                             },
                                             POP:{
-                                                className:'xui-uicmd-pop',
+                                                className:'xuicon xui-uicmd-pop',
                                                 style:'{popDisplay}',
                                                 $order:1
                                             },
                                             CLOSE:{
-                                                className:'xui-uicmd-close ',
+                                                className:'xuicon xui-uicmd-close ',
                                                 style:'{closeDisplay}',
                                                 $order:2
                                             }

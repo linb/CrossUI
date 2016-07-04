@@ -263,7 +263,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
-                        className:'xui-ui-icon {imageClass}',
+                        className:'xuicon xui-icon-empty {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}'
                     },
                     CAPTION:{
@@ -290,7 +290,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
-                         className:'xui-ui-icon {checkboxCls}'
+                         className:'xuicon {checkboxCls}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -315,7 +315,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
-                         className:'xui-ui-icon {radioboxCls}'
+                         className:'xuicon {radioboxCls}'
                     },
                     CAPTION:{
                         text : '{caption}',

@@ -136,7 +136,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         },
                         ICON:{
                             $order:10,
-                            className:'xui-ui-icon {imageClass}',
+                            className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION:{

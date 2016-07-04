@@ -174,7 +174,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     className:'xui-uibar-cmdl',
                     ICON:{
                         $order:0,
-                        className:'xui-ui-icon {imageClass}',
+                        className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                     },
                     CAPTION:{
@@ -188,48 +188,48 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     tagName: 'div',
                     className:'xui-uibar-cmdr',
                     INFO:{
-                        className:'xui-uicmd-info',
+                        className:'xuicon xui-uicmd-info',
                         style:'{infoDisplay}',
                         $order:1
                     },
                     OPT:{
-                        className:'xui-uicmd-opt',
+                        className:'xuicon xui-uicmd-opt',
                         style:'{optDisplay}',
                         $order:1
                     },
                     PIN:{
                         $order:2,
-                        className:'xui-uicmd-pin',
+                        className:'xuicon xui-uicmd-pin',
                         style:'{pinDisplay}'
                     },
                     LAND:{
                         $order:3,
-                        className:'xui-uicmd-land',
+                        className:'xuicon xui-uicmd-land',
                         style:'{landDisplay}'
                     },
                     REFRESH:{
-                        className:'xui-uicmd-refresh',
+                        className:'xuicon xui-uicmd-refresh',
                         style:'{refreshDisplay}',
                         $order:4
                     },
                     MIN:{
                         $order:5,
-                        className:'xui-uicmd-min',
+                        className:'xuicon xui-uicmd-min',
                         style:'{minDisplay}'
                     },
                     RESTORE:{
                         $order:6,
-                        className:'xui-uicmd-restore',
+                        className:'xuicon xui-uicmd-restore',
                         style:'display:none;'
                     },
                     MAX:{
                         $order:7,
-                        className:'xui-uicmd-max',
+                        className:'xuicon xui-uicmd-max',
                         style:'{maxDisplay}'
                     },
                     CLOSE:{
                         $order:8,
-                        className:'xui-uicmd-close ',
+                        className:'xuicon xui-uicmd-close ',
                         style:'{closeDisplay}'
                     }
                 }

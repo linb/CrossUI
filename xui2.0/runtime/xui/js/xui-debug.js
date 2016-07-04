@@ -1765,6 +1765,11 @@ new function(){
     }
     _.merge(ini,{
         appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
+        img_bg: ini.path+'appearance/bg.gif',
+        img_busy: ini.path+'appearance/busy.gif',
+        img_icon: ini.path+'appearance/icon.png',
+        img_pic: ini.path+'appearance/picture.png',
+        img_blank:b.ie&&b.ver<=7?(ini.path+'appearance/bg.gif'):"data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
         dummy_tag:'$_dummy_$'
     },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
@@ -1772,33 +1777,6 @@ new function(){
     ini.releasePath=ini.appPath;
     if(ini.verPath)ini.releasePath+=(ini.verPath?(ini.verPath+"/"):"")+(ini.ver?(ini.ver+"/"):"");
 
-    var data = new Image();
-    data.onload = data.onerror = function(){
-        var path=xui.ini.path+"appearance/_oldbrowser/";
-        if(this.width != 1 || this.height != 1){
-            document.documentElement.className += " xui-nodatauri";
-            _.merge(xui.ini,{
-                img_dd: path+'ondrag.gif',
-                img_busy: path+'busy.gif',
-                img_icon: path+'icon.png',
-                img_pic: path+'picture.png',
-                img_handler: path+'handler.gif',
-                img_bg: path+'bg.gif',
-                img_blank: path+'bg.gif'
-            },'without');
-        }
-        data.onload = data.onerror = null;
-    };
-    data.src = "data:image/gif;base64,R0lGODlhAQABAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+ZzP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8AzP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wAAJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNmMzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAMwAAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAANgALAAAAAABAAEAAAgEALEFBAA7";
-    _.merge(xui.ini,{
-        img_dd:     "data:image/gif;base64,R0lGODlhEABAAPcAAAAAAAEBAQICAgMDAwUFBAUFBQcHBwgICAkJCQwMDA8PDx4eHiQkJDAwMD8/P0JCQl1dXf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAQAEAAAAj/AP8JHPigQQMHAxMOTAAAgIABAgAkUPgPQsMABAoQCNAQAISEFw0cMMCxI4CFAAIY+Eey4b+LCgSmXCnzpECVBf49AEBgJEWVBwg8WCCgQMuEQEkuYDBgo8uBIlsyeCCgJMWWAB68fPpP5cCOAhm6TLpV4teQI0tyrTgzrcmPChNoVIuAYsKCB+3qtQsgQt+/fgPb/Ce4MOCvEfb6HbhYb1/Eigc35ptYZmW7kw1rRgy48+S9oEOLHk26tGnRnlMzTl0Yst7Mgyk+tnzWpO3JfSPo3q274eXcfjv21rxbeHDBwE32VphbeHPmvYEvBzmc9+eXxa3Hxm69OHPbtk2zNO68WvNh2q8lb6fuuix434Ola5/Nvbt53tLhH8/unXpw49vlhx90/E2HmH3XyTcgSO91FBAAOw==",
-        img_busy:  "data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7",
-        img_icon:   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACmwAAApsBm2pmsgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJgSURBVDiNZZNfSNNRFMc/s8gaizkXgrM2sicFIVJ7Cx82qsmaxAz7I/5QEyGGfxiWaJCRT1rQQxkR1KPQU5CWShiYuAedPtSmsOeI3GJsut0X3elhbv5W53Lhcrif7+V87zkGESEf1QaD4wq8scKpDZieFZkEMLgNGufpYpcdlhmUDYkWIBEpbB9MZUEEJAxpN4zjxs8SCeRg3eatnjmKLlLwaxc4CdSC8YKDoYUA2f1LHAdgD1Ck9Aw2G3afjxdOJyNAWRcsKpBXdsTyqfCusI8QYA0rNpzOEVpbX2Kz2entZS6bRVIpRNNYAKwN1WxZZovhEz38xMIZNG2eVErIZgW/f4HRUdbzJSmFtLWzzkddzftIYzvyrYRMWVNTGKUODRgbC9HczFA4TFovcq2LOIkc3NCObJfkjH1vNKpjExNxRIRIRNHS8gARwe1m/D+RbmL0sXrjCMvJg5/Ji5QODMTwep9ILivgpqf2Dr9//EDpRTo6WKSz80uF1/snoRNZhbQXHuV66Cq3WCKOILV9xPMiiQRScdcbQylBKflXJAzpFhiEYb4WDMsiddeJrqyQLsB5w0KhdGNl5abSiTyGNbjHBwRhD+E+K1g4XdrR9r0IDoeVw1MXAcq7YHEHJAvihzlwcBYf7/DwHCOVdHd/LoIjEeX018SVQjSNeaDsMjz0wVQ12ItmAZdrmGTyMLG1lbmo1cTzV5JJxOViWM+UFPW12VyFyZQ7R6MZAoGn1u3N15EIGQCTCcxmqvRI0TARDE7Q33+O8vIKQqFpmZl5BuDxGBL19dyMx4kFg0zqkb+vwqjwTYPW6AAAAABJRU5ErkJggg==",
-        img_pic:    "data:image/png;base64,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",
-        img_handler:"data:image/gif;base64,R0lGODlhBAAEAPcAAAAAAGSMtP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAEAAQAAAgPAP8JFCDwX4B/BAUe/BcQADs=",
-        img_bg:     data.src,
-        img_blank: data.src
-    },'without');
     //for dom ready
     var f = xui._domReadyFuns= function(){
         if(!xui.isDomReady){
@@ -12353,6 +12331,16 @@ type:4
         xui.busy=xui.Dom.busy;
         xui.free=xui.Dom.free;
 
+        // support data uri?
+        var data = new Image();
+        data.onload = data.onerror = function(){
+            if(this.width != 1 || this.height != 1){
+                document.documentElement.className += " xui-nodatauri";
+            }
+        }
+        data.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+
         xui.$inlineBlock=xui.browser.gek
             ? xui.browser.ver<3
                 ? ['-moz-inline-block', '-moz-inline-box','inline-block']
@@ -15077,7 +15065,7 @@ Class('xui.DragDrop',null,{
                 dragCursor:'move',
                 targetReposition:true,
 
-                dragIcon:xui.ini.img_dd,
+                dragIcon:xui.ini.path+'appearance/ondrag.gif',
                 magneticDistance:0,
                 xMagneticLines:[],
                 yMagneticLines:[],
@@ -18552,272 +18540,9 @@ Class("xui.UI",  "xui.absObj", {
                 height:'16px',
                 'background-repeat':'no-repeat'
             },
-            '.xui-ui-icon':{
-                'vertical-align':'middle',
-                width:'16px',
-                height:'16px',
-                'background-repeat':'no-repeat',
-                'background-position' : 'center',
-                margin:'0 2px'
-            },
-            '.xui-uicmd-close, .xui-uicmd-info, .xui-uicmd-opt, .xui-uicmd-pop, .xui-uicmd-land, .xui-uicmd-refresh, .xui-uicmd-toggle, .xui-uicmd-toggle2, .xui-uicmd-min, .xui-uicmd-max,.xui-uicmd-restore,.xui-uicmd-pin, .xui-uicmd-check, .xui-uicmd-radio, .xui-uicmd-add, .xui-uicmd-remove':{
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat', 
-                'background-position': 'left top',
-                width:'16px',
-                height:'16px',
-                'margin-right':'2px',
-                cursor:'default',
-                'vertical-align':'middle'
-            },
-            '.xui-uicmd-info':{
-                $order:1,
-                'background-position' : '-320px 0'
-            },
-            '.xui-uicmd-info-mouseover':{
-                $order:2,
-                'background-position' : '-320px  -20px'
-            },
-            '.xui-uicmd-info-mousedown':{
-                $order:3,
-                'background-position' : '-320px  -40px'
-            },
-            '.xui-uicmd-opt':{
-                $order:1,
-                'background-position' : '0 0'
-            },
-            '.xui-uicmd-opt-mouseover':{
-                $order:2,
-                'background-position' : '0 -20px'
-            },
-            '.xui-uicmd-opt-mousedown':{
-                $order:3,
-                'background-position' : '0 -40px'
-            },
-            '.xui-uicmd-pop, .xui-uicmd-land':{
-                $order:1,
-                'background-position' : '-40px 0'
-            },
-            '.xui-uicmd-pop-mouseover, .xui-uicmd-land-mouseover':{
-                $order:2,
-                'background-position' : '-40px -20px'
-            },
-            '.xui-uicmd-pop-mousedown, .xui-uicmd-land-mousedown':{
-                $order:3,
-                'background-position' : '-40px -40px'
-            },
-            '.xui-uicmd-refresh':{
-                $order:1,
-                'background-position' : '-280px 0'
-            },
-            '.xui-uicmd-refresh-mouseover':{
-                $order:2,
-                'background-position' : '-280px -20px'
-            },
-            '.xui-uicmd-refresh-mousedown':{
-                $order:3,
-                'background-position' : '-280px -40px'
-            },
-            '.xui-uicmd-pin':{
-                $order:1,
-                'background-position' : '-80px 0'
-            },
-            '.xui-uicmd-pin-mouseover':{
-                $order:2,
-                'background-position': '-80px -20px'
-            },
-            '.xui-uicmd-pin-mousedown':{
-                $order:3,
-                'background-position': '-80px -40px'
-            },
-            '.xui-uicmd-pin-checked, .xui-uicmd-pin-checked-mouseover, .xui-uicmd-pin-checked-mousedown':{
-                $order:4,
-                'background-position':  '-80px -40px'
-            },
-            '.xui-uicmd-min':{
-                $order:1,
-                'background-position' : '-120px 0'
-            },
-            '.xui-uicmd-min-mouseover':{
-                $order:2,
-               'background-position': ' -120px -20px'
-            },
-            '.xui-uicmd-min-mousedown':{
-                $order:3,
-               'background-position':  '-120px -40px'
-            },
-            '.xui-uicmd-restore':{
-                $order:1,
-                'background-position' : '-160px 0'
-            },
-            '.xui-uicmd-restore-mouseover':{
-                $order:2,
-               'background-position':  '-160px -20px'
-            },
-            '.xui-uicmd-restore-mousedown':{
-                $order:3,
-               'background-position':  '-160px -40px'
-            },
-            '.xui-uicmd-max':{
-                $order:1,
-                'background-position' : '-200px 0'
-            },
-            '.xui-uicmd-max-mouseover':{
-                $order:2,
-               'background-position':  '-200px -20px'
-            },
-            '.xui-uicmd-max-mousedown':{
-                $order:3,
-               'background-position':  '-200px -40px'
-            },
-            '.xui-uicmd-close':{
-                $order:1,
-                'background-position' : '-240px 0'
-            },
-            '.xui-uicmd-close-mouseover':{
-                $order:2,
-                'background-position' : '-240px -20px'
-            },
-            '.xui-uicmd-close-mousedown':{
-                $order:3,
-                'background-position' : '-240px -40px'
-            },
-            '.xui-uicmd-check':{
-                $order:1,
-                margin:'0 4px 0 2px',
-                'background-position' : '-20px -70px'
-            },
-            '.xui-uicmd-check-mouseover':{
-                $order:2,
-                'background-position' : '-20px -90px'
-            },
-            '.xui-uicmd-check-mousedown':{
-                $order:3,
-                'background-position' : '-20px -110px'
-            },
-            '.xui-uicmd-check-checked':{
-                $order:4,
-                'background-position' : '0 -70px'
-            },
-            '.xui-uicmd-check-checked-mouseover':{
-                $order:5,
-                'background-position' : '0 -90px'
-            },
-            '.xui-uicmd-check-checked-mousedown':{
-                $order:6,
-                'background-position' : '0 -110px'
-            },
-            '.xui-uicmd-radio':{
-                $order:1,
-                margin:'0 4px 0 2px',
-                'background-position' : '-60px -70px'
-            },
-            '.xui-uicmd-radio-mouseover':{
-                $order:2,
-                'background-position' : '-60px -90px'
-            },
-            '.xui-uicmd-radio-mousedown':{
-                $order:3,
-                'background-position' : '-60px -110px'
-            },
-            '.xui-uicmd-radio-checked':{
-                $order:4,
-                'background-position' : '-40px -70px'
-            },
-            '.xui-uicmd-radio-checked-mouseover':{
-                $order:5,
-                'background-position' : '-40px -90px'
-            },
-            '.xui-uicmd-radio-checked-mousedown':{
-                $order:6,
-                'background-position' : '-40px -110px'
-            },
-            '.xui-uicmd-add':{
-                $order:1,
-               'background-position':'-56px -222px'
-            },
-           '.xui-uicmd-add-mouseover':{
-                $order:2,
-                'background-position':'-56px -222px'
-           },
-           '.xui-uicmd-add-mousedown':{
-                $order:3,
-                'background-position':'-56px -222px'
-           },
-            '.xui-uicmd-remove':{
-                $order:1,
-                'background-position': '-72px -222px'
-            },
-            '.xui-uicmd-remove-mouseover':{
-                $order:1,
-                'background-position': '-72px -222px'
-            },
-            '.xui-uicmd-remove-mousedown':{
-                $order:1,
-                'background-position': '-72px -222px'
-            },
-
-            '.xui-uicmd-toggle':{
-                $order:1,
-                'background-position': '-160px -70px'
-            },
-            '.xui-uicmd-toggle-mouseover':{
-                $order:2,
-                'background-position': '-160px -90px'
-            },
-            '.xui-uicmd-toggle-mousedown':{
-                $order:3,
-                'background-position': '-160px -110px'
-            },
-            '.xui-uicmd-toggle-checked':{
-                $order:4,
-                'background-position': '-180px -70px'
-            },
-            '.xui-uicmd-toggle-checked-mouseover':{
-                $order:5,
-                'background-position': '-180px -90px'
-            },
-            '.xui-uicmd-toggle-checked-mousedown':{
-                $order:6,
-                'background-position': '-180px -110px'
-            },
-            '.xui-uicmd-toggle2':{
-                $order:1,
-                'background-position': '-200px -70px'
-            },
-            '.xui-uicmd-toggle2-mouseover':{
-                $order:2,
-                'background-position': '-200px -90px'
-            },
-            '.xui-uicmd-toggle2-mousedown':{
-                $order:3,
-                'background-position': '-200px -110px'
-            },
-            '.xui-uicmd-toggle2-checked':{
-                $order:4,
-                'background-position': '-220px -70px'
-            },
-            '.xui-uicmd-toggle2-checked-mouseover':{
-                $order:5,
-                'background-position': '-220px -90px'
-            },
-            '.xui-uicmd-toggle2-checked-mousedown':{
-                $order:6,
-                'background-position': '-220px -110px'
-            },
             '.xui-uicmd-none, .xui-display-none':{
                 display:'none'
             },
-            '.xui-uicmd-empty':{
-                $order:1000,
-                width:'16px',
-                height:'16px',
-                'margin-right':'2px',
-                cursor:'default',
-                'vertical-align':'middle',
-                background:'none'
-            },
-
             ".xui-uitembg":{
                 "background-color":"#FFF",
                  "padding":"1px"
@@ -19287,10 +19012,7 @@ Class("xui.UI",  "xui.absObj", {
                 overflow:'hidden'
              },
             '.xui-ui-dirty':{
-                $order:1,
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat': 'no-repeat',
-                'background-position':'-390px -290px'
+                $order:1
             },
             // Firefox will ignore input:read-only
             'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
@@ -19373,8 +19095,8 @@ Class("xui.UI",  "xui.absObj", {
     Static:{
         $cache_css:'',
         $cache_css2:'',
-        $css_tag_dirty: "xui-ui-dirty",
-        $css_tag_invalid: "xui-ui-invalid",
+        $css_tag_dirty: "xuicon xui-ui-dirty",
+        $css_tag_invalid: "xuicon xui-ui-invalid",
         $tag_left:"{",
         $tag_right:"}",
         $tag_subId:"_serialId",
@@ -20579,6 +20301,8 @@ Class("xui.UI",  "xui.absObj", {
             if(cache2){
                 xui.CSS.addStyleSheet(cache2, 'xui.UI-CSS'+(self.$cssNo++),true);
                 xui.UI.$cache_css2='';
+
+                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon');
             }
         },
         buildCSSText:function(hash){
@@ -23549,10 +23273,11 @@ new function(){
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{
+                    className:'xuicon'
                 },
                 ICON:{
                     $order:1,
-                    className:'xui-ui-icon {imageClass}',
+                    className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                 },
                 CAPTION:{
@@ -23560,9 +23285,9 @@ new function(){
                     text:'{caption}'
                 },
                 DROP:{
-                    $order:3,
-                    style:'{_dropCls}',
-                    text:'&#9660'
+                    $order: 3,
+                    className: 'xuicon xui-uicmd-arrowdrop',
+                    style: '{_showDrop}'
                 },
                 CLEAR:{
                     $order:4,
@@ -23580,8 +23305,7 @@ new function(){
                     height:'100%'
                 },
                 DROP:{
-                    'vertical-align': 'middle',                    
-                    'font-size':'12px',
+                    'vertical-align': 'middle',
                     'padding-left':'8px',
                     color:'#888'
                 },
@@ -23676,12 +23400,13 @@ new function(){
                     listbox:['normal','status','drop'],
                     action:function(value){
                         var self=this,
-                            root=self.getRoot(),
                             drop=self.getSubNode('DROP');
-                        if(value=='drop')
+                        if(value=='drop'){
                             drop.css('display','');
-                        else
+                        }
+                        else{
                             drop.css('display','none');
+                        }
                     }
                 }
             },
@@ -23694,7 +23419,7 @@ new function(){
             _prepareData:function(profile){
                 var data=arguments.callee.upper.call(this, profile);
                 data._align = 'text-align:'+data.hAlign+';';
-                data._dropCls = data.type=='drop'?'':'display:none';
+                data._showDrop = data.type=='drop'?'':'display:none';
                 return data;
             },
             RenderTrigger:function(){
@@ -26033,7 +25758,7 @@ Class("xui.UI.Label", "xui.UI",{
             style:'{_style};text-align:{hAlign}',
             ICON:{
                 $order:0,
-                className:'xui-ui-icon {imageClass}',
+                className:'xuicon {imageClass}',
                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
             },
             CAPTION:{
@@ -26270,11 +25995,11 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 tabindex: '{tabindex}',
                 MARK:{
                     $order:0,
-                    className:'xui-uicmd-check'
+                    className:'xuicon xui-uicmd-check'
                 },
                 ICON:{
                     $order:1,
-                    className:'xui-ui-icon {imageClass}',
+                    className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                 },
                 CAPTION:{
@@ -26395,10 +26120,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 IND:{
                     $order:2,
                     IND1:{
+                        tagName:'button',
+                        className:'xui-ui-btn',
                         style:'{_showD}',
                         tabindex:'{tabindex}'
                     },
                     IND2:{
+                        tagName:'button',
+                        className:'xui-ui-btn',
                         style:'{_showD2}',
                         tabindex:'{tabindex}'
                     }
@@ -26439,9 +26168,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 height:'17px',
                 'margin-top':'-8px'
             },            
-            'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE, BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
+            'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE': {
                 'background-image': xui.UI.$bg('icons.gif', '',true),
                 'background-repeat':'no-repeat'
+            },
+            'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
+                padding:0,
+                margin:0
             },
             'BOX-h DECREASE':{
                 $order:1,
@@ -26497,25 +26230,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $order:2,
                 right:'-2px',
                 top:0
-            },
-            'BOX-h IND1,BOX-h IND2':{
-                $order:1,
-                'z-index':2,
-                'background-position': '-21px -282px',
-                height:'18px',
-                width:'8px',
-                left:0,
-                top:0,
-                cursor:'e-resize',
-                'margin-top':'-7px'
-            },
-            'BOX-h IND1-mouseover,BOX-h IND2-mouseover':{
-                $order:2,
-                'background-position':'-31px -282px'
-            },
-            'BOX-h IND1-mousedown,BOX-h IND2-mousedown':{
-                $order:3,
-                'background-position':'-41px -282px'
             },
 
             'BOX-v DECREASE, BOX-v INCREASE':{
@@ -26587,24 +26301,25 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 bottom:'-2px',
                 left:0
             },
+            'BOX-h IND1,BOX-h IND2':{
+                $order:1,
+                'z-index':2,
+                height:'18px',
+                width:'8px',
+                left:0,
+                top:0,
+                cursor:'e-resize',
+                'margin-top':'-7px'
+            },
             'BOX-v IND1,BOX-v IND2':{
                 $order:10,
                 'z-index':2,
-                'background-position': 'left -272px',
                 width:'18px',
                 height:'8px',
                 left:0,
                 top:0,
                 cursor:'n-resize',
                 'margin-left':'-7px'
-            },
-            'BOX-v IND1-mouseover,BOX-v IND2-mouseover':{
-                $order:11,
-                'background-position':'left -282px'
-            },
-            'BOX-v IND1-mousedown,BOX-v IND2-mousedown':{
-                $order:12,
-                'background-position':'left -292px'
             }
         },
         Behaviors:{
@@ -27060,25 +26775,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     value=profile.$Mask;
                 }
                 profile.$_inner=1;
-                if(profile.properties.multiLines){
-                    var node=profile.getSubNode('INPUT').get(0);
-                    if(node.value.replace(/(\r\n|\r)/g, "\n")!=(value+"").replace(/(\r\n|\r)/g, "\n")){
-                        var st=node.scrollTop;
-                        node.value=value;
-                        node.scrollTop=st;
-                    }
-                }else{
-                    profile.getSubNode('INPUT').attr('value',value+"");
-                }
+                profile.getSubNode('INPUT').attr('value',value+"");
                 delete profile.$_inner;
             });
         },
         _getCtrlValue:function(){
             var node=this.getSubNode('INPUT'),
                 v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
-            if(/[\r\n\t]/.test(v)){
-                v=v.replace(/(\r\n|\r)/g, "\n").replace(/( +)(\n)/g, "$2").replace(/\t/g, "    ");
-            }
+            if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
             if(this.get(0).$Mask && this.get(0).$Mask==v){
                 v="";
             }
@@ -27156,9 +26860,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         style:'{_css};{hAlign};'
                     }
                 }
-            },
-            BAK1:{},
-            BAK2:{tagName:'div'}
+            }
         },'all');
         t.FRAME.ERROR = {};
         this.setTemplate(t)
@@ -27227,12 +26929,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                'overflow-y':'auto',
                'overflow-x':'hidden',
                resize:'none'
-            },
-            'BAK1, BAK2':{
-                position:'absolute',
-                visibility:'hidden',
-                left:'-10000px',
-                top:'-10000px'
             },
             ERROR:{
                 width:'9px',
@@ -27321,85 +27017,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                                 b._changeMask(profile,xui.use(src).get(0),'');
                                 return false;
                         }
-                    }else if(m){
-                        var key = xui.Event.getKey(e),
-                        node=xui.use(src).get(0),
-                        k=key.key;
-                        switch(k){
-                            case 'tab':
-                                var r=xui.use(src).caret(),
-                                    sel=node.value.slice(r[0],r[1]);
-                                if(/(\n|\r)/.test(sel)){
-                                    //previous
-                                    str=node.value.slice(0,r[0]);
-                                    if(sel.charAt(0)!='\n' && sel.charAt(0)!='\r'){
-                                        //change sel
-                                        sel=str.slice(r[0]=str.lastIndexOf('\n'))+sel;
-                                    }
-                                    //
-                                    if(xui.browser.ie){
-                                        t= (t=str.match(/\r/g))?t.length:0;
-                                        r[0]-=t;
-                                        t= (t=(node.value.slice(0,r[1])).match(/\r/g))?t.length:0;
-                                        r[1]-=t;
-                                    }
-
-                                    //re caret
-                                    xui.use(src).caret(r[0],r[1]);
-
-                                    if(key.shiftKey){
-                                        sel=sel.replace(/(\n|\n\r)    /g,'$1');
-                                    }else{
-                                        sel=sel.replace(/(\n|\n\r)/g,'$1    ');
-                                    }
-                                    //insert
-                                    profile.box.insertAtCaret(profile,sel);
-
-                                    r[1]=r[0]+sel.length;
-                                    if(xui.browser.ie){
-                                        t= (t=sel.match(/\r/g))?t.length:0;
-                                        r[1]-=t;
-                                    }
-                                    //caret
-                                    xui.use(src).caret(r[0],r[1]);
-                                }else{
-                                    if(key.shiftKey){
-                                        xui.use(src).caret(r[0]-4,r[0]-4);
-                                        r[0]-=4;
-                                        r[1]-=4;
-                                    }else{
-                                        profile.box.insertAtCaret(profile,'    ');
-                                        r[0]+=4;
-                                        r[1]+=4;
-                                    }
-                                }
-                                profile.$pos=r;
-                                return false;
-                            case 'enter':
-                                var paras = profile.box.getParas(profile);
-                                str = paras[1];
-                                var len = str.length - _.str.ltrim(str).length;
-
-                                if(str.charAt(str.length-1)=="{")
-                                    len +=4;
-                                if(len){
-                                    profile.box.insertAtCaret(profile, '\n'+_.str.repeat(' ',len));
-                                    profile.$enter=true;
-                                    return false;
-                                }
-                                break;
-                            default:
-                                if(profile.tips){
-                                    profile.tips.destroy(true);
-                                    profile.tips=null;
-                                }
-                        }
-                        node=null;
                     }
                 },
                 onKeypress:function(profile, e, src){
                     var p=profile.properties,
-                    m=p.multiLines,
                     b=profile.box,
                     cls=profile.box,
                     map=cls._maskMap,
@@ -27423,47 +27044,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
                         cls._changeMask(profile,xui.use(src).get(0),k.key,true);
                         return false;
-                    }else if(m){
-                        var key = xui.Event.getKey(e), k=key.key;
-                        switch(k){
-                            case 'tab':
-                                if(xui.browser.opr)
-                                    _.asyRun(function(){
-                                        xui.use(src).caret(profile.$pos[0], profile.$pos[1]);
-                                    });
-                                return false;
-                            case 'enter':
-                                if(profile.$enter){
-                                    delete profile.$enter;
-                                    return false;
-                                }
-                            case '}':
-                                if(key.shiftKey){
-                                    var paras = profile.box.getParas(profile);
-                                    var
-                                    loc = paras[0],
-                                    str = paras[1],
-                                    pos=paras[2],
-                                    input=paras[3];
-                                    if(/ {4}$/.test(str)){
-                                        var st=xui(src).scrollTop();
-                                        input.value =
-                                            input.value.substr(0,loc).replace(/ {4}$/,'}') +
-                                            input.value.substr(loc, input.value.length);
-
-                                        profile.box.setCaretTo(input, loc - 4 + 1, st);
-
-                                        return false;
-                                    }
-                                }
-                                break;
-                        }
                     }
                 },
                 onKeyup:function(profile, e, src){
-                    var p=profile.properties,
-                        m=p.multiLines,
-                        b=profile.box;
+                    var p=profile.properties,b=profile.box;
                     // must be key up event
                     if(xui.Event.getKey(e).key=='esc'){
                         profile.boxing()._setCtrlValue(p.$UIvalue);
@@ -28013,95 +27597,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             });
         },
-        //for
-        insertAtCaret:function(profile, text) {
-            var input = profile.getSubNode('INPUT'),
-                scrollTop = input.scrollTop() || null,
-                ret;
-            //replace text
-            ret=input.caret(text);
-            //set cursor
-    	    this.setCaretTo(input.get(0), ret||0, scrollTop);
-    	},
-        //set cursor to textarea
-        setCaretTo:function(input, pos, scrollTop){
-            input.focus()
-            var s,c,h,o=xui([input]);
-
-            //opera not support scrollTop in textarea
-            if(_.isNumb(scrollTop))
-                o.scrollTop(scrollTop);
-
-            if(scrollTop===true){
-                if(o.get(0).tagName.toLowerCase() == 'textarea' && o.scrollHeight() !== o.offsetHeight()){
-                    s = o.attr('value').substr(0,pos);
-                    c = o.clone().id('').css({visibility:'hidden',position:'absolute',left:5000+'px'}).attr('value',s);
-                    xui('body').append(c);
-                    h = Math.max((c.scrollHeight() > c.offsetHeight()) ? c.scrollHeight() - 30 : 0,0);
-                    o.scrollTop(h);
-                    c.remove();
-                }
-            }
-            o.caret(pos,pos);
-        },
-        /*
-        return array
-        [0] char number before caret
-        [1] line number of caret
-        [2] absPos of caret
-        [3] text before caret
-        */
-        getParas:function(profile){
-            var o = profile.getSubNode('INPUT'), 
-                me=arguments.callee, 
-                reg = me.reg ||(me.reg=/\r\n/g),
-                v = o.get(0).value,
-                loc = o.caret();
-
-            if(loc[0]<0)loc[0]=0;
-
-            //for ie/opera
-            var l=0, m = v.substr(0,loc[0]).match(reg);
-            if(m)l=m.length;
-            v = v.replace(reg,'\n');
-            var txt = v.substr(0,loc[0]-l);
-
-            var
-            li = txt.lastIndexOf('\n') ,
-            line = txt.substr(li+1, loc[0]-li),
-            w=o.innerWidth(),
-            bak1 = profile.getSubNode('BAK1'),
-            bak2 = profile.getSubNode('BAK2')
-            ;
-            if(txt.charAt(txt.length-1)=='\n')txt+='*';
-
-            bak2.width(w);
-            var
-            x = bak1.html(line.replace(/ /g,'&nbsp;'),false).width(),
-            y = bak2.html(txt.replace(/\n/g,'<br />'),false).height() - o.scrollTop();
-
-            if(x>w){
-                bak2.html(line,false);
-                var lbak = line;
-                var bl = bak2.height();
-                while(lbak){
-                    //delete last words
-                    lbak=lbak.replace(/ [^ ]*$/,'');
-                    bak2.html(lbak,false);
-                    if(bak2.height()!=bl)break;
-                }
-                lbak = line.substr(lbak.length, line.length-lbak.length);
-                x = bak1.html(lbak,true).width();
-            }
-
-            bak1.html('',false);
-            bak2.html('',false);
-
-            var pos = profile.getRoot().offset();
-            pos.left+=x;
-            pos.top+=y;
-            return [loc[0],line,pos,o.get(0),txt];
-        },
         _onresize:function(profile,width,height){
             var $hborder=1, $vborder=1,
                 toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
@@ -28443,7 +27938,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 height:"12px"
             },
             TOOLBARBTN:{
-                background:xui.UI.$bg('toolbar.gif', 'no-repeat')
             },
             LABEL:{
                'z-index':1,
@@ -28499,18 +27993,18 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         $cmds:{
             //font style
             font1:[
-                 {id:'bold',command:'Bold',statusButton:true,imagePos:"-36px 0"},
-                 {id:'italic',command:'Italic',statusButton:true,imagePos:"-108px 0"},
-                 {id:'underline',command:'Underline',statusButton:true,imagePos:"-324px 0"},
-                 {id:'strikethrough',command:'strikeThrough',statusButton:true,imagePos:"-252px 0"}
+                 {id:'bold',command:'Bold',statusButton:true,imageClass:'xuicon xui-icon-bold'},
+                 {id:'italic',command:'Italic',statusButton:true,imageClass:"xuicon xui-icon-italic"},
+                 {id:'underline',command:'Underline',statusButton:true,imageClass:"xuicon xui-icon-underline"},
+                 {id:'strikethrough',command:'strikeThrough',statusButton:true,imageClass:"xuicon xui-icon-strikethrough"}
             ],
             font2:[
-                {id:'subscript',command : 'subscript',statusButton:true,imagePos:"-270px 0"},
-                {id:'superscript',command : 'superscript',statusButton:true,imagePos:"-288px 0"}
+                {id:'subscript',command : 'subscript',statusButton:true,imageClass:"xuicon xui-icon-sub"},
+                {id:'superscript',command : 'superscript',statusButton:true,imageClass:"xuicon xui-icon-super"}
             ],
             font3:[
-                {id:'forecolor',command:'custom',imagePos:"0 0"},
-                {id:'bgcolor',command:'custom',imagePos:"-18px 0"}
+                {id:'forecolor',command:'custom',imageClass:"xuicon xui-icon-forecolor"},
+                {id:'bgcolor',command:'custom',imageClass:"xuicon xui-icon-bgcolor"}
             ],
             font4:[
                 {id:'fontsize',command:'custom',caption:'$editor.fontsize',dropButton:true},
@@ -28518,28 +28012,28 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 {id:'formatblock',command:'custom',caption:'$editor.formatblock',dropButton:true}
             ],
             align:[
-                {id:'left',command:'justifyleft',imagePos:"-144px 0"},
-                {id:'center',command:'justifycenter',imagePos:"-54px 0"},
-                {id:'right',command:'justifyright',imagePos:"-216px 0"},
-                {id :'justify', command : 'justifyfull',imagePos:"-126px 0"}
+                {id:'left',command:'justifyleft',imageClass:"xuicon xui-icon-alignleft"},
+                {id:'center',command:'justifycenter',imageClass:"xuicon xui-icon-aligncenter"},
+                {id:'right',command:'justifyright',imageClass:"xuicon xui-icon-alignright"},
+                {id :'justify', command : 'justifyfull',imageClass:"xuicon xui-icon-alignjustify"}
             ],
             list:[
-                {id:'indent', command:'indent',imagePos:"-90px 0"},
-                {id:'outdent',command:'outdent',imagePos:"-180px 0"},
-                {id:'ol',command:'insertorderedlist',imagePos:"-162px 0"},
-                {id:'ul',command:'insertunorderedlist',imagePos:"-306px 0"}
+                {id:'indent', command:'indent',imageClass:"xuicon xui-icon-indent"},
+                {id:'outdent',command:'outdent',imageClass:"xuicon xui-icon-outdent"},
+                {id:'ol',command:'insertorderedlist',imageClass:"xuicon xui-icon-bullet"},
+                {id:'ul',command:'insertunorderedlist',imageClass:"xuicon xui-icon-number"}
             ],
             insert:[
-                {id:'hr',command:'insertHorizontalRule',imagePos:"-72px 0"},
-                {id:'insertimage',command:'custom',imagePos:"-342px 0"},
-                {id:'createlink',command:'custom',imagePos:"-360px 0"},
-                {id:'unlink',command:'unlink',imagePos:"-378px 0"}
+                {id:'hr',command:'insertHorizontalRule',imageClass:"xuicon xui-icon-inserthr"},
+                {id:'insertimage',command:'custom',imageClass:"xuicon xui-icon-picture"},
+                {id:'createlink',command:'custom',imageClass:"xuicon xui-icon-link"},
+                {id:'unlink',command:'unlink',imageClass:"xuicon xui-icon-breaklink"}
             ],
             clear:[
-                {id:'removeformat',command:'removeformat',imagePos:"-198px 0"}
+                {id:'removeformat',command:'removeformat',imageClass:"xuicon xui-icon-formatclear"}
             ],
             html:[
-                {id:'html',command:'custom', imagePos:"-234px 0"}
+                {id:'html',command:'custom', imageClass:"xuicon xui-icon-html"}
             ]
         },
         _prepareData:function(profile){
@@ -30034,7 +29528,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 height:'50%'
             },
             'R1B, R2B, SMID, MID':{
-                'background-image': xui.UI.$bg('bg.gif')    
+                'background-image': xui.UI.img_bg                
             },            
             R1:{
                 top:0
@@ -30935,12 +30429,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     HANDLE:{
                         tabindex: '{tabindex}',
                         TOGGLE:{
-                            className: 'xui-uicmd-toggle2 {toggleCls2}',
+                            className: 'xuicon xui-uicmd-toggle2 {toggleCls2}',
                             style:"{toggleDispplay}"
                         },
                         ICON:{
                             $order:1,
-                            className:'xui-ui-icon {imageClass}',
+                            className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION : {
@@ -31262,7 +30756,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -31540,15 +31034,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 width:'16px'
             },
             ".xui-nodatauri ADVCLR":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clrbg.png', 'no-repeat left top',null,true),
+                background: xui.browser.ie6?null:xui.UI.$bg('bg.png', 'no-repeat left top',null,true),
                 _filter: xui.UI.$ieBg('bg.png',null,true)
             },
             ".xui-nodatauri ADVWHEEL":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clr.png', 'no-repeat left top',null,true),
+                background: xui.browser.ie6?null:xui.UI.$bg('clr.png', 'no-repeat left top',null,true),
                 _filter: xui.UI.$ieBg('clr.png',null,true)
             },
             '.xui-nodatauri ADVMARK1, .xui-nodatauri ADVMARK2':{
-                background:xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/picker.png', 'no-repeat left top',null,true),
+                background:xui.browser.ie6?null:xui.UI.$bg('picker.png', 'no-repeat left top',null,true),
                 _filter: xui.UI.$ieBg('picker.png',null,true)
             },
 
@@ -32273,7 +31767,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -33092,7 +32586,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -33683,7 +33177,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         ICON:{
                             $order:10,
-                            className:'xui-ui-icon {imageClass}',
+                            className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION:{
@@ -34760,13 +34254,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         TOGGLE:{
-                            className: 'xui-uicmd-toggle {toggleCls}',
+                            className: 'xuicon xui-uicmd-toggle {toggleCls}',
                             style:'{toggleDisplay}',
                             $order:0
                         },
                         ICON:{
                             $order:0,
-                            className:'xui-ui-icon {imageClass}',
+                            className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                         },
                         CAPTION:{
@@ -34780,27 +34274,27 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         INFO:{
-                            className:'xui-uicmd-info',
+                            className:'xuicon xui-uicmd-info',
                             style:'{infoDisplay}',
                             $order:1
                         },
                         OPT:{
-                            className:'xui-uicmd-opt',
+                            className:'xuicon xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:1
                         },
                         POP:{
-                            className:'xui-uicmd-pop',
+                            className:'xuicon xui-uicmd-pop',
                             style:'{popDisplay}',
                             $order:2
                         },
                         REFRESH:{
-                            className:'xui-uicmd-refresh',
+                            className:'xuicon xui-uicmd-refresh',
                             style:'{refreshDisplay}',
                             $order:3
                         },
                         CLOSE:{
-                            className:'xui-uicmd-close ',
+                            className:'xuicon xui-uicmd-close ',
                             style:'{closeDisplay}',
                             $order:4
                         }
@@ -35950,7 +35444,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         RULER:{},
                                         ICON:{
                                             $order:0,
-                                            className:'xui-ui-icon {imageClass}',
+                                            className:'xuicon {imageClass}',
                                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                                         },
                                         CAPTION:{
@@ -35962,16 +35456,16 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             $order:2,
                                             OPT:{
                                                 $order:1,
-                                                className:'xui-uicmd-opt',
+                                                className:'xuicon xui-uicmd-opt',
                                                 style:'{_opt}'
                                             },
                                             POP:{
-                                                className:'xui-uicmd-pop',
+                                                className:'xuicon xui-uicmd-pop',
                                                 style:'{popDisplay}',
                                                 $order:1
                                             },
                                             CLOSE:{
-                                                className:'xui-uicmd-close ',
+                                                className:'xuicon xui-uicmd-close ',
                                                 style:'{closeDisplay}',
                                                 $order:2
                                             }
@@ -37234,11 +36728,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,
-                        className:'{_markcls}'
+                        className:'xuicon {_markcls}'
                     },
                     ICON:{
                         $order:1,
-                        className:'xui-ui-icon {imageClass}',
+                        className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                     },
                     CAPTION:{
@@ -37318,13 +36812,12 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    tagName:"button",
-                    className:'xui-ui-btn {itemClass} {_endsClass} {disabled} {readonly}',
+                    className:'{itemClass} {_endsClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{
                         $order:10,
-                        className:'xui-ui-icon {imageClass}',
+                        className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                     },
                     CAPTION:{
@@ -37346,14 +36839,81 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ITEM:{
                 'vertical-align':'middle',
                 position:'relative',
+                height:'16px',
+                padding:'3px',
                 cursor:'pointer',
+                'font-size':0,
+                'line-height':0,
                 'white-space':'nowrap'
+            },
+            "ITEM-none":{
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-12px -130px'
+            },
+            "ITEM-left":{
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'left -130px',
+                padding:'4px 4px 2px 12px'
+            },
+            "ITEM-right":{
+                'background-image': xui.UI.$bg('icons.gif', '',true),
+                'background-repeat':'no-repeat',
+                'background-position':'right -130px',
+                padding:'4px 12px 2px 2px'
+            },
+            // ignore xui.UI.List setting
+            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+            },
+            'ITEM-mouseover':{},
+            'ITEM-mousedown':{},
+            'ITEM-checked':{},
+            
+            'ITEM-left-mouseover':{
+                $order:1,
+                'background-position': 'left -153px'
+            },
+            'ITEM-left-mousedown':{
+                $order:2,
+                'background-position': 'left -176px'
+            },
+            'ITEM-left-checked':{
+                $order:3,
+                'background-position': 'left -176px'
+            },
+            'ITEM-none-mouseover':{
+                $order:1,
+                'background-position': '-20px -153px'
+            },
+            'ITEM-none-mousedown':{
+                $order:2,
+                'background-position': '-20px -176px'
+            },
+            'ITEM-none-checked':{
+                $order:3,
+                'background-position': '-20px -176px'
+            },
+            'ITEM-right-mouseover':{
+                $order:1,
+                'background-position': 'right -153px'
+            },
+            'ITEM-right-mousedown':{
+                $order:2,
+                'background-position': 'right -176px'
+            },
+            'ITEM-right-checked':{
+                $order:3,
+                'background-position': 'right -176px'
             },
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
                 'vertical-align':'middle'
-            }
+            },
+            "ITEM-none CAPTION":{
+                padding:'1px 4px'
+            } 
         },
         DataModel:({
             maxHeight:null,
@@ -37378,9 +36938,18 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     this.getSubNode('ITEM',true).css('text-align',value);
                 }
             },
-            // [Deprecated]
             itemLinker:{
-                hidden:true
+                ini:'left',
+                listbox:['none','left','right'],
+                action:function(value){
+                    this.getSubNode('ITEM',true)
+                    .tagClass('-none', false)
+                    .tagClass('-left', false)
+                    .tagClass('-right', false)
+                    .tagClass('-'+value, true)
+                    .removeClass(/^xui-uiborder-[lr]/)
+                    .addClass(value=="left"?"xui-uiborder-r":value=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r")
+                }
             }
         }),
         Behaviors:{
@@ -37401,6 +36970,9 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
+
+            if(t = item.itemLinker || p.itemLinker)
+               item._endsClass = profile.getClass('ITEM', '-'+t) +" "+ (t=="left"?"xui-uiborder-r":t=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r");
         }
     }
 });
@@ -37650,7 +37222,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             TOGGLE:{
                                 $order:4,
-                                className:'{togglemark}'
+                                className:'xuicon {togglemark}'
                             },
                             LTAGCMDS:{
                                 $order:3,
@@ -37659,11 +37231,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             MARK:{
                                 $order:5,
+                                className:'xuicon',
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
                                 $order:6,
-                                className:'xui-ui-icon {imageClass}',
+                                className:'xuicon {imageClass}',
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                             },
                             ITEMCAPTION:{
@@ -38999,7 +38572,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
-                        className:'xui-ui-icon {imageClass}',
+                        className:'xuicon xui-icon-empty {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}'
                     },
                     CAPTION:{
@@ -39026,7 +38599,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
-                         className:'xui-ui-icon {checkboxCls}'
+                         className:'xuicon {checkboxCls}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -39051,7 +38624,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
-                         className:'xui-ui-icon {radioboxCls}'
+                         className:'xuicon {radioboxCls}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -39707,7 +39280,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     className:' {typeCls} {disabled}',
                                     ICON:{
                                         $order:1,
-                                        className:'xui-ui-icon {imageClass}',
+                                        className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                                     },
                                     CAPTION:{
@@ -39747,7 +39320,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
+                'background-image':xui.UI.$bg('handler.gif', '',true),
                 'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
@@ -40162,7 +39735,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     RULER:{},
                                     ICON:{
                                         $order:1,
-                                        className:'xui-ui-icon {imageClass}',
+                                        className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
                                     },
                                     CAPTION:{
@@ -40172,6 +39745,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     },
                                     DROP:{
                                         $order:3,
+                                        className:'xuicon xui-uicmd-arrowdrop',
                                         style:'{dropDisplay}'
                                     }
                                 }
@@ -40212,7 +39786,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
+                'background-image': xui.UI.$bg('handler.gif', '', true),
                 'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
@@ -40237,23 +39811,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 margin: '0 2px'
             },
             BTN:{
-                'padding-right':'3px'
-            },
-            DROP:{
-                width:'14px',
-                height:'16px',
-                'vertical-align':'middle',
-                'background-image': xui.UI.$bg('drop.gif', '', 'Button'),
-                'background-position':'left center',
-                'background-repeat':'no-repeat'
-            },
-            'BTN-mouseover DROP':{
-                $order:2,
-                'background-position':'-16px center'
-            },
-            'BTN-mousedown DROP, BTN-checked DROP':{
-                $order:2,
-                'background-position':'-32px center'
+                'padding':'2px'
             },
             BOX:{
                 height:'auto'
@@ -40640,7 +40198,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         CMD:{
                             $order:1,
-                            tagName:'button',
+                            tagName:'div',
                             style:'{cmdDisplay}',
                             className:'xui-ui-unselectable {cls3} '
                         },
@@ -40734,13 +40292,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0
             },
             'CMD-TOP, CMD-BOTTOM, CMD-LEFT, CMD-RIGHT':{
-                    padding:0,
-                    'border-radius': '0px',
-                    '-moz-border-radius': '0px',
-                    '-webkit-border-radius': '0px',
-                    '-o-border-radius': '0px',
-                    '-ms-border-radius': '0px',
-                    '-khtml-border-radius': '0px'
+               'background-image':xui.UI.$bg('icons.gif', '',true),
+               'background-repeat':'no-repeat'
             },
             'CMD-TOP':{
                 $order:1,
@@ -40748,7 +40301,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 bottom:0,
                 width:'40px',
-                height:'9px'
+                height:'9px',
+                'background-position':'-360px -232px'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -40756,7 +40310,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 top:0,
                 width:'40px',
-                height:'9px'
+                height:'9px',
+                'background-position':'-360px -258px'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -40764,7 +40319,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 right:0,
                 height:'40px',
-                width:'9px'
+                width:'9px',
+                'background-position':'-310px -240px'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -40772,8 +40328,26 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 left:0,
                 height:'40px',
-                width:'9px'
+                width:'9px',
+                'background-position':'-336px -240px'
             },
+            'CMD-TOP-mouseover':{
+                $order:2,
+                'background-position':'-360px -245px'
+            },
+            'CMD-BOTTOM-mouseover':{
+                $order:2,
+                'background-position':'-360px -271px'
+            },
+            'CMD-LEFT-mouseover':{
+                $order:2,
+                'background-position':'-323px -240px'
+            },
+            'CMD-RIGHT-mouseover':{
+                $order:2,
+                'background-position':'-349px -240px'
+            },
+
             'MOVE-MAIN':{
                 $order:5,
                 display:'none'
@@ -41931,11 +41505,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             else{
                                 if(orow.value===orow._oValue){
                                     if(psdm)
-                                        node.removeClass('xui-ui-dirty');
+                                        node.removeClass('xuicon xui-ui-dirty');
                                     delete orow.dirty;
                                 }else{
                                     if(psdm)
-                                        node.addClass('xui-ui-dirty');
+                                        node.addClass('xuicon xui-ui-dirty');
                                     orow.dirty=true;
                                 }
                             }
@@ -42400,7 +41974,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 arr.push(profile.getSubNode('CELLA',row._serialId).get(0));
 
             if(prop.dirtyMark && prop.showDirtyMark)
-                xui(arr).removeClass('xui-ui-dirty');
+                xui(arr).removeClass('xuicon xui-ui-dirty');
         },
         resetColValue:function(colId){
             var profile=this.get(0),col=this.getHeaderByColId(colId),arr=[],prop=profile.properties;
@@ -42413,7 +41987,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
             if(prop.dirtyMark && prop.showDirtyMark)
-                xui(arr).removeClass('xui-ui-dirty');
+                xui(arr).removeClass('xuicon xui-ui-dirty');
         },
         getActiveRow:function(type){
             var ar,profile=this.get(0);
@@ -42872,7 +42446,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     delete v.dirty;
                 });
                 if(prop.dirtyMark && prop.showDirtyMark)
-                    profile.getSubNode('CELLA',true).removeClass('xui-ui-dirty');
+                    profile.getSubNode('CELLA',true).removeClass('xuicon xui-ui-dirty');
             })
         },
         getDirtied:function(rowId, colId){
@@ -42993,7 +42567,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     },
                                                     HFMARK:{
                                                         $order:2,
-                                                        className:"xui-uicmd-check",
+                                                        className:"xuicon xui-uicmd-check",
                                                         style:'{_rowMarkDisplay}'
                                                     },
                                                     GRIDCAPTION:{
@@ -43151,9 +42725,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     className:"xui-uiborder-r xui-uiborder-b",
                     text:'&#9660'
                 },
-                ARROW:{
-                    text:'&#8613; '
-                }
+                ARROW:{}
             },
             $submap : {
                 /*the other header in table header*/
@@ -43344,7 +42916,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'{_subClass}'
+                                className:'xuicon {_subClass}'
                             },
                             LTAGCMDS:{
                                 $order:1,
@@ -43410,7 +42982,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'{_subClass}'
+                                className:'xuicon {_subClass}'
                             },
                             FCELLCAPTION:{
                                 $order:5,
@@ -43463,7 +43035,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:2,
                                 style:'{_treeMode};',
-                                className:'{_subClass}'
+                                className:'xuicon {_subClass}'
                             },
                             CELLCAPTION:{
                                 $order:3,
@@ -43662,11 +43234,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'none',
                 width:'14px',
                 height:'22px',
-                color: '#3393D2',
-                'text-align': 'center',
-                'font-size': '20pt',
-                'text-shadow': '2px 2px 2px #ccc',
-                'margin-top': '-4px'
+                'background-image':  xui.UI.$bg('icons.gif','',true),
+                'background-repeat':'no-repeat',
+                'background-position':'-72px -270px'
             },
             COLLIST:{
                 position:'absolute',
@@ -46873,11 +46443,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     else{
                         if(cell.value===cell._oValue){
                             if(psdm)
-                                node.removeClass('xui-ui-dirty');
+                                node.removeClass('xuicon xui-ui-dirty');
                             delete cell.dirty;
                         }else{
                             if(psdm)
-                                node.addClass('xui-ui-dirty');
+                                node.addClass('xuicon xui-ui-dirty');
                             cell.dirty=true;
                         }
                     }
@@ -48394,7 +47964,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     className:'xui-uibar-cmdl',
                     ICON:{
                         $order:0,
-                        className:'xui-ui-icon {imageClass}',
+                        className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                     },
                     CAPTION:{
@@ -48408,48 +47978,48 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     tagName: 'div',
                     className:'xui-uibar-cmdr',
                     INFO:{
-                        className:'xui-uicmd-info',
+                        className:'xuicon xui-uicmd-info',
                         style:'{infoDisplay}',
                         $order:1
                     },
                     OPT:{
-                        className:'xui-uicmd-opt',
+                        className:'xuicon xui-uicmd-opt',
                         style:'{optDisplay}',
                         $order:1
                     },
                     PIN:{
                         $order:2,
-                        className:'xui-uicmd-pin',
+                        className:'xuicon xui-uicmd-pin',
                         style:'{pinDisplay}'
                     },
                     LAND:{
                         $order:3,
-                        className:'xui-uicmd-land',
+                        className:'xuicon xui-uicmd-land',
                         style:'{landDisplay}'
                     },
                     REFRESH:{
-                        className:'xui-uicmd-refresh',
+                        className:'xuicon xui-uicmd-refresh',
                         style:'{refreshDisplay}',
                         $order:4
                     },
                     MIN:{
                         $order:5,
-                        className:'xui-uicmd-min',
+                        className:'xuicon xui-uicmd-min',
                         style:'{minDisplay}'
                     },
                     RESTORE:{
                         $order:6,
-                        className:'xui-uicmd-restore',
+                        className:'xuicon xui-uicmd-restore',
                         style:'display:none;'
                     },
                     MAX:{
                         $order:7,
-                        className:'xui-uicmd-max',
+                        className:'xuicon xui-uicmd-max',
                         style:'{maxDisplay}'
                     },
                     CLOSE:{
                         $order:8,
-                        className:'xui-uicmd-close ',
+                        className:'xuicon xui-uicmd-close ',
                         style:'{closeDisplay}'
                     }
                 }
@@ -49600,6 +49170,407 @@ if(xui.browser.ie){
         }
     }
 });
+    /*support
+    tab: to 4 space
+    enter: add head space
+    {enter: add head+4 space
+    }:add head-4 space
+    */
+Class("xui.UI.TextEditor", ["xui.UI.Widget","xui.absValue"] ,{
+    Instance:{
+        activate:function(){
+            var profile = this.get(0);
+            profile.getSubNode('INPUT').focus();
+            return this;
+        },
+        _setCtrlValue:function(value){
+            if(_.isNull(value) || !_.isDefined(value))value='';
+            return this.each(function(profile){
+                var node=profile.getSubNode('INPUT').get(0);
+                if(node.value.replace(/(\r\n|\r)/g, "\n")!=value.replace(/(\r\n|\r)/g, "\n")){
+                    var st=node.scrollTop;
+                    node.value=value;
+                    node.scrollTop=st;
+                }
+            });
+        },
+        _getCtrlValue:function(value){
+            var profile = this.get(0);
+            return profile.getSubNode('INPUT').attr('value').replace(/(\r\n|\r)/g, "\n").replace(/( +)(\n)/g, "$2").replace(/\t/g, "    ");
+        }
+    },
+    Initialize:function(){
+        //modify default template for shell
+        var t = this.getTemplate();
+        _.merge(t.FRAME.BORDER,{
+            BOX:{
+                tagName:'div',
+                INPUT:{
+                    tagName:'textarea',
+                    tabindex:'{tabindex}',
+                    style:'{_css}'
+                }
+            },
+            BAK1:{},
+            BAK2:{tagName:'div'}
+        },'all');
+        this.setTemplate(t);
+    },
+    Static:{
+        Appearances:{
+            BOX:{
+                width:'100%',
+                height:'100%',
+                left:0,
+                top:0,
+                //for firefox bug: cursor not show
+                position:'absolute',
+                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'hidden',
+                'z-index':'10'
+            },
+            INPUT:{
+                position:'absolute',
+                'background-color':'#fff',
+                left:0,
+                top:0,
+                border:0,
+                margin:0,
+                padding:0,
+                overflow:'auto',
+                'overflow-y':'auto',
+                'overflow-x':'hidden',
+                resize:'none'
+            },
+            'BAK1, BAK2':{
+                position:'absolute',
+                visibility:'hidden',
+                left:'-10000px',
+                top:'-10000px'
+            }
+        },
+        Behaviors:{
+            INPUT:{
+                onFocus:function(profile,e,src){
+                    profile.box._onchange(profile,xui.use(src).get(0));
+                },
+                onChange:function(profile, e, src){
+                    profile.boxing().setUIValue(xui.use(src).get(0).value,null,null,'onchange');
+                    profile.box._onchange(profile,xui.use(src).get(0));
+                },
+                afterKeydown:function(profile, e, src){
+                    var pro=profile.properties,str,t;
+                    if(pro.disabled || pro.readonly)return;
+                    if(profile.$change)delete profile.$change;
+                    var key = xui.Event.getKey(e),
+                    node=xui.use(src).get(0),
+                    k=key.key;
+                    switch(k){
+                        case 'tab':
+                            var r=xui.use(src).caret(),
+                                sel=node.value.slice(r[0],r[1]);
+                            if(/(\n|\r)/.test(sel)){
+                                //previous
+                                str=node.value.slice(0,r[0]);
+                                if(sel.charAt(0)!='\n' && sel.charAt(0)!='\r'){
+                                    //change sel
+                                    sel=str.slice(r[0]=str.lastIndexOf('\n'))+sel;
+                                }
+                                //
+                                if(xui.browser.ie){
+                                    t= (t=str.match(/\r/g))?t.length:0;
+                                    r[0]-=t;
+                                    t= (t=(node.value.slice(0,r[1])).match(/\r/g))?t.length:0;
+                                    r[1]-=t;
+                                }
+
+                                //re caret
+                                xui.use(src).caret(r[0],r[1]);
+
+                                if(key.shiftKey){
+                                    sel=sel.replace(/(\n|\n\r)    /g,'$1');
+                                }else{
+                                    sel=sel.replace(/(\n|\n\r)/g,'$1    ');
+                                }
+                                //insert
+                                profile.box.insertAtCaret(profile,sel);
+
+                                r[1]=r[0]+sel.length;
+                                if(xui.browser.ie){
+                                    t= (t=sel.match(/\r/g))?t.length:0;
+                                    r[1]-=t;
+                                }
+                                //caret
+                                xui.use(src).caret(r[0],r[1]);
+                            }else{
+                                if(key.shiftKey){
+                                    xui.use(src).caret(r[0]-4,r[0]-4);
+                                    r[0]-=4;
+                                    r[1]-=4;
+                                }else{
+                                    profile.box.insertAtCaret(profile,'    ');
+                                    r[0]+=4;
+                                    r[1]+=4;
+                                }
+                            }
+                            profile.$pos=r;
+                            return false;
+                        case 'enter':
+                            var paras = profile.box.getParas(profile);
+                            str = paras[1];
+                            var len = str.length - _.str.ltrim(str).length;
+
+                            if(str.charAt(str.length-1)=="{")
+                                len +=4;
+                            if(len){
+                                profile.box.insertAtCaret(profile, '\n'+_.str.repeat(' ',len));
+                                profile.$enter=true;
+                                return false;
+                            }
+                            break;
+                        default:
+                            if(profile.tips){
+                                profile.tips.destroy(true);
+                                profile.tips=null;
+                            }
+                    }
+                    node=null;
+                },
+                afterKeypress:function(profile, e, src){
+                    if(profile.properties.disabled || profile.properties.readonly)return;
+                    var key = xui.Event.getKey(e), k=key.key;
+                    var me=arguments.callee, map=me.map || (me.map={space:1,enter:1,backspace:1,tab:1,"delete":1});
+                    if(k.length==1 || map[k])
+                        profile.$change=true;
+
+                    switch(k){
+                        case 'tab':
+                            if(xui.browser.opr)
+                                _.asyRun(function(){
+                                    xui.use(src).caret(profile.$pos[0], profile.$pos[1]);
+                                });
+                            return false;
+                        case 'enter':
+                            if(profile.$enter){
+                                delete profile.$enter;
+                                return false;
+                            }
+                        case '}':
+                            if(key.shiftKey){
+                                var paras = profile.box.getParas(profile);
+                                var
+                                loc = paras[0],
+                                str = paras[1],
+                                pos=paras[2],
+                                input=paras[3];
+                                if(/ {4}$/.test(str)){
+                                    var st=xui(src).scrollTop();
+                                    input.value =
+                                    input.value.substr(0,loc).replace(/ {4}$/,'}') +
+                                    input.value.substr(loc, input.value.length);
+
+                                    //fire event manully
+                                    xui(input).onChange();
+
+                                    profile.box.setCaretTo(input, loc - 4 + 1, st);
+
+                                    return false;
+                                }
+                            }
+                            break;
+                    }
+                },
+                afterKeyup:function(profile, e, src){
+                    var key = xui.Event.getKey(e),k=key.key;
+                    var me=arguments.callee, map=me.map || (me.map={space:1,enter:1,backspace:1,tab:1,"delete":1});
+                    if(k.length==1 || map[k])
+                        profile.$change=true;
+
+                    if(profile.$change){
+                        delete profile.$change;
+                        profile.box._onchange(profile,xui.use(src).get(0));
+                    }
+                }
+            }
+        },
+        DataModel:{
+            selectable:true,
+            left:0,
+            top:0,
+            width:200,
+            height:200,
+            position:'absolute',
+            disabled:{
+                ini:false,
+                action: function(v){
+                    b.boxing().setReadonly(v);
+                }
+            },
+            readonly:{
+                ini:false,
+                action: function(v){
+                    this.getSubNode('INPUT').attr('readonly',v).css('background',v?'#EBEADB':'');
+                }
+            }
+        },
+        EventHandlers:{
+            onChange:function(profile, oV, nV){}
+        },
+        RenderTrigger:function(){
+            var ns=this;
+            if(ns.properties.readonly)
+                ns.boxing().setReadonly(true,true);
+
+            var ie=xui.browser.ie,
+                src=ns.getSubNode('INPUT').get(0),
+                f=function(o){
+                    //only for value in IE
+                    if(ie && o.propertyName!='value')return true;
+
+                    var src=ie?o.srcElement:this;
+                    ns.box._onchange(ns,src);
+                };
+            if(ie){
+                src.attachEvent("onpropertychange",f);
+                src.attachEvent("ondrop",f);
+                ns.$ondestory=function(){
+                    src.detachEvent("onpropertychange",f);
+                    src.detachEvent("ondrop",f);
+                    src=f=null;
+                }
+            }else{
+                src.addEventListener("input",f,false);
+                src.addEventListener("dragdrop",f,false);
+                ns.$ondestory=function(){
+                    var src=this.getSubNode('INPUT').get(0);
+                    if(src){
+                        src.removeEventListener("input",f,false);
+                        src.addEventListener("dragdrop",f,false);
+                    }
+                    src=f=null;
+                }
+                ns.getSubNode('BOX').$firfox2();
+            }
+        },
+        _onchange:function(profile,src){
+            if(profile.onChange){
+                var v=src.id;
+                _.resetRun(profile.$xid+'_drop', function(){
+                    v=xui.Dom.byId(v).value||'';
+                    profile.$prevV=profile.$prevV||'';
+                    if(v!=profile.$prevV){
+                        profile.boxing().onChange(profile, profile.$prevV, v);
+                        profile.$prevV=v;
+                    }
+                });
+            }
+        },
+        _prepareData:function(profile){
+            var d=arguments.callee.upper.call(this, profile);
+            if(xui.browser.kde)
+                d._css='resize:none;';
+            return d;
+        },
+        //
+        _onresize:function(profile,width,height){
+            var upper=arguments.callee.upper,
+                size = upper.apply(this,_.toArr(arguments));
+            upper=null;
+            profile.getSubNode('BOX').cssSize(size);
+            profile.getSubNode('INPUT').cssSize(size);
+        },
+        //for
+        insertAtCaret:function(profile, text) {
+            var input = profile.getSubNode('INPUT'),
+                scrollTop = input.scrollTop() || null,
+                ret;
+            //fire onChange manully
+            input.onChange();
+            //replace text
+            ret=input.caret(text);
+            //set cursor
+    	    this.setCaretTo(input.get(0), ret||0, scrollTop);
+    	},
+        //set cursor to textarea
+        setCaretTo:function(input, pos, scrollTop){
+            input.focus()
+            var s,c,h,o=xui([input]);
+
+            //opera not support scrollTop in textarea
+            if(_.isNumb(scrollTop))
+                o.scrollTop(scrollTop);
+
+            if(scrollTop===true){
+                if(o.get(0).tagName.toLowerCase() == 'textarea' && o.scrollHeight() !== o.offsetHeight()){
+                    s = o.attr('value').substr(0,pos);
+                    c = o.clone().id('').css({visibility:'hidden',position:'absolute',left:5000+'px'}).attr('value',s);
+                    xui('body').append(c);
+                    h = Math.max((c.scrollHeight() > c.offsetHeight()) ? c.scrollHeight() - 30 : 0,0);
+                    o.scrollTop(h);
+                    c.remove();
+                }
+            }
+            o.caret(pos,pos);
+        },
+        /*
+        return array
+        [0] char number before caret
+        [1] line number of caret
+        [2] absPos of caret
+        [3] text before caret
+        */
+        getParas:function(profile){
+            var o = profile.getSubNode('INPUT'), 
+                me=arguments.callee, 
+                reg = me.reg ||(me.reg=/\r\n/g),
+                v = o.get(0).value,
+                loc = o.caret();
+
+            if(loc[0]<0)loc[0]=0;
+
+            //for ie/opera
+            var l=0, m = v.substr(0,loc[0]).match(reg);
+            if(m)l=m.length;
+            v = v.replace(reg,'\n');
+            var txt = v.substr(0,loc[0]-l);
+
+            var
+            li = txt.lastIndexOf('\n') ,
+            line = txt.substr(li+1, loc[0]-li),
+            w=o.innerWidth(),
+            bak1 = profile.getSubNode('BAK1'),
+            bak2 = profile.getSubNode('BAK2')
+            ;
+            if(txt.charAt(txt.length-1)=='\n')txt+='*';
+
+            bak2.width(w);
+            var
+            x = bak1.html(line.replace(/ /g,'&nbsp;'),false).width(),
+            y = bak2.html(txt.replace(/\n/g,'<br />'),false).height() - o.scrollTop();
+
+            if(x>w){
+                bak2.html(line,false);
+                var lbak = line;
+                var bl = bak2.height();
+                while(lbak){
+                    //delete last words
+                    lbak=lbak.replace(/ [^ ]*$/,'');
+                    bak2.html(lbak,false);
+                    if(bak2.height()!=bl)break;
+                }
+                lbak = line.substr(lbak.length, line.length-lbak.length);
+                x = bak1.html(lbak,true).width();
+            }
+
+            bak1.html('',false);
+            bak2.html('',false);
+
+            var pos = profile.getRoot().offset();
+            pos.left+=x;
+            pos.top+=y;
+            return [loc[0],line,pos,o.get(0),txt];
+        }
+    }
+});
 Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Instance:{
         fillContent:function(id, obj){
@@ -49680,7 +49651,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             tagName:'div',
                             TOGGLE:{
                                 $order:0,
-                                className:'xui-uicmd-toggle {_tlgchecked}'
+                                className:'xuicon ui-uicmd-toggle {_tlgchecked}'
                             },
                             LTAGCMDS:{
                                 $order:2,
@@ -50060,11 +50031,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     tagName:'div',
                                     TOGGLE:{
                                         $order:0,
-                                        className:'xui-uicmd-toggle {_tlgchecked}'
+                                        className:'xuicon xui-uicmd-toggle {_tlgchecked}'
                                     },
                                     ICON:{
                                         $order:2,
-                                        className:'xui-ui-icon {imageClass}',
+                                        className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                                     },
                                     CAPTION:{
@@ -50084,16 +50055,16 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         $order:2,
                                         OPT:{
                                             $order:1,
-                                            className:'xui-uicmd-opt',
+                                            className:'xuicon xui-uicmd-opt',
                                             style:'{_opt}'
                                         },
                                         POP:{
-                                            className:'xui-uicmd-pop',
+                                            className:'xuicon xui-uicmd-pop',
                                             style:'{popDisplay}',
                                             $order:1
                                         },
                                         CLOSE:{
-                                            className:'xui-uicmd-close ',
+                                            className:'xuicon xui-uicmd-close ',
                                             style:'{closeDisplay}',
                                             $order:2
                                         }

@@ -186,7 +186,6 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 height:"12px"
             },
             TOOLBARBTN:{
-                background:xui.UI.$bg('toolbar.gif', 'no-repeat')
             },
             LABEL:{
                'z-index':1,
@@ -242,18 +241,18 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         $cmds:{
             //font style
             font1:[
-                 {id:'bold',command:'Bold',statusButton:true,imagePos:"-36px 0"},
-                 {id:'italic',command:'Italic',statusButton:true,imagePos:"-108px 0"},
-                 {id:'underline',command:'Underline',statusButton:true,imagePos:"-324px 0"},
-                 {id:'strikethrough',command:'strikeThrough',statusButton:true,imagePos:"-252px 0"}
+                 {id:'bold',command:'Bold',statusButton:true,imageClass:'xuicon xui-icon-bold'},
+                 {id:'italic',command:'Italic',statusButton:true,imageClass:"xuicon xui-icon-italic"},
+                 {id:'underline',command:'Underline',statusButton:true,imageClass:"xuicon xui-icon-underline"},
+                 {id:'strikethrough',command:'strikeThrough',statusButton:true,imageClass:"xuicon xui-icon-strikethrough"}
             ],
             font2:[
-                {id:'subscript',command : 'subscript',statusButton:true,imagePos:"-270px 0"},
-                {id:'superscript',command : 'superscript',statusButton:true,imagePos:"-288px 0"}
+                {id:'subscript',command : 'subscript',statusButton:true,imageClass:"xuicon xui-icon-sub"},
+                {id:'superscript',command : 'superscript',statusButton:true,imageClass:"xuicon xui-icon-super"}
             ],
             font3:[
-                {id:'forecolor',command:'custom',imagePos:"0 0"},
-                {id:'bgcolor',command:'custom',imagePos:"-18px 0"}
+                {id:'forecolor',command:'custom',imageClass:"xuicon xui-icon-forecolor"},
+                {id:'bgcolor',command:'custom',imageClass:"xuicon xui-icon-bgcolor"}
             ],
             font4:[
                 {id:'fontsize',command:'custom',caption:'$editor.fontsize',dropButton:true},
@@ -261,28 +260,28 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 {id:'formatblock',command:'custom',caption:'$editor.formatblock',dropButton:true}
             ],
             align:[
-                {id:'left',command:'justifyleft',imagePos:"-144px 0"},
-                {id:'center',command:'justifycenter',imagePos:"-54px 0"},
-                {id:'right',command:'justifyright',imagePos:"-216px 0"},
-                {id :'justify', command : 'justifyfull',imagePos:"-126px 0"}
+                {id:'left',command:'justifyleft',imageClass:"xuicon xui-icon-alignleft"},
+                {id:'center',command:'justifycenter',imageClass:"xuicon xui-icon-aligncenter"},
+                {id:'right',command:'justifyright',imageClass:"xuicon xui-icon-alignright"},
+                {id :'justify', command : 'justifyfull',imageClass:"xuicon xui-icon-alignjustify"}
             ],
             list:[
-                {id:'indent', command:'indent',imagePos:"-90px 0"},
-                {id:'outdent',command:'outdent',imagePos:"-180px 0"},
-                {id:'ol',command:'insertorderedlist',imagePos:"-162px 0"},
-                {id:'ul',command:'insertunorderedlist',imagePos:"-306px 0"}
+                {id:'indent', command:'indent',imageClass:"xuicon xui-icon-indent"},
+                {id:'outdent',command:'outdent',imageClass:"xuicon xui-icon-outdent"},
+                {id:'ol',command:'insertorderedlist',imageClass:"xuicon xui-icon-bullet"},
+                {id:'ul',command:'insertunorderedlist',imageClass:"xuicon xui-icon-number"}
             ],
             insert:[
-                {id:'hr',command:'insertHorizontalRule',imagePos:"-72px 0"},
-                {id:'insertimage',command:'custom',imagePos:"-342px 0"},
-                {id:'createlink',command:'custom',imagePos:"-360px 0"},
-                {id:'unlink',command:'unlink',imagePos:"-378px 0"}
+                {id:'hr',command:'insertHorizontalRule',imageClass:"xuicon xui-icon-inserthr"},
+                {id:'insertimage',command:'custom',imageClass:"xuicon xui-icon-picture"},
+                {id:'createlink',command:'custom',imageClass:"xuicon xui-icon-link"},
+                {id:'unlink',command:'unlink',imageClass:"xuicon xui-icon-breaklink"}
             ],
             clear:[
-                {id:'removeformat',command:'removeformat',imagePos:"-198px 0"}
+                {id:'removeformat',command:'removeformat',imageClass:"xuicon xui-icon-formatclear"}
             ],
             html:[
-                {id:'html',command:'custom', imagePos:"-234px 0"}
+                {id:'html',command:'custom', imageClass:"xuicon xui-icon-html"}
             ]
         },
         _prepareData:function(profile){
