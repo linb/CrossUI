@@ -987,10 +987,11 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         break;
                 }
             }else{
-                editor.$doc.execCommand(item.command,false,item.commandArgs);
+                editor.$doc.execCommand(item.command,false,item.commandArgs||null);
 
                 if(item.id=='removeformat')
                     xui.UI.RichEditor._updateToolbar(editor.$domId,true,'none')
+                editor.$win.focus();
             }
         },
         _ensureValue:function(profile, value){

@@ -32,5 +32,4 @@
 }
 
 
-.xui-ui-dirty:after { content: "\e668"; color:#ff0000; position:absolute; left:0; top:0;}
 .xui-uicmd-arrowdrop:after {content: "\e623"; }
