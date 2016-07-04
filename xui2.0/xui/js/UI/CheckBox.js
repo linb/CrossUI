@@ -44,6 +44,11 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             KEY:{
                 overflow:'visible'
             },
+            MARK:{
+               cursor:'pointer',
+               margin: '0 4px 0 2px',
+               'vertical-align':'middle'
+            },
             FOCUS:{
                 cursor:'default',
                 'vertical-align':'middle',

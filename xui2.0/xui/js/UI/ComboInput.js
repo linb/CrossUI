@@ -713,7 +713,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 height:'50%'
             },
             'R1B, R2B, SMID, MID':{
-                'background-image': xui.UI.img_bg                
+                'background-image': xui.UI.$bg('bg.gif')
             },            
             R1:{
                 top:0

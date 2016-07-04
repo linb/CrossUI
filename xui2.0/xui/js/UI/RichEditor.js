@@ -268,8 +268,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             list:[
                 {id:'indent', command:'indent',imageClass:"xuicon xui-icon-indent"},
                 {id:'outdent',command:'outdent',imageClass:"xuicon xui-icon-outdent"},
-                {id:'ol',command:'insertorderedlist',imageClass:"xuicon xui-icon-bullet"},
-                {id:'ul',command:'insertunorderedlist',imageClass:"xuicon xui-icon-number"}
+                {id:'ol',command:'insertorderedlist',imageClass:"xuicon xui-icon-number"},
+                {id:'ul',command:'insertunorderedlist',imageClass:"xuicon xui-icon-bullet"}
             ],
             insert:[
                 {id:'hr',command:'insertHorizontalRule',imageClass:"xuicon xui-icon-inserthr"},

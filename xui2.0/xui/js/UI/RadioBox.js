@@ -54,8 +54,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             MARK:{
                $order:1,
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
+               margin: '0 4px 0 2px',
                'vertical-align':'middle'
             },
             'ITEM-checked MARK':{

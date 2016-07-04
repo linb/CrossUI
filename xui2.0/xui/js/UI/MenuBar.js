@@ -179,7 +179,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             HANDLER:{
                 height:'22px',
                 width:'7px',
-                'background-image':xui.UI.$bg('handler.gif', '',true),
+                'background-image': xui.ini.img_handler,
                 'background-position':'left top',
                 cursor:'move',
                 'vertical-align':'middle'
