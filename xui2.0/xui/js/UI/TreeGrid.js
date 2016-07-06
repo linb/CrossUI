@@ -1767,7 +1767,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     text:'&#9660'
                 },
                 ARROW:{
-                    text:'&#8613; '
+                    className:'xuicon xui-icon-bigup',
+                    text:'&nbsp;'
                 }
             },
             $submap : {
@@ -2275,13 +2276,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 display:'none',
-                width:'14px',
-                height:'22px',
+                width:'auto',
+                height:'auto',
                 color: '#3393D2',
+                'font-weight': 'bold',
                 'text-align': 'center',
                 'font-size': '20pt',
-                'text-shadow': '2px 2px 2px #ccc',
-                'margin-top': '-4px'
+                'text-shadow': '2px 2px 2px #ccc'
+            },
+            'ARROW:before':{
+                'margin-left':'-50%'
             },
             COLLIST:{
                 position:'absolute',
@@ -3173,7 +3177,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui.DragDrop.setDropElement(src).setDropFace(src,'move');
                     var nn=xui.use(psrc).get(0);
                     profile.getSubNode("ARROW")
-                        .left(nn.offsetLeft + (profile._leftregionw || 0) - 8)
+                        .left(nn.offsetLeft + (profile._leftregionw || 0))
                         .top(nn.offsetTop+nn.offsetHeight)
                         .css("display","block");
                 },

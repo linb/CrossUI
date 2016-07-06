@@ -18482,10 +18482,52 @@ Class("xui.UI",  "xui.absObj", {
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
             },
-            ".xui-ui-btn":{
-                padding: "3px",
+            ".xui-ui-gradientbg, .xui-ui-btn":{
+                border:'none',
                 color: "#333",
                 'text-decoration': 'none',
+                'white-space':'nowrap',
+                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
+                background_1: "linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #DDD))",
+                background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_4: "-moz-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_5: "-o-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_6: "-ms-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+            },
+            ".xui-ui-gradientbg-mouseover, .xui-ui-btn-hover, .xui-ui-btn-mouseover":{
+                background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
+                background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_4: "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_5: "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_6: "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+            },
+            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+                $order:2,
+                background_1: "linear-gradient(top,  #DDD 5%,  #FFF)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
+                background_3: "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                background_4: "-moz-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                background_5: "-o-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                background_6: "-ms-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                // for IE6789
+                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
+            },
+            ".xui-ui-btn":{
+                $order:1,
+                padding: "3px",
                 cursor: 'pointer',
                 display: xui.$inlineBlock,
                 'text-align': 'center',
@@ -18498,39 +18540,14 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px',
-                'white-space':'nowrap',
                 
                 zoom:xui.browser.ie?1:null,
                 // for IE6
                 'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
-                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null,
-                'width_2':(xui.browser.ie&&xui.browser.ver<=6)?1:null,
-
-                background_1: "linear-gradient(top,  #FFF,  #DDD)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
-                background_3: "-webkit-linear-gradient(top,  #FFF,  #DDD)",
-                background_4: "-moz-linear-gradient(top,  #FFF,  #DDD)",
-                background_5: "-o-linear-gradient(top,  #FFF,  #DDD)",
-                background_6: "-ms-linear-gradient(top,  #FFF,  #DDD)",
-
-                // for IE6789
-                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
-            },
-            ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
-                $order:1,
-                background_1: "linear-gradient(top,  #DDD,  #FFF)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))",
-                background_3: "-webkit-linear-gradient(top,  #DDD,  #FFF)",
-                background_4: "-moz-linear-gradient(top,  #DDD,  #FFF)",
-                background_5: "-o-linear-gradient(top,  #DDD,  #FFF)",
-                background_6: "-ms-linear-gradient(top,  #DDD,  #FFF)",
-                // for IE6789
-                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-input":{
                 background:'#fff',
@@ -20313,14 +20330,14 @@ Class("xui.UI",  "xui.absObj", {
                 xui('html').addClass(b.isStrict?"xui-css-base xui-css-strict xui-css-viewport":"xui-css-base xui-css-viewport");
             }
             if(cache1){
+                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon', true);
+                 
                 xui.CSS.addStyleSheet(cache1, 'xui.UI-CSS'+(self.$cssNo++));
                 xui.UI.$cache_css='';
             }
             if(cache2){
                 xui.CSS.addStyleSheet(cache2, 'xui.UI-CSS'+(self.$cssNo++),true);
                 xui.UI.$cache_css2='';
-
-                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon');
             }
         },
         buildCSSText:function(hash){
@@ -37363,20 +37380,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
-            'BAR-GROUP':{
-                $order:2,
-                'background-color':'#CCE4FC',
-                'cursor': 'default;'
-            },
-            'BAR-GROUP-mouseover':{
-                $order:3
-            },
-            'BAR-GROUP-expand':{
-                $order:4
-            },
-            'BAR-GROUP-expand-mouseover':{
-                $order:5
-            },
             SUB:{
                 overflow:'hidden',
                 zoom:xui.browser.ie?1:null,
@@ -37387,7 +37390,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 position:'relative',
                 'margin-left':'22px'
             },
-
             MARK:{
                cursor:'pointer',
                width:'16px',
@@ -37400,6 +37402,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             'BAR-checked MARK':{
                 $order:3,
                 'background-position': '0 -70px'
+            },
+            'BAR-group':{
+                $order:4,
+                'border-top': '0',
+                'border-bottom': '0'
             },
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -37564,11 +37571,10 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     _.arr.each(results,function(o){
                         nodes.merge( self.getSubNodeByItemId('BAR', o.id) );
                     });
-                    var cls1=self.getClass('BAR'), cls2 = self.getClass('BAR', '-group');
                     if(v)
-                       nodes.replaceClass(new RegExp('(\\b)' + cls1 + '([^b]*\\b)','g'), '$1'+cls2+'$2');
+                       nodes.addClass('xui-ui-gradientbg ' + profile.getClass('BAR','-group'));
                     else
-                       nodes.replaceClass(new RegExp('(\\b)' + cls2 + '([^b]*\\b)','g'), '$1'+cls1+'$2');
+                       nodes.removeClass('xui-ui-gradientbg' + profile.getClass('BAR','-group'));
                 }
             },
             selMode:{
@@ -37843,7 +37849,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item._tabindex = p.tabindex;
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
-                item.cls_group = profile.getClass('BAR', '-group');
+                item.cls_group = "xui-ui-gradientbg "  + profile.getClass('BAR','-group');
                 item.mark2Display = 'display:none';
             }
             xui.UI.List._prepareCmds(profile, item);
@@ -37855,6 +37861,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 properties = profile.properties,
                 barNode = profile.getSubNode('BAR', itemId),
                 markNode = profile.getSubNode('TOGGLE', itemId),
+                icon = profile.getSubNode('ITEMICON', itemId),
                 subNs = profile.getSubNode('SUB', itemId);
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
@@ -37868,6 +37875,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         subNs.css({display:'none',height:0});
                         markNode.tagClass('-checked', false);
                         barNode.tagClass('-expand',false).tagClass('-fold');
+                        icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
                         if(properties.dynDestory || item.dynDestory){
                             var s=item.sub, arr=[];
@@ -37915,12 +37923,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }else{
                             markNode.css('background','');
                         }
-                        if(empty){
-                            // markNode.css('background','none');
-                            // do nothing
-                        }else{
-                            markNode.tagClass('-checked');
-                            barNode.tagClass('-fold',false).tagClass('-expand');
+                        if(!empty){
                             item._checked = true;
                             if(ins.afterExpand)
                                 ins.afterExpand(profile,item);
@@ -37966,8 +37969,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         if(p.singleOpen)
                             b._toggleNodes(item._pid?profile.getItemByItemId(item._pid).sub:p.items, false)
 
+                        if(!empty){
+                            markNode.tagClass('-checked');
+                            barNode.tagClass('-fold',false).tagClass('-expand');
+                            icon.tagClass('-fold',false).tagClass('-expand');
+                        }
+                        
                         if(!stopanim){
                             subNs.css("height","0px").css("display",'');
+                           
                             if(p.animCollapse){
                                 var h=0;
                                 subNs.children().each(function(o){
@@ -38016,20 +38026,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
     }
 });
 Class("xui.UI.TreeView","xui.UI.TreeBar",{
-    Instance:{
-        _afterInsertItems:function(profile, data, pid){
-            profile.box._reorderItems(profile, pid);
-        },
-        _afterRemoveItems:function(profile, data){
-            _.arr.each(data,function(item){
-                profile.box._reorderItems(profile, item._pid);
-            });
-        }
-    },
     Initialize:function(){
         this.addTemplateKeys(['IMAGE']);
          var t = this.getTemplate();
          t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
+         t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
+         t.$submap.items.ITEM.BAR.ITEMICON.className='xuicon {cls_file} {imageClass}';
          this.setTemplate(t);
     },
     Static:{
@@ -38081,93 +38083,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 left:0,
                 overflow: 'auto',
                 position:'relative'
-            },
-            'BAR ITEMICON':{
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position' : '-244px -236px'
-            },
-            'BAR-fold ITEMICON':{
-                $order:1,
-                'background-position' : '-260px -236px'
-            },
-            'BAR-expand ITEMICON':{
-                $order:1,
-                'background-position' : '-276px -236px'
-            },
-            'IMAGE-vertical, IMAGE-path-1, IMAGE-path-2, IMAGE-path-3, IMAGE-fold-1, IMAGE-fold-2, IMAGE-fold-3':{
-                $order:1,
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'0 0',
-                width:'16px',
-                height:'18px',
-                'vertical-align':'middle'
-            },
-            'IMAGE-none':{
-                width:'16px',
-                height:'18px',
-                'vertical-align':'middle'
-            },
-            'IMAGE-path-1,IMAGE-path-2':{
-                $order:2,
-                'background-position' : '-196px -236px'
-            },
-            'IMAGE-path-3':{
-                $order:3,
-                'background-position' : '-212px -236px'
-            },
-            'IMAGE-fold-1':{
-                $order:4,
-                'background-position' : '-196px -254px'
-            },
-            'IMAGE-fold-2':{
-                $order:5,
-                'background-position' : '-212px -254px'
-            },
-            'IMAGE-fold-3':{
-                $order:6,
-                'background-position' : '-228px -254px'
-            },
-            'IMAGE-fold-1-checked':{
-                $order:7,
-                'background-position' : '-244px -254px'
-            },
-            'IMAGE-fold-2-checked':{
-                $order:8,
-                'background-position' : '-260px -254px'
-            },
-            'IMAGE-fold-3-checked':{
-                $order:9,
-                'background-position' : '-276px -254px'
-            },
-            'IMAGE-fold-1-mousedown':{
-                $order:10,
-                'background-position' : '-196px -272px'
-            },
-            'IMAGE-fold-2-mousedown':{
-                $order:11,
-                'background-position' : '-212px -272px'
-            },
-            'IMAGE-fold-3-mousedown':{
-                $order:12,
-                'background-position' : '-228px -272px'
-            },
-            'IMAGE-fold-1-checked-mousedown':{
-                $order:13,
-                'background-position' : '-244px -272px'
-            },
-            'IMAGE-fold-2-checked-mousedown':{
-                $order:14,
-                'background-position' : '-260px -272px'
-            },
-            'IMAGE-fold-3-checked-mousedown':{
-                $order:15,
-                'background-position' : '-276px -272px'
-            },
-            'IMAGE-vertical':{
-                $order:16,
-                'background-position' : '-228px -236px'
             }
         },
         Behaviors:{
@@ -38194,134 +38109,37 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 }
             }
         },
-        _buildIcon:function(cls, type){
-            return "<span class='"+cls+type+"'></span>";
-        },
-        _getType:function(sub, type, cls, checked){
-            var r=sub
-                ? type=='last' ? '-fold-3': type=='first'? '-fold-1' : '-fold-2'
-                : type=='last' ? '-path-3': type=='first'? '-path-1' : '-path-2';
-            return checked?(cls+r+" "+cls+r+"-checked xui-treebar-toggle-checked"):(cls+r);
-        },
         _prepareItem:function(profile, item, oitem, pid, index,len){
             var p=profile.properties,
                 map1=profile.ItemIdMapSubSerialId,
                 map2=profile.SubSerialIdMapItem,
-                pitem,arr,ll,
-                html,
-                cls=profile.getClass('IMAGE'),
-                buildIcon=this._buildIcon,
-                getType=this._getType;
+                pitem;
 
             if(pid){
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){
                     oitem._deep=pitem._deep+1;
-                    arr=_.copy(pitem._icons);
-                    arr.push(index==len-1?'last':index===0?'first':'middle');
-                    oitem._icons=arr;
                     item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'px;';
-
-
-                    // build image html
-                    html='';
-                    ll=arr.length-1;
-                    _.arr.each(arr,function(o,i){
-                        if(i!==ll)
-                            html+=buildIcon(cls, o=='last'?(p.togglePlaceholder?'-empty':'-none'):'-vertical');
-                    });
-                    item.innerIcons=html;
-
                     // for the last one
-                    item.togglemark = item.sub?(getType(item.sub, arr[ll],cls,item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                    item.togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
             }else{
                 oitem._deep=0;
-                oitem._icons=[index==len-1?'last':index===0?'first':'middle'];
                 item.rulerStyle='';
                 item.innerIcons='';
-
-                item.togglemark = item.sub?(getType(item.sub, oitem._icons[0], cls, item._checked)):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                item.togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
             item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
+            item.cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             xui.UI.List._prepareCmds(profile, item);
-        },
-        _reorderItems:function(profile, pid){
-            var p=profile.properties,
-                map1=profile.ItemIdMapSubSerialId,
-                map2=profile.SubSerialIdMapItem,
-                cls=profile.getClass('IMAGE'),
-                getType=this._getType;
-
-            var getAllSub=function(item, arr){
-                if(item.sub && item.sub.length){
-                    var me=arguments.callee;
-                    _.arr.each(item.sub,function(item){
-                        if(item._icons)
-                            arr.push(item);
-                        me(item, arr);
-                    });
-                }
-            };
-            // no parent now
-            if(pid && !map1[pid])
-                return;
-
-            var baseid=profile.box.KEY+"-RULER:"+profile.serialId+":",
-                arr=pid?map2[map1[pid]].sub:p.items,
-                len=arr.length,ov,nv,deep=0,
-                aitem,ns;
-            _.arr.each(arr,function(item,i){
-                if(item._icons){
-                    ov=item._icons[item._icons.length-1];
-                    nv=i==len-1?'last':i===0?'first':'middle';
-                    if(ov!=nv){
-                        ns=[];
-                        aitem=null;
-
-                        item._icons[deep=item._icons.length-1]=nv;
-                        // ui
-                        aitem=item;
-                        // recursive
-                        var a=[];
-                        getAllSub(item, a);
-                        _.arr.each(a,function(o){
-                            o._icons[deep]=nv;
-                            // ui
-                            ns.push(o.id);
-                        });
-                        // the toggle image
-                        if(aitem){
-                            profile.getSubNodeByItemId('TOGGLE', aitem.id)
-                                // "xui-treeview-image-fold-2 xui-treeview-image--fold-2-checked"
-                                // "xui-treeview-image-path-2"
-                                .replaceClass(new RegExp("\\b"+cls+"-[\\w]+-[\\w]+((-[\\w]+)*)\\b", "g"), getType(aitem.sub, nv, cls) + '$1');
-                        }
-                        // parent's images
-                        if(ns.length){
-                            _.arr.each(ns,function(id,i){
-                                ns[i]=baseid+map1[id];
-                            });
-
-                            // refresh className. -none or -vertical only
-                            ns=xui(ns).first();
-                            if(deep)
-                                ns=ns.next(deep);
-                            ns.removeClass(new RegExp("\\b"+cls+"[-\\w]+\\b"))
-                              .addClass(cls+(nv=='last'?(p.togglePlaceholder?'-empty':'-none'):'-vertical'));
-                        }
-                    }
-                }
-            });
-
         },
         _tofold:function(profile,item,pid){
             var cls=profile.getClass('IMAGE');
@@ -42736,7 +42554,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     text:'&#9660'
                 },
                 ARROW:{
-                    text:'&#8613; '
+                    className:'xuicon xui-icon-bigup',
+                    text:'&nbsp;'
                 }
             },
             $submap : {
@@ -43244,13 +43063,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 display:'none',
-                width:'14px',
-                height:'22px',
+                width:'auto',
+                height:'auto',
                 color: '#3393D2',
+                'font-weight': 'bold',
                 'text-align': 'center',
                 'font-size': '20pt',
-                'text-shadow': '2px 2px 2px #ccc',
-                'margin-top': '-4px'
+                'text-shadow': '2px 2px 2px #ccc'
+            },
+            'ARROW:before':{
+                'margin-left':'-50%'
             },
             COLLIST:{
                 position:'absolute',
@@ -44142,7 +43964,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui.DragDrop.setDropElement(src).setDropFace(src,'move');
                     var nn=xui.use(psrc).get(0);
                     profile.getSubNode("ARROW")
-                        .left(nn.offsetLeft + (profile._leftregionw || 0) - 8)
+                        .left(nn.offsetLeft + (profile._leftregionw || 0))
                         .top(nn.offsetTop+nn.offsetHeight)
                         .css("display","block");
                 },
@@ -49264,7 +49086,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             tagName:'div',
                             TOGGLE:{
                                 $order:0,
-                                className:'xuicon ui-uicmd-toggle {_tlgchecked}'
+                                className:'xuicon xui-uicmd-toggle {_tlgchecked}'
                             },
                             LTAGCMDS:{
                                 $order:2,

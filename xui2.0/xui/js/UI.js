@@ -1827,10 +1827,52 @@ Class("xui.UI",  "xui.absObj", {
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
             },
-            ".xui-ui-btn":{
-                padding: "3px",
+            ".xui-ui-gradientbg, .xui-ui-btn":{
+                border:'none',
                 color: "#333",
                 'text-decoration': 'none',
+                'white-space':'nowrap',
+                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
+                background_1: "linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #DDD))",
+                background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_4: "-moz-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_5: "-o-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                background_6: "-ms-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+            },
+            ".xui-ui-gradientbg-mouseover, .xui-ui-btn-hover, .xui-ui-btn-mouseover":{
+                background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
+                background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_4: "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_5: "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                background_6: "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+            },
+            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+                $order:2,
+                background_1: "linear-gradient(top,  #DDD 5%,  #FFF)",
+                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
+                background_3: "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                background_4: "-moz-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                background_5: "-o-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                background_6: "-ms-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                // for IE6789
+                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
+            },
+            ".xui-ui-btn":{
+                $order:1,
+                padding: "3px",
                 cursor: 'pointer',
                 display: xui.$inlineBlock,
                 'text-align': 'center',
@@ -1843,39 +1885,14 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px',
-                'white-space':'nowrap',
                 
                 zoom:xui.browser.ie?1:null,
                 // for IE6
                 'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
-                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null,
-                'width_2':(xui.browser.ie&&xui.browser.ver<=6)?1:null,
-
-                background_1: "linear-gradient(top,  #FFF,  #DDD)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#DDD))",
-                background_3: "-webkit-linear-gradient(top,  #FFF,  #DDD)",
-                background_4: "-moz-linear-gradient(top,  #FFF,  #DDD)",
-                background_5: "-o-linear-gradient(top,  #FFF,  #DDD)",
-                background_6: "-ms-linear-gradient(top,  #FFF,  #DDD)",
-
-                // for IE6789
-                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 'border-color': '#666'
-            },
-            ".xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
-                $order:1,
-                background_1: "linear-gradient(top,  #DDD,  #FFF)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDD), to(#FFF))",
-                background_3: "-webkit-linear-gradient(top,  #DDD,  #FFF)",
-                background_4: "-moz-linear-gradient(top,  #DDD,  #FFF)",
-                background_5: "-o-linear-gradient(top,  #DDD,  #FFF)",
-                background_6: "-ms-linear-gradient(top,  #DDD,  #FFF)",
-                // for IE6789
-                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-input":{
                 background:'#fff',
@@ -3658,14 +3675,14 @@ Class("xui.UI",  "xui.absObj", {
                 xui('html').addClass(b.isStrict?"xui-css-base xui-css-strict xui-css-viewport":"xui-css-base xui-css-viewport");
             }
             if(cache1){
+                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon', true);
+                 
                 xui.CSS.addStyleSheet(cache1, 'xui.UI-CSS'+(self.$cssNo++));
                 xui.UI.$cache_css='';
             }
             if(cache2){
                 xui.CSS.addStyleSheet(cache2, 'xui.UI-CSS'+(self.$cssNo++),true);
                 xui.UI.$cache_css2='';
-
-                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon');
             }
         },
         buildCSSText:function(hash){

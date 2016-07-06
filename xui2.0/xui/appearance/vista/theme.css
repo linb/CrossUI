@@ -165,17 +165,21 @@ html, .xui-uibg-base{
     height:5px;
     background-image: url('Border/corner.gif')
 }
-.xui-ui-btn{
+.xui-ui-gradientbg, .xui-ui-btn{
     border-color:#8F8F8F;
+    -moz-box-shadow:inset 0px 1px 0px 0px #E7F1F6;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #E7F1F6;
+    box-shadow:inset 0px 1px 0px 0px #E7F1F6;    
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7F1F6', endColorstr='#2DB8E5');
     background: linear-gradient(top,  #E7F1F6,  #2DB8E5);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#E7F1F6), to(#2DB8E5));
     background: -moz-linear-gradient(top,  #E7F1F6,  #2DB8E5);
     background: -o-linear-gradient(top,  #E7F1F6,  #2DB8E5);  
 }
-.xui-ui-btn:hover, .xui-ui-btn-mouseover{
+.xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
     border-color:#717171;
 }
+.xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked,
 .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2DB8E5', endColorstr='#E7F1F6');
     background: linear-gradient(top,  #2DB8E5,  #E7F1F6);
@@ -374,15 +378,6 @@ html, .xui-uibg-base{
 }
 .xui-treebar-bar-checked{
 }
-.xui-treebar-bar-group{
-	background-color:#E1F5FE;
-}
-.xui-treebar-bar-group-mouseover{
-}
-.xui-treebar-bar-group-expand{
-}
-.xui-treebar-bar-group-expand-mouseover{
-}
 .xui-treebar-checked{
     background-image: url(Public/icons.gif);
 }
@@ -390,15 +385,6 @@ html, .xui-uibg-base{
     background-image: url(Public/icons.gif);
 }
 /*xui.UI.TreeView*/
-.xui-treeview-image-vertical, 
-.xui-treeview-image-path-1, 
-.xui-treeview-image-path-2, 
-.xui-treeview-image-path-3, 
-.xui-treeview-image-fold-1, 
-.xui-treeview-image-fold-2, 
-.xui-treeview-image-fold-3{
-    background-image: url(Public/icons.gif);
-}
 .xui-treeview-mark{
     background-image: url(Public/icons.gif);
 }

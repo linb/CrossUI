@@ -22,15 +22,16 @@
   height:16px;
 }
 .xuicon-mouseover{
-  color: #666;
+  color: #000;
 }
 .xuicon-mousedown{
-  color: #0089d7;
+  color: #FF0000;
 }
 .xuicon-checked{
-  color: #0089d7;
+  color: #FF0000;
 }
 
+.xui-uicmd-arrowdrop:after {content: "\e623"; }
 
 .xui-fangda:before { content: "\e61d"; }
 .xui-suoxiao:before { content: "\e61e"; }
@@ -55,7 +56,6 @@
 .xui-icon-sub:before { content: "\e639"; }
 .xui-icon-alignjustify:before { content: "\e62b"; }
 .xui-icon-alignright:before { content: "\e646"; }
-.xui-uicmd-arrowdrop:before { content: "\e623"; }
 .xui-upload:before { content: "\e624"; }
 .xui-icon-formatbrush:before { content: "\e63a"; }
 .xui-refresh:before { content: "\e625"; }
@@ -115,7 +115,7 @@
 .xui-icon-smill:before { content: "\e65b"; }
 .xui-liebiaolist46:before { content: "\e619"; }
 .xui-icon-arrowup:before { content: "\e654"; }
-.xui-icon-folder:before { content: "\e622"; }
+.xui-icon-file-fold:before { content: "\e622"; }
 .xui-zuidahua:before { content: "\e61a"; }
 .xui-icon-circle:before { content: "\e656"; }
 .xui-zuixiaohua:before { content: "\e61b"; }
@@ -131,7 +131,8 @@
 .xui-icon-html:before { content: "\e665"; }
 .xui-icon-code:before { content: "\e648"; }
 .xui-uicmd-min:before { content: "\e667"; }
-.xui-icon-folderopen:before { content: "\e669"; }
+.xui-icon-file-expand:before { content: "\e669"; }
+.xui-uicmd-land:before { content: "\e615"; }
 .xui-icon-arrowdown:before { content: "\e655"; }
 .xui-icon-arrowleft:before { content: "\e653"; }
 .xui-icon-next:before { content: "\e60b"; }
