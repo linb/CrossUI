@@ -212,36 +212,14 @@ Class("xui.UI.Resizer","xui.UI",{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
-                visibility: 'visible',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-17px -244px',
-                'font-size':0,
-                'line-height':0
+                visibility: 'visible'
             },
             'CONF1, CONF2, ROTATE':{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'font-size':0,
-                'line-height':0,
                 cursor:'pointer'
-            },
-            CONF2:{
-                $order:2,
-                'background-position':'-90px -272px'
-             },    
-            CONF1:{
-                $order:3,
-                'background-position':'-112px -284px'
-             },
-            ROTATE:{
-                $order:4,
-                cursor: "crosshair",
-                'background-position':'-160px -280px'
             },
              HANDLER:{
                 $order:0,
@@ -573,10 +551,10 @@ Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE: {tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
-                CONF1:{tagName:'div', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
-                CONF2:{tagName:'div', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', style:'top:-18px;left:50%;margin-left:-8px;width:16px;height:16px;{_rotateBtn};'},
+                MOVE: {tagName:'div', className:'xuicon xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
+                CONF1:{tagName:'div', className:'xuicon xui-icon-star', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', className:'xuicon xui-icon-dropdown', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
+                ROTATE:{tagName:'div', className:'xuicon xui-icon-circle', style:'top:-18px;left:50%;margin-left:-8px;width:16px;height:16px;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},

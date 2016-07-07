@@ -222,8 +222,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         var t = this.getTemplate();
         _.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-outset",
-             TOP:{},
-             BOTTOM:{},
+             TOP:{
+                className:'xuicon xui-icon-circleup'
+             },
+             BOTTOM:{
+                className:'xuicon xui-icon-circledown'
+             },
              BOX:{
                 tagName:'div',
                 className:"xui-uibg-base",
@@ -280,7 +284,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         text : '{add}',
                         $order:2
                     },
-                    SUB:{style:'{displaySub}'}
+                    SUB:{
+                        className:'xuicon xui-icon-singleright',
+                        style:'{displaySub}'
+                    }
                 }
             },
             'items.checkbox':{
@@ -402,13 +409,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'absolute',
                 'margin-left':'-8px',
                 right:0,
-                height:'16px',
-                width:'16px',
                 'z-index':'10',
                 top:0,
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-48px -244px'
             },
             BOTTOM:{
                 cursor:'pointer',
@@ -416,43 +418,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'absolute',
                 'margin-left':'-8px',
                 right:0,
-                height:'16px',
-                width:'16px',
                 'z-index':'10',
-                bottom:0,
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-66px -244px'
+                bottom:0
             },
             'RADIOBOX, CHECKBOX, RADIOBOX-checked, CHECKBOX-checked':{
                 cursor:'pointer',
-                'vertical-align':'middle',
-                width:'16px',
-                height:'16px'
-            },
-            CHECKBOX:{
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px',
-               margin:0
-            },
-            'CHECKBOX-checked':{
-               $order:1,
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'0 -70px'
-            },
-            RADIOBOX:{
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-60px -70px',
-               margin:0
-            },
-            'RADIOBOX-checked':{
-               $order:1,
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-40px -70px'
+                'vertical-align':'middle'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -476,12 +447,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             SUB:{
                 position:'absolute',
                 top:'2px',
-                right:'6px',
-                width:'8px',
-                height:'16px',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-200px -70px'
+                right:'6px'
             }
         },
         Behaviors:{
@@ -824,9 +790,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             item.type=item.type||'button';
             if(item.type=='checkbox')
-                item.checkboxCls =profile.getClass('CHECKBOX', item.value?'-checked':'');
+                item.checkboxCls = 'xui-uicmd-check' + (item.value?'-checked':'');
             else if(item.type=='radiobox')
-                item.radioboxCls =profile.getClass('RADIOBOX', item.value?'-checked':'');
+                item.radioboxCls = 'xui-uicmd-radio' + (item.value?'-checked':'');
         },
         _onresize:null
     }

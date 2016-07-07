@@ -21,12 +21,16 @@
   width:16px;
   height:16px;
 }
-.xuicon-mouseover{
+.xuicon:before{
+    display:inline-block;
+}
+.xuicon-mouseover:before{
   color: #000;
 }
-.xuicon-mousedown{
+.xuicon-mousedown:before{
   color: #FF0000;
+  padding: 1px 0 0 1px;
 }
-.xuicon-checked{
+.xuicon-checked:before{
   color: #FF0000;
 }

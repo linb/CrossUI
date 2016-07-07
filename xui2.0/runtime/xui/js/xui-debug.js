@@ -18574,7 +18574,6 @@ Class("xui.UI",  "xui.absObj", {
                 display:'none'
             },
             ".xui-uitembg":{
-                "background-color":"#FFF",
                  "padding":"1px"
             },
             ".xui-uitembg-mouseover":{
@@ -19086,12 +19085,6 @@ Class("xui.UI",  "xui.absObj", {
                 'background-repeat':'no-repeat', 
                 'background-position': 'center center'
             },
-            '.xui-uicmd-toggle2-busy':{
-                $order:7,
-                'background-image': 'url('+xui.ini.img_busy+')',
-                'background-repeat':'no-repeat', 
-                'background-position': 'center center'
-            },
             ".xui-busy":{
                 "background-image":"url(data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7)",
                 "background-repeat":"no-repeat",
@@ -19131,7 +19124,7 @@ Class("xui.UI",  "xui.absObj", {
         $cache_css:'',
         $cache_css2:'',
         $css_tag_dirty: "xui-ui-dirty",
-        $css_tag_invalid: "xuicon xui-ui-invalid",
+        $css_tag_invalid: "xui-ui-invalid",
         $tag_left:"{",
         $tag_right:"}",
         $tag_subId:"_serialId",
@@ -24740,36 +24733,14 @@ Class("xui.UI.Resizer","xui.UI",{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
-                visibility: 'visible',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-17px -244px',
-                'font-size':0,
-                'line-height':0
+                visibility: 'visible'
             },
             'CONF1, CONF2, ROTATE':{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
                 visibility: 'visible',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'font-size':0,
-                'line-height':0,
                 cursor:'pointer'
-            },
-            CONF2:{
-                $order:2,
-                'background-position':'-90px -272px'
-             },    
-            CONF1:{
-                $order:3,
-                'background-position':'-112px -284px'
-             },
-            ROTATE:{
-                $order:4,
-                cursor: "crosshair",
-                'background-position':'-160px -280px'
             },
              HANDLER:{
                 $order:0,
@@ -25101,10 +25072,10 @@ Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE: {tagName:'div', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
-                CONF1:{tagName:'div', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
-                CONF2:{tagName:'div', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', style:'top:-18px;left:50%;margin-left:-8px;width:16px;height:16px;{_rotateBtn};'},
+                MOVE: {tagName:'div', className:'xuicon xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
+                CONF1:{tagName:'div', className:'xuicon xui-icon-star', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', className:'xuicon xui-icon-dropdown', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
+                ROTATE:{tagName:'div', className:'xuicon xui-icon-circle', style:'top:-18px;left:50%;margin-left:-8px;width:16px;height:16px;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
@@ -26174,18 +26145,18 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
+                    className:'xuicon {_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
+                    className:'xuicon {_incls}',
                     tabindex:'{tabindex}'
                 }
             }
         },
         Appearances:{
             'IND, BT, RULER, RULERLEFT, RULERRIGHT, IND1, IND2, DECREASE, INCREASE':{
-                'font-size':0,
-                'line-height':0,
                 position:'absolute'
             },
             LABEL:{
@@ -26208,39 +26179,17 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 height:'17px',
                 'margin-top':'-8px'
             },            
-            'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE': {
-                'background-image': xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat'
-            },
             'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
                 padding:0,
                 margin:0
             },
             'BOX-h DECREASE':{
                 $order:1,
-                left:0,
-                'background-position': '-80px -70px'
+                left:0
             },
             'BOX-h INCREASE':{
                 $order:1,
-                right:0,
-                'background-position': '-100px -70px'
-            },
-            'BOX-h DECREASE-mouseover':{
-                $order:2,
-                'background-position':'-80px -90px'
-            },
-            'BOX-h DECREASE-mousedown':{
-                $order:3,
-                'background-position':'-80px -110px'
-            },
-            'BOX-h INCREASE-mouseover':{
-                $order:2,
-                'background-position':'-100px -90px'
-            },
-            'BOX-h INCREASE-mousedown':{
-                $order:3,
-                'background-position':'-100px -110px'
+                right:0
             },
             'BOX-h BG':{
                 top:'50%'                
@@ -26281,33 +26230,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },            
             'BOX-v DECREASE':{
                 $order:10,
-                top:0,
-                'background-position': '-120px -70px'
+                top:0
             },
             'BOX-v INCREASE':{
                 $order:10,
-                bottom:0,
-                'background-position': '-140px -70px'
-            },
-            'BOX-v DECREASE-mouseover':{
-                $order:11,
-                'background-position':'-120px -90px'
-            },
-            'BOX-v DECREASE-mousedown':{
-                $order:12,
-                'background-position':'-120px -110px'
-            },
-            '.xui-ui-disabled INCREASE, .xui-ui-disabled DECREASE':{
-                $order:15,
-                display:'none'
-            }, 
-            'BOX-v INCREASE-mouseover':{
-                $order:11,
-                'background-position':'-140px -90px'
-            },
-            'BOX-v INCREASE-mousedown':{
-                $order:12,
-                'background-position':'-140px -110px'
+                bottom:0
             },
             'BOX-v BG':{
                 $order:10,
@@ -26651,6 +26578,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
+
+            d._decls = 'xui-icon-triangle-'+(d.type=='vertical'?'up':'left');
+            d._incls = 'xui-icon-triangle-'+(d.type=='vertical'?'down':'right');
             return d;
         },
         _adjustValue:function(profile,value){
@@ -26902,7 +26832,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             }
         },'all');
-        t.FRAME.ERROR = {};
+        t.FRAME.ERROR = {
+            className:'xuicon xui-icon-error'
+        };
         this.setTemplate(t)
     },
     Static:{
@@ -26971,17 +26903,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                resize:'none'
             },
             ERROR:{
-                width:'9px',
-                height:'9px',
                 position:'absolute',
                 right:'2px',
                 top:'2px',
                 display:'none',
-                'font-size':0,
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -244px',
-                'z-index':'50'
+                'z-index':20
             },
             '.setting-xui-input':{
                 'border-style':'solid',
@@ -30412,7 +30338,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     HANDLE:{
                         tabindex: '{tabindex}',
                         TOGGLE:{
-                            className: 'xuicon xui-uicmd-toggle2 {toggleCls2}',
+                            className: 'xuicon xui-uicmd-toggle {toggleCls2}',
                             style:"{toggleDispplay}"
                         },
                         ICON:{
@@ -30552,7 +30478,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
             data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked'):'';
-            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle2-checked':'';
+            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle-checked':'';
 
             profile._toggle = !!data.toggle;
 
@@ -30832,6 +30758,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         TOGGLE:{
                             $order:2,
+                            className:'xuicon xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     }
@@ -30892,7 +30819,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 action:function(v){
                     var ns=this;
                     ns.getSubNode('ADV').css('display',v?'':'none');
-                    ns.getSubNode('TOGGLE').tagClass("-adv", v);
+                    if(v)
+                        ns.getSubNode('TOGGLE').removeClass('xui-icon-doubleright').addClass('xui-icon-doubleleft');
+                    else
+                        ns.getSubNode('TOGGLE').removeClass('xui-icon-doubleleft').addClass('xui-icon-doubleright');
+
                     ns.getRoot().width(v?410:210);
                     if(v)
                         ns.box._updateMarks(ns,ns.properties.$UIvalue,true, ns.$hsv[0])
@@ -31060,28 +30991,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 right:'6px',
                 top:'4px',
                 display:xui.$inlineBlock,
-                width:'15px',
-                height:'15px',
-                cursor:'default',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-300px -70px',
-                 zoom:xui.browser.ie6?1:null
-            },
-            'TOGGLE-mouseover':{
-                'background-position': '-300px -90px'
-            },
-            'TOGGLE-mousedown':{
-                'background-position': '-300px -110px'
-            },
-            "TOGGLE-adv":{
-                'background-position': '-240px -70px'
-            },
-            'TOGGLE-adv-mouseover':{
-                'background-position': '-240px -90px'
-            },
-            'TOGGLE-adv-mousedown':{
-                'background-position': '-240px -110px'
+                cursor:'default'
             }
         },
         Behaviors:{
@@ -31716,10 +31626,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
+                            className:'xuicon xui-icon-doubleleft',
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
+                            className:'xuicon xui-icon-singleleft',
                             tabindex: '{tabindex}'
                         },
                         YEAR:{
@@ -31738,10 +31650,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         NEXT:{
                             $order:7,
+                            className:'xuicon xui-icon-singleright',
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:8,
+                            className:'xuicon xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     },
@@ -31793,10 +31707,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'div',
                             TPRE2:{
                                 $order:0,
+                                className:'xuicon xui-icon-doubleleft',
                                 tabindex: '{tabindex}'
                             },
                             TPRE:{
                                 $order:1,
+                                className:'xuicon xui-icon-singleleft',
                                 tabindex: '{tabindex}'
                             },
                             HOUR:{
@@ -31810,15 +31726,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             },
                             TNEXT:{
                                 $order:6,
+                                className:'xuicon xui-icon-singleright',
                                 tabindex: '{tabindex}'
                             },
                             TNEXT2:{
                                 $order:7,
+                                className:'xuicon xui-icon-doubleright',
                                 tabindex: '{tabindex}'
                             }
                         },
                         TODAY:{
                              tabindex: '{tabindex}',
+                             className:'xuicon xui-icon-date',
                              title:"{_todaytitle}"
                         },
                         SET:{
@@ -31888,88 +31807,24 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top:'3px',
                 left:'0',
                 display:xui.$inlineBlock,
-                width:'16px',
-                height:'16px',
-                cursor:'default',
-                'background-image':xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                'background-position':'right top',
-                _zoom:1
-            },
-            'TODAY-mouseover':{
-                'background-position': 'right -20px'
-            },
-            'TODAY-mousedown':{
-                'background-position': 'right -40px'
+                cursor:'default'
             },
             'PRE,PRE2,NEXT,NEXT2,TPRE,TPRE2,TNEXT,TNEXT2':{
                 $order:0,
                 display:xui.$inlineBlock,
                 position:'relative',
                 margin:'0 2px',
-                width:'15px',
-                height:'15px',
                 'vertical-align': 'middle',
-                cursor:'default',
-                'background-image':xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                _zoom:1
-            },
-            'PRE, TPRE':{
-                $order:1,
-                'background-position': '-260px -70px'
-            },
-            'PRE-mouseover, TPRE-mouseover':{
-                $order:2,
-                'background-position': '-260px -90px'
-            },
-            'PRE-mousedown, TPRE-mousedown':{
-                $order:3,
-                'background-position': '-260px -110px'
-            },
-            'PRE2, TPRE2':{
-                $order:1,
-                'background-position': '-240px -70px'
-            },
-            'PRE2-mouseover, TPRE2-mouseover':{
-                $order:2,
-                'background-position': '-240px -90px'
-            },
-            'PRE2-mousedown, TPRE2-mousedown':{
-                $order:3,
-                'background-position': '-240px -110px'
-            },
-            'NEXT, TNEXT':{
-                $order:1,
-                'background-position': '-280px -70px'
-            },
-            'NEXT-mouseover, TNEXT-mouseover':{
-                $order:2,
-                'background-position': '-280px -90px'
-            },
-            'NEXT-mousedown, TNEXT-mousedown':{
-                $order:3,
-                'background-position': '-280px -110px'
-            },
-            'NEXT2, TNEXT2':{
-                $order:1,
-                'background-position': '-300px -70px'
-            },
-            'NEXT2-mouseover, TNEXT2-mouseover':{
-                $order:2,
-                'background-position': '-300px -90px'
-            },
-            'NEXT2-mousedown, TNEXT2-mousedown':{
-                $order:3,
-                'background-position': '-300px -110px'
+                cursor:'default'
             },
             'YEAR,MONTH,DAY,HOUR,MINUTE':{
                 $order:4,
+                margin:'2px 2px 0 2px',
                 height:'15px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
-                'padding-left':'2px',
-                cursor:'e-resize'
+                cursor:'e-resize',
+                'padding-left':'2px'
             },
             YEAR:{
                 width:'32px'
@@ -32540,10 +32395,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
+                            className:'xuicon xui-icon-doubleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
+                            className:'xuicon xui-icon-singleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         HOUR:{
@@ -32557,10 +32414,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             },
                         NEXT:{
                             $order:6,
+                            className:'xuicon xui-icon-singleright',                            
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:7,
+                            className:'xuicon xui-icon-doubleright',                            
                             tabindex: '{tabindex}'
                         }
                     },
@@ -32686,65 +32545,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'PRE,PRE2,NEXT,NEXT2':{
                 position:'relative',
                 margin:'0 2px',
-                width:'15px',
-                height:'15px',
                 'vertical-align': 'middle',
-                cursor:'default',
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                _zoom:1
-            },
-            PRE:{
-                $order:1,
-                'background-position': '-260px -70px'
-            },
-            'PRE-mouseover':{
-                $order:2,
-                'background-position': '-260px -90px'
-            },
-            'PRE-mousedown':{
-                $order:3,
-                'background-position': '-260px -110px'
-            },
-            NEXT:{
-                $order:1,
-                'background-position': '-280px -70px'
-            },
-            'NEXT-mouseover':{
-                $order:2,
-                'background-position': '-280px -90px'
-            },
-            'NEXT-mousedown':{
-                $order:3,
-                'background-position': '-280px -110px'
-            },
-            PRE2:{
-                $order:1,
-                'background-position': '-240px -70px'
-            },
-            'PRE2-mouseover':{
-                $order:2,
-                'background-position': '-240px -90px'
-            },
-            'PRE2-mousedown':{
-                $order:3,
-                'background-position': '-240px -110px'
-            },
-            NEXT2:{
-                $order:1,
-                'background-position': '-300px -70px'
-            },
-            'NEXT2-mouseover':{
-                $order:2,
-                'background-position': '-300px -90px'
-            },
-            'NEXT2-mousedown':{
-                $order:3,
-                'background-position': '-300px -110px'
+                cursor:'default'
             },
             'HOUR, MINUTE':{
                 $order:3,
-                margin:'0 2px',
+                margin:'2px 2px 0 2px',
                 height:'15px',
                 width:'16px',
                 'font-weight':'bold',
@@ -33033,16 +32839,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     p=profile.properties,
                     item=box._ITEMKEY || 'ITEM',
                     k=box._DIRTYKEY || 'ITEM',
+                    mk='MARK',
                     getN=function(k,i){return profile.getSubNode(k,i)},
                     getI=function(i){return profile.getSubIdByItemId(i)};
                 if(p.selMode=='single'){
                     var itemId = getI(uiv);
                     if(uiv!==null && itemId)
-                        getN(k,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(item,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
 
                     itemId = getI(value);
                     if(itemId)
-                        getN(k,itemId).tagClass('-checked');
+                        getN(item,itemId).tagClass('-checked');
 
                     //scroll
                     if(itemId){
@@ -33065,10 +32872,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     value = value?value.split(p.valueSeparator):[];
                     //check all
                     _.arr.each(uiv,function(o){
-                        getN(k, getI(o)).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(item, getI(o)).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(mk, getI(o)).tagClass('-checked',false); 
                     });
                     _.arr.each(value,function(o){
-                        getN(k, getI(o)).tagClass('-checked');
+                        getN(item, getI(o)).tagClass('-checked');
+                        getN(mk, getI(o)).tagClass('-checked');
                     });
                 }
             });
@@ -33156,6 +32965,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         MARK:{
                             $order:5,
+                            className:'xuicon xui-uicmd-check',
                             style:"{_cbDisplay}"
                         },
                         ICON:{
@@ -33271,16 +33081,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             MARK:{
                $order:1,
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
-               'vertical-align':'middle',
-               'background-image':xui.UI.$bg('icons.gif', '',true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px'
-            },
-            'ITEM-checked MARK':{
-                $order:2,
-                'background-position': '0 -70px'
+               'vertical-align':'middle'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -37007,14 +36808,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(flag){
                         _.arr.each(value,function(o){
                             fun('BAR', o);
+                            fun('MARK', o);
                         });
                     }else{
                         //check all
                         _.arr.each(uiv,function(o){
                             fun('BAR', o, false);
+                            fun('MARK', o, false);
                         });
                         _.arr.each(value,function(o){
                             fun('BAR', o);
+                            fun('MARK', o);
                         });
                     }
                 }
@@ -37213,7 +37017,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             MARK:{
                                 $order:5,
-                                className:'xuicon',
+                                className:'xuicon xui-uicmd-check',
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
@@ -37231,7 +37035,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 $order:8
                             },
                             OPT:{
-                                $order:9
+                                $order:9,
+                                className:'xuicon xui-uicmd-opt'
                             },
                             RTAGCMDS:{
                                 $order:10,
@@ -37334,16 +37139,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             MARK:{
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
-               'vertical-align':'middle',
-               'background-image': xui.UI.$bg('icons.gif','', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px'
-            },
-            'BAR-checked MARK':{
-                $order:3,
-                'background-position': '0 -70px'
+               'vertical-align':'middle'
             },
             'BAR-group':{
                 $order:4,
@@ -37361,20 +37157,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 top:'auto',
                 right:'2px',
                 top:'2px',
-                width:'16px',
-                height:'16px',
-                display:'none',
-                'background-image': xui.UI.$bg('icons.gif','', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-130px -224px'
-            },
-            'OPT-mouseover':{
-                $order:20,
-                'background-position':'-130px -244px'
-            },
-            'OPT-mousedown':{
-                $order:30,
-                'background-position':'-130px -264px'
+                display:'none'
             },
             LTAGCMDS:{
                 "padding-left":'4px',
@@ -38314,8 +38097,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         var t = this.getTemplate();
         _.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-outset",
-             TOP:{},
-             BOTTOM:{},
+             TOP:{
+                className:'xuicon xui-icon-circleup'
+             },
+             BOTTOM:{
+                className:'xuicon xui-icon-circledown'
+             },
              BOX:{
                 tagName:'div',
                 className:"xui-uibg-base",
@@ -38372,7 +38159,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         text : '{add}',
                         $order:2
                     },
-                    SUB:{style:'{displaySub}'}
+                    SUB:{
+                        className:'xuicon xui-icon-singleright',
+                        style:'{displaySub}'
+                    }
                 }
             },
             'items.checkbox':{
@@ -38494,13 +38284,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'absolute',
                 'margin-left':'-8px',
                 right:0,
-                height:'16px',
-                width:'16px',
                 'z-index':'10',
                 top:0,
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-48px -244px'
             },
             BOTTOM:{
                 cursor:'pointer',
@@ -38508,43 +38293,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'absolute',
                 'margin-left':'-8px',
                 right:0,
-                height:'16px',
-                width:'16px',
                 'z-index':'10',
-                bottom:0,
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-66px -244px'
+                bottom:0
             },
             'RADIOBOX, CHECKBOX, RADIOBOX-checked, CHECKBOX-checked':{
                 cursor:'pointer',
-                'vertical-align':'middle',
-                width:'16px',
-                height:'16px'
-            },
-            CHECKBOX:{
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px',
-               margin:0
-            },
-            'CHECKBOX-checked':{
-               $order:1,
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'0 -70px'
-            },
-            RADIOBOX:{
-               'background-image':xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-60px -70px',
-               margin:0
-            },
-            'RADIOBOX-checked':{
-               $order:1,
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-40px -70px'
+                'vertical-align':'middle'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -38568,12 +38322,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             SUB:{
                 position:'absolute',
                 top:'2px',
-                right:'6px',
-                width:'8px',
-                height:'16px',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-200px -70px'
+                right:'6px'
             }
         },
         Behaviors:{
@@ -38916,9 +38665,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             item.type=item.type||'button';
             if(item.type=='checkbox')
-                item.checkboxCls =profile.getClass('CHECKBOX', item.value?'-checked':'');
+                item.checkboxCls = 'xui-uicmd-check' + (item.value?'-checked':'');
             else if(item.type=='radiobox')
-                item.radioboxCls =profile.getClass('RADIOBOX', item.value?'-checked':'');
+                item.radioboxCls = 'xui-uicmd-radio' + (item.value?'-checked':'');
         },
         _onresize:null
     }
@@ -39983,8 +39732,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-ui-unselectable {cls3} ',
-                            text:'{_origin}'
+                            className:'xui-ui-unselectable xuicon {cls3} '
                         },
                         PANEL:{
                             tagName:'div',
@@ -40549,9 +40297,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 data.cls1  = profile.getClass('ITEM', '-' + pos );
                 data.cls2  = profile.getClass('MOVE', '-' + pos );
-                data.cls3  = profile.getClass('CMD', '-' + pos );
-
-                data._origin = pos=="top"?"+":pos=="bottom"?"+":pos=="left"?"+":pos=="right"?"+":"";
+                data.cls3  = data.cls3  = profile.getClass('CMD', '-' + pos ) + " xui-icon-arrow" + pos;
 
                 data.display = data.hidden?'display:none':'';
                 data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';
@@ -40749,7 +40495,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     uiv = box.getUIValue(),
                     p = profile.properties,
                     rowMap=profile.rowMap,
-                    k = p.activeMode=='row'?['CELLS1','CELLS2']:'CELL',
+                    k = p.activeMode=='row'?['CELLS1','CELLS2','MARK','HFMARK']:'CELL',
                     getN = function(k,i){return profile.getSubNodes(k,i)},
                     getI = function(i){
                         var map1=profile.rowMap2;
@@ -41209,11 +40955,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if('sub' in options){
                             t = box._getToggleNode(profile, rid);
                             if(options.sub){
-                                t.addClass('xui-uicmd-toggle2');
+                                t.addClass('xui-uicmd-toggle');
                                 if(orow._layer)
                                     t.removeClass('xui-uicmd-empty');
                             }else{
-                                t.removeClass('xui-uicmd-toggle2');
+                                t.removeClass('xui-uicmd-toggle');
                                 if(orow._layer)
                                     t.addClass('xui-uicmd-empty');
                             }
@@ -42680,6 +42426,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             MARK:{
                                 $order:2,
+                                className:'xuicon xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -42720,6 +42467,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             className:'xui-v-wrapper {cellClass}{firstCellClass}',
                             MARK:{
                                 $order:2,
+                                className:'xuicon xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -42871,7 +42619,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
-                                className:'{checkboxCls}'
+                                className:'xuicon xui-uicmd-check {checkboxCls}'
                             }
                         }
                     }
@@ -43034,38 +42782,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'font-size':0,
                 'line-height':0
             },
-            'SORT, SORT-checked':{
-                width:'16px',
-                height:'16px'
-            },
             SORT:{
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-110px -220px',
-
                 position:'absolute',
                 right:'2px',
                 bottom:'2px'
-            },
-            'HCELL-mouseover SORT':{
-                $order:1,
-                'background-position': '-110px -240px'
-            },
-            'HCELL-mousedown SORT':{
-                $order:2,
-                'background-position': '-110px -260px'
-            },
-            'SORT-checked':{
-                $order:3,
-                'background-position': '-130px -220px'
-            },
-            'HCELL-mouseover SORT-checked':{
-                $order:4,
-                'background-position': '-130px -240px'
-            },
-            'HCELL-mousedown SORT-checked':{
-                $order:5,
-                'background-position': '-130px -260px'
             },
             HHANDLER:{
                 position:'absolute',
@@ -43297,32 +43017,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             'CHECKBOX, MARK':{
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
-               'vertical-align':'middle',
-               'background-image': xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px'
-            },
-            'CELL-mouseover CHECKBOX':{
-                $order:1,
-                'background-position': '-20px -90px'
-            },
-            'CELL-mousedown CHECKBOX':{
-                $order:2,
-                'background-position': '-20px -110px'
-            },
-            'CHECKBOX-checked, CELLS1-checked MARK, CELLS2-checked MARK':{
-                $order:3,
-                'background-position': '0 -70px'
-            },
-            'CELL-mouseover CHECKBOX-checked':{
-                $order:4,
-                'background-position': '0 -90px'
-            },
-            'CELL-mousedown CHECKBOX-checked':{
-                $order:5,
-                'background-position': '0 -110px'
+               'vertical-align':'middle'
             },
             'SUB1, SUM22':{
                 //for ie bug: relative , height='auto' will disppear
@@ -45823,7 +45518,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(node)
                         node.tagClass('-checked', cell.value);
                     else
-                        uicell.checkboxCls = profile.getClass('CHECKBOX', cell.value?'-checked':'');
+                        uicell.checkboxCls = 'xui-uicmd-check-' + (cell.value?'checked':'');
                 break;
                 case 'progress':
                     cell.value=parseFloat(cell.value)||0;
@@ -45981,8 +45676,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cells = t.cells = [];
 
                 t[SubID]=temp;
-//                t._subClass = row.sub?'xui-uicmd-toggle2':(row._layer?'xui-uicmd-empty':'');
-                t._subClass = row.sub?'xui-uicmd-toggle2':'';
+//                t._subClass = row.sub?'xui-uicmd-toggle':(row._layer?'xui-uicmd-empty':'');
+                t._subClass = row.sub?'xui-uicmd-toggle':'';
 
                 // id to dom item id
                 a[row.id]=temp;

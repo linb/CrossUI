@@ -207,8 +207,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-ui-unselectable {cls3} ',
-                            text:'{_origin}'
+                            className:'xui-ui-unselectable xuicon {cls3} '
                         },
                         PANEL:{
                             tagName:'div',
@@ -773,9 +772,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 data.cls1  = profile.getClass('ITEM', '-' + pos );
                 data.cls2  = profile.getClass('MOVE', '-' + pos );
-                data.cls3  = profile.getClass('CMD', '-' + pos );
-
-                data._origin = pos=="top"?"+":pos=="bottom"?"+":pos=="left"?"+":pos=="right"?"+":"";
+                data.cls3  = data.cls3  = profile.getClass('CMD', '-' + pos ) + " xui-icon-arrow" + pos;
 
                 data.display = data.hidden?'display:none':'';
                 data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';

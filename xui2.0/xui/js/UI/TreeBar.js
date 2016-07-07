@@ -46,14 +46,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(flag){
                         _.arr.each(value,function(o){
                             fun('BAR', o);
+                            fun('MARK', o);
                         });
                     }else{
                         //check all
                         _.arr.each(uiv,function(o){
                             fun('BAR', o, false);
+                            fun('MARK', o, false);
                         });
                         _.arr.each(value,function(o){
                             fun('BAR', o);
+                            fun('MARK', o);
                         });
                     }
                 }
@@ -252,7 +255,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             MARK:{
                                 $order:5,
-                                className:'xuicon',
+                                className:'xuicon xui-uicmd-check',
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
@@ -270,7 +273,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 $order:8
                             },
                             OPT:{
-                                $order:9
+                                $order:9,
+                                className:'xuicon xui-uicmd-opt'
                             },
                             RTAGCMDS:{
                                 $order:10,
@@ -373,16 +377,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             MARK:{
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
-               'vertical-align':'middle',
-               'background-image': xui.UI.$bg('icons.gif','', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px'
-            },
-            'BAR-checked MARK':{
-                $order:3,
-                'background-position': '0 -70px'
+               'vertical-align':'middle'
             },
             'BAR-group':{
                 $order:4,
@@ -400,20 +395,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 top:'auto',
                 right:'2px',
                 top:'2px',
-                width:'16px',
-                height:'16px',
-                display:'none',
-                'background-image': xui.UI.$bg('icons.gif','', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-130px -224px'
-            },
-            'OPT-mouseover':{
-                $order:20,
-                'background-position':'-130px -244px'
-            },
-            'OPT-mousedown':{
-                $order:30,
-                'background-position':'-130px -264px'
+                display:'none'
             },
             LTAGCMDS:{
                 "padding-left":'4px',

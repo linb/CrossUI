@@ -80,10 +80,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
+                            className:'xuicon xui-icon-doubleleft',
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
+                            className:'xuicon xui-icon-singleleft',
                             tabindex: '{tabindex}'
                         },
                         YEAR:{
@@ -102,10 +104,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         },
                         NEXT:{
                             $order:7,
+                            className:'xuicon xui-icon-singleright',
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:8,
+                            className:'xuicon xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     },
@@ -157,10 +161,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                             tagName:'div',
                             TPRE2:{
                                 $order:0,
+                                className:'xuicon xui-icon-doubleleft',
                                 tabindex: '{tabindex}'
                             },
                             TPRE:{
                                 $order:1,
+                                className:'xuicon xui-icon-singleleft',
                                 tabindex: '{tabindex}'
                             },
                             HOUR:{
@@ -174,15 +180,18 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                             },
                             TNEXT:{
                                 $order:6,
+                                className:'xuicon xui-icon-singleright',
                                 tabindex: '{tabindex}'
                             },
                             TNEXT2:{
                                 $order:7,
+                                className:'xuicon xui-icon-doubleright',
                                 tabindex: '{tabindex}'
                             }
                         },
                         TODAY:{
                              tabindex: '{tabindex}',
+                             className:'xuicon xui-icon-date',
                              title:"{_todaytitle}"
                         },
                         SET:{
@@ -252,88 +261,24 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 top:'3px',
                 left:'0',
                 display:xui.$inlineBlock,
-                width:'16px',
-                height:'16px',
-                cursor:'default',
-                'background-image':xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                'background-position':'right top',
-                _zoom:1
-            },
-            'TODAY-mouseover':{
-                'background-position': 'right -20px'
-            },
-            'TODAY-mousedown':{
-                'background-position': 'right -40px'
+                cursor:'default'
             },
             'PRE,PRE2,NEXT,NEXT2,TPRE,TPRE2,TNEXT,TNEXT2':{
                 $order:0,
                 display:xui.$inlineBlock,
                 position:'relative',
                 margin:'0 2px',
-                width:'15px',
-                height:'15px',
                 'vertical-align': 'middle',
-                cursor:'default',
-                'background-image':xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                _zoom:1
-            },
-            'PRE, TPRE':{
-                $order:1,
-                'background-position': '-260px -70px'
-            },
-            'PRE-mouseover, TPRE-mouseover':{
-                $order:2,
-                'background-position': '-260px -90px'
-            },
-            'PRE-mousedown, TPRE-mousedown':{
-                $order:3,
-                'background-position': '-260px -110px'
-            },
-            'PRE2, TPRE2':{
-                $order:1,
-                'background-position': '-240px -70px'
-            },
-            'PRE2-mouseover, TPRE2-mouseover':{
-                $order:2,
-                'background-position': '-240px -90px'
-            },
-            'PRE2-mousedown, TPRE2-mousedown':{
-                $order:3,
-                'background-position': '-240px -110px'
-            },
-            'NEXT, TNEXT':{
-                $order:1,
-                'background-position': '-280px -70px'
-            },
-            'NEXT-mouseover, TNEXT-mouseover':{
-                $order:2,
-                'background-position': '-280px -90px'
-            },
-            'NEXT-mousedown, TNEXT-mousedown':{
-                $order:3,
-                'background-position': '-280px -110px'
-            },
-            'NEXT2, TNEXT2':{
-                $order:1,
-                'background-position': '-300px -70px'
-            },
-            'NEXT2-mouseover, TNEXT2-mouseover':{
-                $order:2,
-                'background-position': '-300px -90px'
-            },
-            'NEXT2-mousedown, TNEXT2-mousedown':{
-                $order:3,
-                'background-position': '-300px -110px'
+                cursor:'default'
             },
             'YEAR,MONTH,DAY,HOUR,MINUTE':{
                 $order:4,
+                margin:'2px 2px 0 2px',
                 height:'15px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
-                'padding-left':'2px',
-                cursor:'e-resize'
+                cursor:'e-resize',
+                'padding-left':'2px'
             },
             YEAR:{
                 width:'32px'

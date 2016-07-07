@@ -21,23 +21,27 @@
   width:16px;
   height:16px;
 }
-.xuicon-mouseover{
+.xuicon:before{
+    display:inline-block;
+}
+.xuicon-mouseover:before{
   color: #000;
 }
-.xuicon-mousedown{
+.xuicon-mousedown:before{
   color: #FF0000;
+  padding: 1px 0 0 1px;
 }
-.xuicon-checked{
+.xuicon-checked:before{
   color: #FF0000;
 }
 .xui-uicmd-helpinput:before { content: "\e671"; }
 .xui-icon-zoomin:before { content: "\e61d"; }
-.xui-suoxiao:before { content: "\e61e"; }
+.xui-icon-zoomout:before { content: "\e61e"; }
 .xui-icon-bullet:before { content: "\e632"; }
 .xui-icon-minus:before { content: "\e606"; }
 .xui-uicmd-add:before { content: "\e609"; }
 .xui-icon-star:before { content: "\e649"; }
-.xui-move:before { content: "\e64a"; }
+.xui-icon-dragmove:before { content: "\e64a"; }
 .xui-uicmd-date:before { content: "\e64b"; }
 .xui-icon-number:before { content: "\e633"; }
 .xui-uicmd-pop:before { content: "\e61f"; }
@@ -61,14 +65,16 @@
 .xui-refresh:before { content: "\e625"; }
 .xui-icon-undo:before { content: "\e660"; }
 .xui-uicmd-refresh:before { content: "\e621"; }
-.xui-date:before { content: "\e626"; }
+.xui-icon-date:before { content: "\e626"; }
 .xui-lajitong:before { content: "\e60c"; }
 .xui-icon-alignleft:before { content: "\e647"; }
+.xui-icon-singleright:before { content: "\e672"; }
+.xui-icon-singleleft:before { content: "\e673"; }
 .xui-uicmd-max:before { content: "\e60d"; }
 .xui-uicmd-pop1:before { content: "\e60e"; }
 .xui-icon-last:before { content: "\e60f"; }
-.xui-uicmd-empty:before { content: "\e64c"; }
-.xui-icon-zoomout:before { content: "\e627"; }
+.xui-icon-error:before { content: "\e674"; }
+.xui-icon-remove:before { content: "\e627"; }
 .xui-uicmd-pin:before { content: "\e628"; }
 .xui-icon-link:before { content: "\e63b"; }
 .xui-icon-forecolor:before { content: "\e63c"; }
@@ -78,10 +84,12 @@
 .xui-uicmd-getter:before { content: "\e657"; }
 .xui-uicmd-save:before { content: "\e629"; }
 .xui-icon-dragcopy:before { content: "\e612"; }
+.xui-icon-dropdown:before { content: "\e678"; }
 .xui-uicmd-popbox:before { content: "\e668"; }
 .xui-uicmd-close:before { content: "\e62a"; }
 .xui-uicmd-datetime:before { content: "\e66c"; }
 .xui-icon-arrowright:before { content: "\e652"; }
+.xui-icon-triangle-right:before { content: "\e675"; }
 .xui-icon-font:before { content: "\e63e"; }
 .xui-icon-bgcolor:before { content: "\e63f"; }
 .xui-icon-mobile:before { content: "\e600"; }
@@ -96,10 +104,10 @@
 .xui-icon-redo:before { content: "\e661"; }
 .xui-icon-bold:before { content: "\e641"; }
 .xui-icon-bigup:before { content: "\e650"; }
-.xui-icon-angledoubledown:before { content: "\e65c"; }
-.xui-icon-angledoubleleft:before { content: "\e65d"; }
-.xui-icon-angledoubleright:before { content: "\e65e"; }
-.xui-icon-angledoubleup:before { content: "\e65f"; }
+.xui-icon-doubledown:before { content: "\e65c"; }
+.xui-icon-doubleleft:before { content: "\e65d"; }
+.xui-icon-doubleright:before { content: "\e65e"; }
+.xui-icon-doubleup:before { content: "\e65f"; }
 .xui-uicmd-check:before { content: "\e601"; }
 .xui-uicmd-check-checked:before { content: "\e608"; }
 .xui-uicmd-color:before { content: "\e62e"; }
@@ -111,8 +119,8 @@
 .xui-icon-formatclear:before { content: "\e644"; }
 .xui-uicmd-select:before { content: "\e66e"; }
 .xui-uicmd-file:before { content: "\e66b"; }
-.xui-icon-stop:before { content: "\e651"; }
-.xui-shenglvehao:before { content: "\e62f"; }
+.xui-icon-dragstop:before { content: "\e651"; }
+.xui-uicmd-dotted:before { content: "\e62f"; }
 .xui-icon-dialog:before { content: "\e82c"; }
 .xui-icon-print:before { content: "\e613"; }
 .xui-icon-right:before { content: "\e616"; }
@@ -120,7 +128,7 @@
 .xui-uicmd-info:before { content: "\e618"; }
 .xui-icon-smill:before { content: "\e65b"; }
 .xui-liebiaolist46:before { content: "\e619"; }
-.xui-icon-arrowup:before { content: "\e654"; }
+.xui-icon-arrowtop:before { content: "\e654"; }
 .xui-icon-file-fold:before { content: "\e622"; }
 .xui-zuidahua:before { content: "\e61a"; }
 .xui-icon-circle:before { content: "\e656"; }
@@ -141,8 +149,12 @@
 .xui-icon-file-expand:before { content: "\e669"; }
 .xui-uicmd-delete:before { content: "\e670"; }
 .xui-uicmd-land:before { content: "\e615"; }
-.xui-icon-arrowdown:before { content: "\e655"; }
+.xui-icon-arrowbottom:before { content: "\e655"; }
 .xui-icon-arrowleft:before { content: "\e653"; }
 .xui-icon-next:before { content: "\e60b"; }
 .xui-icon-first:before { content: "\e611"; }
 .xui-icon-first1:before { content: "\e66a"; }
+.xui-icon-triangle-left:before { content: "\e676"; }
+.xui-icon-triangle-up:before { content: "\e677"; }
+.xui-icon-triangle-down:before { content: "\e679"; }
+.xui-uicmd-empty:before { content: "\e64c"; }

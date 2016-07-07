@@ -57,18 +57,18 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
+                    className:'xuicon {_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
+                    className:'xuicon {_incls}',
                     tabindex:'{tabindex}'
                 }
             }
         },
         Appearances:{
             'IND, BT, RULER, RULERLEFT, RULERRIGHT, IND1, IND2, DECREASE, INCREASE':{
-                'font-size':0,
-                'line-height':0,
                 position:'absolute'
             },
             LABEL:{
@@ -91,39 +91,17 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 height:'17px',
                 'margin-top':'-8px'
             },            
-            'BOX-v DECREASE, BOX-v INCREASE, BOX-h DECREASE, BOX-h INCREASE': {
-                'background-image': xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat'
-            },
             'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
                 padding:0,
                 margin:0
             },
             'BOX-h DECREASE':{
                 $order:1,
-                left:0,
-                'background-position': '-80px -70px'
+                left:0
             },
             'BOX-h INCREASE':{
                 $order:1,
-                right:0,
-                'background-position': '-100px -70px'
-            },
-            'BOX-h DECREASE-mouseover':{
-                $order:2,
-                'background-position':'-80px -90px'
-            },
-            'BOX-h DECREASE-mousedown':{
-                $order:3,
-                'background-position':'-80px -110px'
-            },
-            'BOX-h INCREASE-mouseover':{
-                $order:2,
-                'background-position':'-100px -90px'
-            },
-            'BOX-h INCREASE-mousedown':{
-                $order:3,
-                'background-position':'-100px -110px'
+                right:0
             },
             'BOX-h BG':{
                 top:'50%'                
@@ -164,33 +142,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },            
             'BOX-v DECREASE':{
                 $order:10,
-                top:0,
-                'background-position': '-120px -70px'
+                top:0
             },
             'BOX-v INCREASE':{
                 $order:10,
-                bottom:0,
-                'background-position': '-140px -70px'
-            },
-            'BOX-v DECREASE-mouseover':{
-                $order:11,
-                'background-position':'-120px -90px'
-            },
-            'BOX-v DECREASE-mousedown':{
-                $order:12,
-                'background-position':'-120px -110px'
-            },
-            '.xui-ui-disabled INCREASE, .xui-ui-disabled DECREASE':{
-                $order:15,
-                display:'none'
-            }, 
-            'BOX-v INCREASE-mouseover':{
-                $order:11,
-                'background-position':'-140px -90px'
-            },
-            'BOX-v INCREASE-mousedown':{
-                $order:12,
-                'background-position':'-140px -110px'
+                bottom:0
             },
             'BOX-v BG':{
                 $order:10,
@@ -534,6 +490,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
+
+            d._decls = 'xui-icon-triangle-'+(d.type=='vertical'?'up':'left');
+            d._incls = 'xui-icon-triangle-'+(d.type=='vertical'?'down':'right');
             return d;
         },
         _adjustValue:function(profile,value){

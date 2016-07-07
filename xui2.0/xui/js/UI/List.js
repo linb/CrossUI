@@ -9,16 +9,17 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     p=profile.properties,
                     item=box._ITEMKEY || 'ITEM',
                     k=box._DIRTYKEY || 'ITEM',
+                    mk='MARK',
                     getN=function(k,i){return profile.getSubNode(k,i)},
                     getI=function(i){return profile.getSubIdByItemId(i)};
                 if(p.selMode=='single'){
                     var itemId = getI(uiv);
                     if(uiv!==null && itemId)
-                        getN(k,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(item,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
 
                     itemId = getI(value);
                     if(itemId)
-                        getN(k,itemId).tagClass('-checked');
+                        getN(item,itemId).tagClass('-checked');
 
                     //scroll
                     if(itemId){
@@ -41,10 +42,12 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     value = value?value.split(p.valueSeparator):[];
                     //check all
                     _.arr.each(uiv,function(o){
-                        getN(k, getI(o)).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(item, getI(o)).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(mk, getI(o)).tagClass('-checked',false); 
                     });
                     _.arr.each(value,function(o){
-                        getN(k, getI(o)).tagClass('-checked');
+                        getN(item, getI(o)).tagClass('-checked');
+                        getN(mk, getI(o)).tagClass('-checked');
                     });
                 }
             });
@@ -132,6 +135,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         },
                         MARK:{
                             $order:5,
+                            className:'xuicon xui-uicmd-check',
                             style:"{_cbDisplay}"
                         },
                         ICON:{
@@ -247,16 +251,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             MARK:{
                $order:1,
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
-               'vertical-align':'middle',
-               'background-image':xui.UI.$bg('icons.gif', '',true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px'
-            },
-            'ITEM-checked MARK':{
-                $order:2,
-                'background-position': '0 -70px'
+               'vertical-align':'middle'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',

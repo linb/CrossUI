@@ -168,11 +168,11 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         $order:3,
                         tagName:'div',
                         className:'xui-uibar-cmdl',
-                        DATE:{$order:0,style:'{dateDisplay}'},
-                        PRE:{$order:2},
-                        'ZOOMIN':{$order:3,style:'{zoomDisplay}'},
-                        'ZOOMOUT':{$order:4,style:'{zoomDisplay}'},
-                        NEXT:{$order:5}
+                        DATE:{$order:0,style:'{dateDisplay}',className:'xuicon xui-icon-date'},
+                        PRE:{$order:2,className:'xuicon xui-icon-singleleft'},
+                        'ZOOMIN':{$order:3,style:'{zoomDisplay}',className:'xuicon xui-icon-zoomin'},
+                        'ZOOMOUT':{$order:4,style:'{zoomDisplay}',className:'xuicon xui-icon-zoomout'},
+                        NEXT:{$order:5,className:'xuicon xui-icon-singleright'}
                     },
                     BARCMDR:{
                         $order:4,
@@ -1023,73 +1023,6 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 background:0,
                 visibility:'hidden',
                 height:'100%'
-            },
-            'ZOOMIN, ZOOMOUT, DATE, PRE, NEXT':{
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat'
-            },
-            ZOOMIN:{
-                $order:1,
-                'background-position':'-360px -70px'
-            },
-            'ZOOMIN-mouseover':{
-                $order:2,
-                'background-position': '-360px -90px'
-            },
-            'ZOOMIN-mousedown':{
-                $order:3,
-                'background-position': '-360px -110px'
-            },
-            ZOOMOUT:{
-                $order:1,
-                'background-position':'-380px -70px'
-            },
-            'ZOOMOUT-mouseover':{
-                $order:2,
-                'background-position': '-380px -90px'
-            },
-            'ZOOMOUT-mousedown':{
-                $order:3,
-                'background-position': '-380px -110px'
-            },
-            DATE:{
-                $order:1,
-                'background-position':'-340px -70px'
-            },
-            'DATE-mouseover':{
-                $order:2,
-                'background-position':' -340px -90px'
-            },
-            'DATE-mousedown':{
-                $order:3,
-                'background-position':' -340px -110px'
-            },
-            PRE:{
-                $order:1,
-                'background-position':'-260px -70px',
-                top:'0'
-            },
-            'PRE-mouseover':{
-                $order:2,
-                'background-position': '-260px -90px'
-            },
-            'PRE-mousedown':{
-                $order:3,
-                'background-position': '-260px -110px'
-            },
-            NEXT:{
-                $order:1,
-                position:'absolute',
-                'background-position':'-280px -70px',
-                top:'0'
-            },
-            'NEXT-mouseover':{
-                $order:2,
-                'background-position': '-280px -90px'
-            },
-            'NEXT-mousedown':{
-                $order:3,
-                'background-position': '-280px -110px'
             },
             BGITEM:{
                 position:'absolute',

@@ -72,9 +72,6 @@ html, .xui-uibg-base{
     border-bottom-color:#f1f1f1;
 }
 /*item [[[colors]]]*/
-.xui-uitembg{
-    background-color:#FFF;
-}
 .xui-uitembg-mouseover{
     background-color:#EBF3FD;
     border-color:#c9c9c9;
@@ -310,12 +307,6 @@ html, .xui-uibg-base{
 		background-color:#AAD2FA;
 }
 
-.xui-list-mark{
-    background-image: url(Public/icons.gif);
-}
-.xui-list-opt{
-    background-image: url(Public/icons.gif);
-}
 
 /*xui.UI.Slider*/
 .xui-slider-box-v .xui-slider-decrease, .xui-slider-box-v .xui-slider-increase, .xui-slider-box-h .xui-slider-decrease, .xui-slider-box-h .xui-slider-increase, .xui-slider-box-h .xui-slider-ind1, .xui-slider-box-h .xui-slider-ind2, .xui-slider-box-v .xui-slider-ind1, .xui-slider-box-v .xui-slider-ind2{
@@ -374,19 +365,8 @@ html, .xui-uibg-base{
 }
 .xui-treebar-bar-checked{
 }
-.xui-treebar-checked{
-    background-image: url(Public/icons.gif);
-}
-.xui-treebar-opt{
-    background-image: url(Public/icons.gif);
-}
+
 /*xui.UI.TreeView*/
-.xui-treeview-mark{
-    background-image: url(Public/icons.gif);
-}
-.xui-treeview-opt{
-    background-image: url(Public/icons.gif);
-}
 .xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
     background-image: url(List/item.gif);
     background-repeat:repeat-x;
@@ -514,10 +494,6 @@ html, .xui-uibg-base{
     background-position:left top;
     background-image:url(Public/split_horizontal.gif);
 }
-.xui-popmenu-checkbox, .xui-popmenu-checkbox-checked, .xui-popmenu-top, .xui-popmenu-bottom,  .xui-popmenu-sub
-{
-    background-image: url(Public/icons.gif);
-}
 
 
 /*xui.UI.Layout*/
@@ -621,27 +597,9 @@ html, .xui-uibg-base{
 /*xui.UI.TimePicker*/
 /*xui.UI.ColorPicker*/
 /*.xui-datepicker-today, */
-.xui-datepicker-pre, .xui-datepicker-next, .xui-datepicker-pre2, .xui-datepicker-next2,
-.xui-timepicker-pre, .xui-timepicker-next, .xui-timepicker-pre2, .xui-timepicker-next2,
-.xui-colorpicker-toggle{
-    background-image: url(Public/icons.gif);
-}
+
 
 /*xui.UI.TreeGrid [[[colors]]]*/
-.xui-treegrid-arrow{
-    background-image: url(Public/icons.gif);
-    background-repeat:no-repeat;
-    background-position:-72px -270px;
-}
-.xui-treegrid-mark{
-    background-image: url(Public/icons.gif);
-}
-.xui-treegrid-mark{
-    background-image: url(Public/icons.gif);
-}
-.xui-treegrid-sort, .xui-treegrid-checkbox, .xui-treegrid-checkbox-checked{
-    background-image: url(Public/icons.gif);
-}
 
 .xui-treegrid-header1, .xui-treegrid-header2, .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
@@ -764,10 +722,6 @@ html, .xui-uibg-base{
     background-image: url(TimeLine/bars.gif);
 }
 .xui-timeline-head, .xui-timeline-handler{
-}
-.xui-timeline-zoomin, .xui-timeline-zoomout, .xui-timeline-date, .xui-timeline-min, 
-.xui-timeline-pre, .xui-timeline-next{
-    background-image: url(Public/icons.gif);
 }
 .xui-timeline-mainc{
 }

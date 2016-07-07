@@ -128,7 +128,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             }
         },'all');
-        t.FRAME.ERROR = {};
+        t.FRAME.ERROR = {
+            className:'xuicon xui-icon-error'
+        };
         this.setTemplate(t)
     },
     Static:{
@@ -197,17 +199,11 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                resize:'none'
             },
             ERROR:{
-                width:'9px',
-                height:'9px',
                 position:'absolute',
                 right:'2px',
                 top:'2px',
                 display:'none',
-                'font-size':0,
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -244px',
-                'z-index':'50'
+                'z-index':20
             },
             '.setting-xui-input':{
                 'border-style':'solid',

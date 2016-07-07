@@ -20,7 +20,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     uiv = box.getUIValue(),
                     p = profile.properties,
                     rowMap=profile.rowMap,
-                    k = p.activeMode=='row'?['CELLS1','CELLS2']:'CELL',
+                    k = p.activeMode=='row'?['CELLS1','CELLS2','MARK','HFMARK']:'CELL',
                     getN = function(k,i){return profile.getSubNodes(k,i)},
                     getI = function(i){
                         var map1=profile.rowMap2;
@@ -480,11 +480,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if('sub' in options){
                             t = box._getToggleNode(profile, rid);
                             if(options.sub){
-                                t.addClass('xui-uicmd-toggle2');
+                                t.addClass('xui-uicmd-toggle');
                                 if(orow._layer)
                                     t.removeClass('xui-uicmd-empty');
                             }else{
-                                t.removeClass('xui-uicmd-toggle2');
+                                t.removeClass('xui-uicmd-toggle');
                                 if(orow._layer)
                                     t.addClass('xui-uicmd-empty');
                             }
@@ -1951,6 +1951,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             MARK:{
                                 $order:2,
+                                className:'xuicon xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -1991,6 +1992,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             className:'xui-v-wrapper {cellClass}{firstCellClass}',
                             MARK:{
                                 $order:2,
+                                className:'xuicon xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -2142,7 +2144,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
-                                className:'{checkboxCls}'
+                                className:'xuicon xui-uicmd-check {checkboxCls}'
                             }
                         }
                     }
@@ -2305,38 +2307,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'font-size':0,
                 'line-height':0
             },
-            'SORT, SORT-checked':{
-                width:'16px',
-                height:'16px'
-            },
             SORT:{
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-110px -220px',
-
                 position:'absolute',
                 right:'2px',
                 bottom:'2px'
-            },
-            'HCELL-mouseover SORT':{
-                $order:1,
-                'background-position': '-110px -240px'
-            },
-            'HCELL-mousedown SORT':{
-                $order:2,
-                'background-position': '-110px -260px'
-            },
-            'SORT-checked':{
-                $order:3,
-                'background-position': '-130px -220px'
-            },
-            'HCELL-mouseover SORT-checked':{
-                $order:4,
-                'background-position': '-130px -240px'
-            },
-            'HCELL-mousedown SORT-checked':{
-                $order:5,
-                'background-position': '-130px -260px'
             },
             HHANDLER:{
                 position:'absolute',
@@ -2568,32 +2542,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             'CHECKBOX, MARK':{
                cursor:'pointer',
-               width:'16px',
-               height:'16px',
-               'vertical-align':'middle',
-               'background-image': xui.UI.$bg('icons.gif', '', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-20px -70px'
-            },
-            'CELL-mouseover CHECKBOX':{
-                $order:1,
-                'background-position': '-20px -90px'
-            },
-            'CELL-mousedown CHECKBOX':{
-                $order:2,
-                'background-position': '-20px -110px'
-            },
-            'CHECKBOX-checked, CELLS1-checked MARK, CELLS2-checked MARK':{
-                $order:3,
-                'background-position': '0 -70px'
-            },
-            'CELL-mouseover CHECKBOX-checked':{
-                $order:4,
-                'background-position': '0 -90px'
-            },
-            'CELL-mousedown CHECKBOX-checked':{
-                $order:5,
-                'background-position': '0 -110px'
+               'vertical-align':'middle'
             },
             'SUB1, SUM22':{
                 //for ie bug: relative , height='auto' will disppear
@@ -5094,7 +5043,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(node)
                         node.tagClass('-checked', cell.value);
                     else
-                        uicell.checkboxCls = profile.getClass('CHECKBOX', cell.value?'-checked':'');
+                        uicell.checkboxCls = 'xui-uicmd-check-' + (cell.value?'checked':'');
                 break;
                 case 'progress':
                     cell.value=parseFloat(cell.value)||0;
@@ -5252,8 +5201,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cells = t.cells = [];
 
                 t[SubID]=temp;
-//                t._subClass = row.sub?'xui-uicmd-toggle2':(row._layer?'xui-uicmd-empty':'');
-                t._subClass = row.sub?'xui-uicmd-toggle2':'';
+//                t._subClass = row.sub?'xui-uicmd-toggle':(row._layer?'xui-uicmd-empty':'');
+                t._subClass = row.sub?'xui-uicmd-toggle':'';
 
                 // id to dom item id
                 a[row.id]=temp;

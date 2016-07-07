@@ -79,10 +79,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
+                            className:'xuicon xui-icon-doubleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
+                            className:'xuicon xui-icon-singleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         HOUR:{
@@ -96,10 +98,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                             },
                         NEXT:{
                             $order:6,
+                            className:'xuicon xui-icon-singleright',                            
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:7,
+                            className:'xuicon xui-icon-doubleright',                            
                             tabindex: '{tabindex}'
                         }
                     },
@@ -225,65 +229,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             'PRE,PRE2,NEXT,NEXT2':{
                 position:'relative',
                 margin:'0 2px',
-                width:'15px',
-                height:'15px',
                 'vertical-align': 'middle',
-                cursor:'default',
-                'background-image': xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                _zoom:1
-            },
-            PRE:{
-                $order:1,
-                'background-position': '-260px -70px'
-            },
-            'PRE-mouseover':{
-                $order:2,
-                'background-position': '-260px -90px'
-            },
-            'PRE-mousedown':{
-                $order:3,
-                'background-position': '-260px -110px'
-            },
-            NEXT:{
-                $order:1,
-                'background-position': '-280px -70px'
-            },
-            'NEXT-mouseover':{
-                $order:2,
-                'background-position': '-280px -90px'
-            },
-            'NEXT-mousedown':{
-                $order:3,
-                'background-position': '-280px -110px'
-            },
-            PRE2:{
-                $order:1,
-                'background-position': '-240px -70px'
-            },
-            'PRE2-mouseover':{
-                $order:2,
-                'background-position': '-240px -90px'
-            },
-            'PRE2-mousedown':{
-                $order:3,
-                'background-position': '-240px -110px'
-            },
-            NEXT2:{
-                $order:1,
-                'background-position': '-300px -70px'
-            },
-            'NEXT2-mouseover':{
-                $order:2,
-                'background-position': '-300px -90px'
-            },
-            'NEXT2-mousedown':{
-                $order:3,
-                'background-position': '-300px -110px'
+                cursor:'default'
             },
             'HOUR, MINUTE':{
                 $order:3,
-                margin:'0 2px',
+                margin:'2px 2px 0 2px',
                 height:'15px',
                 width:'16px',
                 'font-weight':'bold',

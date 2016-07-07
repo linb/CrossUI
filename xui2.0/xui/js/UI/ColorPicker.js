@@ -200,6 +200,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         },
                         TOGGLE:{
                             $order:2,
+                            className:'xuicon xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     }
@@ -260,7 +261,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 action:function(v){
                     var ns=this;
                     ns.getSubNode('ADV').css('display',v?'':'none');
-                    ns.getSubNode('TOGGLE').tagClass("-adv", v);
+                    if(v)
+                        ns.getSubNode('TOGGLE').removeClass('xui-icon-doubleright').addClass('xui-icon-doubleleft');
+                    else
+                        ns.getSubNode('TOGGLE').removeClass('xui-icon-doubleleft').addClass('xui-icon-doubleright');
+
                     ns.getRoot().width(v?410:210);
                     if(v)
                         ns.box._updateMarks(ns,ns.properties.$UIvalue,true, ns.$hsv[0])
@@ -428,28 +433,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 right:'6px',
                 top:'4px',
                 display:xui.$inlineBlock,
-                width:'15px',
-                height:'15px',
-                cursor:'default',
-                'background-image':xui.UI.$bg('icons.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'-300px -70px',
-                 zoom:xui.browser.ie6?1:null
-            },
-            'TOGGLE-mouseover':{
-                'background-position': '-300px -90px'
-            },
-            'TOGGLE-mousedown':{
-                'background-position': '-300px -110px'
-            },
-            "TOGGLE-adv":{
-                'background-position': '-240px -70px'
-            },
-            'TOGGLE-adv-mouseover':{
-                'background-position': '-240px -90px'
-            },
-            'TOGGLE-adv-mousedown':{
-                'background-position': '-240px -110px'
+                cursor:'default'
             }
         },
         Behaviors:{
