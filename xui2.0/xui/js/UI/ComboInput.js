@@ -475,7 +475,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"{_commandCls} {btncls}"
+                    className:"{_commandCls} {btncls} xuicon"
                 }
             }
         },'all');
@@ -712,9 +712,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 position:'absolute',
                 height:'50%'
             },
-            'R1B, R2B, SMID, MID':{
-                'background-image': xui.UI.$bg('bg.gif')
-            },            
             R1:{
                 top:0
             },
@@ -724,61 +721,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'R1B,R2B':{
                 cursor:'pointer',
                 width:'16px',
-                'font-size':0,
-                'line-height':0,
                 position:'absolute',
                 left:0,
                 top:'50%',
-                'margin-top':'-4px',
                 height:'6px',
+                'margin-top':'-2px',
                 'z-index':2
-            },
-            R1B:{
-                $order:1,
-                'background-position':'-14px -36px'
-            },
-            R2B:{
-                $order:1,
-                'background-position':'left -5px'
             },
             'SMID,MID':{
                 $order:2,
                 cursor:'pointer',
-                width:'16px',
-                'font-size':0,
-                'line-height':0,
                 position:'absolute',
-                bottom:'0',
-                left:0,
-                height:'16px'
-            },
-            'SMID':{
-                $order:3,
-                'background-position':'-16px -16px'
-            },
-            'SMID-save':{
-                $order:8,
-                'background-position': '-32px 0'
-            },
-            'SMID-delete':{
-                $order:8,
-                'background-position': '-32px -16px'
-            },
-            'SMID-add':{
-                $order:8,
-                'background-position': '-32px -32px'
-            },
-            'SMID-remove':{
-                $order:8,
-                'background-position': '-32px -48px'
-            },
-            'SMID-select':{
-                $order:8,
-                'background-position': 'left -16px'
-            },
-            'SMID-pop':{
-                $order:8,
-                'background-position': '-32px -64px'
+                bottom:'2px',
+                left:0
             },
             '.setting-xui-comboinput':{
                 'border-style':'solid',
@@ -1071,27 +1026,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, value){}
         },
-        _posMap:{
-            none:'',
-            currency:'',
-            'number':'',
-            combobox:'left top',
-            listbox:'left top',
-            file:'-16px top',
-            getter:'left -31px',
-            helpinput:'-16px -46px',
-            cmdbox:'left -16px',
-            popbox:'left -46px',
-            time:'left -60px',
-            date:'left -75px',
-            color:'-16px -60px',
- 
-            // Deprecated
-            timepicker:'left -60px',
-            datepicker:'left -75px',
-            datetime:'left -75px',
-            colorpicker:'-16px -60px'
-        },
         DataModel:{
             cachePopWnd:true,
             // allowed: yyyy,mm,dd,y,m,d
@@ -1315,12 +1249,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         R1:{
                             tagName:'button',
                             className:'xui-ui-btn',
-                            R1B:{}
+                            R1B:{
+                                className:'xuicon xui-icon-smallup'
+                            }
                         },
                         R2:{
                             tagName:'button',
                             className:'xui-ui-btn',
-                            R2B:{}
+                            R2B:{
+                                className:'xuicon xui-icon-smalldown'
+                            }
                         }
                     };
                 break;
@@ -1345,6 +1283,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
                         MID:{
+                            className:'xuicon {_btnClass}',
                             style:'{_btnStyle}'
                         }
                     };
@@ -1369,15 +1308,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile),
-                map=profile.box._posMap;
-            if(map[data.type])
-                data._btnStyle = data.btnImage? ('background: url('+data.btnImage+')' + (data.btnImagePos||'')) :('background-position:'+(data.btnImagePos||map[data.type]));
+            var data=arguments.callee.upper.call(this, profile);
 
+            var tt=data.type;
+            tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox')?'arrowdrop':tt;
+
+            data._btnClass = "xui-uicmd-" + tt;
+            if(data.btnImage)
+                data._btnStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
             data._type="text";
 
             data._saveDisplay = data.commandBtn!='none'?'':'display:none';
-            data._commandCls = profile.getClass("SMID","-"+data.commandBtn);
+            data._commandCls = "xui-uicmd-" + data.commandBtn;
 
             data._popbtnDisplay = (data.type!='none'&&data.type!='input'&&data.type!='password')?'':'display:none';
             data.typecls=profile.getClass('KEY','-type-'+(

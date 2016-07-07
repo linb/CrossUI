@@ -167,6 +167,9 @@ html, .xui-uibg-base{
 }
 .xui-ui-gradientbg, .xui-ui-btn{
     border-color:#8F8F8F;
+    -moz-box-shadow:inset 0px 1px 0px 0px #E7F1F6;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #E7F1F6;
+    box-shadow:inset 0px 1px 0px 0px #E7F1F6;    
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7F1F6', endColorstr='#2DB8E5');
     background: linear-gradient(top,  #E7F1F6,  #2DB8E5);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#E7F1F6), to(#2DB8E5));
@@ -288,10 +291,6 @@ html, .xui-uibg-base{
 .xui-input-box-focus, .xui-input-box-mouseover, .xui-comboinput-box-focus, .xui-comboinput-box-mouseover{
     border-color:#5C93BC;
 }
-.xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid{
-    background-image: url(ComboInput/bg.gif);
-}
-
 
 /*xui.UI.List*/
 .xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{

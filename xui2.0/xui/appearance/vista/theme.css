@@ -291,10 +291,6 @@ html, .xui-uibg-base{
 .xui-input-box-focus, .xui-input-box-mouseover, .xui-comboinput-box-focus, .xui-comboinput-box-mouseover{
     border-color:#5C93BC;
 }
-.xui-comboinput-r1b, .xui-comboinput-r2b, .xui-comboinput-mid, .xui-comboinput-smid{
-    background-image: url(ComboInput/bg.gif);
-}
-
 
 /*xui.UI.List*/
 .xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{

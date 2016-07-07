@@ -30,17 +30,15 @@
 .xuicon-checked{
   color: #FF0000;
 }
-
-.xui-uicmd-arrowdrop:after {content: "\e623"; }
-
-.xui-fangda:before { content: "\e61d"; }
+.xui-uicmd-helpinput:before { content: "\e671"; }
+.xui-icon-zoomin:before { content: "\e61d"; }
 .xui-suoxiao:before { content: "\e61e"; }
 .xui-icon-bullet:before { content: "\e632"; }
 .xui-icon-minus:before { content: "\e606"; }
-.xui-icon-plus:before { content: "\e609"; }
+.xui-uicmd-add:before { content: "\e609"; }
 .xui-icon-star:before { content: "\e649"; }
 .xui-move:before { content: "\e64a"; }
-.xui-icon-date:before { content: "\e64b"; }
+.xui-uicmd-date:before { content: "\e64b"; }
 .xui-icon-number:before { content: "\e633"; }
 .xui-uicmd-pop:before { content: "\e61f"; }
 .xui-add:before { content: "\e620"; }
@@ -52,10 +50,12 @@
 .xui-icon-outdent:before { content: "\e635"; }
 .xui-icon-strikethrough:before { content: "\e636"; }
 .xui-icon-inserthr:before { content: "\e637"; }
+.xui-uicmd-remove:before { content: "\e66d"; }
 .xui-icon-super:before { content: "\e638"; }
 .xui-icon-sub:before { content: "\e639"; }
 .xui-icon-alignjustify:before { content: "\e62b"; }
 .xui-icon-alignright:before { content: "\e646"; }
+.xui-uicmd-arrowdrop:before { content: "\e623"; }
 .xui-upload:before { content: "\e624"; }
 .xui-icon-formatbrush:before { content: "\e63a"; }
 .xui-refresh:before { content: "\e625"; }
@@ -68,17 +68,19 @@
 .xui-uicmd-pop1:before { content: "\e60e"; }
 .xui-icon-last:before { content: "\e60f"; }
 .xui-uicmd-empty:before { content: "\e64c"; }
-.xui-jianshao:before { content: "\e627"; }
+.xui-icon-zoomout:before { content: "\e627"; }
 .xui-uicmd-pin:before { content: "\e628"; }
 .xui-icon-link:before { content: "\e63b"; }
 .xui-icon-forecolor:before { content: "\e63c"; }
-.xui-icon-time:before { content: "\e64f"; }
+.xui-uicmd-time:before { content: "\e64f"; }
 .xui-icon-aligncenter:before { content: "\e666"; }
-.xui-uicmd-check:before { content: "\e601"; }
-.xui-uicmd-check-checked:before { content: "\e608"; }
+.xui-uicmd-cmdbox:before { content: "\e64e"; }
+.xui-uicmd-getter:before { content: "\e657"; }
 .xui-uicmd-save:before { content: "\e629"; }
 .xui-icon-dragcopy:before { content: "\e612"; }
+.xui-uicmd-popbox:before { content: "\e668"; }
 .xui-uicmd-close:before { content: "\e62a"; }
+.xui-uicmd-datetime:before { content: "\e66c"; }
 .xui-icon-arrowright:before { content: "\e652"; }
 .xui-icon-font:before { content: "\e63e"; }
 .xui-icon-bgcolor:before { content: "\e63f"; }
@@ -98,13 +100,17 @@
 .xui-icon-angledoubleleft:before { content: "\e65d"; }
 .xui-icon-angledoubleright:before { content: "\e65e"; }
 .xui-icon-angledoubleup:before { content: "\e65f"; }
+.xui-uicmd-check:before { content: "\e601"; }
+.xui-uicmd-check-checked:before { content: "\e608"; }
+.xui-uicmd-color:before { content: "\e62e"; }
 .xui-icon-breaklink:before { content: "\e642"; }
 .xui-icon-picture:before { content: "\e643"; }
 .xui-weibiaoti1:before { content: "\e62c"; }
 .xui-back:before { content: "\e62d"; }
 .xui-icon-dragadd:before { content: "\e614"; }
 .xui-icon-formatclear:before { content: "\e644"; }
-.xui-colorboard:before { content: "\e62e"; }
+.xui-uicmd-select:before { content: "\e66e"; }
+.xui-uicmd-file:before { content: "\e66b"; }
 .xui-icon-stop:before { content: "\e651"; }
 .xui-shenglvehao:before { content: "\e62f"; }
 .xui-icon-dialog:before { content: "\e82c"; }
@@ -124,14 +130,16 @@
 .xui-uicmd-radio-checked:before { content: "\e605"; }
 .xui-uicmd-restore:before { content: "\e630"; }
 .xui-dialog-copy:before { content: "\e61c"; }
-.xui-uicmd-toggle:before { content: "\e631"; }
-.xui-uicmd-toggle-checked:before { content: "\e662"; }
-.xui-uicmd-up:before { content: "\e663"; }
-.xui-uicmd-down:before { content: "\e664"; }
+.xui-icon-smallup:before { content: "\e663"; }
+.xui-icon-smalldown:before { content: "\e664"; }
 .xui-icon-html:before { content: "\e665"; }
 .xui-icon-code:before { content: "\e648"; }
 .xui-uicmd-min:before { content: "\e667"; }
+.xui-uicmd-toggle:before { content: "\e631"; }
+.xui-uicmd-toggle-checked:before { content: "\e662"; }
+.xui-uicmd-location:before { content: "\e66f"; }
 .xui-icon-file-expand:before { content: "\e669"; }
+.xui-uicmd-delete:before { content: "\e670"; }
 .xui-uicmd-land:before { content: "\e615"; }
 .xui-icon-arrowdown:before { content: "\e655"; }
 .xui-icon-arrowleft:before { content: "\e653"; }

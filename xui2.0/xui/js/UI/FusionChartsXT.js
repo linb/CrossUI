@@ -448,10 +448,10 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             }
         },
         EventHandlers:{
-            onFusionChartsEvent:function(prf, eventObject, argumentsObject){},
-            onDataClick:function(prf, argsMap){},
-            onLabelClick:function(prf, argsMap){},
-            onAnnotationClick:function(prf, argsMap){},
+            onFusionChartsEvent:function(profile, eventObject, argumentsObject){},
+            onDataClick:function(profile, argsMap){},
+            onLabelClick:function(profile, argsMap){},
+            onAnnotationClick:function(profile, argsMap){},
             onShowTips:null
         },
         _onresize:function(prf,width,height){
