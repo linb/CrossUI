@@ -99,6 +99,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             'ITEM-mousedown':{
             },
             'ITEM-checked':{
+                border:'solid 1px #648cb4',
+                'border-radius':'3px'                
             },
             ITEMFRAME:{
                 display:xui.browser.ie?'inline-block':'block',

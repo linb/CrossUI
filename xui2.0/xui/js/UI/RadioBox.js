@@ -42,6 +42,9 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                overflow:'hidden',
                'vertical-align':'middle'
             },
+            'ITEM-checked':{
+                
+            },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
@@ -56,9 +59,6 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                cursor:'pointer',
                margin: '0 4px 0 2px',
                'vertical-align':'middle'
-            },
-            'ITEM-checked MARK':{
-                $order:2
             }
         },
         DataModel:{

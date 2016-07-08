@@ -14,12 +14,16 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     getI=function(i){return profile.getSubIdByItemId(i)};
                 if(p.selMode=='single'){
                     var itemId = getI(uiv);
-                    if(uiv!==null && itemId)
+                    if(uiv!==null && itemId){
                         getN(item,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(mk, itemId).tagClass('-checked',false); 
+                    }
 
                     itemId = getI(value);
-                    if(itemId)
+                    if(itemId){
                         getN(item,itemId).tagClass('-checked');
+                        getN(mk,itemId).tagClass('-checked');
+                    }
 
                     //scroll
                     if(itemId){

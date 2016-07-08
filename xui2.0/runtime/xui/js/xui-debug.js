@@ -19042,11 +19042,13 @@ Class("xui.UI",  "xui.absObj", {
              },
             '.xui-ui-dirty':{
                 $order:1,
-                background:'url(data:image/gif;base64,R0lGODlhBwAHAPcAAAAAADDSEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAHAAcAAAgYAAMIHPhvoMB/BQkiVLgwAMKHDh9KnBgQADs=) no-repeat left top'
+                'background-image':'url(data:image/gif;base64,R0lGODlhBwAHAPcAAAAAADDSEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAHAAcAAAgYAAMIHPhvoMB/BQkiVLgwAMKHDh9KnBgQADs=)',
+                'background-repeat':'no-repeat',
+                'background-position':'left top'
             },
             '.xui-nodatauri .xui-ui-dirty':{
                 $order:2,
-                background:xui.UI.$bg('_oldbrowser/dirtymark.gif', 'no-repeat left top',null,true)
+                'background-image':xui.UI.$bg('_oldbrowser/dirtymark.gif', '',null,true)
             },
             // Firefox will ignore input:read-only
             'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
@@ -32844,12 +32846,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     getI=function(i){return profile.getSubIdByItemId(i)};
                 if(p.selMode=='single'){
                     var itemId = getI(uiv);
-                    if(uiv!==null && itemId)
+                    if(uiv!==null && itemId){
                         getN(item,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(mk, itemId).tagClass('-checked',false); 
+                    }
 
                     itemId = getI(value);
-                    if(itemId)
+                    if(itemId){
                         getN(item,itemId).tagClass('-checked');
+                        getN(mk,itemId).tagClass('-checked');
+                    }
 
                     //scroll
                     if(itemId){
@@ -33660,6 +33666,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'ITEM-mousedown':{
             },
             'ITEM-checked':{
+                border:'solid 1px #648cb4',
+                'border-radius':'3px'                
             },
             ITEMFRAME:{
                 display:xui.browser.ie?'inline-block':'block',
@@ -33879,7 +33887,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
              },
             'ITEM-checked':{
                 $order:2,
-                padding:0
+                padding:0,
+                border:'solid 1px #648cb4',
+                'border-radius':'3px'                
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
             }
@@ -36542,6 +36552,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                overflow:'hidden',
                'vertical-align':'middle'
             },
+            'ITEM-checked':{
+                
+            },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
@@ -36556,9 +36569,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                cursor:'pointer',
                margin: '0 4px 0 2px',
                'vertical-align':'middle'
-            },
-            'ITEM-checked MARK':{
-                $order:2
             }
         },
         DataModel:{

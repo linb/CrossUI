@@ -70,7 +70,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
              },
             'ITEM-checked':{
                 $order:2,
-                padding:0
+                padding:0,
+                border:'solid 1px #648cb4',
+                'border-radius':'3px'                
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
             }
