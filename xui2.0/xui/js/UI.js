@@ -3931,8 +3931,10 @@ Class("xui.UI",  "xui.absObj", {
 
             //todo:remove the extra paras
             hashOut.imageDisplay = (hashOut.imageClass||hashOut.image)?'':'display:none';
-            if(hashOut.image)
+            if(hashOut.image){
+                hashOut.imageClass='xui-icon-empty';
                 hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+            }
             if(hashOut.imagePos)
                 hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
             else if(hashOut.image)

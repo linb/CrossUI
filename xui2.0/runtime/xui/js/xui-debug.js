@@ -20586,8 +20586,10 @@ Class("xui.UI",  "xui.absObj", {
 
             //todo:remove the extra paras
             hashOut.imageDisplay = (hashOut.imageClass||hashOut.image)?'':'display:none';
-            if(hashOut.image)
+            if(hashOut.image){
+                hashOut.imageClass='xui-icon-empty';
                 hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+            }
             if(hashOut.imagePos)
                 hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
             else if(hashOut.image)
@@ -33100,20 +33102,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top:'auto',
                 right:'2px',
                 top:'2px',
-                width:'16px',
-                height:'16px',
-                display:'none',
-                'background-image': xui.UI.$bg('icons.gif','', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-130px -224px'
-            },
-            'OPT-mouseover':{
-                $order:20,
-                'background-position':'-130px -244px'
-            },
-            'OPT-mousedown':{
-                $order:30,
-                'background-position':'-130px -264px'
+                display:'none'
             },
             LTAGCMDS:{
                 "padding-left":'4px',
@@ -36274,6 +36263,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         delete t.LIST.RIGHT;
         delete t.LIST.DROP;
         this.setTemplate(t);
+        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
@@ -36281,6 +36271,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             LIST:{
                 'z-index':'2',
                 position:'absolute'
+            },
+            LISTBG:{
+                display:'none'
             },
             ITEMS:{
                 'z-index':'2',
@@ -36305,59 +36298,20 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 margin:'2px',
                 position:'relative',
                 cursor:'pointer',
-                'padding-right':'4px',
-                'vertical-align':'top',
-                'background-image':xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'right -270px'
-            },
-            'ITEM-mouseover':{
-                $order:1,
-                'background-position' : 'right -360px'
-            },
-            'ITEM-mousedown, ITEM-checked':{
-                $order:2,
-                'background-position' : 'right -450px'
-            },
-            ITEMI:{
-                $order:0,
-                'padding-left':'4px',
-                //keep this same with ITEM
-                'vertical-align':'top',
-                'background-image':xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -330px'
-            },
-            'ITEM-mouseover ITEMI':{
-                $order:1,
-                'background-position' : 'left -420px'
-            },
-            'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
-                $order:2,
-                'background-position' : 'left -510px'
-            },
-            ITEMC:{
-                $order:0,
-                //keep this same with ITEM
-                'vertical-align':'top',
-                height:'20px',
-                padding:'2px 0',
-                'background-image':xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -300px'
+                'padding':'0 4px 0 0',
+                'vertical-align':'top'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
                 $order:2,
                 display:'block'
-            }, 
-            'ITEM-mouseover ITEMC':{
-                $order:1,
-                'background-position' : 'left -390px'
             },
-            'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
-                $order:2,
-                'background-position' : 'left -480px'
-            },
+            ITEMC:{
+                $order:0,
+                padding:'2px 0 1px 0',
+                //keep this same with ITEM
+                'vertical-align':'top',
+                'text-align': 'center'
+            },             
             HANDLE:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
@@ -36605,7 +36559,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'{itemClass} {_endsClass} {disabled} {readonly}',
+                    className:'xui-ui-btn {itemClass} {_endsClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{
@@ -36632,80 +36586,17 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ITEM:{
                 'vertical-align':'middle',
                 position:'relative',
-                height:'16px',
-                padding:'3px',
+                padding:'3px 5px',
+                margin:'0 4px',
                 cursor:'pointer',
                 'font-size':0,
                 'line-height':0,
                 'white-space':'nowrap'
             },
-            "ITEM-none":{
-                'background-image': xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                'background-position':'-12px -130px'
-            },
-            "ITEM-left":{
-                'background-image': xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -130px',
-                padding:'4px 4px 2px 12px'
-            },
-            "ITEM-right":{
-                'background-image': xui.UI.$bg('icons.gif', '',true),
-                'background-repeat':'no-repeat',
-                'background-position':'right -130px',
-                padding:'4px 12px 2px 2px'
-            },
-            // ignore xui.UI.List setting
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-            },
-            'ITEM-mouseover':{},
-            'ITEM-mousedown':{},
-            'ITEM-checked':{},
-            
-            'ITEM-left-mouseover':{
-                $order:1,
-                'background-position': 'left -153px'
-            },
-            'ITEM-left-mousedown':{
-                $order:2,
-                'background-position': 'left -176px'
-            },
-            'ITEM-left-checked':{
-                $order:3,
-                'background-position': 'left -176px'
-            },
-            'ITEM-none-mouseover':{
-                $order:1,
-                'background-position': '-20px -153px'
-            },
-            'ITEM-none-mousedown':{
-                $order:2,
-                'background-position': '-20px -176px'
-            },
-            'ITEM-none-checked':{
-                $order:3,
-                'background-position': '-20px -176px'
-            },
-            'ITEM-right-mouseover':{
-                $order:1,
-                'background-position': 'right -153px'
-            },
-            'ITEM-right-mousedown':{
-                $order:2,
-                'background-position': 'right -176px'
-            },
-            'ITEM-right-checked':{
-                $order:3,
-                'background-position': 'right -176px'
-            },
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
                 'vertical-align':'middle'
-            },
-            "ITEM-none CAPTION":{
-                padding:'1px 4px'
             } 
         },
         DataModel:({
@@ -36731,18 +36622,9 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     this.getSubNode('ITEM',true).css('text-align',value);
                 }
             },
+            // deprecated
             itemLinker:{
-                ini:'left',
-                listbox:['none','left','right'],
-                action:function(value){
-                    this.getSubNode('ITEM',true)
-                    .tagClass('-none', false)
-                    .tagClass('-left', false)
-                    .tagClass('-right', false)
-                    .tagClass('-'+value, true)
-                    .removeClass(/^xui-uiborder-[lr]/)
-                    .addClass(value=="left"?"xui-uiborder-r":value=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r")
-                }
+                hidden:true
             }
         }),
         Behaviors:{
@@ -38675,9 +38557,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             item.type=item.type||'button';
             if(item.type=='checkbox')
-                item.checkboxCls = 'xui-uicmd-check' + (item.value?'-checked':'');
+                item.checkboxCls = 'xui-uicmd-check ' + (item.value?'xui-uicmd-check-checked xuicon-checked':'');
             else if(item.type=='radiobox')
-                item.radioboxCls = 'xui-uicmd-radio' + (item.value?'-checked':'');
+                item.radioboxCls = 'xui-uicmd-radio ' + (item.value?'xui-uicmd-radio-checked xuicon-checked':'');
         },
         _onresize:null
     }
@@ -39344,7 +39226,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             ITEM:{
                 'vertical-align': 'middle',
                 padding: '0px 1px',
-                margin: '0 2px'
+                margin: '0'
             },
             'SPLIT':{
                 $order:1,
@@ -42101,6 +41983,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         text:'{gridHandlerCaption}'
                                                     },
                                                     SORT:{
+                                                        className:'xuicon xui-icon-sort',
                                                         style:'{sortDisplay}'
                                                     }
                                                 }
@@ -42286,6 +42169,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{caption}"
                             },
                             SORT:{
+                                className:'xuicon xui-icon-sort',
                                 style:'{sortDisplay}'
                             },
                             HHANDLER : {
@@ -42720,9 +42604,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
-                'background-image':  xui.UI.$bg('head.gif'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden',
@@ -42914,9 +42795,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               'background-image': xui.UI.$bg('head.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#CAE3FF',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -42926,9 +42804,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
-               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#FFF1A0'
             },
             'ROW1, ROW2':{
@@ -48990,7 +48865,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
 
             if(item._show){
                 item._checked = profile.getClass('ITEM','-checked');
-                item._tlgchecked = profile.getClass('TOGGLE','-checked');
+                item._tlgchecked = 'xuicon-checked xui-uicmd-toggle-checked';
             }
             
             this._prepareCmds(profile, item);

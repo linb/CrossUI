@@ -215,7 +215,7 @@ html, .xui-uibg-base{
 }
 .xui-uibar-top-focus .xui-uibar-tdl{
 	background-position: left -90px;
-},
+}
 .xui-uibar-top-focus .xui-uibar-tdm{
 	background-position: left -120px;
 	background-repeat: repeat-x;
@@ -256,11 +256,11 @@ html, .xui-uibg-base{
 
 .xui-uibar-top-s .xui-uibar-tdl{
 	background-position: left -261px;
-},
+}
 .xui-uibar-top-s .xui-uibar-tdm{
 	background-position: left -283px;
 	background-repeat: repeat-x;
-},
+}
 .xui-uibar-top-s .xui-uibar-tdr{
 	background-position: right -305px;
 }
@@ -295,75 +295,16 @@ html, .xui-uibg-base{
     background-repeat:repeat-x;
 }
 .xui-list-item-mouseover{
-		background-position: left -51px;
-		background-color: #FAD200;
+	background-position: left -51px;
+	background-color: #FAD200;
 }
 .xui-list-item-mousedown{
-		background-position: left -101px;
-		background-color:#F5D22D;
+	background-position: left -101px;
+	background-color:#F5D22D;
 }
 .xui-list-item-checked{
-		background-position:left top;
-		background-color:#AAD2FA;
-}
-
-
-/*xui.UI.Slider*/
-.xui-slider-box-v .xui-slider-decrease, .xui-slider-box-v .xui-slider-increase, .xui-slider-box-h .xui-slider-decrease, .xui-slider-box-h .xui-slider-increase, .xui-slider-box-h .xui-slider-ind1, .xui-slider-box-h .xui-slider-ind2, .xui-slider-box-v .xui-slider-ind1, .xui-slider-box-v .xui-slider-ind2{
-    background-image: url(Public/icons.gif);
-    background-repeat: no-repeat;
-    border: none;
-}
-.xui-slider-box-h .xui-slider-decrease{
-    left:0,
-    background-position: -80px -70px;
-}
-.xui-slider-box-h .xui-slider-increase{
-    right:0,
-    background-position: -100px -70px;
-}
-.xui-slider-box-h .xui-slider-decrease-mouseover{
-    background-position:-80px -90px;
-}
-.xui-slider-box-h .xui-slider-decrease-mousedown{
-    background-position: -80px -110px;
-}
-.xui-slider-box-h .xui-slider-increase-mouseover{
-    background-position: -100px -90px
-}
-.xui-slider-box-h .xui-slider-increase-mousedown{
-    background-position: -100px -110px
-}
-.xui-slider-box-h .xui-slider-ind1, .xui-slider-box--h .xui-slider-ind2{
-    background-position: -21px -282px;
-}
-.xui-slider-box-h .xui-slider-ind1-mouseover,.xui-slider-box-h .xui-slider-ind2-mouseover{
-    background-position: -31px -282px;
-}
-.xui-slider-box-h .xui-slider-ind1-mousedown,.xui-slider-box-h .xui-slider-ind2-mousedown{
-    background-position:-41px -282px;
-}
-.xui-slider-box-v .xui-slider-ind1,.xui-slider-box-v .xui-slider-ind2{
-    background-position: left -272px;
-},
-.xui-slider-box-v .xui-slider-ind1-mouseover,.xui-slider-box-v .xui-slider-ind2-mouseover{
-    background-position:left -282px;
-},
-.xui-slider-box-v .xui-slider-ind1-mousedown,.xui-slider-box-v .xui-slider-ind2-mousedown{
-    background-position:left -292px;
-}
-
-.xui-slider-box-h .xui-slider-ruler, .xui-slider-box-h .xui-slider-rulerleft, .xui-slider-box-h .xui-slider-rulerright{
-}
-.xui-slider-box-v .xui-slider-ruler, .xui-slider-box-v .xui-slider-rulerleft, .xui-slider-box-v .xui-slider-rulerright{
-}
-
-/*xui.UI.TreeBar*/
-.xui-treebar-bar{
-}
-.xui-treebar-bar-mouseover{
-}
-.xui-treebar-bar-checked{
+	background-position:left top;
+	background-color:#AAD2FA;
 }
 
 /*xui.UI.TreeView*/
@@ -435,6 +376,9 @@ html, .xui-uibg-base{
     background-position : left -890px
 }
 
+.xui-tabs-left:before, .xui-tabs-right:before, .xui-tabs-drop:before{
+    display: none
+}
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
     border:none;
     border-radius: 0px;
@@ -465,11 +409,6 @@ html, .xui-uibg-base{
     background-position:-80px top;
 }
 
-/*xui.UI.ButtonViews*/
-.xui-buttonviews-item, .xui-buttonviews-itemi, .xui-buttonviews-itemc{
-    background-image: url(ToolBar/button.png);
-}
-
 /*xui.UI.Stacks*/
 .xui-stacks-cmds{
     top:5px;
@@ -496,75 +435,14 @@ html, .xui-uibg-base{
 }
 
 
-/*xui.UI.Layout*/
-.xui-layout-move-top, .xui-layout-move-bottom{
-    height:6px;
-}
-.xui-layout-move-left, .xui-layout-move-right{
-    width:6px;
-}
-.xui-layout-move-top-mouseover, .xui-layout-move-bottom-mouseover,
-.xui-layout-move-left-mouseover, .xui-layout-move-right-mouseover{
-}
-
-.xui-layout-cmd-top, .xui-layout-cmd-bottom, .xui-layout-cmd-left, .xui-layout-cmd-right{
-    background-image: url(Public/icons.gif);
-	background-repeat: no-repeat;
-	border:0;
-}
-.xui-layout-cmd-top{
-	left:50%;
-	bottom:0;
-    margin-left:-18px;
-    width:35px;
-    height:8px;
-    background-position:-365px -232px;
-}
-.xui-layout-cmd-bottom{
-	left:50%;
-	top:0;
-    margin-left:-18px;
-    width:35px;
-    height:8px;
-    background-position:-365px -258px;
-}
-.xui-layout-cmd-left{
-	top:50%;
-	right:0;
-    margin-top:-18px;
-    height:35px;
-    width:8px;
-    background-position:-313px -242px;
-}
-.xui-layout-cmd-right{
-	top:50%;
-	left:0;
-    margin-top:-18px;
-    height:35px;
-    width:8px;
-    background-position:-339px -242px;
-}
-.xui-layout-cmd-top-mouseover{
-    background-position:-365px -245px;
-}
-.xui-layout-cmd-bottom-mouseover{
-    background-position:-365px -271px;
-}
-.xui-layout-cmd-left-mouseover{
-    background-position:-326px -242px;
-}
-.xui-layout-cmd-right-mouseover{
-    background-position:-352px -242px;
-}
-
-
 /*xui.UI.ToolBar and xui.UI.MenuBar*/
 .xui-toolbar-handler, .xui-menubar-handler{
     background-image: url(Public/handler.gif);
     width:4px;
 }
 .xui-toolbar-item{
-    padding:0px
+    padding:0;
+    margin:0 1px;
 }
 .xui-toolbar-split{
     border: none;
@@ -633,104 +511,9 @@ html, .xui-uibg-base{
 
 /**
 *
-* advance
+* advanced
 *
 **/
-
-/*xui.UI.StatusButtons*/
-.xui-statusbuttons-item-none{
-    background-image: url(Public/icons.gif);
-}
-.xui-statusbuttons-item-left{
-    background-image: url(Public/icons.gif);
-}
-.xui-statusbuttons-item-right{
-    background-image: url(Public/icons.gif);
-}
-
-/*xui.UI.FoldingList*/
-/*xui.UI.FoldingTabs*/
-.xui-foldinglist-item,
-.xui-foldingtabs-item{
-    border: 0;
-
-    border-radius: 0;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0,
-    -o-border-radius: 0;
-    -ms-border-radius: 0;
-    -khtml-border-radius: 0;
-
-    box-shadow: none;
-}
-.xui-foldinglist-hl, .xui-foldinglist-hr, .xui-foldinglist-tl, .xui-foldinglist-tr,
-.xui-foldingtabs-hl, .xui-foldingtabs-hr, .xui-foldingtabs-tl, .xui-foldingtabs-tr{
-    background-image: url(FoldingList/corner.gif);
-    background-repeat: no-repeat;
-}
-.xui-foldinglist-item-prechecked .xui-foldinglist-hl,
-.xui-foldingtabs-item-prechecked .xui-foldingtabs-hl{
-	background-position: left top;
-}
-.xui-foldinglist-item-prechecked .xui-foldinglist-hr,
-.xui-foldingtabs-item-prechecked .xui-foldingtabs-hr{
-	background-position: right top;
-}
-.xui-foldinglist-hl,
-.xui-foldingtabs-hl{
-	background-position: left -37px;
-}
-.xui-foldinglist-hr,
-.xui-foldingtabs-hr{
-	background-position: right -37px;
-}
-.xui-foldinglist-tl,
-.xui-foldingtabs-tl{
-	background-position: left bottom;
-}
-.xui-foldinglist-tr,
-.xui-foldingtabs-tr{
-	background-position: right bottom;
-}
-.xui-foldinglist-head,
-.xui-foldingtabs-head{
-    background-image: url(FoldingList/border_top.gif);
-	background-repeat:repeat-x;
-	background-position:left top;
-}
-.xui-foldinglist-tail,
-.xui-foldingtabs-tail{
-    height:6px;
-    background-image: url(FoldingList/border_bottom.gif);
-	background-repeat:repeat-x;
-	background-position:left bottom;
-} 
-.xui-foldinglist-body, 
-.xui-foldingtabs-body{
-	border-right: solid 1px #CCC;
-}
-.xui-foldinglist-bodyi, 
-.xui-foldingtabs-bodyi{
-	background-repeat:repeat-y;
-	background-position:left top;
-    background-image: url(FoldingList/border_left.gif);
-} 
-
-
-/*xui.UI.TimeLine*/
-.xui-timeline-items{
-    background-image: url(TimeLine/bars.gif);
-}
-.xui-timeline-head, .xui-timeline-handler{
-}
-.xui-timeline-mainc{
-}
-.xui-timeline-biglabel, .xui-timeline-smalllabel {
-}
-.xui-timeline-biglabel div, .xui-timeline-smalllabel div{
-}
-
-
 
 /***setting begin***/
 .setting-xui-border{
@@ -761,12 +544,9 @@ html, .xui-uibg-base{
     border-left-width:1px;
     border-right-width:1px;
 }
-.setting-xui-layout{
-    width:8px;
-}
+
 /***the last one***/
 .setting-uikey{
     font-family: vista;
 }
 /***setting end***/
-

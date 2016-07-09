@@ -268,20 +268,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 top:'auto',
                 right:'2px',
                 top:'2px',
-                width:'16px',
-                height:'16px',
-                display:'none',
-                'background-image': xui.UI.$bg('icons.gif','', true),
-               'background-repeat':'no-repeat',
-               'background-position':'-130px -224px'
-            },
-            'OPT-mouseover':{
-                $order:20,
-                'background-position':'-130px -244px'
-            },
-            'OPT-mousedown':{
-                $order:30,
-                'background-position':'-130px -264px'
+                display:'none'
             },
             LTAGCMDS:{
                 "padding-left":'4px',

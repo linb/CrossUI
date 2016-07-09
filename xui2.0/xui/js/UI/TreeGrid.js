@@ -1616,6 +1616,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         text:'{gridHandlerCaption}'
                                                     },
                                                     SORT:{
+                                                        className:'xuicon xui-icon-sort',
                                                         style:'{sortDisplay}'
                                                     }
                                                 }
@@ -1801,6 +1802,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{caption}"
                             },
                             SORT:{
+                                className:'xuicon xui-icon-sort',
                                 style:'{sortDisplay}'
                             },
                             HHANDLER : {
@@ -2235,9 +2237,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
-                'background-image':  xui.UI.$bg('head.gif'),
-                'background-repeat':'repeat-x',
-                'background-position':'left top',
                 'background-color':'#CAE3FF',
                 position:'relative',
                 overflow:'hidden',
@@ -2429,9 +2428,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               'background-image': xui.UI.$bg('head.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#CAE3FF',
                'border-left':'1px solid #fff',
                'border-top':'1px solid #fff',
@@ -2441,9 +2437,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                'vertical-align':'bottom'
             },
             'FHCELL-mouseover, HCELL-mouseover':{
-               'background-image': xui.UI.$bg('head_mouseover.gif', ''),
-               'background-repeat':'repeat-x',
-               'background-position':'left top',
                'background-color':'#FFF1A0'
             },
             'ROW1, ROW2':{

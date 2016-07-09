@@ -1052,7 +1052,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             HANDLER:{
                 position:'relative',
                 height:'7px',
-                'background-image': xui.ini.img_handler,
+                'background-image': 'url('+xui.ini.img_handler+')',
                 'background-repeat':'repeat'
             },
             TSKBAR:{

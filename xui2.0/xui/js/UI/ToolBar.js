@@ -245,7 +245,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             ITEM:{
                 'vertical-align': 'middle',
                 padding: '0px 1px',
-                margin: '0 2px'
+                margin: '0'
             },
             'SPLIT':{
                 $order:1,

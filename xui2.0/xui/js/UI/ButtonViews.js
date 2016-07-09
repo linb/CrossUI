@@ -6,6 +6,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         delete t.LIST.RIGHT;
         delete t.LIST.DROP;
         this.setTemplate(t);
+        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
@@ -13,6 +14,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             LIST:{
                 'z-index':'2',
                 position:'absolute'
+            },
+            LISTBG:{
+                display:'none'
             },
             ITEMS:{
                 'z-index':'2',
@@ -37,59 +41,20 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 margin:'2px',
                 position:'relative',
                 cursor:'pointer',
-                'padding-right':'4px',
-                'vertical-align':'top',
-                'background-image':xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'right -270px'
-            },
-            'ITEM-mouseover':{
-                $order:1,
-                'background-position' : 'right -360px'
-            },
-            'ITEM-mousedown, ITEM-checked':{
-                $order:2,
-                'background-position' : 'right -450px'
-            },
-            ITEMI:{
-                $order:0,
-                'padding-left':'4px',
-                //keep this same with ITEM
-                'vertical-align':'top',
-                'background-image':xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'no-repeat',
-                'background-position':'left -330px'
-            },
-            'ITEM-mouseover ITEMI':{
-                $order:1,
-                'background-position' : 'left -420px'
-            },
-            'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
-                $order:2,
-                'background-position' : 'left -510px'
-            },
-            ITEMC:{
-                $order:0,
-                //keep this same with ITEM
-                'vertical-align':'top',
-                height:'20px',
-                padding:'2px 0',
-                'background-image':xui.UI.$bg('button.gif', '', true),
-                'background-repeat':'repeat-x',
-                'background-position':'left -300px'
+                'padding':'0 4px 0 0',
+                'vertical-align':'top'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
                 $order:2,
                 display:'block'
-            }, 
-            'ITEM-mouseover ITEMC':{
-                $order:1,
-                'background-position' : 'left -390px'
             },
-            'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
-                $order:2,
-                'background-position' : 'left -480px'
-            },
+            ITEMC:{
+                $order:0,
+                padding:'2px 0 1px 0',
+                //keep this same with ITEM
+                'vertical-align':'top',
+                'text-align': 'center'
+            },             
             HANDLE:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,

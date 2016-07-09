@@ -790,9 +790,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             item.type=item.type||'button';
             if(item.type=='checkbox')
-                item.checkboxCls = 'xui-uicmd-check' + (item.value?'-checked':'');
+                item.checkboxCls = 'xui-uicmd-check ' + (item.value?'xui-uicmd-check-checked xuicon-checked':'');
             else if(item.type=='radiobox')
-                item.radioboxCls = 'xui-uicmd-radio' + (item.value?'-checked':'');
+                item.radioboxCls = 'xui-uicmd-radio ' + (item.value?'xui-uicmd-radio-checked xuicon-checked':'');
         },
         _onresize:null
     }

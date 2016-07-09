@@ -335,7 +335,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
 
             if(item._show){
                 item._checked = profile.getClass('ITEM','-checked');
-                item._tlgchecked = profile.getClass('TOGGLE','-checked');
+                item._tlgchecked = 'xuicon-checked xui-uicmd-toggle-checked';
             }
             
             this._prepareCmds(profile, item);
