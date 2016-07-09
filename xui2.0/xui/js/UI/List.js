@@ -156,7 +156,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             $order:30
                         },
                         OPT:{
-                            $order:50
+                            $order:50,
+                            className:'xuicon xui-uicmd-opt'
                         },
                         TAGCMDS:{
                             $order:60,

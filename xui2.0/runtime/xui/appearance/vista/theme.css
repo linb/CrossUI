@@ -201,7 +201,7 @@ html, .xui-uibg-base{
 }
 /*set table height for ff2, set uibar height for performance*/
 .xui-uibar-top{
-    height:25px;
+    height:24px;
 }
 .xui-uibar-top .xui-uibar-tdl{
 	background-position: 0 0;
@@ -426,56 +426,11 @@ html, .xui-uibg-base{
 .xui-popmenu-boxbgbar{
     background-color:#B4DCF0;
 }
-.xui-popmenu-itemsplit{
-    border: none;
-    padding:2px 0;
-    background-repeat:repeat-x;
-    background-position:left top;
-    background-image:url(Public/split_horizontal.gif);
-}
-
-
-/*xui.UI.ToolBar and xui.UI.MenuBar*/
-.xui-toolbar-handler, .xui-menubar-handler{
-    background-image: url(Public/handler.gif);
-    width:4px;
-}
-.xui-toolbar-item{
-    padding:0;
-    margin:0 1px;
-}
-.xui-toolbar-split{
-    border: none;
-    width: 6px;
-    background-image: url(Public/split_vertical.gif);
-    background-position:left top;
-    background-repeat:repeat-y;
-}
-
-
-.xui-menubar-item-mouseover,
-.xui-menubar-item-mouseover .xui-menubar-itemi,
-.xui-menubar-item-mouseover .xui-menubar-itemc,
-.xui-menubar-item-mousedown,
-.xui-menubar-item-mousedown .xui-menubar-itemi,
-.xui-menubar-item-mousedown .xui-menubar-itemc
-{
-    background-image: url(Public/button.gif);
-}
-
 
 /*xui.UI.ProgressBar*/
-.xui-progressbar-border{
-}
 .xui-progressbar-fill{
     background: #02BB14 url(ProgressBar/bar.gif) repeat-x scroll 0 0;
 }
-
-/*xui.UI.DatePicker*/
-/*xui.UI.TimePicker*/
-/*xui.UI.ColorPicker*/
-/*.xui-datepicker-today, */
-
 
 /*xui.UI.TreeGrid [[[colors]]]*/
 

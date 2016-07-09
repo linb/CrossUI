@@ -132,6 +132,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             $submap:{
                 items:{
                     ITEM:{
+                        className:'xui-uibarbg2',
                         ITEMI:{
                             ITEMC:{
                                 ITEMA:{
@@ -193,10 +194,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             'LIST-disabled':{
                 'background-color':'#E4E4E4'
             },
-            'ITEM-mouseover, ITEM-mouseover ITEMI, ITEM-mouseover ITEMC, ITEM-mousedown, ITEM-mousedown ITEMI, ITEM-mousedown ITEMC':{
-                'background-image':xui.UI.$bg('button.gif', '',true),
-                'background-repeat':'no-repeat'
-           },
             ITEM:{
                 height:'22px',
                 'white-space': 'nowrap',
@@ -223,32 +220,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             ITEMA:{
                 display:xui.$inlineBlock
             },
-            'ITEM-mouseover':{
-                $order:2,
-                'background-position':'right -90px'
-            },
-            'ITEM-mousedown':{
-                $order:3,
-                'background-position':'right -180px'
-            },
-            'ITEM-mouseover ITEMI':{
-               $order:2,
-                'background-position':'left -150px'
-            },
-            'ITEM-mousedown ITEMI':{
-                $order:3,
-                'background-position':'left -240px'
-            },            
-            'ITEM-mouseover ITEMC':{
-                $order:2,
-                'background-position':'left -120px',
-                'background-repeat': 'repeat-x'
-            },
-            'ITEM-mousedown ITEMC':{
-                $order:3,
-                'background-position':'left -210px',
-                'background-repeat': 'repeat-x'
-            },            
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             }

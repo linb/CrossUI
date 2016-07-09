@@ -1925,24 +1925,47 @@ Class("xui.UI",  "xui.absObj", {
                 $order:2,
                 "padding":"0px",
                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',               
                "border":'solid 1px #FAD200'
             },
             ".xui-uitembg-mousedown":{
                 $order:3,
                 "padding":"0px",
-               'border-radius':'3px',
-               "border":'solid 1px #F5D22D'
+                'border-radius': '3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',
+                "border":'solid 1px #F5D22D'
             },
             ".xui-uitembg-checked":{
                 $order:4,
                 "padding":"0px",
-               'border-radius':'3px',
-               "border":'solid 1px #AAD2FA',
+                'border-radius': '3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',
+                "border":'solid 1px #AAD2FA',
                 "color":"#000"
             },
 
             ".xui-uibarbg":{
                 "background-color":"#CCE4FC"
+            },
+            ".xui-uibarbg2":{
+                'border-radius':'3px 3px 0 0',
+                '-moz-border-radius': '3px 3px 0 0',
+                '-webkit-border-radius': '3px 3px 0 0',
+                '-o-border-radius': '3px 3px 0 0',
+                '-ms-border-radius': '3px 3px 0 0',
+                '-khtml-border-radius': '3px 3px 0 0'
             },
             ".xui-uibarbg-mouseover, .xui-uibarbg2-mouseover":{
                 $order:2,
@@ -2315,28 +2338,48 @@ Class("xui.UI",  "xui.absObj", {
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
                 'border-top-color':'#c8e1fa',
-                'border-radius':'6px 0 0 0'
+                'border-radius':'6px 0 0 0',
+                '-moz-border-radius': '6px 0 0 0',
+                '-webkit-border-radius': '6px 0 0 0',
+                '-o-border-radius': '6px 0 0 0',
+                '-ms-border-radius': '6px 0 0 0',
+                '-khtml-border-radius': '6px 0 0 0'      
             },
             '.xui-uiborder-rt':{
                 'border-style':'solid',
                 'border-width':'1px 1px 0 0',
                 'border-right-color':'#648cb4',
                 'border-top-color':'#c8e1fa',
-                'border-radius':'0 6px 0 0'
+                'border-radius':'0 6px 0 0',
+                '-moz-border-radius': '0 6px 0 0',
+                '-webkit-border-radius': '0 6px 0 0',
+                '-o-border-radius': '0 6px 0 0',
+                '-ms-border-radius': '0 6px 0 0',
+                '-khtml-border-radius': '0 6px 0 0'
             },
             '.xui-uiborder-rb':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#648cb4',
                 'border-bottom-color':'#648cb4',
-                'border-radius':'0 0 6px 0'
+                'border-radius':'0 0 6px 0',
+                '-moz-border-radius': '0 0 6px 0',
+                '-webkit-border-radius': '0 0 6px 0',
+                '-o-border-radius': '0 0 6px 0',
+                '-ms-border-radius': '0 0 6px 0',
+                '-khtml-border-radius': '0 0 6px 0'
             },
             '.xui-uiborder-lb':{
                 'border-style':'solid',
                 'border-width':'0 0 1px 1px ',
                 'border-left-color':'#c8e1fa',
                 'border-bottom-color':'#648cb4',
-                'border-radius':'0 0 0 6px'
+                'border-radius':'0 0 0 6px',
+                '-moz-border-radius': '0 0 0 6px',
+                '-webkit-border-radius': '0 0 0 6px',
+                '-o-border-radius': '0 0 0 6px',
+                '-ms-border-radius': '0 0 0 6px',
+                '-khtml-border-radius': '0 0 0 6px'
             },
             '.xui-uiborder-rb2':{
                 'border-style':'solid',
@@ -2346,23 +2389,43 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4',
-                'border-radius':'3px'
+                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
                 'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa',
-                'border-radius':'3px'
+                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px'
             },
             '.xui-uiborder-inset':{
                 $order:9,
                 border:'solid 1px',
                 'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
-                'border-radius':'3px'
+                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px'
             },
             '.xui-uiborder-radius':{
                 $order:11,
-                'border-radius':'6px'
+                'border-radius':'6px',
+                '-moz-border-radius': '6px',
+                '-webkit-border-radius': '6px',
+                '-o-border-radius': '6px',
+                '-ms-border-radius': '6px',
+                '-khtml-border-radius': '6px'
             },
             '.xui-uiborder-none':{
                 $order:10,

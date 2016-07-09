@@ -18580,24 +18580,47 @@ Class("xui.UI",  "xui.absObj", {
                 $order:2,
                 "padding":"0px",
                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',               
                "border":'solid 1px #FAD200'
             },
             ".xui-uitembg-mousedown":{
                 $order:3,
                 "padding":"0px",
-               'border-radius':'3px',
-               "border":'solid 1px #F5D22D'
+                'border-radius': '3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',
+                "border":'solid 1px #F5D22D'
             },
             ".xui-uitembg-checked":{
                 $order:4,
                 "padding":"0px",
-               'border-radius':'3px',
-               "border":'solid 1px #AAD2FA',
+                'border-radius': '3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px',
+                "border":'solid 1px #AAD2FA',
                 "color":"#000"
             },
 
             ".xui-uibarbg":{
                 "background-color":"#CCE4FC"
+            },
+            ".xui-uibarbg2":{
+                'border-radius':'3px 3px 0 0',
+                '-moz-border-radius': '3px 3px 0 0',
+                '-webkit-border-radius': '3px 3px 0 0',
+                '-o-border-radius': '3px 3px 0 0',
+                '-ms-border-radius': '3px 3px 0 0',
+                '-khtml-border-radius': '3px 3px 0 0'
             },
             ".xui-uibarbg-mouseover, .xui-uibarbg2-mouseover":{
                 $order:2,
@@ -18970,28 +18993,48 @@ Class("xui.UI",  "xui.absObj", {
                 'border-width':'1px 0 0 1px',
                 'border-left-color':'#c8e1fa',
                 'border-top-color':'#c8e1fa',
-                'border-radius':'6px 0 0 0'
+                'border-radius':'6px 0 0 0',
+                '-moz-border-radius': '6px 0 0 0',
+                '-webkit-border-radius': '6px 0 0 0',
+                '-o-border-radius': '6px 0 0 0',
+                '-ms-border-radius': '6px 0 0 0',
+                '-khtml-border-radius': '6px 0 0 0'      
             },
             '.xui-uiborder-rt':{
                 'border-style':'solid',
                 'border-width':'1px 1px 0 0',
                 'border-right-color':'#648cb4',
                 'border-top-color':'#c8e1fa',
-                'border-radius':'0 6px 0 0'
+                'border-radius':'0 6px 0 0',
+                '-moz-border-radius': '0 6px 0 0',
+                '-webkit-border-radius': '0 6px 0 0',
+                '-o-border-radius': '0 6px 0 0',
+                '-ms-border-radius': '0 6px 0 0',
+                '-khtml-border-radius': '0 6px 0 0'
             },
             '.xui-uiborder-rb':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#648cb4',
                 'border-bottom-color':'#648cb4',
-                'border-radius':'0 0 6px 0'
+                'border-radius':'0 0 6px 0',
+                '-moz-border-radius': '0 0 6px 0',
+                '-webkit-border-radius': '0 0 6px 0',
+                '-o-border-radius': '0 0 6px 0',
+                '-ms-border-radius': '0 0 6px 0',
+                '-khtml-border-radius': '0 0 6px 0'
             },
             '.xui-uiborder-lb':{
                 'border-style':'solid',
                 'border-width':'0 0 1px 1px ',
                 'border-left-color':'#c8e1fa',
                 'border-bottom-color':'#648cb4',
-                'border-radius':'0 0 0 6px'
+                'border-radius':'0 0 0 6px',
+                '-moz-border-radius': '0 0 0 6px',
+                '-webkit-border-radius': '0 0 0 6px',
+                '-o-border-radius': '0 0 0 6px',
+                '-ms-border-radius': '0 0 0 6px',
+                '-khtml-border-radius': '0 0 0 6px'
             },
             '.xui-uiborder-rb2':{
                 'border-style':'solid',
@@ -19001,23 +19044,43 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #648cb4',
-                'border-radius':'3px'
+                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
                 'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa',
-                'border-radius':'3px'
+                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px'
             },
             '.xui-uiborder-inset':{
                 $order:9,
                 border:'solid 1px',
                 'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
-                'border-radius':'3px'
+                'border-radius':'3px',
+                '-moz-border-radius': '3px',
+                '-webkit-border-radius': '3px',
+                '-o-border-radius': '3px',
+                '-ms-border-radius': '3px',
+                '-khtml-border-radius': '3px'
             },
             '.xui-uiborder-radius':{
                 $order:11,
-                'border-radius':'6px'
+                'border-radius':'6px',
+                '-moz-border-radius': '6px',
+                '-webkit-border-radius': '6px',
+                '-o-border-radius': '6px',
+                '-ms-border-radius': '6px',
+                '-khtml-border-radius': '6px'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -32990,7 +33053,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $order:30
                         },
                         OPT:{
-                            $order:50
+                            $order:50,
+                            className:'xuicon xui-uicmd-opt'
                         },
                         TAGCMDS:{
                             $order:60,
@@ -38697,6 +38761,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $submap:{
                 items:{
                     ITEM:{
+                        className:'xui-uibarbg2',
                         ITEMI:{
                             ITEMC:{
                                 ITEMA:{
@@ -38758,10 +38823,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'LIST-disabled':{
                 'background-color':'#E4E4E4'
             },
-            'ITEM-mouseover, ITEM-mouseover ITEMI, ITEM-mouseover ITEMC, ITEM-mousedown, ITEM-mousedown ITEMI, ITEM-mousedown ITEMC':{
-                'background-image':xui.UI.$bg('button.gif', '',true),
-                'background-repeat':'no-repeat'
-           },
             ITEM:{
                 height:'22px',
                 'white-space': 'nowrap',
@@ -38788,32 +38849,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             ITEMA:{
                 display:xui.$inlineBlock
             },
-            'ITEM-mouseover':{
-                $order:2,
-                'background-position':'right -90px'
-            },
-            'ITEM-mousedown':{
-                $order:3,
-                'background-position':'right -180px'
-            },
-            'ITEM-mouseover ITEMI':{
-               $order:2,
-                'background-position':'left -150px'
-            },
-            'ITEM-mousedown ITEMI':{
-                $order:3,
-                'background-position':'left -240px'
-            },            
-            'ITEM-mouseover ITEMC':{
-                $order:2,
-                'background-position':'left -120px',
-                'background-repeat': 'repeat-x'
-            },
-            'ITEM-mousedown ITEMC':{
-                $order:3,
-                'background-position':'left -210px',
-                'background-repeat': 'repeat-x'
-            },            
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
