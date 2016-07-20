@@ -40809,6 +40809,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $submap:{
                 items:{
                     ITEM:{
+                        style:'{itemStyle}{_itemDisplay}',
                         ITEMI:{
                             ITEMC:{
                                 ITEMA:{
@@ -41086,8 +41087,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             if(this.properties.disabled)this.boxing().setDisabled(true,true);
         },
         _prepareData:function(profile){
+            var none='display:none;';
             var data=arguments.callee.upper.call(this, profile);
-            data.handler = data.handler?'':'display:none';
+            data.handler = data.handler?'':none;
+            data._itemDisplay=data.hidden?none:'';
             return data;
         }
     }
