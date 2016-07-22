@@ -246,7 +246,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             TOGGLE:{
                                 $order:4,
-                                className:'xuicon {togglemark}'
+                                className:'xuifont {togglemark}'
                             },
                             LTAGCMDS:{
                                 $order:3,
@@ -256,7 +256,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             MARK:{
                                 $order:5,
-                                className:'xuicon xui-uicmd-check',
+                                className:'xuifont xui-uicmd-check',
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
@@ -275,7 +275,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             OPT:{
                                 $order:9,
-                                className:'xuicon xui-uicmd-opt'
+                                className:'xuifont xui-uicmd-opt'
                             },
                             RTAGCMDS:{
                                 $order:10,

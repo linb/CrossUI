@@ -129,7 +129,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
         },'all');
         t.FRAME.ERROR = {
-            className:'xuicon xui-icon-error'
+            className:'xuifont xui-icon-error'
         };
         this.setTemplate(t)
     },

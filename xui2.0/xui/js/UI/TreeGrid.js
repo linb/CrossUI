@@ -1608,7 +1608,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     },
                                                     HFMARK:{
                                                         $order:2,
-                                                        className:"xuicon xui-uicmd-check",
+                                                        className:"xuifont xui-uicmd-check",
                                                         style:'{_rowMarkDisplay}'
                                                     },
                                                     GRIDCAPTION:{
@@ -1616,7 +1616,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         text:'{gridHandlerCaption}'
                                                     },
                                                     SORT:{
-                                                        className:'xuicon xui-icon-sort',
+                                                        className:'xuifont xui-icon-sort',
                                                         style:'{sortDisplay}'
                                                     }
                                                 }
@@ -1768,7 +1768,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     text:'&#9660'
                 },
                 ARROW:{
-                    className:'xuicon xui-icon-bigup',
+                    className:'xuifont xui-icon-bigup',
                     text:'&nbsp;'
                 }
             },
@@ -1802,7 +1802,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{caption}"
                             },
                             SORT:{
-                                className:'xuicon xui-icon-sort',
+                                className:'xuifont xui-icon-sort',
                                 style:'{sortDisplay}'
                             },
                             HHANDLER : {
@@ -1953,7 +1953,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             MARK:{
                                 $order:2,
-                                className:'xuicon xui-uicmd-check',
+                                className:'xuifont xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -1963,7 +1963,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'xuicon {_subClass}'
+                                className:'xuifont {_subClass}'
                             },
                             LTAGCMDS:{
                                 $order:1,
@@ -1995,7 +1995,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             className:'xui-v-wrapper {cellClass}{firstCellClass}',
                             MARK:{
                                 $order:2,
-                                className:'xuicon xui-uicmd-check',
+                                className:'xuifont xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -2032,7 +2032,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'xuicon {_subClass}'
+                                className:'xuifont {_subClass}'
                             },
                             FCELLCAPTION:{
                                 $order:5,
@@ -2085,7 +2085,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:2,
                                 style:'{_treeMode};',
-                                className:'xuicon {_subClass}'
+                                className:'xuifont {_subClass}'
                             },
                             CELLCAPTION:{
                                 $order:3,
@@ -2148,7 +2148,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
-                                className:'xuicon xui-uicmd-check {checkboxCls}'
+                                className:'xuifont xui-uicmd-check {checkboxCls}'
                             }
                         }
                     }

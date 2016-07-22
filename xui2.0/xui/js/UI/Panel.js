@@ -68,7 +68,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         TOGGLE:{
-                            className: 'xuicon xui-uicmd-toggle {toggleCls}',
+                            className: 'xuifont xui-uicmd-toggle {toggleCls}',
                             style:'{toggleDisplay}',
                             $order:0
                         },
@@ -88,27 +88,27 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         INFO:{
-                            className:'xuicon xui-uicmd-info',
+                            className:'xuifont xui-uicmd-info',
                             style:'{infoDisplay}',
                             $order:1
                         },
                         OPT:{
-                            className:'xuicon xui-uicmd-opt',
+                            className:'xuifont xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:1
                         },
                         POP:{
-                            className:'xuicon xui-uicmd-pop',
+                            className:'xuifont xui-uicmd-pop',
                             style:'{popDisplay}',
                             $order:2
                         },
                         REFRESH:{
-                            className:'xuicon xui-uicmd-refresh',
+                            className:'xuifont xui-uicmd-refresh',
                             style:'{refreshDisplay}',
                             $order:3
                         },
                         CLOSE:{
-                            className:'xuicon xui-uicmd-close ',
+                            className:'xuifont xui-uicmd-close ',
                             style:'{closeDisplay}',
                             $order:4
                         }

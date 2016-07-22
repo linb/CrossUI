@@ -188,7 +188,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     },
                                     DROP:{
                                         $order:3,
-                                        className:'xuicon xui-uicmd-arrowdrop',
+                                        className:'xuifont xui-uicmd-arrowdrop',
                                         style:'{dropDisplay}'
                                     }
                                 }

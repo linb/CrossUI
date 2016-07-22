@@ -27,7 +27,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 tabindex: '{tabindex}',
                 MARK:{
                     $order:0,
-                    className:'xuicon xui-uicmd-check'
+                    className:'xuifont xui-uicmd-check'
                 },
                 ICON:{
                     $order:1,

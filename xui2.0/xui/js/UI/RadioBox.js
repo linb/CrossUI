@@ -12,7 +12,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,
-                        className:'xuicon {_markcls}'
+                        className:'xuifont {_markcls}'
                     },
                     ICON:{
                         $order:1,

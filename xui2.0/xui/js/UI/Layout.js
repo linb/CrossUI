@@ -207,7 +207,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-ui-unselectable xuicon {cls3} '
+                            className:'xui-ui-unselectable xuifont {cls3} '
                         },
                         PANEL:{
                             tagName:'div',

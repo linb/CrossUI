@@ -107,7 +107,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xuicon xui-uicmd-close ',
+                            className:'xuifont xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -200,7 +200,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         },
                         TOGGLE:{
                             $order:2,
-                            className:'xuicon xui-icon-doubleright',
+                            className:'xuifont xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     }

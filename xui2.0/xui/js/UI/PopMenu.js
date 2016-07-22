@@ -223,10 +223,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-outset",
              TOP:{
-                className:'xuicon xui-icon-circleup'
+                className:'xuifont xui-icon-circleup'
              },
              BOTTOM:{
-                className:'xuicon xui-icon-circledown'
+                className:'xuifont xui-icon-circledown'
              },
              BOX:{
                 tagName:'div',
@@ -285,7 +285,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         $order:2
                     },
                     SUB:{
-                        className:'xuicon xui-icon-singleright',
+                        className:'xuifont xui-icon-singleright',
                         style:'{displaySub}'
                     }
                 }
@@ -297,7 +297,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
-                         className:'xuicon {checkboxCls}'
+                         className:'xuifont {checkboxCls}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -322,7 +322,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
-                         className:'xuicon {radioboxCls}'
+                         className:'xuifont {radioboxCls}'
                     },
                     CAPTION:{
                         text : '{caption}',

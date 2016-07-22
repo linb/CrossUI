@@ -76,7 +76,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     HANDLE:{
                         tabindex: '{tabindex}',
                         TOGGLE:{
-                            className: 'xuicon xui-uicmd-toggle {toggleCls2}',
+                            className: 'xuifont xui-uicmd-toggle {toggleCls2}',
                             style:"{toggleDispplay}"
                         },
                         ICON:{

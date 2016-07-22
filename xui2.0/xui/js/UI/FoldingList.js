@@ -78,7 +78,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             tagName:'div',
                             TOGGLE:{
                                 $order:0,
-                                className:'xuicon xui-uicmd-toggle {_tlgchecked}'
+                                className:'xuifont xui-uicmd-toggle {_tlgchecked}'
                             },
                             LTAGCMDS:{
                                 $order:2,

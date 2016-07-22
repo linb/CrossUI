@@ -1250,14 +1250,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'button',
                             className:'xui-ui-btn',
                             R1B:{
-                                className:'xuicon xui-icon-smallup'
+                                className:'xuifont xui-icon-smallup'
                             }
                         },
                         R2:{
                             tagName:'button',
                             className:'xui-ui-btn',
                             R2B:{
-                                className:'xuicon xui-icon-smalldown'
+                                className:'xuifont xui-icon-smalldown'
                             }
                         }
                     };
@@ -1283,7 +1283,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuicon {_btnClass}',
+                            className:'xuifont {_btnClass}',
                             style:'{_btnStyle}'
                         }
                     };

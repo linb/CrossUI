@@ -79,12 +79,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
-                            className:'xuicon xui-icon-doubleleft',                                                        
+                            className:'xuifont xui-icon-doubleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
-                            className:'xuicon xui-icon-singleleft',                                                        
+                            className:'xuifont xui-icon-singleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         HOUR:{
@@ -98,12 +98,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                             },
                         NEXT:{
                             $order:6,
-                            className:'xuicon xui-icon-singleright',                            
+                            className:'xuifont xui-icon-singleright',                            
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:7,
-                            className:'xuicon xui-icon-doubleright',                            
+                            className:'xuifont xui-icon-doubleright',                            
                             tabindex: '{tabindex}'
                         }
                     },
@@ -112,7 +112,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xuicon xui-uicmd-close ',
+                            className:'xuifont xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }

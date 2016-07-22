@@ -140,7 +140,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         },
                         MARK:{
                             $order:5,
-                            className:'xuicon xui-uicmd-check',
+                            className:'xuifont xui-uicmd-check',
                             style:"{_cbDisplay}"
                         },
                         ICON:{
@@ -158,7 +158,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         },
                         OPT:{
                             $order:50,
-                            className:'xuicon xui-uicmd-opt'
+                            className:'xuifont xui-uicmd-opt'
                         },
                         TAGCMDS:{
                             $order:60,

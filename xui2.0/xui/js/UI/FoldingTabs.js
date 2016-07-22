@@ -110,7 +110,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     tagName:'div',
                                     TOGGLE:{
                                         $order:0,
-                                        className:'xuicon xui-uicmd-toggle {_tlgchecked}'
+                                        className:'xuifont xui-uicmd-toggle {_tlgchecked}'
                                     },
                                     ICON:{
                                         $order:2,
@@ -134,16 +134,16 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         $order:2,
                                         OPT:{
                                             $order:1,
-                                            className:'xuicon xui-uicmd-opt',
+                                            className:'xuifont xui-uicmd-opt',
                                             style:'{_opt}'
                                         },
                                         POP:{
-                                            className:'xuicon xui-uicmd-pop',
+                                            className:'xuifont xui-uicmd-pop',
                                             style:'{popDisplay}',
                                             $order:1
                                         },
                                         CLOSE:{
-                                            className:'xuicon xui-uicmd-close ',
+                                            className:'xuifont xui-uicmd-close ',
                                             style:'{closeDisplay}',
                                             $order:2
                                         }

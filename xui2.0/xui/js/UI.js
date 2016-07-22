@@ -6717,7 +6717,7 @@ new function(){
                 },
                 DROP:{
                     $order: 3,
-                    className: 'xuicon xui-uicmd-arrowdrop',
+                    className: 'xuifont xui-uicmd-arrowdrop',
                     style: '{_showDrop}'
                 },
                 CLEAR:{

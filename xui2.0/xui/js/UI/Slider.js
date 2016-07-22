@@ -57,12 +57,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
-                    className:'xuicon {_decls}',
+                    className:'xuifont {_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
-                    className:'xuicon {_incls}',
+                    className:'xuifont {_incls}',
                     tabindex:'{tabindex}'
                 }
             }
