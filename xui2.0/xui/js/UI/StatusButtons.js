@@ -41,6 +41,14 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 'line-height':0,
                 'white-space':'nowrap'
             },
+            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+            },
+            'ITEM-mouseover':{
+            },
+            'ITEM-mousedown':{
+            },
+            'ITEM-checked':{
+            },
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,

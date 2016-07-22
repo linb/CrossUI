@@ -410,7 +410,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'margin-left':'-8px',
                 right:0,
                 'z-index':'10',
-                top:0,
+                top:0
             },
             BOTTOM:{
                 cursor:'pointer',

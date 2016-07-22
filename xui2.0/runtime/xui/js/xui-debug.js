@@ -29362,7 +29362,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"{_commandCls} {btncls} xuicon"
+                    className:"{_commandCls} {btncls} xuifont"
                 }
             }
         },'all');
@@ -33127,7 +33127,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         title:"{tips}",
                         href:xui.$DEFAULTHREF,
                         style:'{_style}{itemStyle}',
-                        className:'{itemClass}',
+                        className:'xui-node {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -33138,7 +33138,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-ui-btn xui-list-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -33150,7 +33150,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         src:"{image}",
                         border:"0",
                         style:'{_style}{itemStyle}',
-                        className:'{itemClass}',
+                        className:'xui-node {itemClass}',
                         tabindex: '{_tabindex}',
                         alt:"{caption}"
                     }
@@ -33181,10 +33181,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
                 position:'relative',
-                padding:'0 4px 0 6px',
+                padding:'1px 4px 1px 6px',
                 'border-radius':'3px'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+                padding:'0px 3px 0px 5px'
             },
             'ITEM-mouseover':{
                 $order:1,
@@ -36711,6 +36712,14 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 'line-height':0,
                 'white-space':'nowrap'
             },
+            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+            },
+            'ITEM-mouseover':{
+            },
+            'ITEM-mousedown':{
+            },
+            'ITEM-checked':{
+            },
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
@@ -38297,7 +38306,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'margin-left':'-8px',
                 right:0,
                 'z-index':'10',
-                top:0,
+                top:0
             },
             BOTTOM:{
                 cursor:'pointer',
@@ -39718,7 +39727,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-ui-unselectable xuifont {cls3} '
+                            className:'xui-ui-btn xui-ui-unselectable xuifont {cls3} '
                         },
                         PANEL:{
                             tagName:'div',

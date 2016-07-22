@@ -475,7 +475,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"{_commandCls} {btncls} xuicon"
+                    className:"{_commandCls} {btncls} xuifont"
                 }
             }
         },'all');

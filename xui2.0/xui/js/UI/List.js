@@ -182,7 +182,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         title:"{tips}",
                         href:xui.$DEFAULTHREF,
                         style:'{_style}{itemStyle}',
-                        className:'{itemClass}',
+                        className:'xui-node {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -193,7 +193,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-ui-btn xui-list-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -205,7 +205,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         src:"{image}",
                         border:"0",
                         style:'{_style}{itemStyle}',
-                        className:'{itemClass}',
+                        className:'xui-node {itemClass}',
                         tabindex: '{_tabindex}',
                         alt:"{caption}"
                     }
@@ -236,10 +236,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
                 position:'relative',
-                padding:'0 4px 0 6px',
+                padding:'1px 4px 1px 6px',
                 'border-radius':'3px'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+                padding:'0px 3px 0px 5px'
             },
             'ITEM-mouseover':{
                 $order:1,
