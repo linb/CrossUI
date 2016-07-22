@@ -318,6 +318,40 @@ Class("xui.CSS", null,{
                 (b.ie?"zoom:1;":"")+
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
+        },
+        _dftEm:0,
+        _getDftEm: function(force){
+            var ns=this;
+            if(force||!ns._dftEm){
+                var div;
+                xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                ns._dftEm=div.get(0).offsetHeight;
+                div.remove();
+            }
+
+            _.resetRun('xui-css-resetem:asy',function(){
+                xui.CSS.$resetEm();
+            },300);
+
+            return ns._dftEm;
+        },
+        $resetEm:function(){
+            delete xui.CSS._dftEm;
+        },
+        $isEm:function(value){
+            return /^((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/.test(_.str.trim(value+'').toLowerCase());
+        },
+        $isPx:function(value){
+            return /^((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/.test(_.str.trim(value+'').toLowerCase());
+        },
+        $em2px:function(value, force){
+            return (_.isFinite(value) || this.$isEm(value)) ? parseInt((parseFloat(value)||0) * this._getDftEm(force),10) : value;
+        },
+        $px2em:function(value, force){
+            return (_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / this._getDftEm(force): value;
+        },
+        $px:function(value, force){
+            return (this.$isEm(value)?this.$em2px(value, force):parseInt(value, 10)) || 0;
         }
     },
     Initialize:function(){

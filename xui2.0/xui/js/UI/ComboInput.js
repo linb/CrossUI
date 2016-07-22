@@ -1308,7 +1308,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile);
+            var data={},prop=profile.properties;
+            if(prop.height=='auto'){
+                data.height  = xui.CSS.$em2px(1.83);
+            }else if(xui.CSS.$isEm(prop.height)){
+                data.height = xui.CSS.$em2px(prop.height);
+            }
+
+            data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
             tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox')?'arrowdrop':tt;
@@ -1385,7 +1392,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight');
-
+            if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
 

@@ -9,7 +9,7 @@
 .xuicon {
   font-family:"xuicon" !important;
   font-size:16px;
-  line-height:16px;
+  line-height:1em;
   font-style:normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
@@ -21,8 +21,8 @@
 .xuicon-mouseover:before{ color: #000; }
 .xuicon-mousedown:before{ color: #FF0000; padding: 1px 0 0 1px; }
 .xuicon-checked:before{ color: #FF0000; }
-.xui-icon-empty:before{ content:"\00a0" !important; }
 
+.xui-icon-empty:before { content: "\e62c" !important; }
 
 .xui-uicmd-helpinput:before { content: "\e671"; }
 .xui-icon-zoomin:before { content: "\e61d"; }
@@ -56,12 +56,11 @@
 .xui-icon-undo:before { content: "\e660"; }
 .xui-uicmd-refresh:before { content: "\e621"; }
 .xui-icon-date:before { content: "\e626"; }
-.xui-lajitong:before { content: "\e60c"; }
+.xui-icon-trash:before { content: "\e60c"; }
 .xui-icon-alignleft:before { content: "\e647"; }
 .xui-icon-singleright:before { content: "\e672"; }
 .xui-icon-singleleft:before { content: "\e673"; }
 .xui-uicmd-max:before { content: "\e60d"; }
-.xui-uicmd-pop1:before { content: "\e60e"; }
 .xui-icon-last:before { content: "\e60f"; }
 .xui-icon-error:before { content: "\e674"; }
 .xui-icon-remove:before { content: "\e627"; }
@@ -84,12 +83,11 @@
 .xui-icon-font:before { content: "\e63e"; }
 .xui-icon-bgcolor:before { content: "\e63f"; }
 .xui-icon-mobile:before { content: "\e600"; }
-.xui-icon-alarm:before { content: "\e602"; }
+.xui-icon-clock:before { content: "\e602"; }
 .xui-icon-circledown:before { content: "\e603"; }
 .xui-icon-circleleft:before { content: "\e607"; }
 .xui-icon-circleright:before { content: "\e658"; }
 .xui-icon-circleup:before { content: "\e659"; }
-.xui-icon-connection:before { content: "\e65a"; }
 .xui-uicmd-opt:before { content: "\e610"; }
 .xui-icon-italic:before { content: "\e640"; }
 .xui-icon-redo:before { content: "\e661"; }
@@ -116,18 +114,14 @@
 .xui-icon-file:before { content: "\e617"; }
 .xui-uicmd-info:before { content: "\e618"; }
 .xui-icon-smill:before { content: "\e65b"; }
-.xui-liebiaolist46:before { content: "\e619"; }
 .xui-icon-sort:before { content: "\e620"; }
 .xui-icon-arrowtop:before { content: "\e654"; }
 .xui-icon-file-fold:before { content: "\e622"; }
-.xui-zuidahua:before { content: "\e61a"; }
 .xui-icon-circle:before { content: "\e656"; }
-.xui-zuixiaohua:before { content: "\e61b"; }
 .xui-icon-underline:before { content: "\e645"; }
 .xui-uicmd-radio:before { content: "\e604"; }
 .xui-uicmd-radio-checked:before { content: "\e605"; }
 .xui-uicmd-restore:before { content: "\e630"; }
-.xui-dialog-copy:before { content: "\e61c"; }
 .xui-uicmd-toggle-checked:before { content: "\e662"; }
 .xui-icon-smallup:before { content: "\e663"; }
 .xui-icon-smalldown:before { content: "\e664"; }
@@ -141,8 +135,7 @@
 .xui-icon-arrowbottom:before { content: "\e655"; }
 .xui-icon-arrowleft:before { content: "\e653"; }
 .xui-icon-next:before { content: "\e60b"; }
-.xui-icon-first:before { content: "\e611"; }
-.xui-icon-first1:before { content: "\e66a"; }
+.xui-icon-first:before { content: "\e66a"; }
 .xui-icon-triangle-left:before { content: "\e675"; }
 .xui-icon-triangle-down:before { content: "\e677"; }
 .xui-icon-triangle-right:before { content: "\e678"; }

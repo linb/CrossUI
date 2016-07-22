@@ -173,6 +173,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             CAPTION:{
                 cursor:'pointer',
                 display:'inline',
+                padding:'2px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },

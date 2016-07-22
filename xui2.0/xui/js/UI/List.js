@@ -135,6 +135,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         LTAGCMDS:{
                             $order:2,
                             tagName:'span',
+                            style:'{_ltagDisplay}',
                             text:"{ltagCmds}"
                         },
                         MARK:{
@@ -162,6 +163,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         TAGCMDS:{
                             $order:60,
                             tagName:'span',
+                            style:'{_rtagDisplay}',
                             text:"{rtagCmds}"
                         } 
                     }
@@ -234,6 +236,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
                 position:'relative',
+                padding:'0 4px 0 6px',
                 'border-radius':'3px'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
@@ -668,9 +671,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     else
                         a.push(c);
                 }
-                item.ltagCmds=b;
+                item.ltagCmds=b
                 item.rtagCmds=a;
             }
+            item._ltagDisplay= item.ltagCmds?'':'display:none';
+            item._rtagDisplay= item.rtagCmds?'':'display:none';
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;

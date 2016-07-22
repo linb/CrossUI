@@ -2043,7 +2043,7 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-top
             /*set table height for ff2, set uibar height for performance*/
             '.xui-uibar-top':{
-                height:'29px'
+             //   height:'29px'
             },
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
@@ -2078,12 +2078,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
-                position:'absolute',
-                left:0,
-                top:'6px',
+                position:'relative',
                 width:'92%',
-                height:'22px',
-                'padding-left':'8px',
+                'padding':'6px 0 0 8px',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
@@ -2456,7 +2453,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-nodatauri .xui-ui-dirty':{
                 $order:2,
-                'background-image':xui.UI.$bg('_oldbrowser/dirtymark.gif', '',null,true)
+                'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
             'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
@@ -2665,22 +2662,16 @@ Class("xui.UI",  "xui.absObj", {
             if(arr && arr[0])return arr.pop();
             return this._ctrlId.next();
         },
-        $bg:function(path, paras, forceKey, root){
+        $oldBg:function(path, paras, forceKey, root){
             return function(key){
-                var p=xui.ini.path +
-                        (root?'appearance/':('appearance/default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" )) +
-                        path;
                 //_.asyRun(function(){new Image().src=p;});
-                return 'url(' + p +') '+ (paras||'');
+                return 'url(' + xui.ini.path + 'appearance/_oldbrowser/' + path +') '+ (paras||'');
             }
         },
-        $ieBg:function(path,  forceKey, root){
+        $ieOldBg:function(path){
             return function(key){
-                var p=xui.ini.path +
-                        (root?'appearance/':('default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" )) +
-                        path;
                 //_.asyRun(function(){new Image().src=p;});
-                return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+p+'",sizingMethod="crop")';
+                return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+xui.ini.path + 'appearance/_oldbrowser/' + path+'",sizingMethod="crop")';
             }
         },
        /* deep template function
@@ -4558,10 +4549,10 @@ Class("xui.UI",  "xui.absObj", {
                                 style.overflow=style.overflowX=style.overflowY="hidden";
                             }
 
-                            width=(style&&parseInt(style.width,10))||node.width()||0;
-                            height=(style&&parseInt(style.height,10))||node.height()||0;
-                            //width=Math.max( node.scrollWidth()||0,  (style&&parseInt(style.width,10))||node.width()||0);
-                            //height=Math.max( node.scrollHeight()||0, (style&&parseInt(style.height,10))||node.height()||0);
+                            width=(style&&xui.CSS.$px(style.width))||node.width()||0;
+                            height=(style&&xui.CSS.$px(style.height))||node.height()||0;
+                            //width=Math.max( node.scrollWidth()||0,  (style&&xui.CSS.$px(style.width))||node.width()||0);
+                            //height=Math.max( node.scrollHeight()||0, (style&&xui.CSS.$px(style.height))||node.height()||0);
 
                            if(style){
                                style.overflow = old_of;

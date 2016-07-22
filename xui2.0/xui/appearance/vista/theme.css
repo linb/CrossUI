@@ -201,7 +201,7 @@ html, .xui-uibg-base{
 }
 /*set table height for ff2, set uibar height for performance*/
 .xui-uibar-top{
-    height:24px;
+/*    height:24px; */
 }
 .xui-uibar-top .xui-uibar-tdl{
 	background-position: 0 0;

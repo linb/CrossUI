@@ -251,6 +251,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             LTAGCMDS:{
                                 $order:3,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             MARK:{
@@ -279,6 +280,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             RTAGCMDS:{
                                 $order:10,
                                 tagName:'span',
+                                style:'{_rtagDisplay}',
                                 text:"{rtagCmds}"
                             }
                         },
@@ -361,7 +363,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               padding:'1px 4px',
+               padding:'1px 4px 1px 8px',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },

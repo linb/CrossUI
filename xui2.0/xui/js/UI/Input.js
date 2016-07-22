@@ -518,7 +518,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             value:'',
             width:120,
-            height:22,
+            height:'auto',
             disabled:{
                 ini:false,
                 action: function(v){
@@ -606,7 +606,14 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onLabelActive:function(profile, e, src){}
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile);
+            var data={},prop=profile.properties;
+            if(prop.height=='auto'){
+                data.height  = xui.CSS.$em2px(1.83);
+            }else if(xui.CSS.$isEm(prop.height)){
+                data.height = xui.CSS.$em2px(prop.height);
+            }
+
+            var d=arguments.callee.upper.call(this, profile, data);
 
             d._type = d.type || '';
             if(d.maxlength<0)d.maxlength="";
@@ -864,6 +871,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
                 loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
                 roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
+
+            if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
 
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),

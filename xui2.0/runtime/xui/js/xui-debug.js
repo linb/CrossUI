@@ -1688,6 +1688,10 @@ new function(){
         s=u.split(s)[1].split('.');
         return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
     };
+    // for new chrome
+    if(b.isTouch && w.matchMedia)
+            if(!w.matchMedia('(pointer: coarse)').matches)
+                delete b.isTouch;
 
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
 
@@ -8401,6 +8405,40 @@ Class('xui.Event',null,{
                 (b.ie?"zoom:1;":"")+
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
+        },
+        _dftEm:0,
+        _getDftEm: function(force){
+            var ns=this;
+            if(force||!ns._dftEm){
+                var div;
+                xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                ns._dftEm=div.get(0).offsetHeight;
+                div.remove();
+            }
+
+            _.resetRun('xui-css-resetem:asy',function(){
+                xui.CSS.$resetEm();
+            },300);
+
+            return ns._dftEm;
+        },
+        $resetEm:function(){
+            delete xui.CSS._dftEm;
+        },
+        $isEm:function(value){
+            return /^((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/.test(_.str.trim(value+'').toLowerCase());
+        },
+        $isPx:function(value){
+            return /^((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/.test(_.str.trim(value+'').toLowerCase());
+        },
+        $em2px:function(value, force){
+            return (_.isFinite(value) || this.$isEm(value)) ? parseInt((parseFloat(value)||0) * this._getDftEm(force),10) : value;
+        },
+        $px2em:function(value, force){
+            return (_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / this._getDftEm(force): value;
+        },
+        $px:function(value, force){
+            return (this.$isEm(value)?this.$em2px(value, force):parseInt(value, 10)) || 0;
         }
     },
     Initialize:function(){
@@ -18698,7 +18736,7 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-top
             /*set table height for ff2, set uibar height for performance*/
             '.xui-uibar-top':{
-                height:'29px'
+             //   height:'29px'
             },
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
@@ -18733,12 +18771,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
-                position:'absolute',
-                left:0,
-                top:'6px',
+                position:'relative',
                 width:'92%',
-                height:'22px',
-                'padding-left':'8px',
+                'padding':'6px 0 0 8px',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
@@ -19111,7 +19146,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-nodatauri .xui-ui-dirty':{
                 $order:2,
-                'background-image':xui.UI.$bg('_oldbrowser/dirtymark.gif', '',null,true)
+                'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
             'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
@@ -19320,22 +19355,16 @@ Class("xui.UI",  "xui.absObj", {
             if(arr && arr[0])return arr.pop();
             return this._ctrlId.next();
         },
-        $bg:function(path, paras, forceKey, root){
+        $oldBg:function(path, paras, forceKey, root){
             return function(key){
-                var p=xui.ini.path +
-                        (root?'appearance/':('appearance/default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" )) +
-                        path;
                 //_.asyRun(function(){new Image().src=p;});
-                return 'url(' + p +') '+ (paras||'');
+                return 'url(' + xui.ini.path + 'appearance/_oldbrowser/' + path +') '+ (paras||'');
             }
         },
-        $ieBg:function(path,  forceKey, root){
+        $ieOldBg:function(path){
             return function(key){
-                var p=xui.ini.path +
-                        (root?'appearance/':('default/'+ (typeof forceKey=='string'?forceKey:forceKey?'Public':(p=key.split('.'))[p.length-1]) + "/" )) +
-                        path;
                 //_.asyRun(function(){new Image().src=p;});
-                return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+p+'",sizingMethod="crop")';
+                return 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+xui.ini.path + 'appearance/_oldbrowser/' + path+'",sizingMethod="crop")';
             }
         },
        /* deep template function
@@ -21213,10 +21242,10 @@ Class("xui.UI",  "xui.absObj", {
                                 style.overflow=style.overflowX=style.overflowY="hidden";
                             }
 
-                            width=(style&&parseInt(style.width,10))||node.width()||0;
-                            height=(style&&parseInt(style.height,10))||node.height()||0;
-                            //width=Math.max( node.scrollWidth()||0,  (style&&parseInt(style.width,10))||node.width()||0);
-                            //height=Math.max( node.scrollHeight()||0, (style&&parseInt(style.height,10))||node.height()||0);
+                            width=(style&&xui.CSS.$px(style.width))||node.width()||0;
+                            height=(style&&xui.CSS.$px(style.height))||node.height()||0;
+                            //width=Math.max( node.scrollWidth()||0,  (style&&xui.CSS.$px(style.width))||node.width()||0);
+                            //height=Math.max( node.scrollHeight()||0, (style&&xui.CSS.$px(style.height))||node.height()||0);
 
                            if(style){
                                style.overflow = old_of;
@@ -25139,10 +25168,10 @@ Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE: {tagName:'div', className:'xuicon xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-6px;margin-top:-6px;width:13px;height:13px;'},
-                CONF1:{tagName:'div', className:'xuicon xui-icon-star', style:'top:0px;left:-16px;width:16px;height:16px;{_leftCofigBtn};'},
-                CONF2:{tagName:'div', className:'xuicon xui-icon-dropdown', style:'top:0px;left:auto;right:-16px;width:16px;height:16px;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', className:'xuicon xui-icon-circle', style:'top:-18px;left:50%;margin-left:-8px;width:16px;height:16px;{_rotateBtn};'},
+                MOVE: {tagName:'div', className:'xuicon xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
+                CONF1:{tagName:'div', className:'xuicon xui-icon-star', style:'top:0px;left:-1em;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', className:'xuicon xui-icon-dropdown', style:'top:0px;left:auto;right:-1em;{_rightCofigBtn};'},
+                ROTATE:{tagName:'div', className:'xuicon xui-icon-circle', style:'top:-1.2em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
@@ -27289,7 +27318,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             value:'',
             width:120,
-            height:22,
+            height:'auto',
             disabled:{
                 ini:false,
                 action: function(v){
@@ -27377,7 +27406,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             onLabelActive:function(profile, e, src){}
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile);
+            var data={},prop=profile.properties;
+            if(prop.height=='auto'){
+                data.height  = xui.CSS.$em2px(1.83);
+            }else if(xui.CSS.$isEm(prop.height)){
+                data.height = xui.CSS.$em2px(prop.height);
+            }
+
+            var d=arguments.callee.upper.call(this, profile, data);
 
             d._type = d.type || '';
             if(d.maxlength<0)d.maxlength="";
@@ -27635,6 +27671,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
                 loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
                 roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
+
+            if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
 
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
@@ -30157,7 +30195,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile);
+            var data={},prop=profile.properties;
+            if(prop.height=='auto'){
+                data.height  = xui.CSS.$em2px(1.83);
+            }else if(xui.CSS.$isEm(prop.height)){
+                data.height = xui.CSS.$em2px(prop.height);
+            }
+
+            data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
             tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox')?'arrowdrop':tt;
@@ -30234,7 +30279,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight');
-
+            if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
 
@@ -31015,16 +31060,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 width:'16px'
             },
             ".xui-nodatauri ADVCLR":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clrbg.png', 'no-repeat left top',null,true),
-                _filter: xui.UI.$ieBg('bg.png',null,true)
+                background: xui.browser.ie6?null:xui.UI.$oldBg('clrbg.png', 'no-repeat left top'),
+                //for ie6
+                _filter: xui.UI.$ieOldBg('clrbg.png')
             },
             ".xui-nodatauri ADVWHEEL":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clr.png', 'no-repeat left top',null,true),
-                _filter: xui.UI.$ieBg('clr.png',null,true)
+                background: xui.browser.ie6?null:xui.UI.$oldBg('clr.png', 'no-repeat left top'),
+                //for ie6
+                _filter: xui.UI.$ieOldBg('clr.png')
             },
             '.xui-nodatauri ADVMARK1, .xui-nodatauri ADVMARK2':{
-                background:xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/picker.png', 'no-repeat left top',null,true),
-                _filter: xui.UI.$ieBg('picker.png',null,true)
+                background:xui.browser.ie6?null:xui.UI.$oldBg('picker.png', 'no-repeat left top'),
+                //for ie6
+                _filter: xui.UI.$ieOldBg('picker.png')
             },
 
             'LIST span':{
@@ -33032,6 +33080,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         LTAGCMDS:{
                             $order:2,
                             tagName:'span',
+                            style:'{_ltagDisplay}',
                             text:"{ltagCmds}"
                         },
                         MARK:{
@@ -33059,6 +33108,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         TAGCMDS:{
                             $order:60,
                             tagName:'span',
+                            style:'{_rtagDisplay}',
                             text:"{rtagCmds}"
                         } 
                     }
@@ -33131,6 +33181,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
                 position:'relative',
+                padding:'0 4px 0 6px',
                 'border-radius':'3px'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
@@ -33565,9 +33616,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     else
                         a.push(c);
                 }
-                item.ltagCmds=b;
+                item.ltagCmds=b
                 item.rtagCmds=a;
             }
+            item._ltagDisplay= item.ltagCmds?'':'display:none';
+            item._rtagDisplay= item.rtagCmds?'':'display:none';
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;
@@ -34206,6 +34259,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             CAPTION:{
                 cursor:'pointer',
                 display:'inline',
+                padding:'2px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },
@@ -36969,6 +37023,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             LTAGCMDS:{
                                 $order:3,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             MARK:{
@@ -36997,6 +37052,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             RTAGCMDS:{
                                 $order:10,
                                 tagName:'span',
+                                style:'{_rtagDisplay}',
                                 text:"{rtagCmds}"
                             }
                         },
@@ -37079,7 +37135,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               padding:'1px 4px',
+               padding:'1px 4px 1px 8px',
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
@@ -41987,7 +42043,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                         tagName:'div',
                                         HCELLS1:{
                                             tagName:'div',
-                                            style:'{headerHeight};',
+                                            style:'{headerHeight}',
                                             /*the first col (row handler) in table header*/
                                             FHCELL:{
                                                 $order:0,
@@ -42289,7 +42345,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             $order:2,
                             tagName:'div',
                             className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
-                            style:'height:{rowHeight}px;{rowStyle}',
+                            style:'{_rowHeight};{rowStyle}',
                             GRPCELL1:{
                                 tagName:'text',
                                 text:'{_cellhandler}'
@@ -42314,7 +42370,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             $order:2,
                             tagName:'div',
                             className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
-                            style:'height:{rowHeight}px;{rowStyle}',
+                            style:'{_rowHeight};{rowStyle}',
                             GRPCELL2:{
                                 tagName:'text',
                                 text:'{_fgrpcell}'
@@ -42373,6 +42429,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             LTAGCMDS:{
                                 $order:1,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             FCELLCAPTION:{
@@ -42409,6 +42466,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             LTAGCMDS:{
                                 $order:1,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             FHANDLER:{
@@ -42535,7 +42593,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLA:{
                             _NativeElement:true,
                             tagName:'button',
-                            className:'xui-wrapper xui-treegrid-tgbtn {cellClass}',
+                            className:'xui-node xui-wrapper xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -42610,7 +42668,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
+                        className:'xui-node xui-uiborder-outset xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -43253,7 +43311,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     profile.getSubNode("CELLS2",subId).height(h);
 
                     //for ie's weird bug
-                    if(xui.browser.ie && h%2==1)h+=1;
+                    if(xui.browser.ie && xui.browser.ver<=8 && h%2==1)h+=1;
 
                     if(profile.beforeRowResized && false===profile.boxing().beforeRowResized(profile, row?row.id:null, h)){
                         profile._limited=0;
@@ -44374,7 +44432,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             rowHeight:{
-                ini:20,
+                ini:'1.6em',
                 action:function(v){
                     this.box._adjusteditorH(this, this.getSubNodes(['CELLS1','CELLS2'], true).height(v),v);
                 }
@@ -45588,7 +45646,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t._row0DfW=pro.rowHandlerWidth?('width:'+pro.rowHandlerWidth+'px'):'';
                 t._rulerW=4+_layer*mm;
 
-                row._height = t.rowHeight=row._height||row.height||pro.rowHeight;
+                t._rowHeight = row._height || row.height || pro.rowHeight;
+                var px;
+                // only take number / px / em
+                if(xui.CSS.$isEm(t._rowHeight)){
+                    px = xui.CSS.$em2px(t._rowHeight);
+                    row._height=px;
+                }else{
+                    px=parseInt(t._rowHeight, 10);
+                    t._rowHeight = px + 'px';
+                    row._height = px;
+                }
+                t._rowHeight =  'height:'+t._rowHeight;
 
                 t.rowHandlerDisplay=pro.rowHandler?'':NONE;
                 t.rowDDDisplay=(('rowResizer' in row)?row.rowResizer:pro.rowResizer)?'':NONE;

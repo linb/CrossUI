@@ -390,16 +390,19 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 width:'16px'
             },
             ".xui-nodatauri ADVCLR":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clrbg.png', 'no-repeat left top',null,true),
-                _filter: xui.UI.$ieBg('bg.png',null,true)
+                background: xui.browser.ie6?null:xui.UI.$oldBg('clrbg.png', 'no-repeat left top'),
+                //for ie6
+                _filter: xui.UI.$ieOldBg('clrbg.png')
             },
             ".xui-nodatauri ADVWHEEL":{
-                background: xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/clr.png', 'no-repeat left top',null,true),
-                _filter: xui.UI.$ieBg('clr.png',null,true)
+                background: xui.browser.ie6?null:xui.UI.$oldBg('clr.png', 'no-repeat left top'),
+                //for ie6
+                _filter: xui.UI.$ieOldBg('clr.png')
             },
             '.xui-nodatauri ADVMARK1, .xui-nodatauri ADVMARK2':{
-                background:xui.browser.ie6?null:xui.UI.$bg('_oldbrowser/picker.png', 'no-repeat left top',null,true),
-                _filter: xui.UI.$ieBg('picker.png',null,true)
+                background:xui.browser.ie6?null:xui.UI.$oldBg('picker.png', 'no-repeat left top'),
+                //for ie6
+                _filter: xui.UI.$ieOldBg('picker.png')
             },
 
             'LIST span':{

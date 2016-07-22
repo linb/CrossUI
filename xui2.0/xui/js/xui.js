@@ -1688,6 +1688,10 @@ new function(){
         s=u.split(s)[1].split('.');
         return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
     };
+    // for new chrome
+    if(b.isTouch && w.matchMedia)
+            if(!w.matchMedia('(pointer: coarse)').matches)
+                delete b.isTouch;
 
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
 

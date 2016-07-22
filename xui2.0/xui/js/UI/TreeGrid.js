@@ -1582,7 +1582,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                         tagName:'div',
                                         HCELLS1:{
                                             tagName:'div',
-                                            style:'{headerHeight};',
+                                            style:'{headerHeight}',
                                             /*the first col (row handler) in table header*/
                                             FHCELL:{
                                                 $order:0,
@@ -1884,7 +1884,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             $order:2,
                             tagName:'div',
                             className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
-                            style:'height:{rowHeight}px;{rowStyle}',
+                            style:'{_rowHeight};{rowStyle}',
                             GRPCELL1:{
                                 tagName:'text',
                                 text:'{_cellhandler}'
@@ -1909,7 +1909,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             $order:2,
                             tagName:'div',
                             className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
-                            style:'height:{rowHeight}px;{rowStyle}',
+                            style:'{_rowHeight};{rowStyle}',
                             GRPCELL2:{
                                 tagName:'text',
                                 text:'{_fgrpcell}'
@@ -1968,6 +1968,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             LTAGCMDS:{
                                 $order:1,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             FCELLCAPTION:{
@@ -2004,6 +2005,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             LTAGCMDS:{
                                 $order:1,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             FHANDLER:{
@@ -2130,7 +2132,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLA:{
                             _NativeElement:true,
                             tagName:'button',
-                            className:'xui-wrapper xui-treegrid-tgbtn {cellClass}',
+                            className:'xui-node xui-wrapper xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -2205,7 +2207,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-uiborder-outset xui-list-cmd {itemClass}',
+                        className:'xui-node xui-uiborder-outset xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -2848,7 +2850,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     profile.getSubNode("CELLS2",subId).height(h);
 
                     //for ie's weird bug
-                    if(xui.browser.ie && h%2==1)h+=1;
+                    if(xui.browser.ie && xui.browser.ver<=8 && h%2==1)h+=1;
 
                     if(profile.beforeRowResized && false===profile.boxing().beforeRowResized(profile, row?row.id:null, h)){
                         profile._limited=0;
@@ -3969,7 +3971,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             rowHeight:{
-                ini:20,
+                ini:'1.6em',
                 action:function(v){
                     this.box._adjusteditorH(this, this.getSubNodes(['CELLS1','CELLS2'], true).height(v),v);
                 }
@@ -5183,7 +5185,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t._row0DfW=pro.rowHandlerWidth?('width:'+pro.rowHandlerWidth+'px'):'';
                 t._rulerW=4+_layer*mm;
 
-                row._height = t.rowHeight=row._height||row.height||pro.rowHeight;
+                t._rowHeight = row._height || row.height || pro.rowHeight;
+                var px;
+                // only take number / px / em
+                if(xui.CSS.$isEm(t._rowHeight)){
+                    px = xui.CSS.$em2px(t._rowHeight);
+                    row._height=px;
+                }else{
+                    px=parseInt(t._rowHeight, 10);
+                    t._rowHeight = px + 'px';
+                    row._height = px;
+                }
+                t._rowHeight =  'height:'+t._rowHeight;
 
                 t.rowHandlerDisplay=pro.rowHandler?'':NONE;
                 t.rowDDDisplay=(('rowResizer' in row)?row.rowResizer:pro.rowResizer)?'':NONE;
