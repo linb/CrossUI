@@ -168,8 +168,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'relative'
             },
             'BODY, BODYI':{
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':null,
             'ITEM-checked':{
@@ -182,8 +182,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             },
             'HL, HR, TL, TR':{
                 position:'absolute',
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 width:'8px'
             },
             'HL, HR':{
@@ -233,8 +233,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 padding:'2px 4px'
             },
             TAIL:{
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 position:'relative',
                 height:'3px',
                 'background-color':'#EEE'

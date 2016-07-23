@@ -37,8 +37,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 padding:'3px 5px',
                 margin:'0 4px',
                 cursor:'pointer',
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 'white-space':'nowrap'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{

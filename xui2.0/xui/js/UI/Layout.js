@@ -207,7 +207,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-ui-btn xui-ui-unselectable xuifont {cls3} '
+                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifont {cls3} '
                         },
                         PANEL:{
                             tagName:'div',
@@ -228,39 +228,39 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 overflow:'hidden',
                 left:0,
                 top:0,
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             MOVE:{
                 $order:0,
                 position:'absolute',
 
                 'z-index':'10',
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             CMD:{
                 position:'absolute',
                 cursor:'pointer',
                 'z-index':'20',
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             ITEM:{
                 position:'absolute',
                 "z-index":1,
                 overflow:'hidden',
                 'border-width':xui.browser.opr?'0px':null,
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             PANEL:{
                 position:'absolute',
                 overflow:'auto',
                 /*for opera, opera default set border to 3 ;( */
                 'border-width':xui.browser.opr?'0px':null,
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             'ITEM-MAIN':{
                 left:0,

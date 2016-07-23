@@ -2034,8 +2034,8 @@ Class("xui.UI",  "xui.absObj", {
                 position:'relative',
                 //for avoiding extra space after table in IE
                 'vertical-align':'baseline',
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1
@@ -2092,15 +2092,15 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uicon-main':{
                 position:'relative',
                 'padding-left':'4px',
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 'z-index':1,
                 overflow:'visible'
             },
             '.xui-uicon-maini':{
                 'padding-right':'4px',
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
@@ -6370,8 +6370,8 @@ new function(){
         Static:{
             Appearances:{
                 KEY:{
-                    'font-size':xui.browser.ie?0:null,
-                    'line-height':xui.browser.ie?0:null
+                    'font-size':xui.__iefix1,
+                    'line-height':xui.__iefix1
                 },
                 IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
                     'z-index':'-1',

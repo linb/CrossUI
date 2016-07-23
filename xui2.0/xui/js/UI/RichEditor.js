@@ -355,14 +355,14 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         },
                         event=self._event=function(e){
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
-    
-                            if(e.type !== "mouseover" && e.type !== "mouseout"){
+                            var etype = e.type; 
+                            if(etype !== "mouseover" && etype !== "mouseout"){
                                 _.resetRun('RichEditor:'+domId, function(){
                                     // destroyed
                                     if(!kprf.box)return;
-                                    xui.UI.RichEditor._updateToolbar(domId, false,e.type)
+                                    xui.UI.RichEditor._updateToolbar(domId, false,etype)
                                 },100);
-                                 if(e.type=='mousedown'){
+                                 if(etype=='mousedown'){
                                     if(xui.browser.applewebkit && e.target.tagName=="IMG"){
                                             var sel = self.$win.getSelection(), range = self.$doc.createRange();
                                             range.selectNode(e.target);
@@ -375,14 +375,15 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                  }  
                             }
                             if(kprf.onInnerEvent)
-                                return kprf.boxing().onInnerEvent(kprf, e.type, xui.Event.getSrc(e), e);
+                                return kprf.boxing().onInnerEvent(kprf, etype, xui.Event.getSrc(e), e);
                         },
                         event2=self._event2=function(e){
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
                             if(kprf.onInnerEvent){
+                                var etype=e.type;
                                 _.resetRun(kprf.$xid+":frmInnerAsyEvent", function(){
                                     if(kprf && !kprf.destroyed)
-                                        kprf.boxing().onInnerEvent(kprf, e.type, xui.Event.getSrc(e), e);
+                                        kprf.boxing().onInnerEvent(kprf, etype, xui.Event.getSrc(e), e);
                                 });
                             }
                         },

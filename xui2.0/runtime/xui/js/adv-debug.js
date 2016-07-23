@@ -933,8 +933,6 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             'BARCMDL span':{
                 $order:0,
-                width:'15px',
-                height:'15px',
                 margin:'2px',
                 'vertical-align': 'middle',
                 cursor:'default'
@@ -1657,13 +1655,13 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             if(x>bw)x=bw;
             this._setItemNode(profile, o,'left',x+'px');
 
-            // Ö±½ÓÉèÖÃ            
+            // Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½            
             o._left=x;
 
             // if too long, cut right
             if(x + w > bw)
                 w = bw - x;
-            // Ö»ÓÐ¸Ä±ä²ÅÉèÖÃ
+            // Ö»ï¿½Ð¸Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if(w>=0){
                 if(o._width!=w){
                     o._width=w;
@@ -4197,8 +4195,8 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         _objectProp:{JSONData:1,configure:1,plotData:1,feedData:1},
         Appearances:{
             KEY:{
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             BOX:{

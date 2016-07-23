@@ -2254,8 +2254,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 width:0,
                 height:0,
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             'SCROLL11, SCROLL12, SCROLL21, SCROLL22':{
                 position:'relative',
@@ -2297,7 +2297,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:0,
                 cursor:'pointer',
                 visibility:'hidden',
-                'font-size':'12px',
                 color:'#888'
             },
             'BODY11, BODY12, BODY21, BODY22':{
@@ -2305,8 +2304,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 position:'absolute',
                 left:0,
                 top:'0',
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             SORT:{
                 position:'absolute',
@@ -2323,8 +2322,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 right:'0',
                 height:'100%',
                 cursor:'e-resize',
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             'HCELLS1, HCELLS2, CELLS1, CELLS2':{
                 //for ie height change trigger
@@ -2422,8 +2421,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 bottom:'0px',
                 cursor:'n-resize',
                 'z-index':10,
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             'FCELLCAPTION, ROWNUM':{
                 'vertical-align':'middle',
@@ -2445,8 +2444,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
                 width:xui.browser.ie?'100%':null,
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             ROWNUM:{
                 'padding-right':'6px',
@@ -2545,9 +2544,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:0,
                 position:'relative',
                 overflow:'visible',
-                'font-size':'1px',
+                'font-size':xui.__iefix1,
                 //1px for ie8
-                'line-height':'1px'
+                'line-height':xui.__iefix1
             },
             LTAGCMDS:{
                 "padding-right":'2px',

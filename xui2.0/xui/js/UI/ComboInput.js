@@ -694,8 +694,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 width:'16px',
                 height:'20px',
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 position:'absolute'
             },
             SBTN:{
@@ -705,8 +705,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'R1,R2':{
                 $order:1,
                 display:'block',
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 cursor:'pointer',
                 width:'16px',
                 position:'absolute',

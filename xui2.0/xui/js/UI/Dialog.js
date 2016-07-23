@@ -280,8 +280,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 width:"16px",
                 display:'inline',
                 position:'absolute'
@@ -300,8 +300,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             BORDER:{
                 position:'relative',
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 outline:0
             }
         },

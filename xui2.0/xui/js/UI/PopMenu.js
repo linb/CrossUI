@@ -350,8 +350,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 visibility:'hidden'
             },
             POOL:{
-                'font-size':'0',
-                'line-height':'0',
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 position:'absolute',
                 display:'none'
             },
@@ -396,8 +396,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 overflow:'visible',
                 'white-space': 'nowrap',
-                'font-size':'1px',
-                'line-height':'1px',
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 margin:'2px 2px 2px 26px'
             },
             ICON:{
@@ -431,8 +431,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             RULER:{
                 width:'100px',
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             ADD:{
                 position:'absolute',

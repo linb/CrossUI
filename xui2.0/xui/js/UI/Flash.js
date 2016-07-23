@@ -21,8 +21,8 @@ Class("xui.UI.Flash", "xui.UI",{
     Static:{
         Appearances:{
             KEY:{
-                'font-size':xui.browser.ie?0:null,
-                'line-height':xui.browser.ie?0:null,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             BOX:{

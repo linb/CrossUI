@@ -181,8 +181,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 cursor:'e-resize',
                 'background-color':'#f0f0f0',
                 'border-width':xui.browser.opr?'0':null,
-                'font-size':xui.browser.ie?0:'',
-                'line-height':xui.browser.ie?0:'',
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 zoom:xui.browser.ie6?1:null
             },
             'MOVE-mouseover':{
@@ -194,8 +194,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 'float':'left',
                 overflow:'hidden',
                 'border-width':'0',
-                'font-size':xui.browser.ie?0:'',
-                'line-height':xui.browser.ie?0:'',
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 zoom:xui.browser.ie6?1:null
             },
             PANEL:{
@@ -204,8 +204,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 zoom:xui.browser.ie6?1:null,
                 /*for opera, opera defalut set border to 3 ;( */
                 'border-width':xui.browser.opr?'0':null,
-                'font-size':xui.browser.ie?0:'',
-                'line-height':xui.browser.ie?0:''
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             }
         },
         Behaviors:{

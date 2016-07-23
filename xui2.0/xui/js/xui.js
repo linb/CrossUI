@@ -1711,6 +1711,9 @@ new function(){
             try {document.execCommand('BackgroundImageCache', false, true)}catch(e){}
             w.XMLHttpRequest = function(){return new ActiveXObject("Msxml2.XMLHTTP")};
         }
+        if(b.ie6||b.ie7)b.ie67=1;
+        xui.__iefix1=b.ie67?0:null;
+        if(b.ie6||b.ie7||b.ie8)b.ie678=1;
         b.cssTag1="-ms-";
         b.cssTag2="ms";
     }else if(b.gek){

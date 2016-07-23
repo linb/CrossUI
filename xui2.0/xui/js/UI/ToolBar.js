@@ -200,8 +200,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         },
         Appearances:{
             KEY:{
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 position:'absolute',
                 overflow:'hidden',
                 left:0,
@@ -223,8 +223,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             ITEMS:{
                 display:'block',
                 'padding-bottom':'1px',
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1
             },
             HANDLER:{
                 height:'22px',
@@ -235,8 +235,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'vertical-align':'middle'
             },
             GROUP:{
-                'font-size':0,
-                'line-height':0,
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
                 padding:'1px 2px 0px 1px',

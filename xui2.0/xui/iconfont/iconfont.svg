@@ -2,13 +2,13 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20120731 at Thu Jul 21 11:27:13 2016
+Created by FontForge 20120731 at Sat Jul 23 14:43:10 2016
  By admin
 </metadata>
 <defs>
-<font id="xuicon" horiz-adv-x="1024" >
+<font id="xuifont" horiz-adv-x="1024" >
   <font-face 
-    font-family="xuicon"
+    font-family="xuifont"
     font-weight="500"
     font-stretch="normal"
     units-per-em="1024"

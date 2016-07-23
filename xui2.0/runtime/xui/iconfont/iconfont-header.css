@@ -16,12 +16,18 @@
   -moz-osx-font-smoothing: grayscale;
   color: #444;
   vertical-align:middle;
+
+  display:-moz-inline-block;
+  display:-moz-inline-box;
   display:inline-block;
+  *display:inline;
+  zoom:1;
 }
 .xuicon{
   margin: 0 4px;
 }
-.xuifont-mouseover:before{ color: #000; }
-.xuifont-mousedown:before{ color: #FF0000; padding: 1px 0 0 1px; }
-.xuifont-checked:before{ color: #FF0000; }
+.xuifont-mouseover:before, .xuicon-mouseover:before{ color: #000; }
+.xuifont-mousedown:before, .xuicon-mousedown:before{ color: #FF0000; }
+.xuifont-checked:before, .xuicon-checked:before{ color: #FF0000; }
+
 .xui-icon-empty:before{ content: "\e62c" !important; }
