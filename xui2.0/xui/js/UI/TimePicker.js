@@ -79,12 +79,14 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
-                            className:'xuifont xui-icon-doubleleft',                                                        
+                            className:'xuifont',
+                            $fonticon:'xui-icon-doubleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
-                            className:'xuifont xui-icon-singleleft',                                                        
+                            className:'xuifont',
+                            $fonticon:'xui-icon-singleleft',                                                        
                             tabindex: '{tabindex}'
                         },
                         HOUR:{
@@ -98,12 +100,14 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                             },
                         NEXT:{
                             $order:6,
-                            className:'xuifont xui-icon-singleright',                            
+                            className:'xuifont',
+                            $fonticon:'xui-icon-singleright',                            
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:7,
-                            className:'xuifont xui-icon-doubleright',                            
+                            className:'xuifont',
+                            $fonticon:'xui-icon-doubleright',                            
                             tabindex: '{tabindex}'
                         }
                     },
@@ -112,7 +116,8 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xuifont xui-uicmd-close ',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }

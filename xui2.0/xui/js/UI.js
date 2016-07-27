@@ -1,3 +1,130 @@
+new function(){
+    if(xui.browser.ie67){
+        // empty element size fixed
+        xui.__iefix1=0;
+        // fonticon fixed
+        xui.__iefix2={
+            "xui-icon-empty": '&#xe62c;',
+            "xui-uicmd-helpinput": '&#xe671;',
+            "xui-icon-zoomin": '&#xe61d;',
+            "xui-icon-zoomout": '&#xe61e;',
+            "xui-icon-bullet": '&#xe632;',
+            "xui-icon-minus": '&#xe606;',
+            "xui-uicmd-add": '&#xe609;',
+            "xui-icon-star": '&#xe649;',
+            "xui-icon-dragmove": '&#xe64a;',
+            "xui-uicmd-check": '&#xe631;',
+            "xui-uicmd-date": '&#xe64b;',
+            "xui-icon-number": '&#xe633;',
+            "xui-uicmd-pop": '&#xe61f;',
+            "xui-icon-mouse": '&#xe64d;',
+            "xui-icon-prev": '&#xe60a;',
+            "xui-icon-question": '&#xe63d;',
+            "xui-icon-loading": '&#xe68d;',
+            "xui-icon-indent": '&#xe634;',
+            "xui-icon-outdent": '&#xe635;',
+            "xui-icon-strikethrough": '&#xe636;',
+            "xui-icon-inserthr": '&#xe637;',
+            "xui-uicmd-remove": '&#xe66d;',
+            "xui-icon-super": '&#xe638;',
+            "xui-icon-sub": '&#xe639;',
+            "xui-icon-alignjustify": '&#xe62b;',
+            "xui-icon-alignright": '&#xe646;',
+            "xui-uicmd-arrowdrop": '&#xe623;',
+            "xui-icon-upload": '&#xe624;',
+            "xui-icon-formatbrush": '&#xe63a;',
+            "xui-refresh": '&#xe625;',
+            "xui-icon-undo": '&#xe660;',
+            "xui-uicmd-refresh": '&#xe621;',
+            "xui-icon-date": '&#xe626;',
+            "xui-icon-trash": '&#xe60c;',
+            "xui-icon-alignleft": '&#xe647;',
+            "xui-icon-singleright": '&#xe672;',
+            "xui-icon-singleleft": '&#xe673;',
+            "xui-uicmd-max": '&#xe60d;',
+            "xui-icon-last": '&#xe60f;',
+            "xui-icon-error": '&#xe674;',
+            "xui-icon-remove": '&#xe627;',
+            "xui-uicmd-pin": '&#xe628;',
+            "xui-icon-link": '&#xe63b;',
+            "xui-icon-forecolor": '&#xe63c;',
+            "xui-uicmd-time": '&#xe64f;',
+            "xui-icon-aligncenter": '&#xe666;',
+            "xui-uicmd-check-checked": '&#xe608;',
+            "xui-uicmd-cmdbox": '&#xe64e;',
+            "xui-uicmd-toggle": '&#xe601;',
+            "xui-uicmd-getter": '&#xe657;',
+            "xui-uicmd-save": '&#xe629;',
+            "xui-icon-dragcopy": '&#xe612;',
+            "xui-icon-dropdown": '&#xe679;',
+            "xui-uicmd-popbox": '&#xe668;',
+            "xui-uicmd-close": '&#xe62a;',
+            "xui-uicmd-datetime": '&#xe66c;',
+            "xui-icon-arrowright": '&#xe652;',
+            "xui-icon-font": '&#xe63e;',
+            "xui-icon-bgcolor": '&#xe63f;',
+            "xui-icon-mobile": '&#xe600;',
+            "xui-icon-clock": '&#xe602;',
+            "xui-icon-circledown": '&#xe603;',
+            "xui-icon-circleleft": '&#xe607;',
+            "xui-icon-circleright": '&#xe658;',
+            "xui-icon-circleup": '&#xe659;',
+            "xui-uicmd-opt": '&#xe610;',
+            "xui-icon-italic": '&#xe640;',
+            "xui-icon-redo": '&#xe661;',
+            "xui-icon-bold": '&#xe641;',
+            "xui-icon-bigup": '&#xe650;',
+            "xui-icon-doubledown": '&#xe65c;',
+            "xui-icon-doubleleft": '&#xe65d;',
+            "xui-icon-doubleright": '&#xe65e;',
+            "xui-icon-doubleup": '&#xe65f;',
+            "xui-uicmd-color": '&#xe62e;',
+            "xui-icon-breaklink": '&#xe642;',
+            "xui-icon-picture": '&#xe643;',
+            "xui-icon-back": '&#xe62d;',
+            "xui-icon-dragadd": '&#xe614;',
+            "xui-icon-formatclear": '&#xe644;',
+            "xui-uicmd-select": '&#xe66e;',
+            "xui-uicmd-file": '&#xe66b;',
+            "xui-icon-triangle-up": '&#xe676;',
+            "xui-icon-dragstop": '&#xe651;',
+            "xui-uicmd-dotted": '&#xe62f;',
+            "xui-icon-dialog": '&#xe82c;',
+            "xui-icon-print": '&#xe613;',
+            "xui-icon-right": '&#xe616;',
+            "xui-icon-file": '&#xe617;',
+            "xui-uicmd-info": '&#xe618;',
+            "xui-icon-smill": '&#xe65b;',
+            "xui-icon-sort": '&#xe620;',
+            "xui-icon-arrowtop": '&#xe654;',
+            "xui-icon-file-fold": '&#xe622;',
+            "xui-icon-circle": '&#xe656;',
+            "xui-icon-underline": '&#xe645;',
+            "xui-uicmd-radio": '&#xe604;',
+            "xui-uicmd-radio-checked": '&#xe605;',
+            "xui-uicmd-restore": '&#xe630;',
+            "xui-uicmd-toggle-checked": '&#xe662;',
+            "xui-icon-smallup": '&#xe663;',
+            "xui-icon-smalldown": '&#xe664;',
+            "xui-icon-html": '&#xe665;',
+            "xui-icon-code": '&#xe648;',
+            "xui-uicmd-min": '&#xe667;',
+            "xui-uicmd-location": '&#xe66f;',
+            "xui-icon-file-expand": '&#xe669;',
+            "xui-uicmd-delete": '&#xe670;',
+            "xui-uicmd-land": '&#xe615;',
+            "xui-icon-arrowbottom": '&#xe655;',
+            "xui-icon-arrowleft": '&#xe653;',
+            "xui-icon-next": '&#xe60b;',
+            "xui-icon-first": '&#xe66a;',
+            "xui-icon-triangle-left": '&#xe675;',
+            "xui-icon-triangle-down": '&#xe677;',
+            "xui-icon-triangle-right": '&#xe678;',
+            "xui-icon-sort-checked": '&#xe6bb;'
+        };
+    }
+};
+
 Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
@@ -2720,6 +2847,15 @@ Class("xui.UI",  "xui.absObj", {
                             if(n=a1[i]){
                                 if(n in properties){
                                     t=properties[n];
+                                    if(n.substr(0,4)=="_fi_"){
+                                        // for ie67 fonticon text
+                                        if(xui.__iefix2 && (a0[i-1]=="_the_next_is_fonticon_" || n=="_fi_")){
+                                            t = _.str.trim(t).split(/\s+/).pop();
+                                            t =  (t in xui.__iefix2) ? xui.__iefix2[t] : str;
+                                        }else if(n=="_fi_"){
+                                            t = str;
+                                        }
+                                    }
                                     //if sub template exists
                                     if(template[s=tag+n] && t)
                                         self(profile, template, t, s, result);
@@ -2790,9 +2926,10 @@ Class("xui.UI",  "xui.absObj", {
                     tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
     
                     //default class first
-                    template['class'] =  'xui-node xui-node-'+tagN+' ' + t+' '+
+                    template['class'] =  'xui-node xui-node-'+tagN + (t?(' '+t):'') + 
                         //custom class here
-                        bak + ' ' +
+                        (bak?(' '+bak):'') + 
+                        (template.$fonticon?(' '+template.$fonticon):'') +
                         //add a special
                         (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
                 }else{
@@ -2862,6 +2999,12 @@ Class("xui.UI",  "xui.absObj", {
 
             if(!map2[tagName] && text)
                 arr[arr.length]=text;
+            // for ie67
+            if(template.$fonticon && xui.__iefix2){
+                if(xui.__iefix2[template.$fonticon] )arr[arr.length]=xui.__iefix2[template.$fonticon];
+                else if(/^\s*\{\s*_fi_[\w\s]+\}\s*$/.test(template.$fonticon))arr[arr.length]="{_the_next_is_fonticon_}"+template.$fonticon;
+            }
+            delete template.$fonticon;
 
             // add sub node
             for(var i=0,l=a.length;i<l;){
@@ -6704,7 +6847,7 @@ new function(){
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{
-                    className:'xuicon'
+                    tagName:'div'
                 },
                 ICON:{
                     $order:1,
@@ -6717,8 +6860,9 @@ new function(){
                 },
                 DROP:{
                     $order: 3,
-                    className: 'xuifont xui-uicmd-arrowdrop',
-                    style: '{_showDrop}'
+                    className: 'xuifont',
+                    style: '{_showDrop}',
+                    $fonticon:'xui-uicmd-arrowdrop'
                 },
                 CLEAR:{
                     $order:4,

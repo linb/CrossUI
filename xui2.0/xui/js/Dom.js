@@ -1282,7 +1282,25 @@ Class('xui.Dom','xui.absBox',{
                 r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("([-\\w]+" + tag + "[-\\w]*)")),
                 r2=me["_r2"]||(me["_r2"]=/([-\w]+)/g);
             self.removeClass(r1);
-            return (false===isAdd)? self : self.replaceClass(r2, '$1 $1' + tag);
+            isAdd=false!==isAdd;
+            var r= isAdd ? self.replaceClass(r2, '$1 $1' + tag) : self;
+
+            //fix for ie67
+            if(xui.__iefix2 && tag=="-checked"){
+                this.each(function(n){
+                    var arr = xui.Dom._getClass(n).split(/\s+/);
+                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
+                        _.arr.each(arr,function(s){
+                            //It has 'xxxx' and 'xxxx-checked'
+                            if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(/-checked$/,''):s] ){
+                                xui(n).html(xui.__iefix2[s.replace(/-checked$/,'')+(isAdd?tag:'')]);
+                                return false;
+                            }
+                        });
+                    }
+                });
+            }
+            return r;
         },
 //events:
         /*

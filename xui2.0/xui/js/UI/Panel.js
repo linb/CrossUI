@@ -68,7 +68,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
                         TOGGLE:{
-                            className: 'xuifont xui-uicmd-toggle {toggleCls}',
+                            className: 'xuifont',
+                            $fonticon:'{_fi_toggleCls2}',
                             style:'{toggleDisplay}',
                             $order:0
                         },
@@ -88,27 +89,32 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         INFO:{
-                            className:'xuifont xui-uicmd-info',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-info',
                             style:'{infoDisplay}',
                             $order:1
                         },
                         OPT:{
-                            className:'xuifont xui-uicmd-opt',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:1
                         },
                         POP:{
-                            className:'xuifont xui-uicmd-pop',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-pop',
                             style:'{popDisplay}',
                             $order:2
                         },
                         REFRESH:{
-                            className:'xuifont xui-uicmd-refresh',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-refresh',
                             style:'{refreshDisplay}',
                             $order:3
                         },
                         CLOSE:{
-                            className:'xuifont xui-uicmd-close ',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-close ',
                             style:'{closeDisplay}',
                             $order:4
                         }
@@ -409,7 +415,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             var nodisplay='display:none';
 
             data.panelDisplay = data.toggle?'':nodisplay;
-            data.toggleCls = data.toggle?'xui-uicmd-toggle-checked':'';
+            data._fi_toggleCls2 = data.toggle?'xui-uicmd-toggle xuifont-checked xui-uicmd-toggle-checked':'xui-uicmd-toggle';
 
             data.toggleDisplay = data.toggleBtn?'':nodisplay;
             data.infoDisplay = data.infoBtn?'':nodisplay;

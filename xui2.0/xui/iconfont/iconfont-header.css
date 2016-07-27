@@ -6,9 +6,9 @@
   url('iconfont.ttf?t=1467528113') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
   url('iconfont.svg?t=1467528113#xuifont') format('svg'); /* iOS 4.1- */
 }
-.xuifont:before, .xuicon:before{
+.xuifont, .xuicon{
   font-family:"xuifont" !important;
-  font-size:1.33333333em;
+  font-size:16px;
   line-height:1em;
   font-style:normal;
   -webkit-font-smoothing: antialiased;
@@ -16,18 +16,12 @@
   -moz-osx-font-smoothing: grayscale;
   color: #444;
   vertical-align:middle;
-
-  display:-moz-inline-block;
-  display:-moz-inline-box;
-  display:inline-block;
-  *display:inline;
-  zoom:1;
 }
 .xuicon{
   margin: 0 4px;
 }
-.xuifont-mouseover:before, .xuicon-mouseover:before{ color: #000; }
-.xuifont-mousedown:before, .xuicon-mousedown:before{ color: #FF0000; }
-.xuifont-checked:before, .xuicon-checked:before{ color: #FF0000; }
+.xuifont-mouseover, .xuicon-mouseover{ color: #000; }
+.xuifont-mousedown, .xuicon-mousedown{ color: #FF0000; }
+.xuifont-checked, .xuicon-checked{ color: #FF0000; }
 
 .xui-icon-empty:before{ content: "\e62c" !important; }

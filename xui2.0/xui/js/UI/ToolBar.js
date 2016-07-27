@@ -179,7 +179,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     ICON:{
                                         $order:1,
                                         className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}'
+                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}',
+                                        text:'{_fi_}'
                                     },
                                     CAPTION:{
                                         $order:2,
@@ -188,7 +189,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     },
                                     DROP:{
                                         $order:3,
-                                        className:'xuifont xui-uicmd-arrowdrop',
+                                        className:'xuifont',
+                                        $fonticon:'xui-uicmd-arrowdrop',
                                         style:'{dropDisplay}'
                                     }
                                 }

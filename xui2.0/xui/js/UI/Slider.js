@@ -57,12 +57,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
-                    className:'xuifont {_decls}',
+                    className:'xuifont',
+                    $fonticon:'{_fi_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
-                    className:'xuifont {_incls}',
+                    className:'xuifont',
+                    $fonticon:'{_fi_incls}',
                     tabindex:'{tabindex}'
                 }
             }
@@ -491,8 +493,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
 
-            d._decls = 'xui-icon-triangle-'+(d.type=='vertical'?'up':'left');
-            d._incls = 'xui-icon-triangle-'+(d.type=='vertical'?'down':'right');
+            d._fi_decls = 'xui-icon-triangle-'+(d.type=='vertical'?'up':'left');
+            d._fi_incls = 'xui-icon-triangle-'+(d.type=='vertical'?'down':'right');
             return d;
         },
         _adjustValue:function(profile,value){

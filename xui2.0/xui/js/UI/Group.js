@@ -76,7 +76,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     HANDLE:{
                         tabindex: '{tabindex}',
                         TOGGLE:{
-                            className: 'xuifont xui-uicmd-toggle {toggleCls2}',
+                            className: 'xuifont',
+                            $fonticon:'{_fi_toggleCls2}',
                             style:"{toggleDispplay}"
                         },
                         ICON:{
@@ -216,7 +217,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
 
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
             data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked'):'';
-            data.toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle-checked':'';
+            data._fi_toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle xuifont-checked xui-uicmd-toggle-checked':'xui-uicmd-toggle';
 
             profile._toggle = !!data.toggle;
 

@@ -4,7 +4,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
          var t = this.getTemplate();
          t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
          t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
-         t.$submap.items.ITEM.BAR.ITEMICON.className='xuicon {cls_file} {imageClass}';
+         var n=t.$submap.items.ITEM.BAR.ITEMICON;
+         n.className='xuicon {imageClass}';
+         n.$fonticon = '{_fi_cls_file}';
          this.setTemplate(t);
     },
     Static:{
@@ -94,19 +96,19 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     oitem._deep=pitem._deep+1;
                     item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'px;';
                     // for the last one
-                    item.togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                    item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
             }else{
                 oitem._deep=0;
                 item.rulerStyle='';
                 item.innerIcons='';
-                item.togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
             item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
-            item.cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
+            item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';

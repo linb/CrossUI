@@ -188,48 +188,57 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     tagName: 'div',
                     className:'xui-uibar-cmdr',
                     INFO:{
-                        className:'xuifont xui-uicmd-info',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-info',
                         style:'{infoDisplay}',
                         $order:1
                     },
                     OPT:{
-                        className:'xuifont xui-uicmd-opt',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-opt',
                         style:'{optDisplay}',
                         $order:1
                     },
                     PIN:{
                         $order:2,
-                        className:'xuifont xui-uicmd-pin',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-pin',
                         style:'{pinDisplay}'
                     },
                     LAND:{
                         $order:3,
-                        className:'xuifont xui-uicmd-land',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-land',
                         style:'{landDisplay}'
                     },
                     REFRESH:{
-                        className:'xuifont xui-uicmd-refresh',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-refresh',
                         style:'{refreshDisplay}',
                         $order:4
                     },
                     MIN:{
                         $order:5,
-                        className:'xuifont xui-uicmd-min',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-min',
                         style:'{minDisplay}'
                     },
                     RESTORE:{
                         $order:6,
-                        className:'xuifont xui-uicmd-restore',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-restore',
                         style:'display:none;'
                     },
                     MAX:{
                         $order:7,
-                        className:'xuifont xui-uicmd-max',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-max',
                         style:'{maxDisplay}'
                     },
                     CLOSE:{
                         $order:8,
-                        className:'xuifont xui-uicmd-close ',
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-close ',
                         style:'{closeDisplay}'
                     }
                 }

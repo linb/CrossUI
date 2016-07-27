@@ -168,24 +168,26 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         $order:3,
                         tagName:'div',
                         className:'xui-uibar-cmdl',
-                        DATE:{$order:0,style:'{dateDisplay}',className:'xuifont xui-icon-date'},
-                        PRE:{$order:2,className:'xuifont xui-icon-singleleft'},
-                        'ZOOMIN':{$order:3,style:'{zoomDisplay}',className:'xuifont xui-icon-zoomin'},
-                        'ZOOMOUT':{$order:4,style:'{zoomDisplay}',className:'xuifont xui-icon-zoomout'},
-                        NEXT:{$order:5,className:'xuifont xui-icon-singleright'}
+                        DATE:{$order:0,style:'{dateDisplay}',className:'xuifont',$fonticon:'xui-icon-date'},
+                        PRE:{$order:2,className:'xuifont',$fonticon:'xui-icon-singleleft'},
+                        'ZOOMIN':{$order:3,style:'{zoomDisplay}',className:'xuifont',$fonticon:'xui-icon-zoomin'},
+                        'ZOOMOUT':{$order:4,style:'{zoomDisplay}',className:'xuifont',$fonticon:'xui-icon-zoomout'},
+                        NEXT:{$order:5,className:'xuifont',$fonticon:'xui-icon-singleright'}
                     },
                     BARCMDR:{
                         $order:4,
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         OPT:{
-                            className:'xuifont xui-uicmd-opt',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:0
                         },
                         CLOSE:{
                             $order:4,
-                            className:'xuifont xui-uicmd-close ',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }

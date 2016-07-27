@@ -129,7 +129,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
         },'all');
         t.FRAME.ERROR = {
-            className:'xuifont xui-icon-error'
+            className:'xuifont',
+            $fonticon:'xui-icon-error'
         };
         this.setTemplate(t)
     },
@@ -187,6 +188,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                "background-image":xui.browser.ie?'url(.)':null,
                border:0,
                margin:0,
+               // default
+               'text-align':'left',
 
                'margin-top':xui.browser.ie?'-1px':null,
                position:'relative',

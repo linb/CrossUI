@@ -80,12 +80,14 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdl',
                         PRE2:{
                             $order:0,
-                            className:'xuifont xui-icon-doubleleft',
+                            className:'xuifont',
+                            $fonticon:'xui-icon-doubleleft',
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
-                            className:'xuifont xui-icon-singleleft',
+                            className:'xuifont',
+                            $fonticon:'xui-icon-singleleft',
                             tabindex: '{tabindex}'
                         },
                         YEAR:{
@@ -104,12 +106,14 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         },
                         NEXT:{
                             $order:7,
-                            className:'xuifont xui-icon-singleright',
+                            className:'xuifont',
+                            $fonticon:'xui-icon-singleright',
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:8,
-                            className:'xuifont xui-icon-doubleright',
+                            className:'xuifont',
+                            $fonticon:'xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     },
@@ -118,7 +122,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xuifont xui-uicmd-close ',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -161,12 +166,14 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                             tagName:'div',
                             TPRE2:{
                                 $order:0,
-                                className:'xuifont xui-icon-doubleleft',
+                                className:'xuifont',
+                                $fonticon:'xui-icon-doubleleft',
                                 tabindex: '{tabindex}'
                             },
                             TPRE:{
                                 $order:1,
-                                className:'xuifont xui-icon-singleleft',
+                                className:'xuifont',
+                                $fonticon:'xui-icon-singleleft',
                                 tabindex: '{tabindex}'
                             },
                             HOUR:{
@@ -180,18 +187,21 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                             },
                             TNEXT:{
                                 $order:6,
-                                className:'xuifont xui-icon-singleright',
+                                className:'xuifont',
+                                $fonticon:'xui-icon-singleright',
                                 tabindex: '{tabindex}'
                             },
                             TNEXT2:{
                                 $order:7,
-                                className:'xuifont xui-icon-doubleright',
+                                className:'xuifont',
+                                $fonticon:'xui-icon-doubleright',
                                 tabindex: '{tabindex}'
                             }
                         },
                         TODAY:{
                              tabindex: '{tabindex}',
-                             className:'xuifont xui-icon-date',
+                             className:'xuifont',
+                            $fonticon:'xui-icon-date',
                              title:"{_todaytitle}"
                         },
                         SET:{

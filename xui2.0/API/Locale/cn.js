@@ -10729,6 +10729,16 @@ _.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            onClick:{
+                $desc:"在单击按钮的时候触发该事件.",
+                $paras:[
+                    $profile,
+                    "e: Event, 事件对象.",
+                    "src: String, 事件所属DOM元素的xid.",
+                    "btn: String, 点击的按钮",
+                    "value: String, 界面值"
+                ]
+            },
             onLabelClick:{
                 $desc:"在单击标签的时候触发该事件.",
                 $paras:[

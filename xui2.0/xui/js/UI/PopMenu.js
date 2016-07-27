@@ -223,10 +223,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-outset",
              TOP:{
-                className:'xuifont xui-icon-circleup'
+                className:'xuifont',
+                $fonticon:'xui-icon-circleup'
              },
              BOTTOM:{
-                className:'xuifont xui-icon-circledown'
+                className:'xuifont',
+                $fonticon:'xui-icon-circledown'
              },
              BOX:{
                 tagName:'div',
@@ -285,7 +287,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         $order:2
                     },
                     SUB:{
-                        className:'xuifont xui-icon-singleright',
+                        className:'xuifont',
+                        $fonticon:'xui-icon-singleright',
                         style:'{displaySub}'
                     }
                 }
@@ -297,7 +300,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
-                         className:'xuifont {checkboxCls}'
+                         className:'xuifont',
+                        $fonticon:'{_fi_checkboxCls1} {_fi_checkboxCls2}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -322,7 +326,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
-                         className:'xuifont {radioboxCls}'
+                        className:'xuifont',
+                        $fonticon:'{_fi_radioboxCls1} {_fi_radioboxCls2} '
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -789,10 +794,14 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             item._itemDisplay=item.hidden?none:'';
 
             item.type=item.type||'button';
-            if(item.type=='checkbox')
-                item.checkboxCls = 'xui-uicmd-check ' + (item.value?'xui-uicmd-check-checked xuicon-checked':'');
-            else if(item.type=='radiobox')
-                item.radioboxCls = 'xui-uicmd-radio ' + (item.value?'xui-uicmd-radio-checked xuicon-checked':'');
+            if(item.type=='checkbox'){
+                item._fi_checkboxCls1 = 'xui-uicmd-check';
+                item._fi_checkboxCls2 = item.value?'xuicon-checked xui-uicmd-check-checked':'';
+            }
+            else if(item.type=='radiobox'){
+                item._fi_radioboxCls1 = 'xui-uicmd-radio';
+                item._fi_radioboxCls2 = item.value?'xuicon-checked xui-uicmd-radio-checked':'';
+            }
         },
         _onresize:null
     }

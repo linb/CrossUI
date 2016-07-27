@@ -12,7 +12,8 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,
-                        className:'xuifont {_markcls}'
+                        className:'xuifont',
+                        $fonticon:'{_fi_markcls}'
                     },
                     ICON:{
                         $order:1,
@@ -42,8 +43,9 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                overflow:'hidden',
                'vertical-align':'middle'
             },
+            // to cover LIST's
             'ITEM-checked':{
-                
+                padding:'4px'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
@@ -81,7 +83,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             onCmd:null
         },
         _prepareItem:function(profile, item){
-            item._markcls = profile.properties.checkBox?'xui-uicmd-check':'xui-uicmd-radio';
+            item._fi_markcls = profile.properties.checkBox?'xui-uicmd-check':'xui-uicmd-radio';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
         }
     }

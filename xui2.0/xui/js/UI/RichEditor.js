@@ -241,18 +241,18 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         $cmds:{
             //font style
             font1:[
-                 {id:'bold',command:'Bold',statusButton:true,imageClass:'xuifont xui-icon-bold'},
-                 {id:'italic',command:'Italic',statusButton:true,imageClass:"xuifont xui-icon-italic"},
-                 {id:'underline',command:'Underline',statusButton:true,imageClass:"xuifont xui-icon-underline"},
-                 {id:'strikethrough',command:'strikeThrough',statusButton:true,imageClass:"xuifont xui-icon-strikethrough"}
+                 {id:'bold',command:'Bold',statusButton:true,imageClass:'xuifont xui-icon-bold',_fi_:'xui-icon-bold'},
+                 {id:'italic',command:'Italic',statusButton:true,imageClass:'xuifont xui-icon-italic',_fi_:'xui-icon-italic'},
+                 {id:'underline',command:'Underline',statusButton:true,imageClass:'xuifont xui-icon-underline',_fi_:'xui-icon-underline'},
+                 {id:'strikethrough',command:'strikeThrough',statusButton:true,imageClass:'xuifont xui-icon-strikethrough',_fi_:'xui-icon-strikethrough'}
             ],
             font2:[
-                {id:'subscript',command : 'subscript',statusButton:true,imageClass:"xuifont xui-icon-sub"},
-                {id:'superscript',command : 'superscript',statusButton:true,imageClass:"xuifont xui-icon-super"}
+                {id:'subscript',command : 'subscript',statusButton:true,imageClass:"xuifont xui-icon-sub",_fi_:'xui-icon-sub'},
+                {id:'superscript',command : 'superscript',statusButton:true,imageClass:"xuifont xui-icon-super",_fi_:'xui-icon-super'}
             ],
             font3:[
-                {id:'forecolor',command:'custom',imageClass:"xuifont xui-icon-forecolor"},
-                {id:'bgcolor',command:'custom',imageClass:"xuifont xui-icon-bgcolor"}
+                {id:'forecolor',command:'custom',imageClass:"xuifont xui-icon-forecolor",_fi_:'xui-icon-forecolor'},
+                {id:'bgcolor',command:'custom',imageClass:"xuifont xui-icon-bgcolor",_fi_:'xui-icon-bgcolor'}
             ],
             font4:[
                 {id:'fontsize',command:'custom',caption:'$editor.fontsize',dropButton:true},
@@ -260,28 +260,28 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 {id:'formatblock',command:'custom',caption:'$editor.formatblock',dropButton:true}
             ],
             align:[
-                {id:'left',command:'justifyleft',imageClass:"xuifont xui-icon-alignleft"},
-                {id:'center',command:'justifycenter',imageClass:"xuifont xui-icon-aligncenter"},
-                {id:'right',command:'justifyright',imageClass:"xuifont xui-icon-alignright"},
-                {id :'justify', command : 'justifyfull',imageClass:"xuifont xui-icon-alignjustify"}
+                {id:'left',command:'justifyleft',imageClass:"xuifont xui-icon-alignleft",_fi_:'xui-icon-alignleft'},
+                {id:'center',command:'justifycenter',imageClass:"xuifont xui-icon-aligncenter",_fi_:'xui-icon-aligncenter'},
+                {id:'right',command:'justifyright',imageClass:"xuifont xui-icon-alignright",_fi_:'xui-icon-alignright'},
+                {id :'justify', command : 'justifyfull',imageClass:"xuifont xui-icon-alignjustify",_fi_:'xui-icon-alignjustify'}
             ],
             list:[
-                {id:'indent', command:'indent',imageClass:"xuifont xui-icon-indent"},
-                {id:'outdent',command:'outdent',imageClass:"xuifont xui-icon-outdent"},
-                {id:'ol',command:'insertorderedlist',imageClass:"xuifont xui-icon-number"},
-                {id:'ul',command:'insertunorderedlist',imageClass:"xuifont xui-icon-bullet"}
+                {id:'indent', command:'indent',imageClass:"xuifont xui-icon-indent",_fi_:'xui-icon-indent'},
+                {id:'outdent',command:'outdent',imageClass:"xuifont xui-icon-outdent",_fi_:'xui-icon-outdent'},
+                {id:'ol',command:'insertorderedlist',imageClass:"xuifont xui-icon-number",_fi_:'xui-icon-number'},
+                {id:'ul',command:'insertunorderedlist',imageClass:"xuifont xui-icon-bullet",_fi_:'xui-icon-bullet'}
             ],
             insert:[
-                {id:'hr',command:'insertHorizontalRule',imageClass:"xuifont xui-icon-inserthr"},
-                {id:'insertimage',command:'custom',imageClass:"xuifont xui-icon-picture"},
-                {id:'createlink',command:'custom',imageClass:"xuifont xui-icon-link"},
-                {id:'unlink',command:'unlink',imageClass:"xuifont xui-icon-breaklink"}
+                {id:'hr',command:'insertHorizontalRule',imageClass:"xuifont xui-icon-inserthr",_fi_:'xui-icon-inserthr'},
+                {id:'insertimage',command:'custom',imageClass:"xuifont xui-icon-picture",_fi_:'xui-icon-picture'},
+                {id:'createlink',command:'custom',imageClass:"xuifont xui-icon-link",_fi_:'xui-icon-link'},
+                {id:'unlink',command:'unlink',imageClass:"xuifont xui-icon-breaklink",_fi_:'xui-icon-breaklink'}
             ],
             clear:[
-                {id:'removeformat',command:'removeformat',imageClass:"xuifont xui-icon-formatclear"}
+                {id:'removeformat',command:'removeformat',imageClass:"xuifont xui-icon-formatclear",_fi_:'xui-icon-formatclear'}
             ],
             html:[
-                {id:'html',command:'custom', imageClass:"xuifont xui-icon-html"}
+                {id:'html',command:'custom', imageClass:"xuifont xui-icon-html",_fi_:'xui-icon-html'}
             ]
         },
         _prepareData:function(profile){

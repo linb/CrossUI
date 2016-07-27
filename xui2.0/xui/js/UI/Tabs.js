@@ -390,16 +390,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             $order:2,
                                             OPT:{
                                                 $order:1,
-                                                className:'xuifont xui-uicmd-opt',
+                                                className:'xuifont',
+                                                $fonticon:'xui-uicmd-opt',
                                                 style:'{_opt}'
                                             },
                                             POP:{
-                                                className:'xuifont xui-uicmd-pop',
+                                                className:'xuifont',
+                                                $fonticon:'xui-uicmd-pop',
                                                 style:'{popDisplay}',
                                                 $order:1
                                             },
                                             CLOSE:{
-                                                className:'xuifont xui-uicmd-close ',
+                                                className:'xuifont',
+                                                $fonticon:'xui-uicmd-close ',
                                                 style:'{closeDisplay}',
                                                 $order:2
                                             }

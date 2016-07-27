@@ -1608,7 +1608,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     },
                                                     HFMARK:{
                                                         $order:2,
-                                                        className:"xuifont xui-uicmd-check",
+                                                        className:"xuifont",
+                                                        $fonticon:"xui-uicmd-check",
                                                         style:'{_rowMarkDisplay}'
                                                     },
                                                     GRIDCAPTION:{
@@ -1616,7 +1617,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         text:'{gridHandlerCaption}'
                                                     },
                                                     SORT:{
-                                                        className:'xuifont xui-icon-sort',
+                                                        className:'xuifont',
+                                                        $fonticon:'xui-icon-sort',
                                                         style:'{sortDisplay}'
                                                     }
                                                 }
@@ -1768,7 +1770,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     text:'&#9660'
                 },
                 ARROW:{
-                    className:'xuifont xui-icon-bigup',
+                    className:'xuifont',
+                    $fonticon:'xui-icon-bigup',
                     text:'&nbsp;'
                 }
             },
@@ -1802,7 +1805,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{caption}"
                             },
                             SORT:{
-                                className:'xuifont xui-icon-sort',
+                                className:'xuifont',
+                                $fonticon:'xui-icon-sort',
                                 style:'{sortDisplay}'
                             },
                             HHANDLER : {
@@ -1953,7 +1957,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             MARK:{
                                 $order:2,
-                                className:'xuifont xui-uicmd-check',
+                                className:'xuifont',
+                                $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -1995,7 +2000,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             className:'xui-v-wrapper {cellClass}{firstCellClass}',
                             MARK:{
                                 $order:2,
-                                className:'xuifont xui-uicmd-check',
+                                className:'xuifont',
+                                $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
                             ROWNUM:{
@@ -2148,7 +2154,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
-                                className:'xuifont xui-uicmd-check {checkboxCls}'
+                                className:'xuifont xui-uicmd-check',
+                                $fonticon:'{_fi_checkboxCls}'
                             }
                         }
                     }
@@ -5036,8 +5043,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     caption=cell.value+'';
                     if(node)
                         node.tagClass('-checked', cell.value);
-                    else
-                        uicell.checkboxCls = 'xui-uicmd-check-' + (cell.value?'checked':'');
+                    else{
+                        uicell._fi_checkboxCls = cell.value?'xuifont-checked xui-uicmd-check-checked':'';
+                     }
                 break;
                 case 'progress':
                     cell.value=parseFloat(cell.value)||0;

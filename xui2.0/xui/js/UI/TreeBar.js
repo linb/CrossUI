@@ -246,7 +246,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             TOGGLE:{
                                 $order:4,
-                                className:'xuifont {togglemark}'
+                                className:'xuifont',
+                                $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
                                 $order:3,
@@ -256,7 +257,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             MARK:{
                                 $order:5,
-                                className:'xuifont xui-uicmd-check',
+                                className:'xuifont',
+                                $fonticon:'xui-uicmd-check',
                                 style:'{mark2Display}'
                             },
                             ITEMICON:{
@@ -275,7 +277,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             OPT:{
                                 $order:9,
-                                className:'xuifont xui-uicmd-opt'
+                                className:'xuifont',
+                                $fonticon:'xui-uicmd-opt'
                             },
                             RTAGCMDS:{
                                 $order:10,
@@ -806,7 +809,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem._pid=pid;
 
             // set 'visible' will show when parent call .height()
-            item.togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+            item._fi_togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';

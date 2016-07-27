@@ -230,10 +230,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
 
-                if(type=='upload'||type=='file'||type=='none'||type=='input'||type=='password'||type=='spin'||type=='currency'||type=='number')return;
+                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
+
                 //open already
                 if(profile.$poplink)return;
-
                 var o,v,
                     box = profile.boxing(),
                     main = profile.getRoot(),
@@ -475,7 +475,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"{_commandCls} {btncls} xuifont"
+                    className:"xuifont {btncls}",
+                    $fonticon:'{_fi_commandCls}'
                 }
             }
         },'all');
@@ -502,7 +503,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             delete profile.$fromEditor;
             delete profile.$typeOK;
 
-            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox'||type=='cmd')
+            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox'||type=='button'||type=='dropbutton')
                 profile.$inputReadonly=true;
 
             if(type=='upload'||type=='file')
@@ -669,24 +670,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 'text-align':'right'
             },
-            'KEY-type-file INPUT, KEY-type-cmd INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
+            'KEY-type-file INPUT, KEY-type-button INPUT, KEY-type-dropbutton INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
                 $order:4,
                 cursor:'pointer',
                 'text-align':'left',
                 overflow:'hidden'
             },
-            'KEY-type-file BOX, KEY-type-cmd BOX, KEY-type-cmdbox BOX, KEY-type-listbox BOX':{
-                $order:4,
-                background_1: "linear-gradient(top,  #FFF 50%,  #EEE)",
-                background_2: "-webkit-gradient(linear, 0% 50%, 0% 100%, from(#FFF), to(#EEE))",
-                background_3: "-webkit-linear-gradient(top,  #FFF 50%,  #EEE)",           
-                background_4: "-moz-linear-gradient(top,  #FFF 50%,  #EEE)",
-                background_5: "-o-linear-gradient(top,  #FFF 50%,  #EEE)",
-                background_6: "-ms-linear-gradient(top,  #FFF 50%,  #EEE)",
-
-                // for IE6789
-                "-ms-filter": (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EEEEEE', GradientType=0)":null
+            'KEY-type-button INPUT, KEY-type-dropbutton INPUT':{
+                $order:5,
+                'text-align':'center'
             },
             'RBTN,SBTN,BTN':{
                 display:'block',
@@ -761,8 +753,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
 
-                    if(prop.type=='popbox' || prop.type=='getter'){
-                        if(profile.onClick && false===profile.boxing().onClick(profile, e, src, prop.$UIvalue))
+                    if(prop.type=='popbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
+                        if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
                     }
 
@@ -781,9 +773,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             BOX:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
-                    if(prop.type=='cmdbox'||prop.type=='cmd'){
+                    if(prop.type=='cmdbox'||prop.type=='button'||prop.type=='dropbutton'){
                         if(profile.onClick)
-                            profile.boxing().onClick(profile, e, src, prop.$UIvalue);
+                            profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
                     //DOM node's readOnly
                     }else if(prop.inputReadonly || profile.$inputReadonly){
                         if(prop.disabled || prop.readonly)return;
@@ -1024,7 +1016,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             beforePopShow:function(profile, popCtl){},
             afterPopShow:function(profile, popCtl){},
             afterPopHide:function(profile, popCtl, type){},
-            onClick:function(profile, e, src, value){}
+            onClick:function(profile, e, src, btn, value){}
         },
         DataModel:{
             cachePopWnd:true,
@@ -1100,7 +1092,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             type:{
                 ini:'combobox',
-                listbox:_.toArr('none,input,password,combobox,listbox,file,getter,helpinput,cmd,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
+                listbox:_.toArr('none,input,password,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
                 set:function(value){
                     var pro=this;
                     pro.properties.type=value;
@@ -1123,11 +1115,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ini:false,
                 action: function(v){
                     var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-disabled";
+                         cls="xui-ui-disabled",
+                        type=(""+i.get(0).type);
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
-                    if((""+i.get(0).type).toLowerCase()!='cmd'){
+                    if(type!='button'&&type!='dropbutton'){
                         if(!v && (this.properties.readonly||this.$inputReadonly))
                             v=true;
                         // use 'readonly'(not 'disabled') for selection
@@ -1234,7 +1227,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 case "number":
                 case "currency":
                 break;
-                case 'cmd':
+                case 'button':
                     t.BOX.WRAP.INPUT.type='button';
                 break;
                 case 'password':
@@ -1250,18 +1243,21 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'button',
                             className:'xui-ui-btn',
                             R1B:{
-                                className:'xuifont xui-icon-smallup'
+                                className:'xuifont',
+                                $fonticon:'xui-icon-smallup'
                             }
                         },
                         R2:{
                             tagName:'button',
                             className:'xui-ui-btn',
                             R2B:{
-                                className:'xuifont xui-icon-smalldown'
+                                className:'xuifont',
+                                $fonticon:'xui-icon-smalldown'
                             }
                         }
                     };
                 break;
+
                 // following have BTN button
                 case 'upload':
                 case 'file':
@@ -1275,6 +1271,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     };
                 case 'listbox':
                 case 'cmdbox':
+                case 'dropbutton':
                     t.BOX.WRAP.INPUT.type='button';
                 default:
                     t.BTN={
@@ -1283,11 +1280,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuifont {_btnClass}',
+                            className:'xuifont',
+                            $fonticon:'{_fi_btnClass}',
                             style:'{_btnStyle}'
                         }
                     };
                 }
+                if(properties.type=='button'||properties.type=='dropbutton'){
+                    t.BOX.WRAP.INPUT.className+=' xui-ui-btn';
+                }
+
                 if(properties.multiLines){
                     switch(properties.type){
                     case 'none':
@@ -1318,15 +1320,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
-            tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox')?'arrowdrop':tt;
+            tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':tt;
 
-            data._btnClass = "xui-uicmd-" + tt;
+            data._fi_btnClass = "xui-uicmd-" + tt;
             if(data.btnImage)
                 data._btnStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
             data._type="text";
 
             data._saveDisplay = data.commandBtn!='none'?'':'display:none';
-            data._commandCls = "xui-uicmd-" + data.commandBtn;
+            data._fi_commandCls = "xui-uicmd-" + data.commandBtn;
 
             data._popbtnDisplay = (data.type!='none'&&data.type!='input'&&data.type!='password')?'':'display:none';
             data.typecls=profile.getClass('KEY','-type-'+(
@@ -1402,7 +1404,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelPos=t.labelPos || 'left',
                 px='px',
                 commandbtn=f(t.commandBtn!='none'?'SBTN':null),
-                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='cmd')?null:'BTN'),
+                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='button')?null:'BTN'),
                 ww=width,
                 hh=height,
                 bw1=0,

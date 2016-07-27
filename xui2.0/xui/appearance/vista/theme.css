@@ -1,3 +1,11 @@
+/*base size*/
+.xui-node{
+		font-size: 12px;
+}
+.xuifont, .xuicon{
+		font-size: 16px;
+}
+
 /*background [[[colors]]]*/
 html, .xui-uibg-base{
     background-color:#FCFCFC;

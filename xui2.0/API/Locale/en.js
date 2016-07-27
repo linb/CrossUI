@@ -10809,6 +10809,16 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            onClick:{
+                $desc:"Fired when user click the button.",
+                $paras:[
+                    $profile,
+                    "e: Event, DOM event Object.",
+                    "src : String, the event source DOM element's xid.",
+                    "btn: String, the button",
+                    "value: String, the value"
+                ]
+            },
             onLabelClick:{
                 $desc:"Fired when user click the label.",
                 $paras:[

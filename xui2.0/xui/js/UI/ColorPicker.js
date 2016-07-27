@@ -107,7 +107,8 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
-                            className:'xuifont xui-uicmd-close ',
+                            className:'xuifont',
+                            $fonticon:'xui-uicmd-close ',
                             style:'{closeDisplay}'
                         }
                     }
@@ -200,7 +201,8 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         },
                         TOGGLE:{
                             $order:2,
-                            className:'xuifont xui-icon-doubleright',
+                            className:'xuifont',
+                            $fonticon:'xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     }
@@ -259,13 +261,15 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             advance:{
                 ini:false,
                 action:function(v){
-                    var ns=this;
+                    var ns=this,
+                        tg=ns.getSubNode('TOGGLE');
                     ns.getSubNode('ADV').css('display',v?'':'none');
-                    if(v)
-                        ns.getSubNode('TOGGLE').removeClass('xui-icon-doubleright').addClass('xui-icon-doubleleft');
-                    else
-                        ns.getSubNode('TOGGLE').removeClass('xui-icon-doubleleft').addClass('xui-icon-doubleright');
-
+                    if(xui.__iefix2){
+                        tg.html(xui.__iefix2[v?'xui-icon-doubleleft':'xui-icon-doubleright']);
+                    }else{
+                        if(v) tg.removeClass('xui-icon-doubleright').addClass('xui-icon-doubleleft');
+                        else tg.removeClass('xui-icon-doubleleft').addClass('xui-icon-doubleright');
+                    }
                     ns.getRoot().width(v?410:210);
                     if(v)
                         ns.box._updateMarks(ns,ns.properties.$UIvalue,true, ns.$hsv[0])
@@ -769,9 +773,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 b=p.boxing(),
                 ex=b.getSubNode('EXAMI'),
                 hsv=cls.rgb2hsv(rgb),
-                vv=xui.getRes('color.LIST.'+v);
-            ex.css({backgroundColor:'#'+v, color:hsv[2]>0.6?'#000':'#FFF'});
-            ex.text(p.show_color=vv==v?'#'+v:vv);
+                vv=xui.getRes('color.LIST.'+v),
+                v1=(v=='transparent'?'':'#')+v;
+            ex.css({backgroundColor: v1, color:hsv[2]>0.6?'#000':'#FFF'});
+            ex.text(p.show_color = vv==v? v1 : vv);
         },
         //reset example block
         _updateDftTip:function(p){

@@ -78,7 +78,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             tagName:'div',
                             TOGGLE:{
                                 $order:0,
-                                className:'xuifont xui-uicmd-toggle {_tlgchecked}'
+                                className:'xuifont',
+                                $fonticon:'{_fi_tlg}'
                             },
                             LTAGCMDS:{
                                 $order:2,
@@ -335,7 +336,9 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
 
             if(item._show){
                 item._checked = profile.getClass('ITEM','-checked');
-                item._tlgchecked = 'xuicon-checked xui-uicmd-toggle-checked';
+                item._fi_tlg = 'xuifont-checked xui-uicmd-toggle xui-uicmd-toggle-checked';
+            }else{
+                item._fi_tlg = 'xui-uicmd-toggle';
             }
             
             this._prepareCmds(profile, item);

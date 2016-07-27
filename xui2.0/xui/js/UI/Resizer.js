@@ -551,10 +551,10 @@ Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE: {tagName:'div', className:'xuifont xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
-                CONF1:{tagName:'div', className:'xuifont xui-icon-star', style:'top:0px;left:-1em;{_leftCofigBtn};'},
-                CONF2:{tagName:'div', className:'xuifont xui-icon-dropdown', style:'top:0px;left:auto;right:-1em;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', className:'xuifont xui-icon-circle', style:'top:-1.2em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
+                MOVE: {tagName:'div', className:'xuifont',$fonticon:'xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
+                CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'top:0px;left:-1em;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-dropdown', style:'top:0px;left:auto;right:-1em;{_rightCofigBtn};'},
+                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'top:-1.2em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
                 R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
