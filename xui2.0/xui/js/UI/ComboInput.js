@@ -684,7 +684,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 display:'block',
                 'z-index':'1',
                 cursor:'pointer',
-                width:'16px',
+                width:'18px',
                 height:'20px',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
@@ -700,7 +700,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 cursor:'pointer',
-                width:'16px',
+                width:'18px',
                 position:'absolute',
                 height:'50%'
             },
@@ -712,7 +712,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'R1B,R2B':{
                 cursor:'pointer',
-                width:'16px',
+                width:'18px',
                 position:'absolute',
                 left:0,
                 top:'50%',
@@ -1393,7 +1393,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $vborder=1,
                 toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
-                roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight');
+                roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight'),
+                btnw=xui.UI.$getCSSValue('xui-comboinput-btn','width');
+
             if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
@@ -1413,8 +1415,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top=Math.max(0, (t.$b_tw||0)-$vborder);
             if(null!==ww){
                 ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
-                bw1=(commandbtn?16:0);
-                bw2=(functionbtn?16:0);
+                bw1=(commandbtn?btnw:0);
+                bw2=(functionbtn?btnw:0);
 //                bw1=(commandbtn?commandbtn.offsetWidth:0);
 //                bw2=(functionbtn?functionbtn.offsetWidth:0);
                 ww -= (bw1+bw2);
