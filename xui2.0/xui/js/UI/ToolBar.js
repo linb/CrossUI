@@ -142,6 +142,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         className:'{groupClass}',
                         style:'{grpDisplay} {groupStyle}',
                         HANDLER:{
+                            className:'xuifont',
+                            $fonticon:'xui-icon-empty',
                             style:'{mode2}'
                         },
                         LIST:{
@@ -229,10 +231,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':xui.__iefix1
             },
             HANDLER:{
-                height:'22px',
+                height:'100%',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
-                'background-position':'left top',
+                background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },

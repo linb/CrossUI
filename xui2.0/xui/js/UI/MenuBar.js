@@ -121,6 +121,8 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 LIST:{
                     tagName:'div',
                     HANDLER:{
+                        className:'xuifont',
+                        $fonticon:'xui-icon-empty',
                         style:'{handler}'
                     },
                     ITEMS:{
@@ -179,10 +181,9 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'line-height':xui.__iefix1
             },
             HANDLER:{
-                height:'22px',
+                height:'100%',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
-                'background-position':'left top',
+                background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
@@ -196,7 +197,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'background-color':'#E4E4E4'
             },
             ITEM:{
-                height:'22px',
                 'white-space': 'nowrap',
                 'vertical-align':'top',
                 overflow:'hidden',
@@ -209,12 +209,10 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 cursor:'pointer'
             },
             ITEMI:{
-                height:'22px',
                 'padding-left':'6px',
                 'vertical-align':'top'
             },
             ITEMC:{
-                height:'22px',
                 'padding-top':'3px',
                 'vertical-align':'top'
             },

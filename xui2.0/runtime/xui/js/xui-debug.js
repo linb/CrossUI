@@ -9794,14 +9794,14 @@ Class('xui.Dom','xui.absBox',{
             var r= isAdd ? self.replaceClass(r2, '$1 $1' + tag) : self;
 
             //fix for ie67
-            if(xui.__iefix2 && tag=="-checked"){
+            if(xui.__iefix2 && (tag=="-checked"||tag=="-fold"||tag=="-expand")){
                 this.each(function(n){
                     var arr = xui.Dom._getClass(n).split(/\s+/);
                     if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
                         _.arr.each(arr,function(s){
                             //It has 'xxxx' and 'xxxx-checked'
-                            if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(/-checked$/,''):s] ){
-                                xui(n).html(xui.__iefix2[s.replace(/-checked$/,'')+(isAdd?tag:'')]);
+                            if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(new RegExp(tag+'$'),''):s] ){
+                                xui(n).html(xui.__iefix2[s.replace(new RegExp(tag+'$'),'')+(isAdd?tag:'')]);
                                 return false;
                             }
                         });
@@ -29742,7 +29742,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 display:'block',
                 'z-index':'1',
                 cursor:'pointer',
-                width:'16px',
+                width:'18px',
                 height:'20px',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
@@ -29758,7 +29758,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 cursor:'pointer',
-                width:'16px',
+                width:'18px',
                 position:'absolute',
                 height:'50%'
             },
@@ -29770,7 +29770,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'R1B,R2B':{
                 cursor:'pointer',
-                width:'16px',
+                width:'18px',
                 position:'absolute',
                 left:0,
                 top:'50%',
@@ -30451,7 +30451,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $vborder=1,
                 toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
-                roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight');
+                roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight'),
+                btnw=xui.UI.$getCSSValue('xui-comboinput-btn','width');
+
             if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
@@ -30471,8 +30473,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top=Math.max(0, (t.$b_tw||0)-$vborder);
             if(null!==ww){
                 ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
-                bw1=(commandbtn?16:0);
-                bw2=(functionbtn?16:0);
+                bw1=(commandbtn?btnw:0);
+                bw2=(functionbtn?btnw:0);
 //                bw1=(commandbtn?commandbtn.offsetWidth:0);
 //                bw2=(functionbtn?functionbtn.offsetWidth:0);
                 ww -= (bw1+bw2);
@@ -39036,6 +39038,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 LIST:{
                     tagName:'div',
                     HANDLER:{
+                        className:'xuifont',
+                        $fonticon:'xui-icon-empty',
                         style:'{handler}'
                     },
                     ITEMS:{
@@ -39094,10 +39098,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'line-height':xui.__iefix1
             },
             HANDLER:{
-                height:'22px',
+                height:'100%',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
-                'background-position':'left top',
+                background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
@@ -39111,7 +39114,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'background-color':'#E4E4E4'
             },
             ITEM:{
-                height:'22px',
                 'white-space': 'nowrap',
                 'vertical-align':'top',
                 overflow:'hidden',
@@ -39124,12 +39126,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer'
             },
             ITEMI:{
-                height:'22px',
                 'padding-left':'6px',
                 'vertical-align':'top'
             },
             ITEMC:{
-                height:'22px',
                 'padding-top':'3px',
                 'vertical-align':'top'
             },
@@ -39447,6 +39447,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         className:'{groupClass}',
                         style:'{grpDisplay} {groupStyle}',
                         HANDLER:{
+                            className:'xuifont',
+                            $fonticon:'xui-icon-empty',
                             style:'{mode2}'
                         },
                         LIST:{
@@ -39534,10 +39536,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':xui.__iefix1
             },
             HANDLER:{
-                height:'22px',
+                height:'100%',
                 width:'7px',
-                'background-image': xui.ini.img_handler,
-                'background-position':'left top',
+                background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
