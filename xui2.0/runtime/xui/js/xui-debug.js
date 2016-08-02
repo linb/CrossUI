@@ -8446,7 +8446,7 @@ Class('xui.Event',null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node{margin:0;padding:0;font-size:12px;line-height:1.22em;-webkit-text-size-adjust:none;}"+
+            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;} .xui-nodesmall{font-size:12px;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
@@ -9797,7 +9797,7 @@ Class('xui.Dom','xui.absBox',{
             if(xui.__iefix2 && (tag=="-checked"||tag=="-fold"||tag=="-expand")){
                 this.each(function(n){
                     var arr = xui.Dom._getClass(n).split(/\s+/);
-                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
+                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuifontsmall')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
                         _.arr.each(arr,function(s){
                             //It has 'xxxx' and 'xxxx-checked'
                             if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(new RegExp(tag+'$'),''):s] ){
@@ -26405,13 +26405,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
-                    className:'xuifont',
+                    className:'xuifontsmall',
                     $fonticon:'{_fi_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
-                    className:'xuifont',
+                    className:'xuifontsmall',
                     $fonticon:'{_fi_incls}',
                     tabindex:'{tabindex}'
                 }
@@ -29532,7 +29532,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"xuifont {btncls}",
+                    className:"xuifontsmall {btncls}",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
@@ -30300,7 +30300,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'button',
                             className:'xui-ui-btn',
                             R1B:{
-                                className:'xuifont',
+                                className:'xuifontsmall',
                                 $fonticon:'xui-icon-smallup'
                             }
                         },
@@ -30308,7 +30308,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'button',
                             className:'xui-ui-btn',
                             R2B:{
-                                className:'xuifont',
+                                className:'xuifontsmall',
                                 $fonticon:'xui-icon-smalldown'
                             }
                         }
@@ -30337,7 +30337,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuifont',
+                            className:'xuifontsmall',
                             $fonticon:'{_fi_btnClass}',
                             style:'{_btnStyle}'
                         }
@@ -38439,7 +38439,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.checkbox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '{itemClass} {disabled}',
+                    className: '  xui-uibarbg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
@@ -38465,7 +38465,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.radiobox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '{itemClass} {disabled}',
+                    className: '  xui-uibarbg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
@@ -38918,8 +38918,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     o=xui([o]);
                     p2=o.offset();
                     size=o.cssSize();
-                    if(p1.left>p2.left && p1.top>p2.top && p1.left<p2.left+size.width && p1.top<p2.top+size.height)
-                        return b=1;
+                    if(p1.left>=p2.left && p1.top>=p2.top && p1.left<=p2.left+size.width && p1.top<=p2.top+size.height){
+                        b=1;return false;
+                    }
                 });
                 if(!b){
                     while(b=profile.$parentPopMenu)profile=b;
@@ -39984,7 +39985,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifont {cls3}',
+                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifontsmall {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{

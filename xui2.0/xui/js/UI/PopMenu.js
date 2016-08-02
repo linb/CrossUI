@@ -296,7 +296,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.checkbox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '{itemClass} {disabled}',
+                    className: '  xui-uibarbg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
@@ -322,7 +322,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.radiobox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '{itemClass} {disabled}',
+                    className: '  xui-uibarbg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
@@ -775,8 +775,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     o=xui([o]);
                     p2=o.offset();
                     size=o.cssSize();
-                    if(p1.left>p2.left && p1.top>p2.top && p1.left<p2.left+size.width && p1.top<p2.top+size.height)
-                        return b=1;
+                    if(p1.left>=p2.left && p1.top>=p2.top && p1.left<=p2.left+size.width && p1.top<=p2.top+size.height){
+                        b=1;return false;
+                    }
                 });
                 if(!b){
                     while(b=profile.$parentPopMenu)profile=b;

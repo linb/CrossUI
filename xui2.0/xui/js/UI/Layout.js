@@ -207,7 +207,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifont {cls3}',
+                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifontsmall {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{

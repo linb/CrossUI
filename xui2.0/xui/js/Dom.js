@@ -1289,7 +1289,7 @@ Class('xui.Dom','xui.absBox',{
             if(xui.__iefix2 && (tag=="-checked"||tag=="-fold"||tag=="-expand")){
                 this.each(function(n){
                     var arr = xui.Dom._getClass(n).split(/\s+/);
-                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
+                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuifontsmall')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
                         _.arr.each(arr,function(s){
                             //It has 'xxxx' and 'xxxx-checked'
                             if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(new RegExp(tag+'$'),''):s] ){

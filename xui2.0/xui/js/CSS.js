@@ -357,7 +357,7 @@ Class("xui.CSS", null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node{margin:0;padding:0;font-size:12px;line-height:1.22em;-webkit-text-size-adjust:none;}"+
+            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;} .xui-nodesmall{font-size:12px;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
