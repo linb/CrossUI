@@ -28,7 +28,7 @@ Class("xui.UI.Image", "xui.UI",{
             },
             onLoad:function(profile, e, src){
                 var img=xui.use(src).get(0),path=img.src;
-                if(path!=xui.ini.img_bg2){
+                if(path!=xui.ini.img_bg){
                     var i=new Image();
                     i.onload=function(){
                         if(!profile||profile.isDestroyed)return;

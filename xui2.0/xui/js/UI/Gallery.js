@@ -3,6 +3,14 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         getStatus:function(id){
             var item=this.get(0).getItemByItemId(id);
             return (item && item._status)||'ini';
+        },
+        _afterInsertItems:function(profile){
+            profile.getSubNodes("IMAGE").each(function(o){
+                if(o.src==xui.ini.img_bg){
+                    o.src=o.title;
+                    o.title=null;
+                }
+            });
         }
     },
     Initialize:function(){
@@ -32,7 +40,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                                     tagName : 'div',
                                     IMAGE:{
                                         tagName : 'img',
-                                        src:'{image}',
+                                        src:xui.ini.img_bg,
+                                        title:'{image}',
                                         width:'{imgWidth}',
                                         height:'{imgHeight}',
                                         style:'{imgStyle}'
@@ -145,17 +154,20 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         Behaviors:{
             IMAGE:{
                 onLoad:function(profile,e,src){
-                    var p=profile.properties,
-                            nn=xui.use(src),
-                          node=nn.get(0),
-                          item=profile.getItemByDom(src);
-                    if(item.autoItemSize||p.autoItemSize){
-                        nn.attr('width','');nn.attr('height','');
+                    var img=xui.use(src).get(0),path=img.src;
+                    if(path!=xui.ini.img_bg){
+                            var p=profile.properties,
+                                    nn=xui.use(src),
+                                  node=nn.get(0),
+                                  item=profile.getItemByDom(src);
+                            if(item.autoItemSize||p.autoItemSize){
+                                nn.attr('width','');nn.attr('height','');
+                            }
+                            xui(node).parent(2).removeClass('xui-busy'); 
+                            nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                            node.style.visibility="visible";
+                            item._status='loaded';
                     }
-                    xui(node).parent(2).removeClass('xui-busy'); 
-                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                    node.style.visibility="visible";
-                    item._status='loaded';
                 },
                 onError:function(profile,e,src){
                     var p=profile.properties,
@@ -245,6 +257,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 item._itemSize='width:'+item.itemWidth+'px;height:'+item.itemHeight+'px;';
             }
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
+        },
+        RenderTrigger:function(){
+            this.boxing()._afterInsertItems(this);
         }
     }
 });
