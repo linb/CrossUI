@@ -238,7 +238,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     CLOSE:{
                         $order:8,
                         className:'xuifont',
-                        $fonticon:'xui-uicmd-close ',
+                        $fonticon:'xui-uicmd-close',
                         style:'{closeDisplay}'
                     }
                 }

@@ -114,7 +114,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         },
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}',
                             $order:4
                         }

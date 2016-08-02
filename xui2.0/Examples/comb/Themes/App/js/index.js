@@ -104,8 +104,7 @@ Class('App', 'xui.Module',{
                 },
                 {
                     "id" : "3",
-                    "caption" : "page 3",
-                    "closeBtn" : true
+                    "caption" : "page 3"
                 },
                 {
                     "id" : "4",
@@ -113,13 +112,11 @@ Class('App', 'xui.Module',{
                 },
                 {
                     "id" : "5",
-                    "caption" : "page 5",
-                    "closeBtn" : true
+                    "caption" : "page 5"
                 },
                 {
                     "id" : "6",
-                    "caption" : "page 6",
-                    "closeBtn" : true
+                    "caption" : "page 6"
                 }])
                 .setValue("1")
             );
@@ -181,7 +178,7 @@ Class('App', 'xui.Module',{
                 .setCaption("Group")
                 .setToggle(false)
                 , "2");
-
+            
             host.xui_ui_group18.append(
                 xui.create("xui.UI.ProgressBar")
                 .setHost(host,"xui_ui_progressbar44")
@@ -204,10 +201,11 @@ Class('App', 'xui.Module',{
             
             host.xui_ui_group19.append(
                 xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button5")
                 .setLeft(20)
                 .setTop(20)
-            );
-
+                );
+            
             host.tabs2.append(
                 xui.create("xui.UI.Group")
                 .setHost(host,"xui_ui_group20")
@@ -494,26 +492,6 @@ Class('App', 'xui.Module',{
                 );
             
             host.tabs2.append(
-                xui.create("xui.UI.Div")
-                .setHost(host,"div11")
-                .setLeft(30)
-                .setTop(10)
-                .setWidth(70)
-                .setHeight(30)
-                .setHtml("div")
-                , "1");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Span")
-                .setHost(host,"xui_ui_span5")
-                .setLeft(80)
-                .setTop(9)
-                .setWidth(26)
-                .setHeight(16)
-                .setHtml("span")
-                , "1");
-            
-            host.tabs2.append(
                 xui.create("xui.UI.Pane")
                 .setHost(host,"pane16")
                 .setDock("top")
@@ -633,7 +611,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.CheckBox({
-                            "alias" : "xui_ui_checkbox52",
+                            "alias" : "xui_ui_checkbox1",
                             "key" : "xui.UI.CheckBox",
                             "properties" : {
                                 "caption" : "checkbox",
@@ -666,7 +644,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "clr",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput1037",
+                            "alias" : "xui_ui_comboinput3",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "color",
@@ -683,7 +661,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput1038",
+                            "alias" : "xui_ui_comboinput4",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "date",
@@ -700,7 +678,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput1039",
+                            "alias" : "xui_ui_comboinput5",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "time",
@@ -718,7 +696,7 @@ Class('App', 'xui.Module',{
                     "sub" : [{
                         "id" : "radio",
                         "object" : new xui.UI.ProgressBar({
-                            "alias" : "xui_ui_progressbar59",
+                            "alias" : "xui_ui_progressbar2",
                             "key" : "xui.UI.ProgressBar",
                             "properties" : {
                                 "value" : 75,
@@ -732,7 +710,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button301",
+                            "alias" : "xui_ui_button6",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "status button",
@@ -747,7 +725,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn2",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button302",
+                            "alias" : "xui_ui_button7",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "drop button",
@@ -766,7 +744,7 @@ Class('App', 'xui.Module',{
                     "sub" : [{
                         "id" : "radio",
                         "object" : new xui.UI.RadioBox({
-                            "alias" : "xui_ui_radiobox28",
+                            "alias" : "xui_ui_radiobox1",
                             "key" : "xui.UI.RadioBox",
                             "properties" : {
                                 "width" : "auto",
@@ -803,6 +781,26 @@ Class('App', 'xui.Module',{
                 }])
                 .onClick("_toolbar5_onclick")
                 );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"div11")
+                .setLeft(30)
+                .setTop(10)
+                .setWidth(70)
+                .setHeight(30)
+                .setHtml("div")
+                , "1");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Span")
+                .setHost(host,"xui_ui_span5")
+                .setLeft(80)
+                .setTop(9)
+                .setWidth(26)
+                .setHeight(16)
+                .setHtml("span")
+                , "1");
             
             host.tabs2.append(
                 xui.create("xui.UI.Block")
@@ -1495,10 +1493,784 @@ Class('App', 'xui.Module',{
                 );
             
             host.tabs2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block138")
+                .setLeft(10)
+                .setTop(129)
+                .setWidth(280)
+                .setHeight(230)
+                .setBorderType("groove")
+                , "3");
+            
+            host.xui_ui_block138.append(
+                xui.create("xui.UI.TreeBar")
+                .setHost(host,"xui_ui_treebar16")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "tree<br/> item <br/>a",
+                    "image" : "img/demo.gif"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "tree item b",
+                    "image" : "img/demo.gif",
+                    "disabled" : true
+                },
+                {
+                    "id" : "c",
+                    "caption" : "tree item c",
+                    "image" : "img/demo.gif",
+                    "disabled" : true
+                },
+                {
+                    "id" : "d",
+                    "caption" : "tree d",
+                    "sub" : [{
+                        "id" : "sub d a"
+                    },
+                    {
+                        "id" : "sub d b"
+                    },
+                    {
+                        "id" : "sub d c"
+                    }]
+                },
+                {
+                    "id" : "e",
+                    "caption" : "tree group e",
+                    "group" : true,
+                    "sub" : [{
+                        "id" : "sub e 1",
+                        "caption" : "sub e 1"
+                    },
+                    {
+                        "id" : "sub e 2",
+                        "caption" : "sub e 2"
+                    }]
+                },
+                {
+                    "id" : "f",
+                    "caption" : "tree group f",
+                    "group" : true,
+                    "iniFold" : false,
+                    "sub" : [{
+                        "id" : "sub f 1",
+                        "caption" : "sub f 1"
+                    },
+                    {
+                        "id" : "sub f 2",
+                        "caption" : "sub f 2"
+                    }]
+                }])
+                .setPosition("relative")
+                );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block139")
+                .setLeft(300)
+                .setTop(129)
+                .setWidth(250)
+                .setHeight(231)
+                .setBorderType("groove")
+                , "3");
+            
+            host.xui_ui_block139.append(
+                xui.create("xui.UI.TreeView")
+                .setHost(host,"xui_ui_treeview26")
+                .setItems([{
+                    "id" : "node1",
+                    "caption" : "node1",
+                    "sub" : [{
+                        "id" : "node11"
+                    },
+                    {
+                        "id" : "node12",
+                        "image" : "img/demo.gif"
+                    },
+                    {
+                        "id" : "node13"
+                    },
+                    {
+                        "id" : "node14"
+                    }]
+                },
+                {
+                    "id" : "node2",
+                    "caption" : "node2",
+                    "iniFold" : false,
+                    "sub" : [{
+                        "id" : "node21",
+                        "caption" : "node21"
+                    },
+                    {
+                        "id" : "node22",
+                        "caption" : "node22"
+                    },
+                    {
+                        "id" : "node23",
+                        "caption" : "node23",
+                        "disabled" : true
+                    },
+                    {
+                        "id" : "node24",
+                        "caption" : "node24"
+                    }]
+                }])
+                .setLeft(90)
+                .setTop(110)
+                );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.FoldingList")
+                .setHost(host,"xui_ui_foldinglist40")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "caption a",
+                    "title" : "title a",
+                    "text" : "detail 1"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "caption b",
+                    "title" : "title b"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "caption c",
+                    "title" : "title c",
+                    "text" : "detail 2"
+                }])
+                .setLeft(10)
+                .setTop(389)
+                .setWidth(536)
+                .setHeight(111)
+                .setTagCmds([{
+                    "id" : "cmd_1",
+                    "caption" : "cmd 1"
+                },
+                {
+                    "id" : "cmd_2",
+                    "caption" : "cmd 2"
+                }])
+                , "3");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.List")
+                .setHost(host,"xui_ui_list139")
+                .setItems([{
+                    "imageClass" : "xui-icon-none",
+                    "caption" : "xui-icon-none",
+                    "id" : "er"
+                },
+                {
+                    "imageClass" : "xui-ui-busy",
+                    "caption" : "xui-ui-busy",
+                    "id" : "es"
+                },
+                {
+                    "imageClass" : "xui-icon-empty",
+                    "caption" : "xui-icon-empty",
+                    "id" : "et"
+                },
+                {
+                    "imageClass" : "xuicon xui-uicmd-helpinput",
+                    "caption" : "xui-uicmd-helpinput",
+                    "_fi_":"xui-uicmd-helpinput",
+                    "id" : "eu"
+                },
+                {
+                    "imageClass" : "xuicon xui-icon-zoomin",
+                    "caption" : "xui-icon-zoomin",
+                    "_fi_":"xui-uicmd-helpinput",
+                    "id" : "ev"
+                },
+                {
+                    "imageClass" : "xui-icon-zoomout",
+                    "caption" : "xui-icon-zoomout",
+                    "id" : "ew"
+                },
+                {
+                    "imageClass" : "xui-icon-bullet",
+                    "caption" : "xui-icon-bullet",
+                    "id" : "ex"
+                },
+                {
+                    "imageClass" : "xui-icon-minus",
+                    "caption" : "xui-icon-minus",
+                    "id" : "ey"
+                },
+                {
+                    "imageClass" : "xui-uicmd-add",
+                    "caption" : "xui-uicmd-add",
+                    "id" : "ez"
+                },
+                {
+                    "imageClass" : "xui-icon-star",
+                    "caption" : "xui-icon-star",
+                    "id" : "fa"
+                },
+                {
+                    "imageClass" : "xui-icon-dragmove",
+                    "caption" : "xui-icon-dragmove",
+                    "id" : "fb"
+                },
+                {
+                    "imageClass" : "xui-uicmd-check",
+                    "caption" : "xui-uicmd-check",
+                    "id" : "fc"
+                },
+                {
+                    "imageClass" : "xui-uicmd-date",
+                    "caption" : "xui-uicmd-date",
+                    "id" : "fd"
+                },
+                {
+                    "imageClass" : "xui-icon-number",
+                    "caption" : "xui-icon-number",
+                    "id" : "fe"
+                },
+                {
+                    "imageClass" : "xui-uicmd-pop",
+                    "caption" : "xui-uicmd-pop",
+                    "id" : "ff"
+                },
+                {
+                    "imageClass" : "xui-icon-mouse",
+                    "caption" : "xui-icon-mouse",
+                    "id" : "fg"
+                },
+                {
+                    "imageClass" : "xui-icon-prev",
+                    "caption" : "xui-icon-prev",
+                    "id" : "fh"
+                },
+                {
+                    "imageClass" : "xui-icon-question",
+                    "caption" : "xui-icon-question",
+                    "id" : "fi"
+                },
+                {
+                    "imageClass" : "xui-icon-loading",
+                    "caption" : "xui-icon-loading",
+                    "id" : "fj"
+                },
+                {
+                    "imageClass" : "xui-icon-indent",
+                    "caption" : "xui-icon-indent",
+                    "id" : "fk"
+                },
+                {
+                    "imageClass" : "xui-icon-outdent",
+                    "caption" : "xui-icon-outdent",
+                    "id" : "fl"
+                },
+                {
+                    "imageClass" : "xui-icon-strikethrough",
+                    "caption" : "xui-icon-strikethrough",
+                    "id" : "fm"
+                },
+                {
+                    "imageClass" : "xui-icon-inserthr",
+                    "caption" : "xui-icon-inserthr",
+                    "id" : "fn"
+                },
+                {
+                    "imageClass" : "xui-uicmd-remove",
+                    "caption" : "xui-uicmd-remove",
+                    "id" : "fo"
+                },
+                {
+                    "imageClass" : "xui-icon-super",
+                    "caption" : "xui-icon-super",
+                    "id" : "fp"
+                },
+                {
+                    "imageClass" : "xui-icon-sub",
+                    "caption" : "xui-icon-sub",
+                    "id" : "fq"
+                },
+                {
+                    "imageClass" : "xui-icon-alignjustify",
+                    "caption" : "xui-icon-alignjustify",
+                    "id" : "fr"
+                },
+                {
+                    "imageClass" : "xui-icon-alignright",
+                    "caption" : "xui-icon-alignright",
+                    "id" : "fs"
+                },
+                {
+                    "imageClass" : "xui-uicmd-arrowdrop",
+                    "caption" : "xui-uicmd-arrowdrop",
+                    "id" : "ft"
+                },
+                {
+                    "imageClass" : "xui-icon-upload",
+                    "caption" : "xui-icon-upload",
+                    "id" : "fu"
+                },
+                {
+                    "imageClass" : "xui-icon-formatbrush",
+                    "caption" : "xui-icon-formatbrush",
+                    "id" : "fv"
+                },
+                {
+                    "imageClass" : "xui-refresh",
+                    "caption" : "xui-refresh",
+                    "id" : "fw"
+                },
+                {
+                    "imageClass" : "xui-icon-undo",
+                    "caption" : "xui-icon-undo",
+                    "id" : "fx"
+                },
+                {
+                    "imageClass" : "xui-uicmd-refresh",
+                    "caption" : "xui-uicmd-refresh",
+                    "id" : "fy"
+                },
+                {
+                    "imageClass" : "xui-icon-date",
+                    "caption" : "xui-icon-date",
+                    "id" : "fz"
+                },
+                {
+                    "imageClass" : "xui-icon-trash",
+                    "caption" : "xui-icon-trash",
+                    "id" : "ga"
+                },
+                {
+                    "imageClass" : "xui-icon-alignleft",
+                    "caption" : "xui-icon-alignleft",
+                    "id" : "gb"
+                },
+                {
+                    "imageClass" : "xui-icon-singleright",
+                    "caption" : "xui-icon-singleright",
+                    "id" : "gc"
+                },
+                {
+                    "imageClass" : "xui-icon-singleleft",
+                    "caption" : "xui-icon-singleleft",
+                    "id" : "gd"
+                },
+                {
+                    "imageClass" : "xui-uicmd-max",
+                    "caption" : "xui-uicmd-max",
+                    "id" : "ge"
+                },
+                {
+                    "imageClass" : "xui-icon-last",
+                    "caption" : "xui-icon-last",
+                    "id" : "gf"
+                },
+                {
+                    "imageClass" : "xui-icon-error",
+                    "caption" : "xui-icon-error",
+                    "id" : "gg"
+                },
+                {
+                    "imageClass" : "xui-icon-remove",
+                    "caption" : "xui-icon-remove",
+                    "id" : "gh"
+                },
+                {
+                    "imageClass" : "xui-uicmd-pin",
+                    "caption" : "xui-uicmd-pin",
+                    "id" : "gi"
+                },
+                {
+                    "imageClass" : "xui-icon-link",
+                    "caption" : "xui-icon-link",
+                    "id" : "gj"
+                },
+                {
+                    "imageClass" : "xui-icon-forecolor",
+                    "caption" : "xui-icon-forecolor",
+                    "id" : "gk"
+                },
+                {
+                    "imageClass" : "xui-uicmd-time",
+                    "caption" : "xui-uicmd-time",
+                    "id" : "gl"
+                },
+                {
+                    "imageClass" : "xui-icon-aligncenter",
+                    "caption" : "xui-icon-aligncenter",
+                    "id" : "gm"
+                },
+                {
+                    "imageClass" : "xui-uicmd-check-checked",
+                    "caption" : "xui-uicmd-check-checked",
+                    "id" : "gn"
+                },
+                {
+                    "imageClass" : "xui-uicmd-cmdbox",
+                    "caption" : "xui-uicmd-cmdbox",
+                    "id" : "go"
+                },
+                {
+                    "imageClass" : "xui-uicmd-toggle",
+                    "caption" : "xui-uicmd-toggle",
+                    "id" : "gp"
+                },
+                {
+                    "imageClass" : "xui-uicmd-getter",
+                    "caption" : "xui-uicmd-getter",
+                    "id" : "gq"
+                },
+                {
+                    "imageClass" : "xui-uicmd-save",
+                    "caption" : "xui-uicmd-save",
+                    "id" : "gr"
+                },
+                {
+                    "imageClass" : "xui-icon-dragcopy",
+                    "caption" : "xui-icon-dragcopy",
+                    "id" : "gs"
+                },
+                {
+                    "imageClass" : "xui-icon-dropdown",
+                    "caption" : "xui-icon-dropdown",
+                    "id" : "gt"
+                },
+                {
+                    "imageClass" : "xui-uicmd-popbox",
+                    "caption" : "xui-uicmd-popbox",
+                    "id" : "gu"
+                },
+                {
+                    "imageClass" : "xui-uicmd-close",
+                    "caption" : "xui-uicmd-close",
+                    "id" : "gv"
+                },
+                {
+                    "imageClass" : "xui-uicmd-datetime",
+                    "caption" : "xui-uicmd-datetime",
+                    "id" : "gw"
+                },
+                {
+                    "imageClass" : "xui-icon-arrowright",
+                    "caption" : "xui-icon-arrowright",
+                    "id" : "gx"
+                },
+                {
+                    "imageClass" : "xui-icon-font",
+                    "caption" : "xui-icon-font",
+                    "id" : "gy"
+                },
+                {
+                    "imageClass" : "xui-icon-bgcolor",
+                    "caption" : "xui-icon-bgcolor",
+                    "id" : "gz"
+                },
+                {
+                    "imageClass" : "xui-icon-mobile",
+                    "caption" : "xui-icon-mobile",
+                    "id" : "ha"
+                },
+                {
+                    "imageClass" : "xui-icon-clock",
+                    "caption" : "xui-icon-clock",
+                    "id" : "hb"
+                },
+                {
+                    "imageClass" : "xui-icon-circledown",
+                    "caption" : "xui-icon-circledown",
+                    "id" : "hc"
+                },
+                {
+                    "imageClass" : "xui-icon-circleleft",
+                    "caption" : "xui-icon-circleleft",
+                    "id" : "hd"
+                },
+                {
+                    "imageClass" : "xui-icon-circleright",
+                    "caption" : "xui-icon-circleright",
+                    "id" : "he"
+                },
+                {
+                    "imageClass" : "xui-icon-circleup",
+                    "caption" : "xui-icon-circleup",
+                    "id" : "hf"
+                },
+                {
+                    "imageClass" : "xui-uicmd-opt",
+                    "caption" : "xui-uicmd-opt",
+                    "id" : "hg"
+                },
+                {
+                    "imageClass" : "xui-icon-italic",
+                    "caption" : "xui-icon-italic",
+                    "id" : "hh"
+                },
+                {
+                    "imageClass" : "xui-icon-redo",
+                    "caption" : "xui-icon-redo",
+                    "id" : "hi"
+                },
+                {
+                    "imageClass" : "xui-icon-bold",
+                    "caption" : "xui-icon-bold",
+                    "id" : "hj"
+                },
+                {
+                    "imageClass" : "xui-icon-bigup",
+                    "caption" : "xui-icon-bigup",
+                    "id" : "hk"
+                },
+                {
+                    "imageClass" : "xui-icon-doubledown",
+                    "caption" : "xui-icon-doubledown",
+                    "id" : "hl"
+                },
+                {
+                    "imageClass" : "xui-icon-doubleleft",
+                    "caption" : "xui-icon-doubleleft",
+                    "id" : "hm"
+                },
+                {
+                    "imageClass" : "xui-icon-doubleright",
+                    "caption" : "xui-icon-doubleright",
+                    "id" : "hn"
+                },
+                {
+                    "imageClass" : "xui-icon-doubleup",
+                    "caption" : "xui-icon-doubleup",
+                    "id" : "ho"
+                },
+                {
+                    "imageClass" : "xui-uicmd-color",
+                    "caption" : "xui-uicmd-color",
+                    "id" : "hp"
+                },
+                {
+                    "imageClass" : "xui-icon-breaklink",
+                    "caption" : "xui-icon-breaklink",
+                    "id" : "hq"
+                },
+                {
+                    "imageClass" : "xui-icon-picture",
+                    "caption" : "xui-icon-picture",
+                    "id" : "hr"
+                },
+                {
+                    "imageClass" : "xui-icon-back",
+                    "caption" : "xui-icon-back",
+                    "id" : "hs"
+                },
+                {
+                    "imageClass" : "xui-icon-dragadd",
+                    "caption" : "xui-icon-dragadd",
+                    "id" : "ht"
+                },
+                {
+                    "imageClass" : "xui-icon-formatclear",
+                    "caption" : "xui-icon-formatclear",
+                    "id" : "hu"
+                },
+                {
+                    "imageClass" : "xui-uicmd-select",
+                    "caption" : "xui-uicmd-select",
+                    "id" : "hv"
+                },
+                {
+                    "imageClass" : "xui-uicmd-file",
+                    "caption" : "xui-uicmd-file",
+                    "id" : "hw"
+                },
+                {
+                    "imageClass" : "xui-icon-triangle-up",
+                    "caption" : "xui-icon-triangle-up",
+                    "id" : "hx"
+                },
+                {
+                    "imageClass" : "xui-icon-dragstop",
+                    "caption" : "xui-icon-dragstop",
+                    "id" : "hy"
+                },
+                {
+                    "imageClass" : "xui-uicmd-dotted",
+                    "caption" : "xui-uicmd-dotted",
+                    "id" : "hz"
+                },
+                {
+                    "imageClass" : "xui-icon-dialog",
+                    "caption" : "xui-icon-dialog",
+                    "id" : "ia"
+                },
+                {
+                    "imageClass" : "xui-icon-print",
+                    "caption" : "xui-icon-print",
+                    "id" : "ib"
+                },
+                {
+                    "imageClass" : "xui-icon-right",
+                    "caption" : "xui-icon-right",
+                    "id" : "ic"
+                },
+                {
+                    "imageClass" : "xui-icon-file",
+                    "caption" : "xui-icon-file",
+                    "id" : "id"
+                },
+                {
+                    "imageClass" : "xui-uicmd-info",
+                    "caption" : "xui-uicmd-info",
+                    "id" : "ie"
+                },
+                {
+                    "imageClass" : "xui-icon-smill",
+                    "caption" : "xui-icon-smill",
+                    "id" : "if"
+                },
+                {
+                    "imageClass" : "xui-icon-sort",
+                    "caption" : "xui-icon-sort",
+                    "id" : "ig"
+                },
+                {
+                    "imageClass" : "xui-icon-arrowtop",
+                    "caption" : "xui-icon-arrowtop",
+                    "id" : "ih"
+                },
+                {
+                    "imageClass" : "xui-icon-file-fold",
+                    "caption" : "xui-icon-file-fold",
+                    "id" : "ii"
+                },
+                {
+                    "imageClass" : "xui-icon-circle",
+                    "caption" : "xui-icon-circle",
+                    "id" : "ij"
+                },
+                {
+                    "imageClass" : "xui-icon-underline",
+                    "caption" : "xui-icon-underline",
+                    "id" : "ik"
+                },
+                {
+                    "imageClass" : "xui-uicmd-radio",
+                    "caption" : "xui-uicmd-radio",
+                    "id" : "il"
+                },
+                {
+                    "imageClass" : "xui-uicmd-radio-checked",
+                    "caption" : "xui-uicmd-radio-checked",
+                    "id" : "im"
+                },
+                {
+                    "imageClass" : "xui-uicmd-restore",
+                    "caption" : "xui-uicmd-restore",
+                    "id" : "in"
+                },
+                {
+                    "imageClass" : "xui-uicmd-toggle-checked",
+                    "caption" : "xui-uicmd-toggle-checked",
+                    "id" : "io"
+                },
+                {
+                    "imageClass" : "xui-icon-smallup",
+                    "caption" : "xui-icon-smallup",
+                    "id" : "ip"
+                },
+                {
+                    "imageClass" : "xui-icon-smalldown",
+                    "caption" : "xui-icon-smalldown",
+                    "id" : "iq"
+                },
+                {
+                    "imageClass" : "xui-icon-html",
+                    "caption" : "xui-icon-html",
+                    "id" : "ir"
+                },
+                {
+                    "imageClass" : "xui-icon-code",
+                    "caption" : "xui-icon-code",
+                    "id" : "is"
+                },
+                {
+                    "imageClass" : "xui-uicmd-min",
+                    "caption" : "xui-uicmd-min",
+                    "id" : "it"
+                },
+                {
+                    "imageClass" : "xui-uicmd-location",
+                    "caption" : "xui-uicmd-location",
+                    "id" : "iu"
+                },
+                {
+                    "imageClass" : "xui-icon-file-expand",
+                    "caption" : "xui-icon-file-expand",
+                    "id" : "iv"
+                },
+                {
+                    "imageClass" : "xui-uicmd-delete",
+                    "caption" : "xui-uicmd-delete",
+                    "id" : "iw"
+                },
+                {
+                    "imageClass" : "xui-uicmd-land",
+                    "caption" : "xui-uicmd-land",
+                    "id" : "ix"
+                },
+                {
+                    "imageClass" : "xui-icon-arrowbottom",
+                    "caption" : "xui-icon-arrowbottom",
+                    "id" : "iy"
+                },
+                {
+                    "imageClass" : "xui-icon-arrowleft",
+                    "caption" : "xui-icon-arrowleft",
+                    "id" : "iz"
+                },
+                {
+                    "imageClass" : "xui-icon-next",
+                    "caption" : "xui-icon-next",
+                    "id" : "ja"
+                },
+                {
+                    "imageClass" : "xui-icon-first",
+                    "caption" : "xui-icon-first",
+                    "id" : "jb"
+                },
+                {
+                    "imageClass" : "xui-icon-triangle-left",
+                    "caption" : "xui-icon-triangle-left",
+                    "id" : "jc"
+                },
+                {
+                    "imageClass" : "xui-icon-triangle-down",
+                    "caption" : "xui-icon-triangle-down",
+                    "id" : "jd"
+                },
+                {
+                    "imageClass" : "xui-icon-triangle-right",
+                    "caption" : "xui-icon-triangle-right",
+                    "id" : "je"
+                },
+                {
+                    "imageClass" : "xui-icon-sort-checked",
+                    "caption" : "xui-icon-sort-checked",
+                    "id" : "jf"
+                }])
+                .setLeft(580)
+                .setTop(120)
+                .setWidth(200)
+                .setHeight(350)
+                .setLabelSize(20)
+                .setLabelPos("top")
+                .setLabelCaption("Icons")
+                .setLabelHAlign("left")
+                .setValue("a")
+                , "3");
+            
+            host.tabs2.append(
                 xui.create("xui.UI.Label")
                 .setHost(host,"label5")
                 .setLeft(30)
-                .setTop(100)
+                .setTop(80)
                 .setCaption("Label")
                 .setImage("img/demo.gif")
                 .setFontColor("#4B0082")
@@ -1510,14 +2282,14 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.ColorPicker")
                 .setHost(host,"color1")
                 .setLeft(20)
-                .setTop(230)
+                .setTop(210)
                 , "1");
             
             host.tabs2.append(
                 xui.create("xui.UI.Link")
                 .setHost(host,"link1")
                 .setLeft(30)
-                .setTop(49)
+                .setTop(40)
                 .setCaption("link")
                 .setTarget("crossui.com")
                 , "1");
@@ -1526,14 +2298,14 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.TimePicker")
                 .setHost(host,"time1")
                 .setLeft(250)
-                .setTop(290)
+                .setTop(283)
                 , "1");
             
             host.tabs2.append(
                 xui.create("xui.UI.DatePicker")
                 .setHost(host,"date1")
                 .setLeft(520)
-                .setTop(314)
+                .setTop(308)
                 .setValue(new Date(2013,4,22,0,0,0,0))
                 , "1");
             
@@ -1565,7 +2337,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.Image")
                 .setHost(host,"xui_ui_image3")
                 .setLeft(30)
-                .setTop(140)
+                .setTop(120)
                 .setWidth(84)
                 .setHeight(81)
                 .setSrc("{xui.ini.img_pic}")
@@ -1803,9 +2575,9 @@ Class('App', 'xui.Module',{
                 .setTop(130)
                 .setWidth(200)
                 .setLabelSize(100)
-                .setCaption("Combo")
                 .setLabelCaption("Combo Button")
                 .setType("dropbutton")
+                .setCaption("Combo")
                 , "1");
             
             host.tabs2.append(
@@ -1917,184 +2689,6 @@ Class('App', 'xui.Module',{
                 .setLabelHAlign("left")
                 .setMultiLines(true)
                 , "1");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block138")
-                .setLeft(10)
-                .setTop(129)
-                .setWidth(280)
-                .setHeight(230)
-                .setBorderType("groove")
-                , "3");
-            
-            host.xui_ui_block138.append(
-                xui.create("xui.UI.TreeBar")
-                .setHost(host,"xui_ui_treebar16")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "tree<br/> item <br/>a",
-                    "image" : "img/demo.gif"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "tree item b",
-                    "image" : "img/demo.gif",
-                    "disabled" : true
-                },
-                {
-                    "id" : "c",
-                    "caption" : "tree item c",
-                    "image" : "img/demo.gif",
-                    "disabled" : true
-                },
-                {
-                    "id" : "d",
-                    "caption" : "tree d",
-                    "sub" : [{
-                        "id" : "sub d a"
-                    },
-                    {
-                        "id" : "sub d b"
-                    },
-                    {
-                        "id" : "sub d c"
-                    }]
-                },
-                {
-                    "id" : "e",
-                    "caption" : "tree group e",
-                    "group" : true,
-                    "sub" : [{
-                        "id" : "sub e 1",
-                        "caption" : "sub e 1"
-                    },
-                    {
-                        "id" : "sub e 2",
-                        "caption" : "sub e 2"
-                    }]
-                },
-                {
-                    "id" : "f",
-                    "caption" : "tree group f",
-                    "group" : true,
-                    "iniFold" : false,
-                    "sub" : [{
-                        "id" : "sub f 1",
-                        "caption" : "sub f 1"
-                    },
-                    {
-                        "id" : "sub f 2",
-                        "caption" : "sub f 2"
-                    }]
-                }])
-                .setPosition("relative")
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block139")
-                .setLeft(300)
-                .setTop(129)
-                .setWidth(250)
-                .setHeight(231)
-                .setBorderType("groove")
-                , "3");
-            
-            host.xui_ui_block139.append(
-                xui.create("xui.UI.TreeView")
-                .setHost(host,"xui_ui_treeview26")
-                .setItems([{
-                    "id" : "node1",
-                    "caption" : "node1",
-                    "sub" : [{
-                        "id" : "node11"
-                    },
-                    {
-                        "id" : "node12",
-                        "image" : "img/demo.gif"
-                    },
-                    {
-                        "id" : "node13"
-                    },
-                    {
-                        "id" : "node14"
-                    }]
-                },
-                {
-                    "id" : "node2",
-                    "caption" : "node2",
-                    "iniFold" : false,
-                    "sub" : [{
-                        "id" : "node21",
-                        "caption" : "node21"
-                    },
-                    {
-                        "id" : "node22",
-                        "caption" : "node22"
-                    },
-                    {
-                        "id" : "node23",
-                        "caption" : "node23",
-                        "disabled" : true
-                    },
-                    {
-                        "id" : "node24",
-                        "caption" : "node24"
-                    }]
-                }])
-                .setLeft(90)
-                .setTop(110)
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.FoldingList")
-                .setHost(host,"xui_ui_foldinglist40")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "caption a",
-                    "title" : "title a",
-                    "text" : "detail 1"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "caption b",
-                    "title" : "title b"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "caption c",
-                    "title" : "title c",
-                    "text" : "detail 2"
-                }])
-                .setLeft(10)
-                .setTop(389)
-                .setWidth(536)
-                .setHeight(111)
-                .setTagCmds([{
-                    "id" : "cmd_1",
-                    "caption" : "cmd 1"
-                },
-                {
-                    "id" : "cmd_2",
-                    "caption" : "cmd 2"
-                }])
-                , "3");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.List")
-                .setHost(host,"xui_ui_list139")
-                .setItems([{"imageClass":"xui-icon-none", "caption":"xui-icon-none", "_fi_":"xui-icon-none"},{"imageClass":"xui-ui-busy", "caption":"xui-ui-busy", "_fi_":"xui-ui-busy"},{"imageClass":"xui-icon-empty", "caption":"xui-icon-empty", "_fi_":"xui-icon-empty"}, {"imageClass":"xui-uicmd-helpinput", "caption":"xui-uicmd-helpinput", "_fi_":"xui-uicmd-helpinput"}, {"imageClass":"xui-icon-zoomin", "caption":"xui-icon-zoomin", "_fi_":"xui-icon-zoomin"}, {"imageClass":"xui-icon-zoomout", "caption":"xui-icon-zoomout", "_fi_":"xui-icon-zoomout"}, {"imageClass":"xui-icon-bullet", "caption":"xui-icon-bullet", "_fi_":"xui-icon-bullet"}, {"imageClass":"xui-icon-minus", "caption":"xui-icon-minus", "_fi_":"xui-icon-minus"}, {"imageClass":"xui-uicmd-add", "caption":"xui-uicmd-add", "_fi_":"xui-uicmd-add"}, {"imageClass":"xui-icon-star", "caption":"xui-icon-star", "_fi_":"xui-icon-star"}, {"imageClass":"xui-icon-dragmove", "caption":"xui-icon-dragmove", "_fi_":"xui-icon-dragmove"}, {"imageClass":"xui-uicmd-check", "caption":"xui-uicmd-check", "_fi_":"xui-uicmd-check"}, {"imageClass":"xui-uicmd-date", "caption":"xui-uicmd-date", "_fi_":"xui-uicmd-date"}, {"imageClass":"xui-icon-number", "caption":"xui-icon-number", "_fi_":"xui-icon-number"}, {"imageClass":"xui-uicmd-pop", "caption":"xui-uicmd-pop", "_fi_":"xui-uicmd-pop"}, {"imageClass":"xui-icon-mouse", "caption":"xui-icon-mouse", "_fi_":"xui-icon-mouse"}, {"imageClass":"xui-icon-prev", "caption":"xui-icon-prev", "_fi_":"xui-icon-prev"}, {"imageClass":"xui-icon-question", "caption":"xui-icon-question", "_fi_":"xui-icon-question"}, {"imageClass":"xui-icon-loading", "caption":"xui-icon-loading", "_fi_":"xui-icon-loading"}, {"imageClass":"xui-icon-indent", "caption":"xui-icon-indent", "_fi_":"xui-icon-indent"}, {"imageClass":"xui-icon-outdent", "caption":"xui-icon-outdent", "_fi_":"xui-icon-outdent"}, {"imageClass":"xui-icon-strikethrough", "caption":"xui-icon-strikethrough", "_fi_":"xui-icon-strikethrough"}, {"imageClass":"xui-icon-inserthr", "caption":"xui-icon-inserthr", "_fi_":"xui-icon-inserthr"}, {"imageClass":"xui-uicmd-remove", "caption":"xui-uicmd-remove", "_fi_":"xui-uicmd-remove"}, {"imageClass":"xui-icon-super", "caption":"xui-icon-super", "_fi_":"xui-icon-super"}, {"imageClass":"xui-icon-sub", "caption":"xui-icon-sub", "_fi_":"xui-icon-sub"}, {"imageClass":"xui-icon-alignjustify", "caption":"xui-icon-alignjustify", "_fi_":"xui-icon-alignjustify"}, {"imageClass":"xui-icon-alignright", "caption":"xui-icon-alignright", "_fi_":"xui-icon-alignright"}, {"imageClass":"xui-uicmd-arrowdrop", "caption":"xui-uicmd-arrowdrop", "_fi_":"xui-uicmd-arrowdrop"}, {"imageClass":"xui-icon-upload", "caption":"xui-icon-upload", "_fi_":"xui-icon-upload"}, {"imageClass":"xui-icon-formatbrush", "caption":"xui-icon-formatbrush", "_fi_":"xui-icon-formatbrush"}, {"imageClass":"xui-refresh", "caption":"xui-refresh", "_fi_":"xui-refresh"}, {"imageClass":"xui-icon-undo", "caption":"xui-icon-undo", "_fi_":"xui-icon-undo"}, {"imageClass":"xui-uicmd-refresh", "caption":"xui-uicmd-refresh", "_fi_":"xui-uicmd-refresh"}, {"imageClass":"xui-icon-date", "caption":"xui-icon-date", "_fi_":"xui-icon-date"}, {"imageClass":"xui-icon-trash", "caption":"xui-icon-trash", "_fi_":"xui-icon-trash"}, {"imageClass":"xui-icon-alignleft", "caption":"xui-icon-alignleft", "_fi_":"xui-icon-alignleft"}, {"imageClass":"xui-icon-singleright", "caption":"xui-icon-singleright", "_fi_":"xui-icon-singleright"}, {"imageClass":"xui-icon-singleleft", "caption":"xui-icon-singleleft", "_fi_":"xui-icon-singleleft"}, {"imageClass":"xui-uicmd-max", "caption":"xui-uicmd-max", "_fi_":"xui-uicmd-max"}, {"imageClass":"xui-icon-last", "caption":"xui-icon-last", "_fi_":"xui-icon-last"}, {"imageClass":"xui-icon-error", "caption":"xui-icon-error", "_fi_":"xui-icon-error"}, {"imageClass":"xui-icon-remove", "caption":"xui-icon-remove", "_fi_":"xui-icon-remove"}, {"imageClass":"xui-uicmd-pin", "caption":"xui-uicmd-pin", "_fi_":"xui-uicmd-pin"}, {"imageClass":"xui-icon-link", "caption":"xui-icon-link", "_fi_":"xui-icon-link"}, {"imageClass":"xui-icon-forecolor", "caption":"xui-icon-forecolor", "_fi_":"xui-icon-forecolor"}, {"imageClass":"xui-uicmd-time", "caption":"xui-uicmd-time", "_fi_":"xui-uicmd-time"}, {"imageClass":"xui-icon-aligncenter", "caption":"xui-icon-aligncenter", "_fi_":"xui-icon-aligncenter"}, {"imageClass":"xui-uicmd-check-checked", "caption":"xui-uicmd-check-checked", "_fi_":"xui-uicmd-check-checked"}, {"imageClass":"xui-uicmd-cmdbox", "caption":"xui-uicmd-cmdbox", "_fi_":"xui-uicmd-cmdbox"}, {"imageClass":"xui-uicmd-toggle", "caption":"xui-uicmd-toggle", "_fi_":"xui-uicmd-toggle"}, {"imageClass":"xui-uicmd-getter", "caption":"xui-uicmd-getter", "_fi_":"xui-uicmd-getter"}, {"imageClass":"xui-uicmd-save", "caption":"xui-uicmd-save", "_fi_":"xui-uicmd-save"}, {"imageClass":"xui-icon-dragcopy", "caption":"xui-icon-dragcopy", "_fi_":"xui-icon-dragcopy"}, {"imageClass":"xui-icon-dropdown", "caption":"xui-icon-dropdown", "_fi_":"xui-icon-dropdown"}, {"imageClass":"xui-uicmd-popbox", "caption":"xui-uicmd-popbox", "_fi_":"xui-uicmd-popbox"}, {"imageClass":"xui-uicmd-close", "caption":"xui-uicmd-close", "_fi_":"xui-uicmd-close"}, {"imageClass":"xui-uicmd-datetime", "caption":"xui-uicmd-datetime", "_fi_":"xui-uicmd-datetime"}, {"imageClass":"xui-icon-arrowright", "caption":"xui-icon-arrowright", "_fi_":"xui-icon-arrowright"}, {"imageClass":"xui-icon-font", "caption":"xui-icon-font", "_fi_":"xui-icon-font"}, {"imageClass":"xui-icon-bgcolor", "caption":"xui-icon-bgcolor", "_fi_":"xui-icon-bgcolor"}, {"imageClass":"xui-icon-mobile", "caption":"xui-icon-mobile", "_fi_":"xui-icon-mobile"}, {"imageClass":"xui-icon-clock", "caption":"xui-icon-clock", "_fi_":"xui-icon-clock"}, {"imageClass":"xui-icon-circledown", "caption":"xui-icon-circledown", "_fi_":"xui-icon-circledown"}, {"imageClass":"xui-icon-circleleft", "caption":"xui-icon-circleleft", "_fi_":"xui-icon-circleleft"}, {"imageClass":"xui-icon-circleright", "caption":"xui-icon-circleright", "_fi_":"xui-icon-circleright"}, {"imageClass":"xui-icon-circleup", "caption":"xui-icon-circleup", "_fi_":"xui-icon-circleup"}, {"imageClass":"xui-uicmd-opt", "caption":"xui-uicmd-opt", "_fi_":"xui-uicmd-opt"}, {"imageClass":"xui-icon-italic", "caption":"xui-icon-italic", "_fi_":"xui-icon-italic"}, {"imageClass":"xui-icon-redo", "caption":"xui-icon-redo", "_fi_":"xui-icon-redo"}, {"imageClass":"xui-icon-bold", "caption":"xui-icon-bold", "_fi_":"xui-icon-bold"}, {"imageClass":"xui-icon-bigup", "caption":"xui-icon-bigup", "_fi_":"xui-icon-bigup"}, {"imageClass":"xui-icon-doubledown", "caption":"xui-icon-doubledown", "_fi_":"xui-icon-doubledown"}, {"imageClass":"xui-icon-doubleleft", "caption":"xui-icon-doubleleft", "_fi_":"xui-icon-doubleleft"}, {"imageClass":"xui-icon-doubleright", "caption":"xui-icon-doubleright", "_fi_":"xui-icon-doubleright"}, {"imageClass":"xui-icon-doubleup", "caption":"xui-icon-doubleup", "_fi_":"xui-icon-doubleup"}, {"imageClass":"xui-uicmd-color", "caption":"xui-uicmd-color", "_fi_":"xui-uicmd-color"}, {"imageClass":"xui-icon-breaklink", "caption":"xui-icon-breaklink", "_fi_":"xui-icon-breaklink"}, {"imageClass":"xui-icon-picture", "caption":"xui-icon-picture", "_fi_":"xui-icon-picture"}, {"imageClass":"xui-icon-back", "caption":"xui-icon-back", "_fi_":"xui-icon-back"}, {"imageClass":"xui-icon-dragadd", "caption":"xui-icon-dragadd", "_fi_":"xui-icon-dragadd"}, {"imageClass":"xui-icon-formatclear", "caption":"xui-icon-formatclear", "_fi_":"xui-icon-formatclear"}, {"imageClass":"xui-uicmd-select", "caption":"xui-uicmd-select", "_fi_":"xui-uicmd-select"}, {"imageClass":"xui-uicmd-file", "caption":"xui-uicmd-file", "_fi_":"xui-uicmd-file"}, {"imageClass":"xui-icon-triangle-up", "caption":"xui-icon-triangle-up", "_fi_":"xui-icon-triangle-up"}, {"imageClass":"xui-icon-dragstop", "caption":"xui-icon-dragstop", "_fi_":"xui-icon-dragstop"}, {"imageClass":"xui-uicmd-dotted", "caption":"xui-uicmd-dotted", "_fi_":"xui-uicmd-dotted"}, {"imageClass":"xui-icon-dialog", "caption":"xui-icon-dialog", "_fi_":"xui-icon-dialog"}, {"imageClass":"xui-icon-print", "caption":"xui-icon-print", "_fi_":"xui-icon-print"}, {"imageClass":"xui-icon-right", "caption":"xui-icon-right", "_fi_":"xui-icon-right"}, {"imageClass":"xui-icon-file", "caption":"xui-icon-file", "_fi_":"xui-icon-file"}, {"imageClass":"xui-uicmd-info", "caption":"xui-uicmd-info", "_fi_":"xui-uicmd-info"}, {"imageClass":"xui-icon-smill", "caption":"xui-icon-smill", "_fi_":"xui-icon-smill"}, {"imageClass":"xui-icon-sort", "caption":"xui-icon-sort", "_fi_":"xui-icon-sort"}, {"imageClass":"xui-icon-arrowtop", "caption":"xui-icon-arrowtop", "_fi_":"xui-icon-arrowtop"}, {"imageClass":"xui-icon-file-fold", "caption":"xui-icon-file-fold", "_fi_":"xui-icon-file-fold"}, {"imageClass":"xui-icon-circle", "caption":"xui-icon-circle", "_fi_":"xui-icon-circle"}, {"imageClass":"xui-icon-underline", "caption":"xui-icon-underline", "_fi_":"xui-icon-underline"}, {"imageClass":"xui-uicmd-radio", "caption":"xui-uicmd-radio", "_fi_":"xui-uicmd-radio"}, {"imageClass":"xui-uicmd-radio-checked", "caption":"xui-uicmd-radio-checked", "_fi_":"xui-uicmd-radio-checked"}, {"imageClass":"xui-uicmd-restore", "caption":"xui-uicmd-restore", "_fi_":"xui-uicmd-restore"}, {"imageClass":"xui-uicmd-toggle-checked", "caption":"xui-uicmd-toggle-checked", "_fi_":"xui-uicmd-toggle-checked"}, {"imageClass":"xui-icon-smallup", "caption":"xui-icon-smallup", "_fi_":"xui-icon-smallup"}, {"imageClass":"xui-icon-smalldown", "caption":"xui-icon-smalldown", "_fi_":"xui-icon-smalldown"}, {"imageClass":"xui-icon-html", "caption":"xui-icon-html", "_fi_":"xui-icon-html"}, {"imageClass":"xui-icon-code", "caption":"xui-icon-code", "_fi_":"xui-icon-code"}, {"imageClass":"xui-uicmd-min", "caption":"xui-uicmd-min", "_fi_":"xui-uicmd-min"}, {"imageClass":"xui-uicmd-location", "caption":"xui-uicmd-location", "_fi_":"xui-uicmd-location"}, {"imageClass":"xui-icon-file-expand", "caption":"xui-icon-file-expand", "_fi_":"xui-icon-file-expand"}, {"imageClass":"xui-uicmd-delete", "caption":"xui-uicmd-delete", "_fi_":"xui-uicmd-delete"}, {"imageClass":"xui-uicmd-land", "caption":"xui-uicmd-land", "_fi_":"xui-uicmd-land"}, {"imageClass":"xui-icon-arrowbottom", "caption":"xui-icon-arrowbottom", "_fi_":"xui-icon-arrowbottom"}, {"imageClass":"xui-icon-arrowleft", "caption":"xui-icon-arrowleft", "_fi_":"xui-icon-arrowleft"}, {"imageClass":"xui-icon-next", "caption":"xui-icon-next", "_fi_":"xui-icon-next"}, {"imageClass":"xui-icon-first", "caption":"xui-icon-first", "_fi_":"xui-icon-first"}, {"imageClass":"xui-icon-triangle-left", "caption":"xui-icon-triangle-left", "_fi_":"xui-icon-triangle-left"}, {"imageClass":"xui-icon-triangle-down", "caption":"xui-icon-triangle-down", "_fi_":"xui-icon-triangle-down"}, {"imageClass":"xui-icon-triangle-right", "caption":"xui-icon-triangle-right", "_fi_":"xui-icon-triangle-right"}, {"imageClass":"xui-icon-sort-checked", "caption":"xui-icon-sort-checked", "_fi_":"xui-icon-sort-checked"}])
-                .setLeft(580)
-                .setTop(120)
-                .setWidth(200)
-                .setHeight(350)
-                .setLabelSize(20)
-                .setLabelPos("top")
-                .setLabelCaption("Icons")
-                .setLabelHAlign("left")
-                .setValue("a")
-                , "3");
             
             append(
                 xui.create("xui.UI.PopMenu")

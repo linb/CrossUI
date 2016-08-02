@@ -2354,7 +2354,7 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'middle'
             },
             '.xui-uiw-shell':{
-                background:'transparent',
+//                background:'transparent',
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie&&xui.browser.ver<=6?1:null,
                 //overflow:'hidden',
@@ -3001,6 +3001,7 @@ Class("xui.UI",  "xui.absObj", {
                 arr[arr.length]=text;
             // for ie67
             if(template.$fonticon && xui.__iefix2){
+                template.$fonticon=_.str.trim(template.$fonticon);
                 if(xui.__iefix2[template.$fonticon] )arr[arr.length]=xui.__iefix2[template.$fonticon];
                 else if(/^\s*\{\s*_fi_[\w\s]+\}\s*$/.test(template.$fonticon))arr[arr.length]="{_the_next_is_fonticon_}"+template.$fonticon;
             }
@@ -6530,9 +6531,7 @@ new function(){
                 className:'xui-uiw-shell {_className}',
                 style:'{_style}',
 
-                IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
-                    className:'xui-uibg-bar'
-                }:null,
+                IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{}:null,
                 FRAME:{
                     $order:2,
                     className:'xui-uiw-frame ',
@@ -6851,7 +6850,7 @@ new function(){
                 },
                 ICON:{
                     $order:1,
-                    className:'xuicon {imageClass}',
+                    className:'Buttonxuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                 },
                 CAPTION:{

@@ -100,7 +100,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     BARCMDL:{
                         $order:3,
                         tagName: 'div',
-                        className:'xui-uibar-cmdl'
+                        className:'xui-uibar-cmdl',
+                        SPACE:{
+                            className:'xuifont',
+                            $fonticon:'xui-icon-empty'
+                        }
                     },
                     BARCMDR:{
                         $order:4,
@@ -108,7 +112,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdr',
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
                     }

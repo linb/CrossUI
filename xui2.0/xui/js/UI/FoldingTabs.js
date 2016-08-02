@@ -147,7 +147,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         },
                                         CLOSE:{
                                             className:'xuifont',
-                                            $fonticon:'xui-uicmd-close ',
+                                            $fonticon:'xui-uicmd-close',
                                             style:'{closeDisplay}',
                                             $order:2
                                         }

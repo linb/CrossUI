@@ -117,7 +117,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdr',
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
                     }

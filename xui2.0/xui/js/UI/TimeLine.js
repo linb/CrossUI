@@ -187,7 +187,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         CLOSE:{
                             $order:4,
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
                     }

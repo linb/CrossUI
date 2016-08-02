@@ -19067,7 +19067,7 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'middle'
             },
             '.xui-uiw-shell':{
-                background:'transparent',
+//                background:'transparent',
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie&&xui.browser.ver<=6?1:null,
                 //overflow:'hidden',
@@ -19714,6 +19714,7 @@ Class("xui.UI",  "xui.absObj", {
                 arr[arr.length]=text;
             // for ie67
             if(template.$fonticon && xui.__iefix2){
+                template.$fonticon=_.str.trim(template.$fonticon);
                 if(xui.__iefix2[template.$fonticon] )arr[arr.length]=xui.__iefix2[template.$fonticon];
                 else if(/^\s*\{\s*_fi_[\w\s]+\}\s*$/.test(template.$fonticon))arr[arr.length]="{_the_next_is_fonticon_}"+template.$fonticon;
             }
@@ -23243,9 +23244,7 @@ new function(){
                 className:'xui-uiw-shell {_className}',
                 style:'{_style}',
 
-                IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
-                    className:'xui-uibg-bar'
-                }:null,
+                IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{}:null,
                 FRAME:{
                     $order:2,
                     className:'xui-uiw-frame ',
@@ -23564,7 +23563,7 @@ new function(){
                 },
                 ICON:{
                     $order:1,
-                    className:'xuicon {imageClass}',
+                    className:'Buttonxuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                 },
                 CAPTION:{
@@ -28824,7 +28823,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         var root=editor.getRoot(),ifr=editor.getSubNode("EDITOR");
                         o.setLeft(ifr.left()).setTop(ifr.top()).setWidth(ifr.offsetWidth()).setHeight(ifr.offsetHeight());
                         o.setZIndex(10);
-                        root.append(node);
+                        editor.getSubNode('BOX').append(node);
                     }else{
                         node.popToTop(src);
                     }
@@ -30946,7 +30945,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     BARCMDL:{
                         $order:3,
                         tagName: 'div',
-                        className:'xui-uibar-cmdl'
+                        className:'xui-uibar-cmdl',
+                        SPACE:{
+                            className:'xuifont',
+                            $fonticon:'xui-icon-empty'
+                        }
                     },
                     BARCMDR:{
                         $order:4,
@@ -30954,7 +30957,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uibar-cmdr',
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
                     }
@@ -31965,7 +31968,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uibar-cmdr',
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
                     }
@@ -32739,7 +32742,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uibar-cmdr',
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
                     }
@@ -34429,7 +34432,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         },
                         CLOSE:{
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-close ',
+                            $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}',
                             $order:4
                         }
@@ -35604,7 +35607,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             },
                                             CLOSE:{
                                                 className:'xuifont',
-                                                $fonticon:'xui-uicmd-close ',
+                                                $fonticon:'xui-uicmd-close',
                                                 style:'{closeDisplay}',
                                                 $order:2
                                             }
@@ -47765,7 +47768,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     CLOSE:{
                         $order:8,
                         className:'xuifont',
-                        $fonticon:'xui-uicmd-close ',
+                        $fonticon:'xui-uicmd-close',
                         style:'{closeDisplay}'
                     }
                 }
@@ -49416,7 +49419,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         },
                                         CLOSE:{
                                             className:'xuifont',
-                                            $fonticon:'xui-uicmd-close ',
+                                            $fonticon:'xui-uicmd-close',
                                             style:'{closeDisplay}',
                                             $order:2
                                         }

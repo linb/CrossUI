@@ -831,7 +831,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         var root=editor.getRoot(),ifr=editor.getSubNode("EDITOR");
                         o.setLeft(ifr.left()).setTop(ifr.top()).setWidth(ifr.offsetWidth()).setHeight(ifr.offsetHeight());
                         o.setZIndex(10);
-                        root.append(node);
+                        editor.getSubNode('BOX').append(node);
                     }else{
                         node.popToTop(src);
                     }

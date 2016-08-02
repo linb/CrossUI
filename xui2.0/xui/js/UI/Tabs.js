@@ -402,7 +402,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             },
                                             CLOSE:{
                                                 className:'xuifont',
-                                                $fonticon:'xui-uicmd-close ',
+                                                $fonticon:'xui-uicmd-close',
                                                 style:'{closeDisplay}',
                                                 $order:2
                                             }
