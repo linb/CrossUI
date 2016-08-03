@@ -208,7 +208,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-unselectable xuifont {cls3}',
+                            className:'xui-node xui-ui-unselectable xui-ui-btn xuifont {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{
@@ -756,13 +756,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 var pos;
                 if(p.type=='vertical'){
-                    data.clsmovebg = "xui-uiborder-tb";
+//                    data.clsmovebg = "xui-uiborder-tb";
                     if(data.pos=='before')
                         pos='top';
                     else
                         pos='bottom';
                 }else{
-                    data.clsmovebg = "xui-uiborder-lr";
+//                    data.clsmovebg = "xui-uiborder-lr";
                     if(data.pos=='before')
                         pos='left';
                     else
