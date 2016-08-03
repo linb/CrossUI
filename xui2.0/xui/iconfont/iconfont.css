@@ -32,7 +32,6 @@
 
 .xui-icon-empty:before, .xui-ui-busy:before{ content: "\e62c" !important; }
 
-
 .xui-uicmd-helpinput:before { content: "\e671"; }
 .xui-icon-zoomin:before { content: "\e61d"; }
 .xui-icon-zoomout:before { content: "\e61e"; }
@@ -149,3 +148,4 @@
 .xui-icon-triangle-down:before { content: "\e677"; }
 .xui-icon-triangle-right:before { content: "\e678"; }
 .xui-icon-sort-checked:before { content: "\e6bb"; }
+.xui-icon-transparent:before { content: "\e60e"; }

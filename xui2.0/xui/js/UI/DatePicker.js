@@ -27,8 +27,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             key=self.KEY;
             
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
-        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-uith xui-uiborder-rb2 xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
+        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="1px"/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/></colgroup>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1px"><th id="'+key+'-H:'+id+':7" class="xui-node xui-uith xui-uiborder-rb2 xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
             th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-uith xui-uiborder-rb2 xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
             tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'" >',
@@ -142,7 +142,6 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                                 tagName:'table',
                                 cellpadding:"0",
                                 cellspacing:"0",
-                                width:'100%',
                                 text:body
                             }
                         }
@@ -236,15 +235,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
     Static:{
         Appearances:{
             KEY:{
-                overflow:'visible'
             },
             'TBART, BBART':{
                 'border-spacing':0,
                 'border-collapse':'separate'
             },
             BORDER:{
-                overflow: 'visible',
-                position: 'relative'
             },
             BODY:{
                 position:'relative'
@@ -253,11 +249,10 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 top:'3px'
             },
             TAILI:{
-                position:'relative',
-                height:'24px'
+                position:'relative'
             },
             TIME:{
-                'padding':'2px 18px'
+                'padding':'2px 1.5em'
             },
             SET:{
                 position:'absolute',
@@ -284,17 +279,14 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             'YEAR,MONTH,DAY,HOUR,MINUTE':{
                 $order:4,
                 margin:'2px 2px 0 2px',
-                height:'15px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                'padding-left':'2px'
+                'padding':'0 2px'
             },
             YEAR:{
-                width:'32px'
             },
             'MONTH, DAY,HOUR, MINUTE':{
-                width:'16px'
             },
             CAPTION:{
                 padding:'4px 0 0 0',
@@ -319,7 +311,16 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             'W,H':{
                 $order:3,
                 'vertical-align':'middle',
-                'text-align':'center'
+                'text-align':'center',
+                'padding':'2px'
+            },
+            W:{
+                $order:4,
+                padding:'1px'
+            },
+            H:{
+                $order:4,
+                padding:'2px 0.5em'
             }
         },
         Behaviors:{
@@ -528,7 +529,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 readonly:true
             },
             width:{
-                ini:210,
+                ini:'auto',
                 readonly:true
             },
             value:{

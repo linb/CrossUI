@@ -63,21 +63,22 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             l=list.length,
             i,data,
             arr=[],
-            evs=xui.$IEUNSELECTABLE();
+            evs=xui.$IEUNSELECTABLE(),
+            evs2='style="visibility:hidden;"';
 
         ns.addTemplateKeys(['TXT', 'DD1', 'DD2', 'DD3','R','G','B','HH','S','V','H','E','X']);
 
         //simple list
-        for(i=0;i<l;i++)
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+'>'+list[i]+'</span>');
-
+        for(i=0;i<l;i++){
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            if((i+1)%17==0)arr.push('<br />');
+        }
         //data
-        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd1 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
+        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
+                '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
+               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
         ns.setTemplate({
-            style:'{_style};height:auto;width:{_width}px;',
+            style:'{_style};height:auto;width:auto',
             tagName : 'div',
             onselectstart:'return false',
             BORDER:{
@@ -139,16 +140,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                         onselectstart:'return false',
                                         text:data
                                     },
-                                    TRANS:{
-                                        tagName:"button",
-                                        className:'xui-ui-btn',
-                                        tabindex: '{tabindex}',
-                                        text:"{_transparent}"
-                                    },
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
-                                            className:'xui-uiborder-outset xui-uibg-bar',
+                                        className:'xui-uiborder-outset xui-uibg-bar',
                                         EXAMI:{
                                             tagName:'div',
                                             className:'xui-uiborder-inset'
@@ -192,6 +187,12 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     TAILI:{
                         tagName:'div',
                         className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
+                        TRANS:{
+                            className:'xuicon',
+                            $fonticon:'xui-icon-transparent',
+                            tabindex: '{tabindex}',
+                            title:"{_transparent}"
+                        },
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -268,13 +269,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     var ns=this,
                         tg=ns.getSubNode('TOGGLE');
                     ns.getSubNode('ADV').css('display',v?'':'none');
+                    ns.getSubNode('CON').css('padding-right',v?'205px':'0px');
                     if(xui.__iefix2){
                         tg.html(xui.__iefix2[v?'xui-icon-doubleleft':'xui-icon-doubleright']);
                     }else{
                         if(v) tg.removeClass('xui-icon-doubleright').addClass('xui-icon-doubleleft');
                         else tg.removeClass('xui-icon-doubleleft').addClass('xui-icon-doubleright');
                     }
-                    ns.getRoot().width(v?410:210);
                     if(v)
                         ns.box._updateMarks(ns,ns.properties.$UIvalue,true, ns.$hsv[0])
                 }
@@ -291,88 +292,68 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 padding:'4px 5px 4px 0'
             },
             CON:{
-                height:'198px',
                 padding:'3px',
                 position:'relative'
             },
             DATA:{
-                'float':'left',
-                width:'112px',
-                height:'86px'
             },
             'DATA span':{
-                'float':'left'
+                'padding':'0 2px',
+                'margin-right':'2px',
+                'width':'1.7em'
             },
             'DATA div':{
-                'padding-top':'3px',
-                'clear':'both'
+                'padding-bottom':'.5em'
             },
             TXT:{
                 width:'16px'
             },
             CAPTION:{
-                'font-size':'12px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             EXAM:{
-                'float':'left',
-                'margin-top':'24px',
-                padding:'3px'
+                padding:'3px',
+                position:'absolute',
+                top:'2px',
+                right:'2px'
             },
             EXAMI:{
-                height:'50px',
-                width:'70px',
+                height:'4em',
+                width:'7em',
                 'white-space':'normal',
                 'text-align':'center'
             },
             'DD1, DD2, DD3':{
-                display:'block',
-                height:'16px',
                 border:'1px solid #779EBF',
                 'padding-right':'2px',
                 cursor:'e-resize',
-                'text-align':'right',
+                'text-align':'center',
                 background:'#F8FBFF'
             },
-            DD1:{
-                width:'16px'
-            },
-            DD2:{
-                width:'24px'
-            },
-            DD3:{
-                $order:2,
-                width:'16px',
-                'border-right':'none'
-            },
             TOP:{
-                height:'92px',
                 position:'relative'
             },
             LIST :{
-                height:'106px',
                 position:'relative',
                 overflow:'hidden',
-                margin:'0 2px',
-                'line-height':xui.browser.ie6?'0':null,
-                'clear':'both'
+                margin:'2px',
+                padding:'2px',
+                'line-height':xui.__iefix1
             },
             TAILI:{
                 position:'relative',
                 'padding-top':'4px',
-                height:'22px',
                 'text-align':'center'
             },
             SIMPLE:{
-                'float':'left',
-                width:'192px',
                 position:'relative'
             },
             ADV:{
-                'float':'right',
+                position:'absolute',
+                right:'4px',
+                bottom:'4px',
                 width:'195px',
-                height:'195px',
-                position:'relative'
+                height:'195px'
             },
             'ADV div':{
                 cursor:'crosshair',
@@ -414,13 +395,9 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             },
 
             'LIST span':{
-                height: '12px',
-                width: '10px',
-                'font-size':xui.browser.ie6?'0':null,
-                'float': 'left',
-                display: 'block',
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 overflow: 'hidden',
-                'text-indent': '100px',
                 margin: '0',
                 cursor: 'pointer',
                 border: '1px solid #000',
@@ -428,9 +405,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             },
             TRANS:{
                 position:'absolute',
-                top:'0',
-                right:'0',
-                width:'80px'
+                top:'3px',
+                left:'0',
+                display:xui.$inlineBlock,
+                cursor:'pointer'
             },
             SET:{
                 position:'absolute',
@@ -686,10 +664,9 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             var nodisplay='display:none';
             data.classBar= data.barDisplay?'xui-uibar-top':'xui-uibar-top-s';
             data.closeDisplay = data.closeBtn?'':nodisplay;
-            data._width = data.advance?'410':'210';
             data.advDispay = data.advance?'':'display:none;';
             
-            data._transparent = xui.wrapRes('inline.transparent');
+            data._transparent = xui.getRes('inline.transparent');
             data._set = xui.wrapRes('inline.set');
             return data;
         },
@@ -874,7 +851,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 hex = cls.rgb2hex(rgb);
                 cls._updateMarks(profile, profile.$t_hex=hex);
             }
-
         },
         _updateValueByPos:function(profile, e){
             //set the cur hex value of adv for preventing update adv UI again

@@ -5,6 +5,9 @@
 .xuifont, .xuicon{
 		font-size: 16px;
 }
+.xuifontsmall, .xuiconsmall{
+		font-size: 16px;
+}
 
 /*background [[[colors]]]*/
 html, .xui-uibg-base{

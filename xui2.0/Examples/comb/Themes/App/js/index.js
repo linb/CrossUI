@@ -611,7 +611,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.CheckBox({
-                            "alias" : "xui_ui_checkbox1",
+                            "alias" : "xui_ui_checkbox2",
                             "key" : "xui.UI.CheckBox",
                             "properties" : {
                                 "caption" : "checkbox",
@@ -644,7 +644,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "clr",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput3",
+                            "alias" : "xui_ui_comboinput6",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "color",
@@ -661,7 +661,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput4",
+                            "alias" : "xui_ui_comboinput7",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "date",
@@ -678,7 +678,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput5",
+                            "alias" : "xui_ui_comboinput8",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "time",
@@ -696,7 +696,7 @@ Class('App', 'xui.Module',{
                     "sub" : [{
                         "id" : "radio",
                         "object" : new xui.UI.ProgressBar({
-                            "alias" : "xui_ui_progressbar2",
+                            "alias" : "xui_ui_progressbar3",
                             "key" : "xui.UI.ProgressBar",
                             "properties" : {
                                 "value" : 75,
@@ -710,7 +710,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button6",
+                            "alias" : "xui_ui_button9",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "status button",
@@ -725,7 +725,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn2",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button7",
+                            "alias" : "xui_ui_button10",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "drop button",
@@ -744,7 +744,7 @@ Class('App', 'xui.Module',{
                     "sub" : [{
                         "id" : "radio",
                         "object" : new xui.UI.RadioBox({
-                            "alias" : "xui_ui_radiobox1",
+                            "alias" : "xui_ui_radiobox2",
                             "key" : "xui.UI.RadioBox",
                             "properties" : {
                                 "width" : "auto",
@@ -1676,13 +1676,11 @@ Class('App', 'xui.Module',{
                 {
                     "imageClass" : "xuicon xui-uicmd-helpinput",
                     "caption" : "xui-uicmd-helpinput",
-                    "_fi_":"xui-uicmd-helpinput",
                     "id" : "eu"
                 },
                 {
                     "imageClass" : "xuicon xui-icon-zoomin",
                     "caption" : "xui-icon-zoomin",
-                    "_fi_":"xui-uicmd-helpinput",
                     "id" : "ev"
                 },
                 {
@@ -2282,7 +2280,8 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.ColorPicker")
                 .setHost(host,"color1")
                 .setLeft(20)
-                .setTop(210)
+                .setTop(223)
+                .setZIndex(1002)
                 , "1");
             
             host.tabs2.append(
@@ -2297,14 +2296,14 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.TimePicker")
                 .setHost(host,"time1")
-                .setLeft(250)
+                .setLeft(280)
                 .setTop(283)
                 , "1");
             
             host.tabs2.append(
                 xui.create("xui.UI.DatePicker")
                 .setHost(host,"date1")
-                .setLeft(520)
+                .setLeft(540)
                 .setTop(308)
                 .setValue(new Date(2013,4,22,0,0,0,0))
                 , "1");
@@ -2326,7 +2325,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.Slider")
                 .setHost(host,"slider1")
                 .setLeft(30)
-                .setTop(480)
+                .setTop(490)
                 .setWidth(700)
                 .setHeight(30)
                 .setIsRange(false)

@@ -36,8 +36,10 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         id=xui.UI.$ID;
         t='<span id="'+this.KEY+'-HI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
-        for(i=0;i<24;i++)
+        for(i=0;i<24;i++){
             a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%6===0)?cls2:'')+" xui-custom {comcls}");
+             if(i+1==12)a[a.length]='<br />';
+        }
         h=a.join('');
         a.length=0;
 
@@ -46,8 +48,10 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         id=xui.UI.$ID;
         t='<span id="'+this.KEY+'-MI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
-        for(i=0;i<60;i++)
+        for(i=0;i<60;i++){
             a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%5===0)?cls2:'') +" xui-custom {comcls}");
+            if((i+1) % 10 ===0 && i!=59 )a[a.length]='<br />';
+        }
         m=a.join('');
         a.length=0;
         
@@ -222,11 +226,13 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'padding-top':'4px'
             },
             CONH:{
-                width:'240px'
+                'white-space': 'nowrap',
+                'background-color':'#F9F9FB'
             },
             CONM:{
                 'margin-top':'4px',
-                width:'240px'
+                'white-space': 'nowrap',
+                'background-color':'#F9F9FB'
             },
             BARCMDL:{
                 top:'3px'
@@ -240,12 +246,10 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             'HOUR, MINUTE':{
                 $order:3,
                 margin:'2px 2px 0 2px',
-                height:'15px',
-                width:'16px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                'padding-left':'2px'
+                'padding':'0 2px'
             },
             SET:{
                 position:'absolute',
@@ -257,22 +261,19 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             TAILI:{
                 position:'relative',
                 'padding-top':'4px',
-                height:'20px',
                 'text-align':'center'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             '.xuiex-timepicker':{
-                width:'24px',
-                height:'16px',
-                'text-align':'center'
+                'text-align':'center',
+                padding:'2px 0.4em'
             },
             '.xuiex-timepicker3':{
-                width:'20px',
-                height:'16px',
                 'text-align':'center',
-                'font-weight':'bold'
+                'font-weight':'bold',
+                padding:'2px 0.2333333em'
             }
         },
         Behaviors:{
@@ -447,7 +448,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 readonly:true
             },
             width:{
-                ini:250,
+                ini:'auto',
                 readonly:true
             },
             value:{

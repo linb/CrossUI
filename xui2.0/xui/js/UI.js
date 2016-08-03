@@ -120,7 +120,8 @@ new function(){
             "xui-icon-triangle-left": '&#xe675;',
             "xui-icon-triangle-down": '&#xe677;',
             "xui-icon-triangle-right": '&#xe678;',
-            "xui-icon-sort-checked": '&#xe6bb;'
+            "xui-icon-sort-checked": '&#xe6bb;',
+            "xui-icon-transparent":'&#xe60e;'
         };
     }
 };
@@ -1973,6 +1974,10 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
+            ".xui-ui-btn::-moz-focus-inner":{
+                padding: "0 !important",
+                border: "0 none !important"
+            },
             ".xui-ui-gradientbg-mouseover, .xui-ui-btn-hover, .xui-ui-btn-mouseover":{
                 background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
@@ -2931,7 +2936,7 @@ Class("xui.UI",  "xui.absObj", {
                         (bak?(' '+bak):'') + 
                         (template.$fonticon?(' '+template.$fonticon):'') +
                         //add a special
-                        (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
+                        (lkey==profile.key ? (' xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
                 }else{
                     //default class first
                     template['class'] =  bak + ' ' +
@@ -3707,10 +3712,10 @@ Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        $getCSSValue:function(cls, key){
+        $getCSSValue:function(cls, key,force){
             var cache=xui.$CSSCACHE,
                 ck=cls+'->'+key;
-            if(ck in cache)return cache[ck];
+            if(!force &&(ck in cache))return cache[ck];
             var c=xui.Dom.getEmptyDiv().get(0),r;
             xui.Dom._setClass(c,cls);
             r=cache[ck]=parseInt(xui.Dom.getStyle(c,key),10)||0;

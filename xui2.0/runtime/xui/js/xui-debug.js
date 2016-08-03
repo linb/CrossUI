@@ -16833,7 +16833,8 @@ Class("xui.Tips", null,{
             "xui-icon-triangle-left": '&#xe675;',
             "xui-icon-triangle-down": '&#xe677;',
             "xui-icon-triangle-right": '&#xe678;',
-            "xui-icon-sort-checked": '&#xe6bb;'
+            "xui-icon-sort-checked": '&#xe6bb;',
+            "xui-icon-transparent":'&#xe60e;'
         };
     }
 };
@@ -19644,7 +19645,7 @@ Class("xui.UI",  "xui.absObj", {
                         (bak?(' '+bak):'') + 
                         (template.$fonticon?(' '+template.$fonticon):'') +
                         //add a special
-                        (lkey==profile.key ? ('xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
+                        (lkey==profile.key ? (' xui-ui-ctrl '+((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ')) : '' );
                 }else{
                     //default class first
                     template['class'] =  bak + ' ' +
@@ -29529,10 +29530,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SBTN:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn',
+                className:'xui-ui-unselectable xui-ui-btn xuifont',
+                $fonticon:'xui-icon-empty',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"xuifontsmall {btncls}",
+                    className:"xuifont {btncls}",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
@@ -29718,6 +29720,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 height:'100%',
                 width:'100%',
                 position:'absolute',
+                padding:0,
                 top:0,
                 right:0,
                 cursor:'pointer',
@@ -29741,15 +29744,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 display:'block',
                 'z-index':'1',
                 cursor:'pointer',
-                width:'18px',
-                height:'20px',
+                padding:0,
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 position:'absolute'
             },
             SBTN:{
                 $order:2,
-                'z-index':'6'
+                'z-index':'6',
+                padding:0
             },
             'R1,R2':{
                 $order:1,
@@ -29757,7 +29760,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 cursor:'pointer',
-                width:'18px',
+                padding:0,
                 position:'absolute',
                 height:'50%'
             },
@@ -29769,12 +29772,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'R1B,R2B':{
                 cursor:'pointer',
-                width:'18px',
                 position:'absolute',
                 left:0,
                 top:'50%',
                 height:'6px',
                 'margin-top':'-2px',
+                padding:0,
                 'z-index':2
             },
             'SMID,MID':{
@@ -29782,6 +29785,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 position:'absolute',
                 bottom:'2px',
+                padding:0,
                 left:0
             },
             '.setting-xui-comboinput':{
@@ -30298,17 +30302,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xuifont',
+                            $fonticon:'xui-icon-empty',
                             R1B:{
-                                className:'xuifontsmall',
+                                className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
                             }
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xuifont',
+                            $fonticon:'xui-icon-empty',
                             R2B:{
-                                className:'xuifontsmall',
+                                className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
                             }
                         }
@@ -30334,10 +30340,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.BTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn',
+                        className:'xui-ui-unselectable xui-ui-btn xuifont',
+                        $fonticon:'xui-icon-empty',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuifontsmall',
+                            className:'xuifont',
                             $fonticon:'{_fi_btnClass}',
                             style:'{_btnStyle}'
                         }
@@ -30451,7 +30458,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight'),
-                btnw=xui.UI.$getCSSValue('xui-comboinput-btn','width');
+                btnw=xui.UI.$getCSSValue('xuifont','font-size');
 
             if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
             var t = profile.properties,
@@ -30908,21 +30915,22 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             l=list.length,
             i,data,
             arr=[],
-            evs=xui.$IEUNSELECTABLE();
+            evs=xui.$IEUNSELECTABLE(),
+            evs2='style="visibility:hidden;"';
 
         ns.addTemplateKeys(['TXT', 'DD1', 'DD2', 'DD3','R','G','B','HH','S','V','H','E','X']);
 
         //simple list
-        for(i=0;i<l;i++)
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+'>'+list[i]+'</span>');
-
+        for(i=0;i<l;i++){
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            if((i+1)%17==0)arr.push('<br />');
+        }
         //data
-        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span><span style="width:8px;height:8px" '+evs+' ></span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd1 xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
+        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
+                '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
+               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
         ns.setTemplate({
-            style:'{_style};height:auto;width:{_width}px;',
+            style:'{_style};height:auto;width:auto',
             tagName : 'div',
             onselectstart:'return false',
             BORDER:{
@@ -30984,16 +30992,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                         onselectstart:'return false',
                                         text:data
                                     },
-                                    TRANS:{
-                                        tagName:"button",
-                                        className:'xui-ui-btn',
-                                        tabindex: '{tabindex}',
-                                        text:"{_transparent}"
-                                    },
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
-                                            className:'xui-uiborder-outset xui-uibg-bar',
+                                        className:'xui-uiborder-outset xui-uibg-bar',
                                         EXAMI:{
                                             tagName:'div',
                                             className:'xui-uiborder-inset'
@@ -31037,6 +31039,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     TAILI:{
                         tagName:'div',
                         className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
+                        TRANS:{
+                            className:'xuicon',
+                            $fonticon:'xui-icon-transparent',
+                            tabindex: '{tabindex}',
+                            title:"{_transparent}"
+                        },
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -31113,13 +31121,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var ns=this,
                         tg=ns.getSubNode('TOGGLE');
                     ns.getSubNode('ADV').css('display',v?'':'none');
+                    ns.getSubNode('CON').css('padding-right',v?'205px':'0px');
                     if(xui.__iefix2){
                         tg.html(xui.__iefix2[v?'xui-icon-doubleleft':'xui-icon-doubleright']);
                     }else{
                         if(v) tg.removeClass('xui-icon-doubleright').addClass('xui-icon-doubleleft');
                         else tg.removeClass('xui-icon-doubleleft').addClass('xui-icon-doubleright');
                     }
-                    ns.getRoot().width(v?410:210);
                     if(v)
                         ns.box._updateMarks(ns,ns.properties.$UIvalue,true, ns.$hsv[0])
                 }
@@ -31136,88 +31144,68 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 padding:'4px 5px 4px 0'
             },
             CON:{
-                height:'198px',
                 padding:'3px',
                 position:'relative'
             },
             DATA:{
-                'float':'left',
-                width:'112px',
-                height:'86px'
             },
             'DATA span':{
-                'float':'left'
+                'padding':'0 2px',
+                'margin-right':'2px',
+                'width':'1.7em'
             },
             'DATA div':{
-                'padding-top':'3px',
-                'clear':'both'
+                'padding-bottom':'.5em'
             },
             TXT:{
                 width:'16px'
             },
             CAPTION:{
-                'font-size':'12px',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             EXAM:{
-                'float':'left',
-                'margin-top':'24px',
-                padding:'3px'
+                padding:'3px',
+                position:'absolute',
+                top:'2px',
+                right:'2px'
             },
             EXAMI:{
-                height:'50px',
-                width:'70px',
+                height:'4em',
+                width:'7em',
                 'white-space':'normal',
                 'text-align':'center'
             },
             'DD1, DD2, DD3':{
-                display:'block',
-                height:'16px',
                 border:'1px solid #779EBF',
                 'padding-right':'2px',
                 cursor:'e-resize',
-                'text-align':'right',
+                'text-align':'center',
                 background:'#F8FBFF'
             },
-            DD1:{
-                width:'16px'
-            },
-            DD2:{
-                width:'24px'
-            },
-            DD3:{
-                $order:2,
-                width:'16px',
-                'border-right':'none'
-            },
             TOP:{
-                height:'92px',
                 position:'relative'
             },
             LIST :{
-                height:'106px',
                 position:'relative',
                 overflow:'hidden',
-                margin:'0 2px',
-                'line-height':xui.browser.ie6?'0':null,
-                'clear':'both'
+                margin:'2px',
+                padding:'2px',
+                'line-height':xui.__iefix1
             },
             TAILI:{
                 position:'relative',
                 'padding-top':'4px',
-                height:'22px',
                 'text-align':'center'
             },
             SIMPLE:{
-                'float':'left',
-                width:'192px',
                 position:'relative'
             },
             ADV:{
-                'float':'right',
+                position:'absolute',
+                right:'4px',
+                bottom:'4px',
                 width:'195px',
-                height:'195px',
-                position:'relative'
+                height:'195px'
             },
             'ADV div':{
                 cursor:'crosshair',
@@ -31259,13 +31247,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
 
             'LIST span':{
-                height: '12px',
-                width: '10px',
-                'font-size':xui.browser.ie6?'0':null,
-                'float': 'left',
-                display: 'block',
+                'font-size':xui.__iefix1,
+                'line-height':xui.__iefix1,
                 overflow: 'hidden',
-                'text-indent': '100px',
                 margin: '0',
                 cursor: 'pointer',
                 border: '1px solid #000',
@@ -31273,9 +31257,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             TRANS:{
                 position:'absolute',
-                top:'0',
-                right:'0',
-                width:'80px'
+                top:'3px',
+                left:'0',
+                display:xui.$inlineBlock,
+                cursor:'pointer'
             },
             SET:{
                 position:'absolute',
@@ -31531,10 +31516,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var nodisplay='display:none';
             data.classBar= data.barDisplay?'xui-uibar-top':'xui-uibar-top-s';
             data.closeDisplay = data.closeBtn?'':nodisplay;
-            data._width = data.advance?'410':'210';
             data.advDispay = data.advance?'':'display:none;';
             
-            data._transparent = xui.wrapRes('inline.transparent');
+            data._transparent = xui.getRes('inline.transparent');
             data._set = xui.wrapRes('inline.set');
             return data;
         },
@@ -31719,7 +31703,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 hex = cls.rgb2hex(rgb);
                 cls._updateMarks(profile, profile.$t_hex=hex);
             }
-
         },
         _updateValueByPos:function(profile, e){
             //set the cur hex value of adv for preventing update adv UI again
@@ -31872,8 +31855,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             key=self.KEY;
             
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
-        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="2%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/><col width="14%"/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1%"><th id="'+key+'-H:'+id+':7" class="xui-node xui-uith xui-uiborder-rb2 xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
+        var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="1px"/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/></colgroup>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1px"><th id="'+key+'-H:'+id+':7" class="xui-node xui-uith xui-uiborder-rb2 xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
             th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-uith xui-uiborder-rb2 xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
             tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'" >',
@@ -31987,7 +31970,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 tagName:'table',
                                 cellpadding:"0",
                                 cellspacing:"0",
-                                width:'100%',
                                 text:body
                             }
                         }
@@ -32081,15 +32063,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     Static:{
         Appearances:{
             KEY:{
-                overflow:'visible'
             },
             'TBART, BBART':{
                 'border-spacing':0,
                 'border-collapse':'separate'
             },
             BORDER:{
-                overflow: 'visible',
-                position: 'relative'
             },
             BODY:{
                 position:'relative'
@@ -32098,11 +32077,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top:'3px'
             },
             TAILI:{
-                position:'relative',
-                height:'24px'
+                position:'relative'
             },
             TIME:{
-                'padding':'2px 18px'
+                'padding':'2px 1.5em'
             },
             SET:{
                 position:'absolute',
@@ -32129,17 +32107,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'YEAR,MONTH,DAY,HOUR,MINUTE':{
                 $order:4,
                 margin:'2px 2px 0 2px',
-                height:'15px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                'padding-left':'2px'
+                'padding':'0 2px'
             },
             YEAR:{
-                width:'32px'
             },
             'MONTH, DAY,HOUR, MINUTE':{
-                width:'16px'
             },
             CAPTION:{
                 padding:'4px 0 0 0',
@@ -32164,7 +32139,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'W,H':{
                 $order:3,
                 'vertical-align':'middle',
-                'text-align':'center'
+                'text-align':'center',
+                'padding':'2px'
+            },
+            W:{
+                $order:4,
+                padding:'1px'
+            },
+            H:{
+                $order:4,
+                padding:'2px 0.5em'
             }
         },
         Behaviors:{
@@ -32373,7 +32357,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 readonly:true
             },
             width:{
-                ini:210,
+                ini:'auto',
                 readonly:true
             },
             value:{
@@ -32661,8 +32645,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         id=xui.UI.$ID;
         t='<span id="'+this.KEY+'-HI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
-        for(i=0;i<24;i++)
+        for(i=0;i<24;i++){
             a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%6===0)?cls2:'')+" xui-custom {comcls}");
+             if(i+1==12)a[a.length]='<br />';
+        }
         h=a.join('');
         a.length=0;
 
@@ -32671,8 +32657,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         id=xui.UI.$ID;
         t='<span id="'+this.KEY+'-MI:'+id+':@" class="xui-node xui-node-span '+cls+' !" '+xui.$IEUNSELECTABLE()+' >@</span>';
         a=[];
-        for(i=0;i<60;i++)
+        for(i=0;i<60;i++){
             a[a.length]=t.replace(/@/g,i<10?('0'+i):i).replace('!',((i%5===0)?cls2:'') +" xui-custom {comcls}");
+            if((i+1) % 10 ===0 && i!=59 )a[a.length]='<br />';
+        }
         m=a.join('');
         a.length=0;
         
@@ -32847,11 +32835,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'padding-top':'4px'
             },
             CONH:{
-                width:'240px'
+                'white-space': 'nowrap',
+                'background-color':'#F9F9FB'
             },
             CONM:{
                 'margin-top':'4px',
-                width:'240px'
+                'white-space': 'nowrap',
+                'background-color':'#F9F9FB'
             },
             BARCMDL:{
                 top:'3px'
@@ -32865,12 +32855,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'HOUR, MINUTE':{
                 $order:3,
                 margin:'2px 2px 0 2px',
-                height:'15px',
-                width:'16px',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                'padding-left':'2px'
+                'padding':'0 2px'
             },
             SET:{
                 position:'absolute',
@@ -32882,22 +32870,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             TAILI:{
                 position:'relative',
                 'padding-top':'4px',
-                height:'20px',
                 'text-align':'center'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             '.xuiex-timepicker':{
-                width:'24px',
-                height:'16px',
-                'text-align':'center'
+                'text-align':'center',
+                padding:'2px 0.4em'
             },
             '.xuiex-timepicker3':{
-                width:'20px',
-                height:'16px',
                 'text-align':'center',
-                'font-weight':'bold'
+                'font-weight':'bold',
+                padding:'2px 0.2333333em'
             }
         },
         Behaviors:{
@@ -33072,7 +33057,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 readonly:true
             },
             width:{
-                ini:250,
+                ini:'auto',
                 readonly:true
             },
             value:{
