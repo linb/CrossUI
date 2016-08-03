@@ -18687,6 +18687,10 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
+            ".xui-ui-btn::-moz-focus-inner":{
+                padding: "0 !important",
+                border: "0 none !important"
+            },
             ".xui-ui-gradientbg-mouseover, .xui-ui-btn-hover, .xui-ui-btn-mouseover":{
                 background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
@@ -20421,10 +20425,10 @@ Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        $getCSSValue:function(cls, key){
+        $getCSSValue:function(cls, key,force){
             var cache=xui.$CSSCACHE,
                 ck=cls+'->'+key;
-            if(ck in cache)return cache[ck];
+            if(!force &&(ck in cache))return cache[ck];
             var c=xui.Dom.getEmptyDiv().get(0),r;
             xui.Dom._setClass(c,cls);
             r=cache[ck]=parseInt(xui.Dom.getStyle(c,key),10)||0;
@@ -30458,7 +30462,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight'),
-                btnw=xui.UI.$getCSSValue('xuifont','font-size');
+                btnw=xui.UI.$getCSSValue('xuifont','font-size') + 2*$hborder;
 
             if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
             var t = profile.properties,
@@ -39963,14 +39967,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         MOVE:{
                             $order:0,
                             tagName:'div',
-                            className:'xui-ui-unselectable xui-uibg-bar {clsmovebg} {cls2} ',
+                            // give icon font for em size
+                            className:'xui-ui-unselectable xui-uibg-bar xuifont {clsmovebg} {cls2} ',
                             style:'cursor:{_cursor}'
                         },
                         CMD:{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifontsmall {cls3}',
+                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifont {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{
@@ -39984,9 +39989,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
         },
         Appearances:{
-            '.setting-xui-layout':{
-                width:'9px'
-            },
             KEY:{
                 position:'absolute',
                 overflow:'hidden',
@@ -40042,12 +40044,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             'MOVE-TOP, MOVE-BOTTOM':{
                 width:'100%',
-                height:'7px',
+                height:'.5em',
                 cursor:'n-resize'
             },
             'MOVE-LEFT, MOVE-RIGHT':{
                 height:'100%',
-                width:'7px',
+                width:'.5em',
                 cursor:'w-resize'
             },
             'MOVE-TOP':{
@@ -40077,7 +40079,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 bottom:0,
                 width:'40px',
-                height:'9px'
+                height:'.5em'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -40085,7 +40087,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 top:0,
                 width:'40px',
-                height:'9px'
+                height:'.5em'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -40093,7 +40095,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 right:0,
                 height:'40px',
-                width:'9px'
+                width:'.5em'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -40101,7 +40103,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 left:0,
                 height:'40px',
-                width:'9px'
+                width:'.5em'
             },
             'MOVE-MAIN':{
                 $order:5,
@@ -40251,7 +40253,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o = profile.getSubNode('ITEM',itemId),
                         panel = profile.getSubNode('PANEL',itemId),
                         move = profile.getSubNode('MOVE',itemId),
-                        _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
+                        _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2;
 
                     if(t.type=='vertical'){
                         // restore resize mode
@@ -40577,7 +40579,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 move=profile.getSubNode('MOVE',true),
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
-                _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width'),
+                _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2,
                 pct = t.flexSize, sum=0;
 
             var obj={}, obj2={};

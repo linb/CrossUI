@@ -200,14 +200,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         MOVE:{
                             $order:0,
                             tagName:'div',
-                            className:'xui-ui-unselectable xui-uibg-bar {clsmovebg} {cls2} ',
+                            // give icon font for em size
+                            className:'xui-ui-unselectable xui-uibg-bar xuifont {clsmovebg} {cls2} ',
                             style:'cursor:{_cursor}'
                         },
                         CMD:{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifontsmall {cls3}',
+                            className:'xui-node xui-ui-unselectable xuifont {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{
@@ -221,9 +222,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
         },
         Appearances:{
-            '.setting-xui-layout':{
-                width:'9px'
-            },
             KEY:{
                 position:'absolute',
                 overflow:'hidden',
@@ -279,12 +277,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             'MOVE-TOP, MOVE-BOTTOM':{
                 width:'100%',
-                height:'7px',
+                height:'.5em',
                 cursor:'n-resize'
             },
             'MOVE-LEFT, MOVE-RIGHT':{
                 height:'100%',
-                width:'7px',
+                width:'.5em',
                 cursor:'w-resize'
             },
             'MOVE-TOP':{
@@ -314,7 +312,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 bottom:0,
                 width:'40px',
-                height:'9px'
+                height:'.5em'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -322,7 +320,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-20px',
                 top:0,
                 width:'40px',
-                height:'9px'
+                height:'.5em'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -330,7 +328,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 right:0,
                 height:'40px',
-                width:'9px'
+                width:'.5em'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -338,7 +336,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-20px',
                 left:0,
                 height:'40px',
-                width:'9px'
+                width:'.5em'
             },
             'MOVE-MAIN':{
                 $order:5,
@@ -488,7 +486,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o = profile.getSubNode('ITEM',itemId),
                         panel = profile.getSubNode('PANEL',itemId),
                         move = profile.getSubNode('MOVE',itemId),
-                        _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width');
+                        _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2;
 
                     if(t.type=='vertical'){
                         // restore resize mode
@@ -814,7 +812,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 move=profile.getSubNode('MOVE',true),
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
-                _handlerSize=xui.UI.$getCSSValue('setting-xui-layout','width'),
+                _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2,
                 pct = t.flexSize, sum=0;
 
             var obj={}, obj2={};

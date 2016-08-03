@@ -6,7 +6,7 @@
   url('iconfont.ttf?t=1467528113') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
   url('iconfont.svg?t=1467528113#xuifont') format('svg'); /* iOS 4.1- */
 }
-.xuifont, .xuifontsmall, .xuicon{
+.xuifont, .xuicon{
   font-family:"xuifont" !important;
   font-style:normal;
   -webkit-font-smoothing: antialiased;
@@ -16,10 +16,6 @@
   vertical-align:middle;
 }
 .xuifont, .xuicon{
-  font-size:16px;
-  line-height:1em;
-}
-.xuifontsmall{
   font-size:16px;
   line-height:1em;
 }
