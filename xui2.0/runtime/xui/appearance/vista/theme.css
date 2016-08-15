@@ -3,7 +3,15 @@
 		font-size: 12px;
 }
 .xuifont, .xuicon{
-		font-size: 16px;
+  font-size:1.33333em;
+	/*for IE67 */
+  _font-size:16px;
+}
+.xuifont.inner{
+  font-size:1em;
+	/*for IE67 */
+  _font-size:16px;
+  line-height:1em;
 }
 
 /*background [[[colors]]]*/

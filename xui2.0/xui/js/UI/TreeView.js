@@ -3,7 +3,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         this.addTemplateKeys(['IMAGE']);
          var t = this.getTemplate();
          t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
-         t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
          n.className='xuicon {imageClass}';
          n.$fonticon = '{_fi_cls_file}';
@@ -13,7 +12,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
-                'padding':'1px'
+                'padding':'0.2em'
             },
             ITEM:{
                 'white-space': 'nowrap',
@@ -25,25 +24,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
-               'border-radius':'3px'
-            },
-            'BAR-mouseover, BAR-mousedown, BAR-checked':{
-            },
-            'BAR-mouseover':{
-                $order:1,
-                'background-color':'#FCDD7A',
-                'border-color':'#DCB400'                
-            },
-            'BAR-mousedown':{
-                $order:2,
-                'background-color':'#FAD200',
-                'border-color':'#DCB400'                
-            },
-            'BAR-checked':{
-                $order:2,
-                'background-color':'#CBE4FC',
-                'border-color':'#AAD2FA'                
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,
@@ -75,7 +56,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             }
         },
         DataModel:{
-            $subMargin:22,
+            $subMargin:1.8,
             group:null,
             noIcon:{
                 ini:false,
@@ -94,7 +75,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){
                     oitem._deep=pitem._deep+1;
-                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'px;';
+                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'em;';
                     // for the last one
                     item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }

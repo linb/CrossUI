@@ -57,13 +57,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
-                    className:'xuifontsmall',
+                    className:'xuifont',
                     $fonticon:'{_fi_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
-                    className:'xuifontsmall',
+                    className:'xuifont',
                     $fonticon:'{_fi_incls}',
                     tabindex:'{tabindex}'
                 }
@@ -89,9 +89,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             'BOX-h DECREASE, BOX-h INCREASE':{
                 top:'50%',
-                width:'17px',
-                height:'17px',
-                'margin-top':'-8px'
+                'margin-top':'-.5em'
             },            
             'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
                 padding:0,
@@ -138,9 +136,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'BOX-v DECREASE, BOX-v INCREASE':{
                 $order:10,
                 left:'50%',
-                width:'17px',
-                height:'17px',
-                'margin-left':'-8px'
+                'margin-left':'-.5em'
             },            
             'BOX-v DECREASE':{
                 $order:10,
@@ -605,8 +601,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             }else{
                 var w=ru1.width(),
-                w1=p.showDecreaseHandle?f('DECREASE').width():0,
-                w2=p.showIncreaseHandle?f('INCREASE').width():0,
+                w1=p.showDecreaseHandle?xui.CSS._getDftFISize():0,
+                w2=p.showIncreaseHandle?xui.CSS._getDftFISize():0,
                 w3=f('IND1').width();
     
                 if(ww){

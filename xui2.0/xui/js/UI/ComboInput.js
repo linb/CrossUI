@@ -476,7 +476,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $fonticon:'xui-icon-empty',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"xuifont {btncls}",
+                    className:"xuifont inner {btncls}",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
@@ -1247,7 +1247,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             className:'xui-ui-btn xuifont',
                             $fonticon:'xui-icon-empty',
                             R1B:{
-                                className:'xuifont',
+                                className:'xuifont inner',
                                 $fonticon:'xui-icon-smallup'
                             }
                         },
@@ -1256,7 +1256,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             className:'xui-ui-btn xuifont',
                             $fonticon:'xui-icon-empty',
                             R2B:{
-                                className:'xuifont',
+                                className:'xuifont inner',
                                 $fonticon:'xui-icon-smalldown'
                             }
                         }
@@ -1286,7 +1286,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         $fonticon:'xui-icon-empty',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuifont',
+                            className:'xuifont inner',
                             $fonticon:'{_fi_btnClass}',
                             style:'{_btnStyle}'
                         }

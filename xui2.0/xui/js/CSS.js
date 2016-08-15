@@ -319,21 +319,29 @@ Class("xui.CSS", null,{
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
         },
+        adjustFont:function(){
+            xui.$CSSCACHE={};
+            if(xui.UI)xui.UI.getAll().reLayout(true);    
+        },
+        _dftEmStr:'',
         _dftEm:0,
         _getDftEm: function(force){
             var ns=this;
             if(force||!ns._dftEm){
-                var div;
-                xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
-                ns._dftEm=div.get(0).offsetHeight;
-                div.remove();
+                var fz=ns.$getCSSValue('.xui-node','font-size');
+                if(ns.$isPx(fz)){
+                    ns._dftEm=parseFloat(fz);
+                }else{
+                    var div;
+                    xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                    ns._dftEm=div.get(0).offsetHeight;
+                    div.remove();
+                }
             }
-
-            _.resetRun('xui-css-resetem:asy',function(){
-                xui.CSS.$resetEm();
-            },300);
-
             return ns._dftEm;
+        },
+        _getDftFISize: function(force){
+            return this._getDftEm()*16/12;
         },
         $resetEm:function(){
             delete xui.CSS._dftEm;
@@ -351,13 +359,16 @@ Class("xui.CSS", null,{
             return (_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / this._getDftEm(force): value;
         },
         $px:function(value, force){
-            return (this.$isEm(value)?this.$em2px(value, force):parseInt(value, 10)) || 0;
+            return ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, force):parseInt(value, 10)) || 0;
+        },
+        $em:function(value, force){
+            return ((!_.isFinite(value)&&this.$isPx(value))?this.$px2em(value, force):parseFloat(value)) || 0;
         }
     },
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;} .xui-nodesmall{font-size:12px;line-height:1.22em;}"+
+            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
@@ -416,5 +427,9 @@ Class("xui.CSS", null,{
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
+
+        xui.Thread.repeat(function(t){
+            if((t=xui.CSS._dftEm) && (t!==xui.CSS._getDftEm(true)))xui.CSS.adjustFont();
+        }, 10000);
     }   
 });

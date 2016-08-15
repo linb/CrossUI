@@ -366,7 +366,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               padding:'1px 4px 1px 8px',
+               padding:'.2em .4em',
+                'border-radius': '3px 0 0 3px',
+                '-moz-border-radius': '3px 0 0 3px',
+                '-webkit-border-radius': '3px 0 0 3px',
+                '-o-border-radius': '3px 0 0 3px',
+                '-ms-border-radius': '3px 0 0 3px',
+                '-khtml-border-radius': '3px 0 0 3px',
+
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
@@ -378,7 +385,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //1px for ie8
                 'line-height':'1px',
                 position:'relative',
-                'margin-left':'22px'
+                'margin-left':'1.8em'
             },
             MARK:{
                cursor:'pointer',
@@ -391,33 +398,33 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                padding:'2px'
+                padding:'.167em'
             },
             OPT:{
                 $order:10,
                 position:'absolute',
                 left:'auto',
                 top:'auto',
-                right:'2px',
-                top:'2px',
+                right:'.167em',
+                top:'.167em',
                 display:'none'
             },
             LTAGCMDS:{
-                "padding-left":'4px',
-                "padding-right":'4px',
+                "padding-left":'.333em',
+                "padding-right":'.333em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
-                "padding-left":'4px',
+                "padding-left":'.333em',
                 'vertical-align':'middle'
             },
             'BOX-tagcmdleft TAGCMDS':{
-                "padding-right":'4px',
+                "padding-right":'.333em',
                 "float":"left"
             },
             CMD:{
-                "margin-left":'2px',
-                padding:'0 2px',
+                "margin-left":'.167em',
+                padding:'0 .167em',
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -540,9 +547,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         nodes.merge( self.getSubNodeByItemId('BAR', o.id) );
                     });
                     if(v)
-                       nodes.addClass('xui-ui-gradientbg ' + profile.getClass('BAR','-group'));
+                       nodes.addClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
                     else
-                       nodes.removeClass('xui-ui-gradientbg' + profile.getClass('BAR','-group'));
+                       nodes.removeClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
                 }
             },
             selMode:{

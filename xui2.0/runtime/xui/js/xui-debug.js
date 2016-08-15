@@ -1069,6 +1069,10 @@ _.merge(xui,{
             _.tryF(onSucess);
         }
     },
+    reLayout:function(){
+        xui.$CSSCACHE={};
+        if(xui.UI)xui.UI.getAll().reLayout(true);
+    },
     $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,
@@ -8408,21 +8412,29 @@ Class('xui.Event',null,{
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
         },
+        adjustFont:function(){
+            xui.$CSSCACHE={};
+            if(xui.UI)xui.UI.getAll().reLayout(true);    
+        },
+        _dftEmStr:'',
         _dftEm:0,
         _getDftEm: function(force){
             var ns=this;
             if(force||!ns._dftEm){
-                var div;
-                xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
-                ns._dftEm=div.get(0).offsetHeight;
-                div.remove();
+                var fz=ns.$getCSSValue('.xui-node','font-size');
+                if(ns.$isPx(fz)){
+                    ns._dftEm=parseFloat(fz);
+                }else{
+                    var div;
+                    xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                    ns._dftEm=div.get(0).offsetHeight;
+                    div.remove();
+                }
             }
-
-            _.resetRun('xui-css-resetem:asy',function(){
-                xui.CSS.$resetEm();
-            },300);
-
             return ns._dftEm;
+        },
+        _getDftFISize: function(force){
+            return this._getDftEm()*16/12;
         },
         $resetEm:function(){
             delete xui.CSS._dftEm;
@@ -8440,13 +8452,16 @@ Class('xui.Event',null,{
             return (_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / this._getDftEm(force): value;
         },
         $px:function(value, force){
-            return (this.$isEm(value)?this.$em2px(value, force):parseInt(value, 10)) || 0;
+            return ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, force):parseInt(value, 10)) || 0;
+        },
+        $em:function(value, force){
+            return ((!_.isFinite(value)&&this.$isPx(value))?this.$px2em(value, force):parseFloat(value)) || 0;
         }
     },
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;} .xui-nodesmall{font-size:12px;line-height:1.22em;}"+
+            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
@@ -8505,6 +8520,10 @@ Class('xui.Event',null,{
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
+
+        xui.Thread.repeat(function(t){
+            if((t=xui.CSS._dftEm) && (t!==xui.CSS._getDftEm(true)))xui.CSS.adjustFont();
+        }, 10000);
     }   
 });Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
@@ -9187,7 +9206,7 @@ Class('xui.Dom','xui.absBox',{
         },
         rotate:function(v){
             if(_.isSet(v)){
-                v=parseInt(v,10)||0;
+                v=parseFloat(v)||0;
                 v=v%360;
                 if(v<0)v=v+360;
                 return this.each(function(o){
@@ -9575,7 +9594,7 @@ Class('xui.Dom','xui.absBox',{
         cssRegion:function(region,triggerEvent) {
             var self=this;
             if(typeof region=='object'){
-                var i,t,m,  node=self.get(0), dom=xui.Dom, f=dom._setPxStyle,m={};
+                var i,t,m,  node=self.get(0), dom=xui.Dom, f=dom._setUnitStyle,m={};
                 for(var j=0,c=dom._boxArr;i=c[j++];)
                     m[i] = ((i in region) && region[i]!==null)?f(node,i,region[i]):false;
                 if(triggerEvent){
@@ -9598,7 +9617,7 @@ Class('xui.Dom','xui.absBox',{
         },
         //for quick size
         cssSize:function(size,triggerEvent) {
-            var self=this, node=self.get(0),r,dom=xui.Dom,f=dom._setPxStyle,b1,b2;
+            var self=this, node=self.get(0),r,dom=xui.Dom,f=dom._setUnitStyle,b1,b2;
            if(size){
                 var t;
                 b1 = size.width!==null?f(node,'width',size.width):false;
@@ -9611,7 +9630,7 @@ Class('xui.Dom','xui.absBox',{
         },
         //for quick move
         cssPos:function(pos, triggerEvent){
-            var node=this.get(0),dom=xui.Dom,f=dom._setPxStyle,b1,b2,r;
+            var node=this.get(0),dom=xui.Dom,f=dom._setUnitStyle,b1,b2,r;
             if(pos){
                 var t;
                 b1 = pos.left!=null?f(node,'left',pos.left):false;
@@ -9620,7 +9639,7 @@ Class('xui.Dom','xui.absBox',{
                 r=this;
             }else{
                 f=dom.getStyle;
-                r={left :parseInt(f(node, 'left'),10)||0,  top :parseInt(f(node, 'top'),10)||0};
+                r={left :parseFloat(f(node, 'left'))||0,  top :parseFloat(f(node, 'top'))||0};
             }
             node=null;
             return r;
@@ -9654,8 +9673,8 @@ Class('xui.Dom','xui.absBox',{
 
             me=arguments.callee,
             add= me.add || (me.add=function(pos, l, t){
-                pos.left += parseInt(l,10)||0;
-                pos.top += parseInt(t,10)||0;
+                pos.left += parseFloat(l)||0;
+                pos.top += parseFloat(t)||0;
             }),
             border=me.border || ( me.border = function(node, pos){
                 add(pos, getStyle(node,'borderLeftWidth'), getStyle(node,'borderTopWidth'));
@@ -9797,7 +9816,7 @@ Class('xui.Dom','xui.absBox',{
             if(xui.__iefix2 && (tag=="-checked"||tag=="-fold"||tag=="-expand")){
                 this.each(function(n){
                     var arr = xui.Dom._getClass(n).split(/\s+/);
-                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuifontsmall')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
+                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
                         _.arr.each(arr,function(s){
                             //It has 'xxxx' and 'xxxx-checked'
                             if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(new RegExp(tag+'$'),''):s] ){
@@ -11939,11 +11958,11 @@ type:4
                 }
                 return key;
         },
-        _setPxStyle:function(node, key, value){
+        _setUnitStyle:function(node, key, value){
             if(node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
-                value =_.isFinite(value) ? ((parseInt(value,10)||0) + "px") : (value +'');
+                value =_.isFinite(value) ? ((parseFloat(value)||0) + "px") : (value +'');
                 if((key=='width'||key=='height') && value.charAt(0)=='-')value='0';
                 if(style[key]!=value){
                     style[key]=value;
@@ -12189,8 +12208,8 @@ type:4
             self.plugIn(o[0],function(type){
                 type=type||'both';
                 node = this.get(0);
-                return ((type=='both'||type=='left'||type=='top')?parseInt(fun(node, o[1]),10):0) 
-                     + ((type=='both'||type=='right'||type=='bottom')?parseInt(fun(node, o[2]),10):0) || 0;
+                return ((type=='both'||type=='left'||type=='top')?parseFloat(fun(node, o[1])):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?parseFloat(fun(node, o[2])):0) || 0;
             })
         });
         /*
@@ -12238,7 +12257,7 @@ type:4
                 var n,r,t,style=node.style,me=arguments.callee,contentBox=xui.browser.contentBox,
                 r1=me.r1 || (me.r1=/%$/),
                 getStyle=xui.Dom.getStyle,
-                f=xui.Dom._setPxStyle,type=typeof value,t1;
+                f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
                     if(value===true){
                         n=(getStyle(node,'display')=='none');
@@ -12254,9 +12273,9 @@ type:4
                     switch(index){
                         case 1:
                             r=getStyle(node,o[1]);
-                            if((isNaN(parseInt(r,10)) || r1.test(r))&&!_in)
+                            if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
                                 r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
-                            r=parseInt(r,10)||0;
+                            r=parseFloat(r)||0;
                             break;
                         case 2:
                             r=node[o[6]];
@@ -12280,7 +12299,7 @@ type:4
                         t.swap(temp);
                         temp.empty(false);
                     }
-                    return parseInt(r,10)||0;
+                    return parseFloat(r)||0;
                 }else{
                     switch(index){
                         case 1:
@@ -12324,7 +12343,7 @@ type:4
                 var m,args,k=o[1];
                 return this.each(function(node){
                     m=xui.use(node.$xid)[k]();
-                    m=(parseInt(m,10)||0)+offset;
+                    m=(parseFloat(m)||0)+offset;
                     if(k=='width'||k=='height')m=m>0?m:0;
                     node.style[k]=m+'px';
                     if(triggerEvent){
@@ -12369,13 +12388,13 @@ type:4
                         if(window===node)return b.opr?Math.max(doc.body['client'+t],window['inner'+t]):b.kde?window['inner'+t]:(xui.browser.contentBox && doc.documentElement['client'+t]) ||doc.body['client'+t];
                     }
                     //give shortcut
-                    if(o=='width')value=parseInt(node.style.width,10)||self._W(node,1,value);
-                    else if(o=='height')value=parseInt(node.style.height,10)||self._H(node,1,value);
+                    if(o=='width')value=parseFloat(node.style.width)||self._W(node,1,value);
+                    else if(o=='height')value=parseFloat(node.style.height)||self._H(node,1,value);
                     else
                         value = xui.Dom.getStyle(node, o);
-                    return value=='auto'?value:(parseInt(value,10)||0);
+                    return value=='auto'?value:(parseFloat(value)||0);
                 }else{
-                    var f=xui.Dom._setPxStyle,t,a,
+                    var f=xui.Dom._setUnitStyle,t,a,
                     av = _.isFinite(value) ? (value+"px") : value;
                     return self.each(function(v){
                         if(v.nodeType!=1)return;
@@ -15866,8 +15885,8 @@ Class("xui.Tips", null,{
             }else if(tips._showed && tips.MOVABLE){
                 p=event.getPos(e);
                 n=tips._Node.style;
-                n.left = (parseInt(n.left,10)||0) + (p.left-tips._pos.left) +'px';
-                n.top = (parseInt(n.top,10)||0) + (p.top-tips._pos.top) +'px';
+                n.left = (parseFloat(n.left)||0) + (p.left-tips._pos.left) +'px';
+                n.top = (parseFloat(n.top)||0) + (p.top-tips._pos.top) +'px';
                 tips._pos=p;
             }
         },'$Tips',-1)
@@ -17606,6 +17625,7 @@ Class("xui.UI",  "xui.absObj", {
                     arr.push(o);
                 }
             });
+            xui.$CSSCACHE={};
             xui.UI.pack(arr,false).refresh();
             return this;
         },
@@ -17761,7 +17781,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div class="xui-node-div" style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;line-height:24px;cursor:wait;"><div>'+htm+'</div></div>');
+                        node=profile.$busy=xui.create('<div class="xui-node-div" style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;line-height:2em;cursor:wait;"><div>'+htm+'</div></div>');
                         xui([node.get(0)]).css({opacity:0.5});
                     }
                     node=profile.$busy;
@@ -17882,14 +17902,14 @@ Class("xui.UI",  "xui.absObj", {
         show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
                 var t=o.properties,ins=o.boxing(),b;
-                left=(left||left===0)?(parseInt(left,10)||0):null;
-                top=(top||top===0)?(parseInt(top,10)||0):null;
+                left=(left||left===0)?(parseFloat(left)||0):null;
+                top=(top||top===0)?(parseFloat(top)||0):null;
                 if(left!==null)t.left=left;
                 if(top!==null)t.top=top;
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    o.getRoot().show(left&&(left+'px'), top&&(top+'px'),null,ignoreEffects);
+                    o.getRoot().show(left&&(_.isFinite(left)?(left+'px'):left), top&&(_.isFinite(top)?(top+'px'):top),null,ignoreEffects);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -17907,7 +17927,7 @@ Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)o.getRoot().show(left&&(left+'px'), top&&(top+'px'));
+                        if(!b)o.getRoot().show(left&&(_.isFinite(left)?(left+'px'):left), top&&(_.isFinite(top)?(top+'px'):top));
                     }
                 }
             });
@@ -18530,7 +18550,7 @@ Class("xui.UI",  "xui.absObj", {
                     var self=this,
                         p=self.properties,b=false,
                         args;
-                    self.getRoot()[o]?self.getRoot()[o](value):xui.Dom._setPxStyle(self.getRootNode(),o,value);
+                    self.getRoot()[o]?self.getRoot()[o](value):xui.Dom._setUnitStyle(self.getRootNode(),o,value);
                     if(o=='width'||o=='height'){
                         // for no _onresize widget only
                         if(!self.box._onresize && self.onResize)
@@ -18717,7 +18737,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-ui-btn":{
                 $order:1,
-                padding: "3px",
+                padding: ".25em",
                 cursor: 'pointer',
                 display: xui.$inlineBlock,
                 'text-align': 'center',
@@ -18756,49 +18776,37 @@ Class("xui.UI",  "xui.absObj", {
              },
             '.xui-ui-image':{
                 'vertical-align':'middle',
-                width:'16px',
-                height:'16px',
+                width:'1.3333em',
+                height:'1.3333em',
                 'background-repeat':'no-repeat'
             },
             '.xui-uicmd-none, .xui-display-none':{
                 display:'none'
             },
             ".xui-uitembg":{
-                 "padding":"1px"
-            },
-            ".xui-uitembg-mouseover":{
-                $order:2,
-                "padding":"0px",
+                padding:'.2em .4em',
                'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px',               
-               "border":'solid 1px #FAD200'
+                '-khtml-border-radius': '3px',
+                'border':'solid 0.1em transparent'
+            },
+            ".xui-uitembg-mouseover":{
+                $order:2,
+                 'background-color':'#FCDD7A',
+                'border-color':'#DCB400'
             },
             ".xui-uitembg-mousedown":{
                 $order:3,
-                "padding":"0px",
-                'border-radius': '3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px',
-                "border":'solid 1px #F5D22D'
+                'background-color':'#FAD200',
+                'border-color':'#AAD2FA'
             },
             ".xui-uitembg-checked":{
                 $order:4,
-                "padding":"0px",
-                'border-radius': '3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px',
-                "border":'solid 1px #AAD2FA',
-                "color":"#000"
+                'background-color':'#CBE4FC',
+                'border-color':'#AAD2FA'
             },
 
             ".xui-uibarbg":{
@@ -18893,7 +18901,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
                 position:'absolute',
-                width:'4px',
+                width:'.25em',
                 left:0,
                 top:0,
                 height:'100%'
@@ -18902,15 +18910,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 position:'absolute',
                 top:0,
-                left:'4px',
-                right:'4px',
+                left:'.25em',
+                right:'.25em',
                 height:'100%',
                 width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
                 position:'absolute',
-                width:'4px',
+                width:'.25em',
                 top:0,
                 right:0,
                 height:'100%'
@@ -18925,36 +18933,36 @@ Class("xui.UI",  "xui.absObj", {
                 overflow:'hidden',
                 position:'relative',
                 width:'92%',
-                'padding':'6px 0 0 8px',
+                'padding':'.5em 0 0 .6667em',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
                 position:'absolute',
-                top:'6px',
-                right:'8px',
+                top:'.5em',
+                right:'.6667em',
                 'text-align':'right'
             },
             '.xui-uicon-main':{
                 position:'relative',
-                'padding-left':'4px',
+                'padding-left':'.3333em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 'z-index':1,
                 overflow:'visible'
             },
             '.xui-uicon-maini':{
-                'padding-right':'4px',
+                'padding-right':'.3333em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
-                height:'12px'
+                height:'1em'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
                 position:'absolute',
-                width:'4px',
+                width:'.3333em',
                 left:0,
                 bottom:0,
                 height:'100%'
@@ -18963,15 +18971,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 position:'absolute',
                 bottom:0,
-                left:'4px',
-                right:'4px',
+                left:'.3333em',
+                right:'.3333em',
                 height:'100%',
                 width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
                 position:'absolute',
-                width:'4px',
+                width:'.3333em',
                 right:0,
                 bottom:0,
                 height:'100%'
@@ -18979,12 +18987,12 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-top-s
             '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
                 $order:3,
-                height:'7px'
+                height:'.5833em'
             },
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
-                width:'4px',
+                width:'.3333em',
                 left:0,
                 top:0,
                 height:'100%'
@@ -18993,15 +19001,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 position:'absolute',
                 top:0,
-                left:'4px',
-                right:'4px',
+                left:'.3333em',
+                right:'.3333em',
                 height:'100%',
                 width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
                 position:'absolute',
-                width:'4px',
+                width:'.3333em',
                 top:0,
                 right:0,
                 height:'100%'
@@ -19017,12 +19025,12 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-bottom-s
             '.xui-uibar-bottom-s':{
                 $order:3,
-                height:'6px'
+                height:'.5em'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
-                width:'4px',
+                width:'.3333em',
                 left:0,
                 bottom:0,
                 height:'100%'
@@ -19031,15 +19039,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 position:'absolute',
                 bottom:0,
-                left:'4px',
-                right:'4px',
+                left:'.3333em',
+                right:'.3333em',
                 height:'100%',
                 width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
                 position:'absolute',
-                width:'4px',
+                width:'.3333em',
                 right:0,
                 bottom:0,
                 height:'100%'
@@ -20431,7 +20439,7 @@ Class("xui.UI",  "xui.absObj", {
             if(!force &&(ck in cache))return cache[ck];
             var c=xui.Dom.getEmptyDiv().get(0),r;
             xui.Dom._setClass(c,cls);
-            r=cache[ck]=parseInt(xui.Dom.getStyle(c,key),10)||0;
+            r=cache[ck]=parseFloat(xui.Dom.getStyle(c,key))||0;
             xui.Dom._setClass(c,"");
             return r;
         },
@@ -21035,7 +21043,7 @@ Class("xui.UI",  "xui.absObj", {
                 ini:0,
                 action:function(v){
                     var root=this.getRoot(),ins=this.boxing();
-                    v=parseInt(v,10)||0;
+                    v=parseFloat(v)||0;
                     v=v%360;
                     if(v<0)v=v+360;
                     if(this.box['xui.svg']){
@@ -21155,9 +21163,9 @@ Class("xui.UI",  "xui.absObj", {
             var s=profile.box,t=s._onresize;
             if(t&&(force||w||h)){
                 //adjust width and height
-                //w=parseInt(w,10)||null;
-                w=((w===""||w=='auto')?"auto":parseInt(w,10))||null
-                h=((h===""||h=='auto')?"auto":parseInt(h,10))||null;
+                //w=parseFloat(w)||null;
+                w=((w===""||w=='auto')?"auto":parseFloat(w))||null
+                h=((h===""||h=='auto')?"auto":parseFloat(h))||null;
 
                 //if it it has delay resize, overwrite arguments
                 if('_$visibility' in profile){
@@ -21655,8 +21663,8 @@ Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 style = profile.getRootNode().style,
                                 left, top, right, bottom,temp, other,
-                                x = parseInt(prop._dockBorderWidth,10) || 0,
-                                y = parseInt(prop._dockBorderHeight,10) || 0,
+                                x = parseFloat(prop._dockBorderWidth) || 0,
+                                y = parseFloat(prop._dockBorderHeight) || 0,
                                 region={},
                                 isSVG=profile.box['xui.svg'],bbox;
                             if(isSVG){
@@ -21728,7 +21736,7 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'top':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;
                                             if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
                                             if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
@@ -21789,7 +21797,7 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.ww*pct,10) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
                                             if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
                                             if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
@@ -21867,7 +21875,7 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
                                             if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
                                             if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
@@ -21948,7 +21956,7 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseInt(obj.hh*pct,10) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
                                             if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
                                             if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
@@ -22023,7 +22031,7 @@ Class("xui.UI",  "xui.absObj", {
 
                                     left = sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left);
                                     right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-parseFloat(prop.width)-parseFloat(prop.left));
-                                    top = prop.dock=='width'?(parseInt(prop.top,10) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top));
+                                    top = prop.dock=='width'?(parseFloat(prop.top) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top));
                                     //later call for w/h change once
                                     temp=obj.width - left - right - x;
                                     if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  prop.dockMinW));
@@ -22056,7 +22064,7 @@ Class("xui.UI",  "xui.absObj", {
 
                                     top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top);
                                     bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
-                                    left = prop.dock=='height'?(parseInt(prop.left,10) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left));
+                                    left = prop.dock=='height'?(parseFloat(prop.left) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left));
                                     //later call for w/h change once
                                     temp=obj.height - top - bottom - y;
                                     if(prop.dockMinH) temp = _adjust((prop.dockMinH<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  prop.dockMinH));
@@ -22238,8 +22246,8 @@ Class("xui.UI",  "xui.absObj", {
             for(var j=0,i;i=map[j];j++){
                 var t=(i in data)?data[i]:prop[i];
                 if(t || t===0){
-                    if(String(parseFloat(t))==String(t))
-                        a[a.length]=i+':'+(parseInt(t,10)||0)+'px';
+                    if(_.isFinite(t))
+                        a[a.length]=i+':'+(parseFloat(t)||0)+'px';
                     else if(t!='auto' && t)
                         a[a.length]=i+':'+t;
                 }
@@ -23310,12 +23318,12 @@ new function(){
                     /*for ie6 bug*/
                     /*for example, if single number, 100% width will add 1*/
                     /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(parseInt(ww/2,10))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(parseFloat(ww/2))*2;
                 }
                 if(hh&&'auto'!==hh){
                     hh -=Math.max((t.$vborder||0)*2, (t.$b_lw||0) + (t.$b_rw||0));
 
-                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(parseInt(hh/2,10))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(parseFloat(hh/2))*2;
                     /*for ie6 bug*/
                     if(xui.browser.ie&&xui.browser.ver<=6&&null===width){
                         o.ieRemedy();
@@ -23487,7 +23495,7 @@ new function(){
             Appearances:{
                 KEY:{
                     cursor:'pointer',
-                    padding:'3px 5px'
+                    padding:'.25em .41667em'
                 }
             },            
             DataModel:{
@@ -23598,7 +23606,7 @@ new function(){
                 },
                 DROP:{
                     'vertical-align': 'middle',
-                    'padding-left':'8px',
+                    'padding-left':'.66667em',
                     color:'#888'
                 },
                 'DROP-mouseover':{
@@ -23803,7 +23811,7 @@ new function(){
             $initRootHidden:true,
             _objectProp:{normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
             Templates:{
-                style:'padding:6px;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:150px;height:60px;visibility:hidden;display:none;position:absolute;z-index:0;',
+                style:'padding:.5em;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:12.5em;height:5em;visibility:hidden;display:none;position:absolute;z-index:0;',
                 className:'{_className}',
                 text:'{_html}'
             },
@@ -26410,13 +26418,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 DECREASE:{
                     style:'{_showDes}',
-                    className:'xuifontsmall',
+                    className:'xuifont',
                     $fonticon:'{_fi_decls}',
                     tabindex:'{tabindex}'
                 },
                 INCREASE:{
                     style:'{_showIns}',
-                    className:'xuifontsmall',
+                    className:'xuifont',
                     $fonticon:'{_fi_incls}',
                     tabindex:'{tabindex}'
                 }
@@ -26442,9 +26450,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             'BOX-h DECREASE, BOX-h INCREASE':{
                 top:'50%',
-                width:'17px',
-                height:'17px',
-                'margin-top':'-8px'
+                'margin-top':'-.5em'
             },            
             'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
                 padding:0,
@@ -26491,9 +26497,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'BOX-v DECREASE, BOX-v INCREASE':{
                 $order:10,
                 left:'50%',
-                width:'17px',
-                height:'17px',
-                'margin-left':'-8px'
+                'margin-left':'-.5em'
             },            
             'BOX-v DECREASE':{
                 $order:10,
@@ -26958,8 +26962,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             }else{
                 var w=ru1.width(),
-                w1=p.showDecreaseHandle?f('DECREASE').width():0,
-                w2=p.showIncreaseHandle?f('INCREASE').width():0,
+                w1=p.showDecreaseHandle?xui.CSS._getDftFISize():0,
+                w2=p.showIncreaseHandle?xui.CSS._getDftFISize():0,
                 w3=f('IND1').width();
     
                 if(ww){
@@ -27121,8 +27125,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 position:'relative'
             },
             BORDER:{
-                'line-height':'0px',
-                'font-size':'0px'
+                'line-height':xui.__iefix1,
+                'font-size':xui.__iefix1
             },
             LABEL:{
                'z-index':1,
@@ -29538,7 +29542,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $fonticon:'xui-icon-empty',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"xuifont {btncls}",
+                    className:"xuifont inner {btncls}",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
@@ -30309,7 +30313,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             className:'xui-ui-btn xuifont',
                             $fonticon:'xui-icon-empty',
                             R1B:{
-                                className:'xuifont',
+                                className:'xuifont inner',
                                 $fonticon:'xui-icon-smallup'
                             }
                         },
@@ -30318,7 +30322,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             className:'xui-ui-btn xuifont',
                             $fonticon:'xui-icon-empty',
                             R2B:{
-                                className:'xuifont',
+                                className:'xuifont inner',
                                 $fonticon:'xui-icon-smalldown'
                             }
                         }
@@ -30348,7 +30352,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         $fonticon:'xui-icon-empty',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuifont',
+                            className:'xuifont inner',
                             $fonticon:'{_fi_btnClass}',
                             style:'{_btnStyle}'
                         }
@@ -33355,7 +33359,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px'
+               'padding-top':'.333em'
             },
             EXTRA:{
                 display:'none'
@@ -33363,34 +33367,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             ITEMS:{
                 position:'relative',
                 overflow:'auto',
-                'overflow-x': 'hidden',
-                'padding':'1px'
+                'overflow-x': 'hidden'
             },
             ITEM:{
                 display:'block',
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
-                position:'relative',
-                padding:'1px 4px 1px 6px',
-                'border-radius':'3px'
-            },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-                padding:'0px 3px 0px 5px'
-            },
-            'ITEM-mouseover':{
-                $order:1,
-                'background-color':'#FCDD7A',
-                'border-color':'#DCB400'
-            },
-            'ITEM-mousedown':{
-                $order:2,
-                'background-color':'#FAD200',
-                'border-color':'#DCB400'
-            },
-            'ITEM-checked':{
-                $order:2,
-                'background-color':'#CBE4FC',
-                'border-color':'#AAD2FA'
+                position:'relative'
             },
             MARK:{
                $order:1,
@@ -33399,29 +33382,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                padding:'2px'
+                padding:'.167em'
             },
             OPT:{
                 $order:10,
                 position:'absolute',
                 left:'auto',
                 top:'auto',
-                right:'2px',
-                top:'2px',
+                right:'.167em',
+                top:'.167em',
                 display:'none'
             },
             LTAGCMDS:{
-                "padding-left":'4px',
-                "padding-right":'4px',
+                "padding-left":'.333em',
+                "padding-right":'.333em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
-                "padding-left":'4px',
+                "padding-left":'.333em',
                 'vertical-align':'middle'
             },
             CMD:{
-                "margin-left":'2px',
-                "padding": "0 2px",
+                "margin-left":'.167em',
+                "padding": "0 .167em",
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -37378,7 +37361,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               padding:'1px 4px 1px 8px',
+               padding:'.2em .4em',
+                'border-radius': '3px 0 0 3px',
+                '-moz-border-radius': '3px 0 0 3px',
+                '-webkit-border-radius': '3px 0 0 3px',
+                '-o-border-radius': '3px 0 0 3px',
+                '-ms-border-radius': '3px 0 0 3px',
+                '-khtml-border-radius': '3px 0 0 3px',
+
                'outline-offset':'-1px',
                '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
@@ -37390,7 +37380,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //1px for ie8
                 'line-height':'1px',
                 position:'relative',
-                'margin-left':'22px'
+                'margin-left':'1.8em'
             },
             MARK:{
                cursor:'pointer',
@@ -37403,33 +37393,33 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                padding:'2px'
+                padding:'.167em'
             },
             OPT:{
                 $order:10,
                 position:'absolute',
                 left:'auto',
                 top:'auto',
-                right:'2px',
-                top:'2px',
+                right:'.167em',
+                top:'.167em',
                 display:'none'
             },
             LTAGCMDS:{
-                "padding-left":'4px',
-                "padding-right":'4px',
+                "padding-left":'.333em',
+                "padding-right":'.333em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
-                "padding-left":'4px',
+                "padding-left":'.333em',
                 'vertical-align':'middle'
             },
             'BOX-tagcmdleft TAGCMDS':{
-                "padding-right":'4px',
+                "padding-right":'.333em',
                 "float":"left"
             },
             CMD:{
-                "margin-left":'2px',
-                padding:'0 2px',
+                "margin-left":'.167em',
+                padding:'0 .167em',
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -37552,9 +37542,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         nodes.merge( self.getSubNodeByItemId('BAR', o.id) );
                     });
                     if(v)
-                       nodes.addClass('xui-ui-gradientbg ' + profile.getClass('BAR','-group'));
+                       nodes.addClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
                     else
-                       nodes.removeClass('xui-ui-gradientbg' + profile.getClass('BAR','-group'));
+                       nodes.removeClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
                 }
             },
             selMode:{
@@ -38010,7 +38000,6 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         this.addTemplateKeys(['IMAGE']);
          var t = this.getTemplate();
          t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
-         t.$submap.items.ITEM.BAR.className='xui-uitembg {cls_group} {cls_fold} {disabled} {readonly}';
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
          n.className='xuicon {imageClass}';
          n.$fonticon = '{_fi_cls_file}';
@@ -38020,7 +38009,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
-                'padding':'1px'
+                'padding':'0.2em'
             },
             ITEM:{
                 'white-space': 'nowrap',
@@ -38032,25 +38021,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                position:'relative',
                display:'block',
                'outline-offset':'-1px',
-               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
-               'border-radius':'3px'
-            },
-            'BAR-mouseover, BAR-mousedown, BAR-checked':{
-            },
-            'BAR-mouseover':{
-                $order:1,
-                'background-color':'#FCDD7A',
-                'border-color':'#DCB400'                
-            },
-            'BAR-mousedown':{
-                $order:2,
-                'background-color':'#FAD200',
-                'border-color':'#DCB400'                
-            },
-            'BAR-checked':{
-                $order:2,
-                'background-color':'#CBE4FC',
-                'border-color':'#AAD2FA'                
+               '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null
             },
             SUB:{
                 zoom:xui.browser.ie?1:null,
@@ -38082,7 +38053,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             }
         },
         DataModel:{
-            $subMargin:22,
+            $subMargin:1.8,
             group:null,
             noIcon:{
                 ini:false,
@@ -38101,7 +38072,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){
                     oitem._deep=pitem._deep+1;
-                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'px;';
+                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'em;';
                     // for the last one
                     item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
@@ -39975,7 +39946,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:1,
                             tagName:'button',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-btn xui-ui-unselectable xuifont {cls3}',
+                            className:'xui-node xui-ui-unselectable xui-ui-btn xuifont {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{
@@ -40523,13 +40494,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 var pos;
                 if(p.type=='vertical'){
-                    data.clsmovebg = "xui-uiborder-tb";
+//                    data.clsmovebg = "xui-uiborder-tb";
                     if(data.pos=='before')
                         pos='top';
                     else
                         pos='bottom';
                 }else{
-                    data.clsmovebg = "xui-uiborder-lr";
+//                    data.clsmovebg = "xui-uiborder-lr";
                     if(data.pos=='before')
                         pos='left';
                     else
@@ -47344,7 +47315,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             profile.getSubNodes('HCELL',true).each(function(hc){
                 if(hc.clientHeight){
-                    borderW = hc.offsetWidth - parseInt(hc.style.width);
+                    borderW = hc.offsetWidth - parseFloat(hc.style.width);
                     return false;
                 }
             });

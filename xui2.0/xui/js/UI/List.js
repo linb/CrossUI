@@ -222,7 +222,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px'
+               'padding-top':'.333em'
             },
             EXTRA:{
                 display:'none'
@@ -230,34 +230,13 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ITEMS:{
                 position:'relative',
                 overflow:'auto',
-                'overflow-x': 'hidden',
-                'padding':'1px'
+                'overflow-x': 'hidden'
             },
             ITEM:{
                 display:'block',
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
-                position:'relative',
-                padding:'1px 4px 1px 6px',
-                'border-radius':'3px'
-            },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-                padding:'0px 3px 0px 5px'
-            },
-            'ITEM-mouseover':{
-                $order:1,
-                'background-color':'#FCDD7A',
-                'border-color':'#DCB400'
-            },
-            'ITEM-mousedown':{
-                $order:2,
-                'background-color':'#FAD200',
-                'border-color':'#DCB400'
-            },
-            'ITEM-checked':{
-                $order:2,
-                'background-color':'#CBE4FC',
-                'border-color':'#AAD2FA'
+                position:'relative'
             },
             MARK:{
                $order:1,
@@ -266,29 +245,29 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                padding:'2px'
+                padding:'.167em'
             },
             OPT:{
                 $order:10,
                 position:'absolute',
                 left:'auto',
                 top:'auto',
-                right:'2px',
-                top:'2px',
+                right:'.167em',
+                top:'.167em',
                 display:'none'
             },
             LTAGCMDS:{
-                "padding-left":'4px',
-                "padding-right":'4px',
+                "padding-left":'.333em',
+                "padding-right":'.333em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
-                "padding-left":'4px',
+                "padding-left":'.333em',
                 'vertical-align':'middle'
             },
             CMD:{
-                "margin-left":'2px',
-                "padding": "0 2px",
+                "margin-left":'.167em',
+                "padding": "0 .167em",
                 'vertical-align':'middle',
                 cursor:'pointer'
             }

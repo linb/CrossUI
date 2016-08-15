@@ -150,8 +150,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 position:'relative'
             },
             BORDER:{
-                'line-height':'0px',
-                'font-size':'0px'
+                'line-height':xui.__iefix1,
+                'font-size':xui.__iefix1
             },
             LABEL:{
                'z-index':1,

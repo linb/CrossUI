@@ -1069,6 +1069,10 @@ _.merge(xui,{
             _.tryF(onSucess);
         }
     },
+    reLayout:function(){
+        xui.$CSSCACHE={};
+        if(xui.UI)xui.UI.getAll().reLayout(true);
+    },
     $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,

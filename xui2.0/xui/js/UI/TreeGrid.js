@@ -6627,7 +6627,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             profile.getSubNodes('HCELL',true).each(function(hc){
                 if(hc.clientHeight){
-                    borderW = hc.offsetWidth - parseInt(hc.style.width);
+                    borderW = hc.offsetWidth - parseFloat(hc.style.width);
                     return false;
                 }
             });

@@ -679,7 +679,7 @@ Class('xui.Dom','xui.absBox',{
         },
         rotate:function(v){
             if(_.isSet(v)){
-                v=parseInt(v,10)||0;
+                v=parseFloat(v)||0;
                 v=v%360;
                 if(v<0)v=v+360;
                 return this.each(function(o){
@@ -1067,7 +1067,7 @@ Class('xui.Dom','xui.absBox',{
         cssRegion:function(region,triggerEvent) {
             var self=this;
             if(typeof region=='object'){
-                var i,t,m,  node=self.get(0), dom=xui.Dom, f=dom._setPxStyle,m={};
+                var i,t,m,  node=self.get(0), dom=xui.Dom, f=dom._setUnitStyle,m={};
                 for(var j=0,c=dom._boxArr;i=c[j++];)
                     m[i] = ((i in region) && region[i]!==null)?f(node,i,region[i]):false;
                 if(triggerEvent){
@@ -1090,7 +1090,7 @@ Class('xui.Dom','xui.absBox',{
         },
         //for quick size
         cssSize:function(size,triggerEvent) {
-            var self=this, node=self.get(0),r,dom=xui.Dom,f=dom._setPxStyle,b1,b2;
+            var self=this, node=self.get(0),r,dom=xui.Dom,f=dom._setUnitStyle,b1,b2;
            if(size){
                 var t;
                 b1 = size.width!==null?f(node,'width',size.width):false;
@@ -1103,7 +1103,7 @@ Class('xui.Dom','xui.absBox',{
         },
         //for quick move
         cssPos:function(pos, triggerEvent){
-            var node=this.get(0),dom=xui.Dom,f=dom._setPxStyle,b1,b2,r;
+            var node=this.get(0),dom=xui.Dom,f=dom._setUnitStyle,b1,b2,r;
             if(pos){
                 var t;
                 b1 = pos.left!=null?f(node,'left',pos.left):false;
@@ -1112,7 +1112,7 @@ Class('xui.Dom','xui.absBox',{
                 r=this;
             }else{
                 f=dom.getStyle;
-                r={left :parseInt(f(node, 'left'),10)||0,  top :parseInt(f(node, 'top'),10)||0};
+                r={left :parseFloat(f(node, 'left'))||0,  top :parseFloat(f(node, 'top'))||0};
             }
             node=null;
             return r;
@@ -1146,8 +1146,8 @@ Class('xui.Dom','xui.absBox',{
 
             me=arguments.callee,
             add= me.add || (me.add=function(pos, l, t){
-                pos.left += parseInt(l,10)||0;
-                pos.top += parseInt(t,10)||0;
+                pos.left += parseFloat(l)||0;
+                pos.top += parseFloat(t)||0;
             }),
             border=me.border || ( me.border = function(node, pos){
                 add(pos, getStyle(node,'borderLeftWidth'), getStyle(node,'borderTopWidth'));
@@ -1289,7 +1289,7 @@ Class('xui.Dom','xui.absBox',{
             if(xui.__iefix2 && (tag=="-checked"||tag=="-fold"||tag=="-expand")){
                 this.each(function(n){
                     var arr = xui.Dom._getClass(n).split(/\s+/);
-                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuifontsmall')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
+                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
                         _.arr.each(arr,function(s){
                             //It has 'xxxx' and 'xxxx-checked'
                             if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(new RegExp(tag+'$'),''):s] ){
@@ -3431,11 +3431,11 @@ type:4
                 }
                 return key;
         },
-        _setPxStyle:function(node, key, value){
+        _setUnitStyle:function(node, key, value){
             if(node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
-                value =_.isFinite(value) ? ((parseInt(value,10)||0) + "px") : (value +'');
+                value =_.isFinite(value) ? ((parseFloat(value)||0) + "px") : (value +'');
                 if((key=='width'||key=='height') && value.charAt(0)=='-')value='0';
                 if(style[key]!=value){
                     style[key]=value;
@@ -3681,8 +3681,8 @@ type:4
             self.plugIn(o[0],function(type){
                 type=type||'both';
                 node = this.get(0);
-                return ((type=='both'||type=='left'||type=='top')?parseInt(fun(node, o[1]),10):0) 
-                     + ((type=='both'||type=='right'||type=='bottom')?parseInt(fun(node, o[2]),10):0) || 0;
+                return ((type=='both'||type=='left'||type=='top')?parseFloat(fun(node, o[1])):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?parseFloat(fun(node, o[2])):0) || 0;
             })
         });
         /*
@@ -3730,7 +3730,7 @@ type:4
                 var n,r,t,style=node.style,me=arguments.callee,contentBox=xui.browser.contentBox,
                 r1=me.r1 || (me.r1=/%$/),
                 getStyle=xui.Dom.getStyle,
-                f=xui.Dom._setPxStyle,type=typeof value,t1;
+                f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
                     if(value===true){
                         n=(getStyle(node,'display')=='none');
@@ -3746,9 +3746,9 @@ type:4
                     switch(index){
                         case 1:
                             r=getStyle(node,o[1]);
-                            if((isNaN(parseInt(r,10)) || r1.test(r))&&!_in)
+                            if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
                                 r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
-                            r=parseInt(r,10)||0;
+                            r=parseFloat(r)||0;
                             break;
                         case 2:
                             r=node[o[6]];
@@ -3772,7 +3772,7 @@ type:4
                         t.swap(temp);
                         temp.empty(false);
                     }
-                    return parseInt(r,10)||0;
+                    return parseFloat(r)||0;
                 }else{
                     switch(index){
                         case 1:
@@ -3816,7 +3816,7 @@ type:4
                 var m,args,k=o[1];
                 return this.each(function(node){
                     m=xui.use(node.$xid)[k]();
-                    m=(parseInt(m,10)||0)+offset;
+                    m=(parseFloat(m)||0)+offset;
                     if(k=='width'||k=='height')m=m>0?m:0;
                     node.style[k]=m+'px';
                     if(triggerEvent){
@@ -3861,13 +3861,13 @@ type:4
                         if(window===node)return b.opr?Math.max(doc.body['client'+t],window['inner'+t]):b.kde?window['inner'+t]:(xui.browser.contentBox && doc.documentElement['client'+t]) ||doc.body['client'+t];
                     }
                     //give shortcut
-                    if(o=='width')value=parseInt(node.style.width,10)||self._W(node,1,value);
-                    else if(o=='height')value=parseInt(node.style.height,10)||self._H(node,1,value);
+                    if(o=='width')value=parseFloat(node.style.width)||self._W(node,1,value);
+                    else if(o=='height')value=parseFloat(node.style.height)||self._H(node,1,value);
                     else
                         value = xui.Dom.getStyle(node, o);
-                    return value=='auto'?value:(parseInt(value,10)||0);
+                    return value=='auto'?value:(parseFloat(value)||0);
                 }else{
-                    var f=xui.Dom._setPxStyle,t,a,
+                    var f=xui.Dom._setUnitStyle,t,a,
                     av = _.isFinite(value) ? (value+"px") : value;
                     return self.each(function(v){
                         if(v.nodeType!=1)return;
