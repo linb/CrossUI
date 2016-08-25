@@ -65,16 +65,13 @@ Class('App', 'xui.Com',{
             return children;
             // ]]Code created by CrossUI RAD Tools
         },
-        _ctl_fusionchartsxt1_ondataclick:function (prf, value, category){
+        _ctl_fusionchartsxt1_ondataclick:function (prf, value){
             var ns=this;
-            ns.ctl_l.setDisabled(false).setValue(value.label);
+            ns.ctl_l.setDisabled(false).setValue(value.categoryLabel);
             ns.ctl_v.setDisabled(false).setValue(value.value);
+           
             
-            if(_.isSet(ns._curIndex)){
-                ns.ctl_fusionchartsxt1.callFC("togglePieSlice", [ns._curIndex]);
-            }
-            
-            ns._curIndex=category;
+            ns._curIndex=value.index;
             
             ns.ctl_sbutton6.setDisabled(false);
         },
@@ -88,7 +85,6 @@ Class('App', 'xui.Com',{
             _.set(data,["data",ns._curIndex], {label:l,value:v});
             
              ns.ctl_fusionchartsxt1.setJSONData(data,true);
-             ns.ctl_fusionchartsxt1.callFC("togglePieSlice", [ns._curIndex]);
         }
     }
 });

@@ -16,7 +16,7 @@
   vertical-align:middle;
 }
 .xuifont, .xuicon{
-  font-size:1.33333em;
+  font-size:1.3333333333333333em;
 	/*for IE67 */
   _font-size:16px;
   line-height:1em;
@@ -34,7 +34,12 @@
 .xuifont-mousedown, .xuicon-mousedown{ color: #FF0000; }
 .xuifont-checked, .xuicon-checked{ color: #FF0000; }
 
-.xui-icon-empty:before, .xui-ui-busy:before{ content: "\e62c" !important; }
+.xui-icon-empty:before, .xui-ui-busy:before{
+	content: "\e62c" !important;
+	display:inline-block;
+	height:1em;
+	width:1em;
+}
 
 .xui-uicmd-helpinput:before { content: "\e671"; }
 .xui-icon-zoomin:before { content: "\e61d"; }

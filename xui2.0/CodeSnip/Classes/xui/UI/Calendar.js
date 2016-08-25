@@ -4,18 +4,14 @@ Class('App.xui_UI_Calendar', 'xui.Com',{
             // [[Code created by CrossUI RAD Tools
             var host=this, children=[], append=function(child){children.push(child.get(0))};
             
-            append((new xui.UI.Block)
-                .setHost(host,"block1")
+            
+            append((new xui.UI.Calendar)
+                .setHost(host,"calendar1")
                 .setLeft(50)
                 .setTop(80)
                 .setWidth(340)
                 .setHeight(304)
-                .setResizer(true)
-                .setCustomStyle({"PANEL":"background:#fff;"})
-            );
-            
-            host.block1.append((new xui.UI.Calendar)
-                .setHost(host,"calendar1")
+                .setDock('none')
                 .setDropKeys("iEvent")
                 .onDrop("_calendar1_ondrop")
             );

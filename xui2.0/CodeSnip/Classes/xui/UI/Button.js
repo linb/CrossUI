@@ -66,23 +66,10 @@ Class('App.xui_UI_Button', 'xui.Com',{
                 .setTop(40)
                 .setWidth(190)
                 .setHeight(30)
-                .setShadow(true)
                 .setCaption("with shadow")
             );
             
-            host.group3.append((new xui.UI.Button)
-                .setHost(host,"button34")
-                .setLeft(230)
-                .setTop(70)
-                .setWidth(280)
-                .setHeight(100)
-                .setShadow(true)
-                .setResizer(true)
-                .setCaption("with shadow and resizer")
-                .setHAlign("left")
-                .setVAlign("bottom")
-            );
-            
+ 
             host.group3.append((new xui.UI.Button)
                 .setHost(host,"button12")
                 .setLeft(230)
@@ -134,7 +121,6 @@ Class('App.xui_UI_Button', 'xui.Com',{
                 .setLeft(20)
                 .setTop(10)
                 .setWidth(100)
-                .setBorder(false)
                 .setCaption("align:left")
                 .setHAlign("left")
             );
@@ -144,7 +130,6 @@ Class('App.xui_UI_Button', 'xui.Com',{
                 .setLeft(160)
                 .setTop(10)
                 .setWidth(100)
-                .setBorder(false)
                 .setCaption("align:right")
                 .setHAlign("right")
             );
@@ -154,7 +139,6 @@ Class('App.xui_UI_Button', 'xui.Com',{
                 .setLeft(320)
                 .setTop(10)
                 .setWidth(100)
-                .setBorder(false)
                 .setCaption("with image")
                 .setImage("img/demo.gif")
             );

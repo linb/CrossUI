@@ -16,7 +16,7 @@
             append(
                 (new xui.UI.Span)
                 .setHost(host,"ctl_span5")
-                .setClassName("xui-uicmd-min")
+                .setClassName("xuifont xui-uicmd-min")
                 .setLeft(210)
                 .setTop(10)
                 .setWidth(16)

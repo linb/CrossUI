@@ -298,7 +298,7 @@ Class('App', 'xui.Com',{
                 );
             
             host.ctl_panel3.append(
-                xui.create("xui.UI.SLabel")
+                xui.create("xui.UI.Label")
                 .setHost(host,"ctl_slabel7")
                 .setLeft(275)
                 .setTop(235)

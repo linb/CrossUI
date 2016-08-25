@@ -10177,7 +10177,9 @@ Class('xui.Dom','xui.absBox',{
         }
         */
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
-            var me=arguments.callee, tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
+            var me=arguments.callee, 
+                css=xui.CSS,
+                tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
                 linear:function(s,c) {return (1/s)*c;},
                 sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
                 sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
@@ -10265,10 +10267,10 @@ Class('xui.Dom','xui.absBox',{
                         }else{
                             if(!_.isFinite(e)){
                                 u=e.replace(/[-\d.]*/,'');
-                                s=parseFloat(s);
-                                e=parseFloat(e);
                             }
-                            curvalue = (s + (e-s)*curvalue).toFixed(5);
+                            s=css.$px(s);
+                            e=css.$px(e);
+                            curvalue = _.toFixedNumber(s + (e-s)*curvalue, 6);
                         }
                         curvalue+=u||unit||'';
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
@@ -16051,9 +16053,6 @@ Class("xui.Tips", null,{
                         if(xui.Dom.css3Support("boxShadow")){
                             node.css("boxShadow","2px 2px 2px #717C8C");
                             _ruler.css("boxShadow","2px 2px 2px #717C8C");
-                        }else if(typeof node.addShadow == 'function'){
-                            node.addShadow();
-                            _ruler.addShadow();
                         }
                         xui('body').append(_ruler);
                     }
@@ -16611,8 +16610,6 @@ Class("xui.Tips", null,{
 
                 if(xui.Dom.css3Support("boxShadow")){
                     ns.css("boxShadow","2px 2px 2px #717C8C");
-                }else if(ns.addShadow){
-                    ns.addShadow();
                 }
 
                 if(xui.browser.ie6){
@@ -33837,11 +33834,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 },
                 onMouseover:function(profile, e, src){
                     var item = profile.getItemByDom(src);
+                    if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
                     var item = profile.getItemByDom(src);
+                    if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
@@ -33850,6 +33849,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick:function(profile, e, src){
                     if(profile.onShowOptions){
                         var item = profile.getItemByDom(src);
+                        if(!item)return;
                         if(!profile.properties.optBtn && !item.optBtn)return;
                         profile.boxing().onShowOptions(profile, item, e, src);
                     }
@@ -34383,14 +34383,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             imgWidth:{
-                $spaceunit:1,
                 ini:16,
                 action:function(v){
                     this.getSubNode('IMAGE',true).width(v);
                 }
             },
             imgHeight:{
-                $spaceunit:1,
                 ini:16,
                 action:function(v){
                     this.getSubNode('IMAGE',true).height(v);
@@ -37855,11 +37853,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 },
                 onMouseover:function(profile, e, src){
                     var item = profile.getItemByDom(src);
+                    if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
                     var item = profile.getItemByDom(src);
+                    if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
@@ -37868,6 +37868,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 onClick:function(profile, e, src){
                     if(profile.onShowOptions){
                         var item = profile.getItemByDom(src);
+                        if(!item)return;
                         if(!profile.properties.optBtn && !item.optBtn)return;
                         profile.boxing().onShowOptions(profile, item, e, src);
                     }
@@ -38148,7 +38149,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 var oitem=profile.getItemByDom(fid);
 
                 // stop self
-                if(item && oitem._pid==item.id)return false;
+                if(oitem && item && oitem._pid==item.id)return false;
 
                 var p=xui.use(src).get(0),
                     rn=profile.getRootNode();
@@ -38899,7 +38900,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 overflow:'visible',
                 'white-space': 'nowrap',
                 cursor:'pointer',
-                padding:'.2em 1.5em .2em .2em',
+                padding:'.2em 1.8em .2em .2em',
                 outline:0
             },
             ITEMSPLIT:{
@@ -38938,7 +38939,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'padding-left':'.5em',
+                'padding-left':'.7em',
                 'font-size':'1em'
             },
             RULER:{
@@ -38951,15 +38952,15 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 top:'.25em',
                 right:0,
                 width:'7em',
-                'padding-right':'1.5em',
+                'padding-right':'1.8em',
                 'text-align':'right',
                 'z-index':'10',
                 zoom:xui.browser.ie?1:null
             },
             SUB:{
                 position:'absolute',
-                top:'.2em',
-                right:'.5em'
+                top:'.15em',
+                right:'.15em'
             }
         },
         Behaviors:{
@@ -40657,6 +40658,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var t=profile.properties,
+                        css=xui.CSS,
                         itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src),
                         r=profile.getRoot(),
@@ -40665,7 +40667,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o = profile.getSubNode('ITEM',itemId),
                         panel = profile.getSubNode('PANEL',itemId),
                         move = profile.getSubNode('MOVE',itemId),
-                        _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2;
+                        _handlerSize=css._getDftFISize() / 2;
 
                     if(t.type=='vertical'){
                         // restore resize mode
@@ -41000,14 +41002,16 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
                 pct = t.flexSize, 
-                sum=0;
+                sum=0,
 
                 css=xui.CSS,
                 _handlerSize=css._getDftFISize() / 2,
                 w_em = css.$isEm(width),
-                h_em = css.$isEm(height),
-                height = h_em?css.$em2px(height):height,
-                width = w_em?css.$em2px(width):width;
+                h_em = css.$isEm(height);
+
+
+            if(width&&w_em)width=xui.CSS.$em2px(width);
+            if(height&&h_em)height=xui.CSS.$em2px(height);
 
             var obj={}, obj2={};
             // **keep the original size

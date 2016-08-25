@@ -23,8 +23,13 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     }
 
                     // new one
-                    var fc=new FusionCharts(prop.chartType, prf._chartId, prop.width, prop.height),
-                        flag;
+                    var fc=new FusionCharts(
+                            prop.chartType, 
+                            prf._chartId, 
+                            xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width):prop.width, 
+                            xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height):prop.height
+                    ),
+                     flag;
                     
                     switch(dataFormat){
                         case 'XMLUrl':
@@ -58,6 +63,19 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     }
                     fc.setTransparent(true);
                     fc.render(prf.getSubNode('BOX').id());
+
+                    // attachEvents
+                    var t=FusionCharts(prf._chartId),
+                        f1=function(a,argsMap){
+                            if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
+                        },f2=function(a,argsMap){
+                            if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
+                        },f3=function(a,argsMap){
+                            if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
+                        };
+                    t.addEventListener("dataplotClick",f1);
+                    t.addEventListener("dataLabelClick",f2);
+                    t.addEventListener("annotationClick",f3);
                 }
             });
         },
@@ -430,17 +448,6 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             // render it
             prf.boxing().refreshChart();
             
-            var t=FusionCharts(prf._chartId),
-                f1=function(a,argsMap){
-                    if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
-                },f2=function(a,argsMap){
-                    if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
-                },f3=function(a,argsMap){
-                    if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
-                };
-            t.addEventListener("dataplotClick",f1);
-            t.addEventListener("dataLabelClick",f2);
-            t.addEventListener("annotationClick",f3);
             // set before destroy function
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
                 var t;
@@ -482,7 +489,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 }
                 if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId))){
                     // ensure by px
-                    t.resizeTo(xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width):prop.width, xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height):prop.height);
+                    t.resizeTo(ww, hh);
                 }
             }
         }

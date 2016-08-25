@@ -488,6 +488,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
                     var t=profile.properties,
+                        css=xui.CSS,
                         itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src),
                         r=profile.getRoot(),
@@ -496,7 +497,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o = profile.getSubNode('ITEM',itemId),
                         panel = profile.getSubNode('PANEL',itemId),
                         move = profile.getSubNode('MOVE',itemId),
-                        _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2;
+                        _handlerSize=css._getDftFISize() / 2;
 
                     if(t.type=='vertical'){
                         // restore resize mode
@@ -831,14 +832,16 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
                 pct = t.flexSize, 
-                sum=0;
+                sum=0,
 
                 css=xui.CSS,
                 _handlerSize=css._getDftFISize() / 2,
                 w_em = css.$isEm(width),
-                h_em = css.$isEm(height),
-                height = h_em?css.$em2px(height):height,
-                width = w_em?css.$em2px(width):width;
+                h_em = css.$isEm(height);
+
+
+            if(width&&w_em)width=xui.CSS.$em2px(width);
+            if(height&&h_em)height=xui.CSS.$em2px(height);
 
             var obj={}, obj2={};
             // **keep the original size

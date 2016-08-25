@@ -223,6 +223,7 @@ Class('App.snip_animator', 'xui.Com',{
                             },300);
                         }else{
                             _.asyRun(function(){
+                                if(ns.divDemo)
                                 ns.divDemo.refresh();
                             },1000);
                         }

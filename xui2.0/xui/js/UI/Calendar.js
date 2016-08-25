@@ -163,7 +163,7 @@ Class('xui.UI.Calendar', 'xui.UI.DatePicker', {
                 f('BODY').height(t);
 
                 t=profile.getSubNode('TD','1');
-                profile.box._getDayNodes(profile).height(t.height);
+                profile.box._getDayNodes(profile).height(xui.CSS.$forceu(t.height()));
             }
         }
     }

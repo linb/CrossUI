@@ -401,7 +401,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 overflow:'visible',
                 'white-space': 'nowrap',
                 cursor:'pointer',
-                padding:'.2em 1.5em .2em .2em',
+                padding:'.2em 1.8em .2em .2em',
                 outline:0
             },
             ITEMSPLIT:{
@@ -440,7 +440,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'padding-left':'.5em',
+                'padding-left':'.7em',
                 'font-size':'1em'
             },
             RULER:{
@@ -453,15 +453,15 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 top:'.25em',
                 right:0,
                 width:'7em',
-                'padding-right':'1.5em',
+                'padding-right':'1.8em',
                 'text-align':'right',
                 'z-index':'10',
                 zoom:xui.browser.ie?1:null
             },
             SUB:{
                 position:'absolute',
-                top:'.2em',
-                right:'.5em'
+                top:'.15em',
+                right:'.15em'
             }
         },
         Behaviors:{

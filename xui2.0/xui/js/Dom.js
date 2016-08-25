@@ -1617,7 +1617,9 @@ Class('xui.Dom','xui.absBox',{
         }
         */
         animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
-            var me=arguments.callee, tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
+            var me=arguments.callee, 
+                css=xui.CSS,
+                tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
                 linear:function(s,c) {return (1/s)*c;},
                 sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
                 sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
@@ -1705,10 +1707,10 @@ Class('xui.Dom','xui.absBox',{
                         }else{
                             if(!_.isFinite(e)){
                                 u=e.replace(/[-\d.]*/,'');
-                                s=parseFloat(s);
-                                e=parseFloat(e);
                             }
-                            curvalue = (s + (e-s)*curvalue).toFixed(5);
+                            s=css.$px(s);
+                            e=css.$px(e);
+                            curvalue = _.toFixedNumber(s + (e-s)*curvalue, 6);
                         }
                         curvalue+=u||unit||'';
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));

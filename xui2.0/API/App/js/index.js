@@ -41,7 +41,7 @@ Class('App', 'xui.Com',{
         _onrender:function(){
             SPA=this;
             SPA.btnLang.setCaption(xui.getRes('app.'+xui.getLang()));
-            xui.UI.Border.$abstract=xui.UI.Shadow.$abstract=xui.UI.Resizer.$abstract=true;
+            xui.UI.Resizer.$abstract=true;
             xui.History.setCallback(function(str){
                 var str2=str.replace('#!','');
                 str=str2;

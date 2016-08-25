@@ -10,7 +10,7 @@ Class('App.xui_UI_PopMenu', 'xui.Com',{
                     {"id":"itema", "caption":"itema", "tips":"item a"}, 
                     {"type":"split"}, 
                     {"id":"itemb", "type":"checkbox", value:true,"caption":"itemb", "tips":"item b"}, 
-                    {"id":"itemc", "caption":"itemc", "type":"checkbox", "tips":"item c"}, 
+                    {"id":"itemc", "caption":"itemc", "type":"checkbox", "tips":"item c", add:'some ext text'}, 
                     {"id":"itemd", "caption":"itemd", "tips":"item d"},
                     {"id":"iteme", "type":"radiobox", value:true,"caption":"iteme", "tips":"item e"}, 
                     {"id":"itemf", "caption":"itemf", "type":"radiobox", "tips":"item f"}

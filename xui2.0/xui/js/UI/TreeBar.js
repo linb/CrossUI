@@ -471,11 +471,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 },
                 onMouseover:function(profile, e, src){
                     var item = profile.getItemByDom(src);
+                    if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
                     var item = profile.getItemByDom(src);
+                    if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
@@ -484,6 +486,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 onClick:function(profile, e, src){
                     if(profile.onShowOptions){
                         var item = profile.getItemByDom(src);
+                        if(!item)return;
                         if(!profile.properties.optBtn && !item.optBtn)return;
                         profile.boxing().onShowOptions(profile, item, e, src);
                     }
@@ -764,7 +767,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 var oitem=profile.getItemByDom(fid);
 
                 // stop self
-                if(item && oitem._pid==item.id)return false;
+                if(oitem && item && oitem._pid==item.id)return false;
 
                 var p=xui.use(src).get(0),
                     rn=profile.getRootNode();

@@ -1,7 +1,7 @@
 _.set(xui.Locale,["en","app"], {
     en:'English',
     cn:'Chinese',
-    apititle:"CrossUI 1.4 - API Documentation",
+    apititle:"CrossUI 2.0 - API Documentation",
 
     search:'Search',
     lQ1:'Search API',
@@ -2712,27 +2712,6 @@ _.set(xui.Locale,["en","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependencies: xui.UI.Resizer."
-            },
-            addShadow:{
-                $desc:"To add a shadow to the first element. ",
-                $rtn:"xui.UI.Shadow",
-                $paras:[
-                    "properties [Optional] : key/value pairs, the properties of border."
-                ],
-                $snippet:[
-                    "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove();},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove();},10000);"
-                ],
-                $memo:"Dependencies: xui.UI.Shadow."
-            },
-            removeShadow:{
-                $desc:"To remove an existing shadow from the first element. ",
-                $rtn:"[self]",
-                $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow();},1000);_.asyRun(function(){div.removeShadow();},2000);_.asyRun(function(){div.remove();},3000);"
-                ],
-                $memo:"Dependencies: xui.UI.Shadow."
             },
             addClass:{
                 $desc:"To add a specified class name to each of the current elements.",

@@ -1,7 +1,7 @@
 _.set(xui.Locale,["cn","app"], {
     en:'英文',
     cn:'中文',
-    apititle:"CrossUI 1.4 - API 文档",
+    apititle:"CrossUI 2.0 - API 文档",
 
     search:'API查询',
     lQ1:'按API查询',
@@ -2722,27 +2722,6 @@ _.set(xui.Locale,["cn","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer();},2000);_.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependencies: xui.UI.Resizer."
-            },
-            addShadow:{
-                $desc:"为第一个元素添加阴影. ",
-                $rtn:"xui.UI.Shadow",
-                $paras:[
-                    "properties [可选参数] : 键值对, 边框的属性."
-                ],
-                $snippet:[
-                    "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow();_.asyRun(function(){div.remove();},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 10px #00ff00;width:100px;height:100px;left:100px;top:100px;\\\'></div>');xui('body').append(div);div.topZindex(true).addShadow({shadowOffset:10});_.asyRun(function(){div.remove();},10000);"
-                ],
-                $memo:"Dependencies: xui.UI.Shadow."
-            },
-            removeShadow:{
-                $desc:"移除第一个元素的阴影. ",
-                $rtn:"[self]",
-                $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addShadow();},1000);_.asyRun(function(){div.removeShadow();},2000);_.asyRun(function(){div.remove();},3000);"
-                ],
-                $memo:"Dependencies: xui.UI.Shadow."
             },
             addClass:{
                 $desc:"为每一个元素添加CSS类",
