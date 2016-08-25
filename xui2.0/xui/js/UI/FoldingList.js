@@ -134,20 +134,20 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Static:{
         Appearances:{
             KEY:{
-                padding:'2px'
+                padding:'.2em'
             },
             ITEMS:{
                 border:0,
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'padding-top':'8px'//,
+                'padding-top':'.7em'//,
                 //for ie6 1px bug,  HR/TR(position:absolute;right:0;)
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
             ITEM:{
                 //for ie6 bug
                 zoom:xui.browser.ie?1:null,
-                'margin-top':'-9px',
+                'margin-top':'-7px',
                 padding:0,
                 position:'relative',
                 overflow:'hidden',
@@ -165,7 +165,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 overflow:'auto'
             },
             BODYI:{
-                padding:'2px 8px 0 8px',
+                padding:'.2em .7em 0 .7em',
                 position:'relative'
             },
             'BODY, BODYI':{
@@ -175,7 +175,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':null,
             'ITEM-checked':{
                 $order:2,
-                'margin-bottom':'12px'
+                'margin-bottom':'1em'
              },
             'ITEM-checked BODY':{
                 $order:2,
@@ -185,10 +185,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'absolute',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                width:'8px'
+                width:'.7em'
             },
             'HL, HR':{
-                height:'30px'
+                height:'2.6em'
             },
             'ITEM-prechecked HL':{
                 $order:1
@@ -197,7 +197,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 $order:1
             },
             'TL, TR':{
-                height:'20px'
+                height:'1.7em'
             },
             HL:{
                 $order:1,
@@ -231,17 +231,17 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'relative',
                 'white-space':'nowrap',
                 overflow:'hidden',
-                padding:'2px 4px'
+                padding:'.2em .4em'
             },
             TAIL:{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 position:'relative',
-                height:'3px',
+                height:'.3em',
                 'background-color':'#EEE'
             },
             'CAP1, CAP2':{
-                padding:'3px',
+                padding:'.3em',
                 'vertical-align':'middle'
             },
             CAP1:{
@@ -258,7 +258,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
                 position:'relative',
-                left:'4px',
+                left:'.4em',
 
                 'white-space':'nowrap',
                 overflow:'hidden'
@@ -268,8 +268,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 //'float':'right',
 
                 position:'absolute',
-                right:'4px',
-                top:'2px',
+                right:'.5em',
+                top:'.2em',
 
                 'white-space':'nowrap',
                 overflow:'hidden'
@@ -319,7 +319,9 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                     var item = arr[arr.length-1];
                     item._show = true;
                     item._fill = true;
-                    item._body = profile.onGetContent?profile.boxing().onGetContent(profile,item) : profile.box._buildBody(profile, item);
+                    item._body = profile.onGetContent?profile.boxing().onGetContent(profile,item,function(o){
+                        profile.boxing().fillContent(item.id, item._body=o);
+                    }) : profile.box._buildBody(profile, item);
                 }
             }
             return arguments.callee.upper.apply(this, arguments);

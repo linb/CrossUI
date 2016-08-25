@@ -214,7 +214,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         PANEL:{
                             tagName:'div',
                             className:'xui-uibg-base',
-                            style:'position:absolute;left:0;top:0;{_bginfo};{_overflow};',
+                            style:'position:absolute;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
                     }
@@ -249,15 +249,17 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 position:'absolute',
                 "z-index":1,
                 overflow:'hidden',
-                'border-width':xui.browser.opr?'0px':null,
+                'border-width':xui.browser.opr?'0':null,
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
             PANEL:{
                 position:'absolute',
                 overflow:'auto',
+                left:0,
+                top:0,
                 /*for opera, opera default set border to 3 ;( */
-                'border-width':xui.browser.opr?'0px':null,
+                'border-width':xui.browser.opr?'0':null,
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
@@ -292,50 +294,50 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 top:0
             },
             'MOVE-LEFT':{
-                right:'0px'
+                right:'0'
             },
             'MOVE-RIGHT':{
                 left:0
             },
             'CMD-TOP, CMD-BOTTOM, CMD-LEFT, CMD-RIGHT':{
                 padding:0,
-                'border-radius': '0px',
-                '-moz-border-radius': '0px',
-                '-webkit-border-radius': '0px',
-                '-o-border-radius': '0px',
-                '-ms-border-radius': '0px',
-                '-khtml-border-radius': '0px'
+                'border-radius': '0',
+                '-moz-border-radius': '0',
+                '-webkit-border-radius': '0',
+                '-o-border-radius': '0',
+                '-ms-border-radius': '0',
+                '-khtml-border-radius': '0'
             },
             'CMD-TOP':{
                 $order:1,
                 left:'50%',
-                'margin-left':'-20px',
+                'margin-left':'-1em',
                 bottom:0,
-                width:'40px',
+                width:'2em',
                 height:'.5em'
             },
             'CMD-BOTTOM':{
                 $order:1,
                 left:'50%',
-                'margin-left':'-20px',
+                'margin-left':'-1em',
                 top:0,
-                width:'40px',
+                width:'2em',
                 height:'.5em'
             },
             'CMD-LEFT':{
                 $order:1,
                 top:'50%',
-                'margin-top':'-20px',
+                'margin-top':'-1em',
                 right:0,
-                height:'40px',
+                height:'2em',
                 width:'.5em'
             },
             'CMD-RIGHT':{
                 $order:1,
                 top:'50%',
-                'margin-top':'-20px',
+                'margin-top':'-1em',
                 left:0,
-                height:'40px',
+                height:'2em',
                 width:'.5em'
             },
             'MOVE-MAIN':{
@@ -446,6 +448,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 },
                 onDragstop:function(profile, e, src){
                     var t=profile.properties,
+                        css=xui.CSS,
+                        height=t.height,
+                        width=t.width,
                         o=xui.use(src).parent(),
                         r=profile.getRoot(),
                         item = profile.getItemByDom(src),
@@ -459,18 +464,23 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(t.type=='vertical'){
                         innerH = r.height();
                         //use size to ignore onresize event once
-                        o.height(item._size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y);
+                        item._size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y
+                        o.height(css.$isEm(height)?css.$px2em(item._size)+'em':item._size);
                         cur = sum * item._size / innerH;
                     }else{
                         innerW = r.width();
-                        o.width(item._size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x);
+                        item._size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x
+                        o.width(css.$isEm(width)?css.$px2em(item._size)+'em':item._size);
                         cur = sum * item._size / innerW;
                     }
                     // always - main
                     mainItem.size -= cur - item.size;
                     item.size = cur;
                     //use size to ignore onresize event once
-                    xui.UI.$tryResize(profile,innerW,innerH,true);
+                    xui.UI.$tryResize(profile, 
+                        innerW && css.$isEm(width)?css.$px2em(innerW)+'em':innerW, 
+                        innerH && css.$isEm(height)?css.$px2em(innerH)+'em':innerH, 
+                        true);
                     profile._limited=0;
                 }
             },
@@ -611,8 +621,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             dock:'fill',
             listKey:null,
-            width:200,
-            height:200,
+            width:{
+                $spaceunit:1,
+                ini:'18em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'18em'
+            },
             flexSize:{
                 ini: false,
                 action:function(){
@@ -743,16 +759,18 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             return data;
         },
         _prepareItem:function(profile, data,item){
-            var p=profile.properties,t;
+            var p=profile.properties, 
+                css=xui.CSS,
+                width=p.width, height=p.height,t;
             if(data.id=='main'){
                 data.cls1=profile.getClass('ITEM', '-main');
                 data.cls2  = profile.getClass('MOVE', '-main');
                 data.cls3  = profile.getClass('CMD', '-main' );
             }else{
                 if(p.type=='vertical')
-                    data._size = 'height:'+data._size+'px';
+                    data._size = 'height:'+css.$isEm(height)?css.$px2em(data._size)+'em':data._size+'px';
                 else
-                    data._size = 'width:'+data._size+'px';
+                    data._size = 'width:'+css.$isEm(width)?css.$px2em(data._size)+'em':data._size+'px';
 
                 var pos;
                 if(p.type=='vertical'){
@@ -812,8 +830,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 move=profile.getSubNode('MOVE',true),
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
-                _handlerSize=xui.UI.$getCSSValue('xuifont','font-size') / 2,
-                pct = t.flexSize, sum=0;
+                pct = t.flexSize, 
+                sum=0;
+
+                css=xui.CSS,
+                _handlerSize=css._getDftFISize() / 2,
+                w_em = css.$isEm(width),
+                h_em = css.$isEm(height),
+                height = h_em?css.$em2px(height):height,
+                width = w_em?css.$em2px(width):width;
 
             var obj={}, obj2={};
             // **keep the original size
@@ -939,9 +964,23 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     });
                 }
             }
-
+            var ff_w=function(o){
+               _.arr.each("left,width,right".split(','),function(t){
+                   if(t in o)o[t]=css.$forceu(o[t],'em');
+               });
+            }, ff_h=function(o){
+               _.arr.each("top,height,bottom".split(','),function(t){
+                    if(t in o)o[t]=css.$forceu(o[t],'em');
+               });
+            };
             //collect width/height in size
             _.each(obj2, function(o, id){
+                if(w_em){
+                    ff_w(obj[id]); ff_w(obj2[id]);
+                }
+                if(h_em){
+                    ff_h(obj[id]); ff_h(obj2[id]);
+                }
                 profile.getSubNode('PANEL', id).cssRegion(obj[id], true);
                 profile.getSubNode('ITEM', id).cssRegion(obj2[id]);
             });

@@ -12,9 +12,9 @@ Class("xui.Tips", null,{
         //for: span(display:-moz-inline-box) cant wrap in firefox
         xui.CSS.addStyleSheet(
             ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
-            ".xui-tips-i{font-size:12px;overflow:hidden;position:relative;}"+
+            ".xui-tips-i{overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
-            ".xui-tips-c{padding:1px 2px 2px 2px;}"+
+            ".xui-tips-c{padding:.1em .2em .2em .2em;}"+
             ".xui-tips .xui-tips-c{border-radius:1px;}"
         , this.KEY);
 
@@ -185,7 +185,7 @@ Class("xui.Tips", null,{
                         s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-uitd-alt xui-tips-c xui-custom">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
@@ -215,7 +215,8 @@ Class("xui.Tips", null,{
                             node.popToTop((pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
                                 left:pos.left,
                                 top:pos.top-12,
-                                width:24,height:32
+                                width:24,
+                                height:32
                             }},1);
                         }
                         
@@ -231,7 +232,7 @@ Class("xui.Tips", null,{
                 this.threadid='$tips:1$';
                 this.show=function(item, pos){
                     if(!this.node){
-                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;font-size:12px;padding:3px;overflow:hidden;"></div>');
+                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;padding:.3em;overflow:hidden;"></div>');
                         xui('body').append(this.node);
                     }
                     pos.left+=12;

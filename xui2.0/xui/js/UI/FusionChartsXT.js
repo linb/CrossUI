@@ -219,8 +219,14 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             renderer:null,
             selectable:null,
             tips:null,
-            width:400,
-            height:300,
+            width:{
+                $spaceunit:1,
+                ini:'30em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'25em'
+            },
             chartType:{
                 ini:"Column2D",
                 //Single Series Charts
@@ -455,8 +461,16 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             onShowTips:null
         },
         _onresize:function(prf,width,height){
-            var size = prf.getSubNode('BOX').cssSize(),prop=prf.properties,t;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
+            var size = prf.getSubNode('BOX').cssSize(),
+                prop=prf.properties,
+                // compare with px
+                w_em=xui.CSS.$isEm(width),
+                h_em=xui.CSS.$isEm(height),
+                ww=w_em?xui.CSS.$em2px(width):width, 
+                hh=h_em?xui.CSS.$em2px(height):height,
+                t;
+
+            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=width;
                 if(height)prop.height=height;
@@ -467,7 +481,8 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     prf.getSubNode('COVER').cssSize(size,true);
                 }
                 if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId))){
-                    t.resizeTo(prop.width, prop.height);
+                    // ensure by px
+                    t.resizeTo(xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width):prop.width, xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height):prop.height);
                 }
             }
         }

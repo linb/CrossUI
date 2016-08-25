@@ -65,7 +65,8 @@ Class('App', 'xui.Com',{
             if(!(db=this.$formObj.dbbinder))return;
 
             db=xui.DataBinder.getFromName(db);
-            var data=db.updateDataFromUI().getData();
+            db.updateDataFromUI();
+            var data=db.getData();
 
             if(!data)
                 alert('Ensure all the fields are valid first!');

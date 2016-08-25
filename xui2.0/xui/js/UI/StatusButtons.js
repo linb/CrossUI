@@ -34,8 +34,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ITEM:{
                 'vertical-align':'middle',
                 position:'relative',
-                padding:'3px 5px',
-                margin:'0 4px',
+                padding:'.3em .5em',
+                margin:'0 .4em',
                 cursor:'pointer',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
@@ -52,7 +52,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             CAPTION:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
-                'vertical-align':'middle'
+                'vertical-align':'middle',
+                'font-size':'1em'
             } 
         },
         DataModel:({
@@ -97,7 +98,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 item.itemMargin = "margin:" + t;
 
             if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth = "width:"+ ( t=='auto'?t:(t+'px'));
+                item.itemWidth = "width:"+ ( t=='auto'?t:(_.isFinite(t)?t+'px':t));
 
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;

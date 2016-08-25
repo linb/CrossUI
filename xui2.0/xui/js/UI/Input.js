@@ -110,7 +110,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             style:'',
             LABEL:{
                 className:'{_required}',
-                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                style:'{labelShow};width:{labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -158,7 +158,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px'
+               'padding-top':'.3em'
             },
             WRAP:{
                 left:0,
@@ -180,9 +180,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             INPUT:{
                //don't change it in custom class or style
-               'padding-top':'2px',
-               'padding-left':'2px',
-               'padding-right':'2px',
+               'padding-top':'.2em',
+               'padding-left':'.2em',
+               'padding-right':'.2em',
+               'padding-bottom':'.2em',
 
                "background-color":"transparent",
                "background-image":xui.browser.ie?'url(.)':null,
@@ -191,10 +192,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                // default
                'text-align':'left',
 
-               'margin-top':xui.browser.ie?'-1px':null,
+               'margin-top':xui.browser.ie67?'-1px':null,
                position:'relative',
                //give default size
-               width:'102px',
+               width:'8.5em',
 
                overflow:'auto',
                'overflow-y':'auto',
@@ -203,8 +204,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             ERROR:{
                 position:'absolute',
-                right:'2px',
-                top:'2px',
+                right:'.2em',
+                top:'.2em',
                 display:'none',
                 'z-index':20
             },
@@ -438,9 +439,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             // label
             labelSize:{
+                $spaceunit:1,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:_.isFinite(v)?v+"px":v});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
@@ -452,6 +454,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }                
             },
             labelGap:{
+                $spaceunit:1,
                 ini:4,
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
@@ -520,8 +523,14 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             },
             value:'',
-            width:120,
-            height:'auto',
+            width:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'auto'
+            },
             disabled:{
                 ini:false,
                 action: function(v){
@@ -609,13 +618,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onLabelActive:function(profile, e, src){}
         },
         _prepareData:function(profile){
-            var data={},prop=profile.properties;
+            var data={},prop=profile.properties,t
             if(prop.height=='auto'){
-                data.height  = xui.CSS.$em2px(1.83);
-            }else if(xui.CSS.$isEm(prop.height)){
-                data.height = xui.CSS.$em2px(prop.height);
+                data.height  = '1.83em';
             }
-
             var d=arguments.callee.upper.call(this, profile, data);
 
             d._type = d.type || '';
@@ -627,6 +633,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
+            if(t=d.labelSize)d.labelSize=_.isFinite(t)?t+'px':t;
     
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -870,22 +877,32 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             });
         },
         _onresize:function(profile,width,height){
-            var $hborder=1, $vborder=1,
-                toff=xui.UI.$getCSSValue('xui-input-input','paddingTop'),
-                loff=xui.UI.$getCSSValue('xui-input-input','paddingLeft'),
-                roff=xui.UI.$getCSSValue('xui-input-input','paddingRight');
+            var f=function(k){return k?profile.getSubNode(k).get(0):null},
+                v1=f('INPUT'),
+                $hborder=1, 
+                $vborder=1,
+                clsname='xui-node xui-input-input',
+                toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
+                loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
+                roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
+                boff=xui.UI.$getCSSValue(clsname,'paddingBottom'),
 
-            if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
+            // caculate by px
+            if(height)height = height=='auto' ? (h_em=true) && css.$em2px(1.83) : css.$isEm(height) ? css.$em2px(height) : height;
+            if(width)width = css.$isEm(width) ? css.$em2px(width) : width;
 
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
-
                 label = profile.getSubNode('LABEL'),
-                labelSize=t.labelSize||0,
-                labelGap=t.labelGap||0,
+                labelSize=css.$px(t.labelSize)||0,
+                labelGap=css.$px(t.labelGap)||0,
                 labelPos=t.labelPos || 'left',
-
-                v1=profile.getSubNode('INPUT'),
                 ww=width,
                 hh=height,
                 left=Math.max(0, (t.$b_lw||0)-$hborder),
@@ -904,30 +921,38 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 /*for ie6 bug*/
                 if(xui.browser.ie6&&null===width)o.ieRemedy();
             }
+            var iL=left + (labelPos=='left'?labelSize:0),
+                iT=top + (labelPos=='top'?labelSize:0),
+                iW=ww===null?null:Math.max(0,ww - ((labelPos=='left'||labelPos=='right')?labelSize:0)),
+                iH=hh===null?null:Math.max(0,hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)),
+                iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
+
+            if(null!==iW && iW-loff-roff>0)
+                v1.style.width=wv(Math.max(0,iW-loff-roff));
+            if(null!==iH && iH-toff-boff>0)
+                v1.style.height=hv(Math.max(0,iH-toff-boff));
 
             o.cssRegion({
-                left:left + (labelPos=='left'?labelSize:0),
-                top:top + (labelPos=='top'?labelSize:0),
-                width:ww===null?null:Math.max(0,(ww - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
-                height:hh===null?null:Math.max(0,(hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+                left:wv(iL),
+                top:hv(iT),
+                width:wv(iW),
+                height:hv(iH)
             });
             
             if(labelSize)
                 label.cssRegion({
-                    left:ww===null?null:Math.max(0,labelPos=='right'?(ww-labelSize+labelGap):0),
-                    top: height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                    width:ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),
-                    height:height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                    left:wv(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+$hborder*2):0),
+                    top: hv(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0), 
+                    width:wv(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww))),
+                    height:hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
                 });
 
-            if(ww||hh)
-                v1.cssSize({
-                    width:ww?Math.max(0,(ww-loff-roff-((labelPos=='left'||labelPos=='right')?labelSize:0))):null,
-                    height:hh?Math.max(0,(hh-toff-((labelPos=='top'||labelPos=='bottom')?labelSize:0))):null
-                });
+            iL += (iW||0) + $hborder*2;
 
             /*for ie6 bug*/
-            if((profile.$resizer) && xui.browser.ie)o.ieRemedy();
+            if((profile.$resizer) && xui.browser.ie){
+                o.ieRemedy();
+            }
         }
     }
 });

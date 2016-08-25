@@ -41,8 +41,14 @@ Class("xui.UI.Audio", "xui.UI",{
         },
         DataModel:{
             selectable:true,
-            width:200,
-            height:50,
+            width:{
+                $spaceunit:1,
+                ini:'18em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'5em'
+            },
             src:{
                 ini:'',
                 action:function(v){
@@ -118,14 +124,22 @@ Class("xui.UI.Audio", "xui.UI",{
             onMediaEvent:function(profile, eventType, params){}
         },
         _onresize:function(profile,width,height){
-            var H5=profile.getSubNode('H5'), size = H5.cssSize(),prop=profile.properties;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
+            var H5=profile.getSubNode('H5'), 
+                size = H5.cssSize(),
+                prop=profile.properties,
+                // compare with px
+                w_em=xui.CSS.$isEm(width),
+                h_em=xui.CSS.$isEm(height),
+                ww=w_em?xui.CSS.$em2px(width):width, 
+                hh=h_em?xui.CSS.$em2px(height):height;
+
+            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=width;
                 if(height)prop.height=height;
-
                 size={width:width,height:height};
-                H5.cssSize(size,true);
+                if(width)H5.attr("width", width);
+                if(height)H5.attr("height", height);
             }
         }
     }

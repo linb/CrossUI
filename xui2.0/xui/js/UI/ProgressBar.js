@@ -70,8 +70,14 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     Static:{
         DataModel:{
             value:0,
-            width:300,
-            height:22,
+            width:{
+                $spaceunit:1,
+                ini:'25em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'1.5em'
+            },
             captionTpl:{
                 ini:'* %',
                 action:function(){
@@ -107,16 +113,17 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
+                css=xui.CSS,
                 type=profile.properties.type,
                 node=profile.getSubNodes(['INN','CAP','FILL']);
             if(type=="horizontal"){
                 if(size.height){
-                    v=size.height+'px';
+                    v=css.$forceu(size.height);
                     node.css({height:v,'line-height':v});
                 }
             }else{
-                if(size.width)node.css({width:size.width+'px'});                
-                if(size.height)node.css({'line-height':size.height+'px'});
+                if(size.width)node.css({width:css.$forceu(size.width)});                
+                if(size.height)node.css({'line-height':css.$forceu(size.height)});
             }
         }
     }

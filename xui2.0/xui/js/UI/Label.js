@@ -16,6 +16,7 @@ Class("xui.UI.Label", "xui.UI",{
             CAPTION:{
                 text : '{caption}',
                 style:'{_fc}{_fw}{_fs}',
+                'font-size':'1em',
                 $order:1
             }
         },
@@ -61,7 +62,7 @@ Class("xui.UI.Label", "xui.UI",{
                 }
             },
             'fontSize':{
-                combobox:["","14px","18px","24px","34px"],
+                combobox:["","1.2em","1.5em","2em","3em"],
                 action: function(value){
                     this.getSubNode("CAPTION").css('fontSize', value);
                 }

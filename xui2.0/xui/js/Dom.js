@@ -832,7 +832,7 @@ Class('xui.Dom','xui.absBox',{
                             o.transform(t);
                         }
                     }else{
-                        if(_.isFinite(v))v+='px';
+                        v=xui.CSS.$addu(v);
                         var transform=o.style.transform||"";
                         if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1'+v+',$3');
                         else transform+=" translate("+v+",0)";
@@ -874,7 +874,7 @@ Class('xui.Dom','xui.absBox',{
                             o.transform(t);
                         }
                     }else{
-                        if(_.isFinite(v))v+='px';
+                        v=xui.CSS.$addu(v);
                         var transform=o.style.transform||"";
                         if(/translate\([^)]*\)/i.test(transform))transform=transform.replace(/(translate\()([^,]+),([^)]+)/i, '$1$2,'+v);
                         else transform+=" translate(0,"+v+")";
@@ -900,7 +900,7 @@ Class('xui.Dom','xui.absBox',{
         },
         skewX:function(v){
             if(_.isSet(v)){
-                 if(_.isFinite(v))v+='deg';
+                if(_.isFinite(v))v+='deg';
                 return this.each(function(o){
                     var transform=o.style.transform||"";
                     if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1'+v+',$3');
@@ -1103,16 +1103,22 @@ Class('xui.Dom','xui.absBox',{
         },
         //for quick move
         cssPos:function(pos, triggerEvent){
-            var node=this.get(0),dom=xui.Dom,f=dom._setUnitStyle,b1,b2,r;
+            var node=this.get(0),
+                dom=xui.Dom,
+                css=xui.CSS,
+                f=dom._setUnitStyle,
+                b1,b2,r;
             if(pos){
                 var t;
                 b1 = pos.left!=null?f(node,'left',pos.left):false;
                 b2 = pos.top!==null?f(node,'top',pos.top):false;
                 if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onmove'))this.onMove(true, {left:b1,top:b2});
                 r=this;
-            }else{
+            }
+            // get always returns to px
+            else{
                 f=dom.getStyle;
-                r={left :parseFloat(f(node, 'left'))||0,  top :parseFloat(f(node, 'top'))||0};
+                r={left :css.$px(f(node, 'left')),  top : css.$px(f(node, 'top'))};
             }
             node=null;
             return r;
@@ -2151,7 +2157,7 @@ type:4
                         if(!_.isSet(a1[i].$ieRemedy)){
                             if(_.isSet(a1[i].style.width)){
                                 a1[i].$ieRemedy=a1[i].style.width;
-                                a1[i].style.width=((parseFloat(a1[i].$xuirem)||0)+1)+"px";
+                                a1[i].style.width=((xui.CSS.$px(a1[i].$xuirem)||0)+1)+"px";
                             }
                         }
                         /*
@@ -3435,8 +3441,8 @@ type:4
             if(node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
-                value =_.isFinite(value) ? ((parseFloat(value)||0) + "px") : (value +'');
-                if((key=='width'||key=='height') && value.charAt(0)=='-')value='0';
+                value =xui.CSS.$addu(value);
+                if(value && (key=='width'||key=='height') && value.charAt(0)=='-')value='0';
                 if(style[key]!=value){
                     style[key]=value;
                     return true;
@@ -3681,8 +3687,8 @@ type:4
             self.plugIn(o[0],function(type){
                 type=type||'both';
                 node = this.get(0);
-                return ((type=='both'||type=='left'||type=='top')?parseFloat(fun(node, o[1])):0) 
-                     + ((type=='both'||type=='right'||type=='bottom')?parseFloat(fun(node, o[2])):0) || 0;
+                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1])):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?xui.CSS.$px(fun(node, o[2])):0) || 0;
             })
         });
         /*
@@ -3748,7 +3754,7 @@ type:4
                             r=getStyle(node,o[1]);
                             if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
                                 r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
-                            r=parseFloat(r)||0;
+                            r=xui.CSS.$px(r)||0;
                             break;
                         case 2:
                             r=node[o[6]];
@@ -3818,7 +3824,7 @@ type:4
                     m=xui.use(node.$xid)[k]();
                     m=(parseFloat(m)||0)+offset;
                     if(k=='width'||k=='height')m=m>0?m:0;
-                    node.style[k]=m+'px';
+                    node.style[k]=xui.CSS.$forceu(m);
                     if(triggerEvent){
                         args={};args[k]=1;
                         var f=xui.Dom.$hasEventHandler;
@@ -3860,15 +3866,16 @@ type:4
                         if(doc===node)return Math.max( doc.body['scroll'+t], doc.body['offset'+t], doc.documentElement['scroll'+t], doc.documentElement['offset'+t]);
                         if(window===node)return b.opr?Math.max(doc.body['client'+t],window['inner'+t]):b.kde?window['inner'+t]:(xui.browser.contentBox && doc.documentElement['client'+t]) ||doc.body['client'+t];
                     }
-                    //give shortcut
-                    if(o=='width')value=parseFloat(node.style.width)||self._W(node,1,value);
-                    else if(o=='height')value=parseFloat(node.style.height)||self._H(node,1,value);
+                    // give shortcut
+                    // we force to get px number of width/height 
+                    if(o=='width')value=parseFloat(node.style.width?xui.CSS.$px(node.style.width):'')||self._W(node,1,value);
+                    else if(o=='height')value=parseFloat(node.style.height?xui.CSS.$px(node.style.height):'')||self._H(node,1,value);
                     else
                         value = xui.Dom.getStyle(node, o);
-                    return value=='auto'?value:(parseFloat(value)||0);
+                    return (value=='auto'||value==='')?value:(xui.CSS.$px(value)||0);
                 }else{
                     var f=xui.Dom._setUnitStyle,t,a,
-                    av = _.isFinite(value) ? (value+"px") : value;
+                    av = xui.CSS.$addu(value);
                     return self.each(function(v){
                         if(v.nodeType!=1)return;
                             if(v.style[o]!==av){

@@ -237,7 +237,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'xui-uibarbg  xui-uiborder-tb {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
+                            className:'xui-uibarbg  xui-showfocus xui-uiborder-tb {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
                             style:'{itemStyle}',
                             RULER:{
                                 $order:2,
@@ -367,7 +367,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                display:'block',
                overflow: 'hidden',
                padding:'.2em .4em',
-                'border-radius': '3px 0 0 3px',
+                'border-radius': '.3px 0 0 3px',
                 '-moz-border-radius': '3px 0 0 3px',
                 '-webkit-border-radius': '3px 0 0 3px',
                 '-o-border-radius': '3px 0 0 3px',
@@ -531,8 +531,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         DataModel:{
             listKey:null,
-            width:200,
-            height:200,
+            width:{
+                $spaceunit:1,
+                ini:'18em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'18em'
+            },
             iniFold:true,
             animCollapse:true,
             dock:'fill',

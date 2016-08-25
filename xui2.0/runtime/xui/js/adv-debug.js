@@ -5,6 +5,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             if(!value)return;
             if(value.indexOf(':')==-1)return;
             var profile=this.get(0),
+                css=xui.CSS,
                 p=profile.properties,
                 box=this.constructor,
                 a=value.split(':'),
@@ -17,7 +18,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             if(p.items.length===0)
                 this.insertItems([{id:'$', caption:p.dftTaskName, from:parseInt(a[0],10), to:parseInt(a[1],10)}],null,true);
             else
-                box._resetItem(profile,{left:pxStart,width:pxEnd-pxStart},profile.getSubNodeByItemId('ITEM',p.items[0].id)._get(0));
+                box._resetItem(profile,{
+                    left:css.$forceu(pxStart),
+                    width:css.$forceu(pxEnd-pxStart)
+                },profile.getSubNodeByItemId('ITEM',p.items[0].id)._get(0));
         },
         visibleTask:function(){
             var profile=this.get(0),
@@ -144,10 +148,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             BORDER:{
                 tagName:'div',
                 className: 'xui-uiborder-radius',
-                style:'height:{_bHeight}px;width:{_bWidth}px;',
+                style:'height:{_bHeight};width:{_bWidth};',
                 POOL:{
                     tagName:'div',
-                    style:'position:absolute;left:0;top:0;width:0;height:0;display:none;'
+                    style:'position:absolute;display:none;'
                 },
                 TBAR:{
                     tagName:'div',
@@ -206,7 +210,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                                 tagName:'div',
                                 VIEW:{
                                     tagName:'div',
-                                    style:'left:{_band_left}px;width:{_band_width}px;',
+                                    style:'left:{_band_left_ui};width:{_band_width_ui};',
                                     BAND:{
                                         $order:2,
                                         tagName:'div',
@@ -227,10 +231,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                                     CON:{
                                         $order:3,
                                         tagName:'div',
-                                        style:'height:{_viewHeight}px;',
+                                        style:'height:{_viewHeight};',
                                         BG:{
                                             tagName:'div',
-                                            style:'height:{_viewHeight}px;'
+                                            style:'height:{_viewHeight};'
                                         },
                                         LINES:{
                                             $order:1,
@@ -239,7 +243,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                                         ITEMS:{
                                             $order:2,
                                             tagName:'div',
-                                            style:'height:{_viewHeight}px;',
+                                            style:'height:{_viewHeight};',
                                             text:'{items}'
                                         }
                                     },
@@ -293,7 +297,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         id:null,
                         className:"xui-uiborder-r",
                         tagName:'div',
-                        style:'width:{width}px;left:{left}px;',
+                        style:'width:{width};left:{left};',
                         text:'&nbsp;&nbsp;{text}'
                     }
                 },
@@ -302,21 +306,21 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                         id:null,
                         className:"xui-uiborder-r",
                         tagName:'div',
-                        style:'width:{width}px;left:{left}px;',
+                        style:'width:{width};left:{left};',
                         text:'{text}'
                     }
                 },
                 bgitems:{
                     BGITEM:{
                         tagName:'div',
-                        style:'left:{_left}px;width:{_width}px;'
+                        style:'left:{_left};width:{_width};'
                     }
                 },
                 items:{
                     ITEM:{
                         tagName:'div',
                         className:'xui-uiborder-flat {itemClass} {disabled} {readonly} {_excls}',
-                        style:'left:{_left}px;width:{_width}px;{_top};{_zindex}{itemStyle}',
+                        style:'left:{_uleft};width:{_uwidth};top:{_utop};{_zindex}{itemStyle}',
                         HEAD:{
                             tagName:'div',
                             className:"xui-uiborder-b",
@@ -758,8 +762,14 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         DataModel:{
             readonly:false,
             // control width and height
-            width : 400,
-            height : 200,
+            width : {
+                $spaceunit:1,
+                ini:'28em'
+            },
+            height : {
+                $spaceunit:1,
+                ini:'18em'
+            },
             //invisible band count (left,right)
             //if it's zero, leftSpanCount will be equal to the visible span count(based on widget width)
             leftSpanCount:{
@@ -780,7 +790,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             dftTaskName:'task',
             taskHeight:{
-                ini:25,
+                $spaceunit:1,
+                ini:30,
                 action:function(v){
                     this.getSubNode('ITEM',true).height(v);
                 }
@@ -929,13 +940,13 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding-top':'4px'
+                'padding-top':'.4em'
             },
             MAINC:{
             },
             'BARCMDL span':{
                 $order:0,
-                margin:'2px',
+                margin:'.2em',
                 'vertical-align': 'middle',
                 cursor:'default'
             },
@@ -958,7 +969,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 'font-size':'0',
                 'line-height':'0',
                 right:0,
-                width:'18px',
+                width:'1.5em',
                 overflow:'auto',
                 'overflow-x': 'hidden'
             },
@@ -992,11 +1003,11 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 position:'relative'
             },
             'BIGLABEL, SMALLLABEL':{
-                height:'16px',
+                height:'1.4em',
                 cursor:'move'
             },
             'BIGLABEL div, SMALLLABEL div':{
-                height:'16px',
+                height:'1.4em',
                 'text-align':'center',
                 position:'absolute',
                 cursor:'move',
@@ -1009,7 +1020,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             TIPS:{
                 position:'relative',
-                height:'14px',
+                height:'1.2em',
                 'text-align':'center'
             },
             ACTIVE:{
@@ -1051,7 +1062,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             },
             HANDLER:{
                 position:'relative',
-                height:'7px',
+                height:'.6em',
                 'background-image': 'url('+xui.ini.img_handler+')',
                 'background-repeat':'repeat'
             },
@@ -1064,7 +1075,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 position:'absolute',
                 top:0,
                 height:'100%',
-                width:'6px',
+                width:'.5em',
                 'z-index':10
             },
             'LEFT':{
@@ -1129,6 +1140,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         },
         _prepareData:function(profile){
             var p=profile.properties,
+                css=xui.CSS,
                 d={},
                 date=xui.Date,
                 us=date.$TIMEUNIT,
@@ -1155,10 +1167,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             p._lines=[{}];
 
             //border
-            d._bWidth = p.width;
-            d._bHeight = p.height;
+            d._bWidth = css.$forceu(p.width);
+            d._bHeight = css.$forceu(p.height);
             //view
-            p._viewHeight = d._bHeight;
+            p._viewHeight = css.$forceu(d._bHeight);
             d._tipsdisplay=p.showTips?'':nodisplay;
             d._bardisplay = p.showBar?'':nodisplay;
 
@@ -1193,7 +1205,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             smallLabelFormat = p._smallLabelFormat;
 
             // get bar count in view
-            _barCount = (Math.ceil(p.width / u)||0);
+            _barCount = (Math.ceil(css.$px(p.width) / u)||0);
             _leftBarCount = p.leftSpanCount?p.leftSpanCount:_barCount;
             _rightBarCount = p.rightSpanCount?p.rightSpanCount:_barCount;
             _barCountall =  _barCount + _leftBarCount + _rightBarCount;
@@ -1216,6 +1228,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
 
             // get band with
             p._band_width = Math.ceil(date.diff(smallLabelStart,smallLabelEnd, 'ms')/rate);
+            p._band_width_ui = css.$forceu(p._band_width);
 
             // set band left
             p._band_left_fix = p._band_left = - Math.ceil(date.diff(smallLabelStart, p.dateStart, 'ms')/rate);
@@ -1229,8 +1242,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 _date = date.add(smallLabelStart, smallLabelUnit, smallLabelCount*(i+1));
                 width = Math.ceil(date.diff(smallLabelStart, _date, 'ms')/rate);
                 smallMarks.push({
-                    left : temp,
-                    width : width - temp,
+                    left : css.$forceu(temp),
+                    width : css.$forceu(width - temp),
                     text : label
                 });
                 temp=width;
@@ -1258,8 +1271,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     _date = date.add(bigLabelStart, bigLabelUnit, bigLabelCount*(i+1));
                     width = date.diff(bigLabelStart, _date, 'ms')/rate;
                     bigMarks.push({
-                        left : Math.ceil(temp + off),
-                        width : Math.ceil(width - temp),
+                        left : css.$forceu(Math.ceil(temp + off)),
+                        width : css.$forceu(Math.ceil(width - temp)),
                         text : label
                     });
                     temp=width;
@@ -1270,13 +1283,14 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         },
         _prepareItem:function(profile, item, oitem, pid){
             var self=this,
+                css=xui.CSS,
                 t=profile.properties,
                 index;
             if(!item.id)item.id=_.id();
             if(!item.caption)item.caption=t.dftTaskName;
             // caculate left and width
-            item._realleft=item._left=self._getX(profile, item.from);
-            item._realwidth=item._width=Math.max(self._getX(profile, item.to) - item._left, 0);
+            item._left = item._realleft = self._getX(profile, item.from);
+            item._width = item._realwidth = Math.max(self._getX(profile, item.to) - item._left, 0);
             if(item._width<=t.taskMinSize){
                 item._width=t.taskMinSize;
             }
@@ -1294,7 +1308,10 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             // caculate top and set task to lines cache
             index = self._getLinePos(profile, item);
 
-            item._top = 'top:' + (t.taskHeight+1) * (index-1) + 'px';
+            item._utop = css.$forceu((css.$px(t.taskHeight)+1) * (index-1));
+            item._uwidth = css.$forceu(item._width);
+            item._uleft = css.$forceu(item._left);
+
             item._zindex = 'z-index:'+index;
 
             item._background = item.background?'background:'+item.background+';':'';
@@ -1380,12 +1397,12 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             var p=Math.ceil,
                 t=profile.properties,
                 d=xui.Date,
+                css=xui.CSS,
                 s=t._smallLabelStart,
                 r=t._rate,
                 u=t._timeFormat,
                 ms='ms',
                 y=src.style,
-                z='px',
                 m,n,increment,
                 xx=x
                 ww=w;
@@ -1411,8 +1428,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             n = ((p(w)||0)-2);
 
             if(n>0){
-                y.left= m+z;
-                y.width= n+z;
+                y.left= css.$forceu(m);
+                y.width= css.$forceu(n);
                 if(t.showTips)
                     profile.box._setTips(profile, d.getText(d.add(s, ms, x*r),u)
                         + " - "
@@ -1449,6 +1466,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             // get additional bars
             var t=profile.properties,
                 date=xui.Date,
+                css=xui.CSS,
                 key=tag+'Marks',
                 marks=t[key],
                 labelStart=t[tag+'LabelStart'],
@@ -1465,8 +1483,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 _date = date.add(labelStart, labelUnit, labelCount*(i+1));
                 width = date.diff(labelStart, _date, 'ms')/rate;
                 addLb.push({
-                    left : Math.ceil(temp + (offset||0)-0.0000000000003),
-                    width : Math.ceil(width - temp),
+                    left : css.$forceu(Math.ceil(temp + (offset||0)-0.0000000000003)),
+                    width : css.$forceu(Math.ceil(width - temp)),
                     text : label
                 });
                 temp=width;
@@ -1481,6 +1499,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         _addRight:function(profile, labelEnd, tag, node, offsetCount,  offset){
             var t=profile.properties,
                 date=xui.Date,
+                css=xui.CSS,
                 key=tag+'Marks',
                 marks=t[key],
                 labelStart=t[tag+'LabelStart'],
@@ -1494,8 +1513,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             for(i=0; i<offsetCount; i++){
                 _date = date.add(labelEnd, labelUnit, labelCount*(i+1));
                 addLb.push({
-                    left : Math.ceil(date.diff(labelStart,_d1,'ms')/rate+ (offset||0)-0.0000000000003),
-                    width : Math.ceil(date.diff(_d1, _date, 'ms')/rate),
+                    left : css.$forceu(Math.ceil(date.diff(labelStart,_d1,'ms')/rate+ (offset||0)-0.0000000000003)),
+                    width : css.$forceu(Math.ceil(date.diff(_d1, _date, 'ms')/rate)),
                     text : date.getText(_d1, labelFormat)
                 });
                 _d1=_date;
@@ -1513,6 +1532,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         _rePosition:function(profile, left){
             profile.pause=true;
             var self=this,
+                css=xui.CSS,
                 date = xui.Date,
                 t=profile.properties,
                 rate=t._rate,
@@ -1627,6 +1647,8 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             }
             // reset date start point
             t._band_left = band.left();
+            t._band_left_ui = css.$forceu(t._band_left);
+
             var od=t.dateStart;
             t.dateStart = self._getTime(profile, -t._band_left, 1);
 
@@ -1655,19 +1677,19 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 x = 0;
             }
             if(x>bw)x=bw;
-            this._setItemNode(profile, o,'left',x+'px');
+            this._setItemNode(profile, o,'left',xui.CSS.$forceu(x));
 
-            // ֱ������            
+            //
             o._left=x;
 
             // if too long, cut right
             if(x + w > bw)
                 w = bw - x;
-            // ֻ�иı������
+            //
             if(w>=0){
                 if(o._width!=w){
                     o._width=w;
-                    this._setItemNode(profile, o,'width',w+'px');
+                    this._setItemNode(profile, o,'width',xui.CSS.$forceu(w));
                 }
             }
 
@@ -1697,6 +1719,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         // _reArrage tasks for top position
         _reArrage:function(profile){
             var self=this, o, h,
+                css=xui.CSS,
                 t=profile.properties;
             t._lines.length = 1;
             _.arr.stableSort(t.items,function(x,y){
@@ -1716,13 +1739,13 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     v._line = index;
                     // set top
                     if(t.multiTasks){
-                        self._setItemNode(profile, v, 'top', (t.taskHeight+1) * (index-1) +'px');
+                        self._setItemNode(profile, v, 'top', css.$forceu((css.$px(t.taskHeight)+1) * (index-1)) );
                         self._setItemNode(profile, v, 'zIndex', index);
                     }
                 };
             });
 
-            h = t._linesHeight = t._lines.length * (t.taskHeight+1);
+            h = t._linesHeight = t._lines.length * (css.$px(t.taskHeight)+1);
 
             self._ajustHeight(profile);
         },
@@ -1739,7 +1762,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 t._realleft=t._left=o.left;
                 t.from = timeline._getTime(profile,o.left);
 
-                xui.use(src).get(0).style.left=t._left+'px';
+                xui.use(src).get(0).style.left=xui.CSS.$forceu(t._left);
             }
             if(o.width){
                 t.to = timeline._getTime(profile,o.left+o.width);
@@ -1753,7 +1776,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                     if(o.left + o.width > bandW)
                         t._width = bandW - o.left;
                 }                
-                xui.use(src).get(0).style.width=t._width+'px';
+                xui.use(src).get(0).style.width=xui.CSS.$forceu(t._width);
 
                 temp=+(t._realwidth/t._width*100).toFixed(2);
                 if(temp>=100)temp=100;                
@@ -1767,6 +1790,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
         },
         _ajustHeight:function(profile){
             var p=profile.properties,
+                css=xui.CSS,
                 f=function(p){return profile.getSubNode(p)},
                 view = f('CON'),
                 items = f('ITEMS'),
@@ -1778,17 +1802,17 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             h=Math.max(ih,vh);
 
             b=ih>vh;
-            f('SCROLLI').height(h);
+            f('SCROLLI').height(css.$forceu(h));
             f('SCROLL').css('display',b?'block':'none');
-            items.height(h);
-            lines.height(h);
-            items.top(b?-f('SCROLL').scrollTop():0);
-            lines.top(b?-f('SCROLL').scrollTop():0);
+            items.height(css.$forceu(h));
+            lines.height(css.$forceu(h));
+            items.top(css.$forceu(b?-f('SCROLL').scrollTop():0));
+            lines.top(css.$forceu(b?-f('SCROLL').scrollTop():0));
             
-            var len=parseInt(h/p.taskHeight,10)+1, 
+            var len=parseInt(h/css.$px(p.taskHeight),10)+1, 
                 size=f('LINES').get(0).childNodes.length;
             if(size<len){
-                f('LINES').append(xui.create(_.str.repeat('<div class="xui-uiborder-b" style="height:'+p.taskHeight+'px;"></div>',len-size)));
+                f('LINES').append(xui.create(_.str.repeat('<div class="xui-uiborder-b" style="height:'+css.$forceu(p.taskHeight)+';"></div>',len-size)));
             }
         },
         _showTips:function(profile, node, pos){
@@ -1825,25 +1849,36 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 _bbarH=f('BBAR').height(),
                 _tipsH=f('TAIL').height(),
                 off2=f('CON').offset(null, profile.getRoot()),
-                off3=2,h2,
-                t;
+                off3=2,
+                h2,t,
+
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
 
             //for border, view and items
             if(height && profile._$h != height){
-                f('BORDER').height(profile._$h = t = height);
-                f('CON').height(t=t - (pro.showTips?_tipsH:0) -off2.top - (pro.showBar?_bbarH:0) -off3);
+                t = css.$px(height);
+                f('BORDER').height(hv (profile._$h = height));
+                f('CON').height(hv ( t = t - (pro.showTips?_tipsH:0) -off2.top - (pro.showBar?_bbarH:0) -off3 ) );
                 h2=f('BAND').height();
 
-                f('SCROLL').top(h2).height(t+h2);
-                profile.getSubNodes(['BG','ITEMS','SCROLL']).height(t);
+                f('SCROLL').top(hv(h2)).height(hv(t+h2));
+                profile.getSubNodes(['BG','ITEMS','SCROLL']).height(hv(t));
                 this._ajustHeight(profile);
                 
                 if(xui.browser.ie6)
-                    f('ACTIVE').height(f('VIEW').height()+2);
+                    f('ACTIVE').height(hv(f('VIEW').height()+2));
             }
             if(width && profile._$w != width){
                 // special: modified widget width here
-                f('BORDER').width(profile._$w =  pro.width = width);
+                f('BORDER').width(pro.width = wv(profile._$w =  width));
                 var ins=profile.boxing(),
                     items = ins.getItems('data'),
                     bak_s = pro._smallLabelStart,
@@ -1887,7 +1922,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             }
         },
         _refresh:function(profile,force){
-            var pro=profile.properties, ins=profile.boxing(), nodes, uivalue;
+            var pro=profile.properties, 
+                css=xui.CSS,
+                ins=profile.boxing(), nodes, uivalue;
 
             if(!pro.multiTasks)
                 uivalue=pro.$UIvalue;
@@ -1907,7 +1944,7 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             }
 
             //view/band set left
-            profile.getSubNode('VIEW').left(pro._band_left).width(pro._band_width);
+            profile.getSubNode('VIEW').left(pro._band_left_ui||(0+css.$picku())).width(pro._band_width_ui||(0+css.$picku()));
 
             //if singleTask, setUIValue
             if(!pro.multiTasks){
@@ -2023,8 +2060,16 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             dateField:null,
 
             dock:'fill',
-            width:200,
-            height:200
+            width:{
+                $spaceunit:1,
+                ini:'15em',
+                readonly:false
+            },
+            height:{
+                $spaceunit:1,
+                ini:'15em',
+                readonly:false
+            }
         },
         EventHandlers:{
             onDblclick:function(profile, item, e, src){},
@@ -2045,20 +2090,20 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
                 'white-space':'nowrap'
             },
             DF1:{
-                left:'2px',
-                top:'2px'
+                left:'.15em',
+                top:'.15em'
             },
             DF2:{
-                right:'2px',
-                top:'2px'
+                right:'.15em',
+                top:'.15em'
             },
             DF3:{
-                left:'2px',
-                bottom:'2px'
+                left:'.15em',
+                bottom:'.15em'
             },
             DF4:{
-                right:'2px',
-                bottom:'2px'
+                right:'.15em',
+                bottom:'.15em'
             },
             DAYBOX:{
                 overflow:'hidden'
@@ -2075,8 +2120,9 @@ Class('xui.UI.TimeLine', ['xui.UI','xui.absList',"xui.absValue"], {
             if(height){
                 f('BORDER').height(t=height);
                 f('BODY').height(t);
-                t=(t-16)/6-1;
-                profile.box._getDayNodes(profile).height(t);
+
+                t=profile.getSubNode('TD','1');
+                profile.box._getDayNodes(profile).height(t.height);
             }
         }
     }
@@ -4242,8 +4288,14 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             renderer:null,
             selectable:null,
             tips:null,
-            width:400,
-            height:300,
+            width:{
+                $spaceunit:1,
+                ini:'30em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'25em'
+            },
             chartType:{
                 ini:"Column2D",
                 //Single Series Charts
@@ -4478,8 +4530,16 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             onShowTips:null
         },
         _onresize:function(prf,width,height){
-            var size = prf.getSubNode('BOX').cssSize(),prop=prf.properties,t;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
+            var size = prf.getSubNode('BOX').cssSize(),
+                prop=prf.properties,
+                // compare with px
+                w_em=xui.CSS.$isEm(width),
+                h_em=xui.CSS.$isEm(height),
+                ww=w_em?xui.CSS.$em2px(width):width, 
+                hh=h_em?xui.CSS.$em2px(height):height,
+                t;
+
+            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=width;
                 if(height)prop.height=height;
@@ -4490,7 +4550,8 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     prf.getSubNode('COVER').cssSize(size,true);
                 }
                 if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId))){
-                    t.resizeTo(prop.width, prop.height);
+                    // ensure by px
+                    t.resizeTo(xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width):prop.width, xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height):prop.height);
                 }
             }
         }

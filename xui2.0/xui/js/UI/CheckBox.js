@@ -47,16 +47,17 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             },
             MARK:{
                cursor:'pointer',
-               margin: '0 4px 0 2px',
+               margin: '0 .334em 0 .1667em',
                'vertical-align':'middle'
             },
             FOCUS:{
                 cursor:'default',
                 'vertical-align':'middle',
-                padding:'2px 0'
+                padding:'.1667em 0'
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             }
         },
         Behaviors:{

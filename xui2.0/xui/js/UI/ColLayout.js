@@ -176,8 +176,8 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 $order:0,
                 position:'relative',
                 'float':'right',
-                width:'4px',
-                height:'200px',
+                width:'.333em',
+                height:'20em',
                 cursor:'e-resize',
                 'background-color':'#f0f0f0',
                 'border-width':xui.browser.opr?'0':null,
@@ -318,8 +318,14 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             position:'absolute',
             dock:'fill',
             listKey:null,
-            width:200,
-            height:200,
+            width:{
+                $spaceunit:1,
+                ini:'15em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'15em'
+            },
             minWidth:200,
             disabled:{
                 ini:false,
@@ -531,6 +537,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             data.items[data.items.length-1]._displaymove="display:none";
             return data;
         },
+
         _onresize:function(profile,width,height){
             if(!width)return;
             var ins=profile.boxing(),
@@ -542,12 +549,13 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 arr=profile.getSubNode('ITEM',true).get(),
                 arr2=profile.getSubNode('PANEL',true).get(),
                 itemsN=profile.getSubNode('ITEMS'),
-                ll=width,
+                ll=xui.CSS.$px(width),
                 a=[],t,needRec;
 
+            width = ll;
             //1
             _.arr.each(items,function(o,i){
-                t=parseFloat(o.width)/100;
+                t=xui.CSS.$px(o.width)/100;
                 a[i]=width*t;
                 // fix
                 if(a[i]<min){
@@ -567,7 +575,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
                 needRec=false;
                 _.arr.each(items,function(o,i){
                     if(_.arr.indexOf(mins,o)==-1){
-                        t=parseFloat(o.width)/100;
+                        t=xui.CSS.$px(o.width)/100;
                         a[i]=width*(t/othersl);
                         // fix
                         if(a[i]<min){
@@ -599,7 +607,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
 
             // set item's width
             _.arr.each(arr,function(o,i){
-                var flag=xui.browser.ie6 && parseFloat(o.style.width)>a[i];
+                var flag=xui.browser.ie6 && xui.CSS.$px(o.style.width)>a[i];
                 if(!flag)o.style.width = parseInt(a[i],10) + 'px';
             });
             profile._warr=a;
@@ -613,7 +621,7 @@ Class("xui.UI.ColLayout",["xui.UI","xui.absList"],{
             }
             if(xui.browser.ie6)
                 _.arr.each(arr,function(o,i){
-                    var flag=parseFloat(o.style.width)>a[i];
+                    var flag=xui.CSS.$px(o.style.width)>a[i];
                     if(flag)o.style.width = a[i] + 'px';
                 });
         }

@@ -57,8 +57,14 @@ Class("xui.UI.Flash", "xui.UI",{
         },
         DataModel:{
             selectable:true,
-            width:500,
-            height:300,
+            width:{
+                $spaceunit:1,
+                ini:'30em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'25em'
+            },
             cover:false,
             src:{
                 format:'flash',
@@ -162,8 +168,15 @@ Class("xui.UI.Flash", "xui.UI",{
             profile.getSubNode('BOX').html(xml, false);
         },
         _onresize:function(profile,width,height){
-            var size = profile.getSubNode('BOX').cssSize(),prop=profile.properties;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
+            var size = profile.getSubNode('BOX').cssSize(),
+                prop=profile.properties,
+                // compare with px
+                w_em=xui.CSS.$isEm(width),
+                h_em=xui.CSS.$isEm(height),
+                ww=w_em?xui.CSS.$em2px(width):width, 
+                hh=h_em?xui.CSS.$em2px(height):height;
+
+            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=width;
                 if(height)prop.height=height;

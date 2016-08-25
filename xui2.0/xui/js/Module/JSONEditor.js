@@ -176,7 +176,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         _tg_onEdit:function(profile, obj, editor, type){
             if(profile.properties.bigFont)
-                editor.getSubNode("INPUT").css("font-size", "16px").scrollTop(0);
+                editor.getSubNode("INPUT").css("font-size", "1.3em").scrollTop(0);
         },
         // for value 
         _tg_beforeIniEditor:function(profile, obj, cellNode, pNode, type){

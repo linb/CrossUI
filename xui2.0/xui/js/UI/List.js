@@ -65,20 +65,26 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             return this.each(function(profile){
                 var root = profile.getRoot(),
                     items = profile.getSubNode('ITEMS'),
-                    pp=profile.properties,h,flag;
+                    pp=profile.properties,
+                    mh=pp.maxHeight,
+                    css=xui.CSS,
+                    h_em=css.$isEm(pp.height),
+                    h,flag;
+
+                if(css.$isEm(mh))mh=css.$em2px(mh);
+
                 if(root.css('display')=='none'){
                     flag=1;
                     root.css('visibility','hidden');
                 }
+                items.height('auto');
                 if(profile.properties.height!='auto'){
-                    items.height('auto');
-                    h=Math.min(pp.maxHeight, items.offsetHeight());
-                    pp.height=h;
-                    items.height(h);
+                    h=Math.min(mh, items.offsetHeight());                    
+                    if(h_em)h=css.$px2em(h)+'em';
+                    items.height(pp.height=h);
                 }else{
-                    items.height('auto');
                     h=items.offsetHeight();
-                    if(h>pp.maxHeight){
+                    if(h>mh){
                         items.height(pp.maxHeight);
                         profile.getRoot().height(pp.maxHeight);
                     }
@@ -117,7 +123,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             className:'{_className}',
             LABEL:{
                 className:'{_required}',
-                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                style:'{labelShow};width:{labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },
             ITEMS:{
@@ -129,7 +135,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uitembg {_itemRow} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
@@ -245,7 +251,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                padding:'.167em'
+                padding:'.167em',
+                'font-size':'1em'
             },
             OPT:{
                 $order:10,
@@ -489,8 +496,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 }
             },
             noCtrlKey:true,
-            width:120,
-            height:150,
+            width:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'15em'
+            },
             maxHeight:420,
             itemRow:{
                 ini:false,
@@ -508,9 +521,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             // label
             labelSize:{
+                $spaceunit:1,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:_.isFinite(v)?v+"px":v});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
@@ -522,6 +536,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 }                
             },
             labelGap:{
+                $spaceunit:1,
                 ini:4,
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
@@ -600,10 +615,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             return false;
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile);
+            var d=arguments.callee.upper.call(this, profile),t;
             d._bordertype='xui-uiborder-'+d.borderType;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
+            if(t=d.labelSize)d.labelSize=_.isFinite(t)?t+'px':t;
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -670,28 +686,34 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 border=p.borderType!='none'?2:0,
                 dock=p.dock,
                 max=p.maxHeight,
-
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
                 f=function(k){return profile.getSubNode(k)},
                 o = f('ITEMS'),
                 label = f('LABEL'),
                 root = profile.getRoot(),
-                labelSize = p.labelSize||0,
-                labelGap = p.labelGap||0,
+                labelSize=css.$px(p.labelSize)||0,
+                labelGap=css.$px(p.labelGap)||0,
                 labelPos = p.labelPos || 'left',
                 ll, tt, ww, hh;
-
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
             o.cssRegion({
-                left : ll = labelPos=='left'?labelSize:0,
-                top : tt = labelPos=='top'?labelSize:0,
-                width : ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)),
-                height : hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border))
+                left : wv(ll = labelPos=='left'?labelSize:0),
+                top : hv(tt = labelPos=='top'?labelSize:0),
+                width : wv(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border))),
+                height : hv(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)))
             });
 
 
             if(height=="auto"){
                 if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
                     if(o.height()>max){
-                        o.height(max);
+                        o.height(hv(max));
                         root.height('auto');
                     }
                 }
@@ -699,11 +721,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             if(labelSize){
                 if(width=='auto')ww=o.offsetWidth();
                 if(height=='auto')hh=o.offsetHeight();
-                profile.getSubNode('LABEL').cssRegion({
-                    left: width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),
-                    top:  height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0), 
-                    width: width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width))),
-                    height: height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height)))
+                label.cssRegion({
+                    left: wv(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0)),
+                    top:  hv(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0)), 
+                    width: wv(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width)))),
+                    height: hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))))
                 });
             }
         }

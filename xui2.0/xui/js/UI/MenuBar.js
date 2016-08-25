@@ -182,13 +182,13 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             },
             HANDLER:{
                 height:'100%',
-                width:'7px',
+                width:'0.6em',
                 background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
             LIST:{
-                padding:'1px'
+                padding:'.1em'
             },
             ITEMS:{
                 'vertical-align':'middle'
@@ -200,8 +200,8 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'white-space': 'nowrap',
                 'vertical-align':'top',
                 overflow:'hidden',
-                margin:'0  3px 0 3px',
-                'padding-right':'6px',
+                margin:'0 .25em 0 .25em',
+                'padding-right':'.5em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
@@ -209,18 +209,19 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 cursor:'pointer'
             },
             ITEMI:{
-                'padding-left':'6px',
+                'padding-left':'.5em',
                 'vertical-align':'top'
             },
             ITEMC:{
-                'padding-top':'3px',
+                'padding-top':'.25em',
                 'vertical-align':'top'
             },
             ITEMA:{
                 display:xui.$inlineBlock
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             }
         },
         Behaviors:{
@@ -341,11 +342,15 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             autoTips:false,
             //can't change height
             height:{
+                $spaceunit:1,
                 ini:'auto',
                 readonly:true
             },
                 
-            width:'auto',
+            width:{
+                $spaceunit:1,
+                ini:'auto'
+            },
             parentID:'',
             $hborder:1,
             $vborder:1,

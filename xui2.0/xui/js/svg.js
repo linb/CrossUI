@@ -1924,8 +1924,10 @@ Class("xui.svg", "xui.UI",{
             if(typeof(key)=="string")bb[key]=value;
             _.filter(bb,function(v,k){
                 if(_.arr.indexOf(keys,k)==-1 || v==='auto' || v==='')return false;
-                if(!_.isNumb(v))bb[k]=parseFloat(v);
-                if(!_.isNumb(v))return false;
+                if(!_.isNumb(v)){
+                    bb[k]=xui.CSS.$px(v);
+                    return false;
+                }
             });
             if('left' in bb){bb.x=bb.left;delete bb.left;}
             if('top' in bb){bb.y=bb.top;delete bb.top;}

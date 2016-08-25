@@ -111,17 +111,17 @@ Class("xui.UI.Group", "xui.UI.Div",{
             },
             'FIELDSET-checked':{
                 $order:2,
-                'padding-left':'2px',
+                'padding-left':'.2em',
                 'border-left':'0',
                 'border-right':'0',
                 'border-bottom':'0'
             },
             LEGEND:{
-                'margin-left':'3px'
+                'margin-left':'.e3m'
             },
             HANDLE:{
                 cursor:'default',
-                padding:'0 3px 0 6px',
+                padding:'0 .3em 0 .6em',
                 display:xui.$inlineBlock
             },
             PANEL:{
@@ -135,7 +135,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 display:'none'
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             }
         },
 
@@ -251,14 +252,17 @@ Class("xui.UI.Group", "xui.UI.Div",{
 
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
 
-                var h=profile.getSubNode('LEGEND').height();
+                var css=xui.CSS,
+                    h_em = css.$isEm(p.height),
+                    height=profile.getSubNode('LEGEND').height();
+                if(h_em)height=css.$px2em(height)+'em';
                 // same to ***
                 // for expand status:
                 //    adjust ctrl's height to p.height
                 // for fold status:
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
-                profile.getRoot().height(p.toggle?p.height:h?h:'auto');
+                profile.getRoot().height(p.toggle?p.height:height?height:'auto');
 
                 if(!ignoreEvent){
                     if(value){
@@ -277,10 +281,16 @@ Class("xui.UI.Group", "xui.UI.Div",{
             }
         },
         _onresize:function(profile,width,height){
+            var css=xui.CSS,
+                w_em = css.$isEm(width),
+                h_em = css.$isEm(height);
             if(profile._toggle){
                 if(height && height!='auto'){
                     profile.getSubNode('FIELDSET').height(height);
-                    profile.getSubNode('PANEL').height(height-(profile.getSubNode('LEGEND').height()||18));
+                    height = h_em?css.$em2px(height):height;
+                    height -= profile.getSubNode('LEGEND').height()||18;
+                    if(h_em)height=css.$px2em(height)+'em';
+                    profile.getSubNode('PANEL').height(height);
                 }
             }else{
                 // same to ***
@@ -289,10 +299,16 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 // for fold status:
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
-                profile.getRoot().height(profile.getSubNode('LEGEND').height() || 'auto');
+                height = profile.getSubNode('LEGEND').height();
+                if(h_em)height=css.$px2em(height)+'em';
+                profile.getRoot().height(height || 'auto');
             }
-            if(width && width!='auto')
-                profile.getSubNode('PANEL').width(width-2);
+            if(width && width!='auto'){
+                width = w_em?css.$em2px(width):width;
+                width -= 2;
+                if(w_em)width=css.$px2em(width)+'em';
+                profile.getSubNode('PANEL').width(width);
+            }
         }
     }
 });

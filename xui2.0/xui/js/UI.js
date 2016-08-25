@@ -126,6 +126,7 @@ new function(){
     }
 };
 
+//UIProfile Class
 Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
@@ -507,7 +508,8 @@ Class('xui.UIProfile','xui.Profile', {
                     alias:o.alias,
                     key:o.key,
                     host:o.host
-                };
+                },
+                zz = o.moduleClass+"["+o.moduleXid+"]";
             //host
             if(r.host===self){
                 delete r.host;
@@ -555,11 +557,16 @@ Class('xui.UIProfile','xui.Profile', {
                 _.arr.each(o.children,function(v,w,y,z){
                     w=v[0];
                     if(w.moduleClass && w.moduleXid && (y=xui.SC.get(w.moduleClass)) && (y=y.getInstance(w.moduleXid)) && y["xui.Module"]){
-                        if(moduleHash[z=w.moduleClass+"["+w.moduleXid+"]"]){
-                            return;
-                        }else{
-                            moduleHash[z]=1;
-                            w=y;
+                        z=w.moduleClass+"["+w.moduleXid+"]";
+                        // same module with the parent
+                        if(z!==zz){
+                            // same module with another sibling
+                            if(moduleHash[z]){
+                                return;
+                            }else{
+                                moduleHash[z]=1;
+                                w=y;
+                            }
                         }
                     }
                     m=[w.serialize(false, keepHost)];
@@ -1034,7 +1041,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         busy:function(message,html,key,subId){
             var msg=typeof message=='string'?message:'Loading...',
-                htm=typeof html=='string'?html:'<span style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:16px;">'+msg+'</span>';
+                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.4em;">'+msg+'</span>';
             // busy dom too
             if(message===true||html===true)xui.Dom.busy();
             return this.each(function(profile){
@@ -1054,7 +1061,7 @@ Class("xui.UI",  "xui.absObj", {
                     }
                     node=profile.$busy;
 
-                    xui([node.get(1).firstChild]).html(htm,false).css('paddingTop',(parentNode.offsetHeight()||0)/2+'px');
+                    xui([node.get(1).firstChild]).html(htm,false).css('paddingTop',((parentNode.offsetHeight()||0)/2/xui.CSS._getDftEm()-0.5)+'em');
 
                     parentNode.append(node);
                 },50,[profile,key,subId]);
@@ -1170,14 +1177,14 @@ Class("xui.UI",  "xui.absObj", {
         show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
                 var t=o.properties,ins=o.boxing(),b;
-                left=(left||left===0)?(parseFloat(left)||0):null;
-                top=(top||top===0)?(parseFloat(top)||0):null;
+                left=(left||left===0)?(left||0):null;
+                top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
                 if(top!==null)t.top=top;
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    o.getRoot().show(left&&(_.isFinite(left)?(left+'px'):left), top&&(_.isFinite(top)?(top+'px'):top),null,ignoreEffects);
+                    o.getRoot().show(left&&xui.CSS.$forceu(left), top&&xui.CSS.$forceu(top),null,ignoreEffects);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -1195,7 +1202,7 @@ Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)o.getRoot().show(left&&(_.isFinite(left)?(left+'px'):left), top&&(_.isFinite(top)?(top+'px'):top));
+                        if(!b)o.getRoot().show(left&&xui.CSS.$forceu(left), top&&xui.CSS.$forceu(top));
                     }
                 }
             });
@@ -1781,8 +1788,8 @@ Class("xui.UI",  "xui.absObj", {
                     if(n.clientHeight){
                         if(force){
                             // ensure force 1
-                            n.style.width=0;
-                            n.style.height=0;
+                            n.style.width = 0 + xui.CSS.$picku(n.style.width);
+                            n.style.height = 0 + xui.CSS.$picku(n.style.height);
                             // ensure force 2
                             o._resize_h=o._resize_w=-1;
                         }
@@ -1813,6 +1820,7 @@ Class("xui.UI",  "xui.absObj", {
         var self=this, hash={};
         _.each(xui.UI.$ps,function(i,o){
             hash[o] = {
+                $spaceunit:1,
                 ini:'auto',
                 action:function(value){
                     var self=this,
@@ -2104,7 +2112,7 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-bginput":{
                 background: "#fff"
             },
-/*
+            /*
             ".xui-uirowbg":{
                 "background-color":"#FFF"
             },
@@ -2129,7 +2137,7 @@ Class("xui.UI",  "xui.absObj", {
                 $order:6,
                 "background-color":"#FFE97F"
             },
-*/
+            */
             ".xui-uitd":{
                 "background-color": "#F9F9FB"
             },
@@ -2162,9 +2170,7 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1
             },
 //uibar-top
-            /*set table height for ff2, set uibar height for performance*/
             '.xui-uibar-top':{
-             //   height:'29px'
             },
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
@@ -4428,12 +4434,12 @@ Class("xui.UI",  "xui.absObj", {
             }
         },
         $tryResize:function(profile,w,h,force,key){
-            var s=profile.box,t=s._onresize;
+            var s=profile.box,t=s._onresize,css=xui.CSS;
             if(t&&(force||w||h)){
                 //adjust width and height
                 //w=parseFloat(w)||null;
-                w=((w===""||w=='auto')?"auto":parseFloat(w))||null
-                h=((h===""||h=='auto')?"auto":parseFloat(h))||null;
+                w=((w===""||w=='auto')?"auto":((_.isFinite(w)||css.$isPx(w))?parseFloat(w):w))||null
+                h=((h===""||h=='auto')?"auto":  ((_.isFinite(h)||css.$isPx(h))?parseFloat(h):h))||null;
 
                 //if it it has delay resize, overwrite arguments
                 if('_$visibility' in profile){
@@ -4467,20 +4473,23 @@ Class("xui.UI",  "xui.absObj", {
                 //first time, ensure _onresize to be executed.
                 if(!self.$laidout){
                     self.$laidout=1;
-                    var stl=self.getRootNode().style;
+                    var stl=self.getRootNode().style,
+                        wu = 0+xui.CSS.$picku(stl.width),
+                        hu = 0+xui.CSS.$picku(stl.height);
                     switch(p.dock){
                         case 'top':
                         case 'bottom':
                         case 'width':
-                            stl.width=0;
+                            stl.width = wu;
                             break;
                         case 'left':
                         case 'right':
                         case 'height':
-                            stl.height=0;
+                            stl.height = hu;
                             break;
                         default:
-                            stl.width=stl.height=0;
+                            stl.width = wu;
+                            stl.height = hu;
                     }
                 }
                 xui.UI.$dock(this,false,true);
@@ -4490,6 +4499,7 @@ Class("xui.UI",  "xui.absObj", {
         $dock_map:{middle:1,center:1},
         $dock:function(profile, force, trigger){
             var node = profile.getRoot(),
+                css = xui.CSS,
                 isSVG = profile.box['xui.svg'],
                 ins = profile.boxing(),
                 i1=-1,i2=-1,i3=-1,i4=-1,
@@ -4567,7 +4577,13 @@ Class("xui.UI",  "xui.absObj", {
                 inMatrix='$inMatrix',
                 f,t,isWin,
                 //for ie6 1px bug
-                _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v}
+                _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
+                umargin={
+                    top:css.$forceu(margin.top),
+                    left:css.$forceu(margin.left),
+                    right:css.$forceu(margin.right),
+                    bottom:css.$forceu(margin.bottom)
+                };
 
             if(isSVG){
                 var bbox=ins._getBBox();
@@ -4607,11 +4623,11 @@ Class("xui.UI",  "xui.absObj", {
                         region={right:auto, bottom:auto,width:prop.width||'',height:prop.height||''};
                         break;
                     case 'top':
-                        region={left:margin.left, right:margin.right, bottom:auto, height:prop.height||''};
+                        region={left:umargin.left, right:umargin.right, bottom:auto, height:prop.height||''};
                         //width top
                         break;
                     case 'bottom':
-                        region={left:margin.left, right:margin.right, top:auto, height:prop.height||''};
+                        region={left:umargin.left, right:umargin.right, top:auto, height:prop.height||''};
                         //width bottom
                         break;
                     case 'left':
@@ -4676,22 +4692,28 @@ Class("xui.UI",  "xui.absObj", {
                                 return;
 
                              var style=(isWin?xui.win:node).get(0).style,
-                                obj,i,k,o,key,target,width,height;
-
-                            var ofs = isWin ? xui('body').get(0).style : style,
+                                f_em=function(v){return v=='auto'?'auto':css.$px2em(v)+'em'},
+                                f_px=function(v){return v=='auto'?'auto':v+'px'},
+                                w_em=style&&css.$isEm(style.width),
+                                h_em=style&&css.$isEm(style.height),
+                                wv=w_em?f_em:f_px,
+                                hv=h_em?f_em:f_px,
+                                obj,i,k,o,key,target,
+                                ofs = isWin ? xui('body').get(0).style : style,
                                 old_of=ofs.overflow,
                                 old_ofx=ofs.overflowX,
                                 old_ofy=ofs.overflowY;
 
-                            if(style){
-                                style.overflow=style.overflowX=style.overflowY="hidden";
-                            }
+                            // 1. set overflow for size
+                            if(style)style.overflow=style.overflowX=style.overflowY="hidden";
+                            
+                            //2. get width / height
+                            width=(style&&css.$px(style.width))||node.width()||0;
+                            height=(style&&css.$px(style.height))||node.height()||0;
+                            //width=Math.max( node.scrollWidth()||0,  (style&&css.$px(style.width))||node.width()||0);
+                            //height=Math.max( node.scrollHeight()||0, (style&&css.$px(style.height))||node.height()||0);
 
-                            width=(style&&xui.CSS.$px(style.width))||node.width()||0;
-                            height=(style&&xui.CSS.$px(style.height))||node.height()||0;
-                            //width=Math.max( node.scrollWidth()||0,  (style&&xui.CSS.$px(style.width))||node.width()||0);
-                            //height=Math.max( node.scrollHeight()||0, (style&&xui.CSS.$px(style.height))||node.height()||0);
-
+                            // 3.reset overflow
                            if(style){
                                style.overflow = old_of;
                                style.overflowX = old_ofx;
@@ -4709,7 +4731,9 @@ Class("xui.UI",  "xui.absObj", {
                                     right: conDockPadding.right,
                                     bottom: conDockPadding.bottom,
                                     width: width,
-                                    height: height
+                                    height: height,
+                                    w_em:w_em,
+                                    h_em:h_em
                                 };
                                 obj.preX = obj.oX = obj.left;
                                 obj.preY = obj.oY = obj.top;
@@ -4734,15 +4758,15 @@ Class("xui.UI",  "xui.absObj", {
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
-                                                        tmp= adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width()) ;
+                                                        tmp= adjustMM(o.properties,"W",css.$px(o.properties.width) || node.width()) ;
                                                         wSum +=tmp;
                                                         if(o.properties.dock!="fill"){
-                                                            hMax = Math.max(hMax, adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height()));
+                                                            hMax = Math.max(hMax, adjustMM(o.properties,"H",css.$px(o.properties.height) || node.height()));
                                                         }
                                                     }
                                                     if(perH && (key=='top'||key=='bottom'||key=='height')){
                                                         hCount++;
-                                                        hSum += adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height());
+                                                        hSum += adjustMM(o.properties,"H",css.$px(o.properties.height) || node.height());
                                                     }
                                                 }
                                             }
@@ -4761,7 +4785,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            innerW -= adjustMM(o.properties,"W",parseFloat(o.properties.width) || node.width());
+                                                            innerW -= adjustMM(o.properties,"W",css.$px(o.properties.width) || node.width());
                                                             innerH -= conDockSpacing.width;
                                                         }
                                                     }
@@ -4770,7 +4794,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            node.width(adjustMM(o.properties,"W",Math.min(1, (parseFloat(o.properties.width) || node.width()) / wSum) * innerW));
+                                                            node.width(wv( adjustMM(o.properties,"W",Math.min(1, (css.$px(o.properties.width) || node.width()) / wSum) * innerW)) );
                                                         }
                                                     }
                                                 }
@@ -4787,7 +4811,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            innerH -= adjustMM(o.properties,"H",parseFloat(o.properties.height) || node.height());
+                                                            innerH -= adjustMM(o.properties,"H",css.$px(o.properties.height) || node.height());
                                                             innerH -= conDockSpacing.height;
                                                         }
                                                     }
@@ -4796,7 +4820,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            node.height(adjustMM(o.properties,"H",Math.min(1, (parseFloat(o.properties.height) || node.height())/ hSum) * innerH));
+                                                            node.height(hv( adjustMM(o.properties,"H",Math.min(1, (css.$px(o.properties.height) || node.height())/ hSum) * innerH)) );
                                                         }
                                                     }
                                                 }
@@ -4814,10 +4838,10 @@ Class("xui.UI",  "xui.absObj", {
                                                 if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                     var node = o.getRoot();
                                                     if(pprf&&pprf._conDockFlexFillW && !perW && (key=='left'||key=='right'||key=='width')){
-                                                        node.width(o.properties.width) ;
+                                                        node.width(wv(o.properties.width)) ;
                                                     }
                                                     if(pprf&&pprf._conDockFlexFillH && !perH && (key=='top'||key=='bottom'||key=='height')){
-                                                        node.height(o.properties.height);
+                                                        node.height(hv(o.properties.height));
                                                     }
                                                 }
                                             }
@@ -4868,15 +4892,14 @@ Class("xui.UI",  "xui.absObj", {
                                                 if(!o.node)return;
                                                 
                                                 o.width+=1;o.height+=1;
-                                                if(o.isSVG)
-                                                    o.ins._setBBox(o);
-                                                else
-                                                    o.node.cssRegion(o);
+                                                
+                                                if(o.isSVG) o.ins._setBBox(o);
+                                                else o.node.cssRegion(o);
+                                                
                                                 o.width-=1;o.height-=1;
-                                                if(o.isSVG)
-                                                    o.ins._setBBox(o);
-                                                else
-                                                    o.node.cssRegion(o, true);
+                                                
+                                                if(o.isSVG)o.ins._setBBox(o);
+                                                else o.node.cssRegion(o, true);
 
                                                 if(profile=xui.UIProfile.getFromDom(o.node.get(0))){
                                                     delete o.node;
@@ -4922,6 +4945,7 @@ Class("xui.UI",  "xui.absObj", {
                             var flag=false;
                             if(id && profile.$xid!=id)flag=true;
                             var prop = profile.properties,
+                                css=xui.CSS,
                                 flt=prop.dockFloat,
                                 margin = prop.dockMargin,
                                 stretch=prop.dockStretch,
@@ -4929,12 +4953,23 @@ Class("xui.UI",  "xui.absObj", {
                                 tempW=0,tempH=0,
                                 node = profile.getRoot(),
                                 ins = profile.boxing(),
+                                f_em=function(v){return v=='auto'?'auto':css.$px2em(v)+'em'},
+                                f_px=function(v){return v=='auto'?'auto':v+'px'},
                                 style = profile.getRootNode().style,
+                                wv=(obj.w_em||(style&&css.$isEm(style.width)))?f_em:f_px,
+                                hv=(obj.h_em||(style&&css.$isEm(style.height)))?f_em:f_px,
                                 left, top, right, bottom,temp, other,
-                                x = parseFloat(prop._dockBorderWidth) || 0,
-                                y = parseFloat(prop._dockBorderHeight) || 0,
-                                region={},
+                                x = css.$px(prop._dockBorderWidth) || 0,
+                                y = css.$px(prop._dockBorderHeight) || 0,
+                                region={}, t,
                                 isSVG=profile.box['xui.svg'],bbox;
+                            
+                            // caculate with px
+                            margin.top = css.$px(margin.top);
+                            margin.left = css.$px(margin.left);
+                            margin.right = css.$px(margin.right);
+                            margin.bottom = css.$px(margin.bottom);
+
                             if(isSVG){
                                 bbox=ins._getBBox();
                                 prop.left=bbox.x;
@@ -4981,7 +5016,7 @@ Class("xui.UI",  "xui.absObj", {
                                         break;
                                         default:
                                             noStretch=1;
-                                            pct = Math.min(1, Math.max(0, parseFloat(stretch) ));
+                                            pct = Math.min(1, Math.max(0, css.$px(stretch) ));
                                     }
                             }
 
@@ -4993,21 +5028,21 @@ Class("xui.UI",  "xui.absObj", {
                                     if(isSVG)
                                         ins.setTop(Math.max(0,(obj.height - bbox.height)/2));
                                     else
-                                        node.top(Math.max(0,(obj.height - node.height())/2));
+                                        node.top(hv(Math.max(0,(obj.height - node.height())/2)));
                                     break;
                                 case 'center':
                                     if(isSVG)
                                         ins.setLeft(Math.max(0,(obj.width - bbox.width)/2));
                                     else
-                                        node.left(Math.max(0,(obj.width - node.width())/2));
+                                        node.left(wv(Math.max(0,(obj.width - node.width())/2)));
                                     break;
                                 case 'top':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
+                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
                                             
                                             tempW = temp - margin.left - margin.right;
                                             if((obj.preX + temp - obj.oX) > obj.ww){
@@ -5020,9 +5055,9 @@ Class("xui.UI",  "xui.absObj", {
                                             left=obj.preX;
                                             top=obj.top + margin.top;
                                            
-                                            if(parseFloat(style.left)!=left)region.left=left;
-                                            if(parseFloat(style.top)!=top)region.top=top;
-                                            if(parseFloat(style.width)!=tempW)region.width=tempW=_adjust(tempW)
+                                            if(css.$px(style.left)!==left)region.left=wv(left);
+                                            if(css.$px(style.top)!==top)region.top=hv(top);
+                                            if(css.$px(style.width)!==tempW)region.width=wv(tempW=_adjust(tempW));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5038,18 +5073,18 @@ Class("xui.UI",  "xui.absObj", {
                                                 obj.topHolder=0;
                                                 obj.preX = obj.oX;
                                             }
-                                            left = sStart ? ((flt?0:obj.left)+margin.left) : parseFloat(prop.left);
-                                            right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-parseFloat(prop.width)-parseFloat(prop.left));
+                                            left = sStart ? ((flt?0:obj.left)+margin.left) : css.$px(prop.left);
+                                            right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-css.$px(prop.width)-css.$px(prop.left));
                                             top=(flt?0:obj.top)+margin.top;
                                             temp = obj.width - left - right - x + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
+                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
                                             
 
-                                            if(parseFloat(style.left)!=left)region.left=left;
-                                            if(parseFloat(style.top)!=top)region.top=top;
-                                            if(parseFloat(style.width)!=temp)region.width=_adjust(temp);
+                                            if(css.$px(style.left)!==left)region.left=wv(left);
+                                            if(css.$px(style.top)!==top)region.top=hv(top);
+                                            if(css.$px(style.width)!==temp)region.width=wv(_adjust(temp));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG) ins._setBBox(region);
@@ -5065,10 +5100,10 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : parseFloat(prop.width))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
+                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
 
                                             tempW = temp - margin.left - margin.right;
                                             if((obj.preX + temp - obj.oX) > obj.ww){
@@ -5081,9 +5116,9 @@ Class("xui.UI",  "xui.absObj", {
                                             left=obj.preX;
                                             bottom=obj.bottom + margin.bottom;
                                            
-                                            if(parseFloat(style.left)!=left)region.left=left;
-                                            if(parseFloat(style.bottom)!=bottom)region.bottom=bottom;
-                                            if(parseFloat(style.width)!=tempW)region.width=tempW=_adjust(tempW)
+                                            if(css.$px(style.left)!==left)region.left=wv(left);
+                                            if(css.$px(style.bottom)!==bottom)region.bottom=hv(bottom);
+                                            if(css.$px(style.width)!==tempW)region.width=wv(tempW=_adjust(tempW));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5100,18 +5135,18 @@ Class("xui.UI",  "xui.absObj", {
                                                 obj.bottomHolder=0;
                                                 obj.preX = obj.oX;
                                             }
-                                            left=sStart?((flt?0:obj.left)+margin.left):parseFloat(prop.left);
-                                            right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-parseFloat(prop.width)-parseFloat(prop.left));
+                                            left=sStart?((flt?0:obj.left)+margin.left):css.$px(prop.left);
+                                            right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-css.$px(prop.width)-css.$px(prop.left));
                                             bottom=(flt?0:obj.bottom)+margin.bottom;
 
                                             temp=obj.width - left - right - x + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinW,  prop.dockMinW));
-                                            if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(obj.$prevLeft=temp-prop.dockMaxW,  prop.dockMaxW):(temp));
+                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
 
-                                            if(parseFloat(style.bottom)!=bottom)region.bottom=bottom;
-                                            if(parseFloat(style.left)!=left)region.left=left;
-                                            if(parseFloat(style.width)!=temp)region.width=_adjust(temp);
+                                            if(css.$px(style.bottom)!==bottom)region.bottom=hv(bottom);
+                                            if(css.$px(style.left)!==left)region.left=wv(left);
+                                            if(css.$px(style.width)!==temp)region.width=wv(_adjust(temp));
                                             
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)
@@ -5143,11 +5178,10 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
-
+                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
 
                                             tempH = temp - margin.top - margin.bottom;
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
@@ -5161,9 +5195,9 @@ Class("xui.UI",  "xui.absObj", {
                                             top=obj.preY;
                                             left=obj.left + margin.left;
                                            
-                                            if(parseFloat(style.left)!=left)region.left=left;
-                                            if(parseFloat(style.top)!=top)region.top=top;
-                                            if(parseFloat(style.height)!=tempH)region.height=tempH=_adjust(tempH)
+                                            if(css.$px(style.left)!==left)region.left=wv(left);
+                                            if(css.$px(style.top)!==top)region.top=hv(top);
+                                            if(css.$px(style.height)!==tempH)region.height=wv(tempH=_adjust(tempH));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5182,17 +5216,17 @@ Class("xui.UI",  "xui.absObj", {
                                             }
 
                                             left=(flt?0:obj.left)+margin.left;
-                                            top=sStart?((flt?0:obj.top)+margin.top):parseFloat(prop.top);
-                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
+                                            top=sStart?((flt?0:obj.top)+margin.top):css.$px(prop.top);
+                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height)-css.$px(prop.top));
 
                                             temp=obj.height - top - bottom - y + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
+                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
                                             
-                                            if(parseFloat(style.left)!=left)region.left=left;
-                                            if(parseFloat(style.top)!=top)region.top=top;
-                                            if(parseFloat(style.height)!=temp)region.height=_adjust(temp);
+                                            if(css.$px(style.left)!==left)region.left=wv(left);
+                                            if(css.$px(style.top)!==top)region.top=hv(top);
+                                            if(css.$px(style.height)!==temp)region.height=wv(_adjust(temp));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)
@@ -5224,10 +5258,10 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : parseFloat(prop.height))) + (obj.$prevLeft||0);
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height))) + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
+                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
 
                                             tempH = temp - margin.top - margin.bottom;
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
@@ -5241,9 +5275,9 @@ Class("xui.UI",  "xui.absObj", {
                                             top=obj.preY;
                                             right=obj.right + margin.right;
                                            
-                                            if(parseFloat(style.right)!=right)region.right=right;
-                                            if(parseFloat(style.top)!=top)region.top=top;
-                                            if(parseFloat(style.height)!=tempH)region.height=tempH=_adjust(tempH)
+                                            if(css.$px(style.right)!==right)region.right=wv(right);
+                                            if(css.$px(style.top)!==top)region.top=hv(top);
+                                            if(css.$px(style.height)!==tempH)region.height=hv(tempH=_adjust(tempH));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5262,17 +5296,17 @@ Class("xui.UI",  "xui.absObj", {
                                             }
 
                                             right=(flt?0:obj.right)+margin.right;
-                                            top=sStart?((flt?0:obj.top)+margin.top):(parseFloat(prop.top));
-                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
+                                            top=sStart?((flt?0:obj.top)+margin.top):(css.$px(prop.top));
+                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height)-css.$px(prop.top));
 
                                             temp=obj.height - top - bottom - y + (obj.$prevLeft||0);
                                             delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH) temp=_adjust((prop.dockMinH<=temp)?(temp):(obj.$prevLeft=temp-prop.dockMinH,  prop.dockMinH));
-                                            if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(obj.$prevLeft=temp-prop.dockMaxH,  prop.dockMaxH):(temp));
+                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
+                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
                                             
-                                            if(parseFloat(style.right)!=right)region.right=right;
-                                            if(parseFloat(style.top)!=top)region.top=top;
-                                            if(parseFloat(style.height)!=temp)region.height=_adjust(temp);
+                                            if(css.$px(style.right)!==right)region.right=wv(right);
+                                            if(css.$px(style.top)!==top)region.top=hv(top);
+                                            if(css.$px(style.height)!==temp)region.height=hv(_adjust(temp));
 
                                             if(!_.isEmpty(region)){
                                                 if(isSVG)
@@ -5297,13 +5331,13 @@ Class("xui.UI",  "xui.absObj", {
                                         obj.rightHolder=0;
                                     }
 
-                                    left = sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left);
-                                    right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-parseFloat(prop.width)-parseFloat(prop.left));
-                                    top = prop.dock=='width'?(parseFloat(prop.top) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top));
+                                    left = sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left);
+                                    right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-css.$px(prop.width)-css.$px(prop.left));
+                                    top = prop.dock=='width'?(css.$px(prop.top) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top));
                                     //later call for w/h change once
                                     temp=obj.width - left - right - x;
-                                    if(prop.dockMinW) temp=_adjust((prop.dockMinW<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  prop.dockMinW));
-                                    if(prop.dockMaxW) temp=_adjust((prop.dockMaxW<=temp)?(profile.$dockMaxW=1,  prop.dockMaxW):(delete profile.$dockMaxW, temp));
+                                    if(prop.dockMinW&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  t));
+                                    if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(profile.$dockMaxW=1,  t):(delete profile.$dockMaxW, temp));
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5311,9 +5345,9 @@ Class("xui.UI",  "xui.absObj", {
                                         isSVG:isSVG,
                                         ins:ins,
                                         node:node,
-                                        width: temp,
-                                        left:left,
-                                        top:top
+                                        width: wv(temp),
+                                        left: wv(left),
+                                        top: hv(top)
                                     },'all');
                                     break;
                                 case 'height':
@@ -5330,13 +5364,13 @@ Class("xui.UI",  "xui.absObj", {
                                         obj.preX = obj.oX;
                                     }
 
-                                    top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):parseFloat(prop.top);
-                                    bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-parseFloat(prop.height)-parseFloat(prop.top));
-                                    left = prop.dock=='height'?(parseFloat(prop.left) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):parseFloat(prop.left));
+                                    top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top);
+                                    bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-css.$px(prop.height)-css.$px(prop.top));
+                                    left = prop.dock=='height'?(css.$px(prop.left) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left));
                                     //later call for w/h change once
                                     temp=obj.height - top - bottom - y;
-                                    if(prop.dockMinH) temp = _adjust((prop.dockMinH<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  prop.dockMinH));
-                                    if(prop.dockMaxH) temp=_adjust((prop.dockMaxH<=temp)?(profile.$dockMaxH=1,  prop.dockMaxH):(delete profile.$dockMaxH, temp));
+                                    if(prop.dockMinH&&(t=css.$px(prop.dockMinH))) temp = _adjust((t<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  t));
+                                    if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(profile.$dockMaxH=1,  t):(delete profile.$dockMaxH, temp));
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5344,9 +5378,9 @@ Class("xui.UI",  "xui.absObj", {
                                         isSVG:isSVG,
                                         ins:ins,
                                         node:node,
-                                        height: temp,
-                                        left:left,
-                                        top:top
+                                        height: hv(temp),
+                                        left: wv(left),
+                                        top: hv(top)
                                     },'all');
 
                                     break;
@@ -5411,7 +5445,8 @@ Class("xui.UI",  "xui.absObj", {
             var b,t,r,o={};
             _.merge(o, profile, 'all');
             var p = o.properties = _.clone(profile.properties,true),
-                ds = o.box.$DataStruct;
+                ds = o.box.$DataStruct,
+                dm = o.box.$DataModel;
             switch(p.dock){
                 case 'top':
                 case 'bottom':
@@ -5422,9 +5457,16 @@ Class("xui.UI",  "xui.absObj", {
                     delete p.left;delete p.right;delete p.bottom;
                     break;
             }
-            for(var i in xui.UI.$ps)
-                if((i in p) && typeof p[i]!='number' && p[i]!='' && p[i]!='auto')p[i]=isNaN(p[i]=parseFloat(p[i]))?'auto':p[i];
+            for(var i in xui.UI.$ps){
+                if((i in p) && p[i]=='')p[i]='auto';
+            }
 
+            // *** force to em
+            if(xui.forceEm){
+                if(dm[i] && dm[i]['$spaceunit'])
+                    if(p[i]!='auto'&&(_.isFinite(p[i])||xui.CSS.$isPx(p[i])))
+                        p[i]=css.$px2em(p[i])+'em';
+            }
             if(p.items && p.items.length){
                 t=xui.absObj.$specialChars;
                 p.items = _.clone(p.items,function(o,i,d){
@@ -5498,26 +5540,39 @@ Class("xui.UI",  "xui.absObj", {
             //give default caption
             if('caption' in dm && prop.caption!==null)
                 prop.caption = prop.caption===undefined ? profile.alias : prop.caption;
-            
+
+            // *** force to em
+            if(xui.forceEm){
+                for(var i in prop)
+                    if(dm[i] && dm[i]['$spaceunit'])
+                        if(prop[i]!='auto'&&(_.isFinite(prop[i])||xui.CSS.$isPx(prop[i])))
+                            prop[i]=xui.CSS.$px2em(prop[i])+'em';
+            }
             if('html' in dm && prop.html)
                 data.html = xui.adjustRes(prop.html,0,1);
             if('src' in dm && prop.src)
                 data.src = xui.adjustRes(prop.src,0,1);
-
+            
             //give border width
-            if('$hborder' in dm)
-                data.bWidth=parseFloat(prop.width) - (prop.$hborder||0)*2;
-            if('$vborder' in dm)
-                data.bHeight=parseFloat(prop.height) - (prop.$vborder||0)*2;
-
+            if('$hborder' in dm && dm.$hborder){
+                if(xui.CSS.$isEm(prop.width)){
+                    data.bWidth = xui.CSS.$px2em( xui.CSS.$em2px(prop.width) - prop.$hborder*2 ) + 'em';
+                }else{
+                    data.bWidth = parseFloat(prop.width) - prop.$hborder*2;
+                }
+            }
+            if('$vborder' in dm && dm.$vborder){
+                if(xui.CSS.$isEm(prop.height)){
+                    data.bHeight = xui.CSS.$px2em( xui.CSS.$em2px(prop.height) - prop.$vborder*2 ) + 'em';
+                }else{
+                    data.bHeight = parseFloat(prop.height) - prop.$vborder*2;
+                }
+            }
             //set left,top,bottom,right,width,height,position,z-index,visibility,display
             for(var j=0,i;i=map[j];j++){
                 var t=(i in data)?data[i]:prop[i];
                 if(t || t===0){
-                    if(_.isFinite(t))
-                        a[a.length]=i+':'+(parseFloat(t)||0)+'px';
-                    else if(t!='auto' && t)
-                        a[a.length]=i+':'+t;
+                    if(t!='auto')a[a.length]=i+':'+xui.CSS.$forceu(t);
                 }
             }
             if(prop.position)a[a.length] = 'position:'+prop.position;
@@ -5620,7 +5675,8 @@ Class("xui.UI",  "xui.absObj", {
         }
     }
 });
-//absList cls
+
+//absList Class
 Class("xui.absList", "xui.absObj",{
     Instance:{
         activate:function(){
@@ -6199,6 +6255,7 @@ Class("xui.absList", "xui.absObj",{
     }
 });
 
+//absValue Class
 Class("xui.absValue", "xui.absObj",{
     Instance:{
         /*
@@ -6503,7 +6560,7 @@ Class("xui.absValue", "xui.absObj",{
 //som base widgets Classes
 new function(){
     var u='xui.UI';
-    //Widget cls
+
     Class(u+".Widget", u,{
         Static:{
             Appearances:{
@@ -6531,7 +6588,7 @@ new function(){
                     className:'xui-uiw-frame ',
                     BORDER:{
                         $order:1,
-                        style:'width:{bWidth}px;height:{bHeight}px;',
+                        style:'width:{bWidth};height:{bHeight};',
                         className:'xui-uiw-border'
                     }
                 }
@@ -6540,8 +6597,14 @@ new function(){
                 onSize:xui.UI.$onSize
             },
             DataModel:{
-                width:100,
-                height:100,
+                width:{
+                    $spaceunit:1,
+                    ini:'10em'
+                },
+                height:{
+                    $spaceunit:1,
+                    ini:'10em'
+                },
                 border:'deprecated',
                 shadow:{
                     ini:false,
@@ -6557,7 +6620,7 @@ new function(){
                         }
                     }
                 },
-                //hide props
+                //hide props( with px)
                 $hborder:0,
                 $vborder:0
             },
@@ -6577,28 +6640,39 @@ new function(){
                     o = profile.getSubNode('BORDER'),
                     sd = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                     region,
-                    ww=width,
-                    hh=height,
-                    left=Math.max(0, (t.$b_lw||0)-(t.$hborder||0)),
-                    top=Math.max(0, (t.$b_tw||0)-(t.$vborder||0));
+
+                    css=xui.CSS,
+                    w_em=css.$isEm(width), h_em=css.$isEm(height),
+                    wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                    hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+                    
+                    //px
+                    ww=css.$px(width), hh=css.$px(height),
+                    left=Math.max(0, (t.$b_lw||0)-(t.$hborder||0)), top=Math.max(0, (t.$b_tw||0)-(t.$vborder||0));
+
                 if(ww&&'auto'!==ww){
                     ww -= Math.max((t.$hborder||0)*2, (t.$b_lw||0)+(t.$b_rw||0));
                     /*for ie6 bug*/
                     /*for example, if single number, 100% width will add 1*/
                     /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(parseFloat(ww/2))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(css.$px(ww/2))*2;
                 }
                 if(hh&&'auto'!==hh){
                     hh -=Math.max((t.$vborder||0)*2, (t.$b_lw||0) + (t.$b_rw||0));
 
-                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(parseFloat(hh/2))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(css.$px(hh/2))*2;
                     /*for ie6 bug*/
                     if(xui.browser.ie&&xui.browser.ver<=6&&null===width){
                         o.ieRemedy();
                         if(sd)sd.ieRemedy();
                     }
                 }
-                region={left:left,top:top,width:ww,height:hh};
+                region={
+                    left:wv(left), 
+                    top:hv(top), 
+                    width:wv(ww),
+                    height:hv(hh)
+                };
                 o.cssRegion(region);
                 if(sd)sd.cssRegion(region);
 
@@ -6674,15 +6748,21 @@ new function(){
                 _NativeElement:true,
                 tagName:'{nodeName}',
                 // dont set class to HTML Element
-                className:'xui-wrapper {_className}',
+                className:'xui-node xui-wrapper {_className}',
                 style:'{_style};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
-                width:'100',
-                height:'22',
+                width:{
+                    $spaceunit:1,
+                    ini:'8em'
+                },
+                height:{
+                    $spaceunit:1,
+                    ini:'1em'
+                },
                 nodeName:{
                     ini:"xui",
                     action:function(v){
@@ -6755,7 +6835,7 @@ new function(){
                 _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-wrapper {_className}',
+                className:'xui-node xui-wrapper {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -6788,6 +6868,7 @@ new function(){
             } 
         }
     });
+
     Class(u+".Button", [u+".HTMLButton","xui.absValue"],{
         Initialize:function(){
             // compitable
@@ -6844,7 +6925,7 @@ new function(){
                 },
                 ICON:{
                     $order:1,
-                    className:'Buttonxuicon {imageClass}',
+                    className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
                 },
                 CAPTION:{
@@ -7014,8 +7095,14 @@ new function(){
                 text:'{html}'+xui.UI.$childTag
             },
             DataModel:{
-                width:'16',
-                height:'16',
+                width:{
+                    $spaceunit:1,
+                    ini:'2em'
+                },
+                height:{
+                    $spaceunit:1,
+                    ini:'1em'
+                },
                 selectable:true,
                 html:{
                     html:1,
@@ -7254,8 +7341,14 @@ new function(){
                         this.box._applyAutoLoad(this);
                     }
                 },
-                width:'100',
-                height:'100',
+                width:{
+                    $spaceunit:1,
+                    ini:'10em'
+                },
+                height:{
+                    $spaceunit:1,
+                    ini:'10em'
+                },
                 selectable:true,
                 html:{
                     html:1,
@@ -7477,7 +7570,7 @@ new function(){
         Static:{
             Templates:{
                 tagName:'div',
-                style:'left:0px;top:0px;width:0px;height:0px;visibility:hidden;display:none;position:absolute;z-index:0;'
+                style:'left:0;top:0;width:0;height:0;visibility:hidden;display:none;position:absolute;z-index:0;'
             },
             DataModel:{
                 showEffects:null,

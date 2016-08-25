@@ -80,17 +80,18 @@ Class("xui.UI.Resizer","xui.UI",{
                             node=profile.getRoot(),
                             instance=profile.boxing(),
                             prop=profile.properties,
+                            css=xui.CSS,
                             svg=profile.box['xui.svg'],
                             t;
                         if(size){
                             var w=null,h=null,l=null,t=null;
                             if(t=size.width){
                                 node.widthBy(t);
-                                prop.width = w = svg?instance.getWidth():node.width();
+                                prop.width = w = css.$forceu(svg?instance.getWidth():node.width());
                             }
                             if(t=size.height){
                                 node.heightBy(t);
-                                prop.height = h = svg?instance.getHeight():node.height();
+                                prop.height = h = css.$forceu(svg?instance.getHeight():node.height());
                             }
                             xui.UI.$tryResize(profile,w,h,true);
 
@@ -101,11 +102,11 @@ Class("xui.UI.Resizer","xui.UI",{
                         if(cssPos){
                             if((t=cssPos.left) && !(prop.left=='auto'&&parseInt(prop.right,10)>=0)){
                                 node.leftBy(t);
-                                prop.left= svg?instance.getLeft():node.left();
+                                prop.left= l = css.$forceu(svg?instance.getLeft():node.left());
                             }
                             if((t=cssPos.top) && !(prop.top=='auto'&&parseInt(prop.bottom,10)>=0)){
                                 node.topBy(t);
-                                prop.top = svg?instance.getTop():node.top();
+                                prop.top = t = css.$forceu(svg?instance.getTop():node.top());
                             }
                             if(profile.onMove && (l!==null||t!==null))
                                 instance.onMove(profile,l,t,null,null);
@@ -493,8 +494,10 @@ Class("xui.UI.Resizer","xui.UI",{
             maxHeight: 5000,
             maxWidth: 5000,
 
+            // with px (base: 1em=12px)
             handlerSize:4,
             handlerOffset:0,
+
             disabled:{
                 ini:false,
                 action:function(v){
@@ -552,26 +555,26 @@ Class("xui.UI.Resizer","xui.UI",{
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
                 MOVE: {tagName:'div', className:'xuifont',$fonticon:'xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
-                CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'top:0px;left:-1em;{_leftCofigBtn};'},
-                CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-dropdown', style:'top:0px;left:auto;right:-1em;{_rightCofigBtn};'},
+                CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'top:0em;left:-1em;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-dropdown', style:'top:0em;left:auto;right:-1em;{_rightCofigBtn};'},
                 ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'top:-1.2em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
-                T:{tagName:'div', style:'top:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                R:{tagName:'div', style:'right:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                RB:{tagName:'div', style:'bottom:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                B:{tagName:'div', style:'bottom:-{extend}px;margin-left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                LB:{tagName:'div',style:'bottom:-{extend}px;left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                L:{tagName:'div', style:'left:-{extend}px;margin-top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                LT:{tagName:'div', style:'left:-{extend}px;top:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
+                T:{tagName:'div', style:'top:-{_extend};margin-left:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                RT:{tagName:'div', style:'top:-{_extend};right:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                R:{tagName:'div', style:'right:-{_extend};margin-top:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                RB:{tagName:'div', style:'bottom:-{_extend};right:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                B:{tagName:'div', style:'bottom:-{_extend};margin-left:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                LB:{tagName:'div',style:'bottom:-{_extend};left:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                L:{tagName:'div', style:'left:-{_extend};margin-top:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                LT:{tagName:'div', style:'left:-{_extend};top:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 cover:{
-                    T:{tagName:'div', style:'width:100%;left:0;top:-{extend}px;height:{handlerSize}px;'},
-                    RT:{tagName:'div', style:'top:-{extend}px;right:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                    R:{tagName:'div', style:'height:100%;top:0;right:-{extend}px;width:{handlerSize}px;' },
-                    RB:{tagName:'div', style:'right:-{extend}px;bottom:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                    B:{tagName:'div', style:'width:100%;left:0;bottom:-{extend}px;height:{handlerSize}px;'},
-                    LB:{tagName:'div', style:'left:-{extend}px;bottom:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'},
-                    L:{tagName:'div', style:'height:100%;top:0;left:-{extend}px;width:{handlerSize}px;' },
-                    LT:{tagName:'div', style:'top:-{extend}px;left:-{extend}px;width:{handlerSize}px;height:{handlerSize}px;'}
+                    T:{tagName:'div', style:'width:100%;left:0em;top:-{_extend};height:{_handlerSize};'},
+                    RT:{tagName:'div', style:'top:-{_extend};right:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                    R:{tagName:'div', style:'height:100%;top:0em;right:-{_extend};width:{_handlerSize};' },
+                    RB:{tagName:'div', style:'right:-{_extend};bottom:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                    B:{tagName:'div', style:'width:100%;left:0em;bottom:-{_extend};height:{_handlerSize};'},
+                    LB:{tagName:'div', style:'left:-{_extend};bottom:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
+                    L:{tagName:'div', style:'height:100%;top:0em;left:-{_extend};width:{_handlerSize};' },
+                    LT:{tagName:'div', style:'top:-{_extend};left:-{_extend};width:{_handlerSize};height:{_handlerSize};'}
                 }
             });
 
@@ -645,7 +648,7 @@ Class("xui.UI.Resizer","xui.UI",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var t = profile.properties;
+            var t = profile.properties, css=xui.CSS;
             //default is true
             t._visible=true;
             t._cover=false;
@@ -667,7 +670,9 @@ Class("xui.UI.Resizer","xui.UI",{
             if(typeof t.forceMovable=="boolean")
                 t._move=t.forceMovable;
 
-            t.extend =  (parseInt(t.handlerSize,10)||0)/2 + (parseInt(t.handlerOffset,10)||0);
+            t.extend =  (parseFloat(t.handlerSize)||0)/2 + (parseFloat(t.handlerOffset)||0);
+            t._handlerSize =  css.$em(t.handlerSize)+'em';
+            t._extend =  css.$em(t.extend)+'em';
 
             t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
             t._rightCofigBtn = t.rightConfigBtn?'':'display:none';

@@ -81,24 +81,26 @@ Class('App', 'xui.Com',{
         _button19_onclick:function (profile, e, src, value) {
             if(SPA.$dbBinder && SPA.$curRow){
                 if(SPA.$dbBinder.checkValid()){
-                    var hash=SPA.$dbBinder.updateDataFromUI().getData(),t;
+                    if(SPA.$dbBinder.updateDataFromUI()){
+                        var hash=SPA.$dbBinder.getData(), t;
 
-                    //for listbox
-                    var items=xui.UI.getCachedData('demo'),
-                        index=_.arr.subIndexOf(items,'id',hash.col7);
-                    hash.col7={
-                        value:hash.col7,
-                        caption:items[index].caption
-                    },
-                    //for slider
-                    hash.col11 =Math.round(hash.col11)/100;
+                        //for listbox
+                        var items=xui.UI.getCachedData('demo'),
+                            index=_.arr.subIndexOf(items,'id',hash.col7);
+                        hash.col7={
+                            value:hash.col7.value,
+                            caption:items[index].caption
+                        },
+                        //for slider
+                        hash.col11 =Math.round(hash.col11)/100;
 
-                    _.arr.each(SPA.$curRow.cells,function(cell){
-                        t=hash[cell._col.id];
-                        SPA.tg2.updateCellByRowCol(cell._row.id,cell._col.id,  typeof t=='object'?t:{value:t} );
-                    });
-                    SPA.tg2.resetRowValue(SPA.$curRow.id);
-                    xui.message('data updated!');
+                        _.arr.each(SPA.$curRow.cells,function(cell){
+                            t=hash[cell._col.id];
+                            SPA.tg2.updateCellByRowCol(cell._row.id,cell._col.id,  typeof t=='object'?t:{value:t} );
+                        });
+                        SPA.tg2.resetRowValue(SPA.$curRow.id);
+                        xui.message('data updated!');
+                    }
                 }
                 else
                     xui.message('please correct input first!');

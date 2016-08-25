@@ -20,8 +20,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy xui-hiddenborder {itemClass} {disabled}  {readonly}',
-                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle};{_itemDisplay};{_loadbg}',
+                    className:'xui-busy xui-hiddenborder xui-showfocus {itemClass} {disabled}  {readonly}',
+                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
                         tagName:'div',
@@ -49,7 +49,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 position:'relative',
-                'line-height':'14px',
+                'line-height':'1.2em',
                 zoom:xui.browser.ie6?1:null
             },
             ITEM:{
@@ -131,7 +131,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ini:6,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('margin',(''+parseFloat(v))==(''+v)?v+'px':v);
+                        this.getSubNode('ITEM',true).css('margin',_.isFinite(v)?v+'px':v);
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
@@ -140,7 +140,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ini:2,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('padding',(''+parseFloat(v))==(''+v)?v+'px':v);
+                        this.getSubNode('ITEM',true).css('padding',_.isFinite(v)?v+'px':v);
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
@@ -164,10 +164,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
             onCmd:null
         },
         _prepareItem:function(profile, item){
-            var p = profile.properties;
+            var p = profile.properties,t;
             _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = _.isSet(item[i])?item[i]:p[i];
             });
+            if(t=item.itemMargin)item.itemMargin=_.isFinite(t)?t+'px':t;
+            if(t=item.itemPadding)item.itemPadding=_.isFinite(t)?t+'px':t;
             item._tabindex = p.tabindex;
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },

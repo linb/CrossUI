@@ -37,8 +37,14 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
         DataModel:{
             iframeAutoLoad:null,
             html:null,
-            width:400,
-            height:300,
+            width:{
+                $spaceunit:1,
+                ini:'32em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'25em'
+            },
             scaleChildren:{
                 ini:false
             },
@@ -94,7 +100,15 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
             }
         },
         _onresize:function(profile,width,height){
-            var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh;
+            var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height);
+
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+
             if(scaleChildren){
                 ow=paper.width;
                 oh=paper.height;

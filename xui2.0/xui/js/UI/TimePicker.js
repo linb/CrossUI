@@ -223,57 +223,58 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding-top':'4px'
+                'padding-top':'.4em'
             },
             CONH:{
                 'white-space': 'nowrap',
                 'background-color':'#F9F9FB'
             },
             CONM:{
-                'margin-top':'4px',
+                'margin-top':'.4em',
                 'white-space': 'nowrap',
                 'background-color':'#F9F9FB'
             },
             BARCMDL:{
-                top:'3px'
+                top:'.3em'
             },
             'PRE,PRE2,NEXT,NEXT2':{
                 position:'relative',
-                margin:'0 2px',
+                margin:'0 .2em',
                 'vertical-align': 'middle',
                 cursor:'default'
             },
             'HOUR, MINUTE':{
                 $order:3,
-                margin:'2px 2px 0 2px',
+                margin:'.2em .2em 0 .2em',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                'padding':'0 2px'
+                'padding':'0 .2em'
             },
             SET:{
                 position:'absolute',
                 display:'none',
                 color:'#ff0000',
-                top:'1px',
-                right:'5px'
+                top:'.1em',
+                right:'.5em'
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'4px',
+                'padding-top':'.4em',
                 'text-align':'center'
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             },
             '.xuiex-timepicker':{
                 'text-align':'center',
-                padding:'2px 0.4em'
+                padding:'.2em 0.4em'
             },
             '.xuiex-timepicker3':{
                 'text-align':'center',
                 'font-weight':'bold',
-                padding:'2px 0.2333333em'
+                padding:'.2em 0.3em'
             }
         },
         Behaviors:{

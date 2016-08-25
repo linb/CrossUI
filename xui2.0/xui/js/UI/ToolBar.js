@@ -213,12 +213,12 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             'ITEM-object':{
                 'vertical-align':'middle',
-                'margin-left':'4px'
+                'margin-left':'.4em'
             },
             RULER:{
-                padding:'0px',
-                margin:'0px',
-                width:'0px'
+                padding:'0',
+                margin:'0',
+                width:'0'
             },
             ICON:{
                 margin:0,
@@ -226,13 +226,13 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEMS:{
                 display:'block',
-                'padding-bottom':'1px',
+                'padding-bottom':'.1em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
             HANDLER:{
                 height:'100%',
-                width:'7px',
+                width:'.7em',
                 background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
@@ -242,34 +242,35 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':xui.__iefix1,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
-                padding:'1px 2px 0px 1px',
+                padding:'.1em .2em 0 .1em',
                 'vertical-align':'middle'
             },
             ITEM:{
                 'vertical-align': 'middle',
-                padding: '0px 1px',
+                padding: '0 .1em',
                 margin: '0'
             },
             'SPLIT':{
                 $order:1,
-                width:'0px',
+                width:'0',
                 'vertical-align':'middle',
-                margin: '0 2px'
+                margin: '0 .2em'
             },
             BTN:{
-                'padding':'2px'
+                'padding':'.2em'
             },
             BOX:{
                 height:'auto'
             },
             'LABEL, CAPTION':{
                 'vertical-align':'middle',
-                'margin-left':'2px',
-                'margin-right':'2px'
+                'margin-left':'.2em',
+                'margin-right':'.,2em',
+                'font-size':'1em'
             },
             LABEL:{
                 cursor:'default',
-                'padding-top':'3px'
+                'padding-top':'.3em'
             }
         },
         Behaviors:{
@@ -301,10 +302,19 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 ini:'auto',
                 readonly:true
             },
-            width:'auto',
+            width:{
+                $spaceunit:1,
+                ini:'auto'
+            },
 
-            left:0,
-            top:0,
+            left:{
+                $spaceunit:1,
+                ini:0
+            },
+            top:{
+                $spaceunit:1,
+                ini:0
+            },
 
             handler:{
                 ini:true,

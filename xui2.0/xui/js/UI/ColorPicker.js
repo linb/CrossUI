@@ -66,17 +66,17 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             evs=xui.$IEUNSELECTABLE(),
             evs2='style="visibility:hidden;"';
 
-        ns.addTemplateKeys(['TXT', 'DD1', 'DD2', 'DD3','R','G','B','HH','S','V','H','E','X']);
+        ns.addTemplateKeys(['DD1', 'DD2', 'DD3','R','G','B','HH','S','V','H','E','X']);
 
         //simple list
         for(i=0;i<l;i++){
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" tabindex="{tabindex}" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-showfocus xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
             if((i+1)%17==0)arr.push('<br />');
         }
         //data
         data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
                 '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span style="width:38px"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
+               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
         ns.setTemplate({
             style:'{_style};height:auto;width:auto',
             tagName : 'div',
@@ -305,11 +305,9 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             'DATA div':{
                 'padding-bottom':'.5em'
             },
-            TXT:{
-                width:'16px'
-            },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             },
             EXAM:{
                 padding:'3px',
@@ -374,7 +372,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             'ADVMARK1, ADVMARK2':{
                 background:xui.browser.ie6?null:"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAK3RFWHRDcmVhdGlvbiBUaW1lAHZyIDE0IGp1bCAyMDA2IDEzOjMxOjIzICswMTAwHvJDZwAAAAd0SU1FB9YHDgsgJYiZ4bUAAAAJcEhZcwAALiIAAC4iAari3ZIAAAAEZ0FNQQAAsY8L/GEFAAAB5ElEQVR42q2Tz0sqURTH72Qq4mASSAoSIfSDdCEI8qJFLXSjLYSQNoGLINrI8/0ZD9q0KnDlKkIMebmP9xZRCEEiLQLBiMiNJDYq/Zg573vpCkM6CdGBD3Pn3OvXe77nDGPfENKwJBHx/CxYAtNAAVfgXJKk7khVCCyCP6ALVKAJXkEdbINxw5tgM4HHPphSFEUql8usXq8zWZZZKBRiPp+PH3sBx2Br4FbiBg+aplGxWKRgMPiMH1+YTKZDq9V64na7G+l0mprNJo7RG/g94IEoQSsUCuRyue6QToIJYAJWMA/Bo2QySZ1Ohws9gZBeZI570Gq1yO/395BKGJg+ZbFYznK5HAmf9vQiKW5iqVQim832Fyn5E+83Y7EYieAdY2Nig7dRqtVqrNfr3YiWGsVltVrtr2f0IrwEZrfbGeqWhQ9GMeFwOPprRS9SAWo4HGZOp/MH1l4DAS6+HolE+u9Xek9kcK+qKqVSKUL/s0hPDhFY83g8j5VKhcQg7nxs80/w0mg0KB6Pa2az+RTpDbDA3sd/lwvk8/l+Z7iS/FHEAor8H9rtNmWzWYpGo+T1eikQCFAmkyFxAy7AJ255aMHYcIID8d1oNBi8hGuwwkYFDq0CPlG3YsTb4B/4BRwjBb4S/wGzT16tu5THiAAAAABJRU5ErkJggg==)",
                 height:'16px',
-                margin:'-8px 0pt 0pt -8px',
+                margin:'-8px 0 0 -8px',
                 overflow:'hidden',
                 width:'16px'
             },

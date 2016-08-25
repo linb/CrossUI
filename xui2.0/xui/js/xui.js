@@ -379,6 +379,9 @@ _.merge(_,{
                 break;
         return hash;
     },
+    compareNumber:function(a,b,digits){
+        return _.toFixedNumber(a,digits) === _.toFixedNumber(b,digits);
+    },
     toFixedNumber:function(number,digits) {
         if(!_.isSet(digits))digits=2;
         var m=Math.abs(number),
@@ -893,6 +896,8 @@ _.merge(xui,{
     $localeDomId:'xlid',
     $dateFormat:'',
     $rand:"_r_",
+
+    forceEm:true,
     // for show xui.echo
     debugMode:true,
 
@@ -4096,18 +4101,18 @@ Class('xui.absObj',"xui.absBox",{
             var self=this,
                 sc=xui.absObj.$specialChars,
                 ds=self.$DataStruct,
-                properties=self.$DataModel,
+                dm=self.$DataModel,
                 ps=self.prototype,
                 i,j,t,o,n,m,r;
 
             //merge default value and properties
             for(i in hash){
-                if(!properties[i])properties[i]={};
+                if(!dm[i])dm[i]={};
                 o=hash[i];
                 if(null===o || undefined===o){
                     r=_.str.initial(i);
                     delete ds[i];
-                    delete properties[i]
+                    delete dm[i]
                     if(ps[j='get'+r]&&ps[j].$auto$)delete ps[j];
                     if(ps[j='set'+r]&&ps[j].$auto$)delete ps[j];
                 //Here, if $DataModel inherites from it's parent class, properties[i] will pointer to parent's object.
@@ -4117,11 +4122,11 @@ Class('xui.absObj',"xui.absBox",{
                         o={ini:o};
                     ds[i] = ('ini' in o)?o.ini:(i in ds)?ds[i]:'';
 
-                    t=properties[i];
+                    t=dm[i];
                     for(j in t)
                         if(!(j in o))
                             o[j]=t[j];
-                    properties[i]=o;
+                    dm[i]=o;
                 }
             }
 
@@ -4137,6 +4142,13 @@ Class('xui.absObj',"xui.absBox",{
                     ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force,tag,tag2){
                         return this.each(function(v){
                             if(!v.properties)return;
+
+                            // *** force to em
+                            if(xui.forceEm){
+                                if(dm[i] && dm[i]['$spaceunit'])
+                                    if(value!='auto'&&(_.isFinite(value )||xui.CSS.$isPx(value)))
+                                        value=xui.CSS.$px2em(value)+'em';
+                            }
                             //if same return
                             if(v.properties[i] === value && !force)return;
 

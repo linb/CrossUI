@@ -291,7 +291,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             CAPTION:{
                 padding:'4px 0 0 0',
                 'text-align':'center',
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             },
             MAINI:{
                 'padding-top':'4px',
@@ -525,10 +526,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 }
             },
             height:{
+                $spaceunit:1,
                 ini:'auto',
                 readonly:true
             },
             width:{
+                $spaceunit:1,
                 ini:'auto',
                 readonly:true
             },

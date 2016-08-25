@@ -150,7 +150,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         },
         Appearances:{
             LABEL:{
-                padding:'3px 6px 0 6px',
+                padding:'.25em .5em 0 .5em',
                 'vertical-align':'top',                
                 'white-space':'nowrap'
             },
@@ -163,10 +163,10 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 '-moz-outline-offset': (xui.browser.gek && xui.browser.ver<3)?'':null
             },
             'KEY .xui-ui-btn, POP .xui-ui-btn':{
-                'margin-right':'3px'
+                'margin-right':'.25em'
             },
             'KEY .xui-ui-btn a, POP .xui-ui-btn a':{
-                padding:'0 3px 0 3px'
+                padding:'0 .25em 0 .25em'
             },
             'PREV,CUR,NEXT':{
                 'font-weight' : 'bold'
@@ -175,8 +175,8 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 border:'dotted 1px gray',
                 background:'#fff',
                 position:'absolute',
-                padding:'3px',
-                'line-height':'26px'
+                padding:'.25em',
+                'line-height':'2.2em'
             }
         },
         Behaviors:{
@@ -343,7 +343,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             var _id=profile.keys.POPI+':'+profile.serialId+':';
             while(n<l){
                 //margin-top for ie6
-                a.push('<a style="margin-top:3px;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
+                a.push('<a style="margin-top:.25em;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
                 n=n+m;
             }
             pop.width('auto');

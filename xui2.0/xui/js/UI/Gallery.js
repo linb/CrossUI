@@ -20,8 +20,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-hiddenborder {itemClass} {disabled} {readonly}',
-                    style:'padding:{itemPadding}px;margin:{itemMargin}px;{itemStyle}',
+                    className:'xui-hiddenborder xui-showfocus {itemClass} {disabled} {readonly}',
+                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle}',
                     ITEMFRAME:{
                         style:'{_itemSize};',
                         CAPTION:{
@@ -136,19 +136,22 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             	'text-align': 'center',
                 overflow:'hidden',
                 'white-space':'nowrap',
-                'font-weight':'bold'
+                'font-weight':'bold',
+                'font-size':'1em'
             },
             CONTENT:{
             	'text-align': 'center',
                 overflow:'hidden',
                 'white-space':'nowrap',
                 'background-repeat':'no-repeat',
-                'background-position':'center center'
+                'background-position':'center center',
+                'font-size':'1em'
             },
             COMMENT:{
                 display:'block',
-                margin:'2px',
-                'text-align':'center'
+                margin:'.2em',
+                'text-align':'center',
+                'font-size':'1em'
             }
         },
         Behaviors:{
@@ -193,59 +196,74 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             loadingImg:"",
             errImg:"",
             itemMargin:{
+                $spaceunit:1,
                 ini:6,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('margin', (''+parseFloat(v))==(''+v)?v+'px':v);
+                        this.getSubNode('ITEM',true).css('margin', _.isFinite(v)?v+'px':v);
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
             },
             itemPadding:{
+                $spaceunit:1,
                 ini:2,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('padding',(''+parseFloat(v))==(''+v)?v+'px':v);
+                        this.getSubNode('ITEM',true).css('padding',_.isFinite(v)?v+'px':v);
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
             },
             itemWidth:{
+                $spaceunit:1,
                 ini:32,
                 action:function(v){
                     this.getSubNode('ITEMFRAME',true).width(v);
                 }
             },
             itemHeight:{
+                $spaceunit:1,
                 ini:32,
                 action:function(v){
                     this.getSubNode('ITEMFRAME',true).height(v);
                 }
             },
             imgWidth:{
+                $spaceunit:1,
                 ini:16,
                 action:function(v){
                     this.getSubNode('IMAGE',true).width(v);
                 }
             },
             imgHeight:{
+                $spaceunit:1,
                 ini:16,
                 action:function(v){
                     this.getSubNode('IMAGE',true).height(v);
                 }
             },
-            width:200,
-            height:200
+            width:{
+                $spaceunit:1,
+                ini:200
+            },
+            height:{
+                $spaceunit:1,
+                ini:200
+            }
         }),
         EventHandlers:{
             onCmd:null
         },
         _prepareItem:function(profile, item){
-            var p = profile.properties;
+            var p = profile.properties,t,
+                css=xui.CSS;
 
             _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = _.isSet(item[i])?item[i]:p[i];
             });
+            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
             item.caption = item.caption || '';
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
@@ -254,7 +272,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
-                item._itemSize='width:'+item.itemWidth+'px;height:'+item.itemHeight+'px;';
+                item._itemSize='width:'+css.$forceu(item.itemWidth)+'height:'+css.$forceu(item.itemHeight);
             }
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },

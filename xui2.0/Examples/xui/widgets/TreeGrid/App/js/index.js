@@ -470,7 +470,8 @@ Class('App', 'xui.Com',{
         _button19_onclick:function (profile, e, src, value) {
             if(SPA.$dbBinder && SPA.$curRow){
                 if(SPA.$dbBinder.checkValid()){
-                    var hash=SPA.$dbBinder.updateDataFromUI().getData();
+                    SPA.$dbBinder.updateDataFromUI();
+                    var hash=SPA.$dbBinder.getData();
                     _.arr.each(SPA.$curRow.cells,function(cell){
                         SPA.tg2.updateCellByRowCol(cell._row.id,cell._col.id, {value:hash[cell._col.id]});
                     });

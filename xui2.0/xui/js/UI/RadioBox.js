@@ -7,7 +7,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'{_itemRow} {itemClass} {disabled} {readonly}',
+                    className:'xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
                     style:'{itemStyle}{_itemDisplay}',
                     tabindex: '{_tabindex}',
                     MARK:{
@@ -36,7 +36,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             ITEM:{
                display:xui.$inlineBlock,
                border:0,
-               padding:'4px',
+               padding:'.4em',
                position:'relative',
                zoom:xui.browser.ie?1:null,
                cursor:'pointer',
@@ -45,21 +45,22 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             },
             // to cover LIST's
             'ITEM-checked':{
-                padding:'4px'
+                padding:'.4em'
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             },
             ITEMS:{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 position:'relative',
-                'line-height':'14px'
+                'line-height':'1.2em'
             },
             MARK:{
                $order:1,
                cursor:'pointer',
-               margin: '0 4px 0 2px',
+               margin: '0 .4em 0 .2em',
                'vertical-align':'middle'
             }
         },

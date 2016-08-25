@@ -21,7 +21,7 @@ Class('App', 'xui.Com',{
                 .setTop(460)
                 .setWidth(450)
                 .setHeight(180)
-                .setHtml("<b>Try keyboard</b>: <br /><b>up</b> : to upper cell;<br /><b>down</b> : to below cell; <br /><b>(alt+)left</b>: to left cell; <br /><b>(alt+)right</b> : to right cell;<br /><b>tab</b> : direct to the last cell; <br /><b>enter</b> : equal to down(in edit mode); <br /><b>alt+enter</b> : input 'enter' in textarea(in edit mode); <br /><b>ctrl+enter</b>: show pop wnd(in edit mode); ")
+                .setHtml("<b>Try keyboard</b>: <br /><b>up</b> : to upper cell;<br /><b>down</b> : to below cell; <br /><b>(alt+)left</b>: to left cell; <br /><b>(alt+)right</b> : to right cell;<br /><b>tab</b> : next cell; <br /><b>(shift+)tab</b> : next cell; <br /><b>enter</b> : equal to down(in edit mode); <br /><b>alt+enter</b> : input 'enter' in textarea(in edit mode); <br /><b>ctrl+enter</b>: show pop wnd(in edit mode); ")
             );
             
             append(

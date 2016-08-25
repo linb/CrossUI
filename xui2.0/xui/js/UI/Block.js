@@ -113,8 +113,14 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                     this.getSubNode('PANEL').css('background',v);
                 }
             },
-            width:100,
-            height:100
+            width:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'10em'
+            }
         },
         Appearances:{
             KEY:{
@@ -149,9 +155,9 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             var size = arguments.callee.upper.apply(this,arguments),
                 p=profile.properties,
                 b=(p.$iborder||0)*2;
-            if(size.width)size.width-=b;
+            if(size.width)size.width=xui.CSS.$addpx(size.width, -b);
             if(size.height&&'auto'!==size.height)
-                size.height-=b;
+                size.height=xui.CSS.$addpx(size.height, -b);
             profile.getSubNode('PANEL').cssSize(size,true);
         }
     }

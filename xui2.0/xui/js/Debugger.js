@@ -109,17 +109,17 @@ Class('xui.Debugger', null, {
     },
     Initialize:function(){
         xui.CSS.addStyleSheet(
-            '.xui-dbg-frm{position:absolute;width:300px;z-index:2000;}'+
-            '.xui-dbg-header{cursor:move;height:18px;padding-top:2px;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
-            '.xui-dbg-cmds{position:absolute;right:2px;top:2px;}'+
-            '.xui-dbg-cmds a{margin:2px;}'+
+            '.xui-dbg-frm{position:absolute;width:25em;z-index:2000;}'+
+            '.xui-dbg-header{cursor:move;height:1.5em;padding-top:.2em;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
+            '.xui-dbg-cmds{position:absolute;right:.2em;top:.2em;}'+
+            '.xui-dbg-cmds a{margin:.2em;}'+
             '.xui-dbg-box{position:relative;overflow:hidden;border:solid 1px #AAA;}'+
-            '.xui-dbg-content{position:relative;width:100%;overflow:auto;height:300px;}'+
-            '.xui-dbg-con1{background-color:#CCC;width:298px;}'+
-            '.xui-dbg-con2{padding-left:6px;border-bottom:dashed 1px #CCC;width:292px;}'+
-            '.xui-dbg-con3{padding-left:6px;border-bottom:dashed 1px #CCC;background:#EEE;color:#0000ff;width:292px;}'+
-            '.xui-dbg-con4{padding-left:6px;border-bottom:dashed 1px #CCC;background:#EEE;color:#ff0000;width:292px;}'+
-            '.xui-dbg-tail{overflow:hidden;position:relative;border-top:solid 1px #CCC;height:16px;background:#fff;color:#0000ff;}'+
+            '.xui-dbg-content{position:relative;width:100%;overflow:auto;height:25em;overflow-x:hidden;}'+
+            '.xui-dbg-con1{background-color:#CCC;width:24.5empx;}'+
+            '.xui-dbg-con2{padding-left:.5em;border-bottom:dashed 1px #CCC;width:24.5em;}'+
+            '.xui-dbg-con3{padding-left:.5em;border-bottom:dashed 1px #CCC;background:#EEE;color:#0000ff;width:24.5em;}'+
+            '.xui-dbg-con4{padding-left:.5em;border-bottom:dashed 1px #CCC;background:#EEE;color:#ff0000;width:24.5em;}'+
+            '.xui-dbg-tail{overflow:hidden;position:relative;border-top:solid 1px #CCC;height:1.33333em;background:#fff;color:#0000ff;}'+
             '.xui-dbg-tail input{width:100%;border:0;background:transparent;}'
         ,this.KEY);
         //fix ie6:
@@ -143,9 +143,9 @@ Class('xui.Debugger', null, {
 
            if(!div){
                div =
-               '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset xui-custom" style="font-size:0;line-height:0;border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:14px;overflow:hidden;font-weight:bold;padding:2px;"></div>'+
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:12px;padding:5px;overflow:hidden;"></div>'+
+               '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset xui-custom" style="border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.2emx;overflow:hidden;font-weight:bold;padding:.2em;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.4em;overflow:hidden;"></div>'+
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();

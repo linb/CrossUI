@@ -331,7 +331,7 @@ Class('App', 'xui.Com',{
                 .setLeft(540)
                 .setTop(40)
                 .setWidth(130)
-                .setCaption("autoColHeight")
+                .setCaption("autoHeaderHeight")
                 .onClick("_ctl_sbutton2006_onclick")
                 , "a");
             
@@ -802,7 +802,7 @@ Class('App', 'xui.Com',{
             this.treegrid.autoColWidth();
         },
         _ctl_sbutton2914_onclick:function (profile, e, src, value){
-            this.treegrid.insertCol("tail");
+            this.treegrid.insertCol("tail",[{type:'checkbox'},{type:'date'},{type:'color'}]);
         },
         _ctl_sbutton2915_onclick:function (profile, e, src, value){
             this.treegrid.removeCols(["orderDate","progress"]);

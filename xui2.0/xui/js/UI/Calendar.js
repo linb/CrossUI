@@ -101,8 +101,16 @@ Class('xui.UI.Calendar', 'xui.UI.DatePicker', {
             dateField:null,
 
             dock:'fill',
-            width:200,
-            height:200
+            width:{
+                $spaceunit:1,
+                ini:'15em',
+                readonly:false
+            },
+            height:{
+                $spaceunit:1,
+                ini:'15em',
+                readonly:false
+            }
         },
         EventHandlers:{
             onDblclick:function(profile, item, e, src){},
@@ -123,20 +131,20 @@ Class('xui.UI.Calendar', 'xui.UI.DatePicker', {
                 'white-space':'nowrap'
             },
             DF1:{
-                left:'2px',
-                top:'2px'
+                left:'.15em',
+                top:'.15em'
             },
             DF2:{
-                right:'2px',
-                top:'2px'
+                right:'.15em',
+                top:'.15em'
             },
             DF3:{
-                left:'2px',
-                bottom:'2px'
+                left:'.15em',
+                bottom:'.15em'
             },
             DF4:{
-                right:'2px',
-                bottom:'2px'
+                right:'.15em',
+                bottom:'.15em'
             },
             DAYBOX:{
                 overflow:'hidden'
@@ -153,8 +161,9 @@ Class('xui.UI.Calendar', 'xui.UI.DatePicker', {
             if(height){
                 f('BORDER').height(t=height);
                 f('BODY').height(t);
-                t=(t-16)/6-1;
-                profile.box._getDayNodes(profile).height(t);
+
+                t=profile.getSubNode('TD','1');
+                profile.box._getDayNodes(profile).height(t.height);
             }
         }
     }

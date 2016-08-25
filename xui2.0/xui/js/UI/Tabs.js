@@ -372,6 +372,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             ITEMC:{
                                 HANDLE:{
                                     tabindex: '{_tabindex}',
+                                    className:'xui-showfocus',
                                     IBWRAP:{
                                         tagName:'div',
                                         style:"white-space:nowrap;",
@@ -449,8 +450,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                top:'1px',
-                width:'15px',
+                top:'.1em',
+                width:'1em',
                 'z-index':'10',
                 'font-size':'13pt',
                 'text-align':'center',
@@ -464,11 +465,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 left:0                
             },
             RIGHT:{
-                right:"16px"
+                right:"1.4em"
             },
             DROP:{
-                right:0,
-                'font-size':'12px'
+                right:0
             },
 
             ITEMS:{
@@ -481,9 +481,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             ITEM:{
                 $order:0,
                 cursor:'pointer',
-                'padding-right':'6px',
+                'padding-right':'.5em',
                 'vertical-align':'top',
-                'margin':'0 2px',
+                'margin':'0 .2em',
                 'border-left':'solid 1px #C87800',
                 'border-top':'solid 1px #C87800',
                 'border-right':'solid 1px #C87800',
@@ -499,7 +499,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEMI:{
                 $order:0,
-                'padding-left':'6px',
+                'padding-left':'.5em',
                 //keep this same with ITEM
                 'vertical-align':'top'
             },
@@ -511,7 +511,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEMC:{
                 $order:0,
-                padding:'5px 0 3px 0',
+                padding:'.5em 0 .3em 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
@@ -529,7 +529,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'vertical-align':'middle'
             },
             RULER:{
-                height:'18px',
+                height:'1.5em',
                 width:'1px',
                 'vertical-align':'middle'
             },
@@ -544,7 +544,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                margin:'0 4px'
+                margin:'0 4px',
+                'font-size':'1em'
             },
             CMDS:{
                 'vertical-align':'middle'
@@ -949,8 +950,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             dock:'fill',
             noPanel:false,
-            width:200,
-            height:200,
+            width:{
+                $spaceunit:1,
+                ini:'18em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'18em'
+            },
             position:'absolute',
             itemWidth:{
                 ini:0,
@@ -1175,7 +1182,17 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         //for tabs only
         _onresize:function(profile,width,height,force,key){
             var t=profile.properties,
-                item = profile.getItemByItemId(key);
+                item = profile.getItemByItemId(key),
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+
             if(!item)
                 key=t.$UIvalue;
             item = profile.getItemByItemId(key);
@@ -1203,16 +1220,16 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             if(width && item._w!=width){
-                l.width(item._w=width);
+                l.width(wv(item._w=width));
                 if(!t.noHandler){
                     this._adjustScroll(profile,listH);
                 }
                 wc=width;
             }
-            if(hc||wc)o.height(hc).onSize();
+            if(hc||wc)o.height(hv(hc)).onSize();
         },
 
-        _adjustScroll:function(profile, listH,itemid){
+        _adjustScroll:function(profile, listH,itemid,h_em){
             // SCROLL
             var list = profile.getSubNode('LIST'),
                 w=profile.getRoot().offsetWidth(),
@@ -1223,7 +1240,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 drop =  profile.getSubNode('DROP'),
                 bgh = profile.getSubNode('LISTBG').offsetHeight(),
                 wi=0,
-                sl=0,sw=0;
+                sl=0,sw=0,
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
             items.children().each(function(item){
                 // to show the seleted one
                 if(itemid && profile.getItemIdByDom(item.id) == itemid){
@@ -1268,7 +1287,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             lr += (profile._$scroll_r||profile._$scroll_l)?drop.width():0;
 
             if(listH){
-                listH = (listH - bgh -2) + "px";
+                listH = hv(listH - bgh -2);
                 left.css('line-height',  listH );
                 right.css('line-height', listH );
                 drop.css('line-height',  listH );

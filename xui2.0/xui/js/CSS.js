@@ -321,21 +321,30 @@ Class("xui.CSS", null,{
         },
         adjustFont:function(){
             xui.$CSSCACHE={};
-            if(xui.UI)xui.UI.getAll().reLayout(true);    
+            if(xui.UI){
+                xui.$adjustFont=1;
+                xui.UI.getAll().reLayout(true);    
+                delete xui.$adjustFont;
+            }
         },
         _dftEmStr:'',
         _dftEm:0,
         _getDftEm: function(force){
             var ns=this;
-            if(force||!ns._dftEm){
+            if(force || !ns._dftEm){
                 var fz=ns.$getCSSValue('.xui-node','font-size');
-                if(ns.$isPx(fz)){
-                    ns._dftEm=parseFloat(fz);
-                }else{
-                    var div;
-                    xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
-                    ns._dftEm=div.get(0).offsetHeight;
-                    div.remove();
+
+                // only can be triggerred by modifing font-size of '.xui-node' itslef.
+                if(!ns._dftEmStr || ns._dftEmStr!=fz){
+                    ns._dftEmStr=fz;
+                    if(ns.$isPx(fz)){
+                        ns._dftEm=parseFloat(fz);
+                    }else{
+                        var div;
+                        xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                        ns._dftEm=div.get(0).offsetHeight;
+                        div.remove();
+                    }
                 }
             }
             return ns._dftEm;
@@ -347,28 +356,38 @@ Class("xui.CSS", null,{
             delete xui.CSS._dftEm;
         },
         $isEm:function(value){
-            return /^((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/.test(_.str.trim(value+'').toLowerCase());
+            return (!value||value=='auto')? xui.forceEm : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(_.str.trim(value+''));
         },
         $isPx:function(value){
-            return /^((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/.test(_.str.trim(value+'').toLowerCase());
+            return (!value||value=='auto')? !xui.forceEm  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(_.str.trim(value+''));
         },
         $em2px:function(value, force){
-            return (_.isFinite(value) || this.$isEm(value)) ? parseInt((parseFloat(value)||0) * this._getDftEm(force),10) : value;
+            return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * this._getDftEm(force) : value;
         },
         $px2em:function(value, force){
-            return (_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / this._getDftEm(force): value;
+            return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / this._getDftEm(force): value;
         },
         $px:function(value, force){
-            return ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, force):parseInt(value, 10)) || 0;
+            return ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, force):(value===""||value=='auto')?value:(parseFloat(value))||0);
         },
         $em:function(value, force){
-            return ((!_.isFinite(value)&&this.$isPx(value))?this.$px2em(value, force):parseFloat(value)) || 0;
-        }
+            return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, force):(value===""||value=='auto')?value:(parseFloat(value))||0);
+        },
+        $addpx:function(a,b){
+            if(this.$isEm(a)){
+                return this.$px2em(this.$em2px(a)+b)+'em';
+            }else{
+                return a=='auto'?a:a+b;
+            }
+        },
+        $picku:function(v){return v && (v+'').replace(/[-\d\s.]*/g,'') || (xui.forceEm?'em':'px')},
+        $addu:function(v){return v=='auto'?v:_.isFinite(v)?v+'px':v+''},
+        $forceu:function(v,u){return v=='auto'?v:(u?u=='em':xui.forceEm)?this.$em(v)+'em':this.$px(v)+'px'}
     },
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node, .xui-nodesmall{margin:0;padding:0;-webkit-text-size-adjust:none;}.xui-node{font-size:12px;line-height:1.22em;}"+
+            css=".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;line-height:1.22em;}"+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
@@ -388,7 +407,8 @@ Class("xui.CSS", null,{
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
-            ".xui-node-span, .xui-node-div{border:0;} .xui-node-span:focus, .xui-node-div:focus{outline:0;}"+
+            ".xui-node-span, .xui-node-div{border:0;}"+
+            ((b.ie && b.ver<=8)?"":".xui-node-span:not(.xui-showfocus):focus, .xui-node-div:not(.xui-showfocus):focus{outline:0;}.xui-showfocus:focus{outline-width: 1px;outline-style: dashed;}")+
             ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
             (b.gek
                 ? b.ver<3 
@@ -423,7 +443,8 @@ Class("xui.CSS", null,{
            ".xui-v-top > .xui-v-wrapper:before{vertical-align:top;}"+
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
-           ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))
+           ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
+            ".xui-node-tips{background-color:#FDF8D2;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

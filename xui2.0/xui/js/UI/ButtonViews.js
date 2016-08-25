@@ -38,10 +38,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             ITEM:{
                 $order:0,
-                margin:'2px',
+                margin:'.15em',
                 position:'relative',
                 cursor:'pointer',
-                'padding':'0 4px 0 0',
+                'padding':'0 .3em 0 0',
                 'vertical-align':'top'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
@@ -50,7 +50,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             ITEMC:{
                 $order:0,
-                padding:'2px 0 1px 0',
+                padding:'.15em 0 .1em 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
@@ -60,7 +60,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
                 'vertical-align':'middle',
-                margin:'1px'
+                margin:'.1em'
             }
         },
         DataModel:{
@@ -154,45 +154,64 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         _onresize:function(profile,width,height,force,key){
             var t=profile.properties,
                 noPanel=t.noPanel,
-                item = profile.getItemByItemId(key);
+                item = profile.getItemByItemId(key),
+                w_em=xui.CSS.$isEm(width),
+                h_em=xui.CSS.$isEm(height),
+                css=xui.CSS;
             if(!item)
                 key=t.$UIvalue;
             var o = profile.boxing().getPanel(key),
-                top, left,
+                top, left, hsh,
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 wc=null,hc=null,itmsH;
             if(!t.noHandler){
                 if(t.barLocation=='top'||t.barLocation=='bottom'){
                     if(width){
-                        hs.width(width-2);
-                        hl.width(width-2);
+                        hs.width(css.$addpx(width,-2));
+                        hl.width(css.$addpx(width,-2));
                         // for nopanel:
                         if(noPanel)
-                            hs.height(height-2);
+                            hs.height(css.$addpx(height,-2));
                      
                         left = 0;
                         wc=width;
                     }
-    
-                    hs.height(itmsH = hl.offsetHeight());
+                    if(h_em){
+                        height = css.$em2px(height);
+                    }
+                    // caculate by px
+                    itmsH = hl.offsetHeight()
                     if(height-itmsH>0)hc=height-itmsH-2;
-                    top = t.barLocation=='top'?2- -itmsH:0;
+                    top = t.barLocation=='top'?2+itmsH:0;
+
+                    if(h_em){
+                        hc = css.$px2em(hc)+'em';
+                        itmsH = css.$px2em(itmsH)+'em';
+                        top = css.$px2em(top)+'em';
+                    }
+                    hs.height(itmsH);
                 }else{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hs.width(width-2);
-                            hl.width(width-2);
+                            hs.width(css.$addpx(width,-2));
+                            hl.width(css.$addpx(width,-2));
                         }
-                        hs.height(height-2);
+                        hs.height(css.$addpx(height,-2));
     
                         top=0;
                         hc=height;
                     }
                     if(width){
-                        left = t.barLocation=='left'?2- -t.barSize:0;
-                        wc=width-t.barSize-2;
+                        //caculate by px
+                        left = t.barLocation=='left'?2+css.$px(t.barSize):0;
+                        wc = css.$px(width)-css.$px(t.barSize)-2;
+
+                        if(w_em){
+                            left = css.$px2em(left)+'em';
+                            wc = css.$px2em(wc)+'em';
+                        }
                     }
                 }
             }else{

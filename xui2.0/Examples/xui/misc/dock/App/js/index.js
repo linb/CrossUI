@@ -9,7 +9,7 @@ Class('App', 'xui.Com',{
                 .setDock("right")
                 .setWidth(80)
                 .setHtml("dock : right")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -18,7 +18,7 @@ Class('App', 'xui.Com',{
                 .setDockOrder("2")
                 .setDockMargin({"left":20, "right":20, "top":20, "bottom":0})
                 .setHtml("dock : top ; dockOder : 2 ; dockMargin : {left:20,top:20,bottom:0,right:20}")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -26,7 +26,7 @@ Class('App', 'xui.Com',{
                 .setDock("bottom")
                 .setHeight(60)
                 .setHtml("dock : bottom")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -37,7 +37,7 @@ Class('App', 'xui.Com',{
                 .setWidth(130)
                 .setHeight(78)
                 .setHtml("dock : middle")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -48,7 +48,7 @@ Class('App', 'xui.Com',{
                 .setWidth(210)
                 .setHeight(88)
                 .setHtml("dock : origin(both center and middle)")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -60,7 +60,7 @@ Class('App', 'xui.Com',{
                 .setHeight(60)
                 .setZIndex("20")
                 .setHtml("dock : center")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -70,24 +70,15 @@ Class('App', 'xui.Com',{
                 .setWidth(180)
                 .setHeight(70)
                 .setHtml("dock : none")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
-            
-            append((new xui.UI.Block)
-                .setHost(host,"Block29")
-                .setLeft(100)
-                .setTop(120)
-                .setWidth(190)
-                .setHeight(30)
-                .setBorderType("none")
-            );
-            
+
             append((new xui.UI.Block)
                 .setHost(host,"Block10")
                 .setDock("top")
                 .setHeight(30)
                 .setHtml("dock : top")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -96,7 +87,7 @@ Class('App', 'xui.Com',{
                 .setTop(180)
                 .setHeight(80)
                 .setHtml("dock : width")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -107,7 +98,7 @@ Class('App', 'xui.Com',{
                 .setWidth(180)
                 .setZIndex("30")
                 .setHtml("dock : height ; dockMinH : 500")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             append((new xui.UI.Block)
@@ -115,7 +106,7 @@ Class('App', 'xui.Com',{
                 .setDock("left")
                 .setWidth(70)
                 .setHtml("dock : left")
-                .setBorderType("none")
+                .setBorderType("flat")
             );
             
             return children;

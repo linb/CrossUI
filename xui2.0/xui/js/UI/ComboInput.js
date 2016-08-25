@@ -234,11 +234,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 //open already
                 if(profile.$poplink)return;
-                var o,v,
+                var o, v, css=xui.CSS,
                     box = profile.boxing(),
-                    main = profile.getRoot(),
+                    main = profile.getSubNode('BOX'),
+                    btn = profile.getSubNode('BTN'),
                     pos = main.offset(),
-                    size = main.cssSize();
+                    w = main.offsetWidth() + btn.offsetWidth();
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
@@ -291,7 +292,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'helpinput':
                             o = xui.create('List');
                             o.setHost(profile).setDirtyMark(false).setItems(_.copy(pro.items)).setListKey(pro.listKey||'');
-                            o.setWidth(pro.dropListWidth>=2?pro.dropListWidth:(size.width - (pro.labelSize||0) - (pro.borderType!='none'?2:0)));
+                            w = css.$px(pro.dropListWidth) >=2 ? css.$px(pro.dropListWidth) : w;
+                            o.setWidth(css.$forceu(w));
                             if(pro.dropListHeight)
                                 o.setHeight(pro.dropListHeight);
                             else
@@ -472,11 +474,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SBTN:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn xuifont',
-                $fonticon:'xui-icon-empty',
+                className:'xui-ui-unselectable xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
-                    className:"xuifont inner {btncls}",
+                    className:"xuifont {btncls}",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
@@ -689,7 +690,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 padding:0,
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                position:'absolute'
+                position:'absolute',
+                width:'1.5em'
             },
             SBTN:{
                 $order:2,
@@ -704,7 +706,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 padding:0,
                 position:'absolute',
-                height:'50%'
+                height:'50%',
+                width:'1.5em'
             },
             R1:{
                 top:0
@@ -787,6 +790,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             INPUT:{
+                onClick:function(p,e){
+                    // for grid cell editor 'enter' bug: trigger list pop again
+                    if(p.$cell){
+                        e=xui.Event.getPos(e);
+                        if(e.left===0&&e.top===0)return false;
+                    }
+                },
                 onChange:function(profile, e, src){
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
                     var o=profile._inValid,
@@ -1244,19 +1254,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn xuifont',
-                            $fonticon:'xui-icon-empty',
+                            className:'xui-ui-btn',
                             R1B:{
-                                className:'xuifont inner',
+                                className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
                             }
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn xuifont',
-                            $fonticon:'xui-icon-empty',
+                            className:'xui-ui-btn',
                             R2B:{
-                                className:'xuifont inner',
+                                className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
                             }
                         }
@@ -1282,11 +1290,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.BTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xuifont',
-                        $fonticon:'xui-icon-empty',
+                        className:'xui-ui-unselectable xui-ui-btn',
                         style:"{_popbtnDisplay}",
                         MID:{
-                            className:'xuifont inner',
+                            className:'xuifont',
                             $fonticon:'{_fi_btnClass}',
                             style:'{_btnStyle}'
                         }
@@ -1316,13 +1323,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var data={},prop=profile.properties;
-            if(prop.height=='auto'){
-                data.height  = xui.CSS.$em2px(1.83);
-            }else if(xui.CSS.$isEm(prop.height)){
-                data.height = xui.CSS.$em2px(prop.height);
-            }
-
+            var data={},prop=profile.properties,css=xui.CSS;
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
@@ -1397,20 +1398,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 isB=v1.type.toLowerCase()=='button',
                 $hborder=1, 
                 $vborder=1,
-                toff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingTop'),
-                loff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingLeft'),
-                roff=isB?0:xui.UI.$getCSSValue('xui-comboinput-input','paddingRight'),
-                btnw=xui.UI.$getCSSValue('xuifont','font-size') + 2*$hborder;
+                clsname='xui-node xui-input-input',
+                toff=isB?0:xui.UI.$getCSSValue(clsname,'paddingTop'),
+                loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
+                roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
+                boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
 
-            if(height)height = height=='auto' ? xui.CSS.$em2px(1.83) : xui.CSS.$isEm(height) ? xui.CSS.$em2px(height) : height;
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+                btnw=css._getDftEm() * 1.5;
+
+            // caculate by px
+            if(height)height = height=='auto' ? (h_em=true) && css.$em2px(1.83) : css.$isEm(height) ? css.$em2px(height) : height;
+            if(width)width = css.$isEm(width) ? css.$em2px(width) : width;
+
             var t = profile.properties,
                 o = profile.getSubNode('BOX'),
-
                 label = profile.getSubNode('LABEL'),
-                labelSize=t.labelSize||0,
-                labelGap=t.labelGap||0,
+                labelSize=css.$px(t.labelSize)||0,
+                labelGap=css.$px(t.labelGap)||0,
                 labelPos=t.labelPos || 'left',
-                px='px',
                 commandbtn=f(t.commandBtn!='none'?'SBTN':null),
                 functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='button')?null:'BTN'),
                 ww=width,
@@ -1445,54 +1455,53 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
 
             if(null!==iW && iW-loff-roff>0)
-                v1.style.width=Math.max(0,iW-loff-roff)+px;
-            if(null!==iH && iH-toff>0)
-                v1.style.height=Math.max(0,iH-toff)+px;
+                v1.style.width=wv(Math.max(0,iW-loff-roff));
+            if(null!==iH && iH-toff-boff>0)
+                v1.style.height=hv(Math.max(0,iH-toff-boff));
 
             o.cssRegion({
-                left:iL,
-                top:iT,
-                width:iW,
-                height:iH
+                left:wv(iL),
+                top:hv(iT),
+                width:wv(iW),
+                height:hv(iH)
             });
             
             if(labelSize)
                 label.cssRegion({
-                    left:ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bw1+bw2+$hborder*2):0,
-                    top: height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0, 
-                    width:ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),
-                    height:height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                    left:wv(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bw1+bw2+$hborder*2):0),
+                    top: hv(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0), 
+                    width:wv(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww))),
+                    height:hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
                 });
 
             iL += (iW||0) + $hborder*2;
             if(functionbtn){
                 if(iH2!==null)
-                    functionbtn.style.height=Math.max(0,iH2) + px;
+                    functionbtn.style.height=hv(Math.max(0,iH2));
                 if(iW!==null)
-                    functionbtn.style.left=iL + px;
-                functionbtn.style.top=iT + px;
+                    functionbtn.style.left=wv(iL);
+                functionbtn.style.top=hv(iT);
 
                if(iH2!==null && t.type=='spin'){
                     if(iH2/2-2>0){
-                        f('R1').style.height=(iH2/2)+px;
-                        f('R2').style.height=(iH2/2)+px;
+                        f('R1').style.height=hv(iH2/2);
+                        f('R2').style.height=hv(iH2/2);
                     }
                 }
                 iL += bw1;
             }
             if(commandbtn){
                 if(iH2!==null)
-                    commandbtn.style.height=Math.max(0,iH2) + px;
+                    commandbtn.style.height=hv(Math.max(0,iH2));
                 if(iW!==null)
-                    commandbtn.style.left=iL + px;
-                commandbtn.style.top=iT + px;
+                    commandbtn.style.left=wv(iL);
+                commandbtn.style.top=hv(iT);
             }
 
             /*for ie6 bug*/
             if((profile.$resizer) && xui.browser.ie){
                 o.ieRemedy();
             }
-
         }
     }
 });

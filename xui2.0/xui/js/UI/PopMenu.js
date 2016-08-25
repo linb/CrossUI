@@ -13,6 +13,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items = profile.getSubNode('ITEMS'),
                         itemNs = profile.getSubNode('ITEM',true),
                         pro=profile.properties,
+                        css=xui.CSS,
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});
@@ -27,13 +28,20 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items.removeClass(profile.getClass('ITEMS','-inline'));
 
                     // for IE7
-                    items.cssSize({width:ww,height:hh});
+                    items.cssSize({
+                        width:css.$em(ww)+'em',
+                        height:css.$em(hh)+'em'
+                    });
 
-                    var h = Math.min(pro._maxHeight, hh),
-                        w = Math.min(pro._maxWidth, ww),
-                        size={width:w ,height:h};
+                    var h = css.$em(Math.min(pro._maxHeight, hh))+'em',
+                        w = css.$em(Math.min(pro._maxWidth, ww))+'em',
+                        size={
+                            width:w,
+                            height:h
+                        };
                     pro.width=w;
                     pro.height=h;
+
                     root.cssSize(size);
                     box.cssSize(size);
                     border.cssSize(size);
@@ -380,7 +388,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'background-color':'#CCE4FC',
                 left:0,
                 top:0,
-                width:'22px',
+                width:'2em',
                 height:'100%'
             },
             'ITEMS-inline ITEM':{
@@ -393,7 +401,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 overflow:'visible',
                 'white-space': 'nowrap',
                 cursor:'pointer',
-                padding:'2px 20px 2px 2px',
+                padding:'.2em 1.5em .2em .2em',
                 outline:0
             },
             ITEMSPLIT:{
@@ -403,7 +411,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'white-space': 'nowrap',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                margin:'2px 2px 2px 26px'
+                margin:'.2em .2em .2em 2em'
             },
             ICON:{
                 margin:0
@@ -412,7 +420,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-8px',
+                'margin-left':'-.7em',
                 right:0,
                 'z-index':'10',
                 top:0
@@ -421,7 +429,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-8px',
+                'margin-left':'-.7em',
                 right:0,
                 'z-index':'10',
                 bottom:0
@@ -432,27 +440,28 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'padding-left':'6px'
+                'padding-left':'.5em',
+                'font-size':'1em'
             },
             RULER:{
-                width:'100px',
+                width:'8em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
             ADD:{
                 position:'absolute',
-                top:'3px',
+                top:'.25em',
                 right:0,
-                width:'80px',
-                'padding-right':'20px',
+                width:'7em',
+                'padding-right':'1.5em',
                 'text-align':'right',
                 'z-index':'10',
                 zoom:xui.browser.ie?1:null
             },
             SUB:{
                 position:'absolute',
-                top:'2px',
-                right:'6px'
+                top:'.2em',
+                right:'.5em'
             }
         },
         Behaviors:{
@@ -751,9 +760,15 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             autoHide:false,
 
-            height:'auto',
+            height:{
+                $spaceunit:1,
+                ini:'auto'
+            },
             //opera needs more space for initialize
-            width:'auto',
+            width:{
+                $spaceunit:1,
+                ini:'auto'
+            },
             position:'absolute',
             $hborder:0,
             $vborder:0
@@ -766,6 +781,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         RenderTrigger:function(){
             this.boxing().adjustSize();
+        },
+        _beforeSerialized:function(profile){
+            var o=arguments.callee.upper.call(this, profile),
+                op=o.properties;
+            delete op.left;delete op.top;delete op.right;delete op.bottom;delete op.width;delete op.height;
+            return o;
         },
         _mouseout:function(profile, e){
             if(profile.properties.autoHide){

@@ -58,7 +58,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             className:'{_className} xui-ui-selectable',
             LABEL:{
                 className:'{_required}',
-                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                style:'{labelShow};width:{labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -76,15 +76,21 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 ini:'',
                 html:1
             },
-            width:400,
-            height:300,
+            width:{
+                $spaceunit:1,
+                ini:'32em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'25em'
+            },
             frameTemplate:{
                 ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0;">'+
                         '<head>'+
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:6px;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.6}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.4em}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -131,9 +137,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             },
            // label
             labelSize:{
+                $spaceunit:1,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:_.isFinite(v)?v+"px":v});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
@@ -145,6 +152,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 }                
             },
             labelGap:{
+                $spaceunit:1,
                 ini:4,
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
@@ -182,8 +190,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             },
             MARK:{
                 position:'absolute',
-                width:"12px",
-                height:"12px"
+                width:"1em",
+                height:"1em"
             },
             TOOLBARBTN:{
             },
@@ -192,7 +200,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px'
+               'padding-top':'.4em'
             },
             EDITOR:{
                 position:'absolute',
@@ -285,9 +293,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             ]
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile);            
+            var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
+            if(t=d.labelSize)d.labelSize=_.isFinite(t)?t+'px':t;
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -707,8 +716,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 );
                 t.render(true);
                 // keep toolbar's height number here
-                profile.$_tbH=tbH=t.getRoot().height();
-
+                profile.$_tbH=tbH=t.getRoot().offsetHeight();
                 if(xui.browser.ie)
                     t.getSubNode('BOX').query('*').attr('unselectable','on');
 
@@ -1007,57 +1015,70 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 if(!height)
                     height=profile.properties.height;
 
-                var size={},
-                    _top=0,
-                    t = profile.properties,
-
+                var t = profile.properties,
+                    css=xui.CSS,
                     o = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
-
-                    labelSize=t.labelSize||0,
-                    labelGap=t.labelGap||0,
+                    w_em=css.$isEm(width),
+                    h_em=css.$isEm(height),
+                    wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                    hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+                    labelSize=css.$px(t.labelSize)||0,
+                    labelGap=css.$px(t.labelGap)||0,
                     labelPos=t.labelPos || 'left',
                     ll, tt, ww, hh;
-
+                // caculate by px
+                if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+                if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
                 o.cssRegion({
-                    left : ll = labelPos=='left'?labelSize:0,
-                    top : tt = labelPos=='top'?labelSize:0,
-                    width : ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
-                    height : hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+                    left : wv(ll = labelPos=='left'?labelSize:0),
+                    top : hv(tt = labelPos=='top'?labelSize:0),
+                    width : wv(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
+                    height : hv(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
                 });
-                if(labelSize)
+                if(labelSize){
                     label.cssRegion({
-                        left: width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),
-                        top:  height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                        width: width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),
-                        height: height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                        left: wv(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0)),
+                        top:  hv(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0)), 
+                        width: wv(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width))),
+                        height: hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
                     });
-
-                // calculate toolbar's height
-                var itb=profile._$tb,tbh;
-                if(itb){
-                    // here, do resize first
-                    itb.getRoot().width(ww);
-                    tbh=itb.getRoot().height();
-                    if(tbh)
-                        profile.$_tbH=tbh;
-                    else
-                        tbh=profile.$_tbH;
                 }
-                _top=(itb?(tbh-1):0);
-                
-                size.height=hh - _top -2;
-                if(ww) size.width = ww - 2;
+                _.asyRun(function(){
+                    if(!profile.renderId)return;
 
-                if(size.width<0)size.width=0;
-                if(size.height<0)size.height=0;
-
-                if(ww||hh){
-                    if(profile&&profile.renderId){
-                        profile.getSubNode('EDITOR').top(_top).cssSize(size,true);
-                        profile.getSubNode('MARK').left(1).top(_top+1);
+                    // calculate toolbar's height
+                    var itb=profile._$tb,
+                        size={},
+                        _top=0,
+                        tbh;
+                    if(itb){
+                        // here, do resize first
+                        itb.getRoot().width(wv(ww));
+                        tbh=itb.getRoot().offsetHeight();
+                        if(tbh)
+                            profile.$_tbH=tbh;
+                        else
+                            tbh=profile.$_tbH;
                     }
-                }
+                    _top=(itb?(tbh-1):0);
+                    
+                    size.height=hh - _top -2;
+                    if(ww) size.width = ww - 2;
+
+                    if(size.width<0)size.width=0;
+                    if(size.height<0)size.height=0;
+
+                    if(ww||hh){
+                        if(profile&&profile.renderId){
+                            if(w_em)size.width=css.$px2em(size.width)+'em';
+                            if(h_em)size.height=css.$px2em(size.height)+'em';
+
+                            profile.getSubNode('EDITOR').top(h_em?css.$px2em(_top)+'em':_top).cssSize(size,true);
+                            profile.getSubNode('MARK').left(0+css.$picku()).top(h_em?css.$px2em(_top+1)+'em':_top);
+                        }
+                    }
+                }, 20/*greater than 16*/);
             }
         }
     }

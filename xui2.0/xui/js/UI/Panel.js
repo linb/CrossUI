@@ -179,8 +179,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             CAPTION:{
                 cursor:'pointer',
                 display:'inline',
-                padding:'2px',
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
+                padding:'.2em',
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
             }
         },
         Behaviors:{
@@ -483,6 +484,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         _onresize:function(profile,width,height){
             var isize={},
+                css=xui.CSS,
+                w_em = css.$isEm(width),
+                h_em = css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
                 p=profile.properties,
                 noFrame=p.noFrame,
                 root=profile.getRoot(),
@@ -494,6 +500,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v6=profile.getSubNode('MAINI'),
                 size=profile.properties.borderType=='none'?0:2,
                 h1,h4,t;
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+
             if(height){
                 if(height=='auto')
                     isize.height=height;
@@ -502,7 +512,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         h1=v1.height();
                         h4=noFrame?0:v4.height();
                         if((t=height-h1-h4)>0)
-                            isize.height=t-size;
+                            isize.height=hv(t-size);
                     }else{
                         // same to ***
                         // for expand status:
@@ -510,15 +520,17 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         // for fold status:
                         //    if display => adjust ctrl's height to border's
                         //    if non-display => adjust ctrl's height to 'auto'
-                        root.height(bd.height() || 'auto');
+                        h1 = bd.height();
+                        root.height( h1 ? h_em ? css.$px2em(h1)+'em' : h1 : 'auto');
                     }
                 }
             }
-            if(width)
-                isize.width=width
+            if(width){
+                isize.width=wv(width
                     -(noFrame?0:(parseInt(v6.css('paddingRight'),10)||0))
                     -(noFrame?0:(parseInt(v5.css('paddingLeft'),10)||0))
-                    -v2._borderW();
+                    -v2._borderW());
+            }
             v2.cssSize(isize, true);
         }
     }

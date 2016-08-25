@@ -55,7 +55,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             HANDLE:{
                 cursor:'pointer',
                 display:'block',
-                'padding':'5px 8px',
+                'padding':'.5em .7em',
                 'white-space':'nowrap'
             },
             PANEL:{
@@ -68,8 +68,8 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             },
             CMDS:{
                 position:'absolute',
-                top:'6px',
-                right:'8px',
+                top:'.5em',
+                right:'.7em',
                 'text-align':'right',
                 'vertical-align': 'middle'
             }
@@ -83,7 +83,18 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         _onresize:function(profile,width,height,force,key){
             var t=profile.properties,
                 item = profile.getItemByItemId(key),
-                bw=t.$border*2;
+                bw=t.$border*2,
+
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+
             if(!item)
                 key=t.$UIvalue;
 
@@ -99,7 +110,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 t2=t1=0;
                 _.arr.each(t.items,function(o){
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
-                    obj.cssRegion({bottom:'auto',top:t1});
+                    obj.cssRegion({bottom:'auto',top:hv(t1)});
 
                     // offsetHeight maybe not set here
                     t1 += obj.offsetHeight();
@@ -108,7 +119,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 _.arr.each(t.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
-                    obj.cssRegion({top:'auto',bottom:t2});
+                    obj.cssRegion({top:'auto',bottom:hv(t2)});
                     t2+= obj.offsetHeight();
                 },null,true);
 
@@ -118,16 +129,16 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     hc=temp;
                 }
 
-                bx.height(height);
+                bx.height(wv(height));
             }
             if(width){
                 width-=bw;
                 wc=width;
-                bx.width(width);
+                bx.width(wv(width));
             }    
 
-            o.cssRegion({width:wc?wc:null,height:hc?hc:null,top:top,left:0},true);
-            if(wc)profile.getSubNode('LIST').width(wc);
+            o.cssRegion({width:wc?wv(wc):null,height:hc?hv(hc):null,top:hv(top),left:wv(0)},true);
+            if(wc)profile.getSubNode('LIST').width(wv(wc));
         },
         _adjustScroll:null
     }

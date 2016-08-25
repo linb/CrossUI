@@ -13,8 +13,14 @@ Class("xui.UI.Video", "xui.UI.Audio",{
             }
         },
         DataModel:{
-            width:400,
-            height:300,
+            width:{
+                $spaceunit:1,
+                ini:'34em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'25em'
+            },
             poster:{
                 format:'image',
                 ini: '',
@@ -31,8 +37,15 @@ Class("xui.UI.Video", "xui.UI.Audio",{
             if(t=prop.poster)H5.attr("poster",t);
         },
         _onresize:function(profile,width,height){
-            var H5=profile.getSubNode('H5'), size = H5.cssSize(), prop=profile.properties;
-            if( (width && size.width!=width) || (height && size.height!=height) ){
+            var H5=profile.getSubNode('H5'), 
+                size = H5.cssSize(),
+                prop=profile.properties,
+                // compare with px
+                w_em=xui.CSS.$isEm(width),
+                h_em=xui.CSS.$isEm(height),
+                ww=w_em?xui.CSS.$em2px(width):width, 
+                hh=h_em?xui.CSS.$em2px(height):height;
+            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=width;
                 if(height)prop.height=height;

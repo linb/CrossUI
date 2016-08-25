@@ -24,7 +24,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             className:'{_className}',
             LABEL:{
                 className:'{_required}',
-                style:'{labelShow};width:{labelSize}px;{labelHAlign}',
+                style:'{labelShow};width:{labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -403,10 +403,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         DataModel:{
             position:'absolute',
             width:{
-                ini:200
+                $spaceunit:1,
+                ini:'15em'
             },
             height:{
-                ini:50
+                $spaceunit:1,
+                ini:'4em'
             },
             steps:0,
             value:'0:0',
@@ -437,9 +439,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             // label
             labelSize:{
+                $spaceunit:1,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none',width:(v||0)+"px"});
+                    this.getSubNode('LABEL').css({display:v?'':'none',width:_.isFinite(v)?v+"px":v});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
@@ -451,6 +454,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }                
             },
             labelGap:{
+                $spaceunit:1,
                 ini:4,
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
@@ -478,13 +482,14 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         },
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile),
-                N='display:none';
+                N='display:none',t;
             d._showDes=d.showDecreaseHandle?'':N,
             d._showIns=d.showIncreaseHandle?'':N,
             d._showD2=d.isRange?'':N;
             d._cls=profile.getClass('BOX',d.type=='vertical'?'-v':'-h');
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
+            if(t=d.labelSize)d.labelSize=_.isFinite(t)?t+'px':t;
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -561,32 +566,42 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         },
         _onresize:function(profile, width, height){
             var p=profile.properties,
+                css=xui.CSS,
                 type=p.type,
                 f=function(k){return profile.getSubNode(k)},
                 ruler = f('RULER'),
                 ind = f('IND'),
                 ru1 = f('RULERLEFT'),
-
                 o = f('BOX'),
                 label = profile.getSubNode('LABEL'),
-                labelSize = p.labelSize||0,
-                labelGap = p.labelGap||0,
+                labelSize=css.$px(p.labelSize)||0,
+                labelGap=css.$px(p.labelGap)||0,
                 labelPos = p.labelPos || 'left',
-                ll, tt, ww, hh;
+                ll, tt, ww, hh,
+
+                css=xui.CSS,
+                w_em=css.$isEm(width),
+                h_em=css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
+            // caculate by px
+            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
+            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
 
             o.cssRegion({
-                left : ll = labelPos=='left'?labelSize:0,
-                top : tt = labelPos=='top'?labelSize:0,
-                width : ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),
-                height : hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)))
+                left : wv(ll = labelPos=='left'?labelSize:0),
+                top : hv(tt = labelPos=='top'?labelSize:0),
+                width : wv(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
+                height : hv(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
             });
 
             if(labelSize)
                 label.cssRegion({
-                    left: width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),
-                    top:  height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                    width: width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),
-                    height: height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height))
+                    left: wv(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0)),
+                    top:  hv(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0)), 
+                    width: wv(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width))),
+                    height: hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
                 });
 
             if(type=='vertical'){
@@ -596,8 +611,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 w3=f('IND1').height();
     
                 if(hh){
-                    ruler.top(w1+w).height(hh-w1-w2-2*w);
-                    ind.top(w1).height(profile._size=hh-w1-w2-w3);
+                    ruler.top(hv(w1+w)).height(hv(hh-w1-w2-2*w));
+                    ind.top(hv(w1)).height(hv(profile._size=hh-w1-w2-w3));
                 }
             }else{
                 var w=ru1.width(),
@@ -606,8 +621,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 w3=f('IND1').width();
     
                 if(ww){
-                    ruler.left(w1+w).width(ww-w1-w2-2*w);
-                    ind.left(w1).width(profile._size=ww-w1-w2-w3);
+                    ruler.left(wv(w1+w)).width(wv(ww-w1-w2-2*w));
+                    ind.left(wv(w1)).width(wv(profile._size=ww-w1-w2-w3));
                 }
             }
         }
