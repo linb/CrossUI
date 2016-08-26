@@ -1393,8 +1393,23 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return value;
         },
         _onresize:function(profile,width,height){
-            var f=function(k){return k?profile.getSubNode(k).get(0):null},
-                v1=f('INPUT'),
+            var t = profile.properties,
+                css=xui.CSS, dftfz=css._getDftEm(),
+                // if any node use other font-size which does not equal to xui-node, use 'px' 
+                canuseem=xui.forceEm,
+                f=function(k){if(!k) return null; k=profile.getSubNode(k); if(canuseem)canuseem=(dftfz+'px')==k.css('fontSize'); return k;},
+                // use f first
+                v1=f('INPUT').get(0),
+                o = f('BOX'),
+                label = f('LABEL'),
+                commandbtn=f(t.commandBtn!='none'?'SBTN':null),
+                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='button')?null:'BTN'),
+                // determine em
+                w_em=canuseem && css.$isEm(width),
+                h_em=canuseem && css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+
                 isB=v1.type.toLowerCase()=='button',
                 $hborder=1, 
                 $vborder=1,
@@ -1403,26 +1418,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
-
-                css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
-                btnw=css._getDftEm() * 1.5;
+                btnw=dftfz * 1.5;
 
             // caculate by px
             if(height)height = height=='auto' ? (h_em=true) && css.$em2px(1.83) : css.$isEm(height) ? css.$em2px(height) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width) : width;
 
-            var t = profile.properties,
-                o = profile.getSubNode('BOX'),
-                label = profile.getSubNode('LABEL'),
+            var 
                 labelSize=css.$px(t.labelSize)||0,
                 labelGap=css.$px(t.labelGap)||0,
                 labelPos=t.labelPos || 'left',
-                commandbtn=f(t.commandBtn!='none'?'SBTN':null),
-                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='button')?null:'BTN'),
                 ww=width,
                 hh=height,
                 bw1=0,
@@ -1477,10 +1482,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             iL += (iW||0) + $hborder*2;
             if(functionbtn){
                 if(iH2!==null)
-                    functionbtn.style.height=hv(Math.max(0,iH2));
+                    functionbtn.height(hv(Math.max(0,iH2)));
                 if(iW!==null)
-                    functionbtn.style.left=wv(iL);
-                functionbtn.style.top=hv(iT);
+                    functionbtn.left(wv(iL));
+                functionbtn.top(hv(iT));
 
                if(iH2!==null && t.type=='spin'){
                     if(iH2/2-2>0){
@@ -1492,10 +1497,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
             if(commandbtn){
                 if(iH2!==null)
-                    commandbtn.style.height=hv(Math.max(0,iH2));
+                    commandbtn.height(hv(Math.max(0,iH2)));
                 if(iW!==null)
-                    commandbtn.style.left=wv(iL);
-                commandbtn.style.top=hv(iT);
+                    commandbtn.left(wv(iL));
+                commandbtn.top(hv(iT));
             }
 
             /*for ie6 bug*/

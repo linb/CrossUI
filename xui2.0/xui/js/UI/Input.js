@@ -877,30 +877,32 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             });
         },
         _onresize:function(profile,width,height){
-            var f=function(k){return k?profile.getSubNode(k).get(0):null},
-                v1=f('INPUT'),
+            var t = profile.properties,
+                css=xui.CSS, dftfz=css._getDftEm(),
+                // if any node use other font-size which does not equal to xui-node, use 'px' 
+                canuseem=xui.forceEm,
+                f=function(k){if(!k) return null; k=profile.getSubNode(k); if(canuseem)canuseem=dftfz===k.css('fontSize')+'px'; return k;},
+                v1=f('INPUT').get(0),
+                o = f('BOX'),
+                label = f('LABEL'),
+                w_em=canuseem && css.$isEm(width),
+                h_em=canuseem && css.$isEm(height),
+                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
+                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+
                 $hborder=1, 
                 $vborder=1,
                 clsname='xui-node xui-input-input',
                 toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
-                boff=xui.UI.$getCSSValue(clsname,'paddingBottom'),
-
-                css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+                boff=xui.UI.$getCSSValue(clsname,'paddingBottom');
 
             // caculate by px
             if(height)height = height=='auto' ? (h_em=true) && css.$em2px(1.83) : css.$isEm(height) ? css.$em2px(height) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width) : width;
 
-            var t = profile.properties,
-                o = profile.getSubNode('BOX'),
-                label = profile.getSubNode('LABEL'),
-                labelSize=css.$px(t.labelSize)||0,
+            var labelSize=css.$px(t.labelSize)||0,
                 labelGap=css.$px(t.labelGap)||0,
                 labelPos=t.labelPos || 'left',
                 ww=width,

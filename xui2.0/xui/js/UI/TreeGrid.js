@@ -4921,7 +4921,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     _grp._pxWidth = w -2;
 
-                    _grp._cellWidth = css.$forceu(ol._pxWidth);
+                    _grp._cellWidth = css.$forceu(_grp._pxWidth);
                     _grp._hcellheight = css.$forceu(h-2);
                     _grp._hcelltop = css.$forceu(h*(grp._layer-1));
 
