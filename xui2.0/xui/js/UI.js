@@ -2938,7 +2938,7 @@ Class("xui.UI",  "xui.absObj", {
                         //add a special
                         (lkey==profile.key ? ((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ') : '' ) ;
                 }
-                template['class'] +=  '' +
+                template['class'] +=  ' ' +
                     //custom theme
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class

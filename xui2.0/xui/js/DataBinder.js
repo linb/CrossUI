@@ -249,7 +249,7 @@ Class("xui.DataBinder","xui.absObj",{
                         if(cs)map[t].CS=_.clone(profile.CS,true);
                         if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
                             if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
-                        if(_.isSet(uv) && 'value' in p)
+                        if(_.isDefined(uv) && 'value' in p)
                             if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
                     }else{
                         if(profile.box['xui.UI.ComboInput'] && (p.type=='file'||p.type=='upload')){
@@ -350,12 +350,12 @@ Class("xui.DataBinder","xui.absObj",{
                             }
                         }else uv=v;
                         // set value and caption at last
-                        if(_.isSet(uv) && _.isFun(b.resetValue)){
+                        if(_.isDefined(uv) && _.isFun(b.resetValue)){
                             b.resetValue(uv);
                             profile.__returnArray=_.isArr(uv);
                         }
                         // set caption
-                        if(_.isSet(c) && _.isFun(b.setCaption))
+                        if(_.isDefined(c) && _.isFun(b.setCaption))
                             _.tryF(b.setCaption,[c,true],b);
                     }
                 }

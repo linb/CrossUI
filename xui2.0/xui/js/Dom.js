@@ -1009,9 +1009,9 @@ Class('xui.Dom','xui.absBox',{
                 style=o.style;
                 vv=xui.getNodeData(o);
                 if(vv._xuihide){
-                    if(t=vv._left)if(style.left!=t)style.left=t;
-                    if(t=vv._top)if(style.top!=t)style.top=t;
-                    if(t=vv._position)if(style.position!=t)style.position=t;
+                    if('_left' in vv)if(style.left!=(t=vv._left))style.left=t;
+                    if('_top' in vv)if(style.top!=(t=vv._top))style.top=t;
+                    if('_position' in vv)if(style.position!=(t=vv._position))style.position=t;
                     if(style.visibility!='visible')style.visibility='visible';
                     vv._xuihide=0;
                 }
