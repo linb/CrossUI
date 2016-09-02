@@ -1181,38 +1181,44 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         //for tabs only
         _onresize:function(profile,width,height,force,key){
-            var t=profile.properties,
-                item = profile.getItemByItemId(key),
-                css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+              var prop=profile.properties,
+                item = profile.getItemByItemId(key);
 
-            // caculate by px
-            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
-
-            if(!item)
-                key=t.$UIvalue;
-            item = profile.getItemByItemId(key);
-            var o = profile.boxing().getPanel(key),
-                l=profile.getSubNode('LIST'),
-                listH=null;
-
-            if(!o || o.isEmpty())return;
-            
-            if(!t.noHandler){
-                listH = l.get(0).offsetHeight ||
-                    //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                    l.offsetHeight();
+            if(!item){
+                key=prop.$UIvalue;
+                item = profile.getItemByItemId(key);
             }
-            var hc=null,wc=null;
+
+            var panel = profile.boxing().getPanel(key),
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                list=profile.getSubNode('LIST'),
+                rootfz = useem?root._getEmSize():1,
+                panelfz = useem?panel._getEmSize():1,
+                listfz = useem?list._getEmSize():1,
+                wc=null,
+                hc=null,
+                listH;
+
+             // caculate by px
+            width=width?css.$px(width, rootfz):width;
+            height=height?css.$px(height, rootfz):height;
+
+            if(!panel || panel.isEmpty())return;
+            
+            if(!prop.noHandler){
+                listH = list.get(0).offsetHeight ||
+                    //for opear 9.0 get height bug, get offsetheight in firefox is slow
+                    list.offsetHeight();
+            }
+
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
                 if(height && height!='auto'){
-                    if(!t.noHandler){
+                    if(!prop.noHandler){
                         height = height-listH;
                     }
                     if(height>0)hc=height;
@@ -1220,13 +1226,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             if(width && item._w!=width){
-                l.width(wv(item._w=width));
-                if(!t.noHandler){
+                list.width(adjustunit(item._w=width, listfz));
+                if(!prop.noHandler){
                     this._adjustScroll(profile,listH);
                 }
                 wc=width;
             }
-            if(hc||wc)o.height(hv(hc)).onSize();
+            if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
         },
 
         _adjustScroll:function(profile, listH,itemid,h_em){
@@ -1241,7 +1247,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 bgh = profile.getSubNode('LISTBG').offsetHeight(),
                 wi=0,
                 sl=0,sw=0,
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+
+                prop=profile,properties,
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')};
 
             items.children().each(function(item){
                 // to show the seleted one
@@ -1287,10 +1297,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             lr += (profile._$scroll_r||profile._$scroll_l)?drop.width():0;
 
             if(listH){
-                listH = hv(listH - bgh -2);
-                left.css('line-height',  listH );
-                right.css('line-height', listH );
-                drop.css('line-height',  listH );
+                listH = listH - bgh -2;
+                left.css('line-height',  adjustunit(listH,left) );
+                right.css('line-height', adjustunit(listH,right) );
+                drop.css('line-height',  adjustunit(listH,drop) );
             }
         }
     }

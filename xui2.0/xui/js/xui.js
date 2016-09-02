@@ -897,7 +897,7 @@ _.merge(xui,{
     $dateFormat:'',
     $rand:"_r_",
 
-    forceEm:true,
+    SpaceUnit:'em',
     // for show xui.echo
     debugMode:true,
 
@@ -4143,11 +4143,24 @@ Class('xui.absObj',"xui.absBox",{
                         return this.each(function(v){
                             if(!v.properties)return;
 
+                            var t,nfz;
                             // *** force to em
-                            if(xui.forceEm){
+                            if((v.properties.spaceUnit||xui.SpaceUnit)=='em'){
                                 if(dm[i] && dm[i]['$spaceunit'])
                                     if(value!='auto'&&(_.isFinite(value )||xui.CSS.$isPx(value)))
-                                        value=xui.CSS.$px2em(value)+'em';
+                                        // only have root dom node
+                                        if(v.getRootNode && (t=v.getRootNode())){
+                                            if(!nfz)nfz=xui(t)._getEmSize();
+                                            value=xui.CSS.$px2em(value, nfz)+'em';
+                                        }
+                            }else{
+                                if(dm[i] && dm[i]['$spaceunit'])
+                                    if(value!='auto'&& xui.CSS.$isEm(value))
+                                        // only have root dom node
+                                        if(v.getRootNode && (t=v.getRootNode())){
+                                            if(!nfz)nfz=xui(t)._getEmSize();
+                                            value=xui.CSS.$em2px(value, nfz);
+                                        }
                             }
                             //if same return
                             if(v.properties[i] === value && !force)return;

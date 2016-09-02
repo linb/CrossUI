@@ -229,7 +229,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 box._adjustColsWidth(profile);
                 box._adjustColsHeight(profile);
 
-                xui.UI.$tryResize(profile, css.$forceu(profile.getRoot().width(),css.$picku(prop.width)),css.$forceu(profile.getRoot().height(),css.$picku(prop.height)),true);
+                xui.UI.$tryResize(profile, 
+                    profile.getRoot().width(),
+                    profile.getRoot().height(),
+                    true);
             }
             if(rows&&rows.length)
                 this.setRows(rows);
@@ -480,7 +483,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 ns.setUIValue(arr.join(profile.properties.valueSeparator), true,null,'sub');
                             }
                         }
-
                     }else{
                         if('sub' in options){
                             t = box._getToggleNode(profile, rid);
@@ -496,7 +498,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         // 
                         tt = ns.getSubNodes(['CELLS1','CELLS2'],rid);
-                        if(t=options.height) profile.box._adjusteditorH(profile, tt.height(css.$forceu(orow._pxHeight=t) ),t);
+                        if(t=css.$px(options.height)) profile.box._adjusteditorH(profile, tt.height(css.$forceu(orow._pxHeight=t) ),t);
                         if(t=options.rowStyle) tt.attr('style',tt.attr('style')+";"+t);
                         if(t=options.rowClass) tt.addClass(t);
                         if(options.hasOwnProperty('disabled')){
@@ -1190,7 +1192,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 _.merge(colh, options, 'all');
 
                 if('flexSize' in options){
-                    xui.UI.$tryResize(profile, css.$forceu(profile.getRoot().width(),css.$picku(prop.width)),css.$forceu(profile.getRoot().height(),css.$picku(prop.height)),true);
+                    xui.UI.$tryResize(profile, 
+                        profile.getRoot().width(),
+                        profile.getRoot().height(),
+                    true);
                 }
             }
         },
@@ -2917,7 +2922,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
                         prop.headerHeight=css.$forceu(h);
                         profile.box._adjustColsHeight(profile);
-                        xui.UI.$tryResize(profile, css.$forceu(profile.getRoot().width(),css.$picku(prop.width)),css.$forceu(profile.getRoot().height(),css.$picku(prop.height)),true);
+                        xui.UI.$tryResize(profile, 
+                            profile.getRoot().width(),
+                            profile.getRoot().height(),
+                        true);
                     }else{
                         row.height=css.$forceu(h);
                         profile.getSubNode("CELLS2",subId).height(row.height);
@@ -2956,7 +2964,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.box._adjustColsHeight(profile,true);
 
                         prop.headerHeight = css.$forceu(h, css.$picku(prop.headerHeight));
-                        xui.UI.$tryResize(profile, css.$forceu(profile.getRoot().width(),css.$picku(prop.width)),css.$forceu(profile.getRoot().height(),css.$picku(prop.height)),true);
+                        xui.UI.$tryResize(profile, 
+                            profile.getRoot().width(),
+                            profile.getRoot().height(),
+                        true);
                     }
 
                     if(profile.afterRowResized)
@@ -4037,7 +4048,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         css=xui.CSS,
                         prop=profile.properties;
                     profile.box._adjustColsHeight(profile);
-                    xui.UI.$tryResize(profile, css.$forceu(profile.getRoot().width(),css.$picku(prop.width)),css.$forceu(profile.getRoot().height(),css.$picku(prop.height)),true);
+                    xui.UI.$tryResize(profile, 
+                        profile.getRoot().width(),
+                        profile.getRoot().height(),
+                    true);
                 }
             },
             rowHeight:{
@@ -5709,7 +5723,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     for(var j in i){
                        j=i[j];
                        if(j._editor)
-                            j._editor.setHeight(xui.CSS.$addpx(height, 1));
+                            j._editor.setHeight(xui.CSS.$addpx(height, 1,j._editor.getRootNode()));
                     }
                 }
             });
@@ -6239,14 +6253,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 
                 var prop = profile.properties,
                     css=xui.CSS,
-                    w_em=css.$isEm(prop.width),
-                    h_em=css.$isEm(prop.height),
-                    wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                    hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
-
+                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                    rootfz = useem?profile.getRoot()._getEmSize():1,
                     size = profile.getSubNode("BORDER").cssSize(),
-                    width = size.width,
-                    height = size.height,
+                    width = css.$px(size.width,rootfz),
+                    height = css.$px(size.height,rootfz),
 
                     //left region
                     w1 = prop.rowHandler?(xui.CSS.$px(prop.rowHandlerWidth) + 2):0,
@@ -6278,25 +6290,25 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 w2 = width - w1;
                 profile._leftregionw = w1;
 
-                //h1.width(wv(w1));
-                h2.width(wv(w2));
-                //s21.width(wv(w1));
-                s22.width(wv(w2));
+                //h1.width(adjustunit(w1,h1));
+                h2.width(adjustunit(w2,h2));
+                //s21.width(adjustunit(w1,s21));
+                s22.width(adjustunit(w2,s22));
 
                 _.asyRun(function(){
-                    b21.css('padding-bottom', hv((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0)));
+                    b21.css('padding-bottom', adjustunit((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0),b21));
                     s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', wv((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0)));
+                        b12.css('padding-right', adjustunit((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0),b12));
                         s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);
 
                 // adjust height
-                s11.height(hv(rr?rr:0));
-                s12.height(hv(rr?rr:0));
-                s21.height(hv(height - rh - rr));
-                s22.height(hv(height - rh - rr));
+                s11.height(adjustunit(rr?rr:0,s11));
+                s12.height(adjustunit(rr?rr:0,s12));
+                s21.height(adjustunit(height - rh - rr,s21));
+                s22.height(adjustunit(height - rh - rr,s22));
 
 
                 // others
@@ -6323,8 +6335,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         ww=last?(last.offsetWidth+last.offsetLeft+100):0;
                         //set HI node
-                        header.parent().width(wv(ww));
-                        body.width(wv(bw=ww));
+                        header.parent().width(adjustunit(ww,header.parent()));
+                        body.width(adjustunit(bw=ww,body));
                     }else{
                         if(t=body.get(0).childNodes){
                             l=t.length;
@@ -6354,7 +6366,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
 
                 if(last){
-                    body.width(wv(bw = last.offsetLeft));
+                    body.width(adjustunit(bw = last.offsetLeft,body));
                 }else{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
@@ -6363,7 +6375,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(o.hidden!==true)
                             w += ('_pxWidth' in o) ? o._pxWidth : (o.width + 2);
                     });
-                    body.width(wv(bw = w));
+                    body.width(adjustunit(bw = w,body));
                 }
                 t=last=null;
 
@@ -6823,31 +6835,37 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         _onresize:function(profile,width,height){
-            profile.getSubNode('BORDER').cssSize({width:width||null,height:height||null});
-
             var prop = profile.properties,
+                f=function(k){return profile.getSubNode(k)},
                 css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
-
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
                 w1 = prop.rowHandler?(css.$px(prop.rowHandlerWidth) + 2):0,
                 w2,
-                h1 = profile.getSubNode('HEADER1'),
-                h2 = profile.getSubNode('HEADER2'),
-                b12 = profile.getSubNode('BODY12'),
-                b21 = profile.getSubNode('BODY21'),
-                s11 = profile.getSubNode('SCROLL11'),
-                s12 = profile.getSubNode('SCROLL12'),
-                s21 = profile.getSubNode('SCROLL21'),
-                s22 = profile.getSubNode('SCROLL22'),
+                border = f('BORDER'),
+                h1 = f('HEADER1'),
+                h2 = f('HEADER2'),
+                b12 = f('BODY12'),
+                b21 = f('BODY21'),
+                s11 = f('SCROLL11'),
+                s12 = f('SCROLL12'),
+                s21 = f('SCROLL21'),
+                s22 = f('SCROLL22'),
+                borderfz = useem?border._getEmSize():1,
+
                 rh = h2.height(),
                 rr = b12.height();
-            
-            // caculate by px
-            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+
+             // caculate by px
+            width=width?css.$px(width, rootfz):width;
+            height=height?css.$px(height, rootfz):height;
+
+            border.cssSize({
+                width:width?adjustunit(width,borderfz):null,
+                height:height?adjustunit(height,borderfz):null
+            });
 
             // adjust width
             if(width){
@@ -6866,19 +6884,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 w2 = width - w1;
                 profile._leftregionw = w1;
 
-                //h1.width(wv(w1));
-                h2.width(wv(w2));
-                //s21.width(wv(w1));
-                s22.width(wv(w2));
+                //h1.width(adjustunit(w1,h1));
+                h2.width(adjustunit(w2,h2));
+                //s21.width(adjustunit(w1,s21));
+                s22.width(adjustunit(w2,s22));
             }
-
 
             // adjust height
             if(height){
-                s11.height(hv(rr?rr:0));
-                s12.height(hv(rr?rr:0));
-                s21.height(hv(height - rh - rr));
-                s22.height(hv(height - rh - rr));
+                s11.height(adjustunit(rr?rr:0,s11));
+                s12.height(adjustunit(rr?rr:0,s12));
+                s21.height(adjustunit(height - rh - rr,s21));
+                s22.height(adjustunit(height - rh - rr,s22));
             }
 
             this._adjustBody(profile,'resize');

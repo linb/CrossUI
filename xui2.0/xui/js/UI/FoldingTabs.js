@@ -459,8 +459,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 profile._w=width;
                 profile.getSubNode("PANEL",true).each(function(panel){
                     if(panel.offsetWidth){
-                        var w=xui(panel).width();
-                        if(xui.CSS.$isEm(width))w=xui.CSS.$px2em(w)+'em';
+                        var w=xui(panel).width(), prop=profile.properties;
+                        if((prop.spaceUnit||xui.SpaceUnit)=='em')w=xui.CSS.$px2em(w, panel)+'em';
                         xui(panel).width('auto').width(w);
                     }
                 });

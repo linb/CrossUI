@@ -101,13 +101,16 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
         },
         _onresize:function(profile,width,height){
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
-                css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height);
+                prop=profile,properties,
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1;
 
             // caculate by px
-            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+            width=width?css.$px(width, rootfz):width;
+            height=height?css.$px(height, rootfz):height;
 
             if(scaleChildren){
                 ow=paper.width;

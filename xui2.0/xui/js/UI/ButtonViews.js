@@ -152,75 +152,84 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             .setBarVAlign(pro.barVAlign,true);
         },
         _onresize:function(profile,width,height,force,key){
-            var t=profile.properties,
-                noPanel=t.noPanel,
-                item = profile.getItemByItemId(key),
-                w_em=xui.CSS.$isEm(width),
-                h_em=xui.CSS.$isEm(height),
-                css=xui.CSS;
-            if(!item)
-                key=t.$UIvalue;
-            var o = profile.boxing().getPanel(key),
-                top, left, hsh,
+            var prop=profile.properties,
+                noPanel=prop.noPanel,
+                item = profile.getItemByItemId(key);
+
+            if(!item){
+                key=prop.$UIvalue;
+                item = profile.getItemByItemId(key);
+            }
+
+            var panel = profile.boxing().getPanel(key),
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
+                panelfz = useem?panel._getEmSize():1,
+                // caculate by px
+                ww=width?css.$px(width, rootfz):width, 
+                hh=height?css.$px(height, rootfz):height,
+
+                
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
-                wc=null,hc=null,itmsH;
-            if(!t.noHandler){
-                if(t.barLocation=='top'||t.barLocation=='bottom'){
+                hsfz =  useem?hs._getEmSize():1,
+                hlfz =  useem?hl._getEmSize():1,
+                wc=null,
+                hc=null,
+                top, left, itmsH;
+
+            if(!prop.noHandler){
+                if(prop.barLocation=='top'||prop.barLocation=='bottom'){
                     if(width){
-                        hs.width(css.$addpx(width,-2));
-                        hl.width(css.$addpx(width,-2));
+                        hs.width(css.$addpx(ww, -2, hsfz));
+                        hl.width(css.$addpx(ww, -2, hlfz));
                         // for nopanel:
                         if(noPanel)
-                            hs.height(css.$addpx(height,-2));
+                            hs.height(css.$addpx(hh, -2, hsfz));
                      
                         left = 0;
-                        wc=width;
+                        wc=ww;
                     }
-                    if(h_em){
-                        height = css.$em2px(height);
-                    }
+
                     // caculate by px
                     itmsH = hl.offsetHeight()
-                    if(height-itmsH>0)hc=height-itmsH-2;
-                    top = t.barLocation=='top'?2+itmsH:0;
+                    if(hh-itmsH>0)hc=hh-itmsH-2;
+                    top = prop.barLocation=='top'?2+itmsH:0;
 
-                    if(h_em){
-                        hc = css.$px2em(hc)+'em';
-                        itmsH = css.$px2em(itmsH)+'em';
-                        top = css.$px2em(top)+'em';
-                    }
-                    hs.height(itmsH);
+                    hs.height(adjustunit(itmsH, hsfz));
                 }else{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hs.width(css.$addpx(width,-2));
-                            hl.width(css.$addpx(width,-2));
+                            hs.width(css.$addpx(ww,-2,hsfz));
+                            hl.width(css.$addpx(ww,-2,hlfz));
                         }
-                        hs.height(css.$addpx(height,-2));
+                        hs.height(css.$addpx(hh,-2,hsfz));
     
                         top=0;
-                        hc=height;
+                        hc=hh;
                     }
                     if(width){
                         //caculate by px
-                        left = t.barLocation=='left'?2+css.$px(t.barSize):0;
-                        wc = css.$px(width)-css.$px(t.barSize)-2;
-
-                        if(w_em){
-                            left = css.$px2em(left)+'em';
-                            wc = css.$px2em(wc)+'em';
-                        }
+                        left = prop.barLocation=='left'?2+css.$px(prop.barSize, hsfz):0;
+                        wc = ww-css.$px(prop.barSize, hsfz)-2;
                     }
                 }
             }else{
-                wc=width;
-                hc=height;
+                wc=ww;
+                hc=hh;
             }
 
             if(!noPanel)
-                if(o && !o.isEmpty())o.cssRegion({width:wc?wc:null,height:hc?hc:null,left:left,top:top},true);
+                if(panel && !panel.isEmpty())panel.cssRegion({
+                    width : wc?adjustunit(wc,panelfz):null,
+                    height : hc?adjustunit(hc,panelfz):null,
+                    left : adjustunit(left,panelfz),
+                    top : adjustunit(top,panelfz)
+                },true);
         },
         _adjustScroll:null
     }

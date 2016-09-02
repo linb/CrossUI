@@ -1015,33 +1015,39 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 if(!height)
                     height=profile.properties.height;
 
-                var t = profile.properties,
-                    css=xui.CSS,
-                    o = profile.getSubNode('BOX'),
+                var prop = profile.properties,
+                    root = profile.getRoot(),
+                    box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
-                    w_em=css.$isEm(width),
-                    h_em=css.$isEm(height),
-                    wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                    hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
-                    labelSize=css.$px(t.labelSize)||0,
-                    labelGap=css.$px(t.labelGap)||0,
-                    labelPos=t.labelPos || 'left',
+
+                    css = xui.CSS,
+                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                    rootfz=useem?root._getEmSize():1,
+                    boxfz=useem?box._getEmSize():1,
+                    labelfz=useem?label._getEmSize():1,
+
+                    labelSize=css.$px(prop.labelSize, labelfz)||0,
+                    labelGap=css.$px(prop.labelGap)||0,
+                    labelPos=prop.labelPos || 'left',
                     ll, tt, ww, hh;
+
                 // caculate by px
-                if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-                if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
-                o.cssRegion({
-                    left : wv(ll = labelPos=='left'?labelSize:0),
-                    top : hv(tt = labelPos=='top'?labelSize:0),
-                    width : wv(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
-                    height : hv(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
+                if(width && width!='auto')width=css.$px(width, rootfz);
+                if(height && height!='auto')height=css.$px(height, rootfz);
+
+                box.cssRegion({
+                    left : adjustunit(ll = labelPos=='left'?labelSize:0,boxfz),
+                    top : adjustunit(tt = labelPos=='top'?labelSize:0,boxfz),
+                    width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),boxfz),
+                    height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))),boxfz)
                 });
                 if(labelSize){
                     label.cssRegion({
-                        left: wv(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0)),
-                        top:  hv(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0)), 
-                        width: wv(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width))),
-                        height: hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
+                        left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelfz),
+                        top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz), 
+                        width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelfz),
+                        height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                     });
                 }
                 _.asyRun(function(){
@@ -1054,7 +1060,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         tbh;
                     if(itb){
                         // here, do resize first
-                        itb.getRoot().width(wv(ww));
+                        itb.getRoot().width(adjustunit(ww,itb.getRoot()));
                         tbh=itb.getRoot().offsetHeight();
                         if(tbh)
                             profile.$_tbH=tbh;
@@ -1071,11 +1077,12 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
 
                     if(ww||hh){
                         if(profile&&profile.renderId){
-                            if(w_em)size.width=css.$px2em(size.width)+'em';
-                            if(h_em)size.height=css.$px2em(size.height)+'em';
+                            // non-sence for setting fontSize for EDITOR or MARK
+                            size.width=adjustunit(size.width);
+                            size.height=adjustunit(size.height);
 
-                            profile.getSubNode('EDITOR').top(h_em?css.$px2em(_top)+'em':_top).cssSize(size,true);
-                            profile.getSubNode('MARK').left(0+css.$picku()).top(h_em?css.$px2em(_top+1)+'em':_top);
+                            profile.getSubNode('EDITOR').top(adjustunit(_top)).cssSize(size,true);
+                            profile.getSubNode('MARK').left(0+css.$picku()).top(adjustunit(_top+1));
                         }
                     }
                 }, 20/*greater than 16*/);

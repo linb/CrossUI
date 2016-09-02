@@ -168,20 +168,28 @@ Class("xui.UI.Flash", "xui.UI",{
             profile.getSubNode('BOX').html(xml, false);
         },
         _onresize:function(profile,width,height){
-            var size = profile.getSubNode('BOX').cssSize(),
-                prop=profile.properties,
-                // compare with px
-                w_em=xui.CSS.$isEm(width),
-                h_em=xui.CSS.$isEm(height),
-                ww=w_em?xui.CSS.$em2px(width):width, 
-                hh=h_em?xui.CSS.$em2px(height):height;
+            var prop=profile.properties,
+                css=xui.CSS,
+                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                root=profile.getRoot(),
+                rootfz= useem?root._getEmSize():1,
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+
+                size = profile.getSubNode('BOX').cssSize(),
+
+                // caculate by px
+                ww=width?css.$px(width, rootfz):width, 
+                hh=height?css.$px(height, rootfz):height;
 
             if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
-                if(width)prop.width=width;
-                if(height)prop.height=height;
+                if(width)prop.width=adjustunit(ww,rootfz);
+                if(height)prop.height=adjustunit(hh,rootfz);
 
-                size={width:width,height:height};
+                size={
+                    width:width?prop.width:null,
+                    height:height?prop.height:null
+                };
                 profile.getSubNode('BOX').cssSize(size,true);
                 if(profile.$inDesign || prop.cover){
                     profile.getSubNode('COVER').cssSize(size,true);

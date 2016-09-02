@@ -252,17 +252,25 @@ Class("xui.UI.Group", "xui.UI.Div",{
 
                 profile.getSubNode('FIELDSET').tagClass('-checked',!value);
 
-                var css=xui.CSS,
-                    h_em = css.$isEm(p.height),
-                    height=profile.getSubNode('LEGEND').height();
-                if(h_em)height=css.$px2em(height)+'em';
                 // same to ***
                 // for expand status:
                 //    adjust ctrl's height to p.height
                 // for fold status:
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
-                profile.getRoot().height(p.toggle?p.height:height?height:'auto');
+
+                if(p.toggle){
+                        profile.getRoot().height(p.height);
+                }else{
+                    var css = xui.CSS,
+                        useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                        adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                        root = profile.getRoot(),
+                        rootfz = useem?root._getEmSize():1,
+                        height=profile.getSubNode('LEGEND').height();
+                    height = height?adjustunit(height, rootfz):null;
+                    profile.getRoot().height(height?height:'auto');
+                }
 
                 if(!ignoreEvent){
                     if(value){
@@ -281,16 +289,26 @@ Class("xui.UI.Group", "xui.UI.Div",{
             }
         },
         _onresize:function(profile,width,height){
-            var css=xui.CSS,
-                w_em = css.$isEm(width),
-                h_em = css.$isEm(height);
+            var prop=profile.properties,
+                // compare with px
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
+
+                fs = profile.getSubNode('FIELDSET'),
+                panel =profile.getSubNode('PANEL'), 
+
+                // caculate by px
+                ww=width?css.$px(width, rootfz):null, 
+                hh=height?css.$px(height, rootfz):null;
+
             if(profile._toggle){
                 if(height && height!='auto'){
-                    profile.getSubNode('FIELDSET').height(height);
-                    height = h_em?css.$em2px(height):height;
-                    height -= profile.getSubNode('LEGEND').height()||18;
-                    if(h_em)height=css.$px2em(height)+'em';
-                    profile.getSubNode('PANEL').height(height);
+                    fs.height(adjustunit(hh, fs));
+                    hh -= profile.getSubNode('LEGEND').height()||18;
+                    panel.height(adjustunit(hh, panel) );
                 }
             }else{
                 // same to ***
@@ -300,14 +318,11 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
                 height = profile.getSubNode('LEGEND').height();
-                if(h_em)height=css.$px2em(height)+'em';
+                height = height?adjustunit(height, rootfz):null;
                 profile.getRoot().height(height || 'auto');
             }
-            if(width && width!='auto'){
-                width = w_em?css.$em2px(width):width;
-                width -= 2;
-                if(w_em)width=css.$px2em(width)+'em';
-                profile.getSubNode('PANEL').width(width);
+            if(width && width!='auto' && ww>=2){
+                profile.getSubNode('PANEL').width(adjustunit(ww-2, rootfz));
             }
         }
     }

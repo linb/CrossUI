@@ -53,14 +53,7 @@ Class('App', 'xui.Com',{
                 .setTop(140)
                 .setValue("A0532D")
             );
-            
-            append((new xui.UI.TimeLine)
-                .setHost(host,"timeline1")
-                .setLeft(260)
-                .setTop(10)
-                .setWidth(440)
-            );
-            
+
             return children;
             // ]]Code created by CrossUI RAD Tools
         }

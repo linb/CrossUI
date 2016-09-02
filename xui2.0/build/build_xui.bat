@@ -115,7 +115,6 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\UI\TextEditor.js /b ^
 + %relPath%xui\js\UI\FoldingList.js /b ^
 + %relPath%xui\js\UI\FoldingTabs.js /b ^
-+ %relPath%xui\js\UI\ColLayout.js /b ^
 + %relPath%xui\js\ThirdParty\raphael.js /b ^
 + %relPath%xui\js\svg.js /b ^
 + %relPath%xui\js\UI\SVGPaper.js /b ^
@@ -128,9 +127,7 @@ copy xui.js  %outPath%xui\js%debugPath%
 rem ==================
 rem for adv code
 rem ==================
-copy %relPath%xui\js\UI\TimeLine.js /b ^
-+ %relPath%xui\js\UI\Calendar.js /b ^
-+ %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
+copy %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.widgets.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.powercharts.js /b ^

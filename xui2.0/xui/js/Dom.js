@@ -658,7 +658,7 @@ Class('xui.Dom','xui.absBox',{
         left/top/width/height like, must specify 'px'
         Does't fire onResize onMove event
         */
-        css:function(name, value){
+        css:function(name, value, force){
             if(typeof name=='object' || value!==undefined){
                 this.each(function(o){
                     xui.Dom.setStyle(o,name,value)
@@ -674,8 +674,11 @@ Class('xui.Dom','xui.absBox',{
                 }
                 return this;
             }else{
-                return xui.Dom.getStyle(this.get(0), name);
+                return xui.Dom.getStyle(this.get(0), name, force);
             };
+        },
+        _getEmSize:function(){
+            return parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true));
         },
         rotate:function(v){
             if(_.isSet(v)){
@@ -1118,7 +1121,7 @@ Class('xui.Dom','xui.absBox',{
             // get always returns to px
             else{
                 f=dom.getStyle;
-                r={left :css.$px(f(node, 'left')),  top : css.$px(f(node, 'top'))};
+                r={left :css.$px(f(node, 'left'),node),  top : css.$px(f(node, 'top'),node)};
             }
             node=null;
             return r;
@@ -1695,7 +1698,7 @@ Class('xui.Dom','xui.absBox',{
             type = (type in tween)?type:'circIn';
 
             var starttime, node=this.get(0), self=this, fun=function(threadid){
-                var offtime=_() - starttime, curvalue,u,s,e;
+                var offtime=_() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
                 _.each(params,function(o,i){
                     s=o[0];e=o[1];u=o[2];
@@ -1707,9 +1710,20 @@ Class('xui.Dom','xui.absBox',{
                         }else{
                             if(!_.isFinite(e)){
                                 u=e.replace(/[-\d.]*/,'');
+                                eu=u||'px';
+                                if(!_.isFinite(s)){
+                                    su=s.replace(/[-\d.]*/,'')||'px';
+                                    if(su!=eu){
+                                        if(su=='em'&&eu=='px'){
+                                            s=css.$em2px(s,node);
+                                        }else if(su=='px'&&eu=='em'){
+                                            s=css.$px2em(s,node);
+                                        }
+                                    }
+                                }
                             }
-                            s=css.$px(s);
-                            e=css.$px(e);
+                            s=parseFloat(s);
+                            e=parseFloat(e);
                             curvalue = _.toFixedNumber(s + (e-s)*curvalue, 6);
                         }
                         curvalue+=u||unit||'';
@@ -2159,7 +2173,7 @@ type:4
                         if(!_.isSet(a1[i].$ieRemedy)){
                             if(_.isSet(a1[i].style.width)){
                                 a1[i].$ieRemedy=a1[i].style.width;
-                                a1[i].style.width=((xui.CSS.$px(a1[i].$xuirem)||0)+1)+"px";
+                                a1[i].style.width=((xui.CSS.$px(a1[i].$ieRemedy,a1[i])||0)+1)+"px";
                             }
                         }
                         /*
@@ -2297,7 +2311,7 @@ type:4
             }
             return ns._scrollBarSize;
         },
-        getStyle:function(node, name){
+        getStyle:function(node, name, force){
             if(!node || node.nodeType!=1)return '';
             if(name=="rotate"){
                return xui(node).rotate();
@@ -2310,7 +2324,7 @@ type:4
                 b = name = 'filter';
 
             value= node.style[name];
-            if(!value || value==="initial"){
+            if(force || !value || value==="initial"){
                 var me = arguments.callee,t,
                 brs=xui.browser,
                 map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1}),
@@ -3689,8 +3703,8 @@ type:4
             self.plugIn(o[0],function(type){
                 type=type||'both';
                 node = this.get(0);
-                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1])):0) 
-                     + ((type=='both'||type=='right'||type=='bottom')?xui.CSS.$px(fun(node, o[2])):0) || 0;
+                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1]),node):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?xui.CSS.$px(fun(node, o[2]),node):0) || 0;
             })
         });
         /*
@@ -3756,7 +3770,7 @@ type:4
                             r=getStyle(node,o[1]);
                             if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
                                 r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
-                            r=xui.CSS.$px(r)||0;
+                            r=xui.CSS.$px(r,node)||0;
                             break;
                         case 2:
                             r=node[o[6]];
@@ -3826,7 +3840,7 @@ type:4
                     m=xui.use(node.$xid)[k]();
                     m=(parseFloat(m)||0)+offset;
                     if(k=='width'||k=='height')m=m>0?m:0;
-                    node.style[k]=xui.CSS.$forceu(m);
+                    node.style[k]=xui.CSS.$forceu(m,null,node);
                     if(triggerEvent){
                         args={};args[k]=1;
                         var f=xui.Dom.$hasEventHandler;
@@ -3870,11 +3884,11 @@ type:4
                     }
                     // give shortcut
                     // we force to get px number of width/height 
-                    if(o=='width')value=parseFloat(node.style.width?xui.CSS.$px(node.style.width):'')||self._W(node,1,value);
-                    else if(o=='height')value=parseFloat(node.style.height?xui.CSS.$px(node.style.height):'')||self._H(node,1,value);
+                    if(o=='width')value=(xui.CSS.$isPx(node.style.width)&&parseFloat(node.style.width))||self._W(node,1,value);
+                    else if(o=='height')value=(xui.CSS.$isPx(node.style.height)&&parseFloat(node.style.height))||self._H(node,1,value);
                     else
-                        value = xui.Dom.getStyle(node, o);
-                    return (value=='auto'||value==='')?value:(xui.CSS.$px(value)||0);
+                        value = xui.Dom.getStyle(node, o, true);
+                    return (value=='auto'||value==='')?value:(value||0);
                 }else{
                     var f=xui.Dom._setUnitStyle,t,a,
                     av = xui.CSS.$addu(value);

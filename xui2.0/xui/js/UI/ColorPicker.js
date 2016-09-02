@@ -336,6 +336,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 overflow:'hidden',
                 margin:'2px',
                 padding:'2px',
+                'white-space': 'nowrap',
                 'line-height':xui.__iefix1
             },
             TAILI:{

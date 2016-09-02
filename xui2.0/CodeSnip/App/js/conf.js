@@ -18,6 +18,7 @@
                     {id:'xui.UI.CheckBox', caption:'CheckBox', image:_img_widgets, imagePos:'-96px top'},
                     {id:'xui.UI.Input', caption:'Input', image:_img_widgets, imagePos:'-112px top'},
                     {id:'xui.UI.List', caption:'List', image:_img_widgets, imagePos:'-192px top'},
+                    {id:'xui.UI.FoldingList', caption:'FoldingList', image:_img_widgets, imagePos:'-32px -16px'},
                     {id:'xui.UI.ComboInput', caption:'ComboInput', image:_img_widgets, imagePos:'-144px top'},
                     {id:'xui.UI.RichEditor', caption:'RichEditor', image:_img_widgets, imagePos:'-128px top'},
                     {id:'xui.UI.ProgressBar', caption:'ProgressBar', image:_img_widgets, imagePos:'-608px top'},
@@ -51,11 +52,6 @@
                     {id:'xui.UI.Gallery', caption:'Gallery', image:_img_widgets, imagePos:'-448px top'},
                     {id:'xui.UI.TreeBar', caption:'TreeBar', image:_img_widgets, imagePos:'-464px top'},
                     {id:'xui.UI.TreeView', caption:'TreeView', image:_img_widgets, imagePos:'-464px -16px'}
-                ]},
-                {id:'xui.UI.absAdv',caption:'Advanced',group:true, image:_img_app, imagePos:'-48px -48px', sub:[
-                    {id:'xui.UI.FoldingList', caption:'FoldingList', image:_img_widgets, imagePos:'-32px -16px'},
-                    {id:'xui.UI.Calendar', caption:'Calendar', image:_img_widgets, imagePos:'-496px top'},
-                    {id:'xui.UI.TimeLine', caption:'TimeLine', image:_img_widgets, imagePos:'-528px top'}
                 ]}
             ]},
             {id:'tech.UI', caption:'UI Related', group:true, image:_img_app, imagePos:'-64px -48px', sub:[

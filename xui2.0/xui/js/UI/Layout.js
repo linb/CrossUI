@@ -196,7 +196,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     ITEM:{
                         tagName:'div',
                         className:'{cls1} {itemClass}',
-                        style:'{size};{itemStyle};{display}',
+                        style:'{itemStyle};{display}',
                         MOVE:{
                             $order:0,
                             tagName:'div',
@@ -465,22 +465,20 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         innerH = r.height();
                         //use size to ignore onresize event once
                         item._size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y
-                        o.height(css.$isEm(height)?css.$px2em(item._size)+'em':item._size);
+                        o.height(css.$isEm(height)?css.$px2em(item._size, o)+'em':item._size);
                         cur = sum * item._size / innerH;
                     }else{
                         innerW = r.width();
                         item._size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x
-                        o.width(css.$isEm(width)?css.$px2em(item._size)+'em':item._size);
+                        o.width(css.$isEm(width)?css.$px2em(item._size, o)+'em':item._size);
                         cur = sum * item._size / innerW;
                     }
                     // always - main
                     mainItem.size -= cur - item.size;
                     item.size = cur;
                     //use size to ignore onresize event once
-                    xui.UI.$tryResize(profile, 
-                        innerW && css.$isEm(width)?css.$px2em(innerW)+'em':innerW, 
-                        innerH && css.$isEm(height)?css.$px2em(innerH)+'em':innerH, 
-                        true);
+                    // use px here,  _onresize handle em things
+                    xui.UI.$tryResize(profile,  innerW, innerH, true);
                     profile._limited=0;
                 }
             },
@@ -768,11 +766,6 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data.cls2  = profile.getClass('MOVE', '-main');
                 data.cls3  = profile.getClass('CMD', '-main' );
             }else{
-                if(p.type=='vertical')
-                    data._size = 'height:'+css.$isEm(height)?css.$px2em(data._size)+'em':data._size+'px';
-                else
-                    data._size = 'width:'+css.$isEm(width)?css.$px2em(data._size)+'em':data._size+'px';
-
                 var pos;
                 if(p.type=='vertical'){
 //                    data.clsmovebg = "xui-uiborder-tb";
@@ -836,12 +829,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 css=xui.CSS,
                 _handlerSize=css._getDftFISize() / 2,
-                w_em = css.$isEm(width),
-                h_em = css.$isEm(height);
+                useem = (t.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1;
 
-
-            if(width&&w_em)width=xui.CSS.$em2px(width);
-            if(height&&h_em)height=xui.CSS.$em2px(height);
+            if(width)width=css.$px(width, rootfz);
+            if(height)height=css.$px(height, rootfz);
 
             var obj={}, obj2={};
             // **keep the original size
@@ -967,25 +961,28 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     });
                 }
             }
-            var ff_w=function(o){
+            var ff_w=function(o, emRate){
                _.arr.each("left,width,right".split(','),function(t){
-                   if(t in o)o[t]=css.$forceu(o[t],'em');
+                   if(t in o)o[t]=css.$forceu(o[t],'em',emRate);
                });
-            }, ff_h=function(o){
+            }, ff_h=function(o, emRate){
                _.arr.each("top,height,bottom".split(','),function(t){
-                    if(t in o)o[t]=css.$forceu(o[t],'em');
+                    if(t in o)o[t]=css.$forceu(o[t],'em',emRate);
                });
             };
             //collect width/height in size
             _.each(obj2, function(o, id){
-                if(w_em){
-                    ff_w(obj[id]); ff_w(obj2[id]);
+                var p=profile.getSubNode('PANEL', id),
+                    i=profile.getSubNode('ITEM', id);
+                
+                if(useem){
+                    var pfz=useem?p._getEmSize():1,
+                        ifz=useem?i._getEmSize():1;
+                    ff_w(obj[id],ifz); ff_w(obj2[id],ifz);
+                    ff_h(obj[id],pfz); ff_h(obj2[id],pfz);
                 }
-                if(h_em){
-                    ff_h(obj[id]); ff_h(obj2[id]);
-                }
-                profile.getSubNode('PANEL', id).cssRegion(obj[id], true);
-                profile.getSubNode('ITEM', id).cssRegion(obj2[id]);
+                p.cssRegion(obj[id], true);
+                i.cssRegion(obj2[id]);
             });
         }
     }

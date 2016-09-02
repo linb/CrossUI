@@ -71,7 +71,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     h_em=css.$isEm(pp.height),
                     h,flag;
 
-                if(css.$isEm(mh))mh=css.$em2px(mh);
+                if(css.$isEm(mh))mh=css.$em2px(mh, items);
 
                 if(root.css('display')=='none'){
                     flag=1;
@@ -80,7 +80,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 items.height('auto');
                 if(profile.properties.height!='auto'){
                     h=Math.min(mh, items.offsetHeight());                    
-                    if(h_em)h=css.$px2em(h)+'em';
+                    if(h_em)h=css.$px2em(h, items)+'em';
                     items.height(pp.height=h);
                 }else{
                     h=items.offsetHeight();
@@ -685,38 +685,45 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             xui.UI.$doResize(this,p.width,p.height);
         },
         _onresize:function(profile,width,height){
-            var p=profile.properties,
-                border=p.borderType!='none'?2:0,
-                dock=p.dock,
-                max=p.maxHeight,
-                css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+            var prop=profile.properties,
+                // compare with px
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
+
+                border=prop.borderType!='none'?2:0,
+                dock=prop.dock,
+                max=prop.maxHeight,
+
                 f=function(k){return profile.getSubNode(k)},
                 o = f('ITEMS'),
                 label = f('LABEL'),
-                root = profile.getRoot(),
-                labelSize=css.$px(p.labelSize)||0,
-                labelGap=css.$px(p.labelGap)||0,
-                labelPos = p.labelPos || 'left',
+                ofz = useem?o._getEmSize():1,
+                labelfz = useem?label._getEmSize():1,
+
+                labelSize=css.$px(prop.labelSize, labelfz)||0,
+                labelGap=css.$px(prop.labelGap, rootfz)||0,
+                labelPos = prop.labelPos || 'left',
                 ll, tt, ww, hh;
+
             // caculate by px
-            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+            if(width && width!='auto')width = css.$px(width, rootfz);
+            if(height && height!='auto')height = css.$px(height, rootfz);
+
             o.cssRegion({
-                left : wv(ll = labelPos=='left'?labelSize:0),
-                top : hv(tt = labelPos=='top'?labelSize:0),
-                width : wv(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border))),
-                height : hv(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)))
+                left : adjustunit(ll = labelPos=='left'?labelSize:0, ofz),
+                top : adjustunit(tt = labelPos=='top'?labelSize:0, ofz),
+                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), ofz),
+                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), ofz)
             });
 
 
             if(height=="auto"){
                 if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
                     if(o.height()>max){
-                        o.height(hv(max));
+                        o.height(adjustunit(max, ofz));
                         root.height('auto');
                     }
                 }
@@ -725,10 +732,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 if(width=='auto')ww=o.offsetWidth();
                 if(height=='auto')hh=o.offsetHeight();
                 label.cssRegion({
-                    left: wv(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0)),
-                    top:  hv(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0)), 
-                    width: wv(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width)))),
-                    height: hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))))
+                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),labelfz),
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz), 
+                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width))),labelfz),
+                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))),labelfz)
                 });
             }
         }

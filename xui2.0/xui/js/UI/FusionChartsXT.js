@@ -26,8 +26,8 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     var fc=new FusionCharts(
                             prop.chartType, 
                             prf._chartId, 
-                            xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width):prop.width, 
-                            xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height):prop.height
+                            xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width ,prf.getRootNode()):prop.width, 
+                            xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height, prf.getRootNode()):prop.height
                     ),
                      flag;
                     
@@ -471,18 +471,27 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             var size = prf.getSubNode('BOX').cssSize(),
                 prop=prf.properties,
                 // compare with px
-                w_em=xui.CSS.$isEm(width),
-                h_em=xui.CSS.$isEm(height),
-                ww=w_em?xui.CSS.$em2px(width):width, 
-                hh=h_em?xui.CSS.$em2px(height):height,
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
+
+                // caculate by px
+                ww=width?css.$px(width, rootfz):width, 
+                hh=height?css.$px(height, rootfz):height,
+
                 t;
 
             if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
-                if(width)prop.width=width;
-                if(height)prop.height=height;
+                if(width)prop.width=adjustunit(ww, rootfz);
+                if(height)prop.height=adjustunit(hh, rootfz);
 
-                size={width:width,height:height};
+                size={
+                    width:width?prop.width:null,
+                    height:height?prop.height:null
+                };
                 prf.getSubNode('BOX').cssSize(size,true);
                 if(prf.$inDesign || prop.cover){
                     prf.getSubNode('COVER').cssSize(size,true);

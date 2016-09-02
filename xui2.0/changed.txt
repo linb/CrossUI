@@ -1,3 +1,3 @@
 1)Don't support IE6/7 anymore 
-2)Removed Some advanced widgets( Range/Poll/TagEditor ) 
+2)Removed Some advanced widgets( Range/Poll/TagEditor/ColLayout/Calendar/TimeLine ) 
 

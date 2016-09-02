@@ -153,12 +153,24 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         },        
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),
-                p=profile.properties,
-                b=(p.$iborder||0)*2;
-            if(size.width)size.width=xui.CSS.$addpx(size.width, -b);
+                panel=profile.getSubNode('PANEL'),
+                prop=profile.properties,
+                b=(prop.$iborder||0)*2,
+
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
+                panelfz= useem?panel._getEmSize():1,
+                // caculate by px
+                ww=width?css.$px(width, rootfz):width, 
+                hh=height?css.$px(height, rootfz):height;
+
+            if(size.width) size.width = adjustunit(ww -b, panelfz);
             if(size.height&&'auto'!==size.height)
-                size.height=xui.CSS.$addpx(size.height, -b);
-            profile.getSubNode('PANEL').cssSize(size,true);
+                size.height = adjustunit(hh - b, panelfz);
+            panel.cssSize(size,true);
         }
     }
 });

@@ -113,19 +113,45 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
-                css=xui.CSS,
-                type=profile.properties.type,
-                node=profile.getSubNodes(['INN','CAP','FILL']);
-            if(type=="horizontal"){
+                p=profile.properties,
+                css = xui.CSS,
+                useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                inn = profile.getSubNode('INN'),
+                cap = profile.getSubNode('CAP'),
+                fill = profile.getSubNode('FILL'),
+                rootfz=useem?root._getEmSize():1,
+                innfz = useem?inn._getEmSize():1,
+                capfz = useem?cap._getEmSize():1,
+                fillfz = useem?fill._getEmSize():1;
+            // caculate by px
+            if(size.width && size.width!='auto')size.width=css.$px(size.width, rootfz);
+            if(size.height && size.height!='auto')size.height=css.$px(size.height, rootfz);
+
+            if(p.type=="horizontal"){
                 if(size.height){
-                    v=css.$forceu(size.height);
-                    node.css({height:v,'line-height':v});
+                    v=adjustunit(size.height, innfz);
+                    inn.css({height:v,'line-height':v});
+                    
+                    v=adjustunit(size.height, fillfz);
+                    fill.css({height:v,'line-height':v});
+                    
+                    v=adjustunit(size.height, capfz);
+                    cap.css({height:v,'line-height':v});
                 }
             }else{
-                if(size.width)node.css({width:css.$forceu(size.width)});                
-                if(size.height)node.css({'line-height':css.$forceu(size.height)});
+                if(size.width){
+                    inn.css({width:adjustunit(size.width, innfz)});                   
+                    fill.css({width:adjustunit(size.width, fillfz)});
+                    cap.css({width:adjustunit(size.width, capfz)});
+                }
+                if(size.height){
+                    inn.css({'line-height':adjustunit(size.height, innfz)});
+                    fill.css({'line-height':adjustunit(size.height, fillfz)});
+                    cap.css({'line-height':adjustunit(size.height, capfz)});
+                }
             }
         }
     }
 });
-

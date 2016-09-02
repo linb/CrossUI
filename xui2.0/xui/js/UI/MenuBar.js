@@ -209,11 +209,11 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 cursor:'pointer'
             },
             ITEMI:{
-                'padding-left':'.5em',
+                'padding':'0 .25em',
                 'vertical-align':'top'
             },
             ITEMC:{
-                'padding-top':'.25em',
+                'padding':'.25em 0',
                 'vertical-align':'top'
             },
             ITEMA:{

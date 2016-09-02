@@ -125,21 +125,27 @@ Class("xui.UI.Audio", "xui.UI",{
         },
         _onresize:function(profile,width,height){
             var H5=profile.getSubNode('H5'), 
-                size = H5.cssSize(),
+                size=H5.cssSize(),
                 prop=profile.properties,
-                // compare with px
-                w_em=xui.CSS.$isEm(width),
-                h_em=xui.CSS.$isEm(height),
-                ww=w_em?xui.CSS.$em2px(width):width, 
-                hh=h_em?xui.CSS.$em2px(height):height;
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1,
+                // caculate by px
+                ww=width?css.$px(width, rootfz):width, 
+                hh=height?css.$px(height, rootfz):height;
 
             if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
                 // reset here
-                if(width)prop.width=width;
-                if(height)prop.height=height;
-                size={width:width,height:height};
-                if(width)H5.attr("width", width);
-                if(height)H5.attr("height", height);
+                if(width){
+                    prop.width=adjustunit(ww,rootfz);
+                    H5.attr("width", ww);
+                }
+                if(height){
+                    prop.height=adjustunit(hh,rootfz);
+                    H5.attr("height", hh);
+                }
             }
         }
     }

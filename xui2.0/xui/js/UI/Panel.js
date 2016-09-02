@@ -458,14 +458,24 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(p.toggleBtn)
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
 
-                var h=profile.getSubNode('BORDER').height();
                 // same to ***
                 // for expand status:
                 //    adjust ctrl's height to p.height
                 // for fold status:
                 //    if display => adjust ctrl's height to border's
                 //    if non-display => adjust ctrl's height to 'auto'
-                profile.getRoot().height(p.toggle?p.height:(h||'auto'));
+                if(p.toggle){
+                        profile.getRoot().height(p.height);
+                }else{
+                    var css = xui.CSS,
+                        useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                        adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                        root = profile.getRoot(),
+                        rootfz = useem?root._getEmSize():1,
+                        h1=profile.getSubNode('BORDER').height();
+                    h1 = h1?adjustunit(h1, rootfz):null;
+                    profile.getRoot().height(h1?h1:'auto');
+                }
 
                 if(!ignoreEvent){
                     if(value){
@@ -483,26 +493,29 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
         },
         _onresize:function(profile,width,height){
+           var prop=profile.properties,
+                // compare with px
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                rootfz = useem?root._getEmSize():1;
+
             var isize={},
-                css=xui.CSS,
-                w_em = css.$isEm(width),
-                h_em = css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
-                p=profile.properties,
-                noFrame=p.noFrame,
-                root=profile.getRoot(),
+                noFrame=prop.noFrame,
                 bd=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
                 v2=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
+                panelfz = useem?v2._getEmSize():1,
                 size=profile.properties.borderType=='none'?0:2,
                 h1,h4,t;
+
             // caculate by px
-            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
+            if(width && width!='auto')width=css.$px(width, rootfz)
+            if(height && height!='auto')height=css.$px(height, rootfz)
 
             if(height){
                 if(height=='auto')
@@ -512,7 +525,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         h1=v1.height();
                         h4=noFrame?0:v4.height();
                         if((t=height-h1-h4)>0)
-                            isize.height=hv(t-size);
+                            isize.height=adjustunit(t-size, panelfz);
                     }else{
                         // same to ***
                         // for expand status:
@@ -521,15 +534,16 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         //    if display => adjust ctrl's height to border's
                         //    if non-display => adjust ctrl's height to 'auto'
                         h1 = bd.height();
-                        root.height( h1 ? h_em ? css.$px2em(h1)+'em' : h1 : 'auto');
+                        h1 = h1?adjustunit(h1, rootfz):null;
+                        profile.getRoot().height(h1 || 'auto');
                     }
                 }
             }
             if(width){
-                isize.width=wv(width
+                isize.width=adjustunit(width
                     -(noFrame?0:(parseInt(v6.css('paddingRight'),10)||0))
                     -(noFrame?0:(parseInt(v5.css('paddingLeft'),10)||0))
-                    -v2._borderW());
+                    -v2._borderW(), panelfz);
             }
             v2.cssSize(isize, true);
         }

@@ -81,45 +81,52 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             selMode:null
         },
         _onresize:function(profile,width,height,force,key){
-            var t=profile.properties,
-                item = profile.getItemByItemId(key),
-                bw=t.$border*2,
+              var prop=profile.properties,
+                noPanel=prop.noPanel,
+                item = profile.getItemByItemId(key);
 
-                css=xui.CSS,
-                w_em=css.$isEm(width),
-                h_em=css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')};
+            if(!item){
+                key=prop.$UIvalue;
+                item = profile.getItemByItemId(key);
+            }
+            var panel = profile.boxing().getPanel(key),
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                root = profile.getRoot(),
+                box=profile.getSubNode('BOX'),
+                list=profile.getSubNode('LIST'),
+                boxfz = useem?box._getEmSize():1,
+                rootfz = useem?root._getEmSize():1,
+                panelfz = useem?panel._getEmSize():1,
+                listfz = useem?list._getEmSize():1,
+                bw=prop.$border*2,
+                wc=null,
+                hc=null,
+                temp,t1,t2,obj,top;
+
+            if(!panel || panel.isEmpty())return;
 
             // caculate by px
-            if(width && width!='auto')width = w_em ? css.$em2px(width) : width;
-            if(height && height!='auto')height = h_em ? css.$em2px(height) : height;
-
-            if(!item)
-                key=t.$UIvalue;
-
-            var temp,t1,t2,obj,top,
-                wc=null,hc=null,
-                bx=profile.getSubNode('BOX'),
-                o = profile.boxing().getPanel(key);
-            if(!o || o.isEmpty())return;
+            width=width?css.$px(width, rootfz):width;
+            height=height?css.$px(height, rootfz):height;
 
             // change value
             if(height){
                 height-=bw;
                 t2=t1=0;
-                _.arr.each(t.items,function(o){
+                _.arr.each(prop.items,function(o){
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
-                    obj.cssRegion({bottom:'auto',top:hv(t1)});
+                    obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
                     // offsetHeight maybe not set here
                     t1 += obj.offsetHeight();
                     if(o.id == key)return false;
                 });
-                _.arr.each(t.items,function(o){
+                _.arr.each(prop.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
-                    obj.cssRegion({top:'auto',bottom:hv(t2)});
+                    obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});
                     t2+= obj.offsetHeight();
                 },null,true);
 
@@ -129,16 +136,16 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     hc=temp;
                 }
 
-                bx.height(wv(height));
+                box.height(adjustunit(height,boxfz));
             }
             if(width){
                 width-=bw;
                 wc=width;
-                bx.width(wv(width));
+                box.width(adjustunit(width,boxfz));
             }    
 
-            o.cssRegion({width:wc?wv(wc):null,height:hc?hv(hc):null,top:hv(top),left:wv(0)},true);
-            if(wc)profile.getSubNode('LIST').width(wv(wc));
+            panel.cssRegion({width:wc?adjustunit(wc,panelfz):null,height:hc?adjustunit(hc,panelfz):null,top:adjustunit(top,panelfz),left:0},true);
+            if(wc)list.width(adjustunit(wc,listfz));
         },
         _adjustScroll:null
     }

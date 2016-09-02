@@ -238,8 +238,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     box = profile.boxing(),
                     main = profile.getSubNode('BOX'),
                     btn = profile.getSubNode('BTN'),
-                    pos = main.offset(),
-                    w = main.offsetWidth() + btn.offsetWidth();
+                    pos = main.offset();
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
@@ -292,12 +291,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'helpinput':
                             o = xui.create('List');
                             o.setHost(profile).setDirtyMark(false).setItems(_.copy(pro.items)).setListKey(pro.listKey||'');
-                            w = css.$px(pro.dropListWidth) >=2 ? css.$px(pro.dropListWidth) : w;
-                            o.setWidth(css.$forceu(w));
-                            if(pro.dropListHeight)
-                                o.setHeight(pro.dropListHeight);
-                            else
-                                o.setHeight('auto');
+                            if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
+                            else o.setWidth(css.$forceu( main.offsetWidth() + btn.offsetWidth() ));
+
+                            o.setHeight(pro.dropListHeight||'auto');
+
                             o.afterClick(function(){
                                 if(!this.destroyed)
                                     this.boxing()._cache('',true);
@@ -688,8 +686,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'z-index':'1',
                 cursor:'pointer',
                 padding:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'absolute',
                 width:'1.5em'
             },
@@ -701,8 +697,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'R1,R2':{
                 $order:1,
                 display:'block',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 cursor:'pointer',
                 padding:0,
                 position:'absolute',
@@ -1393,24 +1387,26 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return value;
         },
         _onresize:function(profile,width,height){
-            var t = profile.properties,
-                css=xui.CSS, dftfz=css._getDftEm(),
+             var prop = profile.properties,
+                 type = prop.type,
                 // if any node use other font-size which does not equal to xui-node, use 'px' 
-                canuseem=xui.forceEm,
-                f=function(k){if(!k) return null; k=profile.getSubNode(k); if(canuseem)canuseem=(dftfz+'px')==k.css('fontSize'); return k;},
-                // use f first
-                v1=f('INPUT').get(0),
-                o = f('BOX'),
-                label = f('LABEL'),
-                commandbtn=f(t.commandBtn!='none'?'SBTN':null),
-                functionbtn=f(t.type=='spin'?'RBTN':(t.type=='none'||t.type=='input'||t.type=='password'||t.type=='currency'||t.type=='number'||t.type=='button')?null:'BTN'),
+                f=function(k){if(!k) return null; k=profile.getSubNode(k); return k;},
+                root=f('KEY'),
+                v1=f('INPUT'),
+                box = f('BOX'), 
+                label = f('LABEL'),                
+                commandbtn=f(prop.commandBtn!='none'?'SBTN':null),
+                functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
                 // determine em
-                w_em=canuseem && css.$isEm(width),
-                h_em=canuseem && css.$isEm(height),
-                wv=function(v){return v=='auto'?'auto':w_em?(css.$px2em(v)+'em'):(v+'px')},
-                hv=function(v){return v=='auto'?'auto':h_em?(css.$px2em(v)+'em'):(v+'px')},
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                rootfz=useem?root._getEmSize():1,
+                boxfz=useem?box._getEmSize():1,
+                v1fz=useem?v1._getEmSize():1,
+                labelfz=useem?label._getEmSize():1,
 
-                isB=v1.type.toLowerCase()=='button',
+                isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder=1, 
                 $vborder=1,
                 clsname='xui-node xui-input-input',
@@ -1418,24 +1414,24 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
-                btnw=dftfz * 1.5;
+                btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = height=='auto' ? (h_em=true) && css.$em2px(1.83) : css.$isEm(height) ? css.$em2px(height) : height;
-            if(width)width = css.$isEm(width) ? css.$em2px(width) : width;
+            if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
+            if(width)width = css.$isEm(width) ? css.$em2px(width,root) : width;
 
             var 
-                labelSize=css.$px(t.labelSize)||0,
-                labelGap=css.$px(t.labelGap)||0,
-                labelPos=t.labelPos || 'left',
+                labelSize=css.$px(prop.labelSize,labelfz)||0,
+                labelGap=css.$px(prop.labelGap,rootfz)||0,
+                labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
                 bw1=0,
                 bw2=0,
-                left=Math.max(0, (t.$b_lw||0)-$hborder),
-                top=Math.max(0, (t.$b_tw||0)-$vborder);
+                left=Math.max(0, (prop.$b_lw||0)-$hborder),
+                top=Math.max(0, (prop.$b_tw||0)-$vborder);
             if(null!==ww){
-                ww -= Math.max($hborder*2, (t.$b_lw||0)+(t.$b_rw||0));
+                ww -= Math.max($hborder*2, (prop.$b_lw||0)+(prop.$b_rw||0));
                 bw1=(commandbtn?btnw:0);
                 bw2=(functionbtn?btnw:0);
 //                bw1=(commandbtn?commandbtn.offsetWidth:0);
@@ -1447,11 +1443,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
             }
             if(null!==hh){
-                hh -=Math.max($vborder*2, (t.$b_lw||0) + (t.$b_rw||0));
+                hh -=Math.max($vborder*2, (prop.$b_lw||0) + (prop.$b_rw||0));
 
                 if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
                 /*for ie6 bug*/
-                if(xui.browser.ie6&&null===width)o.ieRemedy();
+                if(xui.browser.ie6&&null===width)box.ieRemedy();
             }
             var iL=left + (labelPos=='left'?labelSize:0),
                 iT=top + (labelPos=='top'?labelSize:0),
@@ -1460,52 +1456,52 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
 
             if(null!==iW && iW-loff-roff>0)
-                v1.style.width=wv(Math.max(0,iW-loff-roff));
+                v1.width(adjustunit(Math.max(0,iW-loff-roff),v1fz));
             if(null!==iH && iH-toff-boff>0)
-                v1.style.height=hv(Math.max(0,iH-toff-boff));
+                v1.height(adjustunit(Math.max(0,iH-toff-boff),v1fz));
 
-            o.cssRegion({
-                left:wv(iL),
-                top:hv(iT),
-                width:wv(iW),
-                height:hv(iH)
+            box.cssRegion({
+                left:adjustunit(iL,boxfz),
+                top:adjustunit(iT,boxfz),
+                width:adjustunit(iW,boxfz),
+                height:adjustunit(iH,boxfz)
             });
             
             if(labelSize)
                 label.cssRegion({
-                    left:wv(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bw1+bw2+$hborder*2):0),
-                    top: hv(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                    width:wv(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww))),
-                    height:hv(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
+                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bw1+bw2+$hborder*2):0,labelfz),
+                    top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
+                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
+                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
 
             iL += (iW||0) + $hborder*2;
             if(functionbtn){
                 if(iH2!==null)
-                    functionbtn.height(hv(Math.max(0,iH2)));
+                    functionbtn.height(adjustunit(Math.max(0,iH2)));
                 if(iW!==null)
-                    functionbtn.left(wv(iL));
-                functionbtn.top(hv(iT));
+                    functionbtn.left(adjustunit(iL));
+                functionbtn.top(adjustunit(iT));
 
-               if(iH2!==null && t.type=='spin'){
+               if(iH2!==null && prop.type=='spin'){
                     if(iH2/2-2>0){
-                        f('R1').style.height=hv(iH2/2);
-                        f('R2').style.height=hv(iH2/2);
+                        f('R1').height(adjustunit(iH2/2));
+                        f('R2').height(adjustunit(iH2/2));
                     }
                 }
                 iL += bw1;
             }
             if(commandbtn){
                 if(iH2!==null)
-                    commandbtn.height(hv(Math.max(0,iH2)));
+                    commandbtn.height(adjustunit(Math.max(0,iH2)));
                 if(iW!==null)
-                    commandbtn.left(wv(iL));
-                commandbtn.top(hv(iT));
+                    commandbtn.left(adjustunit(iL));
+                commandbtn.top(adjustunit(iT));
             }
 
             /*for ie6 bug*/
             if((profile.$resizer) && xui.browser.ie){
-                o.ieRemedy();
+                box.ieRemedy();
             }
         }
     }

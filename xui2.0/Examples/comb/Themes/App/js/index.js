@@ -2296,30 +2296,7 @@ Class('App', 'xui.Module',{
                 .setLabelHAlign("left")
                 .setMultiLines(true)
                 , "1");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.TimeLine")
-                .setHost(host,"xui_ui_timeline13")
-                .setLeft("32.5em")
-                .setTop("0.75em")
-                .setWidth("30.833333333333332em")
-                .setHeight("18.333333333333332em")
-                .setTaskHeight("2.5em")
-                .setCloseBtn(true)
-                .setOptBtn(true)
-                , "5");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Calendar")
-                .setHost(host,"xui_ui_calendar13")
-                .setDock("none")
-                .setLeft("0.8333333333333334em")
-                .setTop("0.75em")
-                .setWidth("30.833333333333332em")
-                .setHeight("18.333333333333332em")
-                .setValue(new Date(2014,4,10,0,0,0,0))
-                , "5");
-            
+
             host.tabs2.append(
                 xui.create("xui.UI.Dialog")
                 .setHost(host,"xui_ui_dialog27")
