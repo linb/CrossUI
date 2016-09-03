@@ -18994,7 +18994,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'.25em',
                 right:'.25em',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
@@ -19055,7 +19055,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'.3333em',
                 right:'.3333em',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
@@ -19085,7 +19085,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'.3333em',
                 right:'.3333em',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
@@ -19123,7 +19123,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'.3333em',
                 right:'.3333em',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8) + 'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
@@ -21193,14 +21193,14 @@ Class("xui.UI",  "xui.absObj", {
                 _.each(xui.UI.$ps,function(j,i){
                     if(style[i]!='auto'&&(_.isFinite(style[i])||xui.CSS.$isPx(style[i]))){
                         if(!nodefz)nodefz=xui(node)._getEmSize();
-                        style[i]=css.$px2em(style[i], nodefz)+'em';
+                        p[i]=style[i]=css.$px2em(style[i], nodefz)+'em';
                     }
                 });
             }else{
                 _.each(xui.UI.$ps,function(j,i){
                     if(style[i]!='auto'&& xui.CSS.$isEm(style[i])){
                         if(!nodefz)nodefz=xui(node)._getEmSize();
-                        style[i]=css.$em2px(style[i], nodefz)+'px';
+                        p[i]=style[i]=css.$em2px(style[i], nodefz)+'px';
                     }
                 });
             }
