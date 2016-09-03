@@ -264,9 +264,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }else{
                     var css = xui.CSS,
                         useem = (p.spaceUnit||xui.SpaceUnit)=='em',
-                        adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
-                        rootfz = useem?root._getEmSize():1,
+                        rootfz = root._getEmSize(),
                         height=profile.getSubNode('LEGEND').height();
                     height = height?adjustunit(height, rootfz):null;
                     profile.getRoot().height(height?height:'auto');
@@ -293,9 +293,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 // compare with px
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem?root._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 

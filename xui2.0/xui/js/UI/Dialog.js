@@ -48,7 +48,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     var box=profile.box,
                         root=profile.getRoot(),
                         rootfz= (p.spaceUnit||xui.SpaceUnit)=='em'?root._getEmSize():1,
-                        adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')};
+                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
                         xui.UI.Div._applyAutoLoad(profile);
@@ -1043,7 +1043,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 root=profile.getRoot(),
                 useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
                 rootfz= useem?root._getEmSize():1,
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 nr=root.cssRegion();
 
             nr.left=adjustunit(nr.left,rootfz);
@@ -1408,8 +1408,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 css=xui.CSS,
                 useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
                 root=profile.getRoot(),
-                rootfz= useem?root._getEmSize():1,
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                needfz = useem||css.$isEm(width)||css.$isEm(height),
+                rootfz=needfz?root._getEmSize():1,
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
 
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
@@ -1421,10 +1422,12 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 v6=profile.getSubNode('MAINI'),
                 h1,h4,t;
             // caculate with px
-            if(width)width=css.$em2px(width, rootfz);
-            if(size.width)size.width=css.$em2px(size.width, rootfz);
-            if(height)height=css.$em2px(height, rootfz);
-            if(size.height)size.height=css.$em2px(size.height, rootfz);
+            if(width)width=css.$px(width, rootfz);
+            if(height)height=css.$px(height, rootfz);
+            if(size.left)size.left=css.$px(size.left, rootfz);
+            if(size.top)size.top=css.$px(size.top, rootfz);
+            if(size.width)size.width=css.$px(size.width, rootfz);
+            if(size.height)size.height=css.$px(size.height, rootfz);
 
             if(height){
                 if(height=='auto'){

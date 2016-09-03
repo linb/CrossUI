@@ -12,8 +12,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         box = profile.getSubNode('BOX'),
                         items = profile.getSubNode('ITEMS'),
                         itemNs = profile.getSubNode('ITEM',true),
-                        pro=profile.properties,
+                        prop=profile.properties,
                         css=xui.CSS,
+                        useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                        rootfz =root._getEmSize(),
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});
@@ -29,18 +32,18 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     // for IE7
                     items.cssSize({
-                        width:css.$em(ww)+'em',
-                        height:css.$em(hh)+'em'
+                        width:adjustunit(ww,rootfz),
+                        height:adjustunit(hh,rootfz)
                     });
 
-                    var h = css.$em(Math.min(pro._maxHeight, hh))+'em',
-                        w = css.$em(Math.min(pro._maxWidth, ww))+'em',
+                    var h = adjustunit(Math.min(prop._maxHeight, hh),rootfz),
+                        w = adjustunit(Math.min(prop._maxWidth, ww),rootfz),
                         size={
                             width:w,
                             height:h
                         };
-                    pro.width=w;
-                    pro.height=h;
+                    prop.width=w;
+                    prop.height=h;
 
                     root.cssSize(size);
                     box.cssSize(size);

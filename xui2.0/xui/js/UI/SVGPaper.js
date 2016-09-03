@@ -104,9 +104,9 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                 prop=profile,properties,
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem?root._getEmSize():1;
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1;
 
             // caculate by px
             width=width?css.$px(width, rootfz):width;

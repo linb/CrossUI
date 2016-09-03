@@ -1025,7 +1025,7 @@ Class("xui.UI.Resizer","xui.UI",{
             
             if(!_.isEmpty(data)){
                 _.each(data,function(o,i){
-                    data[i]=o+"px";
+                    data[i]=parseInt(o,10)+'px';
                 });
                 profile.proxy.css(data);
 

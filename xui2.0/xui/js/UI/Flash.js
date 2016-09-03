@@ -172,8 +172,8 @@ Class("xui.UI.Flash", "xui.UI",{
                 css=xui.CSS,
                 useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
                 root=profile.getRoot(),
-                rootfz= useem?root._getEmSize():1,
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
 
                 size = profile.getSubNode('BOX').cssSize(),
 

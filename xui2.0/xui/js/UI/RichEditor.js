@@ -58,7 +58,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             className:'{_className} xui-ui-selectable',
             LABEL:{
                 className:'{_required}',
-                style:'{labelShow};width:{labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -140,7 +140,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 $spaceunit:1,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none',width:_.isFinite(v)?v+"px":v});
+                    this.getSubNode('LABEL').css({display:v?'':'none'});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
@@ -296,7 +296,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            if(t=d.labelSize)d.labelSize=_.isFinite(t)?t+'px':t;
+            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -1022,10 +1022,11 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
 
                     css = xui.CSS,
                     useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                    adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
-                    rootfz=useem?root._getEmSize():1,
+                    adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                    needfz = useem||css.$isEm(width)||css.$isEm(height),
+                    rootfz=needfz?root._getEmSize():1,
                     boxfz=useem?box._getEmSize():1,
-                    labelfz=useem?label._getEmSize():1,
+                    labelfz=needfz?label._getEmSize():1,
 
                     labelSize=css.$px(prop.labelSize, labelfz)||0,
                     labelGap=css.$px(prop.labelGap)||0,

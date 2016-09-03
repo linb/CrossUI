@@ -131,7 +131,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ini:6,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('margin',_.isFinite(v)?v+'px':v);
+                        this.getSubNode('ITEM',true).css('margin',xui.CSS.$forceu(v));
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
@@ -140,7 +140,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ini:2,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('padding',_.isFinite(v)?v+'px':v);
+                        this.getSubNode('ITEM',true).css('padding',xui.CSS.$forceu(v));
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
@@ -168,8 +168,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
             _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = _.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemMargin)item.itemMargin=_.isFinite(t)?t+'px':t;
-            if(t=item.itemPadding)item.itemPadding=_.isFinite(t)?t+'px':t;
+            if(t=item.itemMargin)item.itemMargin=xui.CSS.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=xui.CSS.$forceu(t);
             item._tabindex = p.tabindex;
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },

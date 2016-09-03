@@ -2543,8 +2543,8 @@ type:4
                         w=rect.right - rect.left, 
                         h=rect.bottom-rect.top;
      
-                    node.style.marginLeft = ((ow-w)/2  + 10 + transX) + 'px';
-                    node.style.marginTop = ((oh-h)/2 + 10 + transY) +  'px';
+                    node.style.marginLeft =parseInt((ow-w)/2  + 10 + transX,10)+'px';
+                    node.style.marginTop = parseInt((oh-h)/2 + 10 + transY,10)+ 'px';
                 }
 
                 // fake
@@ -2669,8 +2669,8 @@ type:4
 
                     var l=-aw/2,t=-ah/2,w=aw,h=ah;
                     if(_.isObj(orient)){
-                        l=orient.left||(l+'px');
-                        t=orient.top||(t+'px');
+                        l=orient.left||(parseInt(l,10)+'px');
+                        t=orient.top||(parseInt(t,10)+'px');
                     }else{
                         switch(orient){
                             case 'LT':
@@ -2712,8 +2712,8 @@ type:4
                     s.zIndex = '0';
                     s.top = t;
                     s.left = l;
-                    s.width = w+'px';
-                    s.height = h+'px';
+                    s.width = parseInt(w,10)+'px';
+                    s.height = parseInt(h,10)+'px';
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
@@ -3535,7 +3535,9 @@ type:4
                         content(o1,o2);
                     }else if(o2){
                         o2.html(content +'',false);
-                        o2.css({left :t.scrollLeft()+t.width()/2-o2.width()/2+'px', top: t.scrollTop()+t.height()/2-o2.height()/2+'px'});
+                        o2.css({
+                            left :parseInt(t.scrollLeft()+t.width()/2-o2.width()/2,10)+'px', 
+                            top: parseInt(t.scrollTop()+t.height()/2-o2.height()/2,10)+'px'});
                     }
                 }
             }

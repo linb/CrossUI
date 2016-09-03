@@ -1400,11 +1400,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 // determine em
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
-                rootfz=useem?root._getEmSize():1,
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||css.$isEm(width)||css.$isEm(height),
+                rootfz=needfz?root._getEmSize():1,
                 boxfz=useem?box._getEmSize():1,
                 v1fz=useem?v1._getEmSize():1,
-                labelfz=useem?label._getEmSize():1,
+                labelfz=needfz?label._getEmSize():1,
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder=1, 

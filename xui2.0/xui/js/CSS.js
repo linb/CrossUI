@@ -361,34 +361,36 @@ Class("xui.CSS", null,{
         $isPx:function(value){
             return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(_.str.trim(value+''));
         },
-        $picku:function(v){return v && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
-        $addu:function(v){return v=='auto'?v:_.isFinite(v)?v+'px':v+''},
 
-        $em2px:function(value, node){
-            return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()) : value;
+        $em2px:function(value, node, force){
+            value = (value===""||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()) : value;
+            return force?parseInt(value, 10):value;
         },
         $px2em:function(value, node){
             return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()): value;
         },
 
-        $px:function(value, node){
-            return ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
+        $px:function(value, node, force){
+            value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
+            return force?parseInt(value, 10):value;
         },
         $em:function(value, node){
             return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
         },
         $adjustunit:function(prop, value, emRate){
-            return value=='auto'?'auto': (prop.spaceUnit||xui.SpaceUnit)=='em'?(this.$em(value, emRate)+'em'):(this.$px(value, emRate)+'px');
+            return value=='auto'?'auto': (prop.spaceUnit||xui.SpaceUnit)=='em'?(this.$em(value, emRate)+'em'):(parseInt(this.$px(value, emRate),10)+'px');
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
             if(this.$isEm(a)){
-                return this.$px2em(this.$em2px(a,node)+parseFloat(b),node)+'em';
+                return this.$px2em(parseInt(this.$em2px(a,node)+parseFloat(b),10),node)+'em';
             }else{
-                return parseFloat(a)+parseFloat(b);
+                return parseInt(parseFloat(a)+parseFloat(b),10)+'px';
             }
         },
-        $forceu:function(v,u,node){return v=='auto'?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':this.$px(v,node)+'px'}
+        $picku:function(v){return v && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
+        $addu:function(v){return v=='auto'?v:(_.isFinite(v)||this.$isPx(v))?parseInt(v,10)+'px':v+''},
+        $forceu:function(v,u,node){return v=='auto'?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':parseInt(this.$px(v,node),10)+'px'}
     },
     Initialize:function(){
         var b=xui.browser,

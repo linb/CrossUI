@@ -92,12 +92,12 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
                 list=profile.getSubNode('LIST'),
                 boxfz = useem?box._getEmSize():1,
-                rootfz = useem?root._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
                 panelfz = useem?panel._getEmSize():1,
                 listfz = useem?list._getEmSize():1,
                 bw=prop.$border*2,
@@ -144,7 +144,12 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 box.width(adjustunit(width,boxfz));
             }    
 
-            panel.cssRegion({width:wc?adjustunit(wc,panelfz):null,height:hc?adjustunit(hc,panelfz):null,top:adjustunit(top,panelfz),left:0},true);
+            panel.cssRegion({
+                width:wc?adjustunit(wc,panelfz):null,
+                height:hc?adjustunit(hc,panelfz):null,
+                top:adjustunit(top,panelfz),
+                left:0+xui.CSS.$picku()
+            },true);
             if(wc)list.width(adjustunit(wc,listfz));
         },
         _adjustScroll:null

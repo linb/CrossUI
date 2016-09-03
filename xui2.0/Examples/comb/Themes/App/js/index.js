@@ -22,7 +22,7 @@ Class('App', 'xui.Module',{
                 .setWidth("11.416666666666666em")
                 .setHeight("2.5em")
                 .setCaption("Change Theme")
-                .setFontSize("14px")
+                .setFontSize("1.5em")
                 .setFontWeight("bold")
                 );
             
@@ -1079,7 +1079,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.Block")
                 .setHost(host,"xui_ui_block138")
                 .setLeft("0.8333333333333334em")
-                .setTop("10.75em")
+                .setTop("12em")
                 .setWidth("23.333333333333332em")
                 .setHeight("19.166666666666668em")
                 .setBorderType("groove")
@@ -1152,7 +1152,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.Block")
                 .setHost(host,"xui_ui_block139")
                 .setLeft("25em")
-                .setTop("10.75em")
+                .setTop("12em")
                 .setWidth("20.833333333333332em")
                 .setHeight("19.25em")
                 .setBorderType("groove")
@@ -1837,7 +1837,7 @@ Class('App', 'xui.Module',{
                     "id" : "jf"
                 }])
                 .setLeft("48.333333333333336em")
-                .setTop("10em")
+                .setTop("11em")
                 .setWidth("16.666666666666668em")
                 .setHeight("29.166666666666668em")
                 .setLabelSize("1.6666666666666667em")
@@ -1855,7 +1855,7 @@ Class('App', 'xui.Module',{
                 .setCaption("Label")
                 .setImage("img/demo.gif")
                 .setFontColor("#4B0082")
-                .setFontSize("14px")
+                .setFontSize("1.5em")
                 .setFontWeight("bold")
                 , "1");
             
@@ -1923,7 +1923,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.Image")
                 .setHost(host,"xui_ui_image3")
                 .setLeft("2.5em")
-                .setTop("10em")
+                .setTop("11em")
                 .setWidth("7em")
                 .setHeight("6.75em")
                 .setSrc("{xui.ini.img_pic}")
@@ -2288,7 +2288,7 @@ Class('App', 'xui.Module',{
                 .setLeft("20em")
                 .setTop("13.25em")
                 .setWidth("25em")
-                .setHeight("10em")
+                .setHeight("11em")
                 .setLabelSize("1.6666666666666667em")
                 .setLabelPos("top")
                 .setLabelGap("0.3333333333333333em")
@@ -2296,11 +2296,658 @@ Class('App', 'xui.Module',{
                 .setLabelHAlign("left")
                 .setMultiLines(true)
                 , "1");
+            host.tabs2.append(
+                xui.create("xui.UI.TreeGrid")
+                .setHost(host, "xui_ui_tgbig")
+                .setDock("none")
+                .setLeft(0)
+                .setTop(0)
+                .setWidth("67em")
+                .setHeight("20em")
+                .setHeader([{
+                    "id" : "a3-1",
+                    "caption" : "col 1",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.899746666666666em"
+                },
+                {
+                    "id" : "a3-2",
+                    "caption" : "col 2",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "6.751316666666668em"
+                },
+                {
+                    "id" : "a3-3",
+                    "caption" : "col 3",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "5.999993333333333em"
+                },
+                {
+                    "id" : "a3-4",
+                    "caption" : "col 4",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.751310000000001em"
+                },
+                {
+                    "id" : "a3-5",
+                    "caption" : "col 5",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "5.499993333333333em"
+                },
+                {
+                    "id" : "a3-6",
+                    "caption" : "col 6",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "5.08333em"
+                },
+                {
+                    "id" : "a3-7",
+                    "caption" : "col 7",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.667996666666664em"
+                },
+                {
+                    "id" : "a3-8",
+                    "caption" : "col 8",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "7.583330000000004em"
+                },
+                {
+                    "id" : "a3-9",
+                    "caption" : "col 9",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "3.58466333333333em"
+                },
+                {
+                    "id" : "a3-10",
+                    "caption" : "col 10",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.666663333333333em"
+                },
+                {
+                    "id" : "a3-11",
+                    "caption" : "col 11",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.584663333333331em"
+                },
+                {
+                    "id" : "a3-12",
+                    "caption" : "col 12",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.249996666666667em"
+                },
+                {
+                    "id" : "a3-13",
+                    "caption" : "col 13",
+                        "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.668329999999998em"
+                }])
+                .setGrpCols([{
+                    "from" : 0,
+                    "id" : "a1-1",
+                    "caption" : "col grp 1",
+                    "to" : 3
+                },
+                {
+                    "from" : 0,
+                    "id" : "a2-1",
+                    "caption" : "col grp 11",
+                    "to" : 0
+                },
+                {
+                    "from" : 1,
+                    "id" : "a2-2",
+                    "caption" : "col grp 12",
+                    "to" : 3
+                },
+                {
+                    "from" : 4,
+                    "id" : "a1-2",
+                    "caption" : "col grp 2",
+                    "to" : 8
+                },
+                {
+                    "from" : 4,
+                    "id" : "a2-3",
+                    "caption" : "col grp 21",
+                    "to" : 6
+                },
+                {
+                    "from" : 7,
+                    "id" : "a2-4",
+                    "caption" : "col grp 22",
+                    "to" : 8
+                },
+                {
+                    "from" : 9,
+                    "id" : "a2-5",
+                    "caption" : "col grp 3",
+                    "to" : 12
+                },
+                {
+                    "from" : 9,
+                    "id" : "a1-3",
+                    "caption" : "col grp 31",
+                    "to" : 12
+                }])
+                .setRows([{
+                    "id" : "s1-1",
+                    "caption" : "Row 1",
+                    "iniFold":false,
+                    "cells" : [{
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    }],
+                    "sub" : [{
+                        "id" : "s3-1",
+                        "caption" : "Row 1 sub 1",
+                        
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "\u2713"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        }]
+                    },
+                    {
+                        "id" : "s3-2",
+                        "caption" : "Row 1 sub 2",
+                        
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "\u2713"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        }]
+                    }]
+                },
+                {
+                    "id" : "s2-1",
+                    "caption" : "Row 2",
+                    "iniFold":false,                    
+                    "cells" : [{
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    }],
+                    "sub" : [{
+                        "id" : "s23-1",
+                        "caption" : "Row 2 sub 1",
+                        
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "\u2713"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        }]
+                    },
+                    {
+                        "id" : "s23-2",
+                        "caption" : "Row 2 sub 2",
+                        
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "\u2713"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        }]
+                    }]
+                },
+                {
+                    "id" : "s3-1",
+                    "caption" : "Row 3",               
+                    "cells" : [{
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "\u21bb"
+                    }],
+                    "sub" : [{
+                        "id" : "s33-1",
+                        "caption" : "Row 3 sub 1",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "\u2713"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        }]
+                    },
+                    {
+                        "id" : "s33-2",
+                        "caption" : "Row 3 sub 2",
+                        
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "\u2713"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "\u2716"
+                        }]
+                    }]
+                }
+                ])
+                ,"5");
 
             host.tabs2.append(
                 xui.create("xui.UI.Dialog")
                 .setHost(host,"xui_ui_dialog27")
-                .setLeft("10em")
+                .setLeft("11em")
                 .setTop("20.833333333333332em")
                 .setWidth("25.833333333333332em")
                 .setHeight("15.833333333333334em")
@@ -2401,7 +3048,7 @@ Class('App', 'xui.Module',{
                 .setLeft("2.0833333333333335em")
                 .setTop("2.3333333333333335em")
                 .setWidth("20.833333333333332em")
-                .setHeight("10em")
+                .setHeight("auto")
                 .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 );
@@ -2747,7 +3394,7 @@ Class('App', 'xui.Module',{
             host.xui_ui_stacks17.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"xui_ui_block180")
-                .setLeft("10em")
+                .setLeft("11em")
                 .setTop("13.333333333333334em")
                 .setWidth("5em")
                 .setHeight("5em")
@@ -2757,7 +3404,7 @@ Class('App', 'xui.Module',{
             host.xui_ui_stacks17.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"xui_ui_block208")
-                .setLeft("10em")
+                .setLeft("11em")
                 .setTop("1.6666666666666667em")
                 .setWidth("5em")
                 .setHeight("5em")
@@ -2767,7 +3414,7 @@ Class('App', 'xui.Module',{
             host.xui_ui_stacks17.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"xui_ui_block209")
-                .setLeft("10em")
+                .setLeft("11em")
                 .setTop("7.5em")
                 .setWidth("5em")
                 .setHeight("5em")

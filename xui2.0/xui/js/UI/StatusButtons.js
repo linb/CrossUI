@@ -98,7 +98,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 item.itemMargin = "margin:" + t;
 
             if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth = "width:"+ ( t=='auto'?t:(_.isFinite(t)?t+'px':t));
+                item.itemWidth = "width:"+ xui.CSS.$forceu(t);
 
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;

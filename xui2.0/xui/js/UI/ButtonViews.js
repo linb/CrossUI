@@ -71,19 +71,20 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     var self=this,
                         hs = self.getSubNode('LIST'),
-                        h = self.getSubNode('ITEMS');
+                        h = self.getSubNode('ITEMS'),
+                        unit = 0+xui.CSS.$picku();
                     switch(v){
                         case 'left':
-                            hs.cssRegion({left:0,top:0,right:'auto',bottom:0});
+                            hs.cssRegion({left:unit,top:unit,right:'auto',bottom:unit});
                         break;
                         case 'top':
-                            hs.cssRegion({left:0,top:0,right:0,bottom:'auto'});
+                            hs.cssRegion({left:unit,top:unit,right:unit,bottom:'auto'});
                         break;
                         case 'right':
-                            hs.cssRegion({left:'auto',top:0,right:0,bottom:0});
+                            hs.cssRegion({left:'auto',top:unit,right:unit,bottom:unit});
                         break;
                         case 'bottom':
-                            hs.cssRegion({left:0,top:'auto',right:0,bottom:0});
+                            hs.cssRegion({left:unit,top:'auto',right:unit,bottom:unit});
                        break;
                     }
                     switch(v){
@@ -112,11 +113,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 ini:'top',
                 listbox:['top','bottom'],
                 action:function(v){
-                    var hl = this.getSubNode('ITEMS');
+                    var hl = this.getSubNode('ITEMS'),
+                        unit = 0+xui.CSS.$picku();
                     if(v=='top')
-                        hl.cssRegion({top:0,bottom:'auto'});
+                        hl.cssRegion({top:unit,bottom:'auto'});
                     else
-                        hl.cssRegion({bottom:0,top:'auto'});
+                        hl.cssRegion({bottom:unit,top:'auto'});
                 }
             },
             barSize:{
@@ -124,15 +126,20 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     var self=this,
                         t=self.properties,
+                        css = xui.CSS,
+                        useem = (t.spaceUnit||xui.SpaceUnit)=='em',
+                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         noPanel=t.noPanel,
                         hs = self.getSubNode('LIST'),
                         hl = self.getSubNode('ITEMS');
                     if(t.barLocation=='left'||t.barLocation=='right'){
-                        if(!noPanel)
-                            hs.merge(hl).width(v);
+                        if(!noPanel){
+                            hs.width( adjustunit(v,hs) );
+                            hl.width( adjustunit(v,hl) );
+                        }
                     }else{
                         if(!noPanel)
-                            hs.height(v);
+                            hs.height( adjustunit(v,hs) );
                     }
                     var t=self.getRootNode().style;
                     xui.UI.$tryResize(self,t.width, t.height,true);
@@ -164,15 +171,14 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem?root._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
                 panelfz = useem?panel._getEmSize():1,
                 // caculate by px
                 ww=width?css.$px(width, rootfz):width, 
                 hh=height?css.$px(height, rootfz):height,
 
-                
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 hsfz =  useem?hs._getEmSize():1,
@@ -184,11 +190,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             if(!prop.noHandler){
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
                     if(width){
-                        hs.width(css.$addpx(ww, -2, hsfz));
-                        hl.width(css.$addpx(ww, -2, hlfz));
+                        hs.width(adjustunit(ww-2, hsfz));
+                        hl.width(adjustunit(ww-2, hlfz));
                         // for nopanel:
                         if(noPanel)
-                            hs.height(css.$addpx(hh, -2, hsfz));
+                            hs.height(adjustunit(hh-2, hsfz));
                      
                         left = 0;
                         wc=ww;
@@ -204,10 +210,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hs.width(css.$addpx(ww,-2,hsfz));
-                            hl.width(css.$addpx(ww,-2,hlfz));
+                            hs.width(adjustunit(ww-2,hsfz));
+                            hl.width(adjustunit(ww-2,hlfz));
                         }
-                        hs.height(css.$addpx(hh,-2,hsfz));
+                        hs.height(adjustunit(hh-2,hsfz));
     
                         top=0;
                         hc=hh;

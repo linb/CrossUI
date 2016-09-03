@@ -469,9 +469,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 }else{
                     var css = xui.CSS,
                         useem = (p.spaceUnit||xui.SpaceUnit)=='em',
-                        adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
-                        rootfz = useem?root._getEmSize():1,
+                        rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
                         h1=profile.getSubNode('BORDER').height();
                     h1 = h1?adjustunit(h1, rootfz):null;
                     profile.getRoot().height(h1?h1:'auto');
@@ -497,9 +497,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 // compare with px
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem?root._getEmSize():1;
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1;
 
             var isize={},
                 noFrame=prop.noFrame,

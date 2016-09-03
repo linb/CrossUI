@@ -1192,10 +1192,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')},
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
-                rootfz = useem?root._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
                 panelfz = useem?panel._getEmSize():1,
                 listfz = useem?list._getEmSize():1,
                 wc=null,
@@ -1251,7 +1251,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 prop=profile,properties,
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return v=='auto'?'auto':useem?(css.$em(v,emRate)+'em'):(css.$px(v,emRate)+'px')};
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                itemsfz=useem?items._getEmSize():1;
 
             items.children().each(function(item){
                 // to show the seleted one
@@ -1261,10 +1262,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
                 wi += item.offsetWidth;
             });
-            items.width(Math.max(wi,w));
+            items.width(adjustunit(Math.max(wi,w),itemsfz));
 
             if(wi<=w){
-                items.left(0);
+                items.left(0+xui.CSS.$picku());
                 profile._$scroll_r=profile._$scroll_l=0;
                 items.css('cursor','');
             }else{
@@ -1276,11 +1277,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
 
                 if(wi+l<w){
-                    items.left(w-wi);
+                    items.left(adjustunit(w-wi,itemsfz));
                     profile._$scroll_r = wi-w;
                     profile._$scroll_l = 0;
                 }else{
-                    items.left(l);
+                    items.left(adjustunit(l,itemsfz));
                     profile._$scroll_r = -l;
                     profile._$scroll_l =  wi - w + l;
                 }

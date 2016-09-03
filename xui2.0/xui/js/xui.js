@@ -897,7 +897,7 @@ _.merge(xui,{
     $dateFormat:'',
     $rand:"_r_",
 
-    SpaceUnit:'em',
+    SpaceUnit:'px',
     // for show xui.echo
     debugMode:true,
 
@@ -3180,7 +3180,7 @@ Class('xui.JSONP','xui.absIO',{
         _pool:{},
         "No":{},
         $response:function(obj,id) {
-            var self=this;
+            var self=this,o;
             if(obj && (o = self._pool[id])){
                 for(var i=0,l=o.length;i<l;i++){
                     o[i]._response=obj;
@@ -4159,7 +4159,7 @@ Class('xui.absObj',"xui.absBox",{
                                         // only have root dom node
                                         if(v.getRootNode && (t=v.getRootNode())){
                                             if(!nfz)nfz=xui(t)._getEmSize();
-                                            value=xui.CSS.$em2px(value, nfz);
+                                            value=xui.CSS.$em2px(value, nfz)+'px';
                                         }
                             }
                             //if same return
