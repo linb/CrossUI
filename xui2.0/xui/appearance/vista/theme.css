@@ -315,12 +315,9 @@ html, .xui-uibg-base{
     padding:0 0 3px 0;
 }
 .xui-tabs-listbg{
-    height:4px;
-    border:0;
-    background-color:transparent;
-    background-image: url(Tabs/line.gif);
-    background-repeat:repeat-x;
-    background-position:center bottom;
+    background-color: #C6E0EF;
+    border-top: solid 1px #8C97A0;
+    border-bottom: solid 1px #8C97A0;
 }
 .xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
     margin : 0;
@@ -363,40 +360,6 @@ html, .xui-uibg-base{
 .xui-tabs-item-mousedown .xui-tabs-itemc, .xui-tabs-item-checked .xui-tabs-itemc{
     background-position : left -890px
 }
-
-.xui-tabs-left:before, .xui-tabs-right:before, .xui-tabs-drop:before{
-    display: none
-}
-.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
-    border:none;
-    border-radius: 0px;
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0,
-	-o-border-radius: 0;
-	-ms-border-radius: 0;
-	-khtml-border-radius: 0;
-    background-image: url(Tabs/cmds.png);
-    background-repeat:no-repeat;
-}
-.xui-tabs-left{
-    background-position:left top;
-}
-.xui-tabs-left-mouseover{
-    background-position:-16px top;
-}
-.xui-tabs-right{
-    background-position:-32px top;
-}
-.xui-tabs-right-mouseover{
-    background-position:-48px top;
-}
-.xui-tabs-drop{
-    background-position:-64px top;
-}
-.xui-tabs-drop-mouseover{
-    background-position:-80px top;
-}
-
 
 /*xui.UI.PopMenu*/
 .xui-popmenu-boxbgbar{
