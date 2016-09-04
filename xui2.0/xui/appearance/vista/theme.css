@@ -27,9 +27,7 @@ html, .xui-uibg-base{
 .xui-uibg-bar-mouseover{
     background-color:#C5E5F6;
 }
-.xui-uiborder-linkbottombar{
-   border-bottom-color:#C6E0EF;
-}
+
 /*border  [[[colors]]]*/
 .xui-hiddenborder{
     border:solid 1px #fff;
@@ -315,51 +313,41 @@ html, .xui-uibg-base{
     padding:0 0 3px 0;
 }
 .xui-tabs-listbg{
+	  height:2px;
     background-color: #C6E0EF;
     border-top: solid 1px #8C97A0;
     border-bottom: solid 1px #8C97A0;
 }
-.xui-tabs-item, .xui-tabs-itemi, .xui-tabs-itemc{
-    margin : 0;
-    border : none;
-    border-radius: 0px;
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0,
-	-o-border-radius: 0;
-	-ms-border-radius: 0;
-	-khtml-border-radius: 0;
+.xui-tabs-item{
+	  margin:0;
+    border:none;
     background-color:transparent; 
-    background-image: url(ToolBar/button.png);
+    background-image: url(Tabs/right.png);
     background-repeat:no-repeat;
-    background-position:right -540px;
+    background-position:right top;
 }
-.xui-tabs-itemc{
-    background-repeat: repeat-x;
+.xui-tabs-handle{
+	padding:1px 1px 0 1px;
 }
-.xui-tabs-item-mouseover{
-    background-position : right -690px;
+
+.xui-tabs-item-mouseover, .xui-tabs-item-mousedown, .xui-tabs-item-checked{
+		background-image:none;
+		background-color: transparent;
+    border-left: solid 1px #9098A2;
+    border-top: solid 1px #9098A2;
+    border-right: solid 1px #9098A2;
 }
 .xui-tabs-item-mousedown, .xui-tabs-item-checked{
-    background-position : right -840px;
+	  background-color: #C6E0EF;
 }
-.xui-tabs-itemi{
-    background-position:left -640px;
+.xui-tabs-item-mouseover .xui-tabs-handle, .xui-tabs-item-mousedown .xui-tabs-handle, .xui-tabs-item-checked .xui-tabs-handle{
+	padding:0;
 }
-.xui-tabs-item-mouseover .xui-tabs-itemi{
-    background-position : left -790px;
+
+.xui-uiborder-linkbottombar {
+    border-bottom-color: #C6E0EF;
 }
-.xui-tabs-item-mousedown .xui-tabs-itemi, .xui-tabs-item-checked .xui-tabs-itemi{
-    background-position : left -940px
-}
-.xui-tabs-itemc{
-    background-position:left -590px
-}
-.xui-tabs-item-mouseover .xui-tabs-itemc{
-    background-position : left -740px;
-}
-.xui-tabs-item-mousedown .xui-tabs-itemc, .xui-tabs-item-checked .xui-tabs-itemc{
-    background-position : left -890px
-}
+
 
 /*xui.UI.PopMenu*/
 .xui-popmenu-boxbgbar{
