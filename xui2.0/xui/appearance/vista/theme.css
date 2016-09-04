@@ -248,12 +248,12 @@ html, .xui-uibg-base{
 /*.xui-uibar-top .xui-uibar-cmdr{
 }*/
 .xui-uicon-main{
-    background-image: url(Public/container_left.gif);
-      background-repeat: repeat-y;
-      background-position: left top;
+    background-image: url(Public/bar_leftright.gif);
+		background-repeat: repeat-y;
+		background-position: left top;
 }
 .xui-uicon-maini{
-    background-image: url(Public/container_right.gif);
+    background-image: url(Public/bar_leftright.gif);
     background-repeat: repeat-y; 
     background-position: right top;
 }
