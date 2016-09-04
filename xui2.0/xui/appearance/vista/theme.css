@@ -88,18 +88,27 @@ html, .xui-uibg-base{
     border-bottom-color:#f1f1f1;
 }
 /*item [[[colors]]]*/
+/*xui.UI.List*/
+/*xui.UI.TreeView*/
+.xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
+    background-image: url(Public/uitembg.gif);
+    background-repeat:repeat-x;
+	   border-color:#c9c9c9;
+}
 .xui-uitembg-mouseover{
-    background-color:#EBF3FD;
-    border-color:#c9c9c9;
+	background-position: left -51px;
+	background-color: #EBF3FD;
 }
 .xui-uitembg-mousedown{
-    background-color:#C1DBFC;
-    border-color:#c9c9c9;
+	background-position: left -101px;
+	background-color:#C1DBFC;
 }
 .xui-uitembg-checked{
-    background-color:#D3E6FE;
-    border-color:#c9c9c9;
+	background-position:left top;
+	background-color:#CFE4FE;
 }
+
+
 .xui-uibarbg, .xui-uipicbg-mouseover, .xui-uipicbg-checked{
     background-color:#E1F5FE;
 }
@@ -215,10 +224,6 @@ html, .xui-uibg-base{
 .xui-uicon-main, .xui-uicon-maini{
 	border:none;
 }
-/*set table height for ff2, set uibar height for performance*/
-.xui-uibar-top{
-/*    height:24px; */
-}
 .xui-uibar-top .xui-uibar-tdl{
 	background-position: 0 0;
 }
@@ -303,39 +308,6 @@ html, .xui-uibg-base{
 }
 .xui-input-box-focus, .xui-input-box-mouseover, .xui-comboinput-box-focus, .xui-comboinput-box-mouseover{
     border-color:#5C93BC;
-}
-
-/*xui.UI.List*/
-.xui-list-item-mouseover, .xui-list-item-mousedown, .xui-list-item-checked{
-    background-image: url(List/item.gif);
-    background-repeat:repeat-x;
-}
-.xui-list-item-mouseover{
-	background-position: left -51px;
-	background-color: #FAD200;
-}
-.xui-list-item-mousedown{
-	background-position: left -101px;
-	background-color:#F5D22D;
-}
-.xui-list-item-checked{
-	background-position:left top;
-	background-color:#AAD2FA;
-}
-
-/*xui.UI.TreeView*/
-.xui-treeview-bar-mouseover, .xui-treeview-bar-mousedown, .xui-treeview-bar-checked{
-    background-image: url(List/item.gif);
-    background-repeat:repeat-x;
-}
-.xui-treeview-bar-mouseover{
-    background-position: left -51px;
-}
-.xui-treeview-bar-mousedown{
-    background-position: left -101px;
-}
-.xui-treeview-bar-checked{
-    background-position: left top;
 }
 
 /*xui.UI.Tabs*/
@@ -425,18 +397,6 @@ html, .xui-uibg-base{
     background-position:-80px top;
 }
 
-/*xui.UI.Stacks*/
-.xui-stacks-cmds{
-    top:5px;
-}
-.xui-stacks-item{
-}
-.xui-stacks-handle{
-}
-
-/*xui.UI.Panel*/
-.xui-panel-panel{
-}
 
 /*xui.UI.PopMenu*/
 .xui-popmenu-boxbgbar{
@@ -445,11 +405,10 @@ html, .xui-uibg-base{
 
 /*xui.UI.ProgressBar*/
 .xui-progressbar-fill{
-    background: #02BB14 url(ProgressBar/bar.gif) repeat-x scroll 0 0;
+    background: #51FF5D url(ProgressBar/bar.gif) repeat-x scroll 0 0;
 }
 
 /*xui.UI.TreeGrid [[[colors]]]*/
-
 .xui-treegrid-header1, .xui-treegrid-header2, .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
 }
@@ -460,8 +419,7 @@ html, .xui-uibg-base{
 .xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
     background: #CFE4FE url(TreeGrid/head_mouseover.gif) repeat-x left top;
 }
-
-.xui-treegrid-fcell,.xui-treegrid-cell, .xui-treegrid-cells-group, .xui-treegrid-preview, .xui-treegrid-summary{
+.xui-treegrid-fcell,.xui-treegrid-cell, .xui-treegrid-cells-group{
     border-right:solid 1px #f1f1f1;
 }
 .xui-treegrid-cell-mouseover{
@@ -487,37 +445,11 @@ html, .xui-uibg-base{
 **/
 
 /***setting begin***/
-.setting-xui-border{
-    border-style:solid;
-    border-top-width:3px;
-    border-bottom-width:3px;
-    border-left-width:3px;
-    border-right-width:3px;
-}
-.setting-xui-button{
-    border-style:solid;
-    border-top-width:1px;
-    border-bottom-width:1px;
-    border-left-width:1px;
-    border-right-width:1px;
-}
-.setting-xui-input{
-    border-style:solid;
-    border-top-width:1px;
-    border-bottom-width:1px;
-    border-left-width:1px;
-    border-right-width:1px;
-}
-.setting-xui-comboinput{
-    border-style:solid;
-    border-top-width:1px;
-    border-bottom-width:1px;
-    border-left-width:1px;
-    border-right-width:1px;
-}
 
 /***the last one***/
 .setting-uikey{
     font-family: vista;
 }
+/***setting end***/
+
 /***setting end***/
