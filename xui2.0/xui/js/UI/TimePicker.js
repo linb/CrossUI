@@ -294,7 +294,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 },
                 onDrag:function(profile, e, src){
                     var count,off = xui.DragDrop.getProfile().offset,v=profile.properties.$UIvalue,a=v.split(':');
-                    a[0]=(parseFloat(a[0])||0)+parseInt(off.x/10,10);
+                    a[0]=Math.round( (parseFloat(a[0])||0)+parseInt(off.x/10) );
                     a[0]=(a[0]%24+24)%24;
                     profile.$temp2=(a[0]<=9?'0':'')+a[0];
 
@@ -323,7 +323,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 },
                 onDrag:function(profile, e, src){
                     var count,off = xui.DragDrop.getProfile().offset,v=profile.properties.$UIvalue,a=v.split(':');
-                    a[0]=(parseFloat(a[0])||0)+parseInt(off.x/20,10);
+                    a[0]=Math.round( (parseFloat(a[0])||0) + parseFloate(off.x/20) );
                     a[0]=(a[0]%60+60)%60;
                     profile.$temp2=(a[0]<=9?'0':'')+a[0];
 

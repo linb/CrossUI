@@ -1024,9 +1024,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     needfz = useem||css.$isEm(width)||css.$isEm(height),
-                    rootfz=needfz?root._getEmSize():1,
-                    boxfz=useem?box._getEmSize():1,
-                    labelfz=needfz?label._getEmSize():1,
+                    rootfz=needfz?root._getEmSize():null,
+                    boxfz=useem?box._getEmSize():null,
+                    labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
 
                     labelSize=css.$px(prop.labelSize, labelfz)||0,
                     labelGap=css.$px(prop.labelGap)||0,

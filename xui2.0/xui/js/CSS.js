@@ -364,7 +364,7 @@ Class("xui.CSS", null,{
 
         $em2px:function(value, node, force){
             value = (value===""||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()) : value;
-            return force?parseInt(value, 10):value;
+            return force?Math.round(parseFloat(value)):value;
         },
         $px2em:function(value, node){
             return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()): value;
@@ -372,25 +372,25 @@ Class("xui.CSS", null,{
 
         $px:function(value, node, force){
             value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
-            return force?parseInt(value, 10):value;
+            return force?Math.round(parseFloat(value)):value;
         },
         $em:function(value, node){
             return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
         },
         $adjustunit:function(prop, value, emRate){
-            return value=='auto'?'auto': (prop.spaceUnit||xui.SpaceUnit)=='em'?(this.$em(value, emRate)+'em'):(parseInt(this.$px(value, emRate),10)+'px');
+            return value=='auto'?'auto': (prop.spaceUnit||xui.SpaceUnit)=='em'?(this.$em(value, emRate)+'em'):(Math.round(this.$px(value, emRate))+'px');
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
             if(this.$isEm(a)){
-                return this.$px2em(parseInt(this.$em2px(a,node)+parseFloat(b),10),node)+'em';
+                return this.$px2em(Math.round(this.$em2px(a,node)+parseFloat(b)),node)+'em';
             }else{
-                return parseInt(parseFloat(a)+parseFloat(b),10)+'px';
+                return Math.round(parseFloat(a)+parseFloat(b))+'px';
             }
         },
         $picku:function(v){return v && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
-        $addu:function(v){return v=='auto'?v:(_.isFinite(v)||this.$isPx(v))?parseInt(v,10)+'px':v+''},
-        $forceu:function(v,u,node){return v=='auto'?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':parseInt(this.$px(v,node),10)+'px'}
+        $addu:function(v){return v=='auto'?v:(_.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
+        $forceu:function(v,u,node){return v=='auto'?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
     },
     Initialize:function(){
         var b=xui.browser,

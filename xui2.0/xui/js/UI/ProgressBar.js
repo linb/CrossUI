@@ -121,10 +121,10 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 inn = profile.getSubNode('INN'),
                 cap = profile.getSubNode('CAP'),
                 fill = profile.getSubNode('FILL'),
-                rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
-                innfz = useem?inn._getEmSize():1,
-                capfz = useem?cap._getEmSize():1,
-                fillfz = useem?fill._getEmSize():1;
+                rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                innfz = useem?inn._getEmSize():null,
+                capfz = useem?cap._getEmSize():null,
+                fillfz = useem?fill._getEmSize():null;
             // caculate by px
             if(size.width && size.width!='auto')size.width=css.$px(size.width, rootfz);
             if(size.height && size.height!='auto')size.height=css.$px(size.height, rootfz);

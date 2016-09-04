@@ -476,7 +476,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz = needfz?root._getEmSize():1,
+                rootfz = needfz?root._getEmSize():null,
 
                 // caculate by px
                 ww=width?css.$px(width, rootfz):width, 

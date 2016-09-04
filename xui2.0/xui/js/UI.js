@@ -1168,7 +1168,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(o.renderId){
                     var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
                     o.getRoot().hide(function(){
-                        t.top=t.left=parseInt(xui.Dom.HIDE_VALUE,10);
+                        t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE));
                         t.dockIgnore=true;
                     },a);
                 }
@@ -4603,7 +4603,7 @@ Class("xui.UI",  "xui.absObj", {
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
-                rootfz = needfz?node._getEmSize():1,
+                rootfz = needfz?node._getEmSize():null,
                 umargin={
                     top:adjustunit(margin.top,rootfz),
                     left:adjustunit(margin.left,rootfz),
@@ -4720,7 +4720,7 @@ Class("xui.UI",  "xui.absObj", {
                              var pn=node.get(0),
                                 style=pn.style,
                                 useem = (pprop.spaceUnit||xui.SpaceUnit)=='em',
-                                nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():1,
+                                nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 obj,i,k,o,key,target,
                                 ofs = isWin ? xui('body').get(0).style : style,
@@ -4978,7 +4978,7 @@ Class("xui.UI",  "xui.absObj", {
                                 root = node.get(0),
                                 style = root.style,
                                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                                nodefz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?node._getEmSize():1,
+                                nodefz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?node._getEmSize():null,
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
                                 x = css.$px(prop._dockBorderWidth,nodefz) || 0,
@@ -6685,8 +6685,8 @@ new function(){
                     useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     root = profile.getRoot(),
-                    rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
-                    borderfz = useem?border._getEmSize():1,
+                    rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                    borderfz = useem?border._getEmSize():null,
 
                     //caculate with px
                     ww=css.$px(width, rootfz), 
@@ -6918,7 +6918,7 @@ new function(){
             // compitable
             xui.UI.SButton = xui.UI.Button;
             var key="xui.UI.SButton";
-            xui.absBox.$type[key.replace("xui.UI.","").replace("xui.","")]=xui.absBox.$type[key]=key;
+            xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
         },
         Instance:{
             activate:function(){

@@ -160,12 +160,10 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
-                panelfz= useem?panel._getEmSize():1,
+                panelfz = useem||css.$isEm(size.width)||css.$isEm(size.height)?panel._getEmSize():null,
                 // caculate by px
-                ww=width?css.$px(width, rootfz):width, 
-                hh=height?css.$px(height, rootfz):height;
+                ww=width?css.$px(size.width, panelfz):size.width, 
+                hh=height?css.$px(size.height, panelfz):size.height;
 
             if(size.width) size.width = adjustunit(ww -b, panelfz);
             if(size.height&&'auto'!==size.height)

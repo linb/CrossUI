@@ -47,7 +47,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        rootfz= (p.spaceUnit||xui.SpaceUnit)=='em'?root._getEmSize():1,
+                        rootfz= (p.spaceUnit||xui.SpaceUnit)=='em'?root._getEmSize():null,
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
@@ -91,10 +91,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 var pro=profile.properties,
                     box=profile.box,
                     css=xui.CSS,
-                    css=xui.CSS,
                     useem = (pro.spaceUnit||xui.SpaceUnit)=='em',
                     root=profile.getRoot(),
-                    rootfz=useem?root._getEmSize():1;
+                    rootfz=useem?root._getEmSize():null;
 
                 var fun=function(){
                     if(profile.inHiding)return;
@@ -370,7 +369,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     css = xui.CSS,
                     useem = (p.spaceUnit||xui.SpaceUnit)=='em',
                     root=profile.getRoot(),
-                    rootfz=useem?root._getEmSize():1,
+                    rootfz=useem?root._getEmSize():null,
                     pos = root.cssPos(),
                     l = null, t = null;
 
@@ -1042,7 +1041,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 css=xui.CSS,
                 root=profile.getRoot(),
                 useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
-                rootfz= useem?root._getEmSize():1,
+                rootfz= useem?root._getEmSize():null,
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 nr=root.cssRegion();
 
@@ -1409,7 +1408,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
                 root=profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz=needfz?root._getEmSize():1,
+                rootfz=needfz?root._getEmSize():null,
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
 
                 size = arguments.callee.upper.apply(this,arguments),

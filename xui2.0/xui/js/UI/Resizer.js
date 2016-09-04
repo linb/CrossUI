@@ -100,11 +100,11 @@ Class("xui.UI.Resizer","xui.UI",{
                                 instance.onResize(profile,w,h);
                         }
                         if(cssPos){
-                            if((t=cssPos.left) && !(prop.left=='auto'&&parseInt(prop.right,10)>=0)){
+                            if((t=cssPos.left) && !(prop.left=='auto'&&Math.round(parseFloat(prop.right))>=0)){
                                 node.leftBy(t);
                                 prop.left= l = css.$forceu(svg?instance.getLeft():node.left());
                             }
-                            if((t=cssPos.top) && !(prop.top=='auto'&&parseInt(prop.bottom,10)>=0)){
+                            if((t=cssPos.top) && !(prop.top=='auto'&&Math.round(parseFloat(prop.bottom))>=0)){
                                 node.topBy(t);
                                 prop.top = t = css.$forceu(svg?instance.getTop():node.top());
                             }
@@ -694,9 +694,9 @@ Class("xui.UI.Resizer","xui.UI",{
                 if(size)target.widthBy(size.width,true).heightBy(size.height,true);
                 if(cssPos){
                     var t=target.get(0).style;
-                    if(t.left=='auto'&&(parseInt(t.right,10)>=0)){}else
+                    if(t.left=='auto'&&(Math.round(parseFloat(t.right))>=0)){}else
                     target.leftBy(cssPos.left)
-                    if(t.top=='auto'&&(parseInt(t.bottom,10)>=0)){}else
+                    if(t.top=='auto'&&(Math.round(parseFloat(t.bottom))>=0)){}else
                     target.topBy(cssPos.top);
                 }
                 if(_.isDefined(rotate)){
@@ -1025,7 +1025,7 @@ Class("xui.UI.Resizer","xui.UI",{
             
             if(!_.isEmpty(data)){
                 _.each(data,function(o,i){
-                    data[i]=parseInt(o,10)+'px';
+                    data[i]=Math.round(parseFloat(o))+'px';
                 });
                 profile.proxy.css(data);
 

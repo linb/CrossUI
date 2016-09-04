@@ -2,6 +2,8 @@ Class("xui.UI.Label", "xui.UI",{
     Initialize:function(){
         // compitable
         xui.UI.SLabel = xui.UI.Label;
+        var key="xui.UI.SLabel";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },    
     Static:{
         Templates:{

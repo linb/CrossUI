@@ -39,8 +39,8 @@ Class("xui.Tips", null,{
             }else if(tips._showed && tips.MOVABLE){
                 p=event.getPos(e);
                 n=tips._Node.style;
-                n.left = parseInt((parseFloat(n.left)||0) + (p.left-tips._pos.left),10) +'px';
-                n.top = parseInt((parseFloat(n.top)||0) + (p.top-tips._pos.top),10) +'px';
+                n.left = Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left)) +'px';
+                n.top = Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top)) +'px';
                 tips._pos=p;
             }
         },'$Tips',-1)
@@ -199,11 +199,11 @@ Class("xui.Tips", null,{
                         t1.innerHTML=s;
                         //set dimension
                         if(xui.browser.ie){
-                            style.width=styleI.width=parseInt(w+(w%2),10)+'px';
+                            style.width=styleI.width=Math.round(w+(w%2))+'px';
                             h=t1.offsetHeight;
-                            style.height=parseInt(h-(h%2),10)+'px';
+                            style.height=Math.round(h-(h%2))+'px';
                         }else
-                            styleI.width=parseInt(w,10)+'px';
+                            styleI.width=Math.round(w)+'px';
 
                         if(pos===true){
                             style.visibility='visible';
@@ -311,8 +311,8 @@ Class("xui.Tips", null,{
         setPos:function(left,top){
             var n=this;
             if((n=n._Node)&&(n=n.style)){
-                if(left||left===0)n.left=parseInt(left,10)+'px';
-                if(top||top===0)n.top=parseInt(top,10)+'px';
+                if(left||left===0)n.left=Math.round(parseFloat(left))+'px';
+                if(top||top===0)n.top=Math.round(parseFloat(top))+'px';
             }
         },
         show:function(pos, item, key){

@@ -106,7 +106,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 node=profile.getSubNodeByItemId('ITEM',subId);
                 if(!node.isEmpty()){
                     if(options.hasOwnProperty('size')){
-                        options.size = parseInt(''+options.size,10);
+                        options.size = Math.round(parseFloat(''+options.size));
                         if(options.size!=item._size){
                             item._size=options.size;
                             if(vertical)
@@ -376,9 +376,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         mh = m.height();
                         if(item.pos=='before'){
                             offset1 = h - item.min;
-                            offset2 = item.max?Math.min(parseInt(item.max,10)-h, (mh-main.min)):(mh-main.min);
+                            offset2 = Math.round(item.max?Math.min(parseFloat(item.max)-h, (mh-main.min)):(mh-main.min));
                         }else{
-                            offset1 = item.max?Math.min(parseInt(item.max,10)-h, (mh-main.min)):(mh-main.min);
+                            offset1 = Math.round(item.max?Math.min(parseFloat(item.max)-h, (mh-main.min)):(mh-main.min));
                             offset2 = h - item.min;
                         }
 
@@ -399,9 +399,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         mw = m.width();
                         if(item.pos=='before'){
                             offset1 = w - item.min;
-                            offset2 = item.max?Math.min(parseInt(item.max,10)-w, (mw-main.min)):(mw-main.min);
+                            offset2 = Math.round(item.max?Math.min(parseFloat(item.max)-w, (mw-main.min)):(mw-main.min));
                         }else{
-                            offset1 = item.max?Math.min(parseInt(item.max,10)-w, (mw-main.min)):(mw-main.min);
+                            offset1 = Math.round(item.max?Math.min(parseFloat(item.max)-w, (mw-main.min)):(mw-main.min));
                             offset2 = w - item.min;
                         }
 
@@ -699,7 +699,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             _.arr.each(arr,function(o){
                 o.id = _.isStr(o.id)?o.id:_.id();
                 o.min = o.min || 10;
-                o._size = o.size = parseInt(o.size,10) || 80;
+                o._size = o.size = Math.round(parseFloat(o.size)) || 80;
                 o.locked= typeof o.locked=='boolean'?o.locked:false;
                 o.folded = typeof o.folded=='boolean'?o.folded:false;
                 o.hidden = typeof o.hidden=='boolean'?o.hidden:false;
@@ -729,7 +729,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             main.id = 'main';
             main.min = main.min || 10;
             // no _size in main
-            main.size = parseInt(main.size,10) || 80;
+            main.size = Math.round(parseFloat(main.size)) || 80;
 
             //reset items
             items.length = 0;
@@ -832,7 +832,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 useem = (t.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz =  useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1;
+                rootfz =  useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
 
             if(width)width=css.$px(width, rootfz);
             if(height)height=css.$px(height, rootfz);
@@ -857,12 +857,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         itemId = profile.getSubIdByItemId(o.id);
                         if(o.hidden){
                             m=0;
-                            obj2[itemId][width]=pct? parseInt(w*Math.min(1,(o.size/sum)),10) :o._size;
+                            obj2[itemId][width]=Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) :o._size);
                         }else if(o.folded){
                             m=obj2[itemId][width]=_handlerSize;
                         }else{
                             blocknumb++;
-                            m=m1=pct? parseInt(w*Math.min(1,(o.size/sum)),10) :o._size;
+                            m=m1=Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) :o._size);
                             if(m>offset+o.min){
                                 m-=offset;
                             }else{
@@ -887,12 +887,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         itemId = profile.getSubIdByItemId(o.id);
                         if(o.hidden){
                             m=0;
-                            obj2[itemId][width]= pct? parseInt(w*Math.min(1,(o.size/sum)),10) : o._size;
+                            obj2[itemId][width]= Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) : o._size);
                         }else if(o.folded){
                             m=obj2[itemId][width]=_handlerSize;
                         }else{
                             blocknumb++;
-                            m=m1= pct? parseInt(w*Math.min(1,(o.size/sum)),10): o._size;
+                            m=m1= Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))): o._size);
                             if(m>offset+o.min){
                                 m-=offset;
                             }else{
@@ -976,8 +976,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     i=profile.getSubNode('ITEM', id);
                 
                 if(useem){
-                    var pfz=useem?p._getEmSize():1,
-                        ifz=useem?i._getEmSize():1;
+                    var pfz=useem?p._getEmSize():null,
+                        ifz=useem?i._getEmSize():null;
                     ff_w(obj[id],ifz); ff_w(obj2[id],ifz);
                     ff_h(obj[id],pfz); ff_h(obj2[id],pfz);
                 }

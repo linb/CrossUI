@@ -208,13 +208,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 top:'.2em',
                 display:'none',
                 'z-index':20
-            },
-            '.setting-xui-input':{
-                'border-style':'solid',
-                'border-top-width':'1px',
-                'border-bottom-width':'1px',
-                'border-left-width':'1px',
-                'border-right-width':'1px'
             }
         },
         Behaviors:{
@@ -889,10 +882,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz=needfz?root._getEmSize():1,
-                boxfz=useem?box._getEmSize():1,
-                v1fz=useem?v1._getEmSize():1,
-                labelfz=needfz?label._getEmSize():1,
+                rootfz=needfz?root._getEmSize():null,
+                boxfz=useem?box._getEmSize():null,
+                v1fz=useem?v1._getEmSize():null,
+                labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
 
                 $hborder=1, 
                 $vborder=1,
@@ -918,12 +911,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 /*for ie6 bug*/
                 /*for example, if single number, 100% width will add 1*/
                 /*for example, if single number, attached shadow will overlap*/
-                if(xui.browser.ie6)ww=(parseInt(ww/2,10))*2;
+                if(xui.browser.ie6)ww=(Math.round(parseFloat(ww/2)))*2;
             }
             if(null!==hh){
                 hh -=Math.max($vborder*2, (prop.$b_lw||0) + (prop.$b_rw||0));
 
-                if(xui.browser.ie6)hh=(parseInt(hh/2,10))*2;
+                if(xui.browser.ie6)hh=(Math.round(parseFloat(hh/2)))*2;
                 /*for ie6 bug*/
                 if(xui.browser.ie6&&null===width)box.ieRemedy();
             }

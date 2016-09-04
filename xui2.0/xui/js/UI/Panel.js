@@ -471,7 +471,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         useem = (p.spaceUnit||xui.SpaceUnit)=='em',
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
-                        rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
+                        rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                         h1=profile.getSubNode('BORDER').height();
                     h1 = h1?adjustunit(h1, rootfz):null;
                     profile.getRoot().height(h1?h1:'auto');
@@ -499,7 +499,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1;
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
 
             var isize={},
                 noFrame=prop.noFrame,
@@ -509,8 +509,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
-                panelfz = useem?v2._getEmSize():1,
-                size=profile.properties.borderType=='none'?0:2,
+                panelfz = useem?v2._getEmSize():null,
+                bordersize=profile.properties.borderType=='none'?0:2,
                 h1,h4,t;
 
             // caculate by px
@@ -525,7 +525,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         h1=v1.height();
                         h4=noFrame?0:v4.height();
                         if((t=height-h1-h4)>0)
-                            isize.height=adjustunit(t-size, panelfz);
+                            isize.height=adjustunit(t-bordersize, panelfz);
                     }else{
                         // same to ***
                         // for expand status:
@@ -541,9 +541,12 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
             if(width){
                 isize.width=adjustunit(width
-                    -(noFrame?0:(parseInt(v6.css('paddingRight'),10)||0))
-                    -(noFrame?0:(parseInt(v5.css('paddingLeft'),10)||0))
-                    -v2._borderW(), panelfz);
+                    -(noFrame?0:(Math.round(parseFloat(v6.css('paddingRight')))||0))
+                    -(noFrame?0:(Math.round(parseFloat(v5.css('paddingLeft')))||0))
+                    -bordersize
+                    -v5._borderW()
+                    -v6._borderW()
+                    , panelfz);
             }
             v2.cssSize(isize, true);
         }

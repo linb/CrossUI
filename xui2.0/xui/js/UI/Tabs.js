@@ -69,13 +69,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
 
                     if(!prop.noHandler && lastV)
-                        _.tryF(profile.box._adjustScroll,[profile,null,lastV],profile.box);
+                        _.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
                 }else{
                     fold(uiv, arr1);
                     expand(value, arr2);
                     
                     if(!prop.noHandler && arr2.length)
-                        _.tryF(profile.box._adjustScroll,[profile,null,value],profile.box);
+                        _.tryF(profile.box._adjustScroll,[profile,value],profile.box);
                 }
 
                 if(arr1.length){
@@ -340,15 +340,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                      $order:0
                 },
                 LEFT:{
-                    className:'xui-ui-unselectable xui-uibg-base',
+                    className:'xui-ui-unselectable',
                     text:'&#10094'
                 },
                 RIGHT:{
-                    className:'xui-ui-unselectable xui-uibg-base',
+                    className:'xui-ui-unselectable',
                     text:'&#10095'
                 },
                 DROP:{
-                    className:'xui-ui-unselectable xui-uibg-base',
+                    className:'xui-ui-unselectable',
                     text:'&#9660'
                 },
                 ITEMS:{
@@ -450,22 +450,22 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                top:'.1em',
-                width:'1em',
+                top:'0',
+                'font-size':'1.25em',
                 'z-index':'10',
-                'font-size':'13pt',
-                'text-align':'center',
-                color:'#888888',
-                border:'solid 1px #888888'
-             },
-            "LEFT-mouseover, RIGHT-mouseover, DROP-mouseover":{
-                color:'#444444'
+                width:'1em',
+                height:'1em',
+                color: '#3393D2',
+                'font-weight': 'bold',
+                'text-align': 'center',
+                'font-size': '1.4em',
+                'text-shadow': '1px 1px 4px #ccc'
             },
             LEFT:{
                 left:0                
             },
             RIGHT:{
-                right:"1.4em"
+                right:"1.5em"
             },
             DROP:{
                 right:0
@@ -1195,9 +1195,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
-                panelfz = useem?panel._getEmSize():1,
-                listfz = useem?list._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                panelfz = useem?panel._getEmSize():null,
+                listfz = useem?list._getEmSize():null,
                 wc=null,
                 hc=null,
                 listH;
@@ -1212,97 +1212,99 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 listH = list.get(0).offsetHeight ||
                     //for opear 9.0 get height bug, get offsetheight in firefox is slow
                     list.offsetHeight();
+                if(profile._listH!=listH){
+                    profile._listH=listH;
+                    force=true;
+                }
             }
 
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
-                if(height && height!='auto'){
+                if(height!='auto'){
                     if(!prop.noHandler){
                         height = height-listH;
                     }
                     if(height>0)hc=height;
-                }else hc=height;
-            }
+                };
+            }else hc=height;
 
             if(width && item._w!=width){
                 list.width(adjustunit(item._w=width, listfz));
                 if(!prop.noHandler){
-                    this._adjustScroll(profile,listH);
+                    this._adjustScroll(profile,prop.$UIvalue||prop.value);
                 }
                 wc=width;
             }
             if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
         },
 
-        _adjustScroll:function(profile, listH,itemid,h_em){
+        _adjustScroll:function(profile,itemid,h_em){
             // SCROLL
-            var list = profile.getSubNode('LIST'),
-                w=profile.getRoot().offsetWidth(),
+            var css=xui.CSS,
+                list = profile.getSubNode('LIST'),
+                rootwidth=profile.getRoot().offsetWidth(),
                 items = profile.getSubNode('ITEMS'),
-                l=items.left(),
                 left =  profile.getSubNode('LEFT'),
                 right =  profile.getSubNode('RIGHT'),
                 drop =  profile.getSubNode('DROP'),
                 bgh = profile.getSubNode('LISTBG').offsetHeight(),
-                wi=0,
-                sl=0,sw=0,
-
+                lastitemright=0,
+                selectitemleft=0,
+                selectitemwidth=0,
+                ks=profile.keys, 
                 prop=profile,properties,
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                itemsfz=useem?items._getEmSize():1;
+                itemsfz=useem?items._getEmSize():null,
+                itemsleft=css.$px(items.left(),itemsfz);
 
             items.children().each(function(item){
+                if(item.hidden)return;
+                if(item.id.indexOf(ks.ITEM)!==0)return;
+
+                if(!lastitemright){
+                    lastitemright = item.offsetLeft + item.offsetWidth;
+                }
+                
                 // to show the seleted one
                 if(itemid && profile.getItemIdByDom(item.id) == itemid){
-                    sl=wi;
-                    sw=item.offsetWidth;
+                    selectitemwidth=item.offsetWidth;
+                    selectitemleft=item.offsetLeft;
+                    return false;
                 }
-                wi += item.offsetWidth;
-            });
-            items.width(adjustunit(Math.max(wi,w),itemsfz));
+            },true);
 
-            if(wi<=w){
+            items.width(adjustunit(Math.max(lastitemright, rootwidth),itemsfz));
+
+            if(lastitemright<=rootwidth){
                 items.left(0+xui.CSS.$picku());
                 profile._$scroll_r=profile._$scroll_l=0;
                 items.css('cursor','');
             }else{
                 // to show the seleted one
-                if(sw){
-                    if((sl+l<0) || (sl+sw-l>w)){
-                        l=-sl;
+                if(selectitemwidth){
+                    if((selectitemleft+itemsleft<0) || (selectitemleft+selectitemwidth-itemsleft>rootwidth)){
+                        itemsleft=-selectitemleft;
                     }
                 }
 
-                if(wi+l<w){
-                    items.left(adjustunit(w-wi,itemsfz));
-                    profile._$scroll_r = wi-w;
+                if(lastitemright+itemsleft<rootwidth){
+                    items.left(adjustunit(rootwidth-lastitemright,itemsfz));
+                    profile._$scroll_r = lastitemright-rootwidth;
                     profile._$scroll_l = 0;
                 }else{
-                    items.left(adjustunit(l,itemsfz));
-                    profile._$scroll_r = -l;
-                    profile._$scroll_l =  wi - w + l;
+                    items.left(adjustunit(itemsleft,itemsfz));
+                    profile._$scroll_r = -itemsleft;
+                    profile._$scroll_l =  lastitemright - rootwidth + itemsleft;
                 }
                 items.css('cursor','move');
             }
             
-            var ll=0, lr=0;
             left.css('display', profile._$scroll_r ? 'block' : 'none');
-            ll += profile._$scroll_r?left.width():0;
-
             right.css('display', profile._$scroll_l ? 'block' : 'none');
-            lr += profile._$scroll_l?left.width():0;
             drop.css('display', (profile._$scroll_l||profile._$scroll_r) ? 'block' : 'none');
-            lr += (profile._$scroll_r||profile._$scroll_l)?drop.width():0;
-
-            if(listH){
-                listH = listH - bgh -2;
-                left.css('line-height',  adjustunit(listH,left) );
-                right.css('line-height', adjustunit(listH,right) );
-                drop.css('line-height',  adjustunit(listH,drop) );
-            }
         }
     }
 });

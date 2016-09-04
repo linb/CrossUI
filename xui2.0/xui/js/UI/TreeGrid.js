@@ -4600,7 +4600,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ws.push(xui([o]).width() + n._layer*ww);
                 });
                 ws.push(css.$px(prop._minColW));
-                w=css.$forceu(parseInt(Math.max.apply(null,ws),10)+ww*2);
+                w=css.$forceu(Math.max.apply(null,ws)+ww*2);
             }else
                 w=css.$forceu(hcell.width());
 
@@ -6253,7 +6253,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     css=xui.CSS,
                     useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                    rootfz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?profile.getRoot()._getEmSize():1,
+                    rootfz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?profile.getRoot()._getEmSize():null,
                     size = profile.getSubNode("BORDER").cssSize(),
                     width = css.$px(size.width,rootfz),
                     height = css.$px(size.height,rootfz),
@@ -6840,7 +6840,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 w1 = prop.rowHandler?(css.$px(prop.rowHandlerWidth) + 2):0,
                 w2,
                 border = f('BORDER'),
@@ -6852,7 +6852,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 s12 = f('SCROLL12'),
                 s21 = f('SCROLL21'),
                 s22 = f('SCROLL22'),
-                borderfz = useem?border._getEmSize():1,
+                borderfz = useem?border._getEmSize():null,
 
                 rh = h2.height(),
                 rr = b12.height();

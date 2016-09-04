@@ -40,12 +40,20 @@ Class('xui.Dom','xui.absBox',{
                 return a;
             }
         },
-        each:function(fun){
-            var ns=this,purge=xui.$cache.domPurgeData,n;
-            for(var i=0,j=ns._nodes,l=j.length;i<l;i++)
-                if((n=purge[j[i]]) && (n=n.element))
-                    if(false===fun.call(ns,n,i))
-                        break;
+        each:function(fun,desc){
+            var ns=this,purge=xui.$cache.domPurgeData,n,
+                  i, j=ns._nodes, l=j.length;
+            if(desc){
+                for(i=l;i>=0;i--)
+                    if((n=purge[j[i]]) && (n=n.element))
+                        if(false===fun.call(ns,n,i))
+                            break;
+            }else{
+                for(i=0;i<l;i++)
+                    if((n=purge[j[i]]) && (n=n.element))
+                        if(false===fun.call(ns,n,i))
+                            break;
+            }
             n=null;
             return ns;
         },
@@ -2543,8 +2551,8 @@ type:4
                         w=rect.right - rect.left, 
                         h=rect.bottom-rect.top;
      
-                    node.style.marginLeft =parseInt((ow-w)/2  + 10 + transX,10)+'px';
-                    node.style.marginTop = parseInt((oh-h)/2 + 10 + transY,10)+ 'px';
+                    node.style.marginLeft =Math.round(parseFloat((ow-w)/2  + 10 + transX))+'px';
+                    node.style.marginTop = Math.round(parseFloat((oh-h)/2 + 10 + transY))+ 'px';
                 }
 
                 // fake
@@ -2669,8 +2677,8 @@ type:4
 
                     var l=-aw/2,t=-ah/2,w=aw,h=ah;
                     if(_.isObj(orient)){
-                        l=orient.left||(parseInt(l,10)+'px');
-                        t=orient.top||(parseInt(t,10)+'px');
+                        l=orient.left||(Math.round(parseFloat(l))+'px');
+                        t=orient.top||(Math.round(parseFloat(t))+'px');
                     }else{
                         switch(orient){
                             case 'LT':
@@ -2712,8 +2720,8 @@ type:4
                     s.zIndex = '0';
                     s.top = t;
                     s.left = l;
-                    s.width = parseInt(w,10)+'px';
-                    s.height = parseInt(h,10)+'px';
+                    s.width = Math.round(parseFloat(w))+'px';
+                    s.height = Math.round(parseFloat(h))+'px';
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
@@ -3536,8 +3544,8 @@ type:4
                     }else if(o2){
                         o2.html(content +'',false);
                         o2.css({
-                            left :parseInt(t.scrollLeft()+t.width()/2-o2.width()/2,10)+'px', 
-                            top: parseInt(t.scrollTop()+t.height()/2-o2.height()/2,10)+'px'});
+                            left :Math.round(parseFloat(t.scrollLeft()+t.width()/2-o2.width()/2))+'px', 
+                            top: Math.round(parseFloat(t.scrollTop()+t.height()/2-o2.height()/2))+'px'});
                     }
                 }
             }

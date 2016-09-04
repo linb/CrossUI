@@ -295,7 +295,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 

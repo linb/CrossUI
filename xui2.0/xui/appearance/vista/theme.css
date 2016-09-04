@@ -215,7 +215,7 @@ html, .xui-uibg-base{
 .xui-uibar-bottom-s .xui-uibar-tdl, .xui-uibar-bottom-s .xui-uibar-tdm, .xui-uibar-bottom-s .xui-uibar-tdr{
     background-color: transparent;
     border: none;
-    background-image: url(Public/bar_vertical.gif);
+    background-image: url(Public/con_vertical.gif);
     background-repeat: no-repeat;
     background-position: left top;
 }
@@ -248,12 +248,12 @@ html, .xui-uibg-base{
 /*.xui-uibar-top .xui-uibar-cmdr{
 }*/
 .xui-uicon-main{
-    background-image: url(Public/bar_leftright.gif);
+    background-image: url(Public/con_left.gif);
 		background-repeat: repeat-y;
 		background-position: left top;
 }
 .xui-uicon-maini{
-    background-image: url(Public/bar_leftright.gif);
+    background-image: url(Public/con_right.gif);
     background-repeat: repeat-y; 
     background-position: right top;
 }
@@ -387,20 +387,7 @@ html, .xui-uibg-base{
     color:#fff;
 }
 
-
-
-/**
-*
-* advanced
-*
-**/
-
-/***setting begin***/
-
-/***the last one***/
+/** important ** the last one: this theme's name */
 .setting-uikey{
     font-family: vista;
 }
-/***setting end***/
-
-/***setting end***/

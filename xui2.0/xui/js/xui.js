@@ -897,7 +897,7 @@ _.merge(xui,{
     $dateFormat:'',
     $rand:"_r_",
 
-    SpaceUnit:'px',
+    SpaceUnit:'em',
     // for show xui.echo
     debugMode:true,
 
@@ -1570,7 +1570,7 @@ _.merge(xui,{
                      //don't trigger any innerHTML or removeChild in __gc()
                      o.__gc();
                      //clear the cache
-                     bak[bak.length]=i;
+                     bak[bak.length]=id;
                      //clear the cache shadow
                      if(o.$domId && o.$domId!=o.domId)
                         bak[bak.length]=o.$domId;

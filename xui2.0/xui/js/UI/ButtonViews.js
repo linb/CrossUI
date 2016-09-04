@@ -173,16 +173,16 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():1,
-                panelfz = useem?panel._getEmSize():1,
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                panelfz = useem?panel._getEmSize():null,
                 // caculate by px
                 ww=width?css.$px(width, rootfz):width, 
                 hh=height?css.$px(height, rootfz):height,
 
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
-                hsfz =  useem?hs._getEmSize():1,
-                hlfz =  useem?hl._getEmSize():1,
+                hsfz =  useem?hs._getEmSize():null,
+                hlfz =  useem?hl._getEmSize():null,
                 wc=null,
                 hc=null,
                 top, left, itmsH;

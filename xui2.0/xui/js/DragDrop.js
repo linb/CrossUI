@@ -519,7 +519,7 @@ Class('xui.DragDrop',null,{
                             - d._cssPos_x)
                         );
                         if(d._proxyLeft-d._pre.left)
-                            d._proxystyle.left=parseInt(d._proxyLeft,10)+'px';
+                            d._proxystyle.left=Math.round(parseFloat(d._proxyLeft))+'px';
                         d._pre.left=d._proxyLeft;
                         p.curPos.left = d._proxyLeft + d.$proxySize;
                     }
@@ -530,7 +530,7 @@ Class('xui.DragDrop',null,{
                             - d._cssPos_y)
                         );
                         if(d._proxyTop-d._pre.top)
-                            d._proxystyle.top=parseInt(d._proxyTop,10)+'px';
+                            d._proxystyle.top=Math.round(parseFloat(d._proxyTop))+'px';
                         d._pre.top=d._proxyTop;
                         p.curPos.top = d._proxyTop + d.$proxySize;
                     }
@@ -733,7 +733,7 @@ Class('xui.DragDrop',null,{
                         zIndex:0,
                         cursor:'',
                         display:'none',
-                        padding:parseInt(d.$proxySize,10)+'px'
+                        padding:Math.round(parseFloat(d.$proxySize))+'px'
                     })
                 );
                 p.proxyNode=d._proxystyle=null;

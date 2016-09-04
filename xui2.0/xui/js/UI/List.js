@@ -692,7 +692,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz =needfz?root._getEmSize():1,
+                rootfz =needfz?root._getEmSize():null,
 
                 border=prop.borderType!='none'?2:0,
                 dock=prop.dock,
@@ -701,8 +701,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 f=function(k){return profile.getSubNode(k)},
                 o = f('ITEMS'),
                 label = f('LABEL'),
-                ofz = useem?o._getEmSize():1,
-                labelfz = needfz?label._getEmSize():1,
+                ofz = useem?o._getEmSize():null,
+                labelfz = needfz?label._getEmSize():null,
 
                 labelSize=css.$px(prop.labelSize, labelfz)||0,
                 labelGap=css.$px(prop.labelGap, rootfz)||0,

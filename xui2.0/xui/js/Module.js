@@ -505,7 +505,7 @@ Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
-        refresh:function(callback){
+        refresh:function(callback,ignoreEffects, purgeNow){
             var paras, b, p, s, fun, 
                 o=this,
                 inm, firstUI,
@@ -535,7 +535,7 @@ Class('xui.Module','xui.absProfile',{
 
             //unserialize
             s = o.serialize(false, true);
-            o.destroy(true);
+            o.destroy(true, true, true);
             //set back
             _.merge(o,s,'all');
             // notice: remove destroyed here
@@ -1056,7 +1056,7 @@ Class('xui.Module','xui.absProfile',{
         isDestroyed:function(){
             return !!this.destroyed;
         },
-        destroy:function(keepStructure){
+        destroy:function(ignoreEffects, purgeNow,keepStructure){
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
             
@@ -1070,7 +1070,7 @@ Class('xui.Module','xui.absProfile',{
             if(ns && ns.length)
                 _.arr.each(ns, function(o){
                     if(o && o.box)
-                        o.boxing().destroy();
+                        o.boxing().destroy(ignoreEffects, purgeNow);
                 },null,true);
 
             if(ns && ns.length)
@@ -1169,9 +1169,9 @@ Class('xui.Module','xui.absProfile',{
             for(var i in c)
                 if(_.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
-        destroyAll:function(){
+        destroyAll:function(ignoreEffects, purgeNow){
             _.arr.each(this._cache,function(o){
-                if(!o.destroyed)o.destroy();
+                if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
         load:function(cls, onEnd, lang, theme, showUI){
