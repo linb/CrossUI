@@ -7,12 +7,6 @@
 	/*for IE67 */
   _font-size:16px;
 }
-.xuifont.inner{
-  font-size:1em;
-	/*for IE67 */
-  _font-size:16px;
-  line-height:1em;
-}
 
 /*background [[[colors]]]*/
 html, .xui-uibg-base{
@@ -85,11 +79,12 @@ html, .xui-uibg-base{
     border-right-color:#f1f1f1;
     border-bottom-color:#f1f1f1;
 }
+
 /*item [[[colors]]]*/
 /*xui.UI.List*/
 /*xui.UI.TreeView*/
 .xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
-    background-image: url(Public/uitembg.gif);
+    background-image: url(Public/list_item.gif);
     background-repeat:repeat-x;
 	   border-color:#c9c9c9;
 }
@@ -136,55 +131,7 @@ html, .xui-uibg-base{
 .xui-cover{}
 .xui-coverlabel{}
 */
-/*xui-border*/
-.xui-border-t{
-    top:-3px;
-    height:5px;
-    background-image: url('Border/vertical.gif')
-}
-.xui-border-b{
-    bottom:-3px;
-    height:5px;
-    background-image: url('Border/vertical.gif')
-}
-.xui-border-l{
-    left:-3px;
-    width:5px;
-    background-image: url('Border/horizontal.gif')
-}
-.xui-border-r{
-    right:-3px;
-    width:5px;
-    background-image: url('Border/horizontal.gif')
-}
-.xui-border-lt{
-    left:-3px;
-    top:-3px;
-    width:5px;
-    height:5px;
-    background-image: url('Border/corner.gif')
-}
-.xui-border-rt{
-    right:-3px;
-    top:-3px;
-    width:5px;
-    height:5px;
-    background-image: url('Border/corner.gif')
-}
-.xui-border-rb{
-    right:-3px;
-    bottom:-3px;
-    width:5px;
-    height:5px;
-    background-image: url('Border/corner.gif')
-}
-.xui-border-lb{
-    left:-3px;
-    bottom:-3px;
-    width:5px;
-    height:5px;
-    background-image: url('Border/corner.gif')
-}
+
 .xui-ui-gradientbg, .xui-ui-btn{
     border-color:#8F8F8F;
     -moz-box-shadow:inset 0px 1px 0px 0px #E7F1F6;
@@ -209,11 +156,10 @@ html, .xui-uibg-base{
 }
 
 /*uibar*/
-.xui-uibar-top .xui-uibar-tdl, .xui-uibar-top .xui-uibar-tdm, .xui-uibar-top .xui-uibar-tdr, 
+.xui-uibar-top .xui-uibar-tdlt, .xui-uibar-top .xui-uibar-tdmt, .xui-uibar-top .xui-uibar-tdrt, 
 .xui-uibar-top-s .xui-uibar-tdl, .xui-uibar-top-s .xui-uibar-tdm, .xui-uibar-top-s .xui-uibar-tdr, 
 .xui-uibar-bottom .xui-uibar-tdl, .xui-uibar-bottom .xui-uibar-tdm, .xui-uibar-bottom .xui-uibar-tdr,
 .xui-uibar-bottom-s .xui-uibar-tdl, .xui-uibar-bottom-s .xui-uibar-tdm, .xui-uibar-bottom-s .xui-uibar-tdr{
-    background-color: transparent;
     border: none;
     background-image: url(Public/con_vertical.gif);
     background-repeat: no-repeat;
@@ -223,23 +169,42 @@ html, .xui-uibg-base{
 	border:none;
 }
 .xui-uibar-top .xui-uibar-tdl{
-	background-position: 0 0;
+    border: none;
+    background-image: url(Public/con_left.gif);
+    background-repeat: repeat-y;
+    background-position: left top;
 }
 .xui-uibar-top .xui-uibar-tdm{
+    border: none;
+}
+.xui-uibar-top .xui-uibar-tdr{
+    border: none;
+    background-image: url(Public/con_right.gif);
+    background-repeat: repeat-y;
+    background-position: right top;
+}
+
+.xui-uibar-top .xui-uibar-tdlt{
+	height:20px;
+	background-position: 0 0;
+}
+.xui-uibar-top .xui-uibar-tdmt{
+	height:20px;
 	background-position: 0 -30px;
 	background-repeat: repeat-x;
 }
-.xui-uibar-top .xui-uibar-tdr{
+.xui-uibar-top .xui-uibar-tdrt{
+	height:20px;
 	background-position: right -60px;
 }
-.xui-uibar-top-focus .xui-uibar-tdl{
+.xui-uibar-top-focus .xui-uibar-tdlt{
 	background-position: left -90px;
 }
-.xui-uibar-top-focus .xui-uibar-tdm{
+.xui-uibar-top-focus .xui-uibar-tdmt{
 	background-position: left -120px;
 	background-repeat: repeat-x;
 }
-.xui-uibar-top-focus .xui-uibar-tdr{
+.xui-uibar-top-focus .xui-uibar-tdrt{
 	background-position: right -150px;
 }
 .xui-uibar-top-s, .xui-uibar-bottom-s{
@@ -313,7 +278,6 @@ html, .xui-uibg-base{
     padding:0 0 3px 0;
 }
 .xui-tabs-listbg{
-	  height:2px;
     background-color: #C6E0EF;
     border-top: solid 1px #8C97A0;
     border-bottom: solid 1px #8C97A0;
@@ -342,10 +306,6 @@ html, .xui-uibg-base{
 }
 .xui-tabs-item-mouseover .xui-tabs-handle, .xui-tabs-item-mousedown .xui-tabs-handle, .xui-tabs-item-checked .xui-tabs-handle{
 	padding:0;
-}
-
-.xui-uiborder-linkbottombar {
-    border-bottom-color: #C6E0EF;
 }
 
 
