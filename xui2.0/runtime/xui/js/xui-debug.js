@@ -12346,7 +12346,7 @@ type:4
                 f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
                     if(value===true){
-                        n=(getStyle(node,'display')=='none');
+                        n=(getStyle(node,'display')=='none') || node.offsetHeight===0;
                         if(n){
                             var temp = xui.Dom.getEmptyDiv().html('*',false);
                             xui([node]).swap(temp);
@@ -12373,10 +12373,10 @@ type:4
                         case 3:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=me(node,1)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(!r)r=me(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
-                            r=me(node,3);
+                            r=me(node,3,value);
                             r+=t[o[4]]();
                             break;
                     }
@@ -12416,7 +12416,7 @@ type:4
             self.plugIn(o[0],function(value){
                 var type=typeof value;
                 if(type=='undefined' || type=='boolean')
-                    return this[o[1]](this.get(0), o[2]);
+                    return this[o[1]](this.get(0), o[2], value);
                 else
                     return this.each(function(v){
                         this[o[1]](v, o[2],value);
@@ -27312,8 +27312,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
             if(type=='vertical'){
                 var w=ru1.height(),
-                    w1=prop.showDecreaseHandle?f('DECREASE').height():0,
-                    w2=prop.showIncreaseHandle?f('INCREASE').height():0,
+                    w1=prop.showDecreaseHandle?xui.CSS._getDftFISize():0,
+                    w2=prop.showIncreaseHandle?xui.CSS._getDftFISize():0,
                     w3=f('IND1').height();
     
                 if(hh){
@@ -34942,7 +34942,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         Appearances:{
             KEY:{
-                overflow:'hidden',
                 background:'transparent'
             },
             'KEY BORDER':{
@@ -35306,8 +35305,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     isize.height=height;
                 else{
                     if(profile._toggle){
-                        h1=v1.height();
-                        h4=noFrame?0:v4.height();
+                        //force to get height
+                        h1=v1.height(true);
+                        h4=noFrame?0:v4.height(true);
                         if((t=height-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
                     }else{
@@ -36905,9 +36905,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(!panel || panel.isEmpty())return;
             
             if(!prop.noHandler){
-                listH = list.get(0).offsetHeight ||
-                    //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                    list.offsetHeight();
+                //force to get offsetHeight
+                listH = list.offsetHeight(true);
                 if(profile._listH!=listH){
                     profile._listH=listH;
                     force=true;
@@ -37140,6 +37139,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
                 wc=null,
                 hc=null,
+                off,
                 temp,t1,t2,obj,top;
 
             if(!panel || panel.isEmpty())return;
@@ -37156,15 +37156,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
-                    // offsetHeight maybe not set here
-                    t1 += obj.offsetHeight();
+                    // force to get offsetHeight
+                    off=obj.offsetHeight(true);
+                    t1 += off
                     if(o.id == key)return false;
                 });
                 _.arr.each(prop.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});
-                    t2+= obj.offsetHeight();
+
+                    // offsetHeight maybe not set here
+                    off=obj.offsetHeight(true);
+                    t2+= off
                 },null,true);
 
                 temp = height - t1 - t2;
@@ -49769,8 +49773,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(height=='auto'){
                     isize.height=height;
                 }else{
-                    h1=v1.height();
-                    h4=v4.height();
+                    //force to get height
+                    h1=v1.height(true);
+                    h4=v4.height(true);
                     if((t=size.height-h1-h4)>0)
                         isize.height=t;
                 }

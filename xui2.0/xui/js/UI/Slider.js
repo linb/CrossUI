@@ -612,8 +612,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
             if(type=='vertical'){
                 var w=ru1.height(),
-                    w1=prop.showDecreaseHandle?f('DECREASE').height():0,
-                    w2=prop.showIncreaseHandle?f('INCREASE').height():0,
+                    w1=prop.showDecreaseHandle?xui.CSS._getDftFISize():0,
+                    w2=prop.showIncreaseHandle?xui.CSS._getDftFISize():0,
                     w3=f('IND1').height();
     
                 if(hh){

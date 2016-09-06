@@ -167,7 +167,6 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         Appearances:{
             KEY:{
-                overflow:'hidden',
                 background:'transparent'
             },
             'KEY BORDER':{
@@ -531,8 +530,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     isize.height=height;
                 else{
                     if(profile._toggle){
-                        h1=v1.height();
-                        h4=noFrame?0:v4.height();
+                        //force to get height
+                        h1=v1.height(true);
+                        h4=noFrame?0:v4.height(true);
                         if((t=height-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
                     }else{

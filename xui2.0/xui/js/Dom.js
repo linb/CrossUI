@@ -3765,7 +3765,7 @@ type:4
                 f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
                     if(value===true){
-                        n=(getStyle(node,'display')=='none');
+                        n=(getStyle(node,'display')=='none') || node.offsetHeight===0;
                         if(n){
                             var temp = xui.Dom.getEmptyDiv().html('*',false);
                             xui([node]).swap(temp);
@@ -3792,10 +3792,10 @@ type:4
                         case 3:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=me(node,1)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(!r)r=me(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
-                            r=me(node,3);
+                            r=me(node,3,value);
                             r+=t[o[4]]();
                             break;
                     }
@@ -3835,7 +3835,7 @@ type:4
             self.plugIn(o[0],function(value){
                 var type=typeof value;
                 if(type=='undefined' || type=='boolean')
-                    return this[o[1]](this.get(0), o[2]);
+                    return this[o[1]](this.get(0), o[2], value);
                 else
                     return this.each(function(v){
                         this[o[1]](v, o[2],value);

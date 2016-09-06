@@ -135,6 +135,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
                 wc=null,
                 hc=null,
+                off,
                 temp,t1,t2,obj,top;
 
             if(!panel || panel.isEmpty())return;
@@ -151,15 +152,19 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
-                    // offsetHeight maybe not set here
-                    t1 += obj.offsetHeight();
+                    // force to get offsetHeight
+                    off=obj.offsetHeight(true);
+                    t1 += off
                     if(o.id == key)return false;
                 });
                 _.arr.each(prop.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});
-                    t2+= obj.offsetHeight();
+
+                    // offsetHeight maybe not set here
+                    off=obj.offsetHeight(true);
+                    t2+= off
                 },null,true);
 
                 temp = height - t1 - t2;

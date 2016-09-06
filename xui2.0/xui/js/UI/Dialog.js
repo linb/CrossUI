@@ -1446,8 +1446,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(height=='auto'){
                     isize.height=height;
                 }else{
-                    h1=v1.height();
-                    h4=v4.height();
+                    //force to get height
+                    h1=v1.height(true);
+                    h4=v4.height(true);
                     if((t=size.height-h1-h4)>0)
                         isize.height=t;
                 }

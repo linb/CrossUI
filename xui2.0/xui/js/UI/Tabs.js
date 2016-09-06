@@ -1206,9 +1206,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(!panel || panel.isEmpty())return;
             
             if(!prop.noHandler){
-                listH = list.get(0).offsetHeight ||
-                    //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                    list.offsetHeight();
+                //force to get offsetHeight
+                listH = list.offsetHeight(true);
                 if(profile._listH!=listH){
                     profile._listH=listH;
                     force=true;
