@@ -7,7 +7,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             className:'xui-uiw-border {clsBorderType1}',
             PANEL:{
                 tagName:'div',
-                className:'{clsBorderType2} xui-uibg-bar',
+                className:'xui-uibg-content {clsBorderType2}',
                 style:'{_panelstyle};{background};{_overflow};',
                 text:'{html}'+xui.UI.$childTag
             }

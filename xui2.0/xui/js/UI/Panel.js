@@ -53,15 +53,24 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     tagName:'div',
                     className:'xui-uibar-top',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                        BARTDLT:{
+                            className:'xui-uibar-tdlt',
+                        }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                        BARTDMT:{
+                            className:'xui-uibar-tdmt',
+                        }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                        BARTDRT:{
+                            className:'xui-uibar-tdrt'
+                        }
                     },
                     BARCMDL:{
                         $order:3,
@@ -131,7 +140,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
-                            className:'{_bordertype}',
+                            className:'xui-uibg-content {_bordertype}',
                             style:'{panelDisplay};{_panelstyle};{_overflow};',
                             text:'{html}'+xui.UI.$childTag
                         }

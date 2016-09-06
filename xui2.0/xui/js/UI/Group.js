@@ -69,7 +69,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             className:'{_className}',
             FIELDSET:{
                 tagName : 'fieldset',
-                className: ' {toggleCls}',
+                className: 'xui-uiborder-flat {toggleCls}',
                 LEGEND:{
                     tagName : 'legend',
                     style:'{_align}',
@@ -95,6 +95,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     $order:1,
                     tagName:'div',
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
+                    className:'xui-uibg-base',
                     text:'{html}'+xui.UI.$childTag
                 }
             }
@@ -104,7 +105,6 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 zoom:xui.browser.ie6?"1":null
             },
             FIELDSET:{
-                border:'1px solid #7ba3cb',
                 position:'relative',
                 overflow:'hidden',
                 zoom:xui.browser.ie6?"1":null

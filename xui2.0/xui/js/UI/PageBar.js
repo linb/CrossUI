@@ -173,7 +173,6 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             POP:{
                 border:'dotted 1px gray',
-                background:'#fff',
                 position:'absolute',
                 padding:'.25em',
                 'line-height':'2.2em'

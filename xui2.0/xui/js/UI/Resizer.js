@@ -196,16 +196,6 @@ Class("xui.UI.Resizer","xui.UI",{
             "KEY.disabled.active":{
                 'background-color':'#eee'
             },
-            /*
-            "KEY.disabled":{
-                background: (xui.browser.isWebKit?"-webkit-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -webkit-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
-                                   :xui.browser.isFF?"-moz-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -moz-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
-                                   :xui.browser.opr?"-o-linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), -o-linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px"
-                                   :"")
-                                 + ";linear-gradient(135deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px), linear-gradient(225deg, transparent 22px, #d9ecff 22px, #d9ecff 24px, transparent 24px, transparent 67px, #d9ecff 67px, #d9ecff 69px, transparent 69px)0 64px",
-                'background-size': "64px 64px",
-                border:"solid 1px #d9ecff"
-            },*/
             "KEY.disabled div":{
                 display:'none'
             },
@@ -227,7 +217,6 @@ Class("xui.UI.Resizer","xui.UI",{
                 position:'absolute',
                 display:'block',
                 border:'solid 1px',
-                'background-color':'#fff',
                 'z-index':100,
                 visibility: 'visible',
                 'font-size':xui.__iefix1,

@@ -20,7 +20,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-hiddenborder xui-showfocus {itemClass} {disabled} {readonly}',
+                    className:'xui-uitembg xui-showfocus {itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding};margin:{itemMargin};{itemStyle}',
                     ITEMFRAME:{
                         style:'{_itemSize};',
@@ -100,16 +100,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 'vertical-align':'top',
                 margin:0,
                 'border-radius':'4px'
-            },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
-            },
-            'ITEM-mouseover':{
-            },
-            'ITEM-mousedown':{
-            },
-            'ITEM-checked':{
-                border:'solid 1px #648cb4',
-                'border-radius':'3px'                
             },
             ITEMFRAME:{
                 display:xui.browser.ie?'inline-block':'block',

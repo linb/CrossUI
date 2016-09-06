@@ -1987,7 +1987,7 @@ Class("xui.UI",  "xui.absObj", {
                 padding: "0 !important",
                 border: "0 none !important"
             },
-            ".xui-ui-gradientbg-mouseover, .xui-ui-btn-hover, .xui-ui-btn-mouseover":{
+            ".xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover":{
                 background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
                 background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
@@ -1999,7 +1999,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
-            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked":{
+            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked, .xui-ui-btn-mousedown:hover, .xui-ui-btn-checked:hover":{
                 $order:2,
                 background_1: "linear-gradient(top,  #DDD 5%,  #FFF)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
@@ -2019,7 +2019,7 @@ Class("xui.UI",  "xui.absObj", {
                 'text-align': 'center',
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'line-height': '1',
-                'border': 'solid 1px #999',
+                'border': 'solid 1px #C5C5C5',
                 'border-radius': '3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
@@ -2033,7 +2033,7 @@ Class("xui.UI",  "xui.absObj", {
                 'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
             ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
-                'border-color': '#666'
+                'border-color': '#B5B5B5'
             },
             ".xui-ui-input":{
                 background:'#fff',
@@ -2042,9 +2042,9 @@ Class("xui.UI",  "xui.absObj", {
                'box-shadow': 'inset 2px 2px 2px #EEEEEE'
             },
             '.xui-ui-shadow':{
-                '-moz-box-shadow': '3px 3px 4px #9f9f9f',
-                '-webkit-box-shadow': '3px 3px 4px #9f9f9f',
-                'box-shadow': '3px 3px 4px #9f9f9f',
+                '-moz-box-shadow': '2px 2px 5px #ababab',
+                '-webkit-box-shadow': '2px 2px 5px #ababab',
+                'box-shadow': '2px 2px 5px #ababab',
                 /* For IE 8 */
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')":null,
                 /* For IE 5.5 - 7 */
@@ -2071,94 +2071,70 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-uitembg-mouseover":{
                 $order:2,
-                 'background-color':'#FCDD7A',
-                'border-color':'#DCB400'
+                'background-color':'#EDEDED',
+                'border-color':'#DDDDDD'
             },
             ".xui-uitembg-mousedown":{
                 $order:3,
-                'background-color':'#FAD200',
-                'border-color':'#AAD2FA'
+                'background-color':'#DDDDDD',
+                'border-color':'#C5C5C5'
             },
             ".xui-uitembg-checked":{
                 $order:4,
-                'background-color':'#CBE4FC',
-                'border-color':'#AAD2FA'
+                'background-color':'#DDDDDD',
+                'border-color':'#C5C5C5'
             },
 
-            ".xui-uibarbg":{
-                "background-color":"#CCE4FC"
+            ".xui-uitembg-bar":{
+                "background-color":"#EDEDED"
             },
-            ".xui-uibarbg2":{
-                'border-radius':'3px 3px 0 0',
-                '-moz-border-radius': '3px 3px 0 0',
-                '-webkit-border-radius': '3px 3px 0 0',
-                '-o-border-radius': '3px 3px 0 0',
-                '-ms-border-radius': '3px 3px 0 0',
-                '-khtml-border-radius': '3px 3px 0 0'
+            ".xui-uitembg-menu":{
+                "background-color":"transparent"
             },
-            ".xui-uibarbg-mouseover, .xui-uibarbg2-mouseover":{
+            ".xui-uitembg-bar-mouseover":{
                 $order:2,
-                "background-color":"#FAD200"
+                "background-color":"#EEEEEE"
             },
-            ".xui-uibarbg-mousedown, .xui-uibarbg2-mousedown":{
+            ".xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked":{
                 $order:3,
-                 "background-color":"#F5D22D"
+                 "background-color":"#DDDDDD"
             },
-            ".xui-uibarbg-checked,.xui-uibarbg2-checked":{
-                $order:4,
-                 "background-color":"#AAD2FA",
-                 "color":"#000"
-            },
-            ".xui-bginput":{
-                background: "#fff"
-            },
-            /*
-            ".xui-uirowbg":{
-                "background-color":"#FFF"
-            },
-            ".xui-uirowbg-mouseover":{
+            ".xui-uitembg-menu-mouseover":{
                 $order:2,
-                "background-color":"#FFF1A0"
+                "background-color":"#C5C5C5"
             },
-            ".xui-uirowbg-mousedown":{
+            ".xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked":{
                 $order:3,
-                 "background-color":"#7199E8"
+                 "background-color":"#B5B5B5"
             },
-            ".xui-uirowbg-checked":{
-                $order:4,
-                 "background-color":"#7199E8",
-                 "color":"#fff"
-            },
-            ".xui-uirowbg-active":{
-                $order:5,
-                "background-color":"#A3BAE9"
-            },
-            ".xui-uirowbg-hot":{
-                $order:6,
-                "background-color":"#FFE97F"
-            },
-            */
-            ".xui-uitd":{
+
+            ".xui-cell":{
                 "background-color": "#F9F9FB"
             },
-            ".xui-uitd-mouseover":{
+            ".xui-cell-mouseover":{
                  $order:2,
                 "background-color": "#d9e8fb"
             },
-            ".xui-uitd-checked, .xui-uitd-checked .xui-node":{
+            ".xui-cell-checked, .xui-cell-checked .xui-node":{
                  $order:3,
-                "background-color":"#316AC5",
+                "background-color":"#ABABAB",
                 color:"#fff"
             },
-            ".xui-uitd-alt":{
+            ".xui-cell-alt":{
                  $order:1,
                 "background-color":"#FDF8D2"
             },
-            ".xui-uith":{
+            ".xui-hcell":{
                  $order:1,
                 color:"#333333",
                 "background-color":"#E8EEF7"
             },
+            '.xui-special-icon':{
+                color:'#3393D2',
+                'text-shadow': '1px 1px 4px #ccc'
+            }
+            
+            ,
             '.xui-uibar-top, .xui-uibar-bottom, .xui-uibar-top-s, .xui-uibar-bottom-s':{
                 position:'relative',
                 //for avoiding extra space after table in IE
@@ -2175,7 +2151,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-tdl':{
                 $order:1,
                 position:'absolute',
-                width:'.25em',
+                width:'12px',
                 left:0,
                 top:0,
                 height:'100%'
@@ -2184,24 +2160,51 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 position:'absolute',
                 top:0,
-                left:'.25em',
-                right:'.25em',
+                left:'12px',
+                right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
                 position:'absolute',
-                width:'.25em',
+                width:'12px',
                 top:0,
                 right:0,
                 height:'100%'
             },
+            '.xui-uibar-top .xui-uibar-tdlt':{
+                position:'absolute',
+                width:'12px',
+                left:0,
+                top:0,
+                height:'12px'
+            },
+            '.xui-uibar-top .xui-uibar-tdmt':{
+                position:'absolute',
+                top:0,
+                left:0,
+                right:0,
+                height:'12px',
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth)+'px')": null
+            },
+            '.xui-uibar-top .xui-uibar-tdrt':{
+                position:'absolute',
+                width:'12px',
+                right:0,
+                top:0,
+                height:'12px'
+            },
             '.xui-uibar-top-focus .xui-uibar-tdl':{
+                'background-color':'#C5C5C5'
             },
             '.xui-uibar-top-focus .xui-uibar-tdm':{
+                'background-color':'#C5C5C5'
             },
             '.xui-uibar-top-focus .xui-uibar-tdr':{
+                'background-color':'#C5C5C5'
+            },
+            '.xui-uibar-top-focus .xuifont, .xui-uibar-top-focus .xuicon, .xui-uibar-top-focus .xui-uicaption':{
             },
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
@@ -2231,12 +2234,12 @@ Class("xui.UI",  "xui.absObj", {
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
-                height:'1em'
+                height:'.33333em'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
                 position:'absolute',
-                width:'.3333em',
+                width:'12px',
                 left:0,
                 bottom:0,
                 height:'100%'
@@ -2245,15 +2248,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 position:'absolute',
                 bottom:0,
-                left:'.3333em',
-                right:'.3333em',
+                left:'12px',
+                right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
                 position:'absolute',
-                width:'.3333em',
+                width:'12px',
                 right:0,
                 bottom:0,
                 height:'100%'
@@ -2261,12 +2264,12 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-top-s
             '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
                 $order:3,
-                height:'.5833em'
+                height:'.8px'
             },
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
-                width:'.3333em',
+                width:'12px',
                 left:0,
                 top:0,
                 height:'100%'
@@ -2275,15 +2278,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 position:'absolute',
                 top:0,
-                left:'.3333em',
-                right:'.3333em',
+                left:'12px',
+                right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
                 position:'absolute',
-                width:'.3333em',
+                width:'12px',
                 top:0,
                 right:0,
                 height:'100%'
@@ -2304,7 +2307,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
-                width:'.3333em',
+                width:'12px',
                 left:0,
                 bottom:0,
                 height:'100%'
@@ -2313,15 +2316,15 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 position:'absolute',
                 bottom:0,
-                left:'.3333em',
-                right:'.3333em',
+                left:'12px',
+                right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 8)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
                 position:'absolute',
-                width:'.3333em',
+                width:'12px',
                 right:0,
                 bottom:0,
                 height:'100%'
@@ -2392,76 +2395,77 @@ Class("xui.UI",  "xui.absObj", {
         })
         + xui.UI.buildCSSText({
             '.xui-uibg-base':{
-                'background-color':'#fff'
+                'background-color':'#FFFFFF'
             },
             '.xui-uibg-content':{
-                'background-color':'#fff'
+                'background-color':'#EDEDED'
             },
             '.xui-uibg-bar':{
-                'background-color':'#aad2fa'
-            },
-            '.xui-uiborder-linkbottombar':{
-                'border-bottom':'solid 1px #FAD600'
+                'background-color':'#DDDDDD'
             },
             '.xui-uibg-bar-mouseover':{
-                'background-color':'#C8E1FA'
+                'background-color':'#EDEDED'
             },
-            '.xui-hiddenborder':{
-                border:'solid 1px #FFFFFF'
-            },
-            '.xui-hiddenborder-mouseover':{
-                border:'solid 1px #aad2fa'
-            },
-            '.xui-hiddenborder-mousedown,.xui-hiddenborder-checed':{
-                border:'solid 1px #648cb4'
+            '.xui-uiborder':{
+                border:'solid 1px #b5b5b5'
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
                 'border-left-width':'1px',
-                'border-left-color':'#c8e1fa'
+                'border-left-color':'#F6F6F6'
             },
             '.xui-uiborder-r':{
                 'border-right-style':'solid',
                 'border-right-width':'1px',
-                'border-right-color':'#648cb4'
+                'border-right-color':'#C5C5C5'
             },
             '.xui-uiborder-t':{
                 'border-top-style':'solid',
                 'border-top-width':'1px',
-                'border-top-color':'#c8e1fa'
+                'border-top-color':'#F6F6F6'
             },
             '.xui-uiborder-b':{
                 'border-bottom-style':'solid',
                 'border-bottom-width':'1px',
-                'border-bottom-color':'#648cb4'
+                'border-bottom-color':'#C5C5C5'
             },
-            '.xui-uiborder-r2':{
+            '.xui-uiborder-r-dark':{
                 'border-right-style':'solid',
                 'border-right-width':'1px',
-                'border-right-color':'#A2BBD9'
+                'border-right-color':'#B5B5B5'
             },
-            '.xui-uiborder-b2':{
+            '.xui-uiborder-b-dark':{
                 'border-bottom-style':'solid',
                 'border-bottom-width':'1px',
-                'border-bottom-color':'#A2BBD9'
+                'border-bottom-color':'#B5B5B5'
+            },
+            '.xui-uiborder-r-light':{
+                'border-right-style':'solid',
+                'border-right-width':'1px',
+                'border-right-color':'#EDEDED'
+            },
+            '.xui-uiborder-b-light':{
+                'border-bottom-style':'solid',
+                'border-bottom-width':'1px',
+                'border-bottom-color':'#EDEDED'
             },
             '.xui-uiborder-tb':{
                 'border-style':'solid',
                 'border-width':'1px 0 1px 0 ',
-                'border-top-color':'#c8e1fa',
-                'border-bottom-color':'#648cb4'
+                'border-top-color':'#F6F6F6',
+                'border-bottom-color':'#C5C5C5'
             },
             '.xui-uiborder-lr':{
                 'border-style':'solid',
                 'border-width':'0 1px 0 1px',
-                'border-left-color':'#c8e1fa',
-                'border-right-color':'#648cb4' 
+                'border-left-color':'#F6F6F6',
+                'border-right-color':'#C5C5C5' 
             },
             '.xui-uiborder-lt':{
                 'border-style':'solid',
                 'border-width':'1px 0 0 1px',
-                'border-left-color':'#c8e1fa',
-                'border-top-color':'#c8e1fa',
+                'border-left-color':'#F6F6F6',
+                'border-top-color':'#F6F6F6',
                 'border-radius':'6px 0 0 0',
                 '-moz-border-radius': '6px 0 0 0',
                 '-webkit-border-radius': '6px 0 0 0',
@@ -2472,8 +2476,8 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-rt':{
                 'border-style':'solid',
                 'border-width':'1px 1px 0 0',
-                'border-right-color':'#648cb4',
-                'border-top-color':'#c8e1fa',
+                'border-right-color':'#C5C5C5',
+                'border-top-color':'#F6F6F6',
                 'border-radius':'0 6px 0 0',
                 '-moz-border-radius': '0 6px 0 0',
                 '-webkit-border-radius': '0 6px 0 0',
@@ -2484,8 +2488,8 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-rb':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
-                'border-right-color':'#648cb4',
-                'border-bottom-color':'#648cb4',
+                'border-right-color':'#C5C5C5',
+                'border-bottom-color':'#C5C5C5',
                 'border-radius':'0 0 6px 0',
                 '-moz-border-radius': '0 0 6px 0',
                 '-webkit-border-radius': '0 0 6px 0',
@@ -2496,8 +2500,8 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-lb':{
                 'border-style':'solid',
                 'border-width':'0 0 1px 1px ',
-                'border-left-color':'#c8e1fa',
-                'border-bottom-color':'#648cb4',
+                'border-left-color':'#F6F6F6',
+                'border-bottom-color':'#C5C5C5',
                 'border-radius':'0 0 0 6px',
                 '-moz-border-radius': '0 0 0 6px',
                 '-webkit-border-radius': '0 0 0 6px',
@@ -2505,14 +2509,20 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '0 0 0 6px',
                 '-khtml-border-radius': '0 0 0 6px'
             },
-            '.xui-uiborder-rb2':{
+            '.xui-uiborder-rb-light':{
                 'border-style':'solid',
                 'border-width':'0 1px 1px 0',
-                'border-right-color':'#A2BBD9',
-                'border-bottom-color':'#A2BBD9'
+                'border-right-color':'#EDEDED',
+                'border-bottom-color':'#EDEDED'
+            },
+            '.xui-uiborder-rb-dark':{
+                'border-style':'solid',
+                'border-width':'0 1px 1px 0',
+                'border-right-color':'#B5B5B5',
+                'border-bottom-color':'#B5B5B5'
             },
             '.xui-uiborder-flat':{
-                border:'solid 1px #648cb4',
+                border:'solid 1px #C5C5C5',
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
@@ -2520,10 +2530,14 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px'
             },
+            '.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover':{
+                $order:2,
+                'border-color':'#7EADD9'
+            },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#c8e1fa #648cb4 #648cb4 #c8e1fa',
+                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6',
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
@@ -2534,7 +2548,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-inset':{
                 $order:9,
                 border:'solid 1px',
-                'border-color':'#648cb4 #c8e1fa #c8e1fa #648cb4',
+                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5',
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
@@ -2550,6 +2564,15 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '6px',
                 '-ms-border-radius': '6px',
                 '-khtml-border-radius': '6px'
+            },
+            '.xui-uiborder-noradius':{
+                $order:11,
+                'border-radius':'0',
+                '-moz-border-radius': '0',
+                '-webkit-border-radius': '0',
+                '-o-border-radius': '0',
+                '-ms-border-radius': '0',
+                '-khtml-border-radius': '0'
             },
             '.xui-uiborder-none':{
                 $order:10,
@@ -2583,21 +2606,23 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-itemreadonly *, .xui-ui-readonly *':{
+            'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly *, .xui-ui-itemreadonly *':{
                 $order:2,
                 color: '#808080'
             },
-            '.xui-ui-itemreadonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly textarea':{
+            '.xui-ui-readonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea':{
                 $order:3,
                 color: '#909090'
             },
-            'input:disabled, button:disabled, a:disabled,  .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled *, .xui-ui-itemdisabled *':{
+            'button:disabled, a:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled *, .xui-ui-itemdisabled *':{
                 $order:2,
                 cursor:'not-allowed',
                 color: '#808080'
             },
-            'input:disabled, button:disabled, a:disabled,  .xui-ui-inputdisabled, .xui-ui-itemdisabled, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
+            'input:disabled, .xui-ui-inputdisabled, .xui-uicell-disabled, .xui-uicell-disabled *, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
                 $order:3,
+                cursor:'not-allowed',
+                color: '#808080',
                 'background-color':'#eee'
             },
             '.xui-ui-invalid, .xui-ui-invalid *':{
@@ -2608,24 +2633,17 @@ Class("xui.UI",  "xui.absObj", {
                 display:"block",
                 'white-space': 'nowrap'
             },
-            '.xui-ui-busy':{
-                 'background-image': 'url('+xui.ini.img_busy+')',
-                'background-repeat':'no-repeat', 
-                'background-position': 'center center'
-            },
-            '.xui-uicmd-toggle-busy':{
+            '.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy':{
                 $order:7,
                 'background-image': 'url('+xui.ini.img_busy+')',
-                'background-repeat':'no-repeat', 
-                'background-position': 'center center'
-            },
-            ".xui-busy":{
-                "background-image":"url(data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7)",
                 "background-repeat":"no-repeat",
                 "background-position":"center center"
             },
             ".xui-required":{
                 "color":"#ff0000"
+            },
+            '.xui-alert':{
+                'background-color':'#ff6600'
             },
             ".xui-err":{
                 "background-image":"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)",
@@ -6978,7 +6996,7 @@ new function(){
                 },
                 DROP:{
                     $order: 3,
-                    className: 'xuifont',
+                    className: 'xuifont xui-special-icon',
                     style: '{_showDrop}',
                     $fonticon:'xui-uicmd-arrowdrop'
                 },
@@ -6999,16 +7017,7 @@ new function(){
                 },
                 DROP:{
                     'vertical-align': 'middle',
-                    'padding-left':'.66667em',
-                    color:'#888'
-                },
-                'DROP-mouseover':{
-                    $order:11,
-                    color:'#444'
-                },
-                'DROP-mousedown':{
-                    $order:12,
-                    'padding-top':'1px'
+                    'padding-left':'.66667em'
                 }
             },            
             Behaviors:{

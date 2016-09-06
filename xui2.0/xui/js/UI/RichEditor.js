@@ -63,7 +63,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             },
             BOX:{
                 EDITOR:{
-                    tagName:'div'
+                    tagName:'div',
+                    className:'xui-uiborder-flat xui-uibg-base'
                 },
                 MARK:{
                 },
@@ -211,8 +212,6 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 height:'100%',
                 padding:0,
                 margin:0,
-                border:'1px solid #648CB4',
-                'background-color':'#fff',
                 'z-index':'0'
             }
         },

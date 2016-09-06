@@ -97,10 +97,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 items:{
                     ITEM:{
                         tagName : 'div',
-                        className:'{_checked} {_precheked} {itemClass} {disabled} {readonly}',
+                        className:'xui-uiborder-flat {_checked} {_precheked} {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
                         HEAD:{
                             tagName : 'div',
+                            className:'xui-uibg-base',
                             HL:{tagName : 'div'},
                             HR:{tagName : 'div'},
                             TITLE:{
@@ -175,6 +176,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         TAIL:{
                             $order:4,
                             tagName : 'div',
+                            className:'xui-uibg-content',
                             TL:{tagName : 'div'},
                             TR:{tagName : 'div'}
                         }
@@ -203,9 +205,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 padding:0,
                 position:'relative',
                 overflow:'hidden',
-                border: 'solid 1px #ccc',
                 'border-radius': '6px',
-                'box-shadow': '-1px -1px 2px #ddd'
+                'box-shadow': '-1px -1px 2px #EDEDED'
             },
             'HEAD, BODY, BODYI, PANEL, TAIL':{
                 position:'relative'
@@ -282,7 +283,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             HEAD:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'background-color':'#fff',
                 overflow:'hidden'
             },
             TITLE:{
@@ -300,8 +300,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             TAIL:{
                 'font-size':0,
                 'line-height':0,
-                height:'.3em',
-                'background-color':'#EEE'
+                height:'.3em'
             },
             'CAPTION, MESSAGE':{
                 padding:'.3em',
@@ -309,10 +308,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 'font-size':'1em'
             },
             CAPTION:{
-                color:'#666',
                 cursor:'pointer',
                 'white-space':'nowrap',
-            	color: '#00681C',
                 'font-size':'1em'
             },
             'ITEM-checked CAPTION':{

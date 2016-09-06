@@ -21,7 +21,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                        
                        items.cssSize({width:'auto',height:'auto'});
  
-                        hh = items.height();
+                        hh = items.height() + 2/*border*/;
                         if(hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
                         itemNs.each(function(n){
@@ -245,7 +245,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 tagName:'div',
                 className:"xui-uibg-base",
                 BOXBGBAR:{
-                    tabName:'div'
+                    tabName:'div',
+                    className:'xui-uibg-bar'
                 },
                  ITEMS:{
                     tagName:'div',
@@ -276,7 +277,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.button':{
                 ITEM:{
                     tabindex: -1,
-                    className: ' xui-uibarbg2 {itemClass} {disabled}',
+                    className: ' xui-uitembg-menu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
@@ -307,7 +308,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.checkbox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uibarbg2 {itemClass} {disabled}',
+                    className: '  xui-uitembg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
@@ -333,7 +334,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.radiobox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uibarbg2 {itemClass} {disabled}',
+                    className: '  xui-uitembg2 {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
@@ -388,7 +389,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOXBGBAR:{
                 'z-index':-1,
                 position:'absolute',
-                'background-color':'#CCE4FC',
                 left:0,
                 top:0,
                 width:'2em',

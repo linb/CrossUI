@@ -502,14 +502,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(t=options.rowStyle) tt.attr('style',tt.attr('style')+";"+t);
                         if(t=options.rowClass) tt.addClass(t);
                         if(options.hasOwnProperty('disabled')){
-                            var cls=profile.getClass('CELLS2', '-disabled');
+                            var cls='xui-uicell-disabled';
                             if(options.disabled)
                                 tt.addClass(cls);
                             else
                                 tt.removeClass(cls);
                         }
                         if(options.hasOwnProperty('readonly')){
-                            var cls=profile.getClass('CELLS2', '-readonly');
+                            var cls='xui-ui-readonly';
                             if(options.readonly)
                                 tt.addClass(cls);
                             else
@@ -1580,7 +1580,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     tagName:'table',
                     cellspacing:'0',
                     cellpadding:'0',
-                    className:'xui-uibg-content',
+                    className:'xui-uibg-base',
                     TBODY:{
                         tagName:'tbody',
                         TRHEADER:{
@@ -1599,7 +1599,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                             FHCELL:{
                                                 $order:0,
                                                 style:'{rowHandlerDisplay};{_row0DfW};height:{_hcellheight};',
-                                                className:'{cellCls}',
+                                                className:'xui-uiborder-noradius xui-uibg-content xui-uiborder-outset {cellCls}',
                                                 tabindex: '{_tabindex}',
                                                 HCELLA:{
                                                     //for IE78
@@ -1783,12 +1783,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 COLLIST:{
                     tagName:'div',
                     COLLISTDROP:{
-                        className:'xuifont',
+                        className:'xuifont xui-special-icon',
                         $fonticon:'xui-icon-triangle-down'
                     }
                 },
                 ARROW:{
-                    className:'xuifont',
+                    className:'xuifont xui-special-icon',
                     $fonticon:'xui-icon-bigup',
                     text:'&nbsp;'
                 }
@@ -1813,7 +1813,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 header:{
                     HCELL:{
                         style:"width:{_cellWidth};height:{_hcellheight};{colDisplay};",
-                        className:'{cellCls}',
+                        className:'xui-uiborder-noradius xui-uibg-content xui-uiborder-outset {cellCls}',
                         HCELLA:{
                             className:'xui-v-wrapper xui-showfocus {headerClass}',
                             style:"{headerStyle};{colStyle}",
@@ -1853,7 +1853,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 grpCols:{
                     HCELL:{
                         style:"position:absolute;width:{_cellWidth};height:{_hcellheight};top:{_hcelltop};left:{_hcellleft};",
-                        className:'{cellCls}',
+                        className:'xui-uiborder-noradius xui-uibg-content xui-uiborder-outset {cellCls}',
                         HCELLA:{
                             className:'xui-v-wrapper xui-showfocus {headerClass}',
                             style:"{headerStyle};{colStyle}",
@@ -1905,7 +1905,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLS1:{
                             $order:2,
                             tagName:'div',
-                            className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
+                            className:'xui-uirowbg xui-uiborder-b-light {rowCls} {rowClass}',
                             style:'{_rowHeight};{rowStyle}',
                             GRPCELL1:{
                                 tagName:'text',
@@ -1930,7 +1930,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLS2:{
                             $order:2,
                             tagName:'div',
-                            className:'xui-uirowbg xui-uiborder-b2 {rowCls} {rowClass}',
+                            className:'xui-uirowbg xui-uiborder-b-light {rowCls} {rowClass}',
                             style:'{_rowHeight};{rowStyle}',
                             GRPCELL2:{
                                 tagName:'text',
@@ -1968,7 +1968,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     FCELL:{
                         $order:0,
                         style:'{rowHandlerDisplay};{_row0DfW};',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             tabindex: '{_tabindex}',
                             style:'{cellStyle}{firstCellStyle}',
@@ -2015,7 +2015,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     FCELL:{
                         $order:0,
                         style:'{rowHandlerDisplay};{_row0DfW};',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             tabindex: '{_tabindex}',
                             style:'{cellStyle}{firstCellStyle}',
@@ -2100,7 +2100,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows.cells.firstinput':{
                     CELL:{
                         style:'width:{_cellWidth};{cellDisplay};',
-                        className:'xui-treegrid-fcell {cellCls}',
+                        className:'xui-uiborder-r-light xui-treegrid-fcell {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
@@ -2125,7 +2125,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows.cells.input':{
                     CELL:{
                         style:'width:{_cellWidth};{cellDisplay};',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
@@ -2140,7 +2140,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows.cells.textarea':{
                     CELL:{
                         style:'width:{_cellWidth};{cellDisplay};',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus xui-cls-wordwrap {cellClass}',
                             style:'{bgcolor};{color};{cellStyle}',
@@ -2155,7 +2155,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows.cells.button':{
                     CELL:{
                         style:'width:{_cellWidth};{cellDisplay};',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             _NativeElement:true,
                             tagName:'button',
@@ -2169,7 +2169,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows.cells.checkbox':{
                     CELL:{
                         style:'width:{_cellWidth};{cellDisplay}',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus {cellClass}',
                             style:'{cellStyle}',
@@ -2184,7 +2184,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'rows.cells.progress':{
                     CELL:{
                         style:'width:{_cellWidth};{cellDisplay}',
-                        className:'{cellCls}',
+                        className:'xui-uiborder-r-light {cellCls}',
                         CELLA:{
                             className:'xui-showfocus {cellClass}',
                             style:'{cellStyle}',
@@ -2192,7 +2192,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             PROGRESS:{
                                 $order:2,
                                 tagName:'div',
-                                className:'xui-v-wrapper',
+                                className:'xui-v-wrapper xui-ui-gradientbg',
                                 style:'width:{progress};',
                                 CELLCAPTION:{
                                     className:'xui-v-node',
@@ -2267,7 +2267,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
-                'background-color':'#CAE3FF',
+                'background-color':'EDEDED',
                 position:'relative',
                 overflow:'hidden',
                 'text-align':'left'
@@ -2292,11 +2292,17 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'SCROLL11, SCROLL12, SCROLL21':{
                 overflow:'hidden'
             },
-            'SCROLL11.columnfreezed, SCROLL21.columnfreezed':{
-                'border-right':'1px solid #9a9a9a'
+            'TBODY21 .columnfreezed':{
+                '-moz-box-shadow': '1px 0  1px #CCC',
+                '-webkit-box-shadow': '1px 0  1px #CCC',
+                'box-shadow': '1px 0  1px #CCC',
+                'z-index':10,
             },
-            'SCROLL11.rowfreezed, SCROLL12.rowfreezed':{
-                'border-bottom':'1px solid #9a9a9a'
+            'TBODY12 .rowfreezed':{
+                '-moz-box-shadow': '0 1px 1px #CCC',
+                '-webkit-box-shadow': '0 1px 1px #CCC',
+                'box-shadow': '0 1px 1px #CCC',
+                'z-index':10,
             },
             SCROLL22:{
                 overflow:'auto'
@@ -2309,11 +2315,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'none',
                 width:'auto',
                 height:'auto',
-                color: '#3393D2',
                 'font-weight': 'bold',
                 'text-align': 'center',
-                'font-size': '2em',
-                'text-shadow': '2px 2px 2px #ccc'
+                'font-size': '2em'
             },
             'ARROW:before':{
                 'margin-left':'-50%'
@@ -2324,8 +2328,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 cursor:'pointer',
-                visibility:'hidden',
-                color:'#888'
+                visibility:'hidden'
             },
             COLLISTDROP:{
                 position:'absolute',
@@ -2378,42 +2381,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             'CELLS1-group FCELLCAPTION, CELLS1-group CELLA,  CELLS1-group GCELLA, CELLS1-group ROWNUM, CELLS2-group FCELLCAPTION, CELLS2-group CELLA, CELLS2-group GCELLA':{
                 'font-weight':'bold',
-                color:'#3764A0',
                 overflow:'visible'
             },
-           'CELLS1-mouseover, CELLS2-mouseover':{
-                $order:4,
-                'background-color':'#DFE8F6'
-            },
-
-            'CELLS1-readonly CELLA,CELLS2-readonly CELLA':{
+            'CELLS1-active, CELLS2-active, CELL-active, CELL-active CELLA':{
                  $order:5,
-                 color:'#808080'
-            },
-            'CELL-readonly CELLA':{
-                 $order:6,
-                 color:'#808080'
-            },
-            'CELLS1-disabled, CELLS2-disabled':{
-                 $order:7,
-                 'background-color':'#EBEADB'
-            },
-            'CELLS1-disabled CELLA, CELLS2-disabled CELLA':{
-                 $order:7,
-                 color:'#808080'
-            },
-            'CELL-disabled':{
-                 $order:8,
-                 'background-color':'#EBEADB'
-            },
-            'CELL-disabled CELLA':{
-                 $order:8,
-                 color:'#808080'
-            },
-
-            'CELLS1-active, CELLS2-active, CELL-active':{
-                 $order:5,
-                 'background-color':'#A3BAE9'
+                 'background-color':'#DDDDDD'
             },
             "CELLS1-hot, CELLS2-hot":{
                 $order:6,
@@ -2421,7 +2393,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             'CELLS1-checked, CELLS2-checked, CELL-checked, CELL-checked CELLA':{
                  $order:6,
-                'background-color':'#7199E8',
+                'background-color':'#ABABAB',
                 color:'#fff'
             },
             "FCELL CELLA, GCELL GCELLA":{
@@ -2464,16 +2436,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'FHCELL, HCELL':{
-               'background-color':'#CAE3FF',
-               'border-left':'1px solid #fff',
-               'border-top':'1px solid #fff',
-               'border-right':'1px solid #A2BBD9',
-               'border-bottom':'1px solid #A2BBD9',
                padding:0,
                'vertical-align':'bottom'
-            },
-            'FHCELL-mouseover, HCELL-mouseover':{
-               'background-color':'#FFF1A0'
             },
             'ROW1, ROW2':{
                 position:'relative',
@@ -2490,7 +2454,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:'100%',
                 //firefox:height:100% without overflow:hidden
                 'padding-left':'1px',
-                'border-right':'1px solid #A2BBD9',
                 position:'relative',
                 overflow:xui.browser.ie6?'hidden':'',
                 'vertical-align':'top',
@@ -2515,9 +2478,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'background-color':'#EFF8FF'
             },
             //
-            'CELL-label a':{
-                color: '#000'
-            },
             'CELL-input':{
             },
             'CELL-number, CELL-spin, CELL-currency':{
@@ -2534,13 +2494,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'line-height':'100%',
                 height:'100%'
             },
-            'CELL-disabled KEY-tgbtn':{
-                 $order:101,
-                 color:'#ababab'
+           'CELLS1-mouseover, CELLS2-mouseover':{
+                $order:4,
+                'background-color':'#F6F6F6'
+            },
+            'FHCELL-mouseover, HCELL-mouseover':{
+               'background-color':'#F6F6F6'
             },
             'CELL-mouseover':{
                 $order:5,
-                'background-color':'#DFE8F6'
+                'background-color':'#C5C5C5'
             },
             'FCELL CELLA, GCELL GCELLA, HCELLA':{
                 position:'relative',
@@ -2559,7 +2522,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'outline-offset':'-1px',
                 '-moz-outline-offset':(xui.browser.gek && xui.browser.ver<3)?'-1px !important':null,
                 height:'100%',
-                color:'#000',
                 //ie need this
                 width:xui.browser.ie?'100%':'',
                 // depends on parent
@@ -2573,8 +2535,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             PROGRESS:{
                 height:'100%',
-                'background-color':'#00ffff',
-                'line-height':'1.8em',
+                'line-height':'1.83333em',
                 overflow:'visible',
                 opacity:0.7,
                 '*filter':'alpha(opacity=70)'
@@ -2715,7 +2676,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     .css({
                         height:profile.getRoot().height()+'px',
                         width:'4px',
-                        backgroundColor:'#ddd',
+                        backgroundColor:'#DDDDDD',
                         cursor:'e-resize'
                     });
                 },
@@ -2729,7 +2690,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }else{
                         if(profile._limited){
-                            p.proxyNode.css('backgroundColor','#ddd');
+                            p.proxyNode.css('backgroundColor','#DDDDDD');
                             profile._limited=0;
                         }
                     }
@@ -2880,7 +2841,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     .css({
                         width:profile.getRoot().width()+'px',
                         height:'4px',
-                        backgroundColor:'#ddd',
+                        backgroundColor:'#DDDDDD',
                         cursor:'n-resize'
                     });
                 },
@@ -2894,7 +2855,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }else{
                         if(profile._limited){
-                            p.proxyNode.css('backgroundColor','#ddd');
+                            p.proxyNode.css('backgroundColor','#DDDDDD');
                             profile._limited=0;
                         }
                     }
@@ -4011,7 +3972,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             _minColW:'.5em',
             _maxColW:'25em',
-            _minRowH:'1.8em',
+            _minRowH:'1.83333em',
 
             gridHandlerCaption:{
                 ini:"",
@@ -4040,7 +4001,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             headerHeight:{
                 $spaceunit:1,
-                ini:'1.8em',
+                ini:'1.83333em',
                 action:function(v){
                     var profile=this,
                         css=xui.CSS,
@@ -4775,6 +4736,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             data.grpCols1=data.grpCols2=data.grpCols;
             data._row0DfW=data.rowHandlerWidth?('width:'+css.$forceu(data.rowHandlerWidth)):'';
 
+            // make sure its' size
+            if(css.$isEm(prop.headerHeight))data.headerHeight = css.$forceu(css.$px(prop.headerHeight,0,true),'em');
+            if(css.$isEm(prop.rowHeight))data.rowHeight = css.$forceu(css.$px(prop.rowHeight,0,true),'em');
+            if(css.$isEm(prop.rowHandlerWidth))data.headerHeight = css.$forceu(css.$px(prop.rowHandlerWidth,0,true),'em');
+
             arguments.callee.upper.call(this, profile);
 
             prop.rows=this._adjustRows(profile, prop.rows);
@@ -4783,8 +4749,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return !item.tag || !!item.tag.match(/\bheader\b/);
             });
             
-            data._columnfreezed = prop.freezedColumn?'columnfreezed':'';
-            data._rowfreezed = prop.freezedRow?'rowfreezed':'';
+            data._columnfreezed = prop.freezedColumn?'columnfreezed xui-uiborder-r-dark':'';
+            data._rowfreezed = prop.freezedRow?'rowfreezed xui-uiborder-b-dark':'';
 
             return data;
         },
@@ -4909,7 +4875,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _grp,w,h,_left,_ww,
 
                     layer=profile._headerLayers,
-                    h=parseInt(headerHeight/(layer+1),10),
+                    h=headerHeight/(layer+1),
                     flag=false;
 
                 for(var j=0,m=arr.length,grp;j<m;j++){
@@ -4983,8 +4949,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 capOut=('caption' in cell) && xui.adjustRes(cell.caption),
                 reg1=/</g,
                 me=arguments.callee,
-                dcls=me._dcls||(me._dcls=profile.getClass('CELL', '-disabled')),
-                rcls=me._rcls||(me._rcls=profile.getClass('CELL', '-readonly')),
+                dcls='xui-uicell-disabled',
+                rcls='xui-ui-readonly',
                 //1. _$caption in cell (for special set)
                 //2. caption in uicell(if [uicell] is not [cell], the [caption] maybe is the result of cell.renderer)
                 //3. renderer in cell
@@ -5262,11 +5228,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 t.rowCls = ""
                 if(row.disabled)
-                    t.rowCls += profile.getClass('CELLS2', '-disabled');
+                    t.rowCls += ' xui-uicell-disabled';
                 if(row.readonly)
-                    t.rowCls += profile.getClass('CELLS2', '-readonly');
+                    t.rowCls += ' xui-ui-readonly';
                 if(row.group)
-                    t.rowCls += profile.getClass('CELLS1','-group') + " xui-uiborder-r2";
+                    t.rowCls += ' ' + profile.getClass('CELLS1','-group') + " xui-uiborder-r-light";
 
                 if(row.hidden)
                     t.rowDisplay=NONE;

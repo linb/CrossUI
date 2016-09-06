@@ -65,10 +65,11 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
         t.$submap.items={
             ITEM:{
                 tagName : 'div',
-                className:'{_checked} {_precheked} {itemClass} {disabled} {readonly}',
+                className:'xui-uiborder-flat {_checked} {_precheked} {itemClass} {disabled} {readonly}',
                 style:'{itemStyle}',
                 HEAD:{
                     tagName : 'div',
+                    className:'xui-uibg-base',
                     HL:{tagName : 'div'},
                     HR:{tagName : 'div'},
                     TITLE:{
@@ -124,6 +125,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 TAIL:{
                     $order:4,
                     tagName : 'div',
+                    className:'xui-uibg-content',
                     TL:{tagName : 'div'},
                     TR:{tagName : 'div'}
                 }
@@ -151,9 +153,8 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 padding:0,
                 position:'relative',
                 overflow:'hidden',
-                border: 'solid 1px #ccc',
                 'border-radius': '6px',
-                'box-shadow': '-1px -1px 2px #ddd'
+                'box-shadow': '-1px -1px 2px #EDEDED'
             },
             'HEAD, BODY, BODYI, TAIL':{
                 position:'relative'
@@ -222,7 +223,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             HEAD:{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'background-color':'#fff',
                 overflow:'hidden'
             },
             TITLE:{
@@ -237,18 +237,15 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 position:'relative',
-                height:'.3em',
-                'background-color':'#EEE'
+                height:'.3em'
             },
             'CAP1, CAP2':{
                 padding:'.3em',
                 'vertical-align':'middle'
             },
             CAP1:{
-                color:'#666',
                 cursor:'pointer',
-                'white-space':'nowrap',
-            	color: '#00681C'
+                'white-space':'nowrap'
             },
             'ITEM-checked CAP1':{
                 $order:2,
@@ -276,7 +273,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:null,HEAD:'HEAD',OPT:'OPT'},
+            HoverEffected:{ITEM:'ITEM',HEAD:'HEAD',OPT:'OPT'},
             ClickEffected:{ITEM:null,HEAD:'HEAD'},
             ITEM:{onClick:null,onKeydown:null},
             HEAD:{

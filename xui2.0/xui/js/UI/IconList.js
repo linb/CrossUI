@@ -20,7 +20,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy xui-hiddenborder xui-showfocus {itemClass} {disabled}  {readonly}',
+                    className:'xui-busy xui-uitembg xui-showfocus {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding};margin:{itemMargin};{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -53,14 +53,14 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 zoom:xui.browser.ie6?1:null
             },
             ITEM:{
+                padding:0,
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
                 position:'relative',
                 cursor:'pointer',
                 'vertical-align':'top',
                 'background-repeat':'no-repeat',
-                'background-position':'center center',
-                'border-radius':'3px'
+                'background-position':'center center'
             },
             IMAGE:{
                 visibility:'hidden'
@@ -68,22 +68,6 @@ Class("xui.UI.IconList", "xui.UI.List",{
             IBWRAP:{
                 'font-size':0,
                 'line-height':0
-            },
-             'ITEM-mouseover':{
-                $order:1,
-                padding:0
-            },
-            'ITEM-mousedown':{
-                $order:2,
-                padding:0
-             },
-            'ITEM-checked':{
-                $order:2,
-                padding:0,
-                border:'solid 1px #648cb4',
-                'border-radius':'3px'                
-            },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
             }
         },
         Behaviors:{

@@ -114,7 +114,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 text:'{labelCaption}'
             },
             BOX:{
-                className:'xui-ui-input',
+                className:'xui-ui-input xui-uiborder-flat xui-uibg-base',
                 WRAP:{
                     tagName : 'div',
                     INPUT:{
@@ -170,13 +170,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 left:0,
                 top:0,
                 position:'absolute',
-                'background-color':'#fff',
-                'border':'solid 1px #B5B8C8',
-                'border-radius': '3px',
                 'z-index':10
-            },
-            'BOX-focus, BOX-mouseover':{
-                'border-color':'#7EADD9'
             },
             INPUT:{
                //don't change it in custom class or style
@@ -348,7 +342,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;
                     if(profile.onFocus)profile.boxing().onFocus(profile);
-                    profile.getSubNode('BORDER').tagClass('-focus');
+                    profile.getSubNode('BOX').tagClass('-focus');
                     
                     var node=xui.use(src).get(0);
                                         
@@ -401,7 +395,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     // allow destory control inonBlur event
                     if (profile.destroyed) return false;
                      
-                    profile.getSubNode('BORDER').tagClass('-focus',false);
+                    profile.getSubNode('BOX').tagClass('-focus',false);
                     var value=xui.use(src).get(0).value;
                     if(profile.$Mask && profile.$Mask==value){
                         value="";

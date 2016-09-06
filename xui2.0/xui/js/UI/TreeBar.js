@@ -218,7 +218,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
-                className:"xui-uibg-content",
+                className:"xui-uibg-base",
                 BOX:{
                     tagName : 'div',
                     onselectstart:'return false',
@@ -237,7 +237,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'xui-uibarbg  xui-showfocus xui-uiborder-tb {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
+                            className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
                             style:'{itemStyle}',
                             RULER:{
                                 $order:2,
@@ -395,6 +395,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 $order:4,
                 'border-top': '0',
                 'border-bottom': '0'
+            },
+            'BAR-group.xui-uitembg':{
+                border:'none'
             },
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',

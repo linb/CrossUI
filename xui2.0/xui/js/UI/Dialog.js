@@ -172,15 +172,24 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 tagName:'div',
                 className:'xui-uibar-top',
                 TBARTDL:{
-                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                    TBARTDLT:{
+                        className:'xui-uibar-tdlt',
+                    }
                 },
                 TBARTDM:{
                     $order:1,
-                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                    TBARTDMT:{
+                        className:'xui-uibar-tdmt',
+                    }
                 },
                 TBARTDR:{
                     $order:2,
-                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
+                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                    TBARTDRT:{
+                        className:'xui-uibar-tdrt'
+                    }
                 },
                 BARCMDL:{
                     $order:3,
@@ -194,6 +203,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     CAPTION:{
                         $order:1,
                         tabindex: '{tabindex}',
+                        className:'xui-uicaption',
                         text:'{caption}'
                     }
                 },
@@ -267,6 +277,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
+                        className:'xui-uibg-bar',
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -327,6 +338,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 outline:0
+            },
+            '.xui-uibar-top BARCMDL':{
+                padding:'.6em 0 .6em 1em'
             }
         },
         Behaviors:{

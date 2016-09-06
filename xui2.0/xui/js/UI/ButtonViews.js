@@ -1,7 +1,7 @@
 Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
     Initialize:function(){        
         var t=this.getTemplate(),keys=this.$Keys;
-        t.LIST.className='xui-uibg-bar xui-uiborder-outset';
+        t.LIST.className='xui-uibg-bar';
         delete t.LIST.LEFT;
         delete t.LIST.RIGHT;
         delete t.LIST.DROP;
@@ -150,6 +150,35 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     this.boxing().setBarSize(this.properties.barSize,true);
                 }
+            },
+            borderType:{
+                ini:'none',
+                listbox:['none','flat','inset','outset'],
+                action:function(v){
+                    var ns=this,
+                        p=ns.properties,
+                        n1=ns.getSubNode('LIST'),
+                        reg=/^xui-uiborder-/,
+                        flat='xui-uiborder-flat',
+                        ins='xui-uiborder-inset',
+                        outs='xui-uiborder-outset',
+                        root=ns.getRoot();
+                    n1.removeClass(reg);
+                    switch(v){
+                        case 'flat':
+                        n1.addClass(flat);
+                        break;
+                        case 'inset':
+                        n1.addClass(ins);
+                        break;
+                        case 'outset':
+                        n1.addClass(outs);
+                        break;
+                    }
+
+                    //force to resize
+                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                }
             }
         },
         LayoutTrigger:function(){
@@ -157,6 +186,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             this.boxing().setBarLocation(pro.barLocation,true)
             .setBarHAlign(pro.barHAlign,true)
             .setBarVAlign(pro.barVAlign,true);
+            
+            if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
         _onresize:function(profile,width,height,force,key){
             var prop=profile.properties,
@@ -183,6 +214,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hl = profile.getSubNode('ITEMS'),
                 hsfz =  useem?hs._getEmSize():null,
                 hlfz =  useem?hl._getEmSize():null,
+                type = prop.borderType,
+                bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
                 wc=null,
                 hc=null,
                 top, left, itmsH;
@@ -190,11 +223,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             if(!prop.noHandler){
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
                     if(width){
-                        hs.width(adjustunit(ww-2, hsfz));
-                        hl.width(adjustunit(ww-2, hlfz));
+                        hs.width(adjustunit(ww-bw, hsfz));
+                        hl.width(adjustunit(ww-bw, hlfz));
                         // for nopanel:
                         if(noPanel)
-                            hs.height(adjustunit(hh-2, hsfz));
+                            hs.height(adjustunit(hh-bw, hsfz));
                      
                         left = 0;
                         wc=ww;
@@ -202,26 +235,26 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
                     // caculate by px
                     itmsH = hl.offsetHeight()
-                    if(hh-itmsH>0)hc=hh-itmsH-2;
-                    top = prop.barLocation=='top'?2+itmsH:0;
+                    if(hh-itmsH>0)hc=hh-itmsH-bw;
+                    top = prop.barLocation=='top'?bw+itmsH:0;
 
                     hs.height(adjustunit(itmsH, hsfz));
                 }else{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hs.width(adjustunit(ww-2,hsfz));
-                            hl.width(adjustunit(ww-2,hlfz));
+                            hs.width(adjustunit(ww-bw,hsfz));
+                            hl.width(adjustunit(ww-bw,hlfz));
                         }
-                        hs.height(adjustunit(hh-2,hsfz));
+                        hs.height(adjustunit(hh-bw,hsfz));
     
                         top=0;
                         hc=hh;
                     }
                     if(width){
                         //caculate by px
-                        left = prop.barLocation=='left'?2+css.$px(prop.barSize, hsfz):0;
-                        wc = ww-css.$px(prop.barSize, hsfz)-2;
+                        left = prop.barLocation=='left'?bw+css.$px(prop.barSize, hsfz):0;
+                        wc = ww-css.$px(prop.barSize, hsfz)-bw;
                     }
                 }
             }else{

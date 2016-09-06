@@ -129,7 +129,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ITEMS:{
                $order:10,
                tagName:'div',
-               className:'xui-uibg-content {_bordertype}',
+               className:'xui-uibg-base {_bordertype}',
                text:"{items}"
             },
             $submap:{

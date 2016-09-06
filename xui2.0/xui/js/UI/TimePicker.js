@@ -67,15 +67,24 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                        BARTDLT:{
+                            className:'xui-uibar-tdlt',
+                        }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                        BARTDMT:{
+                            className:'xui-uibar-tdmt',
+                        }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                        BARTDRT:{
+                            className:'xui-uibar-tdrt'
+                        }
                     },
                     BARCMDL:{
                         $order:3,
@@ -95,12 +104,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         },
                         HOUR:{
                             $order:2,
-                            className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
+                            className:'xui-ui-draggable xui-uibg-base xui-uiborder-flat'
                         },
                         MTXT:{$order:3,text:':'},
                         MINUTE:{
                                 $order:4,
-                                className:'xui-ui-draggable xui-bginput xui-uiborder-inset'
+                                className:'xui-ui-draggable xui-uibg-base xui-uiborder-flat'
                             },
                         NEXT:{
                             $order:6,
@@ -135,13 +144,13 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CONH:{
                             tagName:'div',
-                            className:'xui-uiborder-inset',
+                            className:'xui-uibg-content xui-uiborder-flat',
                             text:h
                         },
                         CONM:{
                             $order:2,
                             tagName:'div',
-                            className:'xui-uiborder-inset',
+                            className:'xui-uibg-content xui-uiborder-flat',
                             text:m
                         }
                     }
@@ -184,15 +193,15 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         });
     },
     Static:{
-        _excls:'xuiex-timepicker xui-uitd',
-        _excls2:'xuiex-timepicker xui-uitd xui-uitd-alt ',
-        _excls3:'xuiex-timepicker3 xui-uitd',
-        _excls4:'xuiex-timepicker xui-uitd xui-uitd-alt',
+        _excls:'xuiex-timepicker xui-cell',
+        _excls2:'xuiex-timepicker xui-cell xui-cell-alt ',
+        _excls3:'xuiex-timepicker3 xui-cell',
+        _excls4:'xuiex-timepicker xui-cell xui-cell-alt',
 
-        _excls_mo:'xui-uitd-mouseover',
-        _excls_c:'xui-uitd-checked',
-        _excls_mo3:'xui-uitd-mouseover',
-        _excls_c3:'xui-uitd-checked',
+        _excls_mo:'xui-cell-mouseover',
+        _excls_c:'xui-cell-checked',
+        _excls_mo3:'xui-cell-mouseover',
+        _excls_c3:'xui-cell-checked',
         _mover:function(src, type){
             var b=this,cn=src.className;
             if(type==2){
@@ -227,15 +236,15 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             },
             CONH:{
                 'white-space': 'nowrap',
-                'background-color':'#F9F9FB'
+                'text-align':'center'
             },
             CONM:{
                 'margin-top':'.4em',
                 'white-space': 'nowrap',
-                'background-color':'#F9F9FB'
+                'text-align':'center'
             },
             BARCMDL:{
-                top:'.3em'
+                top:'.1em'
             },
             'PRE,PRE2,NEXT,NEXT2':{
                 position:'relative',
@@ -245,18 +254,17 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             },
             'HOUR, MINUTE':{
                 $order:3,
-                margin:'.2em .2em 0 .2em',
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
+                margin:'0 .2em',
                 'padding':'0 .2em'
             },
             SET:{
                 position:'absolute',
                 display:'none',
-                color:'#ff0000',
                 top:'.1em',
-                right:'.5em'
+                right:'.4em'
             },
             TAILI:{
                 position:'relative',
@@ -269,12 +277,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             },
             '.xuiex-timepicker':{
                 'text-align':'center',
-                padding:'.2em 0.4em'
+                padding:'.2em .4em'
             },
             '.xuiex-timepicker3':{
                 'text-align':'center',
                 'font-weight':'bold',
-                padding:'.2em 0.3em'
+                padding:'.2em 0.246em'
             }
         },
         Behaviors:{
@@ -323,7 +331,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 },
                 onDrag:function(profile, e, src){
                     var count,off = xui.DragDrop.getProfile().offset,v=profile.properties.$UIvalue,a=v.split(':');
-                    a[0]=Math.round( (parseFloat(a[0])||0) + parseFloate(off.x/20) );
+                    a[0]=Math.round( (parseFloat(a[0])||0) + parseFloat(off.x/20) );
                     a[0]=(a[0]%60+60)%60;
                     profile.$temp2=(a[0]<=9?'0':'')+a[0];
 

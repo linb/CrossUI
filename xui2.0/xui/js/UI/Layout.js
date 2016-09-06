@@ -434,13 +434,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                     if(b){
                         if(!profile._limited){
-                            profile._bg=p.proxyNode.css('backgroundColor');
-                            p.proxyNode.css('backgroundColor','#ff6600');
+                            p.proxyNode.addClass('xui-alert');
                             profile._limited=true;
                         }
                     }else{
                         if(profile._limited){
-                            p.proxyNode.css('backgroundColor',profile._bg);
+                            p.proxyNode.removeClass('xui-alert');
                             profile._limited=0;
                         }
                     }

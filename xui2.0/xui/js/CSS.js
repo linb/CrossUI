@@ -291,7 +291,7 @@ Class("xui.CSS", null,{
         },
         resetCSS:function(){
             var b=xui.browser,
-            css="html{color:#000;background:#FFF;}"+
+            css="html{color:#444;background:#FFF;}"+
                 "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}"+
                 "table{border-collapse:collapse;border-spacing:0;}"+
                 "fieldset,img{border:0;}"+

@@ -7,14 +7,13 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         delete t.LIST.DROP;
         delete t.LIST;
         delete t.PNAELS;
-        t.$submap.items.ITEM.className = 'xui-uibarbg xui-uiborder-tb ';
+        t.$submap.items.ITEM.className = 'xui-uitembg-bar xui-uiborder-tb ';
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
         Appearances:{
             BOX:{
-                border:'solid 1px #648CB4',
                 position:'absolute',
                 left:0,
                 top:0
@@ -75,10 +74,42 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             }
         },
         DataModel:{
-            $border:1,
             noPanel:null,
             noHandler:null,
-            selMode:null
+            selMode:null,
+            borderType:{
+                ini:'flat',
+                listbox:['none','flat','inset','outset'],
+                action:function(v){
+                    var ns=this,
+                        p=ns.properties,
+                        n1=ns.getSubNode('BOX'),
+                        reg=/^xui-uiborder-/,
+                        flat='xui-uiborder-flat',
+                        ins='xui-uiborder-inset',
+                        outs='xui-uiborder-outset',
+                        root=ns.getRoot();
+                    n1.removeClass(reg);
+                    switch(v){
+                        case 'flat':
+                        n1.addClass(flat);
+                        break;
+                        case 'inset':
+                        n1.addClass(ins);
+                        break;
+                        case 'outset':
+                        n1.addClass(outs);
+                        break;
+                    }
+
+                    //force to resize
+                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                }
+            }
+        },
+        LayoutTrigger:function(){
+            var v=this.properties.borderType;
+            if(v&&v!='none')this.boxing().setBorderType(v,true);
         },
         _onresize:function(profile,width,height,force,key){
               var prop=profile.properties,
@@ -100,7 +131,8 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 panelfz = useem?panel._getEmSize():null,
                 listfz = useem?list._getEmSize():null,
-                bw=prop.$border*2,
+                type = prop.borderType,
+                bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
                 wc=null,
                 hc=null,
                 temp,t1,t2,obj,top;

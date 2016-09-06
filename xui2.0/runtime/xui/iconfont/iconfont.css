@@ -12,7 +12,6 @@
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
-  color: #444;
   vertical-align:middle;
 }
 .xuifont, .xuicon{
@@ -31,8 +30,8 @@
   margin: 0 4px;
 }
 .xuifont-mouseover, .xuicon-mouseover{ color: #000; }
-.xuifont-mousedown, .xuicon-mousedown{ color: #FF0000; }
-.xuifont-checked, .xuicon-checked{ color: #FF0000; }
+.xuifont-mousedown, .xuicon-mousedown{ color: #3393D2; }
+.xuifont-checked, .xuicon-checked{ color: #3393D2; }
 
 .xui-icon-empty:before, .xui-ui-busy:before{
 	content: "\e62c" !important;

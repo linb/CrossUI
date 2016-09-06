@@ -1684,7 +1684,7 @@ Class('xui.Dom','xui.absBox',{
                     to = f2(to);
 
                     f3=function(from, to, value,c){
-                        var r= from[c]+Math.round(value*(to[c]-from[c]));
+                        var r= from[c]+Math.round(parseFloat(value*(to[c]-from[c])));
                         return (r < 16 ? '0' : '') + r.toString(16)
                     };
                     return '#' + f3(from,to, curvalue, 'red') + f3(from,to, curvalue, 'green') + f3(from,to, curvalue, 'blue');
@@ -2583,7 +2583,7 @@ type:4
                     if(xui.browser.ie8)node.style.msfilter=t;
                     node.style.filter=t;
                     if(!box)
-                        node.style.backgroundColor="#cccccc";
+                        node.style.backgroundColor="#C5C5C5";
                 }
             }
         },

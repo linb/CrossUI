@@ -135,7 +135,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 items:{
                     ITEM:{
                         style:'{itemStyle}{_itemDisplay}',
-                        className:'xui-uibarbg2',
+                        className:'xui-uitembg-menu',
                         ITEMI:{
                             ITEMC:{
                                 ITEMA:{
@@ -192,9 +192,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             },
             ITEMS:{
                 'vertical-align':'middle'
-            },
-            'LIST-disabled':{
-                'background-color':'#E4E4E4'
             },
             ITEM:{
                 'white-space': 'nowrap',

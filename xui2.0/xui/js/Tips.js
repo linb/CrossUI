@@ -229,7 +229,7 @@ Class("xui.Tips", null,{
                 this.threadid='$tips:1$';
                 this.show=function(item, pos){
                     if(!this.node){
-                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFFACD;padding:.3em;overflow:hidden;"></div>');
+                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFF1A0;padding:.5em;overflow:hidden;"></div>');
                         xui('body').append(this.node);
                     }
                     pos.left+=12;

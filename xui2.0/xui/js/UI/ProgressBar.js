@@ -22,6 +22,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             FILL:{
                 tagName:'div',
                 style:'{fillBG}',
+                className:'xui-ui-gradientbg',
                 text:'{html}'+xui.UI.$childTag
             },
             INN:{
@@ -60,8 +61,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 width:0,
                 height:0,
                 left:0,
-                top:0,
-                'background-color':'#96E115'
+                top:0
             }
         });
         //set back

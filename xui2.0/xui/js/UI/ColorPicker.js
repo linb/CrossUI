@@ -37,7 +37,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     f('V',ff(hsv[2]));
                     delete profile.$hexinhsv;
                 }
-                cls._setClrName(profile,hexs);
+                cls._setClrName(profile,value=='transparent'?value:hexs);
                 cls._updateDftTip(profile);
                 //dont update adv UI again, if adv value is the newest
                 if(p.advance && profile.$hexinadv != hexs){
@@ -66,17 +66,17 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             evs=xui.$IEUNSELECTABLE(),
             evs2='style="visibility:hidden;"';
 
-        ns.addTemplateKeys(['DD1', 'DD2', 'DD3','R','G','B','HH','S','V','H','E','X']);
+        ns.addTemplateKeys(['DD1', 'DD2', 'DD3','R','G','B','TXT','HH','S','V','H','E','X']);
 
         //simple list
         for(i=0;i<l;i++){
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" tabindex="{tabindex}" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-showfocus xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
             if((i+1)%17==0)arr.push('<br />');
         }
         //data
-        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
-                '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-bginput xui-uiborder-inset  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
+        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
+                '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
+               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
         ns.setTemplate({
             style:'{_style};height:auto;width:auto',
             tagName : 'div',
@@ -88,15 +88,24 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'{classBar}',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt'
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                        BARTDLT:{
+                            className:'xui-uibar-tdlt',
+                        }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t'
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                        BARTDMT:{
+                            className:'xui-uibar-tdmt',
+                        }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt'
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                        BARTDRT:{
+                            className:'xui-uibar-tdrt'
+                        }
                     },
                     BARCMDL:{
                         $order:3,
@@ -128,7 +137,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         CON:{
                             $order:1,
                             tagName:'div',
-                            className:'xui-uiborder-inset',
+                            className:'xui-uibg-content xui-uiborder-inset',
                             SIMPLE:{
                                 tagName:'div',
                                 TOP:{
@@ -143,11 +152,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
-                                        className:'xui-uiborder-outset xui-uibg-bar',
-                                        EXAMI:{
-                                            tagName:'div',
-                                            className:'xui-uiborder-inset'
-                                        }
+                                        className:'xui-uiborder-inset',
                                     }
                                 },
                                 LIST:{
@@ -289,44 +294,40 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                padding:'4px 5px 4px 0'
+                padding:'.4em .4em .4em 0'
             },
             CON:{
-                padding:'3px',
+                padding:'.2em',
                 position:'relative'
             },
             DATA:{
             },
             'DATA span':{
-                'padding':'0 2px',
-                'margin-right':'2px',
+                'padding':'0 .2em',
+                'margin-right':'.1em',
                 'width':'1.7em'
             },
             'DATA div':{
-                'padding-bottom':'.5em'
+                'padding':'.4em 0'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             },
             EXAM:{
-                padding:'3px',
+                padding:'.1em',
                 position:'absolute',
-                top:'2px',
-                right:'2px'
-            },
-            EXAMI:{
-                height:'4em',
-                width:'7em',
+                width:'5.6em',
+                height:'5.6em',
+                top:'.2em',
+                right:'.2em',
                 'white-space':'normal',
                 'text-align':'center'
             },
             'DD1, DD2, DD3':{
-                border:'1px solid #779EBF',
                 'padding-right':'2px',
                 cursor:'e-resize',
-                'text-align':'center',
-                background:'#F8FBFF'
+                'text-align':'center'
             },
             TOP:{
                 position:'relative'
@@ -334,14 +335,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             LIST :{
                 position:'relative',
                 overflow:'hidden',
-                margin:'2px',
-                padding:'2px',
+                padding:'.2em',
                 'white-space': 'nowrap',
-                'line-height':xui.__iefix1
+                'line-height':'1em'
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'4px',
+                'padding-top':'.4em',
                 'text-align':'center'
             },
             SIMPLE:{
@@ -399,27 +399,26 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 overflow: 'hidden',
                 margin: '0',
                 cursor: 'pointer',
-                border: '1px solid #000',
-                margin:'0 -1px -1px 0'
+                margin:'0 -1px -1px 0',
+                'font-size': '1.18em'
             },
             TRANS:{
                 position:'absolute',
-                top:'3px',
+                top:'.3em',
                 left:'0',
                 display:xui.$inlineBlock,
                 cursor:'pointer'
             },
             SET:{
                 position:'absolute',
-                color:'#ff0000',
                 display:'none',
                 top:'0',
-                right:'28px'
+                right:'2.4em'
             },
             TOGGLE:{
                 position:'absolute',
-                right:'6px',
-                top:'4px',
+                right:'.5em',
+                top:'0.1em',
                 display:xui.$inlineBlock,
                 cursor:'default'
             }
@@ -682,7 +681,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 k='color.LIST.',
                 vv=xui.getRes(k+v);
             if(vv==v)
-                p.$clrN2 = p.$clrN = '#'+v;
+                p.$clrN2 = p.$clrN = (v=='transparent'?'':'#')+v;
             else{
                 p.$clrN = vv;
                 p.$clrN2 = xui.wrapRes(k+v);
@@ -751,7 +750,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             var cls=this,
                 rgb=cls.hex2rgb(v),
                 b=p.boxing(),
-                ex=b.getSubNode('EXAMI'),
+                ex=b.getSubNode('EXAM'),
                 hsv=cls.rgb2hsv(rgb),
                 vv=xui.getRes('color.LIST.'+v),
                 v1=(v=='transparent'?'':'#')+v;
@@ -759,11 +758,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             ex.text(p.show_color = vv==v? v1 : vv);
         },
         //reset example block
-        _updateDftTip:function(p){
-            var cls=p.box,
-                ex=p.boxing().getSubNode('EXAMI');
-            ex.css({backgroundColor:'#'+p.$hex.join(''), color:p.$hsv[2]>0.6?'#000':'#FFF'});
-            ex.html(p.$clrN2||'',false);
+        _updateDftTip:function(prf){
+            var cls=prf.box,
+                p=prf.properties,
+                trans=(prf.$tempValue||p.$UIvalue)=='transparent',
+                ex=prf.boxing().getSubNode('EXAM');
+            ex.css({backgroundColor:trans?'transparent':'#'+prf.$hex.join(''), color:trans?'#000':prf.$hsv[2]>0.6?'#000':'#FFF'});
+            ex.html(prf.$clrN2||'',false);
         },
         _to3:function(s){
             if(!s||s=="transparent")s="FFFFFF";

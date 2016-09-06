@@ -79,10 +79,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
 
                 if(arr1.length){
-                    profile.getSubNodes('ITEM',arr1).tagClass('-checked',false).removeClass("xui-uiborder-linkbottombar");
+                    profile.getSubNodes('ITEM',arr1).tagClass('-checked',false);
                 }
                 if(arr2.length){
-                    profile.getSubNodes('ITEM',arr2).tagClass('-checked').addClass("xui-uiborder-linkbottombar");
+                    profile.getSubNodes('ITEM',arr2).tagClass('-checked');
                 }
 
             });
@@ -337,18 +337,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 tagName : 'div',
                 style:'{_liststyle}',
                 LISTBG:{
-                     $order:0
+                     $order:0,
+                     className:'xui-uiborder xui-uitembg-bar-checked'
                 },
                 LEFT:{
-                    className:'xui-ui-unselectable',
+                    className:'xui-ui-unselectable xui-special-icon',
                     text:'&#10094'
                 },
                 RIGHT:{
-                    className:'xui-ui-unselectable',
+                    className:'xui-ui-unselectable xui-special-icon',
                     text:'&#10095'
                 },
                 DROP:{
-                    className:'xui-ui-unselectable',
+                    className:'xui-ui-unselectable xui-special-icon',
                     text:'&#9660'
                 },
                 ITEMS:{
@@ -366,7 +367,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'{itemClass} {disabled} {readonly}',
+                        className:'xui-uiborder-flat xui-uitembg {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
                         ITEMI:{
                             ITEMC:{
@@ -440,10 +441,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 left:0,
                 bottom:0,
-                height:'1px',
-                'background-color':'#FAD600',
-                'border-top':'solid 1px #C87800',
-                'border-bottom':'solid 1px #C87800',
+                height:'2px',
                 width:'100%'                
             },
             'LEFT, RIGHT, DROP':{
@@ -455,14 +453,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'z-index':'10',
                 width:'1em',
                 height:'1em',
-                color: '#3393D2',
                 'font-weight': 'bold',
                 'text-align': 'center',
-                'font-size': '1.4em',
-                'text-shadow': '1px 1px 4px #ccc'
+                'font-size': '1.4em'
             },
             LEFT:{
-                left:0                
+                left:0
             },
             RIGHT:{
                 right:"1.5em"
@@ -472,7 +468,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
 
             ITEMS:{
-                padding:'1px 0 2px 0',
+                padding:'1px 0 3px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -481,21 +477,22 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             ITEM:{
                 $order:0,
                 cursor:'pointer',
-                'padding-right':'.5em',
+                'padding':'0 .5em 0 0',
                 'vertical-align':'top',
                 'margin':'0 .2em',
-                'border-left':'solid 1px #C87800',
-                'border-top':'solid 1px #C87800',
-                'border-right':'solid 1px #C87800',
-                'border-radius':'6px 6px 0 0'
+                'border-bottom':0,
+                'border-radius':'6px 6px 0 0',
+                '-moz-border-radius': '6px 6px 0 0',
+                '-webkit-border-radius': '6px 6px 0 0',
+                '-o-border-radius': '6px 6px 0 0',
+                '-ms-border-radius': '6px 6px 0 0',
+                '-khtml-border-radius': '6px 6px 0 0'
             },
             'ITEM-mouseover':{
-                $order:1,
-                'background-color':'#FAFB84'
+                $order:1
             },
             'ITEM-mousedown, ITEM-checked':{
-                $order:2,
-                'background-color':'#FAD600'
+                $order:2
             },
             ITEMI:{
                 $order:0,

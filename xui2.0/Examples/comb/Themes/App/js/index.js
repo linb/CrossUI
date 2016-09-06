@@ -778,6 +778,7 @@ Class('App', 'xui.Module',{
             host.xui_ui_panel25.append(
                 xui.create("xui.UI.Stacks")
                 .setHost(host,"xui_ui_stacks20")
+                .setBorderType('none')
                 .setItems([{
                     "id" : "a",
                     "caption" : "page1",
@@ -1962,6 +1963,8 @@ Class('App', 'xui.Module',{
                 .setLabelGap("0.3333333333333333em")
                 .setLabelCaption("Pop btn")
                 .setType("popbox")
+                .setValue("disabled")
+                .setDisabled(true)
                 , "1");
             
             host.tabs2.append(
@@ -1974,6 +1977,8 @@ Class('App', 'xui.Module',{
                 .setLabelGap("0.3333333333333333em")
                 .setLabelCaption("Getter btn")
                 .setType("getter")
+                .setValue("readonly")
+                .setReadonly(true)
                 , "1");
             
             host.tabs2.append(
@@ -2325,8 +2330,9 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "a3-4",
                     "caption" : "col 4",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.751310000000001em"
+                     "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.751310000000001em",
+                    disabled:true
                 },
                 {
                     "id" : "a3-5",
@@ -2350,7 +2356,8 @@ Class('App', 'xui.Module',{
                     "id" : "a3-8",
                     "caption" : "col 8",
                         "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "7.583330000000004em"
+                    "width" : "7.583330000000004em",
+                    readonly:true
                 },
                 {
                     "id" : "a3-9",
@@ -2496,11 +2503,13 @@ Class('App', 'xui.Module',{
                         },
                         {
                             "value" : "0",
-                            "caption" : "\u2716"
+                            "caption" : "\u2716",
+                                disabled:true
                         },
                         {
                             "value" : "0",
-                            "caption" : "\u2716"
+                            "caption" : "\u2716",
+                             readonly:true
                         },
                         {
                             "value" : "0",
@@ -3060,7 +3069,8 @@ Class('App', 'xui.Module',{
                 .setTop("1.6666666666666667em")
                 .setWidth("29.166666666666668em")
                 .setHeight("15em")
-                .setBorderType("ridge")
+                .setBorderType("flat")
+                .setOverflow('overflow-y:auto')
                 , "4");
             
             host.xui_ui_block175.append(
