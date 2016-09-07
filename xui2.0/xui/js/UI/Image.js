@@ -33,7 +33,7 @@ Class("xui.UI.Image", "xui.UI",{
                     i.onload=function(){
                         if(!profile||profile.isDestroyed)return;
                         var prop=profile.properties,
-                            size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
+                            size=profile.box._adjust(profile, (prop.width===""||prop.width=="auto")?i.width:prop.width, (prop.height===""||prop.height=="auto")?i.height:prop.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
                         profile.boxing().afterLoad(profile, path, size[0], size[1]);
                         if(prop.dock!='none')
@@ -73,13 +73,22 @@ Class("xui.UI.Image", "xui.UI",{
             afterLoad:function(profile, path, width, height){}
         },
         _adjust:function(profile,width,height){
-            var pro=profile.properties,
-                src=profile.getRootNode();
-            width=Math.round(parseFloat(width))||0;
-            height=Math.round(parseFloat(height))||0;
+            var prop=profile.properties,
+                src=profile.getRootNode(),
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                root = profile.getRoot(),
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+
+            width=width?css.$px(width, rootfz):width;
+            height=height?css.$px(height, rootfz):height;
+
             src.style.width=src.style.height='';
             if(width>0 && height>0){
-                var r1=pro.maxWidth/width, r2=pro.maxHeight/height,r= r1<r2?r1:r2;
+                var r1=prop.maxWidth/width, 
+                    r2=prop.maxHeight/height,
+                    r= r1<r2?r1:r2;
                 if(r>=1)r=1;
                 profile._rate=r;
                 return [src.width=width*r, src.height=height*r];
@@ -91,14 +100,14 @@ Class("xui.UI.Image", "xui.UI",{
                 ini:800,
                 action:function(v){
                     var src=this.getRootNode(),prop=this.properties;
-                    this.box._adjust(this,_.isFinite(prop.width)?prop.width:src.width,_.isFinite(prop.height)?prop.height:src.height);
+                    this.box._adjust(this, (prop.width===""||prop.width=="auto")?src.width:prop.width, (prop.height===""||prop.height=="auto")?src.height:prop.height);
                 }
             },
             maxHeight:{
                 ini:600,
                 action:function(v){
                     var src=this.getRootNode(),prop=this.properties;
-                    this.box._adjust(this,_.isFinite(prop.width)?prop.width:src.width,_.isFinite(prop.height)?prop.height:src.height);
+                    this.box._adjust(this, (prop.width===""||prop.width=="auto")?src.width:prop.width, (prop.height===""||prop.height=="auto")?src.height:prop.height);
                 }
             },
             width:{
@@ -109,7 +118,7 @@ Class("xui.UI.Image", "xui.UI",{
                         prop=this.properties,
                         i=new Image();
                     i.src=src.src;
-                    this.box._adjust(this, _.isFinite(v)?Math.round(parseFloat(v)):i.width, _.isFinite(prop.height)?prop.height:i.height);
+                    this.box._adjust(this, (v===""||v=="auto")?i.width:v, (prop.height===""||prop.height=="auto")?i.height:prop.height);
                 }
             },
             height:{
@@ -120,7 +129,7 @@ Class("xui.UI.Image", "xui.UI",{
                         prop=this.properties,
                         i=new Image();
                     i.src=src.src;
-                    this.box._adjust(this,_.isFinite(prop.width)?prop.width:i.width,_.isFinite(v)?Math.round(parseFloat(v)):i.height);
+                    this.box._adjust(this, (prop.width===""||prop.width=="auto")?i.width:prop.width, (v===""||v=="auto")?i.height:v);
                 }
             },
             src:{

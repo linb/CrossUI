@@ -2292,13 +2292,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'SCROLL11, SCROLL12, SCROLL21':{
                 overflow:'hidden'
             },
-            'TBODY21 .columnfreezed':{
+            'TDBODY21 > .columnfreezed':{
                 '-moz-box-shadow': '1px 0  1px #CCC',
                 '-webkit-box-shadow': '1px 0  1px #CCC',
                 'box-shadow': '1px 0  1px #CCC',
                 'z-index':10,
             },
-            'TBODY12 .rowfreezed':{
+            'TDBODY12 > .rowfreezed':{
                 '-moz-box-shadow': '0 1px 1px #CCC',
                 '-webkit-box-shadow': '0 1px 1px #CCC',
                 'box-shadow': '0 1px 1px #CCC',

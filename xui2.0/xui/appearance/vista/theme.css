@@ -67,13 +67,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 /*border*/
 .xui-uiborder{
-    border:solid 1px #7ba3cb;
-}
-.xui-uiborder-flat{
-    border-color:#7ba3cb;
-}
-.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
-    border-color:#3393D2;
+    border:solid 1px #7BA3CB;
 }
 .xui-uiborder-l{
     border-left-color:#F1FAFF;
@@ -82,33 +76,46 @@ input:disabled, .xui-ui-inputdisabled,
     border-top-color:#F1FAFF;
 }
 .xui-uiborder-r{
-    border-right-color:#7ba3cb;
+    border-right-color:#7BA3CB;
 }
 .xui-uiborder-b{
-    border-bottom-color:#7ba3cb;
+    border-bottom-color:#7BA3CB;
 }
 .xui-uiborder-lr{
     border-left-color:#F1FAFF;
-    border-right-color:#7ba3cb;
+    border-right-color:#7BA3CB;
 }
 .xui-uiborder-tb{
     border-top-color:#F1FAFF;
-    border-bottom-color:#7ba3cb;
+    border-bottom-color:#7BA3CB;
 }
 .xui-uiborder-lt{
     border-left-color:#F1FAFF;
     border-top-color:#F1FAFF;
 }
 .xui-uiborder-rb{
-    border-right-color:#7ba3cb;
-    border-bottom-color:#7ba3cb;
+    border-right-color:#7BA3CB;
+    border-bottom-color:#7BA3CB;
+}
+.xui-uiborder-flat{
+    border-color:#7BA3CB;
+}
+.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
+    border-color:#3393D2;
 }
 .xui-uiborder-outset{
-    border-color:#F1FAFF #7ba3cb #7ba3cb #F1FAFF;
+    border-color:#F1FAFF #7BA3CB #7BA3CB #F1FAFF;
 }
-.xui-uiborder-inset{
-    border-color:#7ba3cb #F1FAFF #F1FAFF #7ba3cb;
+.xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
+    border-color:#7BA3CB #F1FAFF #F1FAFF #7BA3CB;
 }
+.xui-uiborder-btn-mousseover{
+    border-color: #F1FAFF;
+}
+.xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
+		background: #D9E8FB;
+}
+
 .xui-uiborder-r-dark{
     border-right-color:#f1f1f1;
 }
@@ -153,7 +160,7 @@ input:disabled, .xui-ui-inputdisabled,
     background-color:#E1F5FE;
 }
 .xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover{
-    background-color:#C5E5F6;
+    background-color:#4dd8fc;
 }
 .xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
 .xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked{
@@ -162,7 +169,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 /*gradient*/
 .xui-ui-gradientbg, .xui-ui-btn{
-    border-color:#8F8F8F;
+    border-color:#7BA3CB;
     -moz-box-shadow:inset 0 1px 0 0 #E7F1F6;
     -webkit-box-shadow:inset 0 1px 0 0 #E7F1F6;
     box-shadow:inset 0 1px 0 0 #E7F1F6;    
@@ -174,7 +181,7 @@ input:disabled, .xui-ui-inputdisabled,
     background: -o-linear-gradient(top,  #E7F1F6 5%,  #4DD8FC 100%);  
 }
 .xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
-    border-color:#717171;
+    border-color:#B9F;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7F1F6', endColorstr='#5FEAFF');
     background: linear-gradient(top,  #E7F1F6 5%,  #5FEAFF 100%);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #E7F1F6), to(1, #5FEAFF));
@@ -291,6 +298,7 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-uibar-bottom-s .xui-uibar-tdr{
 	background-position: right -371px;
 }
+
 
 /*xui.UI.Tabs*/
 .xui-tabs-items{

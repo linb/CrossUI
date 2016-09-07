@@ -176,7 +176,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         TAIL:{
                             $order:4,
                             tagName : 'div',
-                            className:'xui-uibg-content',
+                            className:'xui-uibg-bar',
                             TL:{tagName : 'div'},
                             TR:{tagName : 'div'}
                         }

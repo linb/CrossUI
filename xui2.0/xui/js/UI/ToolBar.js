@@ -172,7 +172,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             },
                             BTN:{
                                 tagName:'button',
-                                className:'xui-ui-btn {itemcls} {itemClass}',
+                                className:'xui-uiborder-btn xui-showfocus {itemcls} {itemClass}',
                                 style:'{itemStyle} {boxDisplay}',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
@@ -257,7 +257,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 margin: '0 .2em'
             },
             BTN:{
-                'padding':'.2em'
+                'padding':'.2em',
+                'cursor':'pointer'
             },
             BOX:{
                 height:'auto'
@@ -413,7 +414,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         xui.UI.adjustData(profile,item, dataItem);
 
                         if(item.type=="statusButton" && !!item.value)
-                            dataItem.itemcls=" xui-ui-btn-checked "+profile.getClass('BTN','-checked', !!item.value);
+                            dataItem.itemcls=" xui-uiborder-btn-checked "+profile.getClass('BTN','-checked', !!item.value);
 
                         dataItem._tabindex=tabindex;
                         dataItem.splitDisplay=dataItem.type=="split"?'':dn;

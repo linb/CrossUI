@@ -438,7 +438,7 @@ Class("xui.CSS", null,{
             (b.ie6?("#"+xui.$localeDomId+"{vertical-align:baseline;}"):"")+
             
             // some cross browser css solution
-            ".xui-nooutline:focus{outline:0;}"+
+            ".xui-nofocus:focus{outline:0;}"+
             ".xui-cls-wordwrap{"+
                 "white-space: pre-wrap;word-break: break-all;" + // css-3
                 (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999

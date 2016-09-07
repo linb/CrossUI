@@ -393,10 +393,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             'BAR-group':{
                 $order:4,
-                'border-top': '0',
-                'border-bottom': '0'
-            },
-            'BAR-group.xui-uitembg':{
                 border:'none'
             },
             ITEMCAPTION:{
@@ -906,9 +902,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 backgroundColor:'',
                                 backgroundAttachment:''
                               });
-
                         }else{
-                            markNode.css('background','');
+                            markNode.removeClass('xui-uicmd-toggle-busy');
                         }
                         if(!empty){
                             item._checked = true;
@@ -984,7 +979,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        if(xui.browser.ie && xui.browser.ver<=8){
+                            markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        }else{
+                            markNode.addClass('xui-uicmd-toggle-busy');
+                        }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: toggle icon will be checked

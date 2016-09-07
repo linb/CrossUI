@@ -478,7 +478,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 listbox:['single','none','multi','multibycheckbox'],
                 action:function(value){
                     if(!this.box._ITEMMARKED)
-                        this.getSubNode('MARK',true).css('display',(value=='multibycheckbox')?'':'none');
+                        this.getSubNode('MARK',true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');
                 }
             },
             borderType:{
@@ -629,7 +629,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             return d;
         },
         _prepareItem:function(profile, item){
-            item._cbDisplay = (profile.properties.selMode=='multibycheckbox')?'':'display:none;';
+            var m=profile.properties.selMode;
+            item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
         },
@@ -699,9 +700,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 max=prop.maxHeight,
 
                 f=function(k){return profile.getSubNode(k)},
-                o = f('ITEMS'),
+                items = f('ITEMS'),
                 label = f('LABEL'),
-                ofz = useem?o._getEmSize():null,
+                itemsfz = useem?items._getEmSize():null,
                 labelfz = needfz?label._getEmSize():null,
 
                 labelSize=css.$px(prop.labelSize, labelfz)||0,
@@ -713,25 +714,25 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             if(width && width!='auto')width = css.$px(width, rootfz);
             if(height && height!='auto')height = css.$px(height, rootfz);
 
-            o.cssRegion({
-                left : adjustunit(ll = labelPos=='left'?labelSize:0, ofz),
-                top : adjustunit(tt = labelPos=='top'?labelSize:0, ofz),
-                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), ofz),
-                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), ofz)
+            items.cssRegion({
+                left : adjustunit(ll = labelPos=='left'?labelSize:0, itemsfz),
+                top : adjustunit(tt = labelPos=='top'?labelSize:0, itemsfz),
+                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), itemsfz),
+                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), itemsfz)
             });
 
 
             if(height=="auto"){
                 if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
-                    if(o.height()>max){
-                        o.height(adjustunit(max, ofz));
+                    if(items.height()>max){
+                        items.height(adjustunit(max, itemsfz));
                         root.height('auto');
                     }
                 }
             }
             if(labelSize){
-                if(width=='auto')ww=o.offsetWidth();
-                if(height=='auto')hh=o.offsetHeight();
+                if(width=='auto')ww=items.offsetWidth();
+                if(height=='auto')hh=items.offsetHeight();
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),labelfz),
                     top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz), 

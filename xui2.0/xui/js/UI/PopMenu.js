@@ -246,7 +246,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 className:"xui-uibg-base",
                 BOXBGBAR:{
                     tabName:'div',
-                    className:'xui-uibg-bar'
+                    className:'xui-uibg-bar',
+                    style:'{_iconDisplay}'
                 },
                  ITEMS:{
                     tagName:'div',
@@ -282,7 +283,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-empty {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}'
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -308,12 +309,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.checkbox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uitembg2 {itemClass} {disabled}',
+                    className: '  xui-uitembg-menu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
                          className:'xuifont',
-                        $fonticon:'{_fi_checkboxCls1} {_fi_checkboxCls2}'
+                        $fonticon:'{_fi_checkboxCls1} {_fi_checkboxCls2}  {_iconDisplay}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -334,12 +335,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.radiobox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uitembg2 {itemClass} {disabled}',
+                    className: '  xui-uitembg-menu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
                         className:'xuifont',
-                        $fonticon:'{_fi_radioboxCls1} {_fi_radioboxCls2} '
+                        $fonticon:'{_fi_radioboxCls1} {_fi_radioboxCls2}  {_iconDisplay}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -773,6 +774,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ini:'auto'
             },
             position:'absolute',
+            noIcon:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             $hborder:0,
             $vborder:0
         }),
@@ -811,12 +818,23 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             }
         },
+        _prepareData:function(profile){
+            var data = arguments.callee.upper.call(this, profile),
+                NONE='display:none',
+                prop=profile.properties;
+            if(prop.noIcon)data._iconDisplay=NONE;
+            return data;
+        },
         _prepareItem:function(profile, item){
-            var none='display:none;';
+            var NONE='display:none;',
+                prop=profile.properties;
+
             item.add = item.add || '';
-            item.displayAdd = item.add?'':none;
-            item.displaySub = item.sub?'':none;
-            item._itemDisplay=item.hidden?none:'';
+            item.displayAdd = item.add?'':NONE;
+            item.displaySub = item.sub?'':NONE;
+            item._itemDisplay=item.hidden?NONE:'';
+
+            item._iconDisplay=prop.noIcon?NONE:'';
 
             item.type=item.type||'button';
             if(item.type=='checkbox'){

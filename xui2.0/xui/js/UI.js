@@ -2521,14 +2521,26 @@ Class("xui.UI",  "xui.absObj", {
                 'border-right-color':'#B5B5B5',
                 'border-bottom-color':'#B5B5B5'
             },
-            '.xui-uiborder-flat':{
-                border:'solid 1px #C5C5C5',
+            '.xui-uiborder-btn, .xui-uiborder-flat, .xui-uiborder-outset, .xui-uiborder-inset':{
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px'
+            },
+            '.xui-uiborder-btn':{
+                border:'solid 1px transparent',
+                background:'none'
+            },
+            '.xui-uiborder-btn-mouseover':{
+                border:'solid 1px #F6F6F6'
+            },
+            '.xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked':{
+                background:'#EDEDED'
+            },
+            '.xui-uiborder-flat':{
+                border:'solid 1px #C5C5C5'
             },
             '.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover':{
                 $order:2,
@@ -2537,24 +2549,12 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6',
-                'border-radius':'3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px'
+                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
             },
-            '.xui-uiborder-inset':{
+            '.xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked':{
                 $order:9,
                 border:'solid 1px',
-                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5',
-                'border-radius':'3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px'
+                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
             },
             '.xui-uiborder-radius':{
                 $order:11,
@@ -2638,6 +2638,9 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image': 'url('+xui.ini.img_busy+')',
                 "background-repeat":"no-repeat",
                 "background-position":"center center"
+            },
+            ".xui-busy:before, .xui-ui-busy:before, .xui-uicmd-toggle-busy:before":{
+                visibility:'hidden'
             },
             ".xui-required":{
                 "color":"#ff0000"

@@ -1061,7 +1061,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     if(itb){
                         // here, do resize first
                         itb.getRoot().width(adjustunit(ww,itb.getRoot()));
-                        tbh=itb.getRoot().offsetHeight();
+                        tbh=itb.getRoot().offsetHeight(true);
                         if(tbh)
                             profile.$_tbH=tbh;
                         else

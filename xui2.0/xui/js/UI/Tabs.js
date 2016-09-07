@@ -434,7 +434,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 position:'relative',
                 overflow:'hidden',
                 left:0,
-                width:'100%'
+                width:'100%',
+                padding:'.25em .25em 0 .25em '
             },
             LISTBG:{
                 position:'absolute',
