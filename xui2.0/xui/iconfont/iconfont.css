@@ -18,6 +18,7 @@
   font-size:1.3333333333333333em;
 	/*for IE67 */
   _font-size:16px;
+  zoom:1;
   line-height:1em;
 }
   /*for IE678 */

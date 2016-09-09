@@ -32513,16 +32513,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     $order:4,
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
-                    BBART:{
-                        BBARTDL:{
-                            className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
-                        },
-                        BBARTDM:{
-                            className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
-                        },
-                        BBARTDR:{
-                            className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
-                        }
+                    BBARTDL:{
+                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                    },
+                    BBARTDM:{
+                        $order:1,
+                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                    },
+                    BBARTDR:{
+                        $order:2,
+                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                     }
                 }
             }
