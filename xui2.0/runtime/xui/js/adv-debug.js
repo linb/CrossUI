@@ -2004,7 +2004,6 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     }
                     fc.setTransparent(true);
                     fc.render(prf.getSubNode('BOX').id());
-
                     // attachEvents
                     var t=FusionCharts(prf._chartId),
                         f1=function(a,argsMap){
@@ -2014,9 +2013,14 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                         },f3=function(a,argsMap){
                             if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
                         };
-                    t.addEventListener("dataplotClick",f1);
-                    t.addEventListener("dataLabelClick",f2);
-                    t.addEventListener("annotationClick",f3);
+
+                    if(prf._f1)t.removeEventListener("dataplotClick",prf._f1);
+                    if(prf._f2)t.removeEventListener("dataLabelClick",prf._f2);
+                    if(prf._f3)t.removeEventListener("annotationClick",prf._f3);
+                    
+                    t.addEventListener("dataplotClick",prf._f1=f1);
+                    t.addEventListener("dataLabelClick",prf._f2=f1);
+                    t.addEventListener("annotationClick",prf._f3=f1);
                 }
             });
         },
@@ -2393,10 +2397,10 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
                 var t;
                 if(this._chartId && (t=FusionCharts(this._chartId))){
-                    t.removeEventListener("dataplotClick",f1);
-                    t.removeEventListener("dataLabelClick",f2);
-                    t.removeEventListener("annotationClick",f3);
-                    f1=f2=f3=null;
+                    t.removeEventListener("dataplotClick",prf._f1);
+                    t.removeEventListener("dataLabelClick",prf._f2);
+                    t.removeEventListener("annotationClick",prf._f3);
+                    prf._f1=prf._f2=prf._f3=null;
                     t.dispose();
                 }
             }
@@ -2415,7 +2419,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 css = xui.CSS,
                 useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
+                root = prf.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz = needfz?root._getEmSize():null,
 

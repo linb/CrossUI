@@ -405,7 +405,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 overflow:'visible',
                 'white-space': 'nowrap',
                 cursor:'pointer',
-                padding:'.2em 1.8em .2em .2em',
+                padding:'.25em 1.75em .25em .25em',
                 outline:0
             },
             ITEMSPLIT:{
@@ -415,7 +415,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'white-space': 'nowrap',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                margin:'.2em .2em .2em 2em'
+                margin:'.25em .25em .25em 2em'
             },
             ICON:{
                 margin:0
@@ -424,7 +424,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-.7em',
+                'margin-left':'-.75em',
                 right:0,
                 'z-index':'10',
                 top:0
@@ -433,7 +433,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-.7em',
+                'margin-left':'-.75em',
                 right:0,
                 'z-index':'10',
                 bottom:0
@@ -444,7 +444,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'padding-left':'.7em',
+                'padding-left':'.75em',
                 'font-size':'1em'
             },
             RULER:{
@@ -457,7 +457,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 top:'.25em',
                 right:0,
                 width:'7em',
-                'padding-right':'1.8em',
+                'padding-right':'1.75em',
                 'text-align':'right',
                 'z-index':'10',
                 zoom:xui.browser.ie?1:null

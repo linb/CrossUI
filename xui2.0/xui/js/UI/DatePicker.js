@@ -66,14 +66,14 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -255,24 +255,24 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 position:'relative'
             },
             BARCMDL:{
-                top:'.1em'
+                top:'.125em'
             },
             TAILI:{
                 position:'relative'
             },
             TIME:{
-                'padding':'.2em 1.5em'
+                'padding':'.25em 1.5em'
             },
             SET:{
                 position:'absolute',
                 display:'none',
-                top:'.1em',
-                right:'.4em'
+                top:'.125em',
+                right:'.5em'
             },
             TODAY:{
                 position:'absolute',
-                top:'.2em',
-                left:'.1em',
+                top:'.25em',
+                left:'.125em',
                 display:xui.$inlineBlock,
                 cursor:'default'
             },
@@ -280,7 +280,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 $order:0,
                 display:xui.$inlineBlock,
                 position:'relative',
-                margin:'0 .2em',
+                margin:'0 .25em',
                 'vertical-align': 'middle',
                 cursor:'default'
             },
@@ -289,8 +289,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                margin:'0 .2em',
-                'padding':'0 .2em'
+                margin:'0 .25em',
+                'padding':'0 .25em'
             },
             YEAR:{
             },
@@ -303,7 +303,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 'font-size':'1em'
             },
             MAINI:{
-                 padding:'.4em .4em .4em 0'
+                 padding:'.5em .5em .5em 0'
             },
             BODY:{
                 overflow: 'visible'
@@ -320,15 +320,15 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 $order:3,
                 'vertical-align':'middle',
                 'text-align':'center',
-                'padding':'.2em'
+                'padding':'.25em'
             },
             W:{
                 $order:4,
-                padding:'.1em'
+                padding:'.125em'
             },
             H:{
                 $order:4,
-                padding:'.2em 0.5em'
+                padding:'.25em 0.5em'
             }
         },
         Behaviors:{

@@ -36,7 +36,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             ITEM:{
                display:xui.$inlineBlock,
                border:0,
-               padding:'.4em',
+               padding:'.5em',
                position:'relative',
                zoom:xui.browser.ie?1:null,
                cursor:'pointer',
@@ -45,7 +45,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
             },
             // to cover LIST's
             'ITEM-checked':{
-                padding:'.4em'
+                padding:'.5em'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -55,12 +55,12 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 position:'relative',
-                'line-height':'1.2em'
+                'line-height':'1.25em'
             },
             MARK:{
                $order:1,
                cursor:'pointer',
-               margin: '0 .4em 0 .2em',
+               margin: '0 .5em 0 .25em',
                'vertical-align':'middle'
             }
         },

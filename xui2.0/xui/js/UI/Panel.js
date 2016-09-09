@@ -55,14 +55,14 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -187,7 +187,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             CAPTION:{
                 cursor:'pointer',
                 display:'inline',
-                padding:'.2em',
+                padding:'.25em',
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             }

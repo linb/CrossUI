@@ -194,7 +194,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 border:0,
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'padding-top':'.7em'//,
+                'padding-top':'.75em'//,
                 //for ie6 1px bug,  HR/TR(position:absolute;right:0;)
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
@@ -213,7 +213,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
 
             CMDS:{
-                padding:'.2em 0 0 .3em',
+                padding:'.25em 0 0 .25em',
                 'vertical-align':'middle',
                 position:'relative'
             },
@@ -224,11 +224,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 overflow:'auto'
             },
             BODYI:{
-                padding:'0 .7em'
+                padding:'0 .75em'
             },
             PANEL:{
                 overflow:'auto',
-                padding:'.2em'
+                padding:'.25em'
             },
             'ITEM-mouseover':{
             },
@@ -246,10 +246,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 position:'absolute',
                 'font-size':0,
                 'line-height':0,
-                width:'.7em'
+                width:'.75em'
             },
             'HL, HR':{
-                height:'2.6em'
+                height:'2.5em'
             },
             'ITEM-prechecked HL':{
                 $order:1
@@ -258,7 +258,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 $order:1
             },
             'TL, TR':{
-                height:'1.7em'
+                height:'1.75em'
             },
             HL:{
                 $order:1,
@@ -291,7 +291,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 position:'relative',
                 'white-space':'nowrap',
                 overflow:'hidden',
-               padding:'.2em .4em'
+               padding:'.25em .5em'
             },
             'BODY, BODYI':{
                 'font-size':0,
@@ -300,10 +300,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             TAIL:{
                 'font-size':0,
                 'line-height':0,
-                height:'.3em'
+                height:'.25em'
             },
             'CAPTION, MESSAGE':{
-                padding:'.3em',
+                padding:'.25em',
                 'vertical-align':'middle',
                 'font-size':'1em'
             },
@@ -320,8 +320,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
                 position:'relative',
-               left:'.4em',
-                padding:"0 0 0 .4em",
+               left:'.5em',
+                padding:"0 0 0 .5em",
                 'white-space':'nowrap',
                 overflow:'hidden'
             },
@@ -331,7 +331,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
 
                 position:'absolute',
                 right:'.5em',
-                top:'.2em',
+                top:'.25em',
                 'white-space':'nowrap',
                 overflow:'hidden'
             }

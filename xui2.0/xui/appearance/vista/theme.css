@@ -38,7 +38,7 @@ input[readonly], textarea[readonly],
 }
 button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-itemdisabled,  
 .xui-ui-disabled *, .xui-ui-itemdisabled *{
-	color: #808080
+	color: #808080;
 }
 input:disabled, .xui-ui-inputdisabled, 
 .xui-uicell-disabled, .xui-uicell-disabled *,
@@ -302,7 +302,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 /*xui.UI.Tabs*/
 .xui-tabs-items{
-    padding:0 0 3px 0;
+    padding:0 0 4px 0;
 }
 .xui-tabs-item{
 	  margin:0;

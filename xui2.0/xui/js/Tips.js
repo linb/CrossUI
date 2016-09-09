@@ -14,7 +14,8 @@ Class("xui.Tips", null,{
             ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
             ".xui-tips-i{overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
-            ".xui-tips-c{padding:.1em .2em .2em .2em;}"+
+            ".xui-tips-c{padding:.125em .25em .25em .25em;}"+
+            ".xui-tips-c *{line-height:1.22em;}"+
             ".xui-tips .xui-tips-c{border-radius:1px;}"
         , this.KEY);
 

@@ -320,6 +320,8 @@ Class("xui.CSS", null,{
             this.addStyleSheet(css,"xui.CSSreset");
         },
         adjustFont:function(){
+            this._dftEmStr='';
+            this._getDftEmSize(true);
             xui.$CSSCACHE={};
             if(xui.UI){
                 xui.$adjustFont=1;
@@ -363,22 +365,19 @@ Class("xui.CSS", null,{
         },
 
         $em2px:function(value, node, force){
-            value = (value===""||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()) : value;
-            return force?Math.round(parseFloat(value)):value;
+            value = (!value||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
+            return force?Math.round(parseFloat(value)||0):value;
         },
         $px2em:function(value, node){
-            return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()): value;
+            return (!value||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
         },
 
         $px:function(value, node, force){
-            value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
-            return force?Math.round(parseFloat(value)):value;
+            value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+            return force?Math.round(parseFloat(value)||0):value;
         },
         $em:function(value, node){
-            return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
-        },
-        $adjustunit:function(prop, value, emRate){
-            return value=='auto'?'auto': (prop.spaceUnit||xui.SpaceUnit)=='em'?(this.$em(value, emRate)+'em'):(Math.round(this.$px(value, emRate))+'px');
+            return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
@@ -388,15 +387,14 @@ Class("xui.CSS", null,{
                 return Math.round(parseFloat(a)+parseFloat(b))+'px';
             }
         },
-        $picku:function(v){return v && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
+        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
         $addu:function(v){return v=='auto'?v:(_.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
-        $forceu:function(v,u,node){return v=='auto'?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
+        $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
     },
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;line-height:1.22em;}"+
-            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
+            css= ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
@@ -410,7 +408,8 @@ Class("xui.CSS", null,{
             ".xui-node-input,.xui-node-textarea,.xui-node-select{cursor:text;font-family:inherit;font-size:inherit;font-weight:inherit;"+(b.ie?"font-size:100%;":"")+"}"+
             ".xui-node-del,.xui-node-ins{text-decoration:none;}"+
             ".xui-node-pre,.xui-node-code,.xui-node-kbd,.xui-node-samp,.xui-node-tt{font-family:monospace;"+(b.ie?"font-size:108%;":"")+"line-height:100%;}"+
-            ".xui-node-select,.xui-node-input,.xui-node-textarea{font:99% arial,helvetica,clean,sans-serif;border-width:1px;}"+
+// dont use font(use font-size/font-family) in IE678
+            ".xui-node-select,.xui-node-input,.xui-node-textarea{font-family:arial,helvetica,clean,sans-serif;border-width:1px;}"+
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
@@ -452,13 +451,18 @@ Class("xui.CSS", null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"
+            ".xui-node-tips{background-color:#FDF8D2;}"+
+            
+           // last one 
+            ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;line-height:1.22em;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
-
+        
+        /*
         xui.Thread.repeat(function(t){
             if((t=xui.CSS._dftEm) && (t!==xui.CSS._getDftEmSize(true)))xui.CSS.adjustFont();
         }, 10000);
+        */
     }   
 });

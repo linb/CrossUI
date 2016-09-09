@@ -20,6 +20,8 @@ Class('App', 'xui.Com',{
             host.panel4.append(
                 xui.create("xui.UI.TreeGrid")
                 .setHost(host,"treegrid")
+                .setWidth("300px")
+                .setHeight("216px")
                 .setSelMode("single")
                 );
             
@@ -39,20 +41,25 @@ Class('App', 'xui.Com',{
                     "id" : "e",
                     "caption" : "Grid",
                     "height" : 120
-                },{
+                },
+                {
                     "id" : "a",
                     "caption" : "Row related",
                     "height" : 180
-                },{
+                },
+                {
                     "id" : "b",
                     "caption" : "Column related",
                     "height" : 130,
                     "image" : ""
-                },{
+                },
+                {
                     "id" : "c",
                     "caption" : "Cell Related",
                     "height" : 40
                 }])
+                .setWidth("216px")
+                .setHeight("216px")
                 .setValue("e")
                 );
             
@@ -156,7 +163,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton67")
                 .setLeft(30)
                 .setTop(10)
@@ -166,7 +173,7 @@ Class('App', 'xui.Com',{
                 , "c");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton207")
                 .setLeft(360)
                 .setTop(10)
@@ -176,7 +183,7 @@ Class('App', 'xui.Com',{
                 , "c");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton1")
                 .setLeft(20)
                 .setTop(10)
@@ -186,7 +193,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton2")
                 .setLeft(20)
                 .setTop(40)
@@ -196,7 +203,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton5")
                 .setLeft(20)
                 .setTop(70)
@@ -206,7 +213,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton6")
                 .setLeft(20)
                 .setTop(100)
@@ -216,7 +223,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton8")
                 .setLeft(20)
                 .setTop(130)
@@ -226,7 +233,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton54")
                 .setLeft(370)
                 .setTop(10)
@@ -236,7 +243,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton94")
                 .setLeft(370)
                 .setTop(40)
@@ -246,7 +253,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton95")
                 .setLeft(370)
                 .setTop(70)
@@ -256,7 +263,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton252")
                 .setLeft(370)
                 .setTop(100)
@@ -266,7 +273,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton253")
                 .setLeft(210)
                 .setTop(10)
@@ -276,7 +283,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton254")
                 .setLeft(210)
                 .setTop(40)
@@ -286,7 +293,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton30")
                 .setLeft(210)
                 .setTop(70)
@@ -296,7 +303,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton31")
                 .setLeft(210)
                 .setTop(100)
@@ -306,7 +313,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton32")
                 .setLeft(210)
                 .setTop(130)
@@ -316,7 +323,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton2005")
                 .setLeft(540)
                 .setTop(10)
@@ -326,7 +333,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton2006")
                 .setLeft(540)
                 .setTop(40)
@@ -336,7 +343,7 @@ Class('App', 'xui.Com',{
                 , "a");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton3")
                 .setLeft(10)
                 .setTop(100)
@@ -346,7 +353,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton4")
                 .setLeft(10)
                 .setTop(70)
@@ -356,7 +363,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton17")
                 .setLeft(10)
                 .setTop(10)
@@ -366,7 +373,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton18")
                 .setLeft(10)
                 .setTop(40)
@@ -376,7 +383,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton7")
                 .setLeft(240)
                 .setTop(100)
@@ -386,7 +393,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton53")
                 .setLeft(240)
                 .setTop(10)
@@ -396,7 +403,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton128")
                 .setLeft(390)
                 .setTop(40)
@@ -406,7 +413,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton129")
                 .setLeft(390)
                 .setTop(10)
@@ -416,7 +423,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton208")
                 .setLeft(240)
                 .setTop(40)
@@ -426,7 +433,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton2713")
                 .setLeft(520)
                 .setTop(10)
@@ -436,7 +443,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton2914")
                 .setLeft(520)
                 .setTop(70)
@@ -446,7 +453,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton2915")
                 .setLeft(520)
                 .setTop(100)
@@ -456,7 +463,7 @@ Class('App', 'xui.Com',{
                 , "b");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton111")
                 .setLeft(10)
                 .setTop(38)
@@ -466,7 +473,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton149")
                 .setLeft(10)
                 .setTop(8)
@@ -476,7 +483,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton28")
                 .setLeft(10)
                 .setTop(68)
@@ -486,7 +493,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"sbutton29")
                 .setLeft(10)
                 .setTop(98)
@@ -496,7 +503,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton61")
                 .setLeft(200)
                 .setTop(8)
@@ -506,7 +513,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton62")
                 .setLeft(380)
                 .setTop(8)
@@ -516,7 +523,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton63")
                 .setLeft(200)
                 .setTop(68)
@@ -526,7 +533,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton64")
                 .setLeft(200)
                 .setTop(38)
@@ -536,7 +543,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton65")
                 .setLeft(380)
                 .setTop(68)
@@ -546,7 +553,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton66")
                 .setLeft(380)
                 .setTop(98)
@@ -556,7 +563,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton351")
                 .setLeft(200)
                 .setTop(98)
@@ -566,7 +573,7 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.SButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"ctl_sbutton712")
                 .setLeft(380)
                 .setTop(38)
@@ -576,25 +583,49 @@ Class('App', 'xui.Com',{
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.HTMLButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"xui_ui_htmlbutton1")
                 .setLeft(542)
                 .setTop(5)
                 .setWidth(130)
                 .setHeight(22)
-                .setHtml("TreeMode(infirstcell)")
+                .setCaption("TreeMode(infirstcell)")
                 .onClick("_xui_ui_htmlbutton1_onclick")
                 , "e");
             
             host.ctl_foldingtabs16.append(
-                xui.create("xui.UI.HTMLButton")
+                xui.create("xui.UI.Button")
                 .setHost(host,"xui_ui_htmlbutton2")
                 .setLeft(540)
                 .setTop(40)
                 .setWidth(130)
                 .setHeight(22)
-                .setHtml("TreeMode(inhandler)")
+                .setCaption("TreeMode(inhandler)")
                 .onClick("_xui_ui_htmlbutton2_onclick")
+                , "e");
+            
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button256")
+                .setLeft(540)
+                .setTop(70)
+                .setWidth(130)
+                .setHeight(22)
+                .setCaption("Freeze first row")
+                .setType("status")
+                .onClick("_xui_uibt256_onclick")
+                , "e");
+            
+            host.ctl_foldingtabs16.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button257")
+                .setLeft(540)
+                .setTop(100)
+                .setWidth(130)
+                .setHeight(22)
+                .setType("status")
+                .setCaption("Freeze first colomn")
+                .onClick("_xui_uibt257_onclick")
                 , "e");
             
             return children;
@@ -618,14 +649,14 @@ Class('App', 'xui.Com',{
 ["010-0", "MA", "Jerry", "Keith", false, 80, 46, 1242835200000,'#FF3300',0.4],
 ["010-1", "SP", "Charles", "Marks", false, 40, 90, 1244649600000,'#FDE500',0.5],
 ["010-2", "SP", "Vincent", "Harrison", false, 31, 40, 1247673600000,'#FFAE00',0.8],
-["020-3", "RA", "Edward", "Sidney", true, 80, 47, 1242489600000,'#FABF00',0.4],
-["020-4", "CA", "Patrick", "Solomon", true, 33, 38, 1241280000000,'#FEFF00',0.2],
-["020-5", "MA", "Leopold", "Glendon", true, 98, 36, 1239552000000,'#FFFCD0',0.3],
 ["030-6", "SP", "Terence", "Edwin", false, 84, 41, 1237219200000,'#FFFAB0',0.5],
 {id:"030-7", cells: ["030-7", "SP", "Brent", "Mike", false, 97, 83, 1243353600000,'#FABF00',0.6], sub:[
     ["030-71", "UK", "Sammy", "Kenneth", false, 31, 64, 1241625600000,'#FFAE00',0.2],
     ["030-72", "CA", "Evan", "Chris", false, 43, 63, 1242835200000,'#FFFAB0',0.9]
-]}
+]},
+["020-3", "RA", "Edward", "Sidney", true, 80, 47, 1242489600000,'#FABF00',0.4],
+["020-4", "CA", "Patrick", "Solomon", true, 33, 38, 1241280000000,'#FEFF00',0.2],
+["020-5", "MA", "Leopold", "Glendon", true, 98, 36, 1239552000000,'#FFFCD0',0.3]
             ]);
 
 
@@ -807,11 +838,17 @@ Class('App', 'xui.Com',{
         _ctl_sbutton2915_onclick:function (profile, e, src, value){
             this.treegrid.removeCols(["orderDate","progress"]);
         },
-        _xui_ui_htmlbutton2_onclick:function (profile, e, value){
+        _xui_ui_htmlbutton2_onclick:function (profile, e, src){
             this.treegrid.setTreeMode("inhandler");
         },
-        _xui_ui_htmlbutton1_onclick:function (profile, e, value){
+        _xui_ui_htmlbutton1_onclick:function (profile, e, src){
             this.treegrid.setTreeMode("infirstcell");
+        },
+        _xui_uibt256_onclick:function (profile, e, src, value){
+            this.treegrid.setFreezedRow(value?1:0);
+        },
+        _xui_uibt257_onclick:function (profile, e, src, value){
+            this.treegrid.setFreezedColumn(value?1:0);
         }
     }
 });

@@ -17944,6 +17944,7 @@ _.set(xui.Locale,["en","app"], {
                     $profile,
                     "cell: Object.",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists.",
+                    "type: String, to determine which button be clicked. left or right.",
                     "src : String, command button's xid."
                 ]
             },

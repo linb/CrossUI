@@ -69,14 +69,14 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -232,23 +232,23 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding-top':'.4em'
+                'padding-top':'.5em'
             },
             CONH:{
                 'white-space': 'nowrap',
                 'text-align':'center'
             },
             CONM:{
-                'margin-top':'.4em',
+                'margin-top':'.5em',
                 'white-space': 'nowrap',
                 'text-align':'center'
             },
             BARCMDL:{
-                top:'.1em'
+                top:'.125em'
             },
             'PRE,PRE2,NEXT,NEXT2':{
                 position:'relative',
-                margin:'0 .2em',
+                margin:'0 .25em',
                 'vertical-align': 'middle',
                 cursor:'default'
             },
@@ -257,18 +257,18 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                margin:'0 .2em',
-                'padding':'0 .2em'
+                margin:'0 .25em',
+                'padding':'0 .25em'
             },
             SET:{
                 position:'absolute',
                 display:'none',
-                top:'.1em',
-                right:'.4em'
+                top:'.125em',
+                right:'.5em'
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.4em',
+                'padding-top':'.5em',
                 'text-align':'center'
             },
             CAPTION:{
@@ -277,12 +277,12 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             },
             '.xuiex-timepicker':{
                 'text-align':'center',
-                padding:'.2em .4em'
+                padding:'.25em .5em'
             },
             '.xuiex-timepicker3':{
                 'text-align':'center',
                 'font-weight':'bold',
-                padding:'.2em 0.246em'
+                padding:'.25em 0.25em'
             }
         },
         Behaviors:{

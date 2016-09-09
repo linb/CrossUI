@@ -17,11 +17,11 @@ Class('App', 'xui.Module',{
             host.pane4.append(
                 xui.create("xui.UI.Label")
                 .setHost(host,"label6")
-                .setLeft("1.9166666666666667em")
-                .setTop("1.4166666666666667em")
-                .setWidth("11.416666666666666em")
+                .setLeft("0.75em")
+                .setTop("1em")
+                .setWidth("6.41675em")
                 .setHeight("2.5em")
-                .setCaption("Change Theme")
+                .setCaption("Theme")
                 .setFontSize("1.5em")
                 .setFontWeight("bold")
                 );
@@ -30,7 +30,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"ctl_comboinput61")
                 .setDirtyMark(false)
-                .setLeft("14.166666666666666em")
+                .setLeft("8.33333em")
                 .setTop("1.1666666666666667em")
                 .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
@@ -87,6 +87,51 @@ Class('App', 'xui.Module',{
                 .afterUIValueSet("_ctl_comboinput61_afteruivalueset")
                 );
             
+            host.pane4.append(
+                xui.create("xui.UI.Label")
+                .setHost(host,"xui_ui_label3")
+                .setLeft("19.1667em")
+                .setTop("1em")
+                .setWidth("8.33341em")
+                .setHeight("2.5em")
+                .setCaption("Font Size")
+                .setFontSize("1.5em")
+                .setFontWeight("bold")
+                );
+            
+            host.pane4.append(
+                xui.create("xui.UI.ComboInput")
+                .setHost(host,"xui_ui_comboinput32")
+                .setDirtyMark(false)
+                .setLeft("28.416700000000002em")
+                .setTop("1.16667em")
+                .setLabelSize("0em")
+                .setLabelGap("0.3333333333333333em")
+                .setType("listbox")
+                .setItems([{
+                    "id" : "12px",
+                    "caption" : "12px"
+                },
+                {
+                    "id" : "14px",
+                    "caption" : "14 px"
+                },
+                {
+                    "id" : "1rem",
+                    "caption" : "1 rem"
+                },
+                {
+                    "id" : "1.125rem",
+                    "caption" : "1.125 rem"
+                },
+                {
+                    "id" : "1.25rem",
+                    "caption" : "1.25 rem"
+                }])
+                .setValue("12px")
+                .afterUIValueSet("_xui_ui_comboinput32_afteruivalueset")
+                );
+            
             append(
                 xui.create("xui.UI.Tabs")
                 .setHost(host,"tabs2")
@@ -119,62 +164,13 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "6",
                     "caption" : "page 6"
+                },
+                {
+                    "id" : "7",
+                    "caption" : "page 7"
                 }])
                 .setValue("1")
             );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Group")
-                .setHost(host,"xui_ui_group18")
-                .setLeft("15.833333333333334em")
-                .setTop("4.166666666666667em")
-                .setWidth("15em")
-                .setHeight("8.333333333333334em")
-                .setCaption("Group")
-                .setToggle(false)
-                , "2");
-            
-            host.xui_ui_group18.append(
-                xui.create("xui.UI.ProgressBar")
-                .setHost(host,"xui_ui_progressbar44")
-                .setLeft("0.8333333333333334em")
-                .setTop("0.8333333333333334em")
-                .setWidth("12.5em")
-                .setHeight("5em")
-                .setValue(50)
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Group")
-                .setHost(host,"xui_ui_group19")
-                .setLeft("15.833333333333334em")
-                .setTop("14.166666666666666em")
-                .setWidth("15em")
-                .setHeight("8.333333333333334em")
-                .setCaption("Group")
-                , "2");
-            
-            host.xui_ui_group19.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button5")
-                .setLeft("1.6666666666666667em")
-                .setTop("1.6666666666666667em")
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Group")
-                .setHost(host,"xui_ui_group20")
-                .setLeft("15.833333333333334em")
-                .setTop("24.166666666666668em")
-                .setWidth("15em")
-                .setHeight("8.333333333333334em")
-                .setCaption("Group")
-                , "2");
-            
-            host.xui_ui_group20.append(
-                xui.create("xui.Module.JSONEditor", "xui.Module")
-                .setHost(host,"xui_module_jsoneditor2")
-                );
             
             host.tabs2.append(
                 xui.create("xui.UI.Pane")
@@ -183,16 +179,7 @@ Class('App', 'xui.Module',{
                 .setTop("1.6666666666666667em")
                 .setWidth("17.5em")
                 .setHeight("16.666666666666668em")
-                , "6");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Pane")
-                .setHost(host,"xui_ui_pane76")
-                .setLeft("31.666666666666668em")
-                .setTop("20em")
-                .setWidth("24.166666666666668em")
-                .setHeight("16.666666666666668em")
-                , "6");
+                , "7");
             
             host.tabs2.append(
                 xui.create("xui.UI.Pane")
@@ -201,7 +188,7 @@ Class('App', 'xui.Module',{
                 .setTop("21.666666666666668em")
                 .setWidth("27.5em")
                 .setHeight("16.666666666666668em")
-                , "6");
+                , "7");
             
             host.tabs2.append(
                 xui.create("xui.UI.SVGPaper")
@@ -210,7 +197,7 @@ Class('App', 'xui.Module',{
                 .setTop("2.5em")
                 .setWidth("63.333333333333336em")
                 .setHeight("30.833333333333332em")
-                , "6");
+                , "7");
             
             host.ctl_svgpaper1.append(
                 xui.create("xui.svg.path")
@@ -350,9 +337,9 @@ Class('App', 'xui.Module',{
                 .setHost(host,"ctl_image1")
                 .setAttr({
                     "src" : "http://www.crossui.com/img/logo.png",
-                    "x" : 510,
+                    "x" : 479.9999967285156,
                     "y" : 110,
-                    "width" : 170,
+                    "width" : 200.00120544433594,
                     "height" : 60
                 }
                 )
@@ -447,13 +434,67 @@ Class('App', 'xui.Module',{
                 );
             
             host.tabs2.append(
+                xui.create("xui.UI.Group")
+                .setHost(host,"xui_ui_group18")
+                .setLeft("15.833333333333334em")
+                .setTop("23.333299999999998em")
+                .setWidth("15em")
+                .setHeight("8.333333333333334em")
+                .setCaption("Group")
+                .setToggle(false)
+                , "2");
+            
+            host.xui_ui_group18.append(
+                xui.create("xui.UI.ProgressBar")
+                .setHost(host,"xui_ui_progressbar44")
+                .setLeft("0.8333333333333334em")
+                .setTop("0.8333333333333334em")
+                .setWidth("12.5em")
+                .setHeight("5em")
+                .setValue(50)
+                );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Group")
+                .setHost(host,"xui_ui_group19")
+                .setLeft("15.833333333333334em")
+                .setTop("2.75em")
+                .setWidth("26.6662em")
+                .setHeight("8.333333333333334em")
+                .setCaption("Group")
+                , "2");
+            
+            host.xui_ui_group19.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button5")
+                .setLeft("1.6666666666666667em")
+                .setTop("1.6666666666666667em")
+                .setCaption("xui_ui_button5")
+                );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Group")
+                .setHost(host,"xui_ui_group20")
+                .setLeft("15.833333333333334em")
+                .setTop("12.75em")
+                .setWidth("26.6662em")
+                .setHeight("8.333333333333334em")
+                .setCaption("Group")
+                , "2");
+            
+            host.xui_ui_group20.append(
+                xui.create("xui.Module.JSONEditor", "xui.Module")
+                .setHost(host,"xui_module_jsoneditor2")
+                );
+            
+            host.tabs2.append(
                 xui.create("xui.UI.Pane")
                 .setHost(host,"pane16")
                 .setDock("top")
                 .setDockStretch("fixed")
                 .setLeft("0.8333333333333334em")
                 .setWidth("66.66666666666667em")
-                .setHeight("10.833333333333334em")
+                .setHeight("11em")
                 , "3");
             
             host.pane16.append(
@@ -600,11 +641,12 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "clr",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput5",
+                            "alias" : "xui_ui_comboinput6",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "color",
-                                "position" : "relative"
+                                "position" : "relative",
+                                "labelSize" : "0em"
                             },
                             "CC" : {
                                 "KEY" : " xui-toolbar-item-object"
@@ -617,11 +659,12 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput9",
+                            "alias" : "xui_ui_comboinput7",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "date",
-                                "position" : "relative"
+                                "position" : "relative",
+                                "labelSize" : "0em"
                             },
                             "CC" : {
                                 "KEY" : " xui-toolbar-item-object"
@@ -634,11 +677,12 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput10",
+                            "alias" : "xui_ui_comboinput8",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "time",
-                                "position" : "relative"
+                                "position" : "relative",
+                                "labelSize" : "0em"
                             },
                             "CC" : {
                                 "KEY" : " xui-toolbar-item-object"
@@ -666,7 +710,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button7",
+                            "alias" : "xui_ui_button4",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "status button",
@@ -681,7 +725,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn2",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button8",
+                            "alias" : "xui_ui_button6",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "drop button",
@@ -721,7 +765,8 @@ Class('App', 'xui.Module',{
                                     "id" : "radio4",
                                     "caption" : "radio4"
                                 }],
-                                "position" : "relative"
+                                "position" : "relative",
+                                "labelSize" : "0em"
                             },
                             "events" : {
                                 "onRender" : function (prf){
@@ -738,6 +783,64 @@ Class('App', 'xui.Module',{
                 .setLeft("auto")
                 .onClick("_toolbar5_onclick")
                 );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Panel")
+                .setHost(host,"xui_ui_panel25")
+                .setDock("none")
+                .setLeft("0.833333em")
+                .setTop("26.583299999999998em")
+                .setWidth("17.4999em")
+                .setHeight("15.9166em")
+                .setZIndex(1)
+                .setCaption("panel sample")
+                .setOptBtn(true)
+                .setToggleBtn(true)
+                .setCloseBtn(true)
+                .setPopBtn(true)
+                , "4");
+            
+            host.xui_ui_panel25.append(
+                xui.create("xui.UI.Stacks")
+                .setHost(host,"xui_ui_stacks20")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "page1",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "page2",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "page3",
+                    "image" : "{xui.ini.img_icon}"
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setBorderType("none")
+                .setValue("a")
+                );
+            
+            host.xui_ui_stacks20.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button80")
+                .setLeft("2.5em")
+                .setTop("1.6666666666666667em")
+                .setCaption("Drop Button'")
+                .setType("drop")
+                , "a");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Pane")
+                .setHost(host,"xui_ui_pane76")
+                .setLeft("31.666666666666668em")
+                .setTop("20em")
+                .setWidth("24.166666666666668em")
+                .setHeight("16.666666666666668em")
+                , "7");
             
             host.tabs2.append(
                 xui.create("xui.UI.Div")
@@ -760,122 +863,104 @@ Class('App', 'xui.Module',{
                 , "1");
             
             host.tabs2.append(
-                xui.create("xui.UI.Panel")
-                .setHost(host,"xui_ui_panel25")
-                .setDock("none")
-                .setLeft("49.166666666666664em")
-                .setTop("1.6666666666666667em")
-                .setWidth("15em")
-                .setHeight("15em")
-                .setZIndex(1)
-                .setCaption("panel sample")
-                .setOptBtn(true)
-                .setToggleBtn(true)
-                .setCloseBtn(true)
-                .setPopBtn(true)
-                , "4");
+                xui.create("xui.UI.FusionChartsXT")
+                .setHost(host,"xui_ui_fusionchartsxt4")
+                .setLeft("46.6667em")
+                .setTop("25em")
+                .setWidth("19.1671em")
+                .setHeight("17.5003em")
+                .setChartType("Thermometer")
+                .setJSONData({
+                    "chart" : {
+                        "caption" : "Central cold storage",
+                        "subcaption" : "Bakersfield Central",
+                        "subcaptionFontBold" : "0",
+                        "lowerLimit" : "-20",
+                        "upperLimit" : "20",
+                        "numberSuffix" : "°C",
+                        "bgColor" : "#ffffff",
+                        "showBorder" : "0",
+                        "thmFillColor" : "#008ee4"
+                    },
+                    "value" : "-10"
+                }
+                )
+                , "6");
             
-            host.xui_ui_panel25.append(
-                xui.create("xui.UI.Stacks")
-                .setHost(host,"xui_ui_stacks20")
-                .setBorderType('none')
+            host.tabs2.append(
+                xui.create("xui.UI.FusionChartsXT")
+                .setHost(host,"xui_ui_fusionchartsxt14")
+                .setLeft("27.5em")
+                .setTop("24.916700000000002em")
+                .setWidth("15.0006em")
+                .setHeight("17.5836em")
+                .setChartType("Cylinder")
+                .setJSONData({
+                    "chart" : {
+                        "caption" : "Fuel Meter",
+                        "subcaption" : "Diesel level in generator Bakersfield Central",
+                        "subcaptionFontBold" : "0",
+                        "lowerLimit" : "0",
+                        "upperLimit" : "120",
+                        "lowerLimitDisplay" : "Empty",
+                        "upperLimitDisplay" : "Full",
+                        "numberSuffix" : " ltrs",
+                        "showValue" : "0",
+                        "showhovereffect" : "1",
+                        "bgCOlor" : "#ffffff",
+                        "borderAlpha" : "0",
+                        "cylFillColor" : "#008ee4"
+                    },
+                    "value" : "110"
+                }
+                )
+                , "6");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block56")
+                .setLeft("0.833333em")
+                .setTop("1.58333em")
+                .setWidth("21.667em")
+                .setHeight("22.5835em")
+                .setBorderType("flat")
+                .setOverflow("overflow-y:auto")
+                , "6");
+            
+            host.xui_ui_block56.append(
+                xui.create("xui.UI.FoldingTabs")
+                .setHost(host,"xui_ui_foldingtabs8")
                 .setItems([{
                     "id" : "a",
-                    "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
+                    "caption" : "tab1",
+                    "message" : "normal"
                 },
                 {
                     "id" : "b",
-                    "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
+                    "caption" : "tab2",
+                    "message" : "with image",
+                    "image" : "img/demo.gif"
                 },
                 {
                     "id" : "c",
-                    "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
+                    "caption" : "tab3",
+                    "message" : "height:100",
+                    "height" : 100
                 },
                 {
                     "id" : "d",
-                    "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
+                    "caption" : "tab4",
+                    "message" : "with commands",
                     "closeBtn" : true,
                     "optBtn" : true,
                     "popBtn" : true
                 }])
-                .setLeft("0em")
-                .setTop("0em")
                 .setValue("a")
                 );
             
             host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button229")
-                .setLeft("0.8333333333333334em")
-                .setTop("9.083333333333334em")
-                .setWidth("12.5em")
-                .setHeight("4.583333333333333em")
-                .setImage("img/demo.gif")
-                .setCaption("HTML content </br> in button")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button230")
-                .setLeft("0.8333333333333334em")
-                .setTop("14.916666666666666em")
-                .setWidth("12.5em")
-                .setCaption("status button")
-                .setType("status")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button231")
-                .setLeft("0.8333333333333334em")
-                .setTop("0.75em")
-                .setCaption("Button (auto width)")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button232")
-                .setLeft("0.8333333333333334em")
-                .setTop("3.5em")
-                .setWidth("12.5em")
-                .setCaption("Button - align left")
-                .setHAlign("left")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button233")
-                .setLeft("0.8333333333333334em")
-                .setTop("6.083333333333333em")
-                .setWidth("12.5em")
-                .setCaption("Button - align center")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.CheckBox")
-                .setHost(host,"xui_ui_checkbox43")
-                .setLeft("1.6666666666666667em")
-                .setTop("18.25em")
-                .setWidth("10.833333333333334em")
-                .setCaption("Checkbox")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.ProgressBar")
-                .setHost(host,"xui_ui_progressbar43")
-                .setLeft("15.833333333333334em")
-                .setTop("0.75em")
-                .setWidth("25.833333333333332em")
-                .setValue(80)
-                , "2");
-            
-            host.tabs2.append(
                 xui.create("xui.UI.FoldingList")
-                .setHost(host,"xui_ui_foldinglist31")
+                .setHost(host,"xui_ui_foldinglist17")
                 .setItems([{
                     "id" : "a",
                     "caption" : "tab1",
@@ -907,45 +992,126 @@ Class('App', 'xui.Module',{
                     "text" : "text5"
                 }])
                 .setLeft("45em")
-                .setTop("0.75em")
+                .setTop("1.41667em")
                 .setWidth("20.833333333333332em")
-                .setHeight("13.083333333333334em")
+                .setHeight("22.333em")
                 .setTagCmds(["#","x"])
+                .setLabelSize("0em")
+                , "6");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block98")
+                .setLeft("24.166700000000002em")
+                .setTop("1.58333em")
+                .setWidth("19.9996em")
+                .setHeight("22.582800000000002em")
+                .setBorderType("flat")
+                , "6");
+            
+            host.xui_ui_block98.append(
+                xui.create("xui.UI.TreeView")
+                .setHost(host,"xui_ui_treeview10")
+                .setItems([{
+                    "id" : "node1",
+                    "sub" : ["node11",{
+                        "id" : "node12",
+                        "image" : "{xui.ini.img_icon}"
+                    },
+                    "node13","node14"],
+                    "caption" : "node1"
+                },
+                {
+                    "id" : "node2",
+                    "iniFold" : false,
+                    "caption" : "node2",
+                    "sub" : [{
+                        "id" : "node21",
+                        "caption" : "node21"
+                    },
+                    {
+                        "id" : "node22",
+                        "caption" : "node22"
+                    },
+                    {
+                        "id" : "node23",
+                        "caption" : "node23"
+                    },
+                    {
+                        "id" : "node24",
+                        "caption" : "node24"
+                    }]
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setSelMode("multibycheckbox")
+                .setValue("a")
+                );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button229")
+                .setLeft("0.8333333333333334em")
+                .setTop("11em")
+                .setWidth("12.5em")
+                .setHeight("4.583333333333333em")
+                .setImage("img/demo.gif")
+                .setCaption("HTML content </br> in button")
                 , "2");
             
             host.tabs2.append(
-                xui.create("xui.UI.List")
-                .setHost(host,"xui_ui_list90")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "item a",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "item b",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "item c",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "d",
-                    "caption" : "item d",
-                    "image" : "{xui.ini.img_icon}",
-                    "disabled" : true
-                }])
-                .setLeft("32.5em")
-                .setTop("3.3333333333333335em")
-                .setWidth("11.666666666666666em")
-                .setHeight("9.25em")
-                .setLabelSize("1.6666666666666667em")
-                .setLabelPos("top")
-                .setLabelCaption("List")
-                .setLabelHAlign("left")
-                .setValue("a")
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button230")
+                .setLeft("0.8333333333333334em")
+                .setTop("16.6667em")
+                .setWidth("12.5em")
+                .setCaption("status button")
+                .setType("status")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button231")
+                .setLeft("0.8333333333333334em")
+                .setTop("0.75em")
+                .setCaption("Button (auto width)")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button232")
+                .setLeft("0.8333333333333334em")
+                .setTop("4.16667em")
+                .setWidth("12.5em")
+                .setCaption("Button - align left")
+                .setHAlign("left")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button233")
+                .setLeft("0.8333333333333334em")
+                .setTop("7.5em")
+                .setWidth("12.5em")
+                .setCaption("Button - align center")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.CheckBox")
+                .setHost(host,"xui_ui_checkbox43")
+                .setLeft("1.6666666666666667em")
+                .setTop("30em")
+                .setWidth("11em")
+                .setCaption("Checkbox")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.ProgressBar")
+                .setHost(host,"xui_ui_progressbar43")
+                .setLeft("15.833333333333334em")
+                .setTop("0.75em")
+                .setWidth("49.999em")
+                .setValue(80)
                 , "2");
             
             host.tabs2.append(
@@ -958,35 +1124,6 @@ Class('App', 'xui.Module',{
                 .setLabelPos("top")
                 .setLabelCaption("Rich Editor")
                 .setLabelHAlign("left")
-                , "2");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.RadioBox")
-                .setHost(host,"xui_ui_radiobox20")
-                .setItems([{
-                    "id" : "1",
-                    "image" : "img/demo.gif",
-                    "caption" : "radio 1"
-                },
-                {
-                    "id" : "2",
-                    "image" : "img/demo.gif",
-                    "caption" : "radio 2"
-                },
-                {
-                    "id" : "3",
-                    "caption" : "radio 3"
-                },
-                {
-                    "id" : "4",
-                    "caption" : "radio 4"
-                },
-                {
-                    "id" : "5",
-                    "caption" : "radio 5"
-                }])
-                .setLeft("1.25em")
-                .setTop("21.666666666666668em")
                 , "2");
             
             host.tabs2.append(
@@ -1016,6 +1153,7 @@ Class('App', 'xui.Module',{
                 .setWidth("25.833333333333332em")
                 .setHeight("4.25em")
                 .setBorderType("none")
+                .setLabelSize("0em")
                 , "2");
             
             host.tabs2.append(
@@ -1046,10 +1184,11 @@ Class('App', 'xui.Module',{
                     "caption" : "item c",
                     "image" : "img/demo.gif"
                 }])
-                .setLeft("42.5em")
-                .setTop("13.333333333333334em")
-                .setWidth("23.333333333333332em")
-                .setHeight("10.833333333333334em")
+                .setLeft("44.166599999999995em")
+                .setTop("15em")
+                .setWidth("21.666700000000002em")
+                .setHeight("11em")
+                .setLabelSize("0em")
                 , "2");
             
             host.tabs2.append(
@@ -1070,11 +1209,98 @@ Class('App', 'xui.Module',{
                     "caption" : "c",
                     "image" : "img/demo.gif"
                 }])
-                .setLeft("32.5em")
-                .setTop("13.333333333333334em")
-                .setWidth("9.166666666666666em")
-                .setHeight("10.833333333333334em")
+                .setLeft("44.166599999999995em")
+                .setTop("3.33333em")
+                .setWidth("21.6662em")
+                .setHeight("11em")
+                .setLabelSize("0em")
                 , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button109")
+                .setLeft("0.833333em")
+                .setTop("20.8333em")
+                .setWidth("12.4713em")
+                .setCaption("Drop Button")
+                .setType("drop")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.ComboInput")
+                .setHost(host,"xui_ui_comboinput243")
+                .setLeft("0.833333em")
+                .setTop("25em")
+                .setWidth("12.499900000000002em")
+                .setHeight("1.74667em")
+                .setLabelSize("0em")
+                .setType("dropbutton")
+                .setValue("Drop Button 2")
+                , "2");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.RadioBox")
+                .setHost(host,"xui_ui_radiobox24")
+                .setItems([{
+                    "id" : "1",
+                    "image" : "img/demo.gif",
+                    "caption" : "radio 1"
+                },
+                {
+                    "id" : "2",
+                    "image" : "img/demo.gif",
+                    "caption" : "radio 2"
+                },
+                {
+                    "id" : "3",
+                    "caption" : "radio 3"
+                },
+                {
+                    "id" : "4",
+                    "caption" : "radio 4"
+                },
+                {
+                    "id" : "5",
+                    "caption" : "radio 5"
+                }])
+                .setLeft("0.833333em")
+                .setTop("24.833299999999998em")
+                .setHeight("17.6662em")
+                .setLabelSize("0em")
+                , "6");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.RadioBox")
+                .setHost(host,"xui_ui_radiobox26")
+                .setItems([{
+                    "id" : "1",
+                    "image" : "img/demo.gif",
+                    "caption" : "radio 1"
+                },
+                {
+                    "id" : "2",
+                    "image" : "img/demo.gif",
+                    "caption" : "radio 2"
+                },
+                {
+                    "id" : "3",
+                    "caption" : "radio 3"
+                },
+                {
+                    "id" : "4",
+                    "caption" : "radio 4"
+                },
+                {
+                    "id" : "5",
+                    "caption" : "radio 5"
+                }])
+                .setLeft("13.3333em")
+                .setTop("25em")
+                .setHeight("17.6662em")
+                .setSelMode("multibycheckbox")
+                .setLabelSize("0em")
+                .setCheckBox(true)
+                , "6");
             
             host.tabs2.append(
                 xui.create("xui.UI.Block")
@@ -1237,6 +1463,7 @@ Class('App', 'xui.Module',{
                     "id" : "cmd_2",
                     "caption" : "cmd 2"
                 }])
+                .setLabelSize("0em")
                 , "3");
             
             host.tabs2.append(
@@ -1840,13 +2067,1141 @@ Class('App', 'xui.Module',{
                 .setLeft("48.333333333333336em")
                 .setTop("11em")
                 .setWidth("16.666666666666668em")
-                .setHeight("29.166666666666668em")
+                .setHeight("29.8334em")
                 .setLabelSize("1.6666666666666667em")
                 .setLabelPos("top")
                 .setLabelCaption("Icons")
                 .setLabelHAlign("left")
                 .setValue("a")
                 , "3");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block176")
+                .setLeft("19.166666666666668em")
+                .setTop("2.49997em")
+                .setWidth("47.5em")
+                .setHeight("39.9166em")
+                .setBorderType("ridge")
+                , "4");
+            
+            host.xui_ui_block176.append(
+                xui.create("xui.UI.Layout")
+                .setHost(host,"xui_ui_layout32")
+                .setItems([{
+                    "id" : "before",
+                    "pos" : "before",
+                    "min" : 10,
+                    "size" : 80,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : true
+                },
+                {
+                    "id" : "main",
+                    "min" : 10,
+                    "size" : 80
+                },
+                {
+                    "id" : "after",
+                    "pos" : "after",
+                    "min" : 10,
+                    "size" : 80,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : true
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                );
+            
+            host.xui_ui_layout32.append(
+                xui.create("xui.UI.Layout")
+                .setHost(host,"xui_ui_layout33")
+                .setItems([{
+                    "id" : "before",
+                    "pos" : "before",
+                    "size" : 80,
+                    "min" : 10,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : true
+                },
+                {
+                    "id" : "main",
+                    "size" : 80,
+                    "min" : 10
+                },
+                {
+                    "id" : "after",
+                    "pos" : "after",
+                    "size" : 80,
+                    "min" : 10,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : true
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setType("horizontal")
+                , "before");
+            
+            host.xui_ui_layout33.append(
+                xui.create("xui.UI.ButtonViews")
+                .setHost(host,"xui_ui_buttonviews2")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "page1",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "page2",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "page3",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "d",
+                    "caption" : "page4",
+                    "image" : "{xui.ini.img_icon}",
+                    "closeBtn" : true,
+                    "optBtn" : true,
+                    "popBtn" : true
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setBarSize(28)
+                .setValue("a")
+                , "main");
+            
+            host.xui_ui_layout32.append(
+                xui.create("xui.UI.Layout")
+                .setHost(host,"xui_ui_layout35")
+                .setItems([{
+                    "id" : "before",
+                    "pos" : "before",
+                    "size" : 80,
+                    "min" : 10,
+                    "locked" : false,
+                    "folded" : true,
+                    "hidden" : false,
+                    "cmd" : true
+                },
+                {
+                    "id" : "main",
+                    "size" : 80,
+                    "min" : 10
+                },
+                {
+                    "id" : "after",
+                    "pos" : "after",
+                    "size" : 120,
+                    "min" : 10,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : false
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setType("horizontal")
+                .setFlexSize(true)
+                , "main");
+            
+            host.xui_ui_layout35.append(
+                xui.create("xui.UI.ButtonViews")
+                .setHost(host,"xui_ui_buttonviews5")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "page1",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "page2",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "page3",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "d",
+                    "caption" : "page4",
+                    "image" : "{xui.ini.img_icon}",
+                    "closeBtn" : true,
+                    "optBtn" : true,
+                    "popBtn" : true
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setBarLocation("left")
+                .setBarSize(140)
+                .setValue("a")
+                , "main");
+            
+            host.xui_ui_layout35.append(
+                xui.create("xui.UI.ButtonViews")
+                .setHost(host,"xui_ui_buttonviews20")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "page1",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "page2",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "page3",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "d",
+                    "caption" : "page4",
+                    "image" : "{xui.ini.img_icon}",
+                    "closeBtn" : true,
+                    "optBtn" : true,
+                    "popBtn" : true
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setBarLocation("right")
+                .setBarSize(140)
+                .setValue("a")
+                , "after");
+            
+            host.xui_ui_layout32.append(
+                xui.create("xui.UI.Layout")
+                .setHost(host,"xui_ui_layout36")
+                .setItems([{
+                    "id" : "before",
+                    "pos" : "before",
+                    "size" : 80,
+                    "min" : 10,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : false
+                },
+                {
+                    "id" : "main",
+                    "size" : 80,
+                    "min" : 10
+                },
+                {
+                    "id" : "after",
+                    "pos" : "after",
+                    "size" : 80,
+                    "min" : 10,
+                    "locked" : false,
+                    "folded" : false,
+                    "hidden" : false,
+                    "cmd" : false
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setType("horizontal")
+                , "after");
+            
+            host.xui_ui_layout36.append(
+                xui.create("xui.UI.ButtonViews")
+                .setHost(host,"xui_ui_buttonviews4")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "page1",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "page2",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "page3",
+                    "image" : "{xui.ini.img_icon}"
+                },
+                {
+                    "id" : "d",
+                    "caption" : "page4",
+                    "image" : "{xui.ini.img_icon}",
+                    "closeBtn" : true,
+                    "optBtn" : true,
+                    "popBtn" : true
+                }])
+                .setLeft("0em")
+                .setTop("0em")
+                .setBarLocation("bottom")
+                .setBarSize(28)
+                .setValue("a")
+                , "main");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Stacks")
+                .setHost(host,"xui_ui_stacks17")
+                .setItems([{
+                    "id" : "a",
+                    "caption" : "stack a",
+                    "popBtn" : true,
+                    "closeBtn" : true,
+                    "image" : "img/demo.gif"
+                },
+                {
+                    "id" : "b",
+                    "caption" : "stack b",
+                    "popBtn" : true,
+                    "closeBtn" : true,
+                    "image" : "img/demo.gif"
+                },
+                {
+                    "id" : "c",
+                    "caption" : "stack c"
+                }])
+                .setDock("none")
+                .setLeft("0.8333333333333334em")
+                .setTop("2.4166666666666665em")
+                .setWidth("17.5em")
+                .setHeight("23.417em")
+                .setValue("a")
+                , "4");
+            
+            host.xui_ui_stacks17.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block177")
+                .setLeft("1.6666666666666667em")
+                .setTop("1.6666666666666667em")
+                .setWidth("5em")
+                .setHeight("5em")
+                , "a");
+            
+            host.xui_ui_stacks17.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block178")
+                .setLeft("1.6666666666666667em")
+                .setTop("7.5em")
+                .setWidth("5em")
+                .setHeight("5em")
+                .setBorderType("ridge")
+                , "a");
+            
+            host.xui_ui_stacks17.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block179")
+                .setLeft("1.6666666666666667em")
+                .setTop("13.333333333333334em")
+                .setWidth("5em")
+                .setHeight("5em")
+                .setBorderType("groove")
+                , "a");
+            
+            host.xui_ui_stacks17.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block180")
+                .setLeft("9.16667em")
+                .setTop("13.333333333333334em")
+                .setWidth("5em")
+                .setHeight("5em")
+                .setBorderType("inset")
+                , "a");
+            
+            host.xui_ui_stacks17.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block208")
+                .setLeft("9.16667em")
+                .setTop("1.6666666666666667em")
+                .setWidth("5em")
+                .setHeight("5em")
+                .setBorderType("flat")
+                , "a");
+            
+            host.xui_ui_stacks17.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block209")
+                .setLeft("9.16667em")
+                .setTop("7.5em")
+                .setWidth("5em")
+                .setHeight("5em")
+                .setBorderType("none")
+                , "a");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.TreeGrid")
+                .setHost(host,"xui_ui_tgbig")
+                .setDock("none")
+                .setLeft("0em")
+                .setTop("0em")
+                .setWidth("67em")
+                .setHeight("20em")
+                .setHeader([{
+                    "id" : "a3-1",
+                    "caption" : "col 1",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.899746666666666em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-2",
+                    "caption" : "col 2",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "6.751316666666668em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-3",
+                    "caption" : "col 3",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "5.999993333333333em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-4",
+                    "caption" : "col 4",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.751310000000001em",
+                    "disabled" : true,
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-5",
+                    "caption" : "col 5",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "5.499993333333333em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-6",
+                    "caption" : "col 6",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "5.08333em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-7",
+                    "caption" : "col 7",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.667996666666664em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-8",
+                    "caption" : "col 8",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "7.583330000000004em",
+                    "readonly" : true,
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-9",
+                    "caption" : "col 9",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "3.58466333333333em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-10",
+                    "caption" : "col 10",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.666663333333333em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-11",
+                    "caption" : "col 11",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.584663333333331em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-12",
+                    "caption" : "col 12",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.249996666666667em",
+                    "type" : "input"
+                },
+                {
+                    "id" : "a3-13",
+                    "caption" : "col 13",
+                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "width" : "4.668329999999998em",
+                    "type" : "input"
+                }])
+                .setGrpCols([{
+                    "from" : 0,
+                    "id" : "a1-1",
+                    "caption" : "col grp 1",
+                    "to" : 3
+                },
+                {
+                    "from" : 0,
+                    "id" : "a2-1",
+                    "caption" : "col grp 11",
+                    "to" : 0
+                },
+                {
+                    "from" : 1,
+                    "id" : "a2-2",
+                    "caption" : "col grp 12",
+                    "to" : 3
+                },
+                {
+                    "from" : 4,
+                    "id" : "a1-2",
+                    "caption" : "col grp 2",
+                    "to" : 8
+                },
+                {
+                    "from" : 4,
+                    "id" : "a2-3",
+                    "caption" : "col grp 21",
+                    "to" : 6
+                },
+                {
+                    "from" : 7,
+                    "id" : "a2-4",
+                    "caption" : "col grp 22",
+                    "to" : 8
+                },
+                {
+                    "from" : 9,
+                    "id" : "a2-5",
+                    "caption" : "col grp 3",
+                    "to" : 12
+                },
+                {
+                    "from" : 9,
+                    "id" : "a1-3",
+                    "caption" : "col grp 31",
+                    "to" : 12
+                }])
+                .setRows([{
+                    "id" : "s1-1",
+                    "caption" : "Row 1",
+                    "iniFold" : false,
+                    "cells" : [{
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    }],
+                    "sub" : [{
+                        "caption" : "Row 1 sub 1",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "✓"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖",
+                            "disabled" : true
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖",
+                            "readonly" : true
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        }]
+                    },
+                    {
+                        "id" : "s3-2",
+                        "caption" : "Row 1 sub 2",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "✓"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        }]
+                    }]
+                },
+                {
+                    "id" : "s2-1",
+                    "caption" : "Row 2",
+                    "iniFold" : false,
+                    "cells" : [{
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    }],
+                    "sub" : [{
+                        "id" : "s23-1",
+                        "caption" : "Row 2 sub 1",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "✓"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        }]
+                    },
+                    {
+                        "id" : "s23-2",
+                        "caption" : "Row 2 sub 2",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "✓"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        }]
+                    }]
+                },
+                {
+                    "id" : "s3-1",
+                    "caption" : "Row 3",
+                    "cells" : [{
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    },
+                    {
+                        "value" : "1",
+                        "caption" : "↻"
+                    }],
+                    "sub" : [{
+                        "id" : "s33-1",
+                        "caption" : "Row 3 sub 1",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "✓"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        }]
+                    },
+                    {
+                        "id" : "s33-2",
+                        "caption" : "Row 3 sub 2",
+                        "cells" : [{
+                            "value" : "10",
+                            "caption" : "✓"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        },
+                        {
+                            "value" : "0",
+                            "caption" : "✖"
+                        }]
+                    }]
+                }])
+                , "5");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Dialog")
+                .setHost(host,"xui_ui_dialog27")
+                .setLeft("11em")
+                .setTop("20.833333333333332em")
+                .setWidth("25.833333333333332em")
+                .setHeight("15.833333333333334em")
+                .setShadow(false)
+                .setResizer(false)
+                .setInitPos("auto")
+                .setCaption("dialog3")
+                .setMovable(false)
+                .setMinBtn(false)
+                .setMaxBtn(false)
+                .setRestoreBtn(false)
+                , "5");
+            
+            host.xui_ui_dialog27.append(
+                xui.create("xui.UI.Input")
+                .setHost(host,"xui_ui_input85")
+                .setLeft("3.3333333333333335em")
+                .setTop("0.8333333333333334em")
+                .setLabelSize("0em")
+                .setLabelGap("0.3333333333333333em")
+                );
+            
+            host.xui_ui_dialog27.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button191")
+                .setLeft("3.3333333333333335em")
+                .setTop("3.3333333333333335em")
+                .setCaption("button18")
+                );
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button271")
+                .setLeft("0.8333333333333334em")
+                .setTop("22.416666666666668em")
+                .setCaption("alert window")
+                .onClick("_sbutton11_onclick")
+                , "5");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button272")
+                .setLeft("0.8333333333333334em")
+                .setTop("25.75em")
+                .setCaption("confirm window")
+                .onClick("_sbutton12_onclick")
+                , "5");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button273")
+                .setLeft("0.8333333333333334em")
+                .setTop("29.083333333333332em")
+                .setCaption("prompt window")
+                .onClick("_sbutton13_onclick")
+                , "5");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"xui_ui_button274")
+                .setLeft("0.8333333333333334em")
+                .setTop("32.416666666666664em")
+                .setCaption("pop window")
+                .onClick("_sbutton14_onclick")
+                , "5");
+            
+            host.tabs2.append(
+                xui.create("xui.UI.Dialog")
+                .setHost(host,"xui_ui_dialog41")
+                .setLeft("37.5em")
+                .setTop("20.833333333333332em")
+                .setWidth("25.833333333333332em")
+                .setHeight("15.833333333333334em")
+                .setCaption("dialog3")
+                .setOptBtn(true)
+                .setLandBtn(true)
+                , "5");
+            
+            host.xui_ui_dialog41.append(
+                xui.create("xui.UI.List")
+                .setHost(host,"xui_ui_list122")
+                .setItems([{
+                    "id" : "item a",
+                    "caption" : "item a"
+                },
+                {
+                    "id" : "item b",
+                    "caption" : "item b"
+                },
+                {
+                    "id" : "item c",
+                    "caption" : "item c"
+                },
+                {
+                    "id" : "item d",
+                    "caption" : "item d"
+                }])
+                .setLeft("2.0833333333333335em")
+                .setTop("2.3333333333333335em")
+                .setWidth("20.833333333333332em")
+                .setHeight("auto")
+                .setLabelSize("0em")
+                .setLabelGap("0.3333333333333333em")
+                );
             
             host.tabs2.append(
                 xui.create("xui.UI.Label")
@@ -1863,8 +3218,8 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.ColorPicker")
                 .setHost(host,"color1")
-                .setLeft("1.6666666666666667em")
-                .setTop("18.583333333333332em")
+                .setLeft("0em")
+                .setTop("19.5em")
                 .setZIndex(1002)
                 , "1");
             
@@ -1880,8 +3235,8 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.TimePicker")
                 .setHost(host,"time1")
-                .setLeft("23.333333333333332em")
-                .setTop("23.583333333333332em")
+                .setLeft("23.833299999999998em")
+                .setTop("23.25em")
                 , "1");
             
             host.tabs2.append(
@@ -1911,8 +3266,8 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.Slider")
                 .setHost(host,"slider1")
                 .setLeft("2.5em")
-                .setTop("40.833333333333336em")
-                .setWidth("58.333333333333336em")
+                .setTop("42em")
+                .setWidth("60em")
                 .setHeight("2.5em")
                 .setIsRange(false)
                 .setLabelSize("0em")
@@ -1943,19 +3298,8 @@ Class('App', 'xui.Module',{
             
             host.tabs2.append(
                 xui.create("xui.UI.ComboInput")
-                .setHost(host,"xui_ui_comboinput286")
-                .setLeft("11.666666666666666em")
-                .setTop("3.25em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("8.333333333333334em")
-                .setLabelGap("0.3333333333333333em")
-                .setLabelCaption("Command btn")
-                .setType("cmdbox")
-                , "1");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.ComboInput")
                 .setHost(host,"xui_ui_comboinput290")
+                .setDisabled(true)
                 .setLeft("11.666666666666666em")
                 .setTop("5.75em")
                 .setWidth("16.666666666666668em")
@@ -1964,12 +3308,12 @@ Class('App', 'xui.Module',{
                 .setLabelCaption("Pop btn")
                 .setType("popbox")
                 .setValue("disabled")
-                .setDisabled(true)
                 , "1");
             
             host.tabs2.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"xui_ui_comboinput294")
+                .setReadonly(true)
                 .setLeft("11.666666666666666em")
                 .setTop("8.25em")
                 .setWidth("16.666666666666668em")
@@ -1978,7 +3322,6 @@ Class('App', 'xui.Module',{
                 .setLabelCaption("Getter btn")
                 .setType("getter")
                 .setValue("readonly")
-                .setReadonly(true)
                 , "1");
             
             host.tabs2.append(
@@ -2131,7 +3474,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"xui_ui_comboinput507")
                 .setLeft("45em")
-                .setTop("10.833333333333334em")
+                .setTop("11em")
                 .setWidth("16.666666666666668em")
                 .setLabelSize("8.333333333333334em")
                 .setLabelGap("0.3333333333333333em")
@@ -2179,7 +3522,7 @@ Class('App', 'xui.Module',{
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"xui_ui_comboinput637")
                 .setLeft("28.333333333333332em")
-                .setTop("10.833333333333334em")
+                .setTop("11em")
                 .setWidth("16.666666666666668em")
                 .setLabelSize("8.333333333333334em")
                 .setLabelGap("0.3333333333333333em")
@@ -2293,7 +3636,7 @@ Class('App', 'xui.Module',{
                 .setLeft("20em")
                 .setTop("13.25em")
                 .setWidth("25em")
-                .setHeight("11em")
+                .setHeight("6.00008em")
                 .setLabelSize("1.6666666666666667em")
                 .setLabelPos("top")
                 .setLabelGap("0.3333333333333333em")
@@ -2301,1135 +3644,18 @@ Class('App', 'xui.Module',{
                 .setLabelHAlign("left")
                 .setMultiLines(true)
                 , "1");
-            host.tabs2.append(
-                xui.create("xui.UI.TreeGrid")
-                .setHost(host, "xui_ui_tgbig")
-                .setDock("none")
-                .setLeft(0)
-                .setTop(0)
-                .setWidth("67em")
-                .setHeight("20em")
-                .setHeader([{
-                    "id" : "a3-1",
-                    "caption" : "col 1",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.899746666666666em"
-                },
-                {
-                    "id" : "a3-2",
-                    "caption" : "col 2",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "6.751316666666668em"
-                },
-                {
-                    "id" : "a3-3",
-                    "caption" : "col 3",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "5.999993333333333em"
-                },
-                {
-                    "id" : "a3-4",
-                    "caption" : "col 4",
-                     "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.751310000000001em",
-                    disabled:true
-                },
-                {
-                    "id" : "a3-5",
-                    "caption" : "col 5",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "5.499993333333333em"
-                },
-                {
-                    "id" : "a3-6",
-                    "caption" : "col 6",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "5.08333em"
-                },
-                {
-                    "id" : "a3-7",
-                    "caption" : "col 7",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.667996666666664em"
-                },
-                {
-                    "id" : "a3-8",
-                    "caption" : "col 8",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "7.583330000000004em",
-                    readonly:true
-                },
-                {
-                    "id" : "a3-9",
-                    "caption" : "col 9",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "3.58466333333333em"
-                },
-                {
-                    "id" : "a3-10",
-                    "caption" : "col 10",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.666663333333333em"
-                },
-                {
-                    "id" : "a3-11",
-                    "caption" : "col 11",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.584663333333331em"
-                },
-                {
-                    "id" : "a3-12",
-                    "caption" : "col 12",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.249996666666667em"
-                },
-                {
-                    "id" : "a3-13",
-                    "caption" : "col 13",
-                        "cellStyle" : "text-align:center;cursor:pointer;",
-                    "width" : "4.668329999999998em"
-                }])
-                .setGrpCols([{
-                    "from" : 0,
-                    "id" : "a1-1",
-                    "caption" : "col grp 1",
-                    "to" : 3
-                },
-                {
-                    "from" : 0,
-                    "id" : "a2-1",
-                    "caption" : "col grp 11",
-                    "to" : 0
-                },
-                {
-                    "from" : 1,
-                    "id" : "a2-2",
-                    "caption" : "col grp 12",
-                    "to" : 3
-                },
-                {
-                    "from" : 4,
-                    "id" : "a1-2",
-                    "caption" : "col grp 2",
-                    "to" : 8
-                },
-                {
-                    "from" : 4,
-                    "id" : "a2-3",
-                    "caption" : "col grp 21",
-                    "to" : 6
-                },
-                {
-                    "from" : 7,
-                    "id" : "a2-4",
-                    "caption" : "col grp 22",
-                    "to" : 8
-                },
-                {
-                    "from" : 9,
-                    "id" : "a2-5",
-                    "caption" : "col grp 3",
-                    "to" : 12
-                },
-                {
-                    "from" : 9,
-                    "id" : "a1-3",
-                    "caption" : "col grp 31",
-                    "to" : 12
-                }])
-                .setRows([{
-                    "id" : "s1-1",
-                    "caption" : "Row 1",
-                    "iniFold":false,
-                    "cells" : [{
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    }],
-                    "sub" : [{
-                        "id" : "s3-1",
-                        "caption" : "Row 1 sub 1",
-                        
-                        "cells" : [{
-                            "value" : "10",
-                            "caption" : "\u2713"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716",
-                                disabled:true
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716",
-                             readonly:true
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        }]
-                    },
-                    {
-                        "id" : "s3-2",
-                        "caption" : "Row 1 sub 2",
-                        
-                        "cells" : [{
-                            "value" : "10",
-                            "caption" : "\u2713"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        }]
-                    }]
-                },
-                {
-                    "id" : "s2-1",
-                    "caption" : "Row 2",
-                    "iniFold":false,                    
-                    "cells" : [{
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    }],
-                    "sub" : [{
-                        "id" : "s23-1",
-                        "caption" : "Row 2 sub 1",
-                        
-                        "cells" : [{
-                            "value" : "10",
-                            "caption" : "\u2713"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        }]
-                    },
-                    {
-                        "id" : "s23-2",
-                        "caption" : "Row 2 sub 2",
-                        
-                        "cells" : [{
-                            "value" : "10",
-                            "caption" : "\u2713"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        }]
-                    }]
-                },
-                {
-                    "id" : "s3-1",
-                    "caption" : "Row 3",               
-                    "cells" : [{
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    },
-                    {
-                        "value" : "1",
-                        "caption" : "\u21bb"
-                    }],
-                    "sub" : [{
-                        "id" : "s33-1",
-                        "caption" : "Row 3 sub 1",
-                        "cells" : [{
-                            "value" : "10",
-                            "caption" : "\u2713"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        }]
-                    },
-                    {
-                        "id" : "s33-2",
-                        "caption" : "Row 3 sub 2",
-                        
-                        "cells" : [{
-                            "value" : "10",
-                            "caption" : "\u2713"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        },
-                        {
-                            "value" : "0",
-                            "caption" : "\u2716"
-                        }]
-                    }]
-                }
-                ])
-                ,"5");
-
-            host.tabs2.append(
-                xui.create("xui.UI.Dialog")
-                .setHost(host,"xui_ui_dialog27")
-                .setLeft("11em")
-                .setTop("20.833333333333332em")
-                .setWidth("25.833333333333332em")
-                .setHeight("15.833333333333334em")
-                .setShadow(false)
-                .setResizer(false)
-                .setInitPos("auto")
-                .setCaption("dialog3")
-                .setMovable(false)
-                .setMinBtn(false)
-                .setMaxBtn(false)
-                .setRestoreBtn(false)
-                , "5");
             
-            host.xui_ui_dialog27.append(
-                xui.create("xui.UI.Input")
-                .setHost(host,"xui_ui_input85")
-                .setLeft("3.3333333333333335em")
-                .setTop("0.8333333333333334em")
-                .setLabelSize("0em")
+            host.tabs2.append(
+                xui.create("xui.UI.ComboInput")
+                .setHost(host,"xui_ui_comboinput286")
+                .setLeft("11.666666666666666em")
+                .setTop("3.25em")
+                .setWidth("16.666666666666668em")
+                .setLabelSize("8.333333333333334em")
                 .setLabelGap("0.3333333333333333em")
-                );
-            
-            host.xui_ui_dialog27.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button191")
-                .setLeft("3.3333333333333335em")
-                .setTop("3.3333333333333335em")
-                .setCaption("button18")
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button271")
-                .setLeft("0.8333333333333334em")
-                .setTop("22.416666666666668em")
-                .setCaption("alert window")
-                .onClick("_sbutton11_onclick")
-                , "5");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button272")
-                .setLeft("0.8333333333333334em")
-                .setTop("25.75em")
-                .setCaption("confirm window")
-                .onClick("_sbutton12_onclick")
-                , "5");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button273")
-                .setLeft("0.8333333333333334em")
-                .setTop("29.083333333333332em")
-                .setCaption("prompt window")
-                .onClick("_sbutton13_onclick")
-                , "5");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Button")
-                .setHost(host,"xui_ui_button274")
-                .setLeft("0.8333333333333334em")
-                .setTop("32.416666666666664em")
-                .setCaption("pop window")
-                .onClick("_sbutton14_onclick")
-                , "5");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Dialog")
-                .setHost(host,"xui_ui_dialog41")
-                .setLeft("37.5em")
-                .setTop("20.833333333333332em")
-                .setWidth("25.833333333333332em")
-                .setHeight("15.833333333333334em")
-                .setCaption("dialog3")
-                .setOptBtn(true)
-                .setLandBtn(true)
-                , "5");
-            
-            host.xui_ui_dialog41.append(
-                xui.create("xui.UI.List")
-                .setHost(host,"xui_ui_list122")
-                .setItems([{
-                    "id" : "item a",
-                    "caption" : "item a"
-                },
-                {
-                    "id" : "item b",
-                    "caption" : "item b"
-                },
-                {
-                    "id" : "item c",
-                    "caption" : "item c"
-                },
-                {
-                    "id" : "item d",
-                    "caption" : "item d"
-                }])
-                .setLeft("2.0833333333333335em")
-                .setTop("2.3333333333333335em")
-                .setWidth("20.833333333333332em")
-                .setHeight("auto")
-                .setLabelSize("0em")
-                .setLabelGap("0.3333333333333333em")
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block175")
-                .setLeft("19.166666666666668em")
-                .setTop("1.6666666666666667em")
-                .setWidth("29.166666666666668em")
-                .setHeight("15em")
-                .setBorderType("flat")
-                .setOverflow('overflow-y:auto')
-                , "4");
-            
-            host.xui_ui_block175.append(
-                xui.create("xui.UI.FoldingTabs")
-                .setHost(host,"xui_ui_foldingtabs20")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "tab1",
-                    "message" : "normal"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "tab2",
-                    "message" : "with image",
-                    "image" : "img/demo.gif"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "tab3",
-                    "message" : "height:100",
-                    "height" : 100
-                },
-                {
-                    "id" : "d",
-                    "caption" : "tab4",
-                    "message" : "with commands",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
-                }])
-                .setValue("a")
-                );
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block176")
-                .setLeft("19.166666666666668em")
-                .setTop("17.5em")
-                .setWidth("45em")
-                .setHeight("25em")
-                .setBorderType("ridge")
-                , "4");
-            
-            host.xui_ui_block176.append(
-                xui.create("xui.UI.Layout")
-                .setHost(host,"xui_ui_layout32")
-                .setItems([{
-                    "id" : "before",
-                    "pos" : "before",
-                    "min" : 10,
-                    "size" : 80,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : true
-                },
-                {
-                    "id" : "main",
-                    "min" : 10,
-                    "size" : 80
-                },
-                {
-                    "id" : "after",
-                    "pos" : "after",
-                    "min" : 10,
-                    "size" : 80,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : true
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                );
-            
-            host.xui_ui_layout32.append(
-                xui.create("xui.UI.Layout")
-                .setHost(host,"xui_ui_layout33")
-                .setItems([{
-                    "id" : "before",
-                    "pos" : "before",
-                    "size" : 80,
-                    "min" : 10,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : true
-                },
-                {
-                    "id" : "main",
-                    "size" : 80,
-                    "min" : 10
-                },
-                {
-                    "id" : "after",
-                    "pos" : "after",
-                    "size" : 80,
-                    "min" : 10,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : true
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                .setType("horizontal")
-                , "before");
-            
-            host.xui_ui_layout33.append(
-                xui.create("xui.UI.ButtonViews")
-                .setHost(host,"xui_ui_buttonviews2")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "d",
-                    "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                .setBarSize(28)
-                .setValue("a")
-                , "main");
-            
-            host.xui_ui_layout32.append(
-                xui.create("xui.UI.Layout")
-                .setHost(host,"xui_ui_layout35")
-                .setItems([{
-                    "id" : "before",
-                    "pos" : "before",
-                    "size" : 80,
-                    "min" : 10,
-                    "locked" : false,
-                    "folded" : true,
-                    "hidden" : false,
-                    "cmd" : true
-                },
-                {
-                    "id" : "main",
-                    "size" : 80,
-                    "min" : 10
-                },
-                {
-                    "id" : "after",
-                    "pos" : "after",
-                    "size" : 80,
-                    "min" : 10,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : false
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                .setType("horizontal")
-                , "main");
-            
-            host.xui_ui_layout35.append(
-                xui.create("xui.UI.ButtonViews")
-                .setHost(host,"xui_ui_buttonviews5")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "d",
-                    "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                .setBarLocation("left")
-                .setBarSize(140)
-                .setValue("a")
-                , "main");
-            
-            host.xui_ui_layout32.append(
-                xui.create("xui.UI.Layout")
-                .setHost(host,"xui_ui_layout36")
-                .setItems([{
-                    "id" : "before",
-                    "pos" : "before",
-                    "size" : 80,
-                    "min" : 10,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : false
-                },
-                {
-                    "id" : "main",
-                    "size" : 80,
-                    "min" : 10
-                },
-                {
-                    "id" : "after",
-                    "pos" : "after",
-                    "size" : 80,
-                    "min" : 10,
-                    "locked" : false,
-                    "folded" : false,
-                    "hidden" : false,
-                    "cmd" : false
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                .setType("horizontal")
-                , "after");
-            
-            host.xui_ui_layout36.append(
-                xui.create("xui.UI.ButtonViews")
-                .setHost(host,"xui_ui_buttonviews4")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
-                },
-                {
-                    "id" : "d",
-                    "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
-                }])
-                .setLeft("0em")
-                .setTop("0em")
-                .setBarLocation("bottom")
-                .setBarSize(28)
-                .setValue("a")
-                , "main");
-            
-            host.tabs2.append(
-                xui.create("xui.UI.Stacks")
-                .setHost(host,"xui_ui_stacks17")
-                .setItems([{
-                    "id" : "a",
-                    "caption" : "stack a",
-                    "popBtn" : true,
-                    "closeBtn" : true,
-                    "image" : "img/demo.gif"
-                },
-                {
-                    "id" : "b",
-                    "caption" : "stack b",
-                    "popBtn" : true,
-                    "closeBtn" : true,
-                    "image" : "img/demo.gif"
-                },
-                {
-                    "id" : "c",
-                    "caption" : "stack c"
-                }])
-                .setDock("none")
-                .setLeft("0.8333333333333334em")
-                .setTop("2.4166666666666665em")
-                .setWidth("17.5em")
-                .setHeight("32.583333333333336em")
-                .setValue("a")
-                , "4");
-            
-            host.xui_ui_stacks17.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block177")
-                .setLeft("1.6666666666666667em")
-                .setTop("1.6666666666666667em")
-                .setWidth("5em")
-                .setHeight("5em")
-                , "a");
-            
-            host.xui_ui_stacks17.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block178")
-                .setLeft("1.6666666666666667em")
-                .setTop("7.5em")
-                .setWidth("5em")
-                .setHeight("5em")
-                .setBorderType("ridge")
-                , "a");
-            
-            host.xui_ui_stacks17.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block179")
-                .setLeft("1.6666666666666667em")
-                .setTop("13.333333333333334em")
-                .setWidth("5em")
-                .setHeight("5em")
-                .setBorderType("groove")
-                , "a");
-            
-            host.xui_ui_stacks17.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block180")
-                .setLeft("11em")
-                .setTop("13.333333333333334em")
-                .setWidth("5em")
-                .setHeight("5em")
-                .setBorderType("inset")
-                , "a");
-            
-            host.xui_ui_stacks17.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block208")
-                .setLeft("11em")
-                .setTop("1.6666666666666667em")
-                .setWidth("5em")
-                .setHeight("5em")
-                .setBorderType("flat")
-                , "a");
-            
-            host.xui_ui_stacks17.append(
-                xui.create("xui.UI.Block")
-                .setHost(host,"xui_ui_block209")
-                .setLeft("11em")
-                .setTop("7.5em")
-                .setWidth("5em")
-                .setHeight("5em")
-                .setBorderType("none")
-                , "a");
+                .setLabelCaption("Command btn")
+                .setType("cmdbox")
+                , "1");
             
             append(
                 xui.create("xui.UI.PopMenu")
@@ -3446,8 +3672,6 @@ Class('App', 'xui.Module',{
                     "id" : "item 3",
                     "caption" : "item 3"
                 }])
-
-                .setHeight("5em")
             );
             
             return children;
@@ -3551,10 +3775,15 @@ Class('App', 'xui.Module',{
         },
         _ctl_comboinput61_afteruivalueset:function (profile,oldValue,newValue){
             xui.setTheme(newValue);
+            this.xui_ui_comboinput32.setUIValue('12px',true);
+        },
+        _xui_ui_comboinput32_afteruivalueset:function (profile,oldValue,newValue){
+            xui.CSS.setStyleRules(".xui-node",{'font-size': newValue});
+            xui.CSS.adjustFont();
         }
+        
     },
     Static:{
         viewStyles:{}
-
     }
 });

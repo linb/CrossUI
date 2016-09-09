@@ -12,7 +12,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
-                'padding':'0.2em'
+                'padding':'.25em'
             },
             ITEM:{
                 'white-space': 'nowrap',

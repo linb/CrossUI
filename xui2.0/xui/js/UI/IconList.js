@@ -49,7 +49,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 position:'relative',
-                'line-height':'1.2em',
+                'line-height':'1.25em',
                 zoom:xui.browser.ie6?1:null
             },
             ITEM:{

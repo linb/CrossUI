@@ -64,7 +64,7 @@ Class("xui.UI.Label", "xui.UI",{
                 }
             },
             'fontSize':{
-                combobox:["","1.2em","1.5em","2em","3em"],
+                combobox:["","1.25em","1.5em","2em","3em"],
                 action: function(value){
                     this.getSubNode("CAPTION").css('fontSize', value);
                 }

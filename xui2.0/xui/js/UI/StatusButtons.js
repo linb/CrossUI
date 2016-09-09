@@ -34,8 +34,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ITEM:{
                 'vertical-align':'middle',
                 position:'relative',
-                padding:'.3em .5em',
-                margin:'0 .4em',
+                padding:'.25em .5em',
+                margin:'0 .5em',
                 cursor:'pointer',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,

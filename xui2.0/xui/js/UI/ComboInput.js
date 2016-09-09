@@ -230,7 +230,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
 
-                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
+                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
 
                 //open already
                 if(profile.$poplink)return;
@@ -242,7 +242,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src))||type=='getter'||type=='cmdbox'||type=='popbox')
+                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 if(profile.__tryToHide){
@@ -472,7 +472,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SBTN:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn',
+                className:'xui-ui-unselectable xui-nofocus xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
                     className:"xuifont {btncls}",
@@ -745,8 +745,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             BTN:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
-
-                    if(prop.type=='popbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
+                    if(prop.type=='label' || prop.type=='popbox' || prop.type=='cmdbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
                     }
@@ -1241,7 +1240,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xui-nofocus',
                             R1B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
@@ -1249,7 +1248,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xui-nofocus',
                             R2B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
@@ -1277,7 +1276,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.BTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn',
+                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus',
                         style:"{_popbtnDisplay}",
                         MID:{
                             className:'xuifont',
@@ -1314,7 +1313,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
-            tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':tt;
+            tt=tt=='timepicker'?'time':
+                tt=='datepicker'?'date':
+                tt=='colorpicker'?'color':
+                (tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':
+                tt;
 
             data._fi_btnClass = "xui-uicmd-" + tt;
             if(data.btnImage)

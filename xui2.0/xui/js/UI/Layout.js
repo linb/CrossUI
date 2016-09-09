@@ -206,9 +206,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         CMD:{
                             $order:1,
-                            tagName:'button',
+                            tagName:'span',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-unselectable xui-ui-btn xuifont {cls3}',
+                            className:'xui-node xui-ui-unselectable xuifont {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{
@@ -314,7 +314,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 bottom:0,
                 width:'2em',
-                height:'.5em'
+                height:'.5em',
+                'text-align':'center'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -322,7 +323,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 top:0,
                 width:'2em',
-                height:'.5em'
+                height:'.5em',
+                'text-align':'center'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -330,7 +332,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 right:0,
                 height:'2em',
-                width:'.5em'
+                width:'.5em',
+                'line-height':'2em'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -338,7 +341,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 left:0,
                 height:'2em',
-                width:'.5em'
+                width:'.5em',
+                'line-height':'2em'
             },
             'MOVE-MAIN':{
                 $order:5,
@@ -767,13 +771,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }else{
                 var pos;
                 if(p.type=='vertical'){
-//                    data.clsmovebg = "xui-uiborder-tb";
+                    data.clsmovebg = "xui-uiborder-tb";
                     if(data.pos=='before')
                         pos='top';
                     else
                         pos='bottom';
                 }else{
-//                    data.clsmovebg = "xui-uiborder-lr";
+                    data.clsmovebg = "xui-uiborder-lr";
                     if(data.pos=='before')
                         pos='left';
                     else

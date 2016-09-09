@@ -90,14 +90,14 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -152,7 +152,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
-                                        className:'xui-uiborder-inset',
+                                        className:'xui-uiborder-inset'
                                     }
                                 },
                                 LIST:{
@@ -294,33 +294,33 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                padding:'.4em .4em .4em 0'
+                padding:'.5em .5em .5em 0'
             },
             CON:{
-                padding:'.2em',
+                padding:'.25em',
                 position:'relative'
             },
             DATA:{
             },
             'DATA span':{
-                'padding':'0 .2em',
-                'margin-right':'.1em',
-                'width':'1.7em'
+                'padding':'0 .25em',
+                'margin-right':'.125em',
+                'width':'1.75em'
             },
             'DATA div':{
-                'padding':'.4em 0'
+                'padding':'.5em 0'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             },
             EXAM:{
-                padding:'.1em',
+                padding:'.125em',
                 position:'absolute',
-                width:'5.6em',
-                height:'5.6em',
-                top:'.2em',
-                right:'.2em',
+                width:'5.5em',
+                height:'5.5em',
+                top:'.25em',
+                right:'.25em',
                 'white-space':'normal',
                 'text-align':'center'
             },
@@ -335,13 +335,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             LIST :{
                 position:'relative',
                 overflow:'hidden',
-                padding:'.2em',
+                padding:'.25em',
                 'white-space': 'nowrap',
                 'line-height':'1em'
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.4em',
+                'padding-top':'.5em',
                 'text-align':'center'
             },
             SIMPLE:{
@@ -404,7 +404,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             },
             TRANS:{
                 position:'absolute',
-                top:'.3em',
+                top:'.25em',
                 left:'0',
                 display:xui.$inlineBlock,
                 cursor:'pointer'
@@ -413,12 +413,12 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 position:'absolute',
                 display:'none',
                 top:'0',
-                right:'2.4em'
+                right:'2.5em'
             },
             TOGGLE:{
                 position:'absolute',
                 right:'.5em',
-                top:'0.1em',
+                top:'0.125em',
                 display:xui.$inlineBlock,
                 cursor:'default'
             }

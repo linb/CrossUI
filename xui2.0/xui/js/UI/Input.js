@@ -158,7 +158,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'.3em'
+               'padding-top':'.25em'
             },
             WRAP:{
                 left:0,
@@ -174,10 +174,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             INPUT:{
                //don't change it in custom class or style
-               'padding-top':'.2em',
-               'padding-left':'.2em',
-               'padding-right':'.2em',
-               'padding-bottom':'.2em',
+               'padding-top':'.25em',
+               'padding-left':'.25em',
+               'padding-right':'.25em',
+               'padding-bottom':'.25em',
 
                "background-color":"transparent",
                "background-image":xui.browser.ie?'url(.)':null,
@@ -198,8 +198,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             ERROR:{
                 position:'absolute',
-                right:'.2em',
-                top:'.2em',
+                right:'.25em',
+                top:'.25em',
                 display:'none',
                 'z-index':20
             }

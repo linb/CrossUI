@@ -182,13 +182,13 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             },
             HANDLER:{
                 height:'100%',
-                width:'0.6em',
+                width:'0.5em',
                 background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
             LIST:{
-                padding:'.1em'
+                padding:'.125em'
             },
             ITEMS:{
                 'vertical-align':'middle'

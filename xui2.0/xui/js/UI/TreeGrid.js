@@ -2296,13 +2296,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 '-moz-box-shadow': '1px 0  1px #CCC',
                 '-webkit-box-shadow': '1px 0  1px #CCC',
                 'box-shadow': '1px 0  1px #CCC',
-                'z-index':10,
+                'z-index':10
             },
             'TDBODY12 > .rowfreezed':{
                 '-moz-box-shadow': '0 1px 1px #CCC',
                 '-webkit-box-shadow': '0 1px 1px #CCC',
                 'box-shadow': '0 1px 1px #CCC',
-                'z-index':10,
+                'z-index':10
             },
             SCROLL22:{
                 overflow:'auto'
@@ -2346,15 +2346,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             SORT:{
                 position:'absolute',
-                right:'.2em',
-                bottom:'.2em'
+                right:'.25em',
+                bottom:'.25em'
             },
             HHANDLER:{
                 position:'absolute',
                 //if set z-index, disappearing in opera
                 //'z-index':'10',
                 background: xui.browser.ie?'url('+xui.ini.img_bg+')':null,
-                width:'.4em',
+                width:'.5em',
                 top:'0',
                 right:'0',
                 height:'100%',
@@ -2422,7 +2422,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             FHANDLER:{
                 position:'absolute',
-                'height':'.4em',
+                'height':'.5em',
                 left:'0',
                 width:'100%',
                 bottom:'0',
@@ -2555,15 +2555,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'line-height':xui.__iefix1
             },
             LTAGCMDS:{
-                "padding-right":'.2em',
+                "padding-right":'.25em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
                 'vertical-align':'middle'
             },
             CMD:{
-                "margin-left":'.2em',
-                padding:'0 .2em',
+                "margin-left":'.25em',
+                padding:'0 .25em',
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -4284,7 +4284,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src){},
-            onEditorClick:function(profile, cell, proEditor, src){}
+            onEditorClick:function(profile, cell, proEditor, type, src){}
         },
         RenderTrigger:function(){
             var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
@@ -5869,6 +5869,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'getter':
                         case 'popbox':
                         case 'cmd':
+                            type='label';
                         case 'cmdbox':
                         case 'droplist':
                             editor.setType(type);
@@ -5889,10 +5890,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     editor.afterPopShow(function(prop, popCtl){
                                         return profile.boxing().afterPopShow(profile, prop.$cell, prop, popCt);
                                     });
-                                if(type=="getter"||type=="popbox"||type=='cmdbox'||type=='cmd'){
+                                if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='cmd' || type=='dropbutton'){
                                     if(profile.onEditorClick)
-                                        editor.onClick(function(prop, node){
-                                            return profile.boxing().onEditorClick(profile, prop.$cell, prop, node);
+                                        editor.onClick(function(prf, e, src, btn){
+                                            return profile.boxing().onEditorClick(profile, prf.$cell, prf, btn, src);
                                         });
                                 }
                             }
@@ -6260,10 +6261,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 s22.width(adjustunit(w2,s22));
 
                 _.asyRun(function(){
-                    b21.css('padding-bottom', adjustunit((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0),b21));
+                    b21.css('padding-bottom', s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0);
                     s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', adjustunit((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0),b12));
+                        b12.css('padding-right', s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0);
                         s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);

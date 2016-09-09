@@ -111,7 +111,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             },
             'FIELDSET-checked':{
                 $order:2,
-                'padding-left':'.2em',
+                'padding-left':'.25em',
                 'border-left':'0',
                 'border-right':'0',
                 'border-bottom':'0'
@@ -121,7 +121,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             },
             HANDLE:{
                 cursor:'default',
-                padding:'0 .3em 0 .6em',
+                padding:'0 .25em 0 .5em',
                 display:xui.$inlineBlock
             },
             PANEL:{

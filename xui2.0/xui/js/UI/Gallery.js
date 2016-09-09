@@ -139,7 +139,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             },
             COMMENT:{
                 display:'block',
-                margin:'.2em',
+                margin:'.25em',
                 'text-align':'center',
                 'font-size':'1em'
             }

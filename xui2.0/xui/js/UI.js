@@ -1041,7 +1041,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         busy:function(message,html,key,subId){
             var msg=typeof message=='string'?message:'Loading...',
-                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.4em;">'+msg+'</span>';
+                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.5em;">'+msg+'</span>';
             // busy dom too
             if(message===true||html===true)xui.Dom.busy();
             return this.each(function(profile){
@@ -1783,13 +1783,13 @@ Class("xui.UI",  "xui.absObj", {
                 if(!o.renderId)return;
                 // adjust self
                 if('dock' in o.properties && o.properties.dock && o.properties.dock!='none' && o.renderId){
-                    var n=o.getRootNode();
+                    var n=o.getRootNode(),css=xui.CSS;
                     // ensure display
                     if(n.clientHeight){
                         if(force){
                             // ensure force 1
-                            n.style.width = 0 + xui.CSS.$picku(n.style.width);
-                            n.style.height = 0 + xui.CSS.$picku(n.style.height);
+                            n.style.width = 0 + css.$picku(n.style.width);
+                            n.style.height = 0 + css.$picku(n.style.height);
                             // ensure force 2
                             o._resize_h=o._resize_w=-1;
                         }
@@ -2060,14 +2060,14 @@ Class("xui.UI",  "xui.absObj", {
                 display:'none'
             },
             ".xui-uitembg":{
-                padding:'.2em .4em',
+                padding:'.25em .5em',
                'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px',
-                'border':'solid 0.1em transparent'
+                'border':'solid 0.125em transparent'
             },
             ".xui-uitembg-mouseover":{
                 $order:2,
@@ -2210,13 +2210,13 @@ Class("xui.UI",  "xui.absObj", {
                 overflow:'hidden',
                 position:'relative',
                 width:'92%',
-                'padding':'.5em 0 0 .6667em',
+                'padding':'.75em 0 .25em 1em',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
                 position:'absolute',
-                top:'.5em',
-                right:'.6667em',
+                top:'.75em',
+                right:'.75em',
                 'text-align':'right'
             },
             '.xui-uicon-main':{
@@ -4523,16 +4523,16 @@ Class("xui.UI",  "xui.absObj", {
                         case 'top':
                         case 'bottom':
                         case 'width':
-                            stl.width = wu;
+                            stl.width = 0;
                             break;
                         case 'left':
                         case 'right':
                         case 'height':
-                            stl.height = hu;
+                            stl.height = 0;
                             break;
                         default:
-                            stl.width = wu;
-                            stl.height = hu;
+                            stl.width = 0;
+                            stl.height = 0;
                     }
                 }
                 xui.UI.$dock(this,false,true);

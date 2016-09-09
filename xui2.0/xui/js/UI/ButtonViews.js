@@ -41,7 +41,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 margin:'.15em',
                 position:'relative',
                 cursor:'pointer',
-                'padding':'0 .3em 0 0',
+                'padding':'0 .25em 0 0',
                 'vertical-align':'top'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
@@ -50,7 +50,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             ITEMC:{
                 $order:0,
-                padding:'.15em 0 .1em 0',
+                padding:'.15em 0 .125em 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
@@ -60,7 +60,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
                 'vertical-align':'middle',
-                margin:'.1em'
+                margin:'.125em'
             }
         },
         DataModel:{

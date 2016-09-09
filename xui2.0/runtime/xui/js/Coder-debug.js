@@ -3,7 +3,7 @@ Class("xui.Coder", null,{
         xui.CSS.addStyleSheet(
             '.sh {font-family: "Courier New" , Courier, mono;border: 1px solid #92D1E4;background:#fff;}'+
             '.sh .sh-con{padding-bottom:3px;background-color: #fff;}'+
-            '.sh .sh-cmd{padding: 3px 8px 3px 8px;font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;color: silver;border-bottom: 1px solid #EBEADB;}'+
+            '.sh .sh-cmd{padding: 3px 8px 3px 8px;font-size: 9px;font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;color: silver;border-bottom: 1px solid #EBEADB;}'+
             '.sh .sh-cmd a{color: blue;text-decoration: none;margin-right: 10px;}'+
             '.sh .sh-cmd a:hover{color: red;}'+
             '.sh .cmd-ruler{width:25px;}'+

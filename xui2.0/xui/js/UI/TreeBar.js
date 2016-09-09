@@ -366,7 +366,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               padding:'.2em .4em',
+               padding:'.25em .5em',
                 'border-radius': '.3px 0 0 3px',
                 '-moz-border-radius': '3px 0 0 3px',
                 '-webkit-border-radius': '3px 0 0 3px',
@@ -385,7 +385,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //1px for ie8
                 'line-height':'1px',
                 position:'relative',
-                'margin-left':'1.8em'
+                'margin-left':'1.75em'
             },
             MARK:{
                cursor:'pointer',

@@ -1804,15 +1804,16 @@ new function(){
         }
         data.onload = data.onerror = null;
     };
-    data.src = "data:image/gif;base64,R0lGODlhAQABAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+ZzP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8AzP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wAAJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNmMzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAMwAAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAANgALAAAAAABAAEAAAgEALEFBAA7";
+    data.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
     _.merge(xui.ini,{
         img_dd:     "data:image/gif;base64,R0lGODlhEABAAPcAAAAAAAEBAQICAgMDAwUFBAUFBQcHBwgICAkJCQwMDA8PDx4eHiQkJDAwMD8/P0JCQl1dXf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAQAEAAAAj/AP8JHPigQQMHAxMOTAAAgIABAgAkUPgPQsMABAoQCNAQAISEFw0cMMCxI4CFAAIY+Eey4b+LCgSmXCnzpECVBf49AEBgJEWVBwg8WCCgQMuEQEkuYDBgo8uBIlsyeCCgJMWWAB68fPpP5cCOAhm6TLpV4teQI0tyrTgzrcmPChNoVIuAYsKCB+3qtQsgQt+/fgPb/Ce4MOCvEfb6HbhYb1/Eigc35ptYZmW7kw1rRgy48+S9oEOLHk26tGnRnlMzTl0Yst7Mgyk+tnzWpO3JfSPo3q274eXcfjv21rxbeHDBwE32VphbeHPmvYEvBzmc9+eXxa3Hxm69OHPbtk2zNO68WvNh2q8lb6fuuix434Ola5/Nvbt53tLhH8/unXpw49vlhx90/E2HmH3XyTcgSO91FBAAOw==",
         img_busy:  "data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7",
         img_icon:   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACmwAAApsBm2pmsgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJgSURBVDiNZZNfSNNRFMc/s8gaizkXgrM2sicFIVJ7Cx82qsmaxAz7I/5QEyGGfxiWaJCRT1rQQxkR1KPQU5CWShiYuAedPtSmsOeI3GJsut0X3elhbv5W53Lhcrif7+V87zkGESEf1QaD4wq8scKpDZieFZkEMLgNGufpYpcdlhmUDYkWIBEpbB9MZUEEJAxpN4zjxs8SCeRg3eatnjmKLlLwaxc4CdSC8YKDoYUA2f1LHAdgD1Ck9Aw2G3afjxdOJyNAWRcsKpBXdsTyqfCusI8QYA0rNpzOEVpbX2Kz2entZS6bRVIpRNNYAKwN1WxZZovhEz38xMIZNG2eVErIZgW/f4HRUdbzJSmFtLWzzkddzftIYzvyrYRMWVNTGKUODRgbC9HczFA4TFovcq2LOIkc3NCObJfkjH1vNKpjExNxRIRIRNHS8gARwe1m/D+RbmL0sXrjCMvJg5/Ji5QODMTwep9ILivgpqf2Dr9//EDpRTo6WKSz80uF1/snoRNZhbQXHuV66Cq3WCKOILV9xPMiiQRScdcbQylBKflXJAzpFhiEYb4WDMsiddeJrqyQLsB5w0KhdGNl5abSiTyGNbjHBwRhD+E+K1g4XdrR9r0IDoeVw1MXAcq7YHEHJAvihzlwcBYf7/DwHCOVdHd/LoIjEeX018SVQjSNeaDsMjz0wVQ12ItmAZdrmGTyMLG1lbmo1cTzV5JJxOViWM+UFPW12VyFyZQ7R6MZAoGn1u3N15EIGQCTCcxmqvRI0TARDE7Q33+O8vIKQqFpmZl5BuDxGBL19dyMx4kFg0zqkb+vwqjwTYPW6AAAAABJRU5ErkJggg==",
         img_pic:    "data:image/png;base64,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",
         img_handler:"data:image/gif;base64,R0lGODlhBAAEAPcAAAAAAGSMtP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAEAAQAAAgPAP8JFCDwX4B/BAUe/BcQADs=",
+        // transparent 1*1 gif and png
         img_bg:     data.src,
-        img_blank: data.src
+        img_blank: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
     },'without');
 
     //for dom ready
@@ -5763,7 +5764,7 @@ xui.Locale.en.editor={
     fontsize:'Font Size',
     fontname:'Font Family',
     formatblock:'Font Block',
-    fontsizeList:'1,1(8pt);2,2(10pt);3,3(12pt);4,4(14pt);5,5(18pt);6,6(24pt);...,...',
+    fontsizeList:'1,1(12px);2,2(13px);3,3(16px);4,4(18px);5,5(24px);6,6(32px);...,...',
     fontnameList:'Arial;Arial Black;Comic Sans MS;Courier New;Impact;Tahoma;Times New Roman;Trebuchet MS;Verdana;...',
     formatblockList:'p,Normal;h1,Heading1;h2,Heading2;h3,Heading3;h4,Heading4;h5,Heading5;h6,Heading6;...,...'
 };/* event
@@ -8438,6 +8439,8 @@ Class('xui.Event',null,{
             this.addStyleSheet(css,"xui.CSSreset");
         },
         adjustFont:function(){
+            this._dftEmStr='';
+            this._getDftEmSize(true);
             xui.$CSSCACHE={};
             if(xui.UI){
                 xui.$adjustFont=1;
@@ -8481,22 +8484,19 @@ Class('xui.Event',null,{
         },
 
         $em2px:function(value, node, force){
-            value = (value===""||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()) : value;
-            return force?Math.round(parseFloat(value)):value;
+            value = (!value||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
+            return force?Math.round(parseFloat(value)||0):value;
         },
         $px2em:function(value, node){
-            return (value===""||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()): value;
+            return (!value||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
         },
 
         $px:function(value, node, force){
-            value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
-            return force?Math.round(parseFloat(value)):value;
+            value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+            return force?Math.round(parseFloat(value)||0):value;
         },
         $em:function(value, node){
-            return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(value===""||value=='auto')?value:(parseFloat(value))||0);
-        },
-        $adjustunit:function(prop, value, emRate){
-            return value=='auto'?'auto': (prop.spaceUnit||xui.SpaceUnit)=='em'?(this.$em(value, emRate)+'em'):(Math.round(this.$px(value, emRate))+'px');
+            return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
@@ -8506,15 +8506,14 @@ Class('xui.Event',null,{
                 return Math.round(parseFloat(a)+parseFloat(b))+'px';
             }
         },
-        $picku:function(v){return v && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
+        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
         $addu:function(v){return v=='auto'?v:(_.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
-        $forceu:function(v,u,node){return v=='auto'?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
+        $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
     },
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css=".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;line-height:1.22em;}"+
-            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
+            css= ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
@@ -8528,7 +8527,8 @@ Class('xui.Event',null,{
             ".xui-node-input,.xui-node-textarea,.xui-node-select{cursor:text;font-family:inherit;font-size:inherit;font-weight:inherit;"+(b.ie?"font-size:100%;":"")+"}"+
             ".xui-node-del,.xui-node-ins{text-decoration:none;}"+
             ".xui-node-pre,.xui-node-code,.xui-node-kbd,.xui-node-samp,.xui-node-tt{font-family:monospace;"+(b.ie?"font-size:108%;":"")+"line-height:100%;}"+
-            ".xui-node-select,.xui-node-input,.xui-node-textarea{font:99% arial,helvetica,clean,sans-serif;border-width:1px;}"+
+// dont use font(use font-size/font-family) in IE678
+            ".xui-node-select,.xui-node-input,.xui-node-textarea{font-family:arial,helvetica,clean,sans-serif;border-width:1px;}"+
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
@@ -8556,7 +8556,7 @@ Class('xui.Event',null,{
             (b.ie6?("#"+xui.$localeDomId+"{vertical-align:baseline;}"):"")+
             
             // some cross browser css solution
-            ".xui-nooutline:focus{outline:0;}"+
+            ".xui-nofocus:focus{outline:0;}"+
             ".xui-cls-wordwrap{"+
                 "white-space: pre-wrap;word-break: break-all;" + // css-3
                 (b.gek?"white-space: -moz-pre-wrap;":"") +  // Mozilla, since 1999
@@ -8570,14 +8570,19 @@ Class('xui.Event',null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"
+            ".xui-node-tips{background-color:#FDF8D2;}"+
+            
+           // last one 
+            ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;line-height:1.22em;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
-
+        
+        /*
         xui.Thread.repeat(function(t){
             if((t=xui.CSS._dftEm) && (t!==xui.CSS._getDftEmSize(true)))xui.CSS.adjustFont();
         }, 10000);
+        */
     }   
 });Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
@@ -10957,6 +10962,15 @@ type:4
                 }
 */
             }
+            // xui.CSS.$px is for IE678
+            if(!b && xui.browser.ie678){
+                // INPUT/TEXTREA will always return % for font-size
+                if((name=='fontSize'||name2=='font-size') && /%/.test(value) && node.parentNode){
+                    value=(node.parentNode.currentStyle[name]||node.parentNode.currentStyle[name2]) * parseFloat(value);
+                }else if(xui.CSS.$isEm(value)){
+                    value=xui.CSS.$px(value, node);;
+                }
+            }
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
         $transformIE:function(node, value) {
@@ -12067,7 +12081,7 @@ type:4
                 //don't remove this {
                 if(o=xui.Dom.byId(id)){
                     //Using firstChild, for performance
-                    if(!o.firstChild && ++count == sequence)
+                    if((!o.firstChild||(o.firstChild.nodeType==3&&!o.firstChild.nodeValue)) && ++count == sequence)
                         return xui([o]);
                 }else{
                     o=doc.createElement('div');
@@ -15947,7 +15961,8 @@ Class("xui.Tips", null,{
             ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
             ".xui-tips-i{overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
-            ".xui-tips-c{padding:.1em .2em .2em .2em;}"+
+            ".xui-tips-c{padding:.125em .25em .25em .25em;}"+
+            ".xui-tips-c *{line-height:1.22em;}"+
             ".xui-tips .xui-tips-c{border-radius:1px;}"
         , this.KEY);
 
@@ -16700,9 +16715,9 @@ Class("xui.Tips", null,{
     Initialize:function(){
         xui.CSS.addStyleSheet(
             '.xui-dbg-frm{position:absolute;width:25em;z-index:2000;}'+
-            '.xui-dbg-header{cursor:move;height:1.5em;padding-top:.2em;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
-            '.xui-dbg-cmds{position:absolute;right:.2em;top:.2em;}'+
-            '.xui-dbg-cmds a{margin:.2em;}'+
+            '.xui-dbg-header{cursor:move;height:1.5em;padding-top:.25em;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
+            '.xui-dbg-cmds{position:absolute;right:.25em;top:.25em;}'+
+            '.xui-dbg-cmds a{margin:.25em;}'+
             '.xui-dbg-box{position:relative;overflow:hidden;border:solid 1px #AAA;}'+
             '.xui-dbg-content{position:relative;width:100%;overflow:auto;height:25em;overflow-x:hidden;}'+
             '.xui-dbg-con1{background-color:#CCC;width:24.5empx;}'+
@@ -16734,8 +16749,8 @@ Class("xui.Tips", null,{
            if(!div){
                div =
                '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset xui-custom" style="border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.2emx;overflow:hidden;font-weight:bold;padding:.2em;"></div>'+
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.4em;overflow:hidden;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.25em;overflow:hidden;font-weight:bold;padding:.25em;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.5em;overflow:hidden;"></div>'+
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();
@@ -17856,7 +17871,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         busy:function(message,html,key,subId){
             var msg=typeof message=='string'?message:'Loading...',
-                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.4em;">'+msg+'</span>';
+                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.5em;">'+msg+'</span>';
             // busy dom too
             if(message===true||html===true)xui.Dom.busy();
             return this.each(function(profile){
@@ -18598,13 +18613,13 @@ Class("xui.UI",  "xui.absObj", {
                 if(!o.renderId)return;
                 // adjust self
                 if('dock' in o.properties && o.properties.dock && o.properties.dock!='none' && o.renderId){
-                    var n=o.getRootNode();
+                    var n=o.getRootNode(),css=xui.CSS;
                     // ensure display
                     if(n.clientHeight){
                         if(force){
                             // ensure force 1
-                            n.style.width = 0 + xui.CSS.$picku(n.style.width);
-                            n.style.height = 0 + xui.CSS.$picku(n.style.height);
+                            n.style.width = 0 + css.$picku(n.style.width);
+                            n.style.height = 0 + css.$picku(n.style.height);
                             // ensure force 2
                             o._resize_h=o._resize_w=-1;
                         }
@@ -18875,14 +18890,14 @@ Class("xui.UI",  "xui.absObj", {
                 display:'none'
             },
             ".xui-uitembg":{
-                padding:'.2em .4em',
+                padding:'.25em .5em',
                'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px',
-                'border':'solid 0.1em transparent'
+                'border':'solid 0.125em transparent'
             },
             ".xui-uitembg-mouseover":{
                 $order:2,
@@ -19025,13 +19040,13 @@ Class("xui.UI",  "xui.absObj", {
                 overflow:'hidden',
                 position:'relative',
                 width:'92%',
-                'padding':'.5em 0 0 .6667em',
+                'padding':'.75em 0 .25em 1em',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
                 position:'absolute',
-                top:'.5em',
-                right:'.6667em',
+                top:'.75em',
+                right:'.75em',
                 'text-align':'right'
             },
             '.xui-uicon-main':{
@@ -19336,14 +19351,26 @@ Class("xui.UI",  "xui.absObj", {
                 'border-right-color':'#B5B5B5',
                 'border-bottom-color':'#B5B5B5'
             },
-            '.xui-uiborder-flat':{
-                border:'solid 1px #C5C5C5',
+            '.xui-uiborder-btn, .xui-uiborder-flat, .xui-uiborder-outset, .xui-uiborder-inset':{
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
                 '-o-border-radius': '3px',
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px'
+            },
+            '.xui-uiborder-btn':{
+                border:'solid 1px transparent',
+                background:'none'
+            },
+            '.xui-uiborder-btn-mouseover':{
+                border:'solid 1px #F6F6F6'
+            },
+            '.xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked':{
+                background:'#EDEDED'
+            },
+            '.xui-uiborder-flat':{
+                border:'solid 1px #C5C5C5'
             },
             '.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover':{
                 $order:2,
@@ -19352,24 +19379,12 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6',
-                'border-radius':'3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px'
+                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
             },
-            '.xui-uiborder-inset':{
+            '.xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked':{
                 $order:9,
                 border:'solid 1px',
-                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5',
-                'border-radius':'3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px'
+                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
             },
             '.xui-uiborder-radius':{
                 $order:11,
@@ -19453,6 +19468,9 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image': 'url('+xui.ini.img_busy+')',
                 "background-repeat":"no-repeat",
                 "background-position":"center center"
+            },
+            ".xui-busy:before, .xui-ui-busy:before, .xui-uicmd-toggle-busy:before":{
+                visibility:'hidden'
             },
             ".xui-required":{
                 "color":"#ff0000"
@@ -21335,16 +21353,16 @@ Class("xui.UI",  "xui.absObj", {
                         case 'top':
                         case 'bottom':
                         case 'width':
-                            stl.width = wu;
+                            stl.width = 0;
                             break;
                         case 'left':
                         case 'right':
                         case 'height':
-                            stl.height = hu;
+                            stl.height = 0;
                             break;
                         default:
-                            stl.width = wu;
-                            stl.height = hu;
+                            stl.width = 0;
+                            stl.height = 0;
                     }
                 }
                 xui.UI.$dock(this,false,true);
@@ -24528,7 +24546,7 @@ new function(){
                     i.onload=function(){
                         if(!profile||profile.isDestroyed)return;
                         var prop=profile.properties,
-                            size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
+                            size=profile.box._adjust(profile, (prop.width===""||prop.width=="auto")?i.width:prop.width, (prop.height===""||prop.height=="auto")?i.height:prop.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
                         profile.boxing().afterLoad(profile, path, size[0], size[1]);
                         if(prop.dock!='none')
@@ -24568,13 +24586,22 @@ new function(){
             afterLoad:function(profile, path, width, height){}
         },
         _adjust:function(profile,width,height){
-            var pro=profile.properties,
-                src=profile.getRootNode();
-            width=Math.round(parseFloat(width))||0;
-            height=Math.round(parseFloat(height))||0;
+            var prop=profile.properties,
+                src=profile.getRootNode(),
+                css = xui.CSS,
+                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                root = profile.getRoot(),
+                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+
+            width=width?css.$px(width, rootfz):width;
+            height=height?css.$px(height, rootfz):height;
+
             src.style.width=src.style.height='';
             if(width>0 && height>0){
-                var r1=pro.maxWidth/width, r2=pro.maxHeight/height,r= r1<r2?r1:r2;
+                var r1=prop.maxWidth/width, 
+                    r2=prop.maxHeight/height,
+                    r= r1<r2?r1:r2;
                 if(r>=1)r=1;
                 profile._rate=r;
                 return [src.width=width*r, src.height=height*r];
@@ -24586,14 +24613,14 @@ new function(){
                 ini:800,
                 action:function(v){
                     var src=this.getRootNode(),prop=this.properties;
-                    this.box._adjust(this,_.isFinite(prop.width)?prop.width:src.width,_.isFinite(prop.height)?prop.height:src.height);
+                    this.box._adjust(this, (prop.width===""||prop.width=="auto")?src.width:prop.width, (prop.height===""||prop.height=="auto")?src.height:prop.height);
                 }
             },
             maxHeight:{
                 ini:600,
                 action:function(v){
                     var src=this.getRootNode(),prop=this.properties;
-                    this.box._adjust(this,_.isFinite(prop.width)?prop.width:src.width,_.isFinite(prop.height)?prop.height:src.height);
+                    this.box._adjust(this, (prop.width===""||prop.width=="auto")?src.width:prop.width, (prop.height===""||prop.height=="auto")?src.height:prop.height);
                 }
             },
             width:{
@@ -24604,7 +24631,7 @@ new function(){
                         prop=this.properties,
                         i=new Image();
                     i.src=src.src;
-                    this.box._adjust(this, _.isFinite(v)?Math.round(parseFloat(v)):i.width, _.isFinite(prop.height)?prop.height:i.height);
+                    this.box._adjust(this, (v===""||v=="auto")?i.width:v, (prop.height===""||prop.height=="auto")?i.height:prop.height);
                 }
             },
             height:{
@@ -24615,7 +24642,7 @@ new function(){
                         prop=this.properties,
                         i=new Image();
                     i.src=src.src;
-                    this.box._adjust(this,_.isFinite(prop.width)?prop.width:i.width,_.isFinite(v)?Math.round(parseFloat(v)):i.height);
+                    this.box._adjust(this, (prop.width===""||prop.width=="auto")?i.width:prop.width, (v===""||v=="auto")?i.height:v);
                 }
             },
             src:{
@@ -25632,7 +25659,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 MOVE: {tagName:'div', className:'xuifont',$fonticon:'xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
                 CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'top:0em;left:-1em;{_leftCofigBtn};'},
                 CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-dropdown', style:'top:0em;left:auto;right:-1em;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'top:-1.2em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
+                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'top:-1.25em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{_extend};margin-left:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 RT:{tagName:'div', style:'top:-{_extend};right:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 R:{tagName:'div', style:'right:-{_extend};margin-top:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
@@ -26393,7 +26420,7 @@ Class("xui.UI.Label", "xui.UI",{
                 }
             },
             'fontSize':{
-                combobox:["","1.2em","1.5em","2em","3em"],
+                combobox:["","1.25em","1.5em","2em","3em"],
                 action: function(value){
                     this.getSubNode("CAPTION").css('fontSize', value);
                 }
@@ -27493,7 +27520,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'.3em'
+               'padding-top':'.25em'
             },
             WRAP:{
                 left:0,
@@ -27509,10 +27536,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             INPUT:{
                //don't change it in custom class or style
-               'padding-top':'.2em',
-               'padding-left':'.2em',
-               'padding-right':'.2em',
-               'padding-bottom':'.2em',
+               'padding-top':'.25em',
+               'padding-left':'.25em',
+               'padding-right':'.25em',
+               'padding-bottom':'.25em',
 
                "background-color":"transparent",
                "background-image":xui.browser.ie?'url(.)':null,
@@ -27533,8 +27560,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             ERROR:{
                 position:'absolute',
-                right:'.2em',
-                top:'.2em',
+                right:'.25em',
+                top:'.25em',
                 display:'none',
                 'z-index':20
             }
@@ -28470,7 +28497,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.4em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.5em}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -28580,7 +28607,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'.4em'
+               'padding-top':'.5em'
             },
             EDITOR:{
                 position:'absolute',
@@ -29440,7 +29467,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     if(itb){
                         // here, do resize first
                         itb.getRoot().width(adjustunit(ww,itb.getRoot()));
-                        tbh=itb.getRoot().offsetHeight();
+                        tbh=itb.getRoot().offsetHeight(true);
                         if(tbh)
                             profile.$_tbH=tbh;
                         else
@@ -29702,7 +29729,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
 
-                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
+                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
 
                 //open already
                 if(profile.$poplink)return;
@@ -29714,7 +29741,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src))||type=='getter'||type=='cmdbox'||type=='popbox')
+                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 if(profile.__tryToHide){
@@ -29944,7 +29971,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SBTN:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn',
+                className:'xui-ui-unselectable xui-nofocus xui-ui-btn',
                 style:"{_saveDisplay}",
                 SMID:{
                     className:"xuifont {btncls}",
@@ -30217,8 +30244,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             BTN:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
-
-                    if(prop.type=='popbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
+                    if(prop.type=='label' || prop.type=='popbox' || prop.type=='cmdbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
                     }
@@ -30713,7 +30739,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xui-nofocus',
                             R1B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
@@ -30721,7 +30747,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xui-nofocus',
                             R2B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
@@ -30749,7 +30775,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.BTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn',
+                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus',
                         style:"{_popbtnDisplay}",
                         MID:{
                             className:'xuifont',
@@ -30786,7 +30812,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
-            tt=tt=='timepicker'?'time':tt=='datepicker'?'date':tt=='colorpicker'?'color':(tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':tt;
+            tt=tt=='timepicker'?'time':
+                tt=='datepicker'?'date':
+                tt=='colorpicker'?'color':
+                (tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':
+                tt;
 
             data._fi_btnClass = "xui-uicmd-" + tt;
             if(data.btnImage)
@@ -31084,7 +31114,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             'FIELDSET-checked':{
                 $order:2,
-                'padding-left':'.2em',
+                'padding-left':'.25em',
                 'border-left':'0',
                 'border-right':'0',
                 'border-bottom':'0'
@@ -31094,7 +31124,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             HANDLE:{
                 cursor:'default',
-                padding:'0 .3em 0 .6em',
+                padding:'0 .25em 0 .5em',
                 display:xui.$inlineBlock
             },
             PANEL:{
@@ -31391,14 +31421,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -31453,7 +31483,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
-                                        className:'xui-uiborder-inset',
+                                        className:'xui-uiborder-inset'
                                     }
                                 },
                                 LIST:{
@@ -31595,33 +31625,33 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'border-collapse':'separate'
             },
             MAINI:{
-                padding:'.4em .4em .4em 0'
+                padding:'.5em .5em .5em 0'
             },
             CON:{
-                padding:'.2em',
+                padding:'.25em',
                 position:'relative'
             },
             DATA:{
             },
             'DATA span':{
-                'padding':'0 .2em',
-                'margin-right':'.1em',
-                'width':'1.7em'
+                'padding':'0 .25em',
+                'margin-right':'.125em',
+                'width':'1.75em'
             },
             'DATA div':{
-                'padding':'.4em 0'
+                'padding':'.5em 0'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             },
             EXAM:{
-                padding:'.1em',
+                padding:'.125em',
                 position:'absolute',
-                width:'5.6em',
-                height:'5.6em',
-                top:'.2em',
-                right:'.2em',
+                width:'5.5em',
+                height:'5.5em',
+                top:'.25em',
+                right:'.25em',
                 'white-space':'normal',
                 'text-align':'center'
             },
@@ -31636,13 +31666,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             LIST :{
                 position:'relative',
                 overflow:'hidden',
-                padding:'.2em',
+                padding:'.25em',
                 'white-space': 'nowrap',
                 'line-height':'1em'
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.4em',
+                'padding-top':'.5em',
                 'text-align':'center'
             },
             SIMPLE:{
@@ -31705,7 +31735,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             TRANS:{
                 position:'absolute',
-                top:'.3em',
+                top:'.25em',
                 left:'0',
                 display:xui.$inlineBlock,
                 cursor:'pointer'
@@ -31714,12 +31744,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 position:'absolute',
                 display:'none',
                 top:'0',
-                right:'2.4em'
+                right:'2.5em'
             },
             TOGGLE:{
                 position:'absolute',
                 right:'.5em',
-                top:'0.1em',
+                top:'0.125em',
                 display:xui.$inlineBlock,
                 cursor:'default'
             }
@@ -32343,14 +32373,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -32532,24 +32562,24 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 position:'relative'
             },
             BARCMDL:{
-                top:'.1em'
+                top:'.125em'
             },
             TAILI:{
                 position:'relative'
             },
             TIME:{
-                'padding':'.2em 1.5em'
+                'padding':'.25em 1.5em'
             },
             SET:{
                 position:'absolute',
                 display:'none',
-                top:'.1em',
-                right:'.4em'
+                top:'.125em',
+                right:'.5em'
             },
             TODAY:{
                 position:'absolute',
-                top:'.2em',
-                left:'.1em',
+                top:'.25em',
+                left:'.125em',
                 display:xui.$inlineBlock,
                 cursor:'default'
             },
@@ -32557,7 +32587,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:0,
                 display:xui.$inlineBlock,
                 position:'relative',
-                margin:'0 .2em',
+                margin:'0 .25em',
                 'vertical-align': 'middle',
                 cursor:'default'
             },
@@ -32566,8 +32596,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                margin:'0 .2em',
-                'padding':'0 .2em'
+                margin:'0 .25em',
+                'padding':'0 .25em'
             },
             YEAR:{
             },
@@ -32580,7 +32610,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-size':'1em'
             },
             MAINI:{
-                 padding:'.4em .4em .4em 0'
+                 padding:'.5em .5em .5em 0'
             },
             BODY:{
                 overflow: 'visible'
@@ -32597,15 +32627,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:3,
                 'vertical-align':'middle',
                 'text-align':'center',
-                'padding':'.2em'
+                'padding':'.25em'
             },
             W:{
                 $order:4,
-                padding:'.1em'
+                padding:'.125em'
             },
             H:{
                 $order:4,
-                padding:'.2em 0.5em'
+                padding:'.25em 0.5em'
             }
         },
         Behaviors:{
@@ -33137,14 +33167,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -33300,23 +33330,23 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding-top':'.4em'
+                'padding-top':'.5em'
             },
             CONH:{
                 'white-space': 'nowrap',
                 'text-align':'center'
             },
             CONM:{
-                'margin-top':'.4em',
+                'margin-top':'.5em',
                 'white-space': 'nowrap',
                 'text-align':'center'
             },
             BARCMDL:{
-                top:'.1em'
+                top:'.125em'
             },
             'PRE,PRE2,NEXT,NEXT2':{
                 position:'relative',
-                margin:'0 .2em',
+                margin:'0 .25em',
                 'vertical-align': 'middle',
                 cursor:'default'
             },
@@ -33325,18 +33355,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-weight':'bold',
                 'vertical-align': 'middle',
                 cursor:'e-resize',
-                margin:'0 .2em',
-                'padding':'0 .2em'
+                margin:'0 .25em',
+                'padding':'0 .25em'
             },
             SET:{
                 position:'absolute',
                 display:'none',
-                top:'.1em',
-                right:'.4em'
+                top:'.125em',
+                right:'.5em'
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.4em',
+                'padding-top':'.5em',
                 'text-align':'center'
             },
             CAPTION:{
@@ -33345,12 +33375,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             '.xuiex-timepicker':{
                 'text-align':'center',
-                padding:'.2em .4em'
+                padding:'.25em .5em'
             },
             '.xuiex-timepicker3':{
                 'text-align':'center',
                 'font-weight':'bold',
-                padding:'.2em 0.246em'
+                padding:'.25em 0.25em'
             }
         },
         Behaviors:{
@@ -34075,7 +34105,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 listbox:['single','none','multi','multibycheckbox'],
                 action:function(value){
                     if(!this.box._ITEMMARKED)
-                        this.getSubNode('MARK',true).css('display',(value=='multibycheckbox')?'':'none');
+                        this.getSubNode('MARK',true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');
                 }
             },
             borderType:{
@@ -34226,7 +34256,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return d;
         },
         _prepareItem:function(profile, item){
-            item._cbDisplay = (profile.properties.selMode=='multibycheckbox')?'':'display:none;';
+            var m=profile.properties.selMode;
+            item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
         },
@@ -34296,9 +34327,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 max=prop.maxHeight,
 
                 f=function(k){return profile.getSubNode(k)},
-                o = f('ITEMS'),
+                items = f('ITEMS'),
                 label = f('LABEL'),
-                ofz = useem?o._getEmSize():null,
+                itemsfz = useem?items._getEmSize():null,
                 labelfz = needfz?label._getEmSize():null,
 
                 labelSize=css.$px(prop.labelSize, labelfz)||0,
@@ -34310,25 +34341,25 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(width && width!='auto')width = css.$px(width, rootfz);
             if(height && height!='auto')height = css.$px(height, rootfz);
 
-            o.cssRegion({
-                left : adjustunit(ll = labelPos=='left'?labelSize:0, ofz),
-                top : adjustunit(tt = labelPos=='top'?labelSize:0, ofz),
-                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), ofz),
-                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), ofz)
+            items.cssRegion({
+                left : adjustunit(ll = labelPos=='left'?labelSize:0, itemsfz),
+                top : adjustunit(tt = labelPos=='top'?labelSize:0, itemsfz),
+                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), itemsfz),
+                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), itemsfz)
             });
 
 
             if(height=="auto"){
                 if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
-                    if(o.height()>max){
-                        o.height(adjustunit(max, ofz));
+                    if(items.height()>max){
+                        items.height(adjustunit(max, itemsfz));
                         root.height('auto');
                     }
                 }
             }
             if(labelSize){
-                if(width=='auto')ww=o.offsetWidth();
-                if(height=='auto')hh=o.offsetHeight();
+                if(width=='auto')ww=items.offsetWidth();
+                if(height=='auto')hh=items.offsetHeight();
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),labelfz),
                     top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz), 
@@ -34479,7 +34510,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             COMMENT:{
                 display:'block',
-                margin:'.2em',
+                margin:'.25em',
                 'text-align':'center',
                 'font-size':'1em'
             }
@@ -34660,7 +34691,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 position:'relative',
-                'line-height':'1.2em',
+                'line-height':'1.25em',
                 zoom:xui.browser.ie6?1:null
             },
             ITEM:{
@@ -34830,14 +34861,14 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     BARTDL:{
                         className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                         BARTDLT:{
-                            className:'xui-uibar-tdlt',
+                            className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
                         className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                         BARTDMT:{
-                            className:'xui-uibar-tdmt',
+                            className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
@@ -34962,7 +34993,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             CAPTION:{
                 cursor:'pointer',
                 display:'inline',
-                padding:'.2em',
+                padding:'.25em',
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             }
@@ -35513,7 +35544,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 border:'dotted 1px gray',
                 position:'absolute',
                 padding:'.25em',
-                'line-height':'2.2em'
+                'line-height':'2.25em'
             }
         },
         Behaviors:{
@@ -36037,7 +36068,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 style:'{_liststyle}',
                 LISTBG:{
                      $order:0,
-                     className:'xui-uiborder xui-uitembg-bar-checked'
+                     className:'xui-uiborder-tb xui-uitembg-bar-checked'
                 },
                 LEFT:{
                     className:'xui-ui-unselectable xui-special-icon',
@@ -36133,14 +36164,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 position:'relative',
                 overflow:'hidden',
                 left:0,
-                width:'100%'
+                width:'100%',
+                padding:'.25em .25em 0 .25em '
             },
             LISTBG:{
                 position:'absolute',
                 overflow:'hidden',
                 left:0,
                 bottom:0,
-                height:'2px',
+                height:'3px',
                 width:'100%'                
             },
             'LEFT, RIGHT, DROP':{
@@ -36154,7 +36186,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'1em',
                 'font-weight': 'bold',
                 'text-align': 'center',
-                'font-size': '1.4em'
+                'font-size': '1.5em'
             },
             LEFT:{
                 left:0
@@ -36167,7 +36199,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
 
             ITEMS:{
-                padding:'1px 0 3px 0',
+                padding:'1px 0 4px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -36178,7 +36210,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 'padding':'0 .5em 0 0',
                 'vertical-align':'top',
-                'margin':'0 .2em',
+                'margin':'0 .25em',
                 'border-bottom':0,
                 'border-radius':'6px 6px 0 0',
                 '-moz-border-radius': '6px 6px 0 0',
@@ -36207,7 +36239,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEMC:{
                 $order:0,
-                padding:'.5em 0 .3em 0',
+                padding:'.5em 0 .25em 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
@@ -37058,7 +37090,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             HANDLE:{
                 cursor:'pointer',
                 display:'block',
-                'padding':'.5em .7em',
+                'padding':'.5em .75em',
                 'white-space':'nowrap'
             },
             PANEL:{
@@ -37072,7 +37104,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             CMDS:{
                 position:'absolute',
                 top:'.5em',
-                right:'.7em',
+                right:'.75em',
                 'text-align':'right',
                 'vertical-align': 'middle'
             }
@@ -37239,7 +37271,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 margin:'.15em',
                 position:'relative',
                 cursor:'pointer',
-                'padding':'0 .3em 0 0',
+                'padding':'0 .25em 0 0',
                 'vertical-align':'top'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
@@ -37248,7 +37280,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             ITEMC:{
                 $order:0,
-                padding:'.15em 0 .1em 0',
+                padding:'.15em 0 .125em 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
@@ -37258,7 +37290,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
                 'vertical-align':'middle',
-                margin:'.1em'
+                margin:'.125em'
             }
         },
         DataModel:{
@@ -37508,7 +37540,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             ITEM:{
                display:xui.$inlineBlock,
                border:0,
-               padding:'.4em',
+               padding:'.5em',
                position:'relative',
                zoom:xui.browser.ie?1:null,
                cursor:'pointer',
@@ -37517,7 +37549,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             // to cover LIST's
             'ITEM-checked':{
-                padding:'.4em'
+                padding:'.5em'
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
@@ -37527,12 +37559,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 position:'relative',
-                'line-height':'1.2em'
+                'line-height':'1.25em'
             },
             MARK:{
                $order:1,
                cursor:'pointer',
-               margin: '0 .4em 0 .2em',
+               margin: '0 .5em 0 .25em',
                'vertical-align':'middle'
             }
         },
@@ -37597,8 +37629,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ITEM:{
                 'vertical-align':'middle',
                 position:'relative',
-                padding:'.3em .5em',
-                margin:'0 .4em',
+                padding:'.25em .5em',
+                margin:'0 .5em',
                 cursor:'pointer',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
@@ -38040,7 +38072,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                position:'relative',
                display:'block',
                overflow: 'hidden',
-               padding:'.2em .4em',
+               padding:'.25em .5em',
                 'border-radius': '.3px 0 0 3px',
                 '-moz-border-radius': '3px 0 0 3px',
                 '-webkit-border-radius': '3px 0 0 3px',
@@ -38059,7 +38091,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //1px for ie8
                 'line-height':'1px',
                 position:'relative',
-                'margin-left':'1.8em'
+                'margin-left':'1.75em'
             },
             MARK:{
                cursor:'pointer',
@@ -38067,10 +38099,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             'BAR-group':{
                 $order:4,
-                'border-top': '0',
-                'border-bottom': '0'
-            },
-            'BAR-group.xui-uitembg':{
                 border:'none'
             },
             ITEMCAPTION:{
@@ -38580,9 +38608,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 backgroundColor:'',
                                 backgroundAttachment:''
                               });
-
                         }else{
-                            markNode.css('background','');
+                            markNode.removeClass('xui-uicmd-toggle-busy');
                         }
                         if(!empty){
                             item._checked = true;
@@ -38658,7 +38685,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        if(xui.browser.ie && xui.browser.ver<=8){
+                            markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        }else{
+                            markNode.addClass('xui-uicmd-toggle-busy');
+                        }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: toggle icon will be checked
@@ -38700,7 +38731,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         Appearances:{
             ITEMS:{
                 //overflow: 'visible'
-                'padding':'0.2em'
+                'padding':'.25em'
             },
             ITEM:{
                 'white-space': 'nowrap',
@@ -39040,7 +39071,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 className:"xui-uibg-base",
                 BOXBGBAR:{
                     tabName:'div',
-                    className:'xui-uibg-bar'
+                    className:'xui-uibg-bar',
+                    style:'{_iconDisplay}'
                 },
                  ITEMS:{
                     tagName:'div',
@@ -39076,7 +39108,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-empty {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}'
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -39102,12 +39134,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.checkbox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uitembg2 {itemClass} {disabled}',
+                    className: '  xui-uitembg-menu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
                          className:'xuifont',
-                        $fonticon:'{_fi_checkboxCls1} {_fi_checkboxCls2}'
+                        $fonticon:'{_fi_checkboxCls1} {_fi_checkboxCls2}  {_iconDisplay}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -39128,12 +39160,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.radiobox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uitembg2 {itemClass} {disabled}',
+                    className: '  xui-uitembg-menu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,
                         className:'xuifont',
-                        $fonticon:'{_fi_radioboxCls1} {_fi_radioboxCls2} '
+                        $fonticon:'{_fi_radioboxCls1} {_fi_radioboxCls2}  {_iconDisplay}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -39198,7 +39230,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 overflow:'visible',
                 'white-space': 'nowrap',
                 cursor:'pointer',
-                padding:'.2em 1.8em .2em .2em',
+                padding:'.25em 1.75em .25em .25em',
                 outline:0
             },
             ITEMSPLIT:{
@@ -39208,7 +39240,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'white-space': 'nowrap',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                margin:'.2em .2em .2em 2em'
+                margin:'.25em .25em .25em 2em'
             },
             ICON:{
                 margin:0
@@ -39217,7 +39249,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-.7em',
+                'margin-left':'-.75em',
                 right:0,
                 'z-index':'10',
                 top:0
@@ -39226,7 +39258,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-.7em',
+                'margin-left':'-.75em',
                 right:0,
                 'z-index':'10',
                 bottom:0
@@ -39237,7 +39269,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'padding-left':'.7em',
+                'padding-left':'.75em',
                 'font-size':'1em'
             },
             RULER:{
@@ -39250,7 +39282,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 top:'.25em',
                 right:0,
                 width:'7em',
-                'padding-right':'1.8em',
+                'padding-right':'1.75em',
                 'text-align':'right',
                 'z-index':'10',
                 zoom:xui.browser.ie?1:null
@@ -39567,6 +39599,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ini:'auto'
             },
             position:'absolute',
+            noIcon:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             $hborder:0,
             $vborder:0
         }),
@@ -39605,12 +39643,23 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             }
         },
+        _prepareData:function(profile){
+            var data = arguments.callee.upper.call(this, profile),
+                NONE='display:none',
+                prop=profile.properties;
+            if(prop.noIcon)data._iconDisplay=NONE;
+            return data;
+        },
         _prepareItem:function(profile, item){
-            var none='display:none;';
+            var NONE='display:none;',
+                prop=profile.properties;
+
             item.add = item.add || '';
-            item.displayAdd = item.add?'':none;
-            item.displaySub = item.sub?'':none;
-            item._itemDisplay=item.hidden?none:'';
+            item.displayAdd = item.add?'':NONE;
+            item.displaySub = item.sub?'':NONE;
+            item._itemDisplay=item.hidden?NONE:'';
+
+            item._iconDisplay=prop.noIcon?NONE:'';
 
             item.type=item.type||'button';
             if(item.type=='checkbox'){
@@ -39808,13 +39857,13 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             HANDLER:{
                 height:'100%',
-                width:'0.6em',
+                width:'0.5em',
                 background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
             },
             LIST:{
-                padding:'.1em'
+                padding:'.125em'
             },
             ITEMS:{
                 'vertical-align':'middle'
@@ -40188,7 +40237,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             },
                             BTN:{
                                 tagName:'button',
-                                className:'xui-ui-btn {itemcls} {itemClass}',
+                                className:'xui-uiborder-btn xui-showfocus {itemcls} {itemClass}',
                                 style:'{itemStyle} {boxDisplay}',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
@@ -40229,7 +40278,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             'ITEM-object':{
                 'vertical-align':'middle',
-                'margin-left':'.4em'
+                'margin-left':'.5em'
             },
             RULER:{
                 padding:'0',
@@ -40242,13 +40291,13 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEMS:{
                 display:'block',
-                'padding-bottom':'.1em',
+                'padding-bottom':'.125em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
             HANDLER:{
                 height:'100%',
-                width:'.7em',
+                width:'.75em',
                 background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
@@ -40258,35 +40307,36 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':xui.__iefix1,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
-                padding:'.1em .2em 0 .1em',
+                padding:'.125em .25em 0 .125em',
                 'vertical-align':'middle'
             },
             ITEM:{
                 'vertical-align': 'middle',
-                padding: '0 .1em',
+                padding: '0 .125em',
                 margin: '0'
             },
             'SPLIT':{
                 $order:1,
                 width:'0',
                 'vertical-align':'middle',
-                margin: '0 .2em'
+                margin: '0 .25em'
             },
             BTN:{
-                'padding':'.2em'
+                'padding':'.25em',
+                'cursor':'pointer'
             },
             BOX:{
                 height:'auto'
             },
             'LABEL, CAPTION':{
                 'vertical-align':'middle',
-                'margin-left':'.2em',
-                'margin-right':'.,2em',
+                'margin-left':'.25em',
+                'margin-right':'.25em',
                 'font-size':'1em'
             },
             LABEL:{
                 cursor:'default',
-                'padding-top':'.3em'
+                'padding':'.25em'
             }
         },
         Behaviors:{
@@ -40429,7 +40479,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         xui.UI.adjustData(profile,item, dataItem);
 
                         if(item.type=="statusButton" && !!item.value)
-                            dataItem.itemcls=" xui-ui-btn-checked "+profile.getClass('BTN','-checked', !!item.value);
+                            dataItem.itemcls=" xui-uiborder-btn-checked "+profile.getClass('BTN','-checked', !!item.value);
 
                         dataItem._tabindex=tabindex;
                         dataItem.splitDisplay=dataItem.type=="split"?'':dn;
@@ -40671,9 +40721,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         CMD:{
                             $order:1,
-                            tagName:'button',
+                            tagName:'span',
                             style:'{cmdDisplay}',
-                            className:'xui-node xui-ui-unselectable xui-ui-btn xuifont {cls3}',
+                            className:'xui-node xui-ui-unselectable xuifont {cls3}',
                             $fonticon:'{_fi_cls3} '
                         },
                         PANEL:{
@@ -40779,7 +40829,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 bottom:0,
                 width:'2em',
-                height:'.5em'
+                height:'.5em',
+                'text-align':'center'
             },
             'CMD-BOTTOM':{
                 $order:1,
@@ -40787,7 +40838,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 top:0,
                 width:'2em',
-                height:'.5em'
+                height:'.5em',
+                'text-align':'center'
             },
             'CMD-LEFT':{
                 $order:1,
@@ -40795,7 +40847,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 right:0,
                 height:'2em',
-                width:'.5em'
+                width:'.5em',
+                'line-height':'2em'
             },
             'CMD-RIGHT':{
                 $order:1,
@@ -40803,7 +40856,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 left:0,
                 height:'2em',
-                width:'.5em'
+                width:'.5em',
+                'line-height':'2em'
             },
             'MOVE-MAIN':{
                 $order:5,
@@ -41232,13 +41286,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }else{
                 var pos;
                 if(p.type=='vertical'){
-//                    data.clsmovebg = "xui-uiborder-tb";
+                    data.clsmovebg = "xui-uiborder-tb";
                     if(data.pos=='before')
                         pos='top';
                     else
                         pos='bottom';
                 }else{
-//                    data.clsmovebg = "xui-uiborder-lr";
+                    data.clsmovebg = "xui-uiborder-lr";
                     if(data.pos=='before')
                         pos='left';
                     else
@@ -43745,17 +43799,17 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'SCROLL11, SCROLL12, SCROLL21':{
                 overflow:'hidden'
             },
-            'TBODY21 .columnfreezed':{
+            'TDBODY21 > .columnfreezed':{
                 '-moz-box-shadow': '1px 0  1px #CCC',
                 '-webkit-box-shadow': '1px 0  1px #CCC',
                 'box-shadow': '1px 0  1px #CCC',
-                'z-index':10,
+                'z-index':10
             },
-            'TBODY12 .rowfreezed':{
+            'TDBODY12 > .rowfreezed':{
                 '-moz-box-shadow': '0 1px 1px #CCC',
                 '-webkit-box-shadow': '0 1px 1px #CCC',
                 'box-shadow': '0 1px 1px #CCC',
-                'z-index':10,
+                'z-index':10
             },
             SCROLL22:{
                 overflow:'auto'
@@ -43799,15 +43853,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             SORT:{
                 position:'absolute',
-                right:'.2em',
-                bottom:'.2em'
+                right:'.25em',
+                bottom:'.25em'
             },
             HHANDLER:{
                 position:'absolute',
                 //if set z-index, disappearing in opera
                 //'z-index':'10',
                 background: xui.browser.ie?'url('+xui.ini.img_bg+')':null,
-                width:'.4em',
+                width:'.5em',
                 top:'0',
                 right:'0',
                 height:'100%',
@@ -43875,7 +43929,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             FHANDLER:{
                 position:'absolute',
-                'height':'.4em',
+                'height':'.5em',
                 left:'0',
                 width:'100%',
                 bottom:'0',
@@ -44008,15 +44062,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'line-height':xui.__iefix1
             },
             LTAGCMDS:{
-                "padding-right":'.2em',
+                "padding-right":'.25em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
                 'vertical-align':'middle'
             },
             CMD:{
-                "margin-left":'.2em',
-                padding:'0 .2em',
+                "margin-left":'.25em',
+                padding:'0 .25em',
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -45737,7 +45791,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src){},
-            onEditorClick:function(profile, cell, proEditor, src){}
+            onEditorClick:function(profile, cell, proEditor, type, src){}
         },
         RenderTrigger:function(){
             var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
@@ -47322,6 +47376,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'getter':
                         case 'popbox':
                         case 'cmd':
+                            type='label';
                         case 'cmdbox':
                         case 'droplist':
                             editor.setType(type);
@@ -47342,10 +47397,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     editor.afterPopShow(function(prop, popCtl){
                                         return profile.boxing().afterPopShow(profile, prop.$cell, prop, popCt);
                                     });
-                                if(type=="getter"||type=="popbox"||type=='cmdbox'||type=='cmd'){
+                                if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='cmd' || type=='dropbutton'){
                                     if(profile.onEditorClick)
-                                        editor.onClick(function(prop, node){
-                                            return profile.boxing().onEditorClick(profile, prop.$cell, prop, node);
+                                        editor.onClick(function(prf, e, src, btn){
+                                            return profile.boxing().onEditorClick(profile, prf.$cell, prf, btn, src);
                                         });
                                 }
                             }
@@ -47713,10 +47768,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 s22.width(adjustunit(w2,s22));
 
                 _.asyRun(function(){
-                    b21.css('padding-bottom', adjustunit((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0),b21));
+                    b21.css('padding-bottom', s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0);
                     s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', adjustunit((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0),b12));
+                        b12.css('padding-right', s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0);
                         s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);
@@ -48501,14 +48556,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 TBARTDL:{
                     className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                     TBARTDLT:{
-                        className:'xui-uibar-tdlt',
+                        className:'xui-uibar-tdlt'
                     }
                 },
                 TBARTDM:{
                     $order:1,
                     className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                     TBARTDMT:{
-                        className:'xui-uibar-tdmt',
+                        className:'xui-uibar-tdmt'
                     }
                 },
                 TBARTDR:{
@@ -48641,8 +48696,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 width:"16px",
                 display:'inline',
                 position:'absolute'
@@ -48662,12 +48715,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             BORDER:{
                 position:'relative',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 outline:0
-            },
-            '.xui-uibar-top BARCMDL':{
-                padding:'.6em 0 .6em 1em'
             }
         },
         Behaviors:{
@@ -49482,7 +49530,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(k.key=='enter')
                             dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'});
+                },null,null,{KEY:'margin:0 .5em'});
                 cmd.append(btn);
 
                 var div = dialog.$div = new xui.UI.Div({
@@ -49552,7 +49600,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         dialog._$_clicked=1;
                         dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'});
+                },null,null,{KEY:'margin:0 .5em'});
                 cmd.append(btn);
 
                 btn = dialog.$btn2=new xui.UI.SButton({
@@ -49565,7 +49613,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         dialog._$_clicked=1;
                         dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'});
+                },null,null,{KEY:'margin:0 .5em'});
                 cmd.append(btn);
 
                 var div = dialog.$div=new xui.UI.Div({
@@ -49625,7 +49673,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(k.key=='enter')
                         dialog.close();
                 }
-            },null,null,{KEY:'margin:0 .4em'})),
+            },null,null,{KEY:'margin:0 .5em'})),
 
             div = dialog.$div = new xui.UI.Div({
                 left:10,
@@ -49699,7 +49747,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             dialog.close();
                         }
                     }
-                },null,null,{KEY:'margin:0 .4em'}));
+                },null,null,{KEY:'margin:0 .5em'}));
 
                 cmd.append(dialog.$btn2 = new xui.UI.SButton({
                     tabindex:1,
@@ -49709,7 +49757,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     onClick:function(){
                         dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'}));
+                },null,null,{KEY:'margin:0 .5em'}));
                 var inp=dialog._$inp=new xui.UI.Input({
                     left:10,
                     top:22,
@@ -49920,7 +49968,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 TAIL:{
                     $order:4,
                     tagName : 'div',
-                    className:'xui-uibg-content',
+                    className:'xui-uibg-bar',
                     TL:{tagName : 'div'},
                     TR:{tagName : 'div'}
                 }
@@ -49931,13 +49979,13 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Static:{
         Appearances:{
             KEY:{
-                padding:'.2em'
+                padding:'.25em'
             },
             ITEMS:{
                 border:0,
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'padding-top':'.7em'//,
+                'padding-top':'.75em'//,
                 //for ie6 1px bug,  HR/TR(position:absolute;right:0;)
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
@@ -49961,7 +50009,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 overflow:'auto'
             },
             BODYI:{
-                padding:'.2em .7em 0 .7em',
+                padding:'.25em .75em 0 .75em',
                 position:'relative'
             },
             'BODY, BODYI':{
@@ -49981,10 +50029,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'absolute',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                width:'.7em'
+                width:'.75em'
             },
             'HL, HR':{
-                height:'2.6em'
+                height:'2.5em'
             },
             'ITEM-prechecked HL':{
                 $order:1
@@ -49993,7 +50041,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 $order:1
             },
             'TL, TR':{
-                height:'1.7em'
+                height:'1.75em'
             },
             HL:{
                 $order:1,
@@ -50026,16 +50074,16 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'relative',
                 'white-space':'nowrap',
                 overflow:'hidden',
-                padding:'.2em .4em'
+                padding:'.25em .5em'
             },
             TAIL:{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 position:'relative',
-                height:'.3em'
+                height:'.25em'
             },
             'CAP1, CAP2':{
-                padding:'.3em',
+                padding:'.25em',
                 'vertical-align':'middle'
             },
             CAP1:{
@@ -50050,7 +50098,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
                 position:'relative',
-                left:'.4em',
+                left:'.5em',
 
                 'white-space':'nowrap',
                 overflow:'hidden'
@@ -50061,7 +50109,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
 
                 position:'absolute',
                 right:'.5em',
-                top:'.2em',
+                top:'.25em',
 
                 'white-space':'nowrap',
                 overflow:'hidden'
@@ -50321,7 +50369,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         TAIL:{
                             $order:4,
                             tagName : 'div',
-                            className:'xui-uibg-content',
+                            className:'xui-uibg-bar',
                             TL:{tagName : 'div'},
                             TR:{tagName : 'div'}
                         }
@@ -50339,7 +50387,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 border:0,
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'padding-top':'.7em'//,
+                'padding-top':'.75em'//,
                 //for ie6 1px bug,  HR/TR(position:absolute;right:0;)
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
@@ -50358,7 +50406,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
 
             CMDS:{
-                padding:'.2em 0 0 .3em',
+                padding:'.25em 0 0 .25em',
                 'vertical-align':'middle',
                 position:'relative'
             },
@@ -50369,11 +50417,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 overflow:'auto'
             },
             BODYI:{
-                padding:'0 .7em'
+                padding:'0 .75em'
             },
             PANEL:{
                 overflow:'auto',
-                padding:'.2em'
+                padding:'.25em'
             },
             'ITEM-mouseover':{
             },
@@ -50391,10 +50439,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 position:'absolute',
                 'font-size':0,
                 'line-height':0,
-                width:'.7em'
+                width:'.75em'
             },
             'HL, HR':{
-                height:'2.6em'
+                height:'2.5em'
             },
             'ITEM-prechecked HL':{
                 $order:1
@@ -50403,7 +50451,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 $order:1
             },
             'TL, TR':{
-                height:'1.7em'
+                height:'1.75em'
             },
             HL:{
                 $order:1,
@@ -50436,7 +50484,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 position:'relative',
                 'white-space':'nowrap',
                 overflow:'hidden',
-               padding:'.2em .4em'
+               padding:'.25em .5em'
             },
             'BODY, BODYI':{
                 'font-size':0,
@@ -50445,10 +50493,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             TAIL:{
                 'font-size':0,
                 'line-height':0,
-                height:'.3em'
+                height:'.25em'
             },
             'CAPTION, MESSAGE':{
-                padding:'.3em',
+                padding:'.25em',
                 'vertical-align':'middle',
                 'font-size':'1em'
             },
@@ -50465,8 +50513,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
                 position:'relative',
-               left:'.4em',
-                padding:"0 0 0 .4em",
+               left:'.5em',
+                padding:"0 0 0 .5em",
                 'white-space':'nowrap',
                 overflow:'hidden'
             },
@@ -50476,7 +50524,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
 
                 position:'absolute',
                 right:'.5em',
-                top:'.2em',
+                top:'.25em',
                 'white-space':'nowrap',
                 overflow:'hidden'
             }

@@ -54,7 +54,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             HANDLE:{
                 cursor:'pointer',
                 display:'block',
-                'padding':'.5em .7em',
+                'padding':'.5em .75em',
                 'white-space':'nowrap'
             },
             PANEL:{
@@ -68,7 +68,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             CMDS:{
                 position:'absolute',
                 top:'.5em',
-                right:'.7em',
+                right:'.75em',
                 'text-align':'right',
                 'vertical-align': 'middle'
             }

@@ -108,9 +108,9 @@ Class('xui.Debugger', null, {
     Initialize:function(){
         xui.CSS.addStyleSheet(
             '.xui-dbg-frm{position:absolute;width:25em;z-index:2000;}'+
-            '.xui-dbg-header{cursor:move;height:1.5em;padding-top:.2em;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
-            '.xui-dbg-cmds{position:absolute;right:.2em;top:.2em;}'+
-            '.xui-dbg-cmds a{margin:.2em;}'+
+            '.xui-dbg-header{cursor:move;height:1.5em;padding-top:.25em;position:relative;border-bottom:solid 1px #CCC;background-color:#FFAB3F;font-weight:bold;}'+
+            '.xui-dbg-cmds{position:absolute;right:.25em;top:.25em;}'+
+            '.xui-dbg-cmds a{margin:.25em;}'+
             '.xui-dbg-box{position:relative;overflow:hidden;border:solid 1px #AAA;}'+
             '.xui-dbg-content{position:relative;width:100%;overflow:auto;height:25em;overflow-x:hidden;}'+
             '.xui-dbg-con1{background-color:#CCC;width:24.5empx;}'+
@@ -142,8 +142,8 @@ Class('xui.Debugger', null, {
            if(!div){
                div =
                '<div class="xui-node xui-node-div xui-wrapper xui-uibg-bar xui-uiborder-outset xui-custom" style="border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.2emx;overflow:hidden;font-weight:bold;padding:.2em;"></div>'+
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.4em;overflow:hidden;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.25em;overflow:hidden;font-weight:bold;padding:.25em;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.5em;overflow:hidden;"></div>'+
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();

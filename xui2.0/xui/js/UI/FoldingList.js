@@ -136,13 +136,13 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Static:{
         Appearances:{
             KEY:{
-                padding:'.2em'
+                padding:'.25em'
             },
             ITEMS:{
                 border:0,
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'padding-top':'.7em'//,
+                'padding-top':'.75em'//,
                 //for ie6 1px bug,  HR/TR(position:absolute;right:0;)
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
@@ -166,7 +166,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 overflow:'auto'
             },
             BODYI:{
-                padding:'.2em .7em 0 .7em',
+                padding:'.25em .75em 0 .75em',
                 position:'relative'
             },
             'BODY, BODYI':{
@@ -186,10 +186,10 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'absolute',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
-                width:'.7em'
+                width:'.75em'
             },
             'HL, HR':{
-                height:'2.6em'
+                height:'2.5em'
             },
             'ITEM-prechecked HL':{
                 $order:1
@@ -198,7 +198,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 $order:1
             },
             'TL, TR':{
-                height:'1.7em'
+                height:'1.75em'
             },
             HL:{
                 $order:1,
@@ -231,16 +231,16 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'relative',
                 'white-space':'nowrap',
                 overflow:'hidden',
-                padding:'.2em .4em'
+                padding:'.25em .5em'
             },
             TAIL:{
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1,
                 position:'relative',
-                height:'.3em'
+                height:'.25em'
             },
             'CAP1, CAP2':{
-                padding:'.3em',
+                padding:'.25em',
                 'vertical-align':'middle'
             },
             CAP1:{
@@ -255,7 +255,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 //position:xui.browser.ie6?'relative':null,
                 //'float':'left',
                 position:'relative',
-                left:'.4em',
+                left:'.5em',
 
                 'white-space':'nowrap',
                 overflow:'hidden'
@@ -266,7 +266,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
 
                 position:'absolute',
                 right:'.5em',
-                top:'.2em',
+                top:'.25em',
 
                 'white-space':'nowrap',
                 overflow:'hidden'

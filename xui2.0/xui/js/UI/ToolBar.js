@@ -213,7 +213,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             'ITEM-object':{
                 'vertical-align':'middle',
-                'margin-left':'.4em'
+                'margin-left':'.5em'
             },
             RULER:{
                 padding:'0',
@@ -226,13 +226,13 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEMS:{
                 display:'block',
-                'padding-bottom':'.1em',
+                'padding-bottom':'.125em',
                 'font-size':xui.__iefix1,
                 'line-height':xui.__iefix1
             },
             HANDLER:{
                 height:'100%',
-                width:'.7em',
+                width:'.75em',
                 background:'url('+xui.ini.img_handler+') repeat-y left top',
                 cursor:'move',
                 'vertical-align':'middle'
@@ -242,22 +242,22 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'line-height':xui.__iefix1,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
-                padding:'.1em .2em 0 .1em',
+                padding:'.125em .25em 0 .125em',
                 'vertical-align':'middle'
             },
             ITEM:{
                 'vertical-align': 'middle',
-                padding: '0 .1em',
+                padding: '0 .125em',
                 margin: '0'
             },
             'SPLIT':{
                 $order:1,
                 width:'0',
                 'vertical-align':'middle',
-                margin: '0 .2em'
+                margin: '0 .25em'
             },
             BTN:{
-                'padding':'.2em',
+                'padding':'.25em',
                 'cursor':'pointer'
             },
             BOX:{
@@ -265,13 +265,13 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             'LABEL, CAPTION':{
                 'vertical-align':'middle',
-                'margin-left':'.2em',
-                'margin-right':'.,2em',
+                'margin-left':'.25em',
+                'margin-right':'.25em',
                 'font-size':'1em'
             },
             LABEL:{
                 cursor:'default',
-                'padding-top':'.3em'
+                'padding':'.25em'
             }
         },
         Behaviors:{

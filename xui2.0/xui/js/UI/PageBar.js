@@ -175,7 +175,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 border:'dotted 1px gray',
                 position:'absolute',
                 padding:'.25em',
-                'line-height':'2.2em'
+                'line-height':'2.25em'
             }
         },
         Behaviors:{

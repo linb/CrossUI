@@ -2376,6 +2376,15 @@ type:4
                 }
 */
             }
+            // xui.CSS.$px is for IE678
+            if(!b && xui.browser.ie678){
+                // INPUT/TEXTREA will always return % for font-size
+                if((name=='fontSize'||name2=='font-size') && /%/.test(value) && node.parentNode){
+                    value=(node.parentNode.currentStyle[name]||node.parentNode.currentStyle[name2]) * parseFloat(value);
+                }else if(xui.CSS.$isEm(value)){
+                    value=xui.CSS.$px(value, node);;
+                }
+            }
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
         $transformIE:function(node, value) {
@@ -3486,7 +3495,7 @@ type:4
                 //don't remove this {
                 if(o=xui.Dom.byId(id)){
                     //Using firstChild, for performance
-                    if(!o.firstChild && ++count == sequence)
+                    if((!o.firstChild||(o.firstChild.nodeType==3&&!o.firstChild.nodeValue)) && ++count == sequence)
                         return xui([o]);
                 }else{
                     o=doc.createElement('div');

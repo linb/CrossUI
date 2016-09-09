@@ -17855,6 +17855,7 @@ _.set(xui.Locale,["cn","app"], {
                     $profile,
                     "cell: Object, cell 对象.",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
+                    "type: String, 点击的位置类型",
                     "src : String, 按钮 DOM 元素的xid."
                 ]
             },

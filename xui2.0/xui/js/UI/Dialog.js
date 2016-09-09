@@ -174,14 +174,14 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 TBARTDL:{
                     className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
                     TBARTDLT:{
-                        className:'xui-uibar-tdlt',
+                        className:'xui-uibar-tdlt'
                     }
                 },
                 TBARTDM:{
                     $order:1,
                     className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
                     TBARTDMT:{
-                        className:'xui-uibar-tdmt',
+                        className:'xui-uibar-tdmt'
                     }
                 },
                 TBARTDR:{
@@ -314,8 +314,6 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 width:"16px",
                 display:'inline',
                 position:'absolute'
@@ -335,12 +333,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             BORDER:{
                 position:'relative',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 outline:0
-            },
-            '.xui-uibar-top BARCMDL':{
-                padding:'.6em 0 .6em 1em'
             }
         },
         Behaviors:{
@@ -1155,7 +1148,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         if(k.key=='enter')
                             dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'});
+                },null,null,{KEY:'margin:0 .5em'});
                 cmd.append(btn);
 
                 var div = dialog.$div = new xui.UI.Div({
@@ -1225,7 +1218,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         dialog._$_clicked=1;
                         dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'});
+                },null,null,{KEY:'margin:0 .5em'});
                 cmd.append(btn);
 
                 btn = dialog.$btn2=new xui.UI.SButton({
@@ -1238,7 +1231,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         dialog._$_clicked=1;
                         dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'});
+                },null,null,{KEY:'margin:0 .5em'});
                 cmd.append(btn);
 
                 var div = dialog.$div=new xui.UI.Div({
@@ -1298,7 +1291,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     if(k.key=='enter')
                         dialog.close();
                 }
-            },null,null,{KEY:'margin:0 .4em'})),
+            },null,null,{KEY:'margin:0 .5em'})),
 
             div = dialog.$div = new xui.UI.Div({
                 left:10,
@@ -1372,7 +1365,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             dialog.close();
                         }
                     }
-                },null,null,{KEY:'margin:0 .4em'}));
+                },null,null,{KEY:'margin:0 .5em'}));
 
                 cmd.append(dialog.$btn2 = new xui.UI.SButton({
                     tabindex:1,
@@ -1382,7 +1375,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     onClick:function(){
                         dialog.close();
                     }
-                },null,null,{KEY:'margin:0 .4em'}));
+                },null,null,{KEY:'margin:0 .5em'}));
                 var inp=dialog._$inp=new xui.UI.Input({
                     left:10,
                     top:22,

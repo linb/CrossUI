@@ -338,7 +338,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 style:'{_liststyle}',
                 LISTBG:{
                      $order:0,
-                     className:'xui-uiborder xui-uitembg-bar-checked'
+                     className:'xui-uiborder-tb xui-uitembg-bar-checked'
                 },
                 LEFT:{
                     className:'xui-ui-unselectable xui-special-icon',
@@ -442,7 +442,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 left:0,
                 bottom:0,
-                height:'2px',
+                height:'3px',
                 width:'100%'                
             },
             'LEFT, RIGHT, DROP':{
@@ -456,7 +456,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'1em',
                 'font-weight': 'bold',
                 'text-align': 'center',
-                'font-size': '1.4em'
+                'font-size': '1.5em'
             },
             LEFT:{
                 left:0
@@ -469,7 +469,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
 
             ITEMS:{
-                padding:'1px 0 3px 0',
+                padding:'1px 0 4px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -480,7 +480,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 'padding':'0 .5em 0 0',
                 'vertical-align':'top',
-                'margin':'0 .2em',
+                'margin':'0 .25em',
                 'border-bottom':0,
                 'border-radius':'6px 6px 0 0',
                 '-moz-border-radius': '6px 6px 0 0',
@@ -509,7 +509,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEMC:{
                 $order:0,
-                padding:'.5em 0 .3em 0',
+                padding:'.5em 0 .25em 0',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
