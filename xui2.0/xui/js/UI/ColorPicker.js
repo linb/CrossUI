@@ -394,8 +394,6 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             },
 
             'LIST span':{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow: 'hidden',
                 margin: '0',
                 cursor: 'pointer',

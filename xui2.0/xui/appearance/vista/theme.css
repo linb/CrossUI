@@ -113,7 +113,7 @@ input:disabled, .xui-ui-inputdisabled,
     border-color: #F1FAFF;
 }
 .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
-		background: #D9E8FB;
+    background: #D9E8FB;
 }
 
 .xui-uiborder-r-dark{
@@ -261,7 +261,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 
 .xui-uibar-bottom{
-    height:6px;
+    padding:3px 0;
 }
 .xui-uibar-bottom .xui-uibar-tdl{
 	background-position: left -189px;
@@ -276,7 +276,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 
 .xui-uibar-top-s, .xui-uibar-bottom-s{
-    height:5px;
+    padding:5px 0 0 0;
 }
 .xui-uibar-top-s .xui-uibar-tdl{
 	background-position: left -261px;

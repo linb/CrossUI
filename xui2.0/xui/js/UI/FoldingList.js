@@ -170,8 +170,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'relative'
             },
             'BODY, BODYI':{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':null,
             'ITEM-checked':{
@@ -184,8 +182,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             },
             'HL, HR, TL, TR':{
                 position:'absolute',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 width:'.75em'
             },
             'HL, HR':{
@@ -234,8 +230,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 padding:'.25em .5em'
             },
             TAIL:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'relative',
                 height:'.25em'
             },

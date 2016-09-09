@@ -27,7 +27,11 @@ Class("xui.UI.Image", "xui.UI",{
                 profile.boxing().onError(profile);
             },
             onLoad:function(profile, e, src){
-                var img=xui.use(src).get(0),path=img.src;
+                var img=xui.use(src).get(0),path;
+                // for IE8 bug
+                try{path=img.src;}catch(e){
+                    return;
+                }
                 if(path!=xui.ini.img_bg){
                     var i=new Image();
                     i.onload=function(){

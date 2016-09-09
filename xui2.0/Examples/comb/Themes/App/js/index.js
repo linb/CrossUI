@@ -1140,13 +1140,11 @@ Class('App', 'xui.Module',{
                 },
                 {
                     "id" : "c",
-                    "caption" : "link list c",
-                    "itemLinker" : "none"
+                    "caption" : "link list c"
                 },
                 {
                     "id" : "d",
-                    "caption" : "link list d",
-                    "itemLinker" : "right"
+                    "caption" : "link list d"
                 }])
                 .setLeft("1.6666666666666667em")
                 .setTop("34.916666666666664em")
@@ -1485,12 +1483,12 @@ Class('App', 'xui.Module',{
                     "id" : "et"
                 },
                 {
-                    "imageClass" : "xuicon xui-uicmd-helpinput",
+                    "imageClass" : "xui-uicmd-helpinput",
                     "caption" : "xui-uicmd-helpinput",
                     "id" : "eu"
                 },
                 {
-                    "imageClass" : "xuicon xui-icon-zoomin",
+                    "imageClass" : "xui-icon-zoomin",
                     "caption" : "xui-icon-zoomin",
                     "id" : "ev"
                 },

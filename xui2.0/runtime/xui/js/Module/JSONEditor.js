@@ -5,6 +5,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
             var ns=this,
                 obj=_.isStr(str)?str?_.unserialize(str):false:str,
                 rows=ns._json2rows(obj);
+         
             ns.tg.setRows(rows).free();
         },
         getValue:function(returnObj){
@@ -122,26 +123,29 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         _json2rows:function(obj,array,rows){
             var ns=this, me=arguments.callee;
             if(!rows)rows=[];
-            _.each(obj,function(o,i){
-                var row={},type=ns._getType(o);
-                i={value:array?'[index]':i,disabled:array};
+            if(obj){
+                _.each(obj,function(o,i){
+                    if(!obj.hasOwnProperty(i))return;
+                    var row={},type=ns._getType(o);
+                    i={value:array?'[index]':i,disabled:array};
 
-                if(type=='hash'){
-                    row.sub=[];
-                    row.cells=[i,{value:'{...}'},''];
-                    me.call(ns, o,false,row.sub);
-                }else if(type=='array'){
-                    row.sub=[];
-                    row.cells=[i,{value:'[...]'},''];
-                    me.call(ns, o,true,row.sub);
-                }else{
-                    ns._getType(o);
-                    row.cells=[i,_.stringify(o),''];
-                }
-                row._type=type;
-                row.caption="";
-                rows.push(row);
-            });
+                    if(type=='hash'){
+                        row.sub=[];
+                        row.cells=[i,{value:'{...}'},''];
+                        me.call(ns, o,false,row.sub);
+                    }else if(type=='array'){
+                        row.sub=[];
+                        row.cells=[i,{value:'[...]'},''];
+                        me.call(ns, o,true,row.sub);
+                    }else{
+                        ns._getType(o);
+                        row.cells=[i,_.stringify(o),''];
+                    }
+                    row._type=type;
+                    row.caption="";
+                    rows.push(row);
+                });
+            }
             return rows;
         },
         _getType:function(o){

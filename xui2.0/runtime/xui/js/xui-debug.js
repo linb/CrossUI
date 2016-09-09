@@ -8529,6 +8529,7 @@ Class('xui.Event',null,{
             ".xui-node-pre,.xui-node-code,.xui-node-kbd,.xui-node-samp,.xui-node-tt{font-family:monospace;"+(b.ie?"font-size:108%;":"")+"line-height:100%;}"+
 // dont use font(use font-size/font-family) in IE678
             ".xui-node-select,.xui-node-input,.xui-node-textarea{font-family:arial,helvetica,clean,sans-serif;border-width:1px;}"+
+            ((b.ie && b.ver<=8)?".xui-node-input{overflow:hidden;}":"")+
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+
@@ -16830,8 +16831,6 @@ Class("xui.Tips", null,{
     }
 });new function(){
     if(xui.browser.ie67){
-        // empty element size fixed
-        xui.__iefix1=0;
         // fonticon fixed
         xui.__iefix2={
             "xui-icon-empty": '&#xe62c;',
@@ -18968,9 +18967,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top, .xui-uibar-bottom, .xui-uibar-top-s, .xui-uibar-bottom-s':{
                 position:'relative',
                 //for avoiding extra space after table in IE
-                'vertical-align':'baseline',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'vertical-align':'baseline'
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1
@@ -18993,7 +18990,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
@@ -19016,7 +19013,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:0,
                 right:0,
                 height:'12px',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdrt':{
                 position:'absolute',
@@ -19039,7 +19036,6 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
                 position:'relative',
-                width:'92%',
                 'padding':'.75em 0 .25em 1em',
                 'white-space': 'nowrap'
             },
@@ -19052,19 +19048,15 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uicon-main':{
                 position:'relative',
                 'padding-left':'.3333em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 'z-index':1,
                 overflow:'visible'
             },
             '.xui-uicon-maini':{
-                'padding-right':'.3333em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'padding-right':'.3333em'
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
-                height:'.33333em'
+                'padding':'.25em 0 0 0'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
@@ -19081,7 +19073,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
@@ -19111,7 +19103,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
@@ -19132,7 +19124,7 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-bottom-s
             '.xui-uibar-bottom-s':{
                 $order:3,
-                height:'.5em'
+                'padding':'.25em 0'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
@@ -19149,7 +19141,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
@@ -19189,7 +19181,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiw-shell':{
 //                background:'transparent',
                 display:xui.$inlineBlock,
-                zoom:xui.browser.ie&&xui.browser.ver<=6?1:null,
+                zoom:xui.browser.ie&&xui.browser.ver<=7?1:null,
                 //overflow:'hidden',
                 /*opera must be 0 not 'none'*/
                 border:0,
@@ -23456,8 +23448,6 @@ new function(){
         Static:{
             Appearances:{
                 KEY:{
-                    'font-size':xui.__iefix1,
-                    'line-height':xui.__iefix1
                 },
                 IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
                     'z-index':'-1',
@@ -24540,7 +24530,11 @@ new function(){
                 profile.boxing().onError(profile);
             },
             onLoad:function(profile, e, src){
-                var img=xui.use(src).get(0),path=img.src;
+                var img=xui.use(src).get(0),path;
+                // for IE8 bug
+                try{path=img.src;}catch(e){
+                    return;
+                }
                 if(path!=xui.ini.img_bg){
                     var i=new Image();
                     i.onload=function(){
@@ -24719,8 +24713,6 @@ new function(){
     Static:{
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             BOX:{
@@ -24914,8 +24906,6 @@ new function(){
     Static:{
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             H5:{
@@ -25289,8 +25279,6 @@ Class("xui.UI.Resizer","xui.UI",{
                 position:'absolute',
                 margin:'0 -1px -1px 0',
                 visibility: 'visible',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
 
                 //for ie
                 background: (xui.browser.ie&&!xui.browser.newie)?('url('+xui.ini.img_bg+')'):'',
@@ -25331,9 +25319,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 display:'block',
                 border:'solid 1px',
                 'z-index':100,
-                visibility: 'visible',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                visibility: 'visible'
             },
             T:{
                $order:1,
@@ -26496,8 +26482,6 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         //modify
         _.merge(t,{
             BORDER:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             INN:{
@@ -27512,8 +27496,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 position:'relative'
             },
             BORDER:{
-                'line-height':xui.__iefix1,
-                'font-size':xui.__iefix1
             },
             LABEL:{
                'z-index':1,
@@ -27553,9 +27535,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                //give default size
                width:'8.5em',
 
-               overflow:'auto',
-               'overflow-y':'auto',
-               'overflow-x':'hidden',
+               overflow:xui.browser.ie678?'hidden':'auto',
+               'overflow-y':xui.browser.ie678?'hidden':'auto',
+               'overflow-x':xui.browser.ie678?'hidden':'hidden',
                resize:'none'
             },
             ERROR:{
@@ -31725,8 +31707,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
 
             'LIST span':{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow: 'hidden',
                 margin: '0',
                 cursor: 'pointer',
@@ -33374,13 +33354,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-size':'1em'
             },
             '.xuiex-timepicker':{
+                width:'2em',
                 'text-align':'center',
-                padding:'.25em .5em'
+                padding:'.25em 0',
+                margin:0
             },
             '.xuiex-timepicker3':{
+                width:'1.6666em',
                 'text-align':'center',
                 'font-weight':'bold',
-                padding:'.25em 0.25em'
+                padding:'.25em 0',
+                margin:0
             }
         },
         Behaviors:{
@@ -34484,8 +34468,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 '-moz-box-flex':'1'
             },
             IBWRAP:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
             },
             IMAGE:{
                 display:xui.$inlineBlock,
@@ -37602,7 +37584,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'xui-ui-btn {itemClass} {_endsClass} {disabled} {readonly}',
+                    className:'xui-ui-btn {itemClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{
@@ -37632,8 +37614,6 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 padding:'.25em .5em',
                 margin:'0 .5em',
                 cursor:'pointer',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 'white-space':'nowrap'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
@@ -37697,9 +37677,6 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
-
-            if(t = item.itemLinker || p.itemLinker)
-               item._endsClass = profile.getClass('ITEM', '-'+t) +" "+ (t=="left"?"xui-uiborder-r":t=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r");
         }
     }
 });
@@ -38836,7 +38813,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     var border = profile.getSubNode('BORDER'),
                         box = profile.getSubNode('BOX'),
                         items = profile.getSubNode('ITEMS'),
-                        itemNs = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
                         css=xui.CSS,
                         useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
@@ -38849,7 +38825,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         hh = items.height() + 2/*border*/;
                         if(hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
-                        itemNs.each(function(n){
+                        items.children().each(function(n){
                             ww=Math.max(ww, n.offsetWidth);
                         });
                         if(ww%2==1)ww+=1;
@@ -39193,8 +39169,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 visibility:'hidden'
             },
             POOL:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'absolute',
                 display:'none'
             },
@@ -39238,8 +39212,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 overflow:'visible',
                 'white-space': 'nowrap',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 margin:'.25em .25em .25em 2em'
             },
             ICON:{
@@ -39273,9 +39245,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'font-size':'1em'
             },
             RULER:{
-                width:'8em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                width:'8em'
             },
             ADD:{
                 position:'absolute',
@@ -39835,8 +39805,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'absolute',
                 left:0,
                 top:0
@@ -39851,9 +39819,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             },
             BORDER:{
                 left:0,
-                top:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                top:0
             },
             HANDLER:{
                 height:'100%',
@@ -39873,9 +39839,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'vertical-align':'top',
                 overflow:'hidden',
                 margin:'0 .25em 0 .25em',
-                'padding-right':'.5em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'padding-right':'.5em'
             },
             'ITEM *':{
                 cursor:'pointer'
@@ -40269,8 +40233,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         },
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'absolute',
                 overflow:'hidden',
                 left:0,
@@ -40291,9 +40253,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEMS:{
                 display:'block',
-                'padding-bottom':'.125em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'padding-bottom':'.125em'
             },
             HANDLER:{
                 height:'100%',
@@ -40303,8 +40263,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 'vertical-align':'middle'
             },
             GROUP:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
                 padding:'.125em .25em 0 .125em',
@@ -40323,7 +40281,10 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             BTN:{
                 'padding':'.25em',
-                'cursor':'pointer'
+                'cursor':'pointer',
+                // for extra padding bug in IE678
+                '*width':'auto',
+                '*overflow':'visible'
             },
             BOX:{
                 height:'auto'
@@ -40741,32 +40702,23 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 position:'absolute',
                 overflow:'hidden',
                 left:0,
-                top:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                top:0
             },
             MOVE:{
                 $order:0,
                 position:'absolute',
 
-                'z-index':'10',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
-            },
+                'z-index':'10'            },
             CMD:{
                 position:'absolute',
                 cursor:'pointer',
-                'z-index':'20',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'z-index':'20'
             },
             ITEM:{
                 position:'absolute',
                 "z-index":1,
                 overflow:'hidden',
-                'border-width':xui.browser.opr?'0':null,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'border-width':xui.browser.opr?'0':null
             },
             PANEL:{
                 position:'absolute',
@@ -40774,9 +40726,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0,
                 top:0,
                 /*for opera, opera default set border to 3 ;( */
-                'border-width':xui.browser.opr?'0':null,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'border-width':xui.browser.opr?'0':null
             },
             'ITEM-MAIN':{
                 left:0,
@@ -43788,9 +43738,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 width:0,
-                height:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                height:0
             },
             'SCROLL11, SCROLL12, SCROLL21, SCROLL22':{
                 position:'relative',
@@ -43847,9 +43795,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'visible',
                 position:'absolute',
                 left:0,
-                top:'0',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                top:0
             },
             SORT:{
                 position:'absolute',
@@ -43865,9 +43811,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 top:'0',
                 right:'0',
                 height:'100%',
-                cursor:'e-resize',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                cursor:'e-resize'
             },
             'HCELLS1, HCELLS2, CELLS1, CELLS2':{
                 //for ie height change trigger
@@ -43934,9 +43878,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 width:'100%',
                 bottom:'0',
                 cursor:'n-resize',
-                'z-index':10,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'z-index':10
             },
             'FCELLCAPTION, ROWNUM':{
                 'vertical-align':'middle',
@@ -43949,9 +43891,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'ROW1, ROW2':{
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                width:xui.browser.ie?'100%':null,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                width:xui.browser.ie?'100%':null
             },
             ROWNUM:{
                 'padding-right':'.5em',
@@ -44056,10 +43996,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 zoom:xui.browser.ie?1:null,
                 height:0,
                 position:'relative',
-                overflow:'visible',
-                'font-size':xui.__iefix1,
-                //1px for ie8
-                'line-height':xui.__iefix1
+                overflow:'visible'
             },
             LTAGCMDS:{
                 "padding-right":'.25em',
@@ -50013,8 +49950,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 position:'relative'
             },
             'BODY, BODYI':{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':null,
             'ITEM-checked':{
@@ -50027,8 +49962,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             },
             'HL, HR, TL, TR':{
                 position:'absolute',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 width:'.75em'
             },
             'HL, HR':{
@@ -50077,8 +50010,6 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 padding:'.25em .5em'
             },
             TAIL:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'relative',
                 height:'.25em'
             },

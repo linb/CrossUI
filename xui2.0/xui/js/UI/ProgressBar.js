@@ -41,8 +41,6 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         //modify
         _.merge(t,{
             BORDER:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             INN:{

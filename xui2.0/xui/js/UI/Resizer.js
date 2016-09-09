@@ -176,8 +176,6 @@ Class("xui.UI.Resizer","xui.UI",{
                 position:'absolute',
                 margin:'0 -1px -1px 0',
                 visibility: 'visible',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
 
                 //for ie
                 background: (xui.browser.ie&&!xui.browser.newie)?('url('+xui.ini.img_bg+')'):'',
@@ -218,9 +216,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 display:'block',
                 border:'solid 1px',
                 'z-index':100,
-                visibility: 'visible',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                visibility: 'visible'
             },
             T:{
                $order:1,

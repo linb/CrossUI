@@ -1,7 +1,5 @@
 new function(){
     if(xui.browser.ie67){
-        // empty element size fixed
-        xui.__iefix1=0;
         // fonticon fixed
         xui.__iefix2={
             "xui-icon-empty": '&#xe62c;',
@@ -2138,9 +2136,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top, .xui-uibar-bottom, .xui-uibar-top-s, .xui-uibar-bottom-s':{
                 position:'relative',
                 //for avoiding extra space after table in IE
-                'vertical-align':'baseline',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'vertical-align':'baseline'
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
                 $order:1
@@ -2163,7 +2159,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdr':{
                 $order:1,
@@ -2186,7 +2182,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:0,
                 right:0,
                 height:'12px',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdrt':{
                 position:'absolute',
@@ -2209,7 +2205,6 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
                 position:'relative',
-                width:'92%',
                 'padding':'.75em 0 .25em 1em',
                 'white-space': 'nowrap'
             },
@@ -2222,19 +2217,15 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uicon-main':{
                 position:'relative',
                 'padding-left':'.3333em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 'z-index':1,
                 overflow:'visible'
             },
             '.xui-uicon-maini':{
-                'padding-right':'.3333em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'padding-right':'.3333em'
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
-                height:'.33333em'
+                'padding':'.25em 0 0 0'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
@@ -2251,7 +2242,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-bottom .xui-uibar-tdr':{
                 $order:1,
@@ -2281,7 +2272,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-top-s .xui-uibar-tdr':{
                 $order:3,
@@ -2302,7 +2293,7 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-bottom-s
             '.xui-uibar-bottom-s':{
                 $order:3,
-                height:'.5em'
+                'padding':'.25em 0'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
@@ -2319,7 +2310,7 @@ Class("xui.UI",  "xui.absObj", {
                 left:'12px',
                 right:'12px',
                 height:'100%',
-                width: xui.browser.ie&&xui.browser.ver<=6? "expression((this.parentNode.offsetWidth - 24)+'px')": null
+                width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth - 24)+'px')": null
             },
             '.xui-uibar-bottom-s .xui-uibar-tdr':{
                 $order:3,
@@ -2359,7 +2350,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiw-shell':{
 //                background:'transparent',
                 display:xui.$inlineBlock,
-                zoom:xui.browser.ie&&xui.browser.ver<=6?1:null,
+                zoom:xui.browser.ie&&xui.browser.ver<=7?1:null,
                 //overflow:'hidden',
                 /*opera must be 0 not 'none'*/
                 border:0,
@@ -6626,8 +6617,6 @@ new function(){
         Static:{
             Appearances:{
                 KEY:{
-                    'font-size':xui.__iefix1,
-                    'line-height':xui.__iefix1
                 },
                 IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{
                     'z-index':'-1',

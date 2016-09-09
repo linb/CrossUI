@@ -7,7 +7,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'xui-ui-btn {itemClass} {_endsClass} {disabled} {readonly}',
+                    className:'xui-ui-btn {itemClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{
@@ -37,8 +37,6 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 padding:'.25em .5em',
                 margin:'0 .5em',
                 cursor:'pointer',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 'white-space':'nowrap'
             },
             'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
@@ -102,9 +100,6 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
-
-            if(t = item.itemLinker || p.itemLinker)
-               item._endsClass = profile.getClass('ITEM', '-'+t) +" "+ (t=="left"?"xui-uiborder-r":t=="right"?"xui-uiborder-l":"xui-uiborder-l xui-uiborder-r");
         }
     }
 });

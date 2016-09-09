@@ -113,8 +113,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 '-moz-box-flex':'1'
             },
             IBWRAP:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
             },
             IMAGE:{
                 display:xui.$inlineBlock,

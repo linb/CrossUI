@@ -17,13 +17,7 @@
 .xuifont, .xuicon{
   font-size:1.3333333333333333em;
 	/*for IE67 */
-  _font-size:16px;
-  line-height:1em;
-}
-.xuifont.inner{
-  font-size:1em;
-	/*for IE67 */
-  _font-size:16px;
+  *font-size:16px;
   line-height:1em;
 }
 .xuicon{

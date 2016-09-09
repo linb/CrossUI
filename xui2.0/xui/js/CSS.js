@@ -410,6 +410,7 @@ Class("xui.CSS", null,{
             ".xui-node-pre,.xui-node-code,.xui-node-kbd,.xui-node-samp,.xui-node-tt{font-family:monospace;"+(b.ie?"font-size:108%;":"")+"line-height:100%;}"+
 // dont use font(use font-size/font-family) in IE678
             ".xui-node-select,.xui-node-input,.xui-node-textarea{font-family:arial,helvetica,clean,sans-serif;border-width:1px;}"+
+            ((b.ie && b.ver<=8)?".xui-node-input{overflow:hidden;}":"")+
 // base setting
             ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
             ".xui-node-a:hover{color:red}"+

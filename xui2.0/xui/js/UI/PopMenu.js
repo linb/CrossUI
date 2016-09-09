@@ -11,7 +11,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     var border = profile.getSubNode('BORDER'),
                         box = profile.getSubNode('BOX'),
                         items = profile.getSubNode('ITEMS'),
-                        itemNs = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
                         css=xui.CSS,
                         useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
@@ -24,7 +23,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         hh = items.height() + 2/*border*/;
                         if(hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
-                        itemNs.each(function(n){
+                        items.children().each(function(n){
                             ww=Math.max(ww, n.offsetWidth);
                         });
                         if(ww%2==1)ww+=1;
@@ -368,8 +367,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 visibility:'hidden'
             },
             POOL:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'absolute',
                 display:'none'
             },
@@ -413,8 +410,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 overflow:'visible',
                 'white-space': 'nowrap',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 margin:'.25em .25em .25em 2em'
             },
             ICON:{
@@ -448,9 +443,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 'font-size':'1em'
             },
             RULER:{
-                width:'8em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                width:'8em'
             },
             ADD:{
                 position:'absolute',

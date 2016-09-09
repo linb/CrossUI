@@ -276,13 +276,17 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'font-size':'1em'
             },
             '.xuiex-timepicker':{
+                width:'2em',
                 'text-align':'center',
-                padding:'.25em .5em'
+                padding:'.25em 0',
+                margin:0
             },
             '.xuiex-timepicker3':{
+                width:'1.6666em',
                 'text-align':'center',
                 'font-weight':'bold',
-                padding:'.25em 0.25em'
+                padding:'.25em 0',
+                margin:0
             }
         },
         Behaviors:{

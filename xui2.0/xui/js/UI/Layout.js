@@ -226,32 +226,23 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 position:'absolute',
                 overflow:'hidden',
                 left:0,
-                top:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                top:0
             },
             MOVE:{
                 $order:0,
                 position:'absolute',
 
-                'z-index':'10',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
-            },
+                'z-index':'10'            },
             CMD:{
                 position:'absolute',
                 cursor:'pointer',
-                'z-index':'20',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'z-index':'20'
             },
             ITEM:{
                 position:'absolute',
                 "z-index":1,
                 overflow:'hidden',
-                'border-width':xui.browser.opr?'0':null,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'border-width':xui.browser.opr?'0':null
             },
             PANEL:{
                 position:'absolute',
@@ -259,9 +250,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 left:0,
                 top:0,
                 /*for opera, opera default set border to 3 ;( */
-                'border-width':xui.browser.opr?'0':null,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'border-width':xui.browser.opr?'0':null
             },
             'ITEM-MAIN':{
                 left:0,

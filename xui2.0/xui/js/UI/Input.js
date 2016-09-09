@@ -150,8 +150,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 position:'relative'
             },
             BORDER:{
-                'line-height':xui.__iefix1,
-                'font-size':xui.__iefix1
             },
             LABEL:{
                'z-index':1,
@@ -191,9 +189,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                //give default size
                width:'8.5em',
 
-               overflow:'auto',
-               'overflow-y':'auto',
-               'overflow-x':'hidden',
+               overflow:xui.browser.ie678?'hidden':'auto',
+               'overflow-y':xui.browser.ie678?'hidden':'auto',
+               'overflow-x':xui.browser.ie678?'hidden':'hidden',
                resize:'none'
             },
             ERROR:{

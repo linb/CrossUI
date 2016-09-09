@@ -20,11 +20,10 @@
   _font-size:16px;
   line-height:1em;
 }
-.xuifont.inner{
-  font-size:1em;
-	/*for IE67 */
-  _font-size:16px;
-  line-height:1em;
+  /*for IE678 */
+.xuifont:before, .xuicon:before{
+  *display:inline;
+  *display:inline-block;
 }
 .xuicon{
   margin: 0 4px;

@@ -196,8 +196,6 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         _objectProp:{JSONData:1,configure:1,plotData:1,feedData:1},
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             BOX:{

@@ -16,8 +16,6 @@ Class("xui.UI.Audio", "xui.UI",{
     Static:{
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 overflow:'hidden'
             },
             H5:{

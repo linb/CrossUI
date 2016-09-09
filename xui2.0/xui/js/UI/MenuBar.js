@@ -160,8 +160,6 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         Appearances:{
             KEY:{
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1,
                 position:'absolute',
                 left:0,
                 top:0
@@ -176,9 +174,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             },
             BORDER:{
                 left:0,
-                top:0,
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                top:0
             },
             HANDLER:{
                 height:'100%',
@@ -198,9 +194,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 'vertical-align':'top',
                 overflow:'hidden',
                 margin:'0 .25em 0 .25em',
-                'padding-right':'.5em',
-                'font-size':xui.__iefix1,
-                'line-height':xui.__iefix1
+                'padding-right':'.5em'
             },
             'ITEM *':{
                 cursor:'pointer'
