@@ -16830,7 +16830,9 @@ Class("xui.Tips", null,{
         }
     }
 });new function(){
-    if(xui.browser.ie67){
+    // IE67 don't support :before
+    // IE8 is buggy
+    if(xui.browser.ie678){
         // fonticon fixed
         xui.__iefix2={
             "xui-icon-empty": '&#xe62c;',
@@ -30168,7 +30170,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 padding:0,
                 position:'absolute',
-                width:'1.5em'
+                width:'1.5em',
+
+                // for IE8
+                overflow:'visible'
             },
             SBTN:{
                 $order:2,
@@ -30182,7 +30187,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 padding:0,
                 position:'absolute',
                 height:'50%',
-                width:'1.5em'
+                width:'1.5em',
+
+                // for IE8
+                overflow:'visible'
             },
             R1:{
                 top:0
@@ -31711,6 +31719,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 margin: '0',
                 cursor: 'pointer',
                 margin:'0 -1px -1px 0',
+                display: xui.$inlineBlock,
                 'font-size': '1.18em'
             },
             TRANS:{

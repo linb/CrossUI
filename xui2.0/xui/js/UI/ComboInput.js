@@ -687,7 +687,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 padding:0,
                 position:'absolute',
-                width:'1.5em'
+                width:'1.5em',
+
+                // for IE8
+                overflow:'visible'
             },
             SBTN:{
                 $order:2,
@@ -701,7 +704,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 padding:0,
                 position:'absolute',
                 height:'50%',
-                width:'1.5em'
+                width:'1.5em',
+
+                // for IE8
+                overflow:'visible'
             },
             R1:{
                 top:0

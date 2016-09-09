@@ -4,14 +4,12 @@
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
-	/*for IE67 */
-  _font-size:16px;
 }
 
 /*background*/
 html{
     background-color:#FCFCFC;
-		color:#333;
+	color:#333;
 }
 .xui-uibg-base{
     background-color:#FCFCFC;

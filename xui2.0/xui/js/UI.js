@@ -1,5 +1,7 @@
 new function(){
-    if(xui.browser.ie67){
+    // IE67 don't support :before
+    // IE8 is buggy
+    if(xui.browser.ie678){
         // fonticon fixed
         xui.__iefix2={
             "xui-icon-empty": '&#xe62c;',

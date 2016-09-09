@@ -398,6 +398,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 margin: '0',
                 cursor: 'pointer',
                 margin:'0 -1px -1px 0',
+                display: xui.$inlineBlock,
                 'font-size': '1.18em'
             },
             TRANS:{

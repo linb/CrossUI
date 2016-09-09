@@ -16,14 +16,16 @@
 }
 .xuifont, .xuicon{
   font-size:1.3333333333333333em;
-	/*for IE67 */
-  _font-size:16px;
-  zoom:1;
   line-height:1em;
 }
+
 .xuicon{
   margin: 0 4px;
+  /* for IE67 */
+  *height:1em;
+  *width:1em;
 }
+
 .xuifont-mouseover, .xuicon-mouseover{ color: #000; }
 .xuifont-mousedown, .xuicon-mousedown{ color: #3393D2; }
 .xuifont-checked, .xuicon-checked{ color: #3393D2; }
@@ -33,4 +35,9 @@
 	display:inline-block;
 	height:1em;
 	width:1em;
+}
+
+/*special for IE8*/
+.xui-css-ie8 :before{
+    content: none !important;
 }
