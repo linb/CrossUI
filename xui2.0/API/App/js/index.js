@@ -329,11 +329,10 @@ Class('App', 'xui.Com',{
         _objtree_aftercreated:function (profile) {
             var items=[
                 {id:'Class', href:'#!Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'},
-                {id:'_', href:'#!_', caption:'_', image:'img/img.gif', imagePos:'left -48px', sub:[]},
-                {id:'xui', href:'#!xui', caption:'xui',image:'img/img.gif', imagePos:'left top', sub:[]}
+                {id:'xui', href:'#!xui', caption:'xui',image:'img/img.gif', imagePos:'left top',iniFold:false, sub:[]}
             ];
             var self=this,
-                o=items[2], id=o.id, sub=o.sub,
+                o=items[1], id=o.id, sub=o.sub,
                 getClass=function(o, ref, id){
                     var arr=[],temp,id=id||o.KEY, temp, sub;
                     for(var i in o)
@@ -362,7 +361,7 @@ Class('App', 'xui.Com',{
                 }
             }
 
-            o=items[2];
+            o=items[1];
             sub=o.sub;
             id='xui';
             o.sub=getClass(xui, self, id);
