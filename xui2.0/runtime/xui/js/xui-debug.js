@@ -9,143 +9,140 @@
 // speed up references
 undefined;
 
-// global 3: class
-Class=function(key, pkey, obj){
-    var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
-        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
-    obj=obj||{};
-    //exists?
-    if(!self._ignoreNSCache && (t=xui.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
-    //clear SC
-    if(t=xui.get(w,['xui','$cache','SC']))delete t[key];
+// global : xui
+var xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)},
+    Class=xui.Class=function(key, pkey, obj){
+        var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
+            _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
+        obj=obj||{};
+        //exists?
+        if(!self._ignoreNSCache && (t=xui.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
+        //clear SC
+        if(t=xui.get(w,['xui','$cache','SC']))delete t[key];
 
-    //multi parents mode
-    pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
-    for(i=0; t=pkey[i]; i++)
-        if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
-            throw 'errNoParent--'+ t;
-    if(obj.Dependencies){
-        if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
-        for(i=0; t=obj.Dependencies[i]; i++)
-            if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                throw 'errNoDependency--'+ t;
-    }
-    parent0=_parent[0];
+        //multi parents mode
+        pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
+        for(i=0; t=pkey[i]; i++)
+            if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
+                throw 'errNoParent--'+ t;
+        if(obj.Dependencies){
+            if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
+            for(i=0; t=obj.Dependencies[i]; i++)
+                if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
+                    throw 'errNoDependency--'+ t;
+        }
+        parent0=_parent[0];
 
-    // Give a change to modify the original object
-    var $Start = obj.$Start || (parent0&&parent0.$Start);
-    xui.tryF($Start, [], obj);
+        // Give a change to modify the original object
+        var $Start = obj.$Start || (parent0&&parent0.$Start);
+        xui.tryF($Start, [], obj);
 
-    // collect items
-    _Static=obj.Static||{};
-    t={};
-    for(i in _Static)
-        if(reg[i])t[i]=1;
-    for(i in t)
-        delete _Static[i];
-    
-    //before and after will pass to children
-    _Static.Before = obj.Before || (parent0&&parent0.Before);
-    _Static.After = obj.After || (parent0&&parent0.After);
-    _Static.$Start = $Start;
-    _Static.$End = obj.$End || (parent0&&parent0.$End);
-    _Static.__gc = obj.__gc || _Static.__gc || (parent0&&parent0.__gc) || function(){Class.__gc(this.$key)};
+        // collect items
+        _Static=obj.Static||{};
+        t={};
+        for(i in _Static)
+            if(reg[i])t[i]=1;
+        for(i in t)
+            delete _Static[i];
+        
+        //before and after will pass to children
+        _Static.Before = obj.Before || (parent0&&parent0.Before);
+        _Static.After = obj.After || (parent0&&parent0.After);
+        _Static.$Start = $Start;
+        _Static.$End = obj.$End || (parent0&&parent0.$End);
+        _Static.__gc = obj.__gc || _Static.__gc || (parent0&&parent0.__gc) || function(){Class.__gc(this.$key)};
 
-    /*set constructor first and create _this
-    upper is the first parent Class
-    */
-    var cf=function(){if(typeof this.initialize=='function')this.initialize()};
-    if(typeof obj.Constructor == 'function'){
-        _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
-        _this.Constructor = _funadj(obj.Constructor);
-    }else{
-        if(parent0){
-            // Constructor is for opera, in opear fun.toString can't get arguments sometime
-            var f=cf,str = parent0.Constructor;
-            if(str)f=new Function(str.slice(str.indexOf("(") + 1, str.indexOf(")")).split(','), str.slice(str.indexOf("{") + 1, str.lastIndexOf("}")));
-            _this = env(f, 'Constructor', key, parent0.upper,'constructor');
-            _this.Constructor = _funadj(str);
-        }else
-            _this = cf;
-    }
+        /*set constructor first and create _this
+        upper is the first parent Class
+        */
+        var cf=function(){if(typeof this.initialize=='function')this.initialize()};
+        if(typeof obj.Constructor == 'function'){
+            _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
+            _this.Constructor = _funadj(obj.Constructor);
+        }else{
+            if(parent0){
+                // Constructor is for opera, in opear fun.toString can't get arguments sometime
+                var f=cf,str = parent0.Constructor;
+                if(str)f=new Function(str.slice(str.indexOf("(") + 1, str.indexOf(")")).split(','), str.slice(str.indexOf("{") + 1, str.lastIndexOf("}")));
+                _this = env(f, 'Constructor', key, parent0.upper,'constructor');
+                _this.Constructor = _funadj(str);
+            }else
+                _this = cf;
+        }
 
-    //collect parent items, keep the last one
-    _t=xui.fun();
-    for(i=_parent.length-1; t=_parent[i--];){
-        xui.merge(_t,t);
-        xui.merge(_t.prototype,t.prototype);
-    }
-    //set keys
-    _this.KEY=_this.$key=_this.prototype.KEY=_this.prototype.$key=key;
-    //envelop
-    //  from Static
-    self._wrap(_this,_Static,0,_t,'static');
-    //  from Instance
-    if(t=obj.Instance)
-        self._wrap(_this.prototype,t,1,_t.prototype,'instance');
-    //inherite from parents
-    self._inherit(_this,_t);
-    self._inherit(_this.prototype,_t.prototype);
-    _t=null;
+        //collect parent items, keep the last one
+        _t=xui.fun();
+        for(i=_parent.length-1; t=_parent[i--];){
+            xui.merge(_t,t);
+            xui.merge(_t.prototype,t.prototype);
+        }
+        //set keys
+        _this.KEY=_this.$key=_this.prototype.KEY=_this.prototype.$key=key;
+        //envelop
+        //  from Static
+        self._wrap(_this,_Static,0,_t,'static');
+        //  from Instance
+        if(t=obj.Instance)
+            self._wrap(_this.prototype,t,1,_t.prototype,'instance');
+        //inherite from parents
+        self._inherit(_this,_t);
+        self._inherit(_this.prototype,_t.prototype);
+        _t=null;
 
-    //exe before functoin
-    if(xui.tryF(_this.Before, arguments, _this)===false)
-        return false;
+        //exe before functoin
+        if(xui.tryF(_this.Before, arguments, _this)===false)
+            return false;
 
-    //add child key to parents
-    for(i=0; t=_parent[i]; i++){
-        t=(t.$children || (t.$children=[]));
-        for(var j=0,k=t.length,b;j<k;j++)
-            if(t[k]==key){
-                b=true;
-                break;
-            }
-        if(!b)t[t.length]=key;
-    }
+        //add child key to parents
+        for(i=0; t=_parent[i]; i++){
+            t=(t.$children || (t.$children=[]));
+            for(var j=0,k=t.length,b;j<k;j++)
+                if(t[k]==key){
+                    b=true;
+                    break;
+                }
+            if(!b)t[t.length]=key;
+        }
 
-    //set symbol
-    _this.$xui$ = _this.$xuiclass$ = 1;
-    _this.$children = [];
-    _this.$parent = _parent;
+        //set symbol
+        _this.$xui$ = _this.$xuiclass$ = 1;
+        _this.$children = [];
+        _this.$parent = _parent;
 
-    //set constructor
-    _this.prototype.constructor = _this;
-    _this.prototype.$xui$ = 1;
-    //set key
-    _this[key] = _this.prototype[key] = true;
+        //set constructor
+        _this.prototype.constructor = _this;
+        _this.prototype.$xui$ = 1;
+        //set key
+        _this[key] = _this.prototype[key] = true;
 
-    //allow load App.Sub first
-    _t=t=xui.get(w, key.split('.'));
-    xui.set(w, key.split('.'), _this);
-    if(Object.prototype.toString.call(_t)=='[object Object]')
-        for(i in _t)_this[i]=_t[i];
+        //allow load App.Sub first
+        _t=t=xui.get(w, key.split('.'));
+        xui.set(w, key.split('.'), _this);
+        if(Object.prototype.toString.call(_t)=='[object Object]')
+            for(i in _t)_this[i]=_t[i];
 
-    //exe after function
-    xui.tryF(_this.After, [], _this);
-    //exe ini function
-    xui.tryF(obj.Initialize, [], _this);
-    xui.tryF(_this.$End, [], _this);
+        //exe after function
+        xui.tryF(_this.After, [], _this);
+        //exe ini function
+        xui.tryF(obj.Initialize, [], _this);
+        xui.tryF(_this.$End, [], _this);
 
-    xui.breakO([obj.Static, obj.Instance, obj],2);
-    
-    if(!(key in _c)){
-        _c[key]=_c.length;
-        _c.push(key);
-    }
+        xui.breakO([obj.Static, obj.Instance, obj],2);
+        
+        if(!(key in _c)){
+            _c[key]=_c.length;
+            _c.push(key);
+        }
 
-    //return Class
-    return self._last=_this;
-};
-// global 4: xui
-xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
+        //return Class
+        return self._last=_this;
+    };
 
-// namespace
-xui.Namespace=function(key){
-    var a=key.split('.'),w=window;
-    return xui.get(w, a) || xui.set(w, a, {});
-};
-
-
+    // namespace
+    xui.Namespace=function(key){
+        var a=key.split('.'),w=window;
+        return xui.get(w, a) || xui.set(w, a, {});
+    };
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
 
@@ -8934,7 +8931,7 @@ Class('xui.Dom','xui.absBox',{
             return self;
         },
         //flag : false => remove from dom tree, not free memory
-        remove:function(triggerGC, purgeNow){
+        remove:function(triggerGC, purgeNow, callback){
             if(triggerGC===false)
                 this.each(function(o,i){
                     if(o.raphael&&o.remove)o.remove();
@@ -8949,6 +8946,10 @@ Class('xui.Dom','xui.absBox',{
                 var f=function(){
                     xui.$purgeChildren(c);
                     c.innerHTML='';
+                    if(callback){
+                        xui.tryF(callback);
+                        callback=null;
+                    }
                     c=null;
                 };
                 // for performance
@@ -8965,7 +8966,7 @@ Class('xui.Dom','xui.absBox',{
         },
 
         //flag = false: no gc
-        html:function(content,triggerGC,loadScripts,purgeNow){
+        html:function(content,triggerGC,loadScripts,purgeNow, callback){
             var s='',t,o=this.get(0);triggerGC=triggerGC!==false;
             if(content!==undefined){
                 if(o){
@@ -8986,6 +8987,10 @@ Class('xui.Dom','xui.absBox',{
                             var f=function(){
                                 xui.$purgeChildren(c);
                                 c.innerHTML='';
+                                if(callback){
+                                    xui.tryF(callback);
+                                    callback=null;
+                                }
                                 c=null;
                             };
                             // for performance
@@ -17410,9 +17415,9 @@ Class('xui.UIProfile','xui.Profile', {
             moduleHash=null;
             return rtnString===false?r:xui.serialize(r);
         },
-        _applySetAction:function(fun, value, ovalue){
+        _applySetAction:function(fun, value, ovalue, force, tag, tag2){
             if(this.renderId)
-                return fun.call(this, value, ovalue);
+                return fun.call(this, value, ovalue, force, tag, tag2);
         },
         getKey:function(id,tagOnly){
             var t;
@@ -23658,8 +23663,8 @@ new function(){
                 selectable:true,
                 html:{
                     html:1,
-                    action:function(v){
-                        this.getRoot().html(xui.adjustRes(v,0,1));
+                    action:function(v,ov,force){
+                        this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
                     }
                 },
                 attributes:{
@@ -23983,8 +23988,8 @@ new function(){
                 selectable:true,
                 html:{
                     html:1,
-                    action:function(v){
-                        this.getRoot().html(xui.adjustRes(v,0,1));
+                    action:function(v,ov,force){
+                        this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
                     }
                 },
                 overflow:{
@@ -24229,8 +24234,8 @@ new function(){
                 selectable:true,
                 html:{
                     html:1,
-                    action:function(v){
-                        this.getRoot().html(xui.adjustRes(v,0,1));
+                    action:function(v,ov,force){
+                        this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
                     }
                 },
                 overflow:{
@@ -31144,8 +31149,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             html:{
-                action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
+                action:function(v,ov,force){
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
                 }
             },
             toggleBtn:{
@@ -35116,8 +35121,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 }
             },
             html:{
-                action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
+                action:function(v,ov,force){
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
                 }
             },
             toggle:{
@@ -48898,8 +48903,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             html:{
                 html:1,
-                action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
+                action:function(v,ov,force){
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
                 }
             },
             // setCaption and getCaption

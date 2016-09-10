@@ -580,9 +580,9 @@ Class('xui.UIProfile','xui.Profile', {
             moduleHash=null;
             return rtnString===false?r:xui.serialize(r);
         },
-        _applySetAction:function(fun, value, ovalue){
+        _applySetAction:function(fun, value, ovalue, force, tag, tag2){
             if(this.renderId)
-                return fun.call(this, value, ovalue);
+                return fun.call(this, value, ovalue, force, tag, tag2);
         },
         getKey:function(id,tagOnly){
             var t;
@@ -6828,8 +6828,8 @@ new function(){
                 selectable:true,
                 html:{
                     html:1,
-                    action:function(v){
-                        this.getRoot().html(xui.adjustRes(v,0,1));
+                    action:function(v,ov,force){
+                        this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
                     }
                 },
                 attributes:{
@@ -7153,8 +7153,8 @@ new function(){
                 selectable:true,
                 html:{
                     html:1,
-                    action:function(v){
-                        this.getRoot().html(xui.adjustRes(v,0,1));
+                    action:function(v,ov,force){
+                        this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
                     }
                 },
                 overflow:{
@@ -7399,8 +7399,8 @@ new function(){
                 selectable:true,
                 html:{
                     html:1,
-                    action:function(v){
-                        this.getRoot().html(xui.adjustRes(v,0,1));
+                    action:function(v,ov,force){
+                        this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
                     }
                 },
                 overflow:{

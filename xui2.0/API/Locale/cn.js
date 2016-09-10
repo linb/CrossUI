@@ -31,13 +31,13 @@ xui.set(xui.Locale,["cn","app"], {
     var $eo={
         $rtn:"[self]",
         $paras:[
-            "fun [可选参数]: Function, 函数的参数 是 [xui.DomProfile 对象, DOM 事件对象, 目前元素的xid字符串].",
-            "label [可选参数]: String, 事件的标签.",
-            "flag  [可选参数]: Boolean, 仅删除事件的时候有效,表示是否删除所有相关的事件."
+            "fun [可选参数]: Function, 函数的参数 是 [xui.DomProfile 对象, DOM 事件对象, 目前元素的xid字符串]",
+            "label [可选参数]: String, 事件的标签",
+            "flag  [可选参数]: Boolean, 仅删除事件的时候有效,表示是否删除所有相关的事件"
         ]
     };
-    var $force="force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false].";
-    var $profile="profile : xui.UIProfile, 当前控件的配置对象.";
+    var $force="force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]";
+    var $profile="profile : xui.UIProfile, 当前控件的配置对象";
     /*
     $desc string
     $paras array
@@ -46,30 +46,13 @@ xui.set(xui.Locale,["cn","app"], {
     $links array
     $memo string
     */
-    xui.set(xui.Locale,["cn","doc"], {
-        Class:{
-            $desc:"类的操作方法集合.<br />当做函数用是申明一个类.",
-            $rtn:"Object",
-            $paras:[
-                "key [必需参数]: String, 名字空间+类名字.",
-                "pkey [必需参数]: String/Array, 名字空间+类名字.所要继承的类.数组表示该类为多继承,有多个父类.",
-                "obj [可选参数]: Object,  类对象. 默认为 {}."
-            ],
-            $snippet:["// 申明命名空间 'Test.NS' 然后申明一个类 'Test.NS.Cls'; \n  Class('Test.NS.Cls'); Class('Test.NS.Cls.Subcls1', 'Test.NS.Cls', {}); Class('Test.NS.Cls.Subcls2', null, {});  alert(typeof Test.NS); alert(typeof Test.NS.Cls); alert(typeof Test.NS.Cls.Subcls1);alert(typeof Test.NS.Cls.Subcls2);"],
-            $memo:"类的命名规则：[A-Z][0-9a-zA-Z]+",
-            destroy:{
-                $desc:"销毁一个类"
-            }
-        }
-    });
-
      var $me=xui.Locale.cn.doc;
 
     xui.set(xui.Locale,["cn","doc","xui"], {
-        $desc:"XUI的根部命名空间.<br />当做函数用是将一系列的DOM元素包装成xui.Dom对象的快捷函数.",
+        $desc:"XUI的根部命名空间.<br />当做函数用是将一系列的DOM元素包装成xui.Dom对象的快捷函数",
         $rtn:"xui.Dom",
         $paras:[
-            "nodes [可选参数]: Element/Element[]/String/String[]/Function, 代表一个或一组DOM元素的字符串、变量或函数,可以是一个[DOM元素], 一个[DOM元素]数组, 一个[DOM元素id], 一个[DOM元素id]数组, 一个[xid], 或一个[xid]数组,等等. 默认为 [].",
+            "nodes [可选参数]: Element/Element[]/String/String[]/Function, 代表一个或一组DOM元素的字符串、变量或函数,可以是一个[DOM元素], 一个[DOM元素]数组, 一个[DOM元素id], 一个[DOM元素id]数组, 一个[xid], 或一个[xid]数组,等等. 默认为 []",
             "flag [可选参数]: Boolean, 指示是否忽略数值检测和清理函数(以获取更好的性能). 默认为 false. 只有在输入一个[xid]数组的情况下这个参数才能为[true]"
         ],
         $snippet:[
@@ -83,50 +66,64 @@ xui.set(xui.Locale,["cn","app"], {
             "//输入一个 xid 字符串\n var xid=xui.getId('btnLang'), n=xui(xid); alert(xid);alert(n.get(0).id);",
             "//输入一个 xid 字符串数组\n var xid=xui.getId('btnLang'), n=xui([xid],false); alert(xid);alert(n.get(0).id);"
         ],
-        Namespace:{
-            $desc:"申明一个名字空间.",
+        Class:{
+            $desc:"类的操作方法集合.<br />当做函数用是申明一个类",
             $rtn:"Object",
             $paras:[
-                "key [必需参数]: String, 名字空间字符串."
+                "key [必需参数]: String, 名字空间+类名字",
+                "pkey [必需参数]: String/Array, 名字空间+类名字.所要继承的类.数组表示该类为多继承,有多个父类",
+                "obj [可选参数]: Object,  类对象. 默认为 {}"
+            ],
+            $snippet:["// 申明命名空间 'Test.NS' 然后申明一个类 'Test.NS.Cls'; \n  xui.Class('Test.NS.Cls'); xui.Class('Test.NS.Cls.Subcls1', 'Test.NS.Cls', {}); xui.Class('Test.NS.Cls.Subcls2', null, {});  alert(typeof Test.NS); alert(typeof Test.NS.Cls); alert(typeof Test.NS.Cls.Subcls1);alert(typeof Test.NS.Cls.Subcls2);"],
+            $memo:"类的命名规则：[A-Z][0-9a-zA-Z]+",
+            destroy:{
+                $desc:"销毁一个类"
+            }
+        },
+        Namespace:{
+            $desc:"申明一个名字空间",
+            $rtn:"Object",
+            $paras:[
+                "key [必需参数]: String, 名字空间字符串"
             ],
             $snippet:["xui.Namespace('Test.NS'); alert(typeof Test.NS)"],
             $memo:"名字空间的命名规则：[A-Z][0-9a-zA-Z]+"
         },
-        //"工具方法的集合.",
+        //"工具方法的集合",
         stamp:{
-            $desc:"得到本地的时间戳.",
+            $desc:"得到本地的时间戳",
             $rtn:"Number"
         },
         rand:{
-            $desc:"得到随机字符串.",
+            $desc:"得到随机字符串",
             $rtn:"String"
         },
         arr:{
-            $desc:"数组的功能函数集合.",
+            $desc:"数组的功能函数集合",
             fastSortObject:{
-                $desc:"对象数组的快速稳定排序函数.",
+                $desc:"对象数组的快速稳定排序函数",
                 $rtn:'Array',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "byKey [必需参数]: Function. 得到排序键值的函数."
+                    "arr [必需参数]: Array, 目标数组",
+                    "byKey [必需参数]: Function. 得到排序键值的函数"
                 ]
             },
             stableSort:{
-                $desc:"稳定排序函数.",
+                $desc:"稳定排序函数",
                 $rtn:'Array',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "sortby [必需参数]: Function(x,y). 排序函数."
+                    "arr [必需参数]: Array, 目标数组",
+                    "sortby [必需参数]: Function(x,y). 排序函数"
                 ]
             },
             each:{
-                $desc:"将函数应用于数组中的每一个元素.",
+                $desc:"将函数应用于数组中的每一个元素",
                 $rtn:'Array',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "fun [必需参数]: Function, 参数: [array element, array index]. 要应用的函数.",
+                    "arr [必需参数]: Array, 目标数组",
+                    "fun [必需参数]: Function, 参数: [array element, array index]. 要应用的函数",
                     "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数). 默认为 [window]",
-                    "desc [可选参数]: Boolean, 按从头到尾还是从尾到头应用函数. 默认是从头到尾."
+                    "desc [可选参数]: Boolean, 按从头到尾还是从尾到头应用函数. 默认是从头到尾"
                 ],
                 $snippet:[
                     "xui.arr.each(['a','b'], function(o,i){alert(i+':'+o);} )",
@@ -134,24 +131,24 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             indexOf:{
-                $desc:"查找给定值在数组中的位置, 返回-1表示没有找到.",
+                $desc:"查找给定值在数组中的位置, 返回-1表示没有找到",
                 $rtn:'Number. 值在数组的index',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "value [必需参数]: Object, 要查找的值."
+                    "arr [必需参数]: Array, 目标数组",
+                    "value [必需参数]: Object, 要查找的值"
                 ],
                 $snippet:[
                     "var a=[1,2,3,4];alert(xui.arr.indexOf(a, 3))"
                 ]
             },
             insertAny:{
-                $desc:"添加一个或多个元素到数组的指定位置.",
+                $desc:"添加一个或多个元素到数组的指定位置",
                 $rtn:'Number',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "target [必需参数]: Object, 要添加的一个或多个元素.",
-                    "index [可选参数]: Number, 指定要插入的位置. 默认为 -1 表示插入到结尾.",
-                    "flag [可选参数]: Boolean, 强制[target]作为一个元素插入,即使它是一个数组.  默认为 false."
+                    "arr [必需参数]: Array, 目标数组",
+                    "target [必需参数]: Object, 要添加的一个或多个元素",
+                    "index [可选参数]: Number, 指定要插入的位置. 默认为 -1 表示插入到结尾",
+                    "flag [可选参数]: Boolean, 强制[target]作为一个元素插入,即使它是一个数组.  默认为 false"
                 ],
                 $snippet:[
                     "var a=[1,2,3]; xui.arr.insertAny(a,5,1);alert(a)",
@@ -160,23 +157,23 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeFrom:{
-                $desc:"移除数组的一部分.",
+                $desc:"移除数组的一部分",
                 $rtn:'Array',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "index [必需参数]: Number, 数组开始的index. ",
-                    "length [可选参数]: Number, 移除元素的个数. 默认为 1."
+                    "arr [必需参数]: Array, 目标数组",
+                    "index [必需参数]: Number, 数组开始的index",
+                    "length [可选参数]: Number, 移除元素的个数. 默认为 1"
                 ],
                 $snippet:[
                     "var a=[1,2,3,4,5]; xui.arr.removeFrom(a, 2,2 ); alert(a);"
                 ]
             },
             removeDuplicate:{
-                $desc:"移除数组的重复元素.",
+                $desc:"移除数组的重复元素",
                 $rtn:'Array',
                 $paras: [
-                    "arr [必需参数] : Array, 目标数组.",
-                    "subKey [可选参数]: String, 判断数组中值是否重复的子键（针对数组中的值为对象的情况）."
+                    "arr [必需参数] : Array, 目标数组",
+                    "subKey [可选参数]: String, 判断数组中值是否重复的子键（针对数组中的值为对象的情况）"
                 ],
                 $snippet:[
                     "var a=[1,2,3,4,5,3,4,5]; xui.arr.removeDuplicate(a); alert(a);",
@@ -184,23 +181,23 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeValue:{
-                $desc:"移除数组中值为”给定值“的元素.",
+                $desc:"移除数组中值为”给定值“的元素",
                 $rtn:'Array',
                 $paras: [
-                    "arr [必需参数] [必需参数]: Array, 目标数组.",
-                    "value: Object, 要移除元素的值."
+                    "arr [必需参数] [必需参数]: Array, 目标数组",
+                    "value: Object, 要移除元素的值"
                 ],
                 $snippet:[
                     "var a=[1,2,3,4,5]; xui.arr.removeValue(a, 4); alert(a);"
                 ]
             },
             subIndexOf:{
-                $desc:"查找给定的键和值在数组中的位置（对于数组是Object的情况）, 返回-1表示没有找到.",
+                $desc:"查找给定的键和值在数组中的位置（对于数组是Object的情况）, 返回-1表示没有找到",
                 $rtn:'Number',
                 $paras: [
-                    "arr [必需参数]: Array, 目标数组.",
-                    "key [必需参数]: String, 键名字.",
-                    "value [必需参数]: Object, 值."
+                    "arr [必需参数]: Array, 目标数组",
+                    "key [必需参数]: String, 键名字",
+                    "value [必需参数]: Object, 值"
                 ],
                 $snippet:[
                     "var a=[1,2,{k:'v'},4]; var i=xui.arr.subIndexOf(a,'k','v'); alert(i);"
@@ -208,20 +205,20 @@ xui.set(xui.Locale,["cn","app"], {
             }
         },
         asyHTML:{
-            $desc:"异步生成html的函数.",
+            $desc:"异步生成html的函数",
             $rtn:"Interger",
             $paras:[
-                "content [必需参数]: String, 要生成html的字符串.",
-                "callback [必需参数]: Function, 回调函数.",
+                "content [必需参数]: String, 要生成html的字符串",
+                "callback [必需参数]: Function, 回调函数",
                 "defer [可选参数]: Number, 每组执行前的时间延迟. 默认为 0",
                 "size [可选参数]: Number, 每组生成的DOM节点数. 默认为 10"
             ]
         },
         asyRun:{
-            $desc:"异步执行一个函数.",
+            $desc:"异步执行一个函数",
             $rtn:"Interger",
             $paras:[
-                "fun [必需参数]: Function, 要执行的函数.",
+                "fun [必需参数]: Function, 要执行的函数",
                 "defer [可选参数]: Number, 在多少毫秒后执行. 默认为 0",
                 "args [可选参数]: Array, 函数的参数. 默认为 [](空数组)",
                 "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数) . 默认为 [window]"
@@ -231,10 +228,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         breakO:{
-            $desc:"断开引用[以释放内存].",
+            $desc:"断开引用[以释放内存]",
             $paras:[
-                "target [必需参数]: Object, 要断开的对象.",
-                "depth [可选参数]: Number, 深度值. 默认为 1."
+                "target [必需参数]: Object, 要断开的对象",
+                "depth [可选参数]: Number, 深度值. 默认为 1"
             ],
             $snippet:[
                 "var a={b:1}, o={a:a}; xui.breakO(o); alert(a && a.b);",
@@ -242,10 +239,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         toFixedNumber:{
-            $desc:"按给定的精度来格式化数字,返回的是格式化后的数字.",
+            $desc:"按给定的精度来格式化数字,返回的是格式化后的数字",
             $paras:[
-                "number [必需参数]: Number, 数字.",
-                "digits [可选参数]: Number, 小数点后精度. 默认为 2."
+                "number [必需参数]: Number, 数字",
+                "digits [可选参数]: Number, 小数点后精度. 默认为 2"
             ],
             $snippet:[
                 "var a=0.3+0.3+0.3; alert(a); alert(xui.toFixedNumber(a, 10));",
@@ -253,31 +250,31 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         toNumeric:{
-            $desc:"按给定的精度、千位分隔符和小数分隔符来从取得数字.",
+            $desc:"按给定的精度、千位分隔符和小数分隔符来从取得数字",
             $paras:[
-                "value [必需参数]: String, 字符串.",
-                "precision [可选参数]: Number, 小数点后精度. 默认为 2.",
-                "groupingSeparator[可选参数]: String, 千位分隔符. 默认为 ','.",
-                "decimalSeparator[可选参数]: String, 小数分隔符. 默认为 '.'."
+                "value [必需参数]: String, 字符串",
+                "precision [可选参数]: Number, 小数点后精度. 默认为 2",
+                "groupingSeparator[可选参数]: String, 千位分隔符. 默认为 ','",
+                "decimalSeparator[可选参数]: String, 小数分隔符. 默认为 \".\""
             ]
         },
         formatNumeric:{
-            $desc:"按给定的精度、千位分隔符和小数分隔符来格式化数字,返回的是格式化后的字符串.",
+            $desc:"按给定的精度、千位分隔符和小数分隔符来格式化数字,返回的是格式化后的字符串",
             $paras:[
-                "value [必需参数]: Number, 数字.",
-                "precision [可选参数]: Number, 小数点后精度. 默认为 2.",
-                "groupingSeparator[可选参数]: String, 千位分隔符. 默认为 ','.",
-                "decimalSeparator[可选参数]: String, 小数分隔符. 默认为 '.'.",
+                "value [必需参数]: Number, 数字",
+                "precision [可选参数]: Number, 小数点后精度. 默认为 2",
+                "groupingSeparator[可选参数]: String, 千位分隔符. 默认为 ','",
+                "decimalSeparator[可选参数]: String, 小数分隔符. 默认为 \".\"",
                 "forceFillZero[可选参数]: Boolean, 是否强制精度默认填充0. 默认为[true]"
             ]
         },
         clone:{
-            $desc:"拷贝对象, 深度拷贝.",
+            $desc:"拷贝对象, 深度拷贝",
             $rtn:"Object",
             $paras:[
-                "hash [必需参数]: Object, 要拷贝的对象.",
+                "hash [必需参数]: Object, 要拷贝的对象",
                 "filter [可选参数]: Function, 参数: [值, 键]. 判断是否拷贝该项. 也可以是 [true],表示会忽略以'_'开头的项",
-                "deep [可选参数]: Number, 拷贝的深度,默认为 100."
+                "deep [可选参数]: Number, 拷贝的深度,默认为 100"
             ],
             $snippet:[
                 "var a=1, b='s'; alert(xui.clone(a)); alert(xui.clone(b));",
@@ -287,53 +284,53 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         copy:{
-            $desc:"浅拷贝, 只拷贝对象的第一层.",
+            $desc:"浅拷贝, 只拷贝对象的第一层",
             $rtn:"Object",
             $paras:[
-                "hash [必需参数]: Object, 要拷贝的对象.",
+                "hash [必需参数]: Object, 要拷贝的对象",
                 "filter [可选参数]: Function, 参数: [值, 键]. 判断是否拷贝该项. 也可以是 [true],表示会忽略以'_'开头的项"
             ],
             $memo:"请参见 <a href='#xui.clone'>xui.clone</a>"
         },
         each:{
-            $desc:"对hash的每一个函数元素,应用一个函数.",
+            $desc:"对hash的每一个函数元素,应用一个函数",
             $rtn:"Object",
             $paras:[
-                "hash [必需参数]: Object, 键值对.",
-                "fun [必需参数]: Function, 函数: [值, 键]. 要应用的函数.",
-                "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数)."
+                "hash [必需参数]: Object, 键值对",
+                "fun [必需参数]: Function, 函数: [值, 键]. 要应用的函数",
+                "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数)"
             ],
             $snippet:[
                 "var h={a:1,b:2}; xui.each(h,function(o,i){alert(i+':'+o)})"
             ]
         },
         'exec':{
-            $desc:"执行一段脚本.",
+            $desc:"执行一段脚本",
             $rtn:"Object",
             $paras:[
-                "script [必需参数]: String, 脚本字符串."
+                "script [必需参数]: String, 脚本字符串"
             ],
             $snippet:[
                 "xui.exec('alert(\"a\")')"
             ]
         },
         isDefined:{
-            $desc:"判断目标对象是否存在.相当于[target===undefined].",
+            $desc:"判断目标对象是否存在.相当于[target===undefined]",
             $rtn:"Boolean",
             $paras:[
-                "target [必需参数]: Object, 要判断的目标对象."
+                "target [必需参数]: Object, 要判断的目标对象"
             ],
             $snippet:[
                 "alert(xui.isDefined(window.aaaa))"
             ]
         },
         filter:{
-            $desc:"过滤数组/键值对的某些元素.",
+            $desc:"过滤数组/键值对的某些元素",
             $rtn:"Object",
             $paras:[
-                "obj [必需参数]: Object, 数组/键值对.",
+                "obj [必需参数]: Object, 数组/键值对",
                 "filter [可选参数]: Function, 参数: [值, 键]. 判断是否保留该项. 也可以是 [true],表示值过滤以'_'开头的项",
-                "force [可选参数]: Boolean, 强行将[obj]做为一个{}执行. 默认为 false."
+                "force [可选参数]: Boolean, 强行将[obj]做为一个{}执行. 默认为 false"
             ],
             $snippet:[
                 "var o={a:1,b:2}; xui.filter(o,function(o,i){return i!='b'}); alert(xui.serialize(o))",
@@ -342,32 +339,32 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         fun:{
-            $desc:"函数的功能函数集合.<br />也可以作为函数用来获取一个空函数.",
+            $desc:"函数的功能函数集合.<br />也可以作为函数用来获取一个空函数",
             args:{
-                $desc:"获取指定函数的参数.",
+                $desc:"获取指定函数的参数",
                 $rtn:"Array",
                 $paras:[
-                    "fun [必需参数]: Function, 目标函数."
+                    "fun [必需参数]: Function, 目标函数"
                 ],
                 $snippet:[
                     "alert(xui.fun.args(function(a,b,c){var body=1;}))"
                 ]
             },
             body:{
-                $desc:"获取函数的函数体.",
+                $desc:"获取函数的函数体",
                 $rtn:"String",
                 $paras:[
-                    "fun [必需参数]: Function, 目标函数."
+                    "fun [必需参数]: Function, 目标函数"
                 ],
                 $snippet:[
                     "alert(xui.fun.body(function(a,b,c){var body=1;}))"
                 ]
             },
             clone:{
-                $desc:"拷贝一个函数.",
+                $desc:"拷贝一个函数",
                 $rtn:"Function",
                 $paras:[
-                    "fun [必需参数]: Function, 目标函数."
+                    "fun [必需参数]: Function, 目标函数"
                 ],
                 $snippet:[
                     "var fun=function(a,b,c){var body=1;}, fun_cloned =  xui.fun.clone(fun); alert(xui.fun.args(fun_cloned));alert(xui.fun.body(fun_cloned));alert(fun_cloned.toString()); alert(fun==fun_cloned); "
@@ -375,11 +372,11 @@ xui.set(xui.Locale,["cn","app"], {
             }
         },
         get:{
-            $desc:"获取多层hash的给定路径的值.",
+            $desc:"获取多层hash的给定路径的值",
             $rtn:"Object",
             $paras:[
-                "hash [必需参数]: Object, 多层hash.",
-                "path [必需参数]: Array, 路径数组, 例如['a','b','c'] 表示{a:{b:{c:[variable]}}}中的variable."
+                "hash [必需参数]: Object, 多层hash",
+                "path [必需参数]: Array, 路径数组, 例如['a','b','c'] 表示{a:{b:{c:[variable]}}}中的variable"
             ],
             $snippet:[
                 "alert(xui.get({a:{b:{c:1}}},'a'))",
@@ -389,7 +386,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         "id":{
-            $desc:"获取一个a-z组成的唯一id编号.",
+            $desc:"获取一个a-z组成的唯一id编号",
             $rtn:"String",
             $snippet:[
                 "alert('system id: ' + xui.id());",
@@ -397,7 +394,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isArr :{
-            $desc:"判断目标是否是一个数组.",
+            $desc:"判断目标是否是一个数组",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -407,7 +404,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isBool :{
-            $desc:"判断目标是否是一个Bool.",
+            $desc:"判断目标是否是一个Bool",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -417,7 +414,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isDate :{
-            $desc:"判断目标是否是一个日期(Date).",
+            $desc:"判断目标是否是一个日期(Date)",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -427,7 +424,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isEmpty :{
-            $desc:"判断目标是否是为空.",
+            $desc:"判断目标是否是为空",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -438,7 +435,7 @@ xui.set(xui.Locale,["cn","app"], {
             $memo:"It's only for hash Object"
         },
         isFun :{
-            $desc:"判断目标是否是一个函数.",
+            $desc:"判断目标是否是一个函数",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -448,7 +445,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isArguments:{
-            $desc:"判断目标是否是一个参数对象.",
+            $desc:"判断目标是否是一个参数对象",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -458,7 +455,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isHash:{
-            $desc:"判断目标是否是一个hash.",
+            $desc:"判断目标是否是一个hash",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -468,7 +465,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isNull:{
-            $desc:"判断目标是否是null.",
+            $desc:"判断目标是否是null",
             $rtn:"Boolean",
             $paras:[
                 "targe [必需参数]t: any"
@@ -478,7 +475,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isFinite:{
-            $desc:"判断目标是否是一个有效的数字.",
+            $desc:"判断目标是否是一个有效的数字",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -488,7 +485,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isNumb:{
-            $desc:"判断目标是否是一个Number(数字).",
+            $desc:"判断目标是否是一个Number(数字)",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -498,7 +495,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isObj :{
-            $desc:"判断目标是否是一个对象.",
+            $desc:"判断目标是否是一个对象",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -508,7 +505,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isReg :{
-            $desc:"判断目标是否是一个正则表达式.",
+            $desc:"判断目标是否是一个正则表达式",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -518,7 +515,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isSet:{
-            $desc:"判断目标是否已经定义.",
+            $desc:"判断目标是否已经定义",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -528,21 +525,21 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isElem:{
-            $desc:"判断目标是否是一个DOM元素.",
+            $desc:"判断目标是否是一个DOM元素",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
             ]
         },
         "isNaN":{
-            $desc:"判断目标是否是一个NaN值.",
+            $desc:"判断目标是否是一个NaN值",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
             ]
         },
         isStr :{
-            $desc:"判断目标是否是一个字符串.",
+            $desc:"判断目标是否是一个字符串",
             $rtn:"Boolean",
             $paras:[
                 "target [必需参数]: any"
@@ -552,12 +549,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         merge:{
-            $desc:"将两个键值对合并.",
+            $desc:"将两个键值对合并",
             $rtn:"Object",
             $paras:[
-                "target [必需参数]: Object, 目标hash.",
-                "source [必需参数]: Object, 源hash.",
-                "type [可选参数]: String/Function,参数: [值, 键]. 可以是'all', 'with', 'without'[默认], 或函数."
+                "target [必需参数]: Object, 目标hash",
+                "source [必需参数]: Object, 源hash",
+                "type [可选参数]: String/Function,参数: [值, 键]. 可以是'all', 'with', 'without'[默认], 或函数"
             ],
             $snippet:[
                 "var a={a:1},b={b:1}; alert(xui.serialize(xui.merge(a,b)))",
@@ -567,25 +564,25 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         resetRun:{
-            $desc:"设置可覆盖式的异步执行函数.如key值相同,后设置的函数会覆盖先前的函数.结果是只有最后设置的函数才会被执行.",
+            $desc:"设置可覆盖式的异步执行函数.如key值相同,后设置的函数会覆盖先前的函数.结果是只有最后设置的函数才会被执行",
             $paras:[
-                "key [必需参数]: String, 唯一标志符.",
-                "fun [必需参数]: Function, 要执行的函数.",
+                "key [必需参数]: String, 唯一标志符",
+                "fun [必需参数]: Function, 要执行的函数",
                 "defer [可选参数]: Number, 多少毫秒后自动执行. 默认为 0",
-                "args [可选参数]: Array, 函数的实际参数.",
-                "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数)."
+                "args [可选参数]: Array, 函数的实际参数",
+                "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数)"
             ],
             $snippet:[
                 "xui.resetRun('id',function(){alert(1)},200);xui.resetRun('id',function(){alert(2)},200);xui.resetRun('id',function(){alert(3)},200);"
             ],
-            $memo:"可以用xui.resetRun.exists(id)来判断是否存在名字为id的异步执行函数."
+            $memo:"可以用xui.resetRun.exists(id)来判断是否存在名字为id的异步执行函数"
         },
         observableRun:{
-            $desc:"将函数包装成一个可在界面上看到反馈(例如,可以看到鼠标的形状变化)的线程并且执行这个线程. ",
+            $desc:"将函数包装成一个可在界面上看到反馈(例如,可以看到鼠标的形状变化)的线程并且执行这个线程",
             $paras:[
-                "tasks [必需参数]: Funtion/Array, 一个任务函数,或是一组任务函数.",
-                "onEnd [可选参数]: Function, 在线程完后执行的回调函数.",
-                "threadid [可选参数]: Stirng, 线程id. 如果这个id所代表的线程已经存在,那么这个/这组任务函数会被插入到这个线程内执行."
+                "tasks [必需参数]: Funtion/Array, 一个任务函数,或是一组任务函数",
+                "onEnd [可选参数]: Function, 在线程完后执行的回调函数",
+                "threadid [可选参数]: Stirng, 线程id. 如果这个id所代表的线程已经存在,那么这个/这组任务函数会被插入到这个线程内执行"
             ],
             $snippet:[
                 "xui.observableRun(xui.fun());",
@@ -594,12 +591,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         stringify:{
-            $desc: "将对象序列化为一个JSON字符串(不强制转换成UTF8编码).",
+            $desc: "将对象序列化为一个JSON字符串(不强制转换成UTF8编码)",
             $rtn: "String",
             $paras:[
-                "obj [必需参数]: Object, 目标对象. ",
+                "obj [必需参数]: Object, 目标对象",
                 "filter [可选参数]: Function, 参数: [值, 键]. 判断是否序列化该项. 也可以是 [true],表示会忽略以'_'开头的项",
-                "dateformat  [可选参数]: String, 'utc' or 'gmt'. 强行将[Date]类型转化为ISO UTC字符串, ISO GMT 字符串, 或默认格式( new Date(yyyy,mm,dd,hh,nn,ss,ms) )."
+                "dateformat  [可选参数]: String, 'utc' or 'gmt'. 强行将[Date]类型转化为ISO UTC字符串, ISO GMT 字符串, 或默认格式( new Date(yyyy,mm,dd,hh,nn,ss,ms) )"
             ],
             $snippet:[
                 "alert(xui.stringify('a'));"+
@@ -616,12 +613,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         serialize:{
-            $desc: "将对象序列化为一个JSON字符串(强制转换成UTF8编码).",
+            $desc: "将对象序列化为一个JSON字符串(强制转换成UTF8编码)",
             $rtn: "String",
             $paras:[
-                "obj [必需参数]: Object, 目标对象. ",
+                "obj [必需参数]: Object, 目标对象",
                 "filter [可选参数]: Function, 参数: [值, 键]. 判断是否序列化该项. 也可以是 [true],表示会忽略以'_'开头的项",
-                "dateformat  [可选参数]: String, 'utc' or 'gmt'. 强行将[Date]类型转化为ISO UTC字符串, ISO GMT 字符串, 或默认格式( new Date(yyyy,mm,dd,hh,nn,ss,ms) )."
+                "dateformat  [可选参数]: String, 'utc' or 'gmt'. 强行将[Date]类型转化为ISO UTC字符串, ISO GMT 字符串, 或默认格式( new Date(yyyy,mm,dd,hh,nn,ss,ms) )"
             ],
             $snippet:[
                 "alert(xui.serialize('a'));"+
@@ -638,22 +635,22 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         set:{
-            $desc:"设置或取消设置多层hash中的某个项.",
+            $desc:"设置或取消设置多层hash中的某个项",
             $rtn:"Object",
             $paras:[
-                "hash [必需参数]: Object, 多重键值对.",
-                "path [必需参数]: Array, 目标路径, ['a','b','c'] => {a:{b:{c:[variable]}}}.",
-                "value [可选参数]: any, 项的新值. 如果是undefined则被清空."
+                "hash [必需参数]: Object, 多重键值对",
+                "path [必需参数]: Array, 目标路径, ['a','b','c'] => {a:{b:{c:[variable]}}}",
+                "value [可选参数]: any, 项的新值. 如果是undefined则被清空"
             ],
             $snippet:[
                 "var o={}; xui.set(o,['a','b','c'], 1); alert(xui.serialize(o)); xui.set(o,['a','b','c']); alert(xui.serialize(o));"
             ]
         },
         toUTF8:{
-            $desc:"把一个字符串专程 UTF8 格式.",
+            $desc:"把一个字符串专程 UTF8 格式",
             $rtn:"String",
             $paras:[
-                "str [必须参数] : String."
+                "str [必须参数] : String"
             ],
             $snippet:[
                 "alert(xui.toUTF8('汉字'));",
@@ -661,10 +658,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         fromUTF8:{
-            $desc:"把一个字符串从 UTF8 格式转回来.",
+            $desc:"把一个字符串从 UTF8 格式转回来",
             $rtn:"String",
             $paras:[
-                "str [必须参数] : String."
+                "str [必须参数] : String"
             ],
             $snippet:[
                 "alert(xui.toUTF8('汉字'));",
@@ -672,10 +669,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         urlEncode:{
-            $desc:"将键值对转化为URL请求字符串.",
+            $desc:"将键值对转化为URL请求字符串",
             $rtn:"String",
             $paras:[
-                "hash [必需参数] : 键值对."
+                "hash [必需参数] : 键值对"
             ],
             $snippet:[
                 "alert(xui.urlEncode({a:1,b:2}));"+
@@ -684,10 +681,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         urlDecode:{
-            $desc:"将URL请求字符串转化为键值对,或获取某一个键的值.",
+            $desc:"将URL请求字符串转化为键值对,或获取某一个键的值",
             $rtn:"Object",
             $paras:[
-                "str [必需参数] : String, URL请求字符串.",
+                "str [必需参数] : String, URL请求字符串",
                 "key [可选参数] : String, 键名字"
             ],
             $snippet:[
@@ -695,43 +692,43 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         str:{
-            $desc:"字符串的功能函数集合.",
+            $desc:"字符串的功能函数集合",
             endWith :{
-                $desc:"测试字符串是否以另一个串结尾.",
+                $desc:"测试字符串是否以另一个串结尾",
                 $rtn:'Boolean',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串.",
-                    "eStr [必需参数]: String, 要测试的结尾串."
+                    "str [必需参数]: String, 目标字符串",
+                    "eStr [必需参数]: String, 要测试的结尾串"
                 ],
                 $snippet:[
                     "alert(xui.str.endWith('abc','c'))"
                 ]
             },
             initial:{
-                $desc:"将指定的字符串首字母改为大写.",
+                $desc:"将指定的字符串首字母改为大写",
                 $rtn:'String',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串."
+                    "str [必需参数]: String, 目标字符串"
                 ],
                 $snippet:[
                     "alert(xui.str.initial('abc'))"
                 ]
             },
             ltrim :{
-                $desc:"拷贝一个字符串,并将左边的空白字符去掉.",
+                $desc:"拷贝一个字符串,并将左边的空白字符去掉",
                 $rtn:'String',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串."
+                    "str [必需参数]: String, 目标字符串"
                 ],
                 $snippet:[
                     "alert(xui.str.ltrim(' abc ').length)"
                 ]
             },
             repeat:{
-                $desc:"将目标字符串复制多少次, 并返回结果.",
+                $desc:"将目标字符串复制多少次, 并返回结果",
                 $rtn:'String',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串.",
+                    "str [必需参数]: String, 目标字符串",
                     "times [必需参数]: 重复次数"
                 ],
                 $snippet:[
@@ -739,41 +736,41 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             rtrim :{
-                $desc:"拷贝一个字符串,并将右边的空白字符去掉.",
+                $desc:"拷贝一个字符串,并将右边的空白字符去掉",
                 $rtn:'String',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串."
+                    "str [必需参数]: String, 目标字符串"
                 ],
                 $snippet:[
                     "alert(xui.str.rtrim(' abc ').length)"
                 ]
             },
             startWith :{
-                    $desc:"测试字符串是否以另一个串开头.",
+                    $desc:"测试字符串是否以另一个串开头",
                     $rtn:'Boolean',
                     $paras:[
-                        "str [必需参数]: String, 目标字符串.",
-                        "sStr [必需参数]: String, 测试的开头字符串."
+                        "str [必需参数]: String, 目标字符串",
+                        "sStr [必需参数]: String, 测试的开头字符串"
                     ],
                     $snippet:[
                         "alert(xui.str.startWith('abc','a'))"
                     ]
             },
             toDom:{
-                $desc:"将html串的直接转化为DOM对象.",
+                $desc:"将html串的直接转化为DOM对象",
                 $rtn:'xui.Dom',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串."
+                    "str [必需参数]: String, 目标字符串"
                 ],
                 $snippet:[
                     "var node = xui.str.toDom('<div>a</div>'); alert(node.outerHTML())"
                 ]
             },
             trim :{
-                $desc:"拷贝一个字符串,并将左右两边的空白字符去掉.",
+                $desc:"拷贝一个字符串,并将左右两边的空白字符去掉",
                 $rtn:'String',
                 $paras:[
-                    "str [必需参数]: String, 目标字符串."
+                    "str [必需参数]: String, 目标字符串"
                 ],
                 $snippet:[
                     "alert(xui.str.trim(' abc ').length)"
@@ -781,11 +778,11 @@ xui.set(xui.Locale,["cn","app"], {
             }
         },
         toArr:{
-            $desc:"将字符串或键值对分割成数组.",
+            $desc:"将字符串或键值对分割成数组",
             $rtn:"Array",
             $paras:[
-                "value [必需参数]: Object, 要分割的字符串或对象.",
-                "force [可选参数]: Boolean/String, 如果是一个字符串（通常是一个字符）表示将一个字符串转换成Array;如果是 Boolean 表示将一个键值对转换成Array."
+                "value [必需参数]: Object, 要分割的字符串或对象",
+                "force [可选参数]: Boolean/String, 如果是一个字符串（通常是一个字符）表示将一个字符串转换成Array;如果是 Boolean 表示将一个键值对转换成Array"
             ],
             $snippet:[
                 "var s='a,b,c', a=xui.toArr(s); alert(xui.serialize(a));",
@@ -796,12 +793,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         tryF:{
-            $desc:"试着执行一个函数.",
+            $desc:"试着执行一个函数",
             $rtn:"Object",
             $paras:[
-                "fun [必需参数]: Function. 要执行的函数.",
-                "args [可选参数]: Array, 函数的参数.",
-                "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数).",
+                "fun [必需参数]: Function. 要执行的函数",
+                "args [可选参数]: Array, 函数的参数",
+                "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数)",
                 "df [可选参数]: Object. 默认的返回值(如果[fun]不是一个真正的函数)"
             ],
             $snippet:[
@@ -811,11 +808,11 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         unserialize:{
-            $desc:"将JSON字符串反序列化为一个Javascript对象.",
+            $desc:"将JSON字符串反序列化为一个Javascript对象",
             $rtn:"Object",
             $paras:[
-                "str [必需参数]: String, JSON字符串.",
-                "dateformat [可选参数]: String, 时间格式."
+                "str [必需参数]: String, JSON字符串",
+                "dateformat [可选参数]: String, 时间格式"
             ],
             $snippet:[
                 "var o={a:[1,{k:1}],s:'s',d:new Date},str; alert(str=xui.serialize(o)); var o2=xui.unserialize(str); alert(o2.d)",
@@ -827,12 +824,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         preLoadImage:{
-            $desc:"预加载图片.",
+            $desc:"预加载图片",
             $rtn:"Integer",
             $paras:[
-                "src [必需参数]: String, 图片地址，可以是图片地址的Array.",
-                "onSuccess [可选参数]: Function, function(img), 图片加载成功时触发的回调函数. ",
-                "onFail [可选参数]: Function, function(img), 图片加载失败时触发的回调函数."
+                "src [必需参数]: String, 图片地址，可以是图片地址的Array",
+                "onSuccess [可选参数]: Function, function(img), 图片加载成功时触发的回调函数",
+                "onFail [可选参数]: Function, function(img), 图片加载失败时触发的回调函数"
             ]
         },
         SERIALIZEMAXLAYER:{
@@ -845,36 +842,36 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"xui库所在的目录"
         },
         use:{
-            $desc:"用一个xid(每个xid都会对应一个dom元素)来实现对一个dom元素的快速引用.本操作不会有新的xui.Dom对象产生.",
+            $desc:"用一个xid(每个xid都会对应一个dom元素)来实现对一个dom元素的快速引用.本操作不会有新的xui.Dom对象产生",
             $rtn:"xui.Dom",
             $paras:[
-                "xid [必需参数]: String. 每个xid都会对应一个dom元素."
+                "xid [必需参数]: String. 每个xid都会对应一个dom元素"
             ],
             $snippet:[
                     "var id='xui.temp.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=xui.create('<button>click me</button>')); o.onClick(function(p,e,xid){ xui.use(xid).text('updated')  });"+
                     "}"
             ],
-            $memo:"由于本操作用的是一个缓存的xui.Dom对象,所以每次应直接对xui.use的返回值进行操作,而不要返回值作为变量值来保存."
+            $memo:"由于本操作用的是一个缓存的xui.Dom对象,所以每次应直接对xui.use的返回值进行操作,而不要返回值作为变量值来保存"
         },
         getId:{
-            $desc:"从一个dom元素或dom id得到它对应的xid.",
+            $desc:"从一个dom元素或dom id得到它对应的xid",
             $rtn:'String',
             $snippet:[
                 "alert(xui.getId('btnLang'))"
             ]
         },
         getNode:{
-            $desc:"从一个xid得到它对应的dom元素.",
+            $desc:"从一个xid得到它对应的dom元素",
             $rtn:'Object'
         },
         setNodeData:{
             $desc:"为一个dom元素设置数据",
             $rtn:"Object",
             $paras:[
-                "node [必需参数]: Element/String, 要设置数据的Dom元素或xid.",
-                "path [必需参数]: Array, 项路径, ['a','b','c'] => {a:{b:{c:[variable]}}}.",
-                "value [可选参数]: any, 项的新值. "
+                "node [必需参数]: Element/String, 要设置数据的Dom元素或xid",
+                "path [必需参数]: Array, 项路径, ['a','b','c'] => {a:{b:{c:[variable]}}}",
+                "value [可选参数]: any, 项的新值"
             ],
             $snippet:[
                     "var id='xui.temp.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -886,7 +883,7 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"得到一个dom元素上的特定数据（这个数据是由setNodeData设置的）",
             $rtn:"Object",
             $paras:[
-                "node [必需参数]: Element/String, 已经设置数据的Dom元素或xid.",
+                "node [必需参数]: Element/String, 已经设置数据的Dom元素或xid",
                 "path [必需参数]: Array, 项路径"
             ],
             $snippet:[
@@ -896,14 +893,14 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isDomReady:{
-            $desc:"判断DOM是否加载成功.",
+            $desc:"判断DOM是否加载成功",
             $rtn:"Boolean",
             $snippet:[
                 "alert(xui.isDomReady)"
             ]
         },
         Locale: {
-            $desc:"xui.Locale是一个键值对, 用以存储本地化的信息.",
+            $desc:"xui.Locale是一个键值对, 用以存储本地化的信息",
             $rtn:"Object",
             $snippet:[
                 "xui.each(xui.Locale.en,function(o,i){alert(i+':'+o)})"
@@ -911,29 +908,29 @@ xui.set(xui.Locale,["cn","app"], {
             $memo:"程序员请使用xui.getRes([resource key])来获取本地化的值"
         },
         browser:{
-            $desc:"xui.browser是一个键值对, 用以当前浏览器的信息.",
+            $desc:"xui.browser是一个键值对, 用以当前浏览器的信息",
             $rtn:"Object",
             $snippet:[
                 "alert(xui.serialize(xui.browser))"
             ]
         },
         ini:{
-            $desc:"xui.ini 是一个键值对, 用以存储XUI库,应用程序路径等相关路径的信息, . 如果程序员使用了自定义的路径[xui_ini](XUI库加载前申明.),这些自定义的路径也将被合并到[xui.ini]里面.",
+            $desc:"xui.ini 是一个键值对, 用以存储XUI库,应用程序路径等相关路径的信息, . 如果程序员使用了自定义的路径[xui_ini](XUI库加载前申明.),这些自定义的路径也将被合并到[xui.ini]里面",
             $rtn:"Object",
             $snippet:[
                 "alert(xui.serialize(xui.ini))"
             ]
         },
         win:{
-            $desc:"xui([window])的快捷访问.",
+            $desc:"xui([window])的快捷访问",
             $rtn:"xui.Dom"
         },
         doc:{
-            $desc:"xui([document])的快捷访问.",
+            $desc:"xui([document])的快捷访问",
             $rtn:"xui.Dom"
         },
         create:{
-            $desc:"生成一个DOM element 或 xui.UI 对象.",
+            $desc:"生成一个DOM element 或 xui.UI 对象",
             $rtn:"xui.Dom/xui.UI",
             $snippet:[
                 "//输入一个DOM节点的名字来生成DOM元素\n var a=xui.create('div'); alert(a.get(0).nodeName)",
@@ -947,7 +944,7 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"每一个控件对象都有一个全局唯一的id, 调用该函数可以获取该id对应的对象",
             $rtn:'xui.UIProfile',
             $paras:[
-                "id [必需参数]: String, 控件的全局 id."
+                "id [必需参数]: String, 控件的全局 id"
             ],
             $snippet:[
                 "var id=xui.UI.getAll().get(0).getId(); alert(xui.getObject(id).key);"
@@ -957,16 +954,16 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"从控件的别名取得控件",
             $rtn:'xui.absBox',
             $paras:[
-                "alias [必需参数]: String, 控件的全局 alias."
+                "alias [必需参数]: String, 控件的全局 alias"
             ]
         },
         getPath:{
-            $desc:"获取类（或其他文件）存放的绝对URL路径.",
+            $desc:"获取类（或其他文件）存放的绝对URL路径",
             $rtn:'String',
             $paras:[
-                "key [必需参数]: String, 类名.",
-                "tag [可选参数]: String, 文件后缀.",
-                "folder [可选参数]: String, 文件夹名."
+                "key [必需参数]: String, 类名",
+                "tag [可选参数]: String, 文件后缀",
+                "folder [可选参数]: String, 文件夹名"
             ],
             $snippet:[
                 "alert(xui.getPath('a.b.c')); alert(xui.getPath('a.b.c','.js')); alert(xui.getPath('a.b.c','.gif','img')); ",
@@ -974,18 +971,18 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         adjustVar:{
-            $desc:"尝试将内部的XUI伪代码变量调整到JS变量.",
+            $desc:"尝试将内部的XUI伪代码变量调整到JS变量",
             $rtn:"Object",
             $paras:[
-                "obj [必需参数]: Object,  变量.",
-                "scope [可选参数]: Object, 作用域对象. 默认为 [window]."
+                "obj [必需参数]: Object,  变量",
+                "scope [可选参数]: Object, 作用域对象. 默认为 [window]"
             ]
         },
         adjustRes:{
-            $desc:"调整字符串内部的资源字符串.",
+            $desc:"调整字符串内部的资源字符串",
             $rtn:'String',
             $paras:[
-                "str [必需参数]: String, 包含资源id的字符串.",
+                "str [必需参数]: String, 包含资源id的字符串",
                 "wrap [可选参数]: Boolean, 如果含有资源id的话,是否用wrapRes来替换. 默认为 false,表示用getRes来替换"
             ],
             $snippet:[
@@ -993,38 +990,38 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getRes:{
-            $desc:"获取资源id对应的资源串.",
+            $desc:"获取资源id对应的资源串",
             $rtn:'String',
             $paras:[
-                "id [必需参数]: String, 资源id."
+                "id [必需参数]: String, 资源id"
             ],
             $snippet:[
-                "alert(xui.getRes('doc.Class.$desc')); alert(xui.Locale[xui.getLang()].doc.Class.$desc); ",
+                "alert(xui.getRes('doc.xui.Class.$$desc')); alert(xui.Locale[xui.getLang()].doc.xui.Class.$$desc); ",
                 "alert(xui.getRes('color.LIST.E1FFFF')); alert(xui.Locale[xui.getLang()].color.LIST.E1FFFF); ",
                 "//如果不存在,返回最后一个关键字 \n alert(xui.getRes('doesnt.exist'))"
 
             ],
-            $memo:"所有的资源字符串都位于 [xui.Locale] <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用."
+            $memo:"所有的资源字符串都位于 [xui.Locale] <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用"
         },
         fetchClass:{
-            $desc:"得到本地或远程文件中的类.",
+            $desc:"得到本地或远程文件中的类",
             $paras:[
                 "uri [必需参数]: String, .js 文件路径",
-                "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数. ",
-                "onFail [可选参数]: Function, 失败时触发的回调函数.",
-                "onAlert [可选参数]: Function, 警告时触发的回调函数.",
-                "force [可选参数]: Boolean, 是否强制重新读取文件."
+                "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数",
+                "onFail [可选参数]: Function, 失败时触发的回调函数",
+                "onAlert [可选参数]: Function, 警告时触发的回调函数",
+                "force [可选参数]: Boolean, 是否强制重新读取文件"
             ]
         },
         include:{
-            $desc:"将某个类的.js 包含到当前文档中.",
+            $desc:"将某个类的.js 包含到当前文档中",
             $paras:[
-                "id [必需参数]: String, 特征字符串（包括名字空间的类名字）. 如果该类已经存在,则直接返回不会在做包含文件的工作. 如果强制包含文件,该参数可以设置为 '' .",
+                "id [必需参数]: String, 特征字符串（包括名字空间的类名字）. 如果该类已经存在,则直接返回不会在做包含文件的工作. 如果强制包含文件,该参数可以设置为 '' ",
                 "path [必需参数]: String, .js 文件路径",
-                "onSuccess [可选参数]: Function, 包含文件成功时触发的回调函数. ",
-                "onFail [可选参数]: Function, 包含文件失败时触发的回调函数.",
-                "sync [可选参数]: Boolean, 是否同步. 如果是同步,要确保path在同域名下.",
-                "options [可选参数]: Object, 一组配置数据."
+                "onSuccess [可选参数]: Function, 包含文件成功时触发的回调函数",
+                "onFail [可选参数]: Function, 包含文件失败时触发的回调函数",
+                "sync [可选参数]: Boolean, 是否同步. 如果是同步,要确保path在同域名下",
+                "options [可选参数]: Object, 一组配置数据"
             ],
             $snippet:[
                 "//改类已经存在,会直接调用onSuccess. \n"+
@@ -1036,7 +1033,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         mailTo:{
-            $desc:"弹出系统邮件发送窗口.",
+            $desc:"弹出系统邮件发送窗口",
             $paras:[
                 "email [必需参数]: String, 邮件地址",
                 "subject [可选参数]: String, 标题",
@@ -1046,14 +1043,14 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         require:{
-            $desc:"确保某个类加载到内存.",
+            $desc:"确保某个类加载到内存",
             $paras:[
                 "cls [必需参数]: String, 符合XUI规范的类名",
-                "onEnd [可选参数]: Function, 结束回调函数. ",
-                "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数. ",
-                "onFail [可选参数]: Function, 失败时触发的回调函数.",
-                "onAlert [可选参数]: Function, 警告时触发的回调函数.",
-                "force [可选参数]: Boolean, 是否强制重新读取文件."
+                "onEnd [可选参数]: Function, 结束回调函数",
+                "onSuccess [可选参数]: Function(class, uir), 成功时触发的回调函数",
+                "onFail [可选参数]: Function, 失败时触发的回调函数",
+                "onAlert [可选参数]: Function, 警告时触发的回调函数",
+                "force [可选参数]: Boolean, 是否强制重新读取文件"
             ],
             $snippet:[
                 "// 同步获取一个存在的 .js 文件\n"+
@@ -1066,161 +1063,161 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"向特定的服务地址发送数据请求. xui.request会按照情况选用xui.Ajax, xui.SAjax 或 xui.IAjax： "+
                   "<br /><b>默认=>xui.Ajax; 目标地址跨域=>xui.SAjax; 如果用'post'方法=>xui.IAjax;</b>",
             $paras:[
-                "uri [必需参数]: String, 目标地址.",
-                "query [可选参数]:  Object/String, 请求的输入数据. ",
-                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "uri [必需参数]: String, 目标地址",
+                "query [可选参数]:  Object/String, 请求的输入数据",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                "options [可选参数]: Object, 一组配置数据."
+                "options [可选参数]: Object, 一组配置数据"
             ],
             $memo:"请参考 <a href='#xui.Ajax'>xui.Ajax</a>, <a href='#xui.SAjax'>xui.SAjax</a>, <a href='#xui.IAjax'>xui.IAjax</a>!"
         },
         restGet:{
-            $desc:"调用 RESTful GET 服务.",
+            $desc:"调用 RESTful GET 服务",
             $paras:[
-                "uri [必需参数]: String, 目标地址.",
-                "query [可选参数]:  Object/String, 请求的输入数据. ",
-                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "uri [必需参数]: String, 目标地址",
+                "query [可选参数]:  Object/String, 请求的输入数据",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                "options [可选参数]: Object, 一组配置数据."
+                "options [可选参数]: Object, 一组配置数据"
             ]
         },
         restPost:{
-            $desc:"调用 RESTful POST 服务 .",
+            $desc:"调用 RESTful POST 服务 ",
             $paras:[
-                "uri [必需参数]: String, 目标地址.",
-                "query [可选参数]:  Object/String, 请求的输入数据. ",
-                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "uri [必需参数]: String, 目标地址",
+                "query [可选参数]:  Object/String, 请求的输入数据",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                "options [可选参数]: Object, 一组配置数据."
+                "options [可选参数]: Object, 一组配置数据"
             ]
         },
         restPut:{
-            $desc:"调用 RESTful PUT 服务 .",
+            $desc:"调用 RESTful PUT 服务 ",
             $paras:[
-                "uri [必需参数]: String, 目标地址.",
-                "query [可选参数]:  Object/String, 请求的输入数据. ",
-                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "uri [必需参数]: String, 目标地址",
+                "query [可选参数]:  Object/String, 请求的输入数据",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                "options [可选参数]: Object, 一组配置数据."
+                "options [可选参数]: Object, 一组配置数据"
             ]
         },
         restDelete:{
-            $desc:"调用 RESTful DELETE 服务 .",
+            $desc:"调用 RESTful DELETE 服务 ",
             $paras:[
-                "uri [必需参数]: String, 目标地址.",
-                "query [可选参数]:  Object/String, 请求的输入数据. ",
-                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
+                "uri [必需参数]: String, 目标地址",
+                "query [可选参数]:  Object/String, 请求的输入数据",
+                "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                "options [可选参数]: Object, 一组配置数据."
+                "options [可选参数]: Object, 一组配置数据"
             ]
         },
         log:{
-            $desc:"记录信息到Debugger窗口,默认使用当前环境中有window.console.loge功能,否则会调用xui.echo.",
+            $desc:"记录信息到Debugger窗口,默认使用当前环境中有window.console.loge功能,否则会调用xui.echo",
             $snippet:[
                 "xui.log(1,'a',[],{});"
             ],
-            $memo:"同时可以输入多个参数;必需使用xui.Debugger.js 来开启Debugger功能."
+            $memo:"同时可以输入多个参数;必需使用xui.Debugger.js 来开启Debugger功能"
         },
         echo:{
-            $desc:"记录信息到xui的Debugger窗口.",
+            $desc:"记录信息到xui的Debugger窗口",
             $snippet:[
                 "xui.echo(1,'a',[],{});"
             ],
-            $memo:"同时可以输入多个参数;必需使用xui.Debugger.js 来开启Debugger功能."
+            $memo:"同时可以输入多个参数;必需使用xui.Debugger.js 来开启Debugger功能"
         },
         main:{
-            $desc:"指定主函数,该函数在DOM加载完成后执行. 程序员可以指定多个主函数. 这些函数将以出现的顺序执行.",
+            $desc:"指定主函数,该函数在DOM加载完成后执行. 程序员可以指定多个主函数. 这些函数将以出现的顺序执行",
             $paras:[
-                'fun [必需参数]: Function, Dom ready后要执行的主函数.'
+                'fun [必需参数]: Function, Dom ready后要执行的主函数'
             ],
             $snippet:[
-                "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event."
+                "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event"
             ]
         },
        launch:{
-            $desc:"加载一个 xui.Module 类, 并显示.",
+            $desc:"加载一个 xui.Module 类, 并显示",
             $paras:[
-                "cls [必需参数] : String, 类名字.",
-                "onEnd [可选参数]: Function(err:Error/String, module: xui.Module). 类加载完之后调用.",
-                "lang [可选参数] : String, 语言名称.(例如, 'en').",
-                "theme [可选参数] : String, 主题名称.(例如, 'vis').",
+                "cls [必需参数] : String, 类名字",
+                "onEnd [可选参数]: Function(err:Error/String, module: xui.Module). 类加载完之后调用",
+                "lang [可选参数] : String, 语言名称.(例如, 'en')",
+                "theme [可选参数] : String, 主题名称.(例如, 'vis')",
                 "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
             ],
             $memo:"与xui.Module.load相同"
         },
         getModule :{
-            $desc:"加载一个Module类.",
+            $desc:"加载一个Module类",
             $rtn:"xui.Module",
             $paras:[
-                "cls [必需参数] : String, 应用模块对象类名.",
-                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 生成应用模块对象(Module Object)成功后被调用.",
+                "cls [必需参数] : String, 应用模块对象类名",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 生成应用模块对象(Module Object)成功后被调用",
                 "threadid [可选参数] : String, 内部线程id",
-                "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newModule.",
-                "properties [可选参数] : Object, 键值对,module的属性.",
-                "events [可选参数] : Object, 键值对,module的事件."
+                "cached [可选参数] : Boolean, 默认为 true, 优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 xui.newModule",
+                "properties [可选参数] : Object, 键值对,module的属性",
+                "events [可选参数] : Object, 键值对,module的事件"
             ],
             $memo:"与xui.ModuleFactory.getModule相同"
         },
         newModule:{
-            $desc:"加载一个Module类.",
+            $desc:"加载一个Module类",
             $paras:[
-                "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数,加载应用模块类成功后被调用.",
+                "cls [必需参数] : String, 应用模块类的路径名字",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数,加载应用模块类成功后被调用",
                 "threadid [可选参数] : String, the inner threadid",
-                "properties [可选参数] : Object, 键值对,module的属性.",
-                "events [可选参数] : Object, 键值对,module的事件."
+                "properties [可选参数] : Object, 键值对,module的属性",
+                "events [可选参数] : Object, 键值对,module的事件"
             ],
             $memo:"与xui.ModuleFactory.newModule相同"
         },
         showModule:{
             $desc:"加载一个Module类，并显示",
             $paras:[
-                "cls [必需参数] : String, 应用模块类的路径名字.",
-                "beforeShow[可选参数] : Function(module: xui.Module, threadid:String), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽.",
-                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 加载应用模块类成功后被调用.",
-                "threadid [可选参数] : String, 线程id.",
-                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. ",
-                "properties [可选参数] : Object, 键值对, 设置该module的属性.",
-                "events [可选参数] : Object, 键值对, 设置该module的事件.",
+                "cls [必需参数] : String, 应用模块类的路径名字",
+                "beforeShow[可选参数] : Function(module: xui.Module, threadid:String), 回调函数, 类生成后显示前调用,如返回false,默认的show功能被屏蔽",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 加载应用模块类成功后被调用",
+                "threadid [可选参数] : String, 线程id",
+                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存",
+                "properties [可选参数] : Object, 键值对, 设置该module的属性",
+                "events [可选参数] : Object, 键值对, 设置该module的事件",
                 "parent [可选参数] : xui.UIProfile/xui.UI/Element/xui.Dom. 显示到的父对象",
-                "subId [可选参数] : String, 父对象容器的id.",
-                "left [可选参数] : Number, 显示的左边坐标.",
-                "top [可选参数] : Number, 显示的上边坐标."
+                "subId [可选参数] : String, 父对象容器的id",
+                "left [可选参数] : Number, 显示的左边坐标",
+                "top [可选参数] : Number, 显示的上边坐标"
             ]
         },
         message:{
-            $desc:"显示一个文本消息.",
+            $desc:"显示一个文本消息",
             $paras:[
-                "body [必需参数]: String, 消息内容.",
-                "head [可选参数]: String, 消息标题.",
-                "width [可选参数]: Number, 消息框宽度. 默认为 200px.",
-                "time [可选参数]: Number, 多少毫秒后消息框自动消失. 默认为 5000ms."
+                "body [必需参数]: String, 消息内容",
+                "head [可选参数]: String, 消息标题",
+                "width [可选参数]: Number, 消息框宽度. 默认为 200px",
+                "time [可选参数]: Number, 多少毫秒后消息框自动消失. 默认为 5000ms"
             ],
             $snippet:[
                 "xui.message('A message')",
                 "//宽设定为100px； 在1秒后消失. \n" +
                 "xui.message('Body', 'Head', 100, 1000)"
             ],
-            $memo:"要使用该函数,需要包含文件xui.Debugger.js."
+            $memo:"要使用该函数,需要包含文件xui.Debugger.js"
         },
         alert:{
-            $desc:"弹出一个警告框.",
+            $desc:"弹出一个警告框",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 警告框标题.",
-                "content [可选参数] : String, 警告语句.",
-                "btnCap  [可选参数] : String, 按钮文字.",
-                "onClose [可选参数] : Function, alert窗口关闭的回调函数.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "title [可选参数] : String, 警告框标题",
+                "content [可选参数] : String, 警告语句",
+                "btnCap  [可选参数] : String, 按钮文字",
+                "onClose [可选参数] : Function, alert窗口关闭的回调函数",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "noCache [可选参数] : Boolean, 是否用缓存的alert窗口,默认为[false]."
+                "noCache [可选参数] : Boolean, 是否用缓存的alert窗口,默认为[false]"
             ],
             $snippet:[
                 "xui.alert('title','content',function(){alert('ok')})",
@@ -1228,20 +1225,20 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         confirm:{
-            $desc:"弹出一个确认框.",
+            $desc:"弹出一个确认框",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 确认框的标题.",
-                "content [可选参数] : String, 确认的提示语句.",
-                "onYes [可选参数] : Function, the Yes 回调函数.",
-                "onNo [可选参数] : Function, the No 回调函数.",
-                "btnCapYes [可选参数] : String, Yes按钮的文字.",
-                "btnCapNo [可选参数] : String, No按钮的文字.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "title [可选参数] : String, 确认框的标题",
+                "content [可选参数] : String, 确认的提示语句",
+                "onYes [可选参数] : Function, the Yes 回调函数",
+                "onNo [可选参数] : Function, the No 回调函数",
+                "btnCapYes [可选参数] : String, Yes按钮的文字",
+                "btnCapNo [可选参数] : String, No按钮的文字",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "noCache [可选参数] : Boolean, 是否用缓存的confirm窗口,默认为[false]."
+                "noCache [可选参数] : Boolean, 是否用缓存的confirm窗口,默认为[false]"
             ],
             $snippet:[
                 "xui.confirm('title','content',function(){alert('yes')},function(){alert('no')})",
@@ -1252,12 +1249,12 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"弹出一个简易对话框.（非模态）",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 简易对话框标题文字.",
+                "title [可选参数] : String, 简易对话框标题文字",
                 "content [可选参数] : String, 窗体内容输入文字",
-                "btnCap [可选参数] : String, OK按钮文字.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "btnCap [可选参数] : String, OK按钮文字",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id"
             ],
             $snippet:[
@@ -1266,34 +1263,34 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         prompt:{
-            $desc:"弹出一个输入框.",
+            $desc:"弹出一个输入框",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 输入框标题文字.",
-                "caption [可选参数] : String, 提示文字.",
-                "content [可选参数] : String, 默认输入文字.",
-                "onYes [可选参数] : Function, 用户单击Yes 回调函数.",
-                "onNo [可选参数] : Function, 用户单击 No 回调函数.",
-                "btnCapYes [可选参数] : String, Yes按钮的文字.",
-                "btnCapNo [可选参数] : String, No按钮的文字.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "title [可选参数] : String, 输入框标题文字",
+                "caption [可选参数] : String, 提示文字",
+                "content [可选参数] : String, 默认输入文字",
+                "onYes [可选参数] : Function, 用户单击Yes 回调函数",
+                "onNo [可选参数] : Function, 用户单击 No 回调函数",
+                "btnCapYes [可选参数] : String, Yes按钮的文字",
+                "btnCapNo [可选参数] : String, No按钮的文字",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "noCache [可选参数] : Boolean, 是否用缓存的prompt窗口,默认为[false]."
+                "noCache [可选参数] : Boolean, 是否用缓存的prompt窗口,默认为[false]"
             ],
             $snippet:[
                 "xui.prompt('title','caption', 'content content ',function(str){alert(str)})"
             ]
         },
         subscribe:{
-            $desc:"订阅系统消息.",
+            $desc:"订阅系统消息",
             $rtn:"Integer",
             $paras:[
-                "topic [必需参数]: String, 订阅的主题.",
-                "subscriber [必需参数]: String, 订阅者的唯一标识id.",
-                "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者.",
-                "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]."
+                "topic [必需参数]: String, 订阅的主题",
+                "subscriber [必需参数]: String, 订阅者的唯一标识id",
+                "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者",
+                "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]"
             ],
             $snippet:[
                 "xui.subscribe('topic1','id1', function(msg){alert('subscriber 1th got a message: '+msg)},true);"+
@@ -1306,34 +1303,34 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         unsubscribe:{
-            $desc:"退订系统消息.",
+            $desc:"退订系统消息",
             $rtn:"undefined",
             $paras:[
-                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有系统中的订阅.",
-                "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅."
+                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有系统中的订阅",
+                "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅"
             ]
         },
         publish:{
-            $desc:"发布系统消息.",
+            $desc:"发布系统消息",
             $rtn:"undefined",
             $paras:[
-                "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息.",
-                "args [可选参数]: Array, 发布消息的参数.",
-                "subscribers [可选参数]: String/Array, 订阅者的唯一标识id. 表示只发给该订阅者(们).",
-                "scope [可选参数]: Object, 发布消息所调用函数的scope."
+                "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息",
+                "args [可选参数]: Array, 发布消息的参数",
+                "subscribers [可选参数]: String/Array, 订阅者的唯一标识id. 表示只发给该订阅者(们)",
+                "scope [可选参数]: Object, 发布消息所调用函数的scope"
             ]
         },
         getSubscribers:{
-            $desc:"得到系统的消息订阅情况.",
+            $desc:"得到系统的消息订阅情况",
             $rtn:"Object",
             $paras:[
-                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有系统中的订阅.",
-                "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅."
+                "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有系统中的订阅",
+                "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅"
             ]
         },
 
         getDateFormat:{
-            $desc:"得到当前应用程序的日期序列化方式.",
+            $desc:"得到当前应用程序的日期序列化方式",
             $rtn:"String",
             $snippet:[
                 "xui.setDateFormat('default'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
@@ -1342,7 +1339,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setDateFormat:{
-            $desc:"设置当前应用程序的日期序列化方式. 'gmt', 'utc' 或 'default'.",
+            $desc:"设置当前应用程序的日期序列化方式'gmt', 'utc' 或 'default'",
             $snippet:[
                 "xui.setDateFormat('default'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
                 "xui.setDateFormat('gmt'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
@@ -1350,53 +1347,53 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getAppLangKey:{
-            $desc:"得到当前应用程序的语言包关键字.",
+            $desc:"得到当前应用程序的语言包关键字",
             $rtn:"String",
             $snippet:["xui.setAppLangKey('app'); alert(xui.getAppLangKey());"]
         },
         setAppLangKey:{
-            $desc:"设置当前应用程序的语言包关键字. 如果此关键字被设置,当用 xui.setLang 设置界面语言的时候,系统会试图从 Locale/[xui.getLang()].js 文件加载当前应用程序的语言包.",
+            $desc:"设置当前应用程序的语言包关键字. 如果此关键字被设置,当用 xui.setLang 设置界面语言的时候,系统会试图从 Locale/[xui.getLang()].js 文件加载当前应用程序的语言包",
             $snippet:["xui.setAppLangKey('app'); alert(xui.getAppLangKey());"]
         },
         getTheme:{
-            $desc:"获取当前皮肤的关键字.",
+            $desc:"获取当前皮肤的关键字",
             $rtn:"String",
             $snippet:[
                 "alert(xui.getTheme());"
             ]
         },
         setTheme:{
-            $desc:"通过设置皮肤关键字来更改当前皮肤.",
+            $desc:"通过设置皮肤关键字来更改当前皮肤",
             $rtn:"[self]",
             $paras:[
-                "key [可选参数] : String, 皮肤键字符串.",
-                "refresh [可选参数] : Boolean, 是否要刷新所有界面控件. 默认是 [true].",
-                "onSuccess [可选参数]: Function, 成功时触发的回调函数. ",
-                "onFail [可选参数]: Function, 失败时触发的回调函数."
+                "key [可选参数] : String, 皮肤键字符串",
+                "refresh [可选参数] : Boolean, 是否要刷新所有界面控件. 默认是 [true]",
+                "onSuccess [可选参数]: Function, 成功时触发的回调函数",
+                "onFail [可选参数]: Function, 失败时触发的回调函数"
             ],
             $snippet:[
                 "//xui.setTheme('xp')"
             ]
         },
         getLang:{
-            $desc:"得到界面的语言关键字.",
+            $desc:"得到界面的语言关键字",
             $rtn:"String",
             $snippet:["alert(xui.getLang());"]
         },
         setLang:{
-            $desc:"重新设置整个页面的语言. 系统会重新查找(in [xui.ini.path]/Locale/)和(in [xui.ini.appPath]/Locale/)并装载语言包.",
+            $desc:"重新设置整个页面的语言. 系统会重新查找(in [xui.ini.path]/Locale/)和(in [xui.ini.appPath]/Locale/)并装载语言包",
             $paras:[
-                "key [必需参数]: String, 语言的关键字.",
-                "callback [可选参数]: Function, 回调函数."
+                "key [必需参数]: String, 语言的关键字",
+                "callback [可选参数]: Function, 回调函数"
             ],
-            $memo:"所有的资源字符串都位于 [xui.Locale]. <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用."
+            $memo:"所有的资源字符串都位于 [xui.Locale]. <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用"
         },
         //request ( uri, query, onSuccess, onFail, threadid, args ),
         wrapRes:{
-            $desc:"获取资源标志符对应的资源字符串, 并将其包装成特定的形式.",
+            $desc:"获取资源标志符对应的资源字符串, 并将其包装成特定的形式",
             $rtn:'String',
             $paras:[
-                "id [必需参数]: String, 资源 id."
+                "id [必需参数]: String, 资源 id"
             ],
             $snippet:[
                 "alert(xui.wrapRes('doc.Class.$desc')); alert(xui.Locale[xui.getLang()].doc.Class.$desc); ",
@@ -1404,7 +1401,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "//如果不存在,返回最后一个关键字\n alert(xui.wrapRes('doesnt.exist'))"
 
             ],
-            $memo:"所有的资源字符串都位于 [xui.Locale]. <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用."
+            $memo:"所有的资源字符串都位于 [xui.Locale]. <br \> [<a href='#xui.setLang'>xui.setLang</a>], [<a href='#xui.getRes'>xui.getRes</a>/<a href='#xui.wrapRes'>xui.wrapRes</a>] 通常一起使用"
         }
     });
 
@@ -1413,7 +1410,7 @@ xui.set(xui.Locale,["cn","app"], {
         $desc:"xui.Thread类. 运行模式: <strong>[onStart function]--delay 1-->[task function 1][回调函数 1]--delay 2-->[task function 2][回调函数 2]--delay 3-->[task function ...n][回调函数 ...n][onEnd function]</strong>",
         $rtn:"xui.Thread",
         $paras:[
-            "id [必需参数]: String, 线程的识别号. 如果已经存在这个识别号,该函数将返回对应的线程对象; 如果不存在,或函数没有指定, 系统将产生一个新的xui.Thread对象, 并给它分配一个唯一的id. 如果程序员不想指定它,可以用null.",
+            "id [必需参数]: String, 线程的识别号. 如果已经存在这个识别号,该函数将返回对应的线程对象; 如果不存在,或函数没有指定, 系统将产生一个新的xui.Thread对象, 并给它分配一个唯一的id. 如果程序员不想指定它,可以用null",
             "tasks [必需参数]: Array, 线程要执行的函数/或函数包. 包格式:<br> { <br>"+
                     "task [必需参数],      //Function, 函数的参数: args or [threadid]. 任务函数.<br>"+
                     "args [可选参数],      //Array, 任务函数的参数.<br>"+
@@ -1421,11 +1418,11 @@ xui.set(xui.Locale,["cn","app"], {
                     "delay [可选参数],     //Number,任务的延迟时间(毫秒).如不指定,将用默认的延迟时间.<br>"+
                     "callback [可选参数]   //Function, 函数的参数: [threadid]. 任务函数执行成功后的回调函数. 回调函数如果返回false, 线程将提前终止. <br>"+
                 "}",
-            "delay [可选参数]: Number, 每个任务的默认延迟时间(毫秒). 默认为 0.",
-            "callback [可选参数]: Function, 函数的参数: [threadid]. 默认的回调函数.",
-            "onStart [可选参数]: Function, 函数的参数: [threadid]. 该函数在所有任务函数开始前被调用.",
-            "onEnd [可选参数]: Function, 函数的参数: [threadid]. 该函数在线程结束后被调用.",
-            "cycle [可选参数]: 指示线程是否循环执行. 默认为 [false]."
+            "delay [可选参数]: Number, 每个任务的默认延迟时间(毫秒). 默认为 0",
+            "callback [可选参数]: Function, 函数的参数: [threadid]. 默认的回调函数",
+            "onStart [可选参数]: Function, 函数的参数: [threadid]. 该函数在所有任务函数开始前被调用",
+            "onEnd [可选参数]: Function, 函数的参数: [threadid]. 该函数在线程结束后被调用",
+            "cycle [可选参数]: 指示线程是否循环执行. 默认为 [false]"
         ],
         $snippet:[
             "xui.Thread(null, [function(){xui.message(1)},function(){xui.message(2)}]).start()",
@@ -1437,14 +1434,14 @@ xui.set(xui.Locale,["cn","app"], {
             "var a=[],i=3; xui.Thread(null, [function(){a.push(1)},function(){a.push(2)}],0,function(){i--;if(!i)return false;},null,function(){alert(a);},true).start()"
         ],
         group:{
-            $desc:"将一系列的xui.Thread对象(或线程id)编组, 打包到一个可执行的线程. 程序员可并行的执行他们.",
+            $desc:"将一系列的xui.Thread对象(或线程id)编组, 打包到一个可执行的线程. 程序员可并行的执行他们",
             $rtn:"xui.Thread",
             $paras:[
-                "id [必需参数]: String, thread id. 线程id. 不需要指定时可传入[null]..",
-                "group [必需参数]: Array, 一系列的xui.Thread对象(或线程id).",
-                "callback [可选参数]: Function(threadid:String). 回调函数.",
-                "onStart [可选参数]: Function(threadid:String).  线程开始时调用.",
-                "onEnd [可选参数]:  Function(threadid:String).  线程结束时调用."
+                "id [必需参数]: String, thread id. 线程id. 不需要指定时可传入[null].",
+                "group [必需参数]: Array, 一系列的xui.Thread对象(或线程id)",
+                "callback [可选参数]: Function(threadid:String). 回调函数",
+                "onStart [可选参数]: Function(threadid:String).  线程开始时调用",
+                "onEnd [可选参数]:  Function(threadid:String).  线程结束时调用"
             ],
             $snippet:[
                 "var a=[]; var t1=xui.Thread('t1',[function(){a.push(1)},function(){a.push(2)}]), t2=xui.Thread('t2',[function(){a.push('a')},function(){a.push('b')}]);"+
@@ -1453,20 +1450,20 @@ xui.set(xui.Locale,["cn","app"], {
             $memo:"You have to use start function to start [thread group]!"
         },
         abort:{
-            $desc:"按照识别号终止一个线程.",
+            $desc:"按照识别号终止一个线程",
             $paras:[
-                "id [必需参数]: String, 线程id."
+                "id [必需参数]: String, 线程id"
             ],
             $snippet:[
                 "xui.Thread('_id', [function(){xui.message(1);xui.Thread.abort('_id')},function(){xui.message(2)}]).start();"
             ]
         },
         observableRun:{
-            $desc:"将一组任务函数和一个onEnd函数包装到一个从界面上可观测的线程(线程开始时会调用'dom.busy' 显示沙漏图标,线程结束的时候调用'dom.free'还原为默认图标),并执行这个线程. <br /> 如果线程号[threadid]不存在, 就产生一个新的线程. <br /> 如果线程号[threadid]存在, 则会分别插入任务和onEnd函数到现有的线程中.",
+            $desc:"将一组任务函数和一个onEnd函数包装到一个从界面上可观测的线程(线程开始时会调用'dom.busy' 显示沙漏图标,线程结束的时候调用'dom.free'还原为默认图标),并执行这个线程. <br /> 如果线程号[threadid]不存在, 就产生一个新的线程. <br /> 如果线程号[threadid]存在, 则会分别插入任务和onEnd函数到现有的线程中",
             $paras:[
-                "tasks [必需参数]: Array, 一系列的任务函数(functions).",
-                "onEnd [可选参数]: Function, 'onEnd' 回调函数.",
-                "threadid [可选参数]: Stirng, 线程id. 不需要指定时可传入[null]."
+                "tasks [必需参数]: Array, 一系列的任务函数(functions)",
+                "onEnd [可选参数]: Function, 'onEnd' 回调函数",
+                "threadid [可选参数]: Stirng, 线程id. 不需要指定时可传入[null]"
             ],
             $snippet:[
                 "xui.Thread.observableRun(function(){xui.message('fun')},function(){alert('end')});",
@@ -1476,23 +1473,23 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         repeat:{
-            $desc:"重复执行一个任务函数,直到这个函数返回 [false].",
+            $desc:"重复执行一个任务函数,直到这个函数返回 [false]",
             $rtn:"xui.Thread",
             $paras:[
-                "task [必需参数]: Function, 要重复执行的任务.",
-                "interval [可选参数]: Number, 重复执行的间隔毫秒数.",
-                "onStart [可选参数]: Function(threadid:String).  重复执行之前调用.",
-                "onEnd [可选参数]:  Function(threadid:String).  重复执行之后调用."
+                "task [必需参数]: Function, 要重复执行的任务",
+                "interval [可选参数]: Number, 重复执行的间隔毫秒数",
+                "onStart [可选参数]: Function(threadid:String).  重复执行之前调用",
+                "onEnd [可选参数]:  Function(threadid:String).  重复执行之后调用"
             ],
             $snippet:[
                 "var l=1; xui.Thread.repeat(function(){alert('repeat time:' + (l++)); if(l>3)return false;}, 500)"
             ]
         },
         isAlive:{
-            $desc:"按照识别号判断某个线程是否还活着.",
+            $desc:"按照识别号判断某个线程是否还活着",
             $rtn:"Boolean",
             $paras:[
-                "id [必需参数]: String, 线程id."
+                "id [必需参数]: String, 线程id"
             ],
             $snippet:[
                 "alert(xui.Thread.isAlive('_id'))",
@@ -1500,14 +1497,14 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         group:{
-            $desc:"将一系列的xui.Thread对象(或线程id)编组, 打包到一个可执行的线程. 程序员可并行的执行他们.",
+            $desc:"将一系列的xui.Thread对象(或线程id)编组, 打包到一个可执行的线程. 程序员可并行的执行他们",
             $rtn:"xui.Thread",
             $paras:[
-                "id [必需参数]: String, thread id. 线程id. 不需要指定时可传入[null]..",
-                "group [必需参数]: Array, 一系列的xui.Thread对象(或线程id).",
-                "callback [可选参数]: Function(threadid:String). 回调函数.",
-                "onStart [可选参数]: Function(threadid:String).  线程开始时调用.",
-                "onEnd [可选参数]:  Function(threadid:String).  线程结束时调用."
+                "id [必需参数]: String, thread id. 线程id. 不需要指定时可传入[null].",
+                "group [必需参数]: Array, 一系列的xui.Thread对象(或线程id)",
+                "callback [可选参数]: Function(threadid:String). 回调函数",
+                "onStart [可选参数]: Function(threadid:String).  线程开始时调用",
+                "onEnd [可选参数]:  Function(threadid:String).  线程结束时调用"
             ],
             $snippet:[
                 "var a=[]; var t1=xui.Thread('t1',[function(){a.push(1)},function(){a.push(2)}]), t2=xui.Thread('t2',[function(){a.push('a')},function(){a.push('b')}]);"+
@@ -1516,9 +1513,9 @@ xui.set(xui.Locale,["cn","app"], {
             $memo:"You have to use start function to start [thread group]!"
         },
         suspend:{
-            $desc:"挂起识别号为给定值的线程.",
+            $desc:"挂起识别号为给定值的线程",
             $paras:[
-                "id [必需参数]: String, 线程id."
+                "id [必需参数]: String, 线程id"
             ],
             $snippet:[
                 "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread.suspend('_bb');xui.asyRun(function(){xui.Thread.resume('_bb')},3000)},function(){xui.message(2)}]).start();"
@@ -1530,7 +1527,7 @@ xui.set(xui.Locale,["cn","app"], {
         resume:{
             $desc:"继续执行识别号为给定值的线程",
             $paras:[
-                "id [必需参数]: String, 线程id."
+                "id [必需参数]: String, 线程id"
             ],
             $snippet:[
                 "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread.suspend('_bb');xui.asyRun(function(){xui.Thread.resume('_bb')},3000)},function(){xui.message(2)}]).start();"
@@ -1539,7 +1536,7 @@ xui.set(xui.Locale,["cn","app"], {
         start:{
             $desc:"开始执行识别号为给定值的线程",
             $paras:[
-                "id [必需参数]: String, 线程id."
+                "id [必需参数]: String, 线程id"
             ],
             $snippet:[
                 "xui.Thread('_t1', [function(){xui.message(1)},function(){xui.message(2)}]); xui.Thread.start('_t1')"
@@ -1548,10 +1545,10 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             links:{
-                $desc:"将另一个线程链接到本线程, 并在本线程的回调函数[onEnd]结束后开始执行另一个线程. ",
+                $desc:"将另一个线程链接到本线程, 并在本线程的回调函数[onEnd]结束后开始执行另一个线程",
                 $rtn:"[self]",
                 $paras:[
-                    "thread [必需参数] : xui.Thread Object, 要链接的线程对象."
+                    "thread [必需参数] : xui.Thread Object, 要链接的线程对象"
                 ],
                 $snippet:[
                     "var out=[];var t1=xui.Thread(null,[function(){out.push(2)},function(){out.push(3)}],null,null,function(){out.push(1)},function(){out.push(4)});" +
@@ -1560,11 +1557,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             isAlive:{
-                $desc:"判断线程是否还活着.",
+                $desc:"判断线程是否还活着",
                 $rtn:"Boolean"
             },
             abort:{
-                $desc:"终止该线程.",
+                $desc:"终止该线程",
                 $snippet:[
                     "xui.Thread('_id', [function(){xui.message(1);xui.Thread('_id').abort();},function(){xui.message(2)}]).start();"
                 ]
@@ -1580,7 +1577,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             resume:{
-                $desc:"继续执行一个被挂起的线程.",
+                $desc:"继续执行一个被挂起的线程",
                 $rtn:"[self]",
                 $paras:[
                     "time [可选参数]: undefined/Number/Boolean.<br> "+
@@ -1597,39 +1594,39 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"开始执行该线程",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数]: String, 线程id."
+                    "id [必需参数]: String, 线程id"
                 ],
                 $snippet:[
                     "xui.Thread('_t1', [function(){xui.message(1)},function(){xui.message(2)}]); xui.Thread.start('_t1')"
                 ]
             },
             getCache:{
-                $desc:"获取线程的缓存数据.",
+                $desc:"获取线程的缓存数据",
                 $rtn:"Object",
                 $paras:[
-                    "key [必需参数]: String, 缓存标志符."
+                    "key [必需参数]: String, 缓存标志符"
                 ],
                 $snippet:[
                     "xui.Thread(null, [function(){this.setCache('k','v')},function(){xui.message(this.getCache('k'))}]).start();"
                 ]
             },
             setCache:{
-                $desc:"设置线程的缓存数据.",
+                $desc:"设置线程的缓存数据",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数]: String, 缓存标志符.",
-                    "value [必需参数]: String, 缓存的数据."
+                    "key [必需参数]: String, 缓存标志符",
+                    "value [必需参数]: String, 缓存的数据"
                 ],
                 $snippet:[
                     "xui.Thread(null, [function(){this.setCache('k','v')},function(){xui.message(this.getCache('k'))}]).start();"
                 ]
             },
             insert:{
-                $desc:"添加一些任务函数到当前线程中.",
+                $desc:"添加一些任务函数到当前线程中",
                 $rtn:"[self]",
                 $paras:[
-                    "arr [必需参数]: Array, 添加的任务函数.",
-                    "index [可选参数]: Nubmer, 插入函数的位置. 默认为 当前位置(插入到下一个要被执行的任务函数前)."
+                    "arr [必需参数]: Array, 添加的任务函数",
+                    "index [可选参数]: Nubmer, 插入函数的位置. 默认为 当前位置(插入到下一个要被执行的任务函数前)"
                 ],
                 $snippet:[
                     "var out=[];xui.Thread(null,[function(){out.push(1)},function(){this.insert([function(){out.push(1.5)}])},function(){out.push(2)}],null,null,null,function(){alert(out)}).start();"
@@ -1640,11 +1637,11 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","absIO"], {
         /*buildQS:{
-            $desc:"To build query string.",
+            $desc:"To build query string",
             $rtn:"String",
             $paras:[
-                "hash [必需参数]: Object, target Object to build query string.",
-                "force [可选参数]: Boolean, true: to return 'a serialized String'. false: to return a 'A URL query string'."
+                "hash [必需参数]: Object, target Object to build query string",
+                "force [可选参数]: Boolean, true: to return 'a serialized String'. false: to return a 'A URL query string'"
             ],
             $snippet:[
                 "alert(xui.absIO.buildQS({a:1,b:{aa:1,bb:2}},true)); alert(xui.absIO.buildQS({a:1,b:{aa:1,bb:2}}));"
@@ -1655,9 +1652,9 @@ xui.set(xui.Locale,["cn","app"], {
             $rtn:"xui.Thread",
             $paras:[
                 "hash [必需参数]: Object, 一系列的xui.absIO对象",
-                "callback [可选参数]: Function,  当每个xui.absIO对象都终止后,该函数将被调用.",
-                "onStart [可选参数]: Function, 当对应的线程开始时调用thread.",
-                "onEnd [可选参数]: Function, 当对应的线程结束时调用.",
+                "callback [可选参数]: Function,  当每个xui.absIO对象都终止后,该函数将被调用",
+                "onStart [可选参数]: Function, 当对应的线程开始时调用thread",
+                "onEnd [可选参数]: Function, 当对应的线程结束时调用",
                 "threadid [可选参数]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]"
             ],
             $snippet:[
@@ -1665,44 +1662,44 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isCrossDomain:{
-            $desc:"判断给定的URI是否跨域.",
+            $desc:"判断给定的URI是否跨域",
             $rtn:"Boolean",
             $paras:[
-                "uri [必需参数]: String, URI路径字符串."
+                "uri [必需参数]: String, URI路径字符串"
             ],
             $snippet:[
                 "alert(xui.absIO.isCrossDomain(location.href));alert(xui.absIO.isCrossDomain('http://www.google.com'));"
             ]
         },
         customQS: {
-            $desc:"之定义一个请求字符串. 子类可覆盖该函数,以增加多的参数等.",
+            $desc:"自定义一个请求字符串. 子类可覆盖该函数,以增加多的参数等",
             $rtn:"Object",
             $paras:[
-                "obj [必需参数]: Object or String, 原始的请求字符串."
+                "obj [必需参数]: Object or String, 原始的请求字符串"
             ]
         },
         "get":{
-            $desc:"用GET方法进行远程调用.",
+            $desc:"用GET方法进行远程调用",
             $rtn:"xui.absIO",
             $paras:[
-                "uri [必需参数]: String, 请求服务的 URL 地址.",
-                "query [可选参数]:  Object/String, 要请求的数据.",
-                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
-                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
-                "threadid [可选参数]: String,  绑定的线程ID.",
-                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+                "uri [必需参数]: String, 请求服务的 URL 地址",
+                "query [可选参数]:  Object/String, 要请求的数据",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+                "threadid [可选参数]: String,  绑定的线程ID",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对" 
             ]
         },
         "post":{
-            $desc:"用POST方法进行远程调用.",
+            $desc:"用POST方法进行远程调用",
             $rtn:"xui.absIO",
             $paras:[
-                "uri [必需参数]: String, 请求服务的 URL 地址.",
-                "query [可选参数]:  Object/String, 要请求的数据.",
-                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
-                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
-                "threadid [可选参数]: String,  绑定的线程ID.",
-                "options [可选参数]: Object, 用来配置这个request的一组键值对." 
+                "uri [必需参数]: String, 请求服务的 URL 地址",
+                "query [可选参数]:  Object/String, 要请求的数据",
+                "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+                "threadid [可选参数]: String,  绑定的线程ID",
+                "options [可选参数]: Object, 用来配置这个request的一组键值对" 
             ]
         },
         prototype:{
@@ -1715,11 +1712,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             isAlive:{
-                $desc:"判断 IO 是否还活着.",
+                $desc:"判断 IO 是否还活着",
                 $rtn:"Boolean"
             },
             abort:{
-                $desc:'取消执行xui.absIO对象.',
+                $desc:'取消执行xui.absIO对象',
                 $snippet:[
                     "//var a=xui.Ajax('uri').start(); \n //a.abort();"
                 ]
@@ -1732,13 +1729,13 @@ xui.set(xui.Locale,["cn","app"], {
         $desc:"xui.MessageService 类",
         prototype:{
             subscribe:{
-                $desc:"订阅消息.",
+                $desc:"订阅消息",
                 $rtn:"Integer",
                 $paras:[
-                    "topic [必需参数]: String, 订阅的主题.",
-                    "subscriber [必需参数]: String, 订阅者的唯一标识id.",
-                    "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者.",
-                    "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]."
+                    "topic [必需参数]: String, 订阅的主题",
+                    "subscriber [必需参数]: String, 订阅者的唯一标识id",
+                    "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者",
+                    "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]"
                 ],
                 $snippet:[
                     "var jsm=new xui.MessageService();"+
@@ -1752,28 +1749,28 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             unsubscribe:{
-                $desc:"退订消息.",
+                $desc:"退订消息",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有的订阅.",
-                    "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅."
+                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有的订阅",
+                    "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅"
                 ]
             },
             publish:{
-                $desc:"发布消息.",
+                $desc:"发布消息",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息.",
-                    "args [可选参数]: Array, 发布消息的参数.",
-                    "scope [可选参数]: Object, 发布消息所调用函数的scope."
+                    "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息",
+                    "args [可选参数]: Array, 发布消息的参数",
+                    "scope [可选参数]: Object, 发布消息所调用函数的scope"
                 ]
             },
             getSubscribers:{
-                $desc:"得到消息订阅情况.",
+                $desc:"得到消息订阅情况",
                 $rtn:"Object",
                 $paras:[
-                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有的订阅.",
-                    "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅."
+                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有的订阅",
+                    "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅"
                 ]
             }
         }
@@ -1783,7 +1780,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.XML 类(静态类)",
         json2xml:{
-            $desc:"实现 XML 向 JSON 的转换.输入json Object,输出转换后的 xml 文本.",
+            $desc:"实现 XML 向 JSON 的转换.输入json Object,输出转换后的 xml 文本",
             $rtn:"String",
             $paras:[
                 "jsonObj [必需参数] : Object, JOSON 变量"
@@ -1791,12 +1788,12 @@ xui.set(xui.Locale,["cn","app"], {
             $snippet:["alert(xui.XML.json2xml({root:{a:1,b:'b','@attr':'r','#text':'text','#cdata':'data'}}))"]
         },
         xml2json:{
-            $desc:"实现 JSON 向 XML 的转换.输入 xml Object,输出转换后的 json Object.",
+            $desc:"实现 JSON 向 XML 的转换.输入 xml Object,输出转换后的 json Object",
             $rtn:"Object",
             $paras:[
                 "xmlObj [必需参数] : Object, XML 变量",
-                "kf [可选参数]: Function, 对键值对key字符串的filter函数.",
-                "vf [可选参数]: Function, 对键值对value字符串的filter函数."
+                "kf [可选参数]: Function, 对键值对key字符串的filter函数",
+                "vf [可选参数]: Function, 对键值对value字符串的filter函数"
             ],
             $snippet:["alert(xui.serialize(xui.XML.xml2json(xui.XML.parseXML('<a attr=\"1\"><b>v</b></a>'))))"]
         },
@@ -1814,7 +1811,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.XMLRPC 类(静态类)",
         wrapRequest:{
-            $desc:"为一次XML RPC调用包装XML字符串.",
+            $desc:"为一次XML RPC调用包装XML字符串",
             $rtn:"String",
             $paras:[
                 "methodName [必需参数] : String, 要调用的 XML RPC 方法名",
@@ -1834,11 +1831,11 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.SOAP 类(静态类)",
         RESULT_NODE_NAME:{
-            $desc:"SOAP返回的根节点名字（可自定义）.",
+            $desc:"SOAP返回的根节点名字（可自定义）",
             $snippet:["alert(xui.SOAP.RESULT_NODE_NAME)"]
         },
         wrapRequest:{
-            $desc:"为一次SOAP调用包装XML字符串.",
+            $desc:"为一次SOAP调用包装XML字符串",
             $rtn:"String",
             $paras:[
                 "methodName [必需参数] : String, 要调用的 SOAP 方法名",
@@ -1874,40 +1871,40 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","Ajax"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.Ajax类. 可处理同域 GET/POST 请求, 可以是同步请求.",
+        $desc:"xui.Ajax类. 可处理同域 GET/POST 请求, 可以是同步请求",
         $rtn:"xui.Ajax",
         $paras:[
-            "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
-            "query [可选参数]:  Object/String, 要请求的数据.",
-            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
-            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+            "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略",
+            "query [可选参数]:  Object/String, 要请求的数据",
+            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
                 "<br>{"+
                 "<br><em>//variables</em>"+
-                "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址."+
-                "<br>&nbsp;&nbsp;query: String/Object, 请求的数据."+
-                "<br>&nbsp;&nbsp;threadid: String, 绑定到这个请求的线程id号."+
-                "<br>&nbsp;&nbsp;asy: Boolean, 请求是否为同步请求. 默认为 [false]."+
+                "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址"+
+                "<br>&nbsp;&nbsp;query: String/Object, 请求的数据"+
+                "<br>&nbsp;&nbsp;threadid: String, 绑定到这个请求的线程id号"+
+                "<br>&nbsp;&nbsp;asy: Boolean, 请求是否为同步请求. 默认为 [false]"+
                 "<br>&nbsp;&nbsp;<strong>method: 'GET' 或 'POST', 请求的方法. 默认为 'GET'.</strong>"+
-                "<br>&nbsp;&nbsp;retry: Number, 请求所允许的重试次数."+
-                "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数."+
-                "<br>&nbsp;&nbsp;reqType: String, 'form'(Ajax), 'json'(Ajax), 或 'xml'(Ajax). 请求返回的数据类型,默认是'form'."+
-                "<br>&nbsp;&nbsp;rspType: String, 'json'(Ajax), 'text'(SAjax), 'script'(Sjax) 或 'xml'(Ajax). 请求返回的数据类型.,默认是'json'."+
+                "<br>&nbsp;&nbsp;retry: Number, 请求所允许的重试次数"+
+                "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数"+
+                "<br>&nbsp;&nbsp;reqType: String, 'form'(Ajax), 'json'(Ajax), 或 'xml'(Ajax). 请求返回的数据类型,默认是'form'"+
+                "<br>&nbsp;&nbsp;rspType: String, 'json'(Ajax), 'text'(SAjax), 'script'(Sjax) 或 'xml'(Ajax). 请求返回的数据类型.,默认是'json'"+
                 "<br><em>//functions</em>"+
-                "<br>&nbsp;&nbsp;cusomQS: Function, 函数参数: [obj, type]. 用来自定义query string对象的函数."+
+                "<br>&nbsp;&nbsp;cusomQS: Function, 函数参数: [obj, type]. 用来自定义query string对象的函数"+
                 "<br><em>//normal events</em>"+
-                "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数."+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数."+
+                "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数"+
                 "<br><em>//trace events</em>"+
-                "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数."+
-                "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数."+
-                "<br>&nbsp;&nbsp;onStart: Function, 请求开始时调用的函数."+
-                "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数."+
+                "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数"+
+                "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数"+
+                "<br>&nbsp;&nbsp;onStart: Function, 请求开始时调用的函数"+
+                "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数"+
                 "<br><em>//before events</em>"+
-                "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止."+
-                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略."+
-                "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略."+
+                "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
+                "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略"+
                 "<br>}"
         ],
         $snippet:[
@@ -1922,13 +1919,13 @@ xui.set(xui.Locale,["cn","app"], {
              "       threadid).start();\n"+
              "   }]);*/"
         ],
-        $memo:"通常建议程序员使用 [xui.request] 来处理一般的请求, 该函数可以自动的判断是否跨域,method的类型,然后选择ajax/sajax/iajax之一.",
+        $memo:"通常建议程序员使用 [xui.request] 来处理一般的请求, 该函数可以自动的判断是否跨域,method的类型,然后选择ajax/sajax/iajax之一",
         callback:{
-            $desc:"String, 默认的回调函数名称. <strong>服务器需要在返回结构中匹配它.</strong>.",
+            $desc:"String, 默认的回调函数名称. <strong>服务器需要在返回结构中匹配它.</strong>",
             $snippet:["alert(xui.Ajax.callback)"]
         },
         method:{
-            $desc:"String, 默认的method名称('GET' or 'POST').",
+            $desc:"String, 默认的method名称('GET' or 'POST')",
             $snippet:["alert(xui.Ajax.method)"]
         },
         optimized:{
@@ -1936,35 +1933,35 @@ xui.set(xui.Locale,["cn","app"], {
             $snippet:["alert(xui.Ajax.optimized)"]
         },
         retry:{
-            $desc:"Number, 默认的重试次数.",
+            $desc:"Number, 默认的重试次数",
             $snippet:["alert(xui.Ajax.retry)"]
         },
         reqType:{
-            $desc:"String, 默认的请求发送类型.",
+            $desc:"String, 默认的请求发送类型",
             $snippet:["alert(xui.Ajax.reqType)"]
         },
         rspType:{
-            $desc:"String, 默认的返回类型.",
+            $desc:"String, 默认的返回类型",
             $snippet:["alert(xui.Ajax.rspType)"]
         },
         uid:{
-            $desc:"String,  唯一id ."
+            $desc:"String,  唯一id "
         },
         timeout:{
-            $desc:"Number, 默认的超时时间.",
+            $desc:"Number, 默认的超时时间",
             $snippet:["alert(xui.Ajax.timeout)"]
         },
         prototype:{
             KEY:{$desc:"本类名"},
             start:{
-                $desc:"开始执行本次请求.",
+                $desc:"开始执行本次请求",
                 $rtn:"[self]",
                 $snippet:[
                     "//xui.Ajax('uri').start();"
                 ]
             },
             abort:{
-                $desc:'终止本次请求.',
+                $desc:'终止本次请求',
                 $snippet:[
                     "//var a=xui.Ajax('uri').start(); \n //a.abort();"
                 ]
@@ -1974,38 +1971,38 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","SAjax"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.SAjax类. 可处理跨域的 GET/POST 数据请求.",
+        $desc:"xui.SAjax类. 可处理跨域的 GET/POST 数据请求",
         $rtn:"xui.SAjax",
         $paras:[
-            "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
-            "query [可选参数]:  Object/String, 要请求的数据.",
-            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
-            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+            "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略",
+            "query [可选参数]:  Object/String, 要请求的数据",
+            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
                 "<br>{"+
                 "<br><em>//variables</em>"+
-                "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址."+
-                "<br>&nbsp;&nbsp;query: String/Object, 请求的数据."+
-                "<br>&nbsp;&nbsp;threadid: String, 绑定到这个请求的线程id号."+
-                "<br>&nbsp;&nbsp;retry: Number, 请求所允许的重试次数."+
-                "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数."+
-                "<br>&nbsp;&nbsp;reqType: String, 'form'或'json'. 请求返回的数据类型,默认是'form'."+
-                "<br>&nbsp;&nbsp;rspType: String, 'text' 或 'script'. 请求返回的数据类型,默认是'text'."+
+                "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址"+
+                "<br>&nbsp;&nbsp;query: String/Object, 请求的数据"+
+                "<br>&nbsp;&nbsp;threadid: String, 绑定到这个请求的线程id号"+
+                "<br>&nbsp;&nbsp;retry: Number, 请求所允许的重试次数"+
+                "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数"+
+                "<br>&nbsp;&nbsp;reqType: String, 'form'或'json'. 请求返回的数据类型,默认是'form'"+
+                "<br>&nbsp;&nbsp;rspType: String, 'text' 或 'script'. 请求返回的数据类型,默认是'text'"+
                 "<br><em>//functions</em>"+
-                "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数."+
+                "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数"+
                 "<br><em>//normal events</em>"+
-                "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数."+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数."+
+                "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数"+
                 "<br><em>//trace events</em>"+
-                "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数."+
-                "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数."+
-                "<br>&nbsp;&nbsp;onStart: Function, 请求开始时调用的函数."+
-                "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数."+
+                "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数"+
+                "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数"+
+                "<br>&nbsp;&nbsp;onStart: Function, 请求开始时调用的函数"+
+                "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数"+
                 "<br><em>//before events</em>"+
-                "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止."+
-                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略."+
-                "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略."+
+                "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
+                "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略"+
                 "<br>}"
         ],
         $snippet:[
@@ -2019,13 +2016,13 @@ xui.set(xui.Locale,["cn","app"], {
              "       threadid).start();\n"+
              "   }]);*/"
         ],
-        $memo:"<br />1.使用[xui.include]来包含一个.js文件.<br />2.使用[xui.request]处理一般的请求, 它可以根据url来来自动判断使用ajax或是sajax.",
+        $memo:"<br />1.使用[xui.include]来包含一个.js文件.<br />2.使用[xui.request]处理一般的请求, 它可以根据url来来自动判断使用ajax或是sajax",
         callback:{
             $desc:"String, 默认的回调函数名关键字. <strong>服务器需要在返回的内容中用相同的关键字.</strong>",
             $snippet:["alert(xui.SAjax.callback)"]
         },
         method:{
-            $desc:"String, 默认的method('GET' 或 'POST').",
+            $desc:"String, 默认的method('GET' 或 'POST')",
             $snippet:["alert(xui.SAjax.method)"]
         },
         optimized:{
@@ -2033,29 +2030,29 @@ xui.set(xui.Locale,["cn","app"], {
             $snippet:["alert(xui.Ajax.optimized)"]
         },
         retry:{
-            $desc:"Number, 默认的重试次数.",
+            $desc:"Number, 默认的重试次数",
             $snippet:["alert(xui.SAjax.retry)"]
         },
         reqType:{
-            $desc:"String, 默认的请求发送类型.",
+            $desc:"String, 默认的请求发送类型",
             $snippet:["alert(xui.SAjax.reqType)"]
         },
         rspType:{
-            $desc:"String, 默认的返回内容类型.",
+            $desc:"String, 默认的返回内容类型",
             $snippet:["alert(xui.SAjax.rspType)"]
         },
         uid:{
-            $desc:"String,  唯一id ."
+            $desc:"String,  唯一id "
         },
         timeout:{
-            $desc:"Number, 默认的超时时间.",
+            $desc:"Number, 默认的超时时间",
             $snippet:["alert(xui.SAjax.timeout)"]
         },
         customQS: {
-            $desc:"自定义的请求字符串. 子类可覆盖该函数,以添加自定义的参数等等.",
+            $desc:"自定义的请求字符串. 子类可覆盖该函数,以添加自定义的参数等等",
             $rtn:"Object",
             $paras:[
-                "obj [必需参数]: Object, original Object."
+                "obj [必需参数]: Object, original Object"
             ]
         },
         prototype:{
@@ -2072,38 +2069,38 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","IAjax"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.IAjax类. 可处理跨域的 GET/POST 请求, 可与远程服务器交流文件.",
+        $desc:"xui.IAjax类. 可处理跨域的 GET/POST 请求, 可与远程服务器交流文件",
         $rtn:"xui.IAjax",
         $paras:[
-            "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略.",
-            "query [可选参数]:  Object/String, 要请求的数据.",
-            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数.",
-            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数.",
+            "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略",
+            "query [可选参数]:  Object/String, 要请求的数据",
+            "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
                 "<br>{"+
                 "<br><em>//variables</em>"+
-                "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址."+
-                "<br>&nbsp;&nbsp;query: String/Object, 请求的数据."+
-                "<br>&nbsp;&nbsp;threadid: String, 绑定到这个请求的线程id号."+
+                "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址"+
+                "<br>&nbsp;&nbsp;query: String/Object, 请求的数据"+
+                "<br>&nbsp;&nbsp;threadid: String, 绑定到这个请求的线程id号"+
                 "<br>&nbsp;&nbsp;<strong>method: 'GET' 或 'POST', 请求的方法. 默认为 'GET'.</strong>"+
-                "<br>&nbsp;&nbsp;retry: Number, 请求所允许的重试次数."+
-                "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数."+
-                "<br>&nbsp;&nbsp;rspType: String, 'text' 或 'xml'. 请求返回的数据类型,默认是'text'."+
+                "<br>&nbsp;&nbsp;retry: Number, 请求所允许的重试次数"+
+                "<br>&nbsp;&nbsp;timeout: Number, 请求的超时毫秒数"+
+                "<br>&nbsp;&nbsp;rspType: String, 'text' 或 'xml'. 请求返回的数据类型,默认是'text'"+
                 "<br><em>//functions</em>"+
-                "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数."+
+                "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数"+
                 "<br><em>//normal events</em>"+
-                "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数."+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数."+
+                "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数"+
                 "<br><em>//trace events</em>"+
-                "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数."+
-                "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数."+
-                "<br>&nbsp;&nbsp;onStart: Function, 请求开始时调用的函数."+
-                "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数."+
+                "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数"+
+                "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数"+
+                "<br>&nbsp;&nbsp;onStart: Function, 请求开始时调用的函数"+
+                "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数"+
                 "<br><em>//before events</em>"+
-                "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止."+
-                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略."+
-                "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略."+
+                "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
+                "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略"+
                 "<br>}"
         ],
         $snippet:[
@@ -2126,13 +2123,13 @@ xui.set(xui.Locale,["cn","app"], {
              "       threadid).start();\n"+
              "   },{method:'GET'}]);*/"
         ],
-        $memo:"程序员只能使用xui.IAjax向跨域的服务器post数据, 或上传upload文件等等.",
+        $memo:"程序员只能使用xui.IAjax向跨域的服务器post数据, 或上传upload文件等等",
         callback:{
             $desc:"String, 默认的回调函数名关键字. <strong>服务器需要在返回的内容中用相同的关键字.</strong>",
             $snippet:["alert(xui.IAjax.callback)"]
         },
         method:{
-            $desc:"String, 默认的method('GET' 或 'POST')..",
+            $desc:"String, 默认的method('GET' 或 'POST').",
             $snippet:["alert(xui.IAjax.method)"]
         },
         optimized:{
@@ -2140,29 +2137,29 @@ xui.set(xui.Locale,["cn","app"], {
             $snippet:["alert(xui.Ajax.optimized)"]
         },
         retry:{
-            $desc:"Number, 默认的重试次数.",
+            $desc:"Number, 默认的重试次数",
             $snippet:["alert(xui.IAjax.retry)"]
         },
         reqType:{
-            $desc:"String, 默认的请求发送类型.",
+            $desc:"String, 默认的请求发送类型",
             $snippet:["alert(xui.IAjax.reqType)"]
         },
         rspType:{
-            $desc:"String, 默认的返回内容类型.",
+            $desc:"String, 默认的返回内容类型",
             $snippet:["alert(xui.IAjax.rspType)"]
         },
         uid:{
-            $desc:"String,  唯一id ."
+            $desc:"String,  唯一id "
         },
         timeout:{
-            $desc:"Number, 默认的超时时间.",
+            $desc:"Number, 默认的超时时间",
             $snippet:["alert(xui.IAjax.timeout)"]
         },
         customQS: {
-            $desc:"自定义的请求字符串. 子类可覆盖该函数,以添加自定义的参数等等.",
+            $desc:"自定义的请求字符串. 子类可覆盖该函数,以添加自定义的参数等等",
             $rtn:"Object",
             $paras:[
-                "obj: Object, 原始的请求参数对象."
+                "obj: Object, 原始的请求参数对象"
             ]
         },
         prototype:{
@@ -2179,66 +2176,66 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","SC"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.SC类（静态类）.<br />以作为函数来进行直接调用：用字符串路径名去直接掉用一个类或对象.如果特定路径名的类或对象存在,直接返回；如果不存在, xui.SC会从内存或远程代码文件中加载这个类或对象.",
+        $desc:"xui.SC类（静态类）.<br />以作为函数来进行直接调用：用字符串路径名去直接掉用一个类或对象.如果特定路径名的类或对象存在,直接返回；如果不存在, xui.SC会从内存或远程代码文件中加载这个类或对象",
         $rtn:"Object/undefined, 类或对象[同步模式下]/ undefined[异步模式下]",
         $paras:[
-            "path [必需参数]: String, 路径名(例如：'xui.UI.Button').",
-            "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象.",
-            "isAsy [可选参数]: Boolean, 直接调用是否为异步. 如果目标类或对象已经在内存中存在,本参数无效.默认为 [false].",
-            "options [可选参数]: Object, 一组键值对,用来配置内部的 xui.Ajax(在异步模式的情况) 或 xui.SAjax(在同步模式的情况)."
+            "path [必需参数]: String, 路径名(例如：'xui.UI.Button')",
+            "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象",
+            "isAsy [可选参数]: Boolean, 直接调用是否为异步. 如果目标类或对象已经在内存中存在,本参数无效.默认为 [false]",
+            "options [可选参数]: Object, 一组键值对,用来配置内部的 xui.Ajax(在异步模式的情况) 或 xui.SAjax(在同步模式的情况)"
         ],
         $snippet:[
             "alert(xui.SC('xui.SC'));xui.SC('xui.absIO',function(){alert(this===xui.absIO)});",
             "xui.SC('xui.UI.LoadFromRemoteFile',function(path,code,threaid){alert('You can know the calling result in firefox only!'); if(!path)alert('Fail to load '+ this.uri)},true);"
         ],
         get:{
-            $desc:"按照给定的字符串路径得到一个对象.",
+            $desc:"按照给定的字符串路径得到一个对象",
             $rtn:"Object",
             $paras:[
-                "path [必需参数]: String, 字符串路径(例如, 'xui.SC.get', 'xui.isArr', 'xui.ini.path').",
-                "obj [可选参数]: Object, 目标对象. 默认为 [window]."
+                "path [必需参数]: String, 字符串路径(例如, 'xui.SC.get', 'xui.isArr', 'xui.ini.path')",
+                "obj [可选参数]: Object, 目标对象. 默认为 [window]"
             ],
             $snippet:[
-                "alert(xui.SC.get('xui.ini.path')); alert(xui.get(window,'xui.ini.path'.split('.'))); "
+                "alert(xui.SC.get('xui.ini.path')); alert(xui.get(window,'xui.ini.path'.split(\".\"))); "
             ],
-            $memo:"等同于 [xui.get]."
+            $memo:"等同于 [xui.get]"
         },
         groupCall:{
             $desc:"将一组字符串路径编组,并并行地调用它们.一般用来从多个远程代码文件中同步地加载多个类或对象.(通过把相关的过程包装在一个外壳线程中执行)",
             $paras:[
-                "pathArr [必需参数]: Array, 一组字符串路径.",
-                "onEnd [可选参数]: Function, 函数的参数:[threadid]. 所有的直接调用都完成后执行.",
-                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象.",
-                "threadid [可选参数]: String, 制定外壳线程的id号."
+                "pathArr [必需参数]: Array, 一组字符串路径",
+                "onEnd [可选参数]: Function, 函数的参数:[threadid]. 所有的直接调用都完成后执行",
+                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象",
+                "threadid [可选参数]: String, 制定外壳线程的id号"
             ],
             $snippet:[
                 "/*\n//最常用的用法是: \n"+
-                "xui.SC.groupCall(['xui.UI.Button','xui.UI.Input','xui.UI.List'],function(){alert('ends.')},function(path){alert(path+' loaded.')});"+
+                "xui.SC.groupCall(['xui.UI.Button','xui.UI.Input','xui.UI.List'],function(){alert('ends')},function(path){alert(path+' loaded')});"+
                 "\n*/"
             ],
             $memo:'相当于loadSnips和execSnips的综合'
         },
         runInBG:{
-            $desc:"在后台同步地从多个远程代码文件中加载多个类或对象.(通过把相关的过程包装在一个外壳线程中执行).",
+            $desc:"在后台同步地从多个远程代码文件中加载多个类或对象.(通过把相关的过程包装在一个外壳线程中执行)",
             $paras:[
-                "pathArr [必需参数]: Array, 一组字符串路径.",
-                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象.",
-                "onStart [可选参数]: Function, 函数的参数:[threadid]. 外壳线程的onStart回调函数.",
-                "onEnd [可选参数]: Function, 函数的参数:[threadid]. 外壳线程的onEnd回调函数."
+                "pathArr [必需参数]: Array, 一组字符串路径",
+                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象",
+                "onStart [可选参数]: Function, 函数的参数:[threadid]. 外壳线程的onStart回调函数",
+                "onEnd [可选参数]: Function, 函数的参数:[threadid]. 外壳线程的onEnd回调函数"
             ],
             $snippet:[
                 "/*\n//The most common usage: \n"+
-                "xui.SC.background(['xui.UI.Button','xui.UI.Input','xui.UI.List'],null,null,function(){alert('ends.')});"+
+                "xui.SC.background(['xui.UI.Button','xui.UI.Input','xui.UI.List'],null,null,function(){alert('ends')});"+
                 "\n*/"
             ]
         },
         loadSnips:{
-            $desc:"通过将一组字符串路径编组,并行、异步地加载一组代码片段(把相关的过程包装在一个外壳线程中执行.返回的结果会缓存起来.",
+            $desc:"通过将一组字符串路径编组,并行、异步地加载一组代码片段(把相关的过程包装在一个外壳线程中执行.返回的结果会缓存起来",
             $paras:[
-                "pathArr [必需参数]: Array, 一组字符串路径.",
-                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象.",
-                "onEnd [可选参数]: Function, 函数的参数:[threadid]. 所有的直接调用都完成后执行.",
-                "threadid [可选参数]: String, 制定外壳线程的id号."
+                "pathArr [必需参数]: Array, 一组字符串路径",
+                "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象",
+                "onEnd [可选参数]: Function, 函数的参数:[threadid]. 所有的直接调用都完成后执行",
+                "threadid [可选参数]: String, 制定外壳线程的id号"
             ],
             $snippet:[
                 "/*\n//最常用的用法是: \n"+
@@ -2247,9 +2244,9 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         execSnips:{
-            $desc:"把通过loadSnips缓存起来的代码片段都执行了.",
+            $desc:"把通过loadSnips缓存起来的代码片段都执行了",
             $paras:[
-                "cache [可选参数]: Object[键值对], 目标代码对象. 默认是 [xui.$cache.text]."
+                "cache [可选参数]: Object[键值对], 目标代码对象. 默认是 [xui.$cache.text]"
             ],
             $snippet:[
                 "/*\n//最常用的用法: \n"+
@@ -2263,24 +2260,24 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Event 类（静态类）",
         isSupported:{
-            $desc:"检测是否支持某事件.",
+            $desc:"检测是否支持某事件",
             $rtn:"Boolean",
             $paras:[
-                "name [必需参数]: String, 事件名."
+                "name [必需参数]: String, 事件名"
             ]
         },
         getWheelDelta:{
-            $desc:"获取鼠标滚轮的移动值.",
+            $desc:"获取鼠标滚轮的移动值",
             $rtn:"Integer",
             $paras:[
-                "event [必需参数] : DOM事件对象."
+                "event [必需参数] : DOM事件对象"
             ]
         },
         getBtn :{
-            $desc:"获取鼠标的哪个键被按下了.",
+            $desc:"获取鼠标的哪个键被按下了",
             $rtn:"String",
             $paras:[
-                "event [必需参数] : DOM事件对象."
+                "event [必需参数] : DOM事件对象"
             ],
             $snippet:[
                 "var id='xui.temp.e1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">click here ' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2289,10 +2286,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getEventPara:{
-            $desc:"获取事件参数对象.",
+            $desc:"获取事件参数对象",
             $rtn:"Object",
             $paras:[
-                "event [必需参数] : DOM事件对象."
+                "event [必需参数] : DOM事件对象"
             ],
             $snippet:[
                 "var id='xui.temp.e2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">click here ' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2301,20 +2298,20 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getId:{
-            $desc:"获取DOM 元素的id字符串(包括window 和 document 对象).",
+            $desc:"获取DOM 元素的id字符串(包括window 和 document 对象)",
             $rtn:"String",
             $paras:[
-                "node [必需参数] : DOM element, window or document Object."
+                "node [必需参数] : DOM element, window or document Object"
             ],
             $snippet:[
                 "alert(xui.Event.getId(document.getElementById('btnLang')));alert(xui.Event.getId(document));alert(xui.Event.getId(window));"
             ]
         },
         getKey:{
-            $desc:"从事件对象中获取和键盘相关的值.",
+            $desc:"从事件对象中获取和键盘相关的值",
             $rtn:"Object, {key:按键字符, type:事件种类, ctrlKey: ctrl键状态, shiftKey: shift 键状态, altKey:alt 键状态}",
             $paras:[
-                "event [必需参数] : DOM 事件对象."
+                "event [必需参数] : DOM 事件对象"
             ],
             $snippet:[
                 "//'Run' the code, and press any keyboars please!\n"+
@@ -2322,10 +2319,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getPos:{
-            $desc:"从事件对象中获取鼠标的位置.",
+            $desc:"从事件对象中获取鼠标的位置",
             $rtn:"Object, 键值对. {left:xx,top:xx}",
             $paras:[
-                "event [必需参数] : DOM事件对象."
+                "event [必需参数] : DOM事件对象"
             ],
             $snippet:[
                 "var id='xui.temp.e4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">click here ' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2334,10 +2331,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getSrc:{
-            $desc:"从事件对象中中获取发生事件的DOM元素.",
+            $desc:"从事件对象中中获取发生事件的DOM元素",
             $rtn:"Element",
             $paras:[
-                "event [必需参数] : DOM 事件对象."
+                "event [必需参数] : DOM 事件对象"
             ],
             $snippet:[
                 "var id='xui.temp.e5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">click here ' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2346,14 +2343,14 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         keyboardHook :{
-            $desc:" 添加/移除一个全局的键盘事件钩子到keyDown事件.",
+            $desc:" 添加/移除一个全局的键盘事件钩子到keyDown事件",
             $rtn:'[self]',
             $paras:[
-                "key [必需参数] : String, 被监视的键.",
-                "ctrl [可选参数] : Boolean, 指示是否监视'CTRL'键. 默认为 [false].",
-                "shift [可选参数] : Boolean, 指示是否监视'SHIFT'键. 默认为 [false].",
-                "alt [可选参数] : Boolean, 指示是否监视'ALT'键. 默认为 [false].",
-                "fun [可选参数] : Function, 用户按下热键后要执行的函数. 如果不指定该参数, 或传入非function变量, 这个键[key](keyboard name)上的钩子将被移除.",
+                "key [必需参数] : String, 被监视的键",
+                "ctrl [可选参数] : Boolean, 指示是否监视'CTRL'键. 默认为 [false]",
+                "shift [可选参数] : Boolean, 指示是否监视'SHIFT'键. 默认为 [false]",
+                "alt [可选参数] : Boolean, 指示是否监视'ALT'键. 默认为 [false]",
+                "fun [可选参数] : Function, 用户按下热键后要执行的函数. 如果不指定该参数, 或传入非function变量, 这个键[key](keyboard name)上的钩子将被移除",
                 "args [可选参数]: Array, 函数的参数. 默认为 []",
                 "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数). 默认为 [window]"
             ],
@@ -2366,31 +2363,31 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         keyboardHookUp :{
-            $desc:" 添加/移除一个全局的键盘事件钩子到keyUp事件.",
+            $desc:" 添加/移除一个全局的键盘事件钩子到keyUp事件",
             $rtn:'[self]',
             $paras:[
-                "key [必需参数] : String, 被监视的键.",
-                "ctrl [可选参数] : Boolean, 指示是否监视'CTRL'键. 默认为 [false].",
-                "shift [可选参数] : Boolean, 指示是否监视'SHIFT'键. 默认为 [false].",
-                "alt [可选参数] : Boolean, 指示是否监视'ALT'键. 默认为 [false].",
-                "fun [可选参数] : Function, 用户按下热键后要执行的函数. 如果不指定该参数, 或传入非function变量, 这个键[key](keyboard name)上的钩子将被移除.",
+                "key [必需参数] : String, 被监视的键",
+                "ctrl [可选参数] : Boolean, 指示是否监视'CTRL'键. 默认为 [false]",
+                "shift [可选参数] : Boolean, 指示是否监视'SHIFT'键. 默认为 [false]",
+                "alt [可选参数] : Boolean, 指示是否监视'ALT'键. 默认为 [false]",
+                "fun [可选参数] : Function, 用户按下热键后要执行的函数. 如果不指定该参数, 或传入非function变量, 这个键[key](keyboard name)上的钩子将被移除",
                 "args [可选参数]: Array, 函数的参数. 默认为 []",
                 "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数). 默认为 [window]"
             ]
         },
         popTabOutTrigger:{
-             $desc:"将最后一个 'TAB失去焦点trigger' 从堆栈中弹出.并激活前一个trigger（如果堆栈中还存在trigger的话）.请参考<a href='#xui.Event.pushTabOutTrigger'>xui.Event.pushTabOutTrigger</a>函数.",
+             $desc:"将最后一个 'TAB失去焦点trigger' 从堆栈中弹出.并激活前一个trigger（如果堆栈中还存在trigger的话）.请参考<a href='#xui.Event.pushTabOutTrigger'>xui.Event.pushTabOutTrigger</a>函数",
              $paras:[
-                "flag [可选参数] : Boolean, 强制清空内部堆栈.默认为 [false]."
+                "flag [可选参数] : Boolean, 强制清空内部堆栈.默认为 [false]"
              ],
              $rtn:'[self]'
         },
         pushTabOutTrigger:{
-            $desc:"将一个 'TAB失去焦点trigger' 压入堆栈,然后激活它（先前的trigger将会无效）. 这个 [trigger] 函数会在用户用 TAB 键让鼠标焦点落在指定 DOM 元素的边界外时执行.",
+            $desc:"将一个 'TAB失去焦点trigger' 压入堆栈,然后激活它（先前的trigger将会无效）. 这个 [trigger] 函数会在用户用 TAB 键让鼠标焦点落在指定 DOM 元素的边界外时执行",
             $rtn:'[self]',
             $paras:[
-                "boundary [必需参数] : Element/String, 作为边界的 DOM 元素或xid.",
-                "trigger [必需参数] : Function, 函数参数：[边界DOM元素的xid]. 这个 [trigger] 函数会在用户用 TAB 键让鼠标焦点落在指定 DOM 的边界 [boundary] 外时执行."
+                "boundary [必需参数] : Element/String, 作为边界的 DOM 元素或xid",
+                "trigger [必需参数] : Function, 函数参数：[边界DOM元素的xid]. 这个 [trigger] 函数会在用户用 TAB 键让鼠标焦点落在指定 DOM 的边界 [boundary] 外时执行"
             ],
             $snippet:[
                 "if(!xui.Dom.byId('xui.temp.out')){this.prepend(xui.create('<div><div id=\"xui.temp.out\" style=\"border:solid 1px;padding:10px;\">xui.temp.out<input id=\"xui.temp.out.first\"><input /><input /><input /><div id=\"xui.temp.in\"  style=\"border:solid 1px;padding:10px;\">xui.temp.in<input id=\"xui.temp.in.first\" /><input /><input /><input /><input /></div></div><div><button onclick=\"xui.arr.each(xui.Event._tabHookStack,function(o){alert(o[0])})\">Click here to show inner stack content!</button><br /><br /><button onclick=\"xui.Event.popTabOutTrigger();\">popTabOutTrigger</button><br /><br /></div><div><button onclick=\"xui.Event.popTabOutTrigger(1);xui(this).parent(2).remove();\">remove this example</button></div></div>'));\n"+
@@ -2398,18 +2395,18 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         stopBubble:{
-            $desc:"停止默认的动作,并阻止事件冒泡.",
+            $desc:"停止默认的动作,并阻止事件冒泡",
             $paras:[
-                "event [必需参数] : DOM event Object."
+                "event [必需参数] : DOM event Object"
             ],
             $snippet:[
                 "if(!xui.Dom.byId('xui.temp.3')){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\" onclick=\"alert(\\\'onclick event on the div\\\')\"><p>You can click here to fire onclick event on the div </p><a id=\"xui.temp.3\" href=\"http://www.crossui.com\" onclick=\"xui.message(\\\'Event bubble is stopped. You cant fire onclick event on the outter div !\\\');xui.Event.stopBubble(event);\" >Event bubble to outter div is stopped here. Click me to try it!</a><button onclick=\"xui(this).parent().remove()\">remove this example</button></div>'))}"
             ]
         },
         stopDefault:{
-            $desc:"停止默认的动作.",
+            $desc:"停止默认的动作",
             $paras:[
-                "event [必需参数] : DOM event Object."
+                "event [必需参数] : DOM event Object"
             ],
             $snippet:[
                 "if(!xui.Dom.byId('xui.temp.4')){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\" ><a id=\"xui.temp.4\" href=\"http://www.crossui.com\" onclick=\"xui.message(\\\'Default action is stopped here. You cant go to \\\'+this.href);xui.Event.stopDefault(event);\" >My default action is stopped. Click me to try it!</a><button onclick=\"xui(this).parent().remove()\">remove this example</button></div>'))}"
@@ -2419,22 +2416,22 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","absBox"],{
         pack:{
-            $desc: "打包装箱一组元素,并生成一个 [xui.absBox] 对象. ",
+            $desc: "打包装箱一组元素,并生成一个 [xui.absBox] 对象",
             $rtn: "xui.absBox",
             $paras:[
-                "arr [必需参数] : Array, 一组值. ",
-                "ensureValue [可选参数] : Boolean, 是否强制检测每个箱内元素值的有效性. 默认为 true. "
+                "arr [必需参数] : Array, 一组值",
+                "ensureValue [可选参数] : Boolean, 是否强制检测每个箱内元素值的有效性. 默认为 true"
             ],
             $snippet:[
                 "var nodes = xui.Dom.pack(['btnLang',document.getElementById('btnLang')]); alert(nodes.get(0).id)"
             ]
         },
         plugIn:{
-            $desc:"向当前类加一个 plug-in 函数.",
+            $desc:"向当前类加一个 plug-in 函数",
             $rtn:"[self]",
             $paras:[
-                "name [必需参数] : String, plug-in 函数名字.",
-                "fun [必需参数] : Function, plug-in 插件函数体."
+                "name [必需参数] : String, plug-in 函数名字",
+                "fun [必需参数] : Function, plug-in 插件函数体"
             ],
             $snippet:[
                 "var n=xui('btnLang'); alert(n.getBackgroundImg); xui.Dom.plugIn('getBackgroundImg',function(){return this.css('backgroundImage')}); alert(n.getBackgroundImg());"
@@ -2443,39 +2440,39 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             each:{
-                $desc:"将函数应用于数组中的每一个箱内元素.",
+                $desc:"将函数应用于数组中的每一个箱内元素",
                 $rtn:'[self]',
                 $paras:[
-                    "fun [必需参数]: Function, [this]指针是 xui.absBox Object, 函数参数: [element, array index]. 应用到每一个箱内元素的函数."
+                    "fun [必需参数]: Function, [this]指针是 xui.absBox Object, 函数参数: [element, array index]. 应用到每一个箱内元素的函数"
                 ],
                 $snippet:[
                     "xui(['xui.UI.Layout:a:','btnLang']).each(function(o,i){alert(i+' -> #'+o.id)})"
                 ]
             },
             get:{
-                $desc:"根据给定位置得到箱内元素,或者得到箱内所有元素.",
+                $desc:"根据给定位置得到箱内元素,或者得到箱内所有元素",
                 $rtn:"Object/Array",
                 $paras:[
-                    "index [可选参数] : Number."
+                    "index [可选参数] : Number"
                 ],
                 $snippet:[
                     "var n=xui(['xui.UI.Layout:a:','btnLang']); alert(n.get(1).id); alert(n.get()[0].id+' , '+n.get()[1].id);"
                 ]
             },
             size:{
-                $desc:"得到箱内元素的个数.",
+                $desc:"得到箱内元素的个数",
                 $rtn:"Number"
             },
             isEmpty:{
-                $desc:"是否目前的箱为空.",
-                $rtn:"Boolean.",
+                $desc:"是否目前的箱为空",
+                $rtn:"Boolean",
                 $snippet:[
                     "var n=xui(['xui.UI.Layout:a:','btnLang']); alert(n.isEmpty()); alert(xui().isEmpty())"
                 ]
             },
             merge:{
-                $desc:"合并一个箱的所有元素到当前箱.",
-                $rtn:"[self].",
+                $desc:"合并一个箱的所有元素到当前箱",
+                $rtn:"[self]",
                 $paras:[
                     "obj [必需参数] : xui.absBox 对象"
                 ],
@@ -2484,11 +2481,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             reBoxing:{
-                $desc:"将当前箱内的所有元素重新打包到另一个箱.",
+                $desc:"将当前箱内的所有元素重新打包到另一个箱",
                 $trn:"xui.absBox",
                 $paras:[
-                    "key [可选参数] : new xui.absBox 子类的名字.",
-                    "ensureValue [可选参数] : Boolean, 是否强制检测每个箱内元素值的有效性. 默认为 true. "
+                    "key [可选参数] : new xui.absBox 子类的名字",
+                    "ensureValue [可选参数] : Boolean, 是否强制检测每个箱内元素值的有效性. 默认为 true"
                 ],
                 $snippet:[
                     "alert(xui('xui.UI.Layout:a:').KEY);alert(xui('xui.UI.Layout:a:').reBoxing('xui.UI.Layout').KEY);"
@@ -2501,10 +2498,10 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Dom 类",
         constructor:{
-            $desc:"用[xui(nodes, flag)]得到一个新xui.Dom实例对象."
+            $desc:"用[xui(nodes, flag)]得到一个新xui.Dom实例对象"
         },
         Events:{
-            $desc:  "<strong>Description</strong>: 添加、删除或者触发特定事件.每个事件可以有三组事件函数：[before开头], [on开头] 和 [after开头].每组是一个函数数组."+
+            $desc:  "<strong>Description</strong>: 添加、删除或者触发特定事件.每个事件可以有三组事件函数：[before开头], [on开头] 和 [after开头].每组是一个函数数组"+
                     "<ul>"+
                         "<li><strong>xui(/**/).onClick([function], 'label')</strong> => 为 [onclick] 事件函数组添加一个标签为'label'的事件函数.</li>"+
                         "<li><strong>xui(/**/).onClick([function]) </strong> => 先清空 [onclick] 事件函数组,再重新加入一个[function]函数.</li>"+
@@ -2527,22 +2524,22 @@ xui.set(xui.Locale,["cn","app"], {
                     "<p style='padding:5px;'><a href='#xui.Dom.prototype.afterClick' onclick='var n =xui(this).parent(5).query(\"a\",\"name\",\"xui.Dom.prototype.afterClick\").next().first(); if(n.next().css(\"display\")==\"none\")n.onClick()'><strong>Go to [onClick] for getting the code snippets!</strong></a></p>"
         },
         HIDE_VALUE:{
-            $desc:"String, 隐藏DOM元素的常量(系统隐藏DOM的方法一般是[element.style.left=xui.Dom.HIDE_VALUE]或[element.style.top=xui.Dom.HIDE_VALUE]). ",
+            $desc:"String, 隐藏DOM元素的常量(系统隐藏DOM的方法一般是[element.style.left=xui.Dom.HIDE_VALUE]或[element.style.top=xui.Dom.HIDE_VALUE])",
             $snippet:[
                 "alert(xui.Dom.HIDE_VALUE)"
             ]
         },
         TOP_ZINDEX:{
-            $desc:"Number, 系统最大z-index量. ",
+            $desc:"Number, 系统最大z-index量",
             $snippet:[
                 "alert(xui.Dom.TOP_ZINDEX)"
             ]
         },
         busy:{
-            $desc:"显示系统忙. 在DOM的正上方增加一层DIV,使用用户不能点击,并将鼠标指针变为漏斗形状. ",
+            $desc:"显示系统忙. 在DOM的正上方增加一层DIV,使用用户不能点击,并将鼠标指针变为漏斗形状",
             $paras:[
-                "label [可选参数] : String, 本 busy 的 id. 使用[xui.Dom.free(label)]释放忙状态.",
-                "busyMsg [可选参数] : String, 指示忙的文字,如“正在处理中”. ",
+                "label [可选参数] : String, 本 busy 的 id. 使用[xui.Dom.free(label)]释放忙状态",
+                "busyMsg [可选参数] : String, 指示忙的文字,如“正在处理中”",
             ],
             $snippet:[
                 "xui.Thread(null,[xui.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
@@ -2550,14 +2547,14 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         free:{
-            $desc:"释放忙状态.",
+            $desc:"释放忙状态",
             $paras:[
-                "label [可选参数] : String, the busy label."
+                "label [可选参数] : String, the busy label"
             ],
             $memo:"见<a href='#xui.Dom.busy'>xui.Dom.busy</a>"
         },
         byId:{
-            $desc:"等同于[document.getElementById]. ",
+            $desc:"等同于[document.getElementById]",
             $rtn:"Element",
             $paras:[
                 "id [必需参数] : String, DOM id"
@@ -2567,78 +2564,78 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         animate:{
-            $desc:"包装特殊效果的动画到一个xui.Thread对象中(shell线程).",
+            $desc:"包装特殊效果的动画到一个xui.Thread对象中(shell线程)",
             $rtn:"xui.Thread",
             $paras:[
                 "css [必需参数] : Object[CSS 键值对]. 不变的CSS样式",
                 "params [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
-                "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数.",
-                "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数.",
-                "duration [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
-                "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated]建议不要使用.",
-                "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'.  默认为'linear'.",
-                "threadid [可选参数]: String, shell线程的全局识别id."
+                "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数",
+                "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数",
+                "duration [可选参数]: Number(ms), 动画的持续时间. 默认为300",
+                "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated]建议不要使用",
+                "type [可选参数]: String, 动画的特效形式'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'.  默认为'linear'",
+                "threadid [可选参数]: String, shell线程的全局识别id"
             ],
             $snippet:[
                 "xui.Dom.animate({backgroundColor:'#ff0000'},{left:[0,200],top:[0,300],width:[30,300],height:[30,300],opacity:[1,0]}, null, null, 500, 0, 'sineOut').start()"
             ]
         },
         getEmptyDiv:{
-            $desc:"生成一个DOM id以'xui.matrix::'开始的DOM对象. ",
+            $desc:"生成一个DOM id以'xui.matrix::'开始的DOM对象",
             $rtn:"xui.Dom",
             $paras:[
-                "sequence [可选参数] : Number, DOM序列好. 默认为1."
+                "sequence [可选参数] : Number, DOM序列好. 默认为1"
             ],
             $snippet:[
                 "var m1=xui.Dom.getEmptyDiv(); alert(m1.id())",
                 "var m1=xui.Dom.getEmptyDiv(), m2=xui.Dom.getEmptyDiv(2); alert(m1.id());alert(m2.id()) "
             ],
-            $memo:"当你不再需要一个matrix div, 请清空它,以便 [xui.Dom.getEmptyDiv]可再次利用. "
+            $memo:"当你不再需要一个matrix div, 请清空它,以便 [xui.Dom.getEmptyDiv]可再次利用"
         },
         getScrollBarSize:{
-            $desc:"获取当前浏览器滚动条的宽度.",
+            $desc:"获取当前浏览器滚动条的宽度",
             $rtn:"Number"
         },
         getStyle:{
-            $desc:"获取DOM元素的CSS样式中某一个项的值.",
+            $desc:"获取DOM元素的CSS样式中某一个项的值",
             $rtn:"String",
             $paras:[
-                "node [必需参数] : Element, DOM元素.",
-                "name [必需参数] : String, CSS样式项名称,如height,width等等."
+                "node [必需参数] : Element, DOM元素",
+                "name [必需参数] : String, CSS样式项名称,如height,width等等"
             ],
             $snippet:[
                 "var n=xui.Dom.byId('btnLang'); alert(xui.Dom.getStyle(n,'width')); alert(xui.Dom.getStyle(n,'overflow'))"
             ]
         },
         setStyle:{
-            $desc:"设置DOM元素的CSS样式中某一个项的值.",
+            $desc:"设置DOM元素的CSS样式中某一个项的值",
             $paras:[
-                "node [必需参数] : Element, DOM元素.",
-                "name [必需参数] : String, CSS样式项名称,如height,width等等.",
-                "value [必需参数] : String, CSS样式项值,如25px."
+                "node [必需参数] : Element, DOM元素",
+                "name [必需参数] : String, CSS样式项名称,如height,width等等",
+                "value [必需参数] : String, CSS样式项值,如25px"
             ],
             $snippet:[
                 "var n=xui.Dom.byId('btnLang'); xui.Dom.setStyle(n,'top', '100px'); xui.asyRun(function(){xui.Dom.setStyle(n,'top', '0px')}, 2000)"
             ]
         },
         setCover:{
-            $desc:"显示或隐藏一个覆盖整个页面的DIV.",
+            $desc:"显示或隐藏一个覆盖整个页面的DIV",
             $paras:[
-                "visible [必需参数] : Boolean or String, true=>表示显示DIV; false=>h表示隐藏DIV; 'string'=>表示显示DIV和文字.",
-                "label [可选参数] : String, 忙标签id. "
+                "visible [必需参数] : Boolean or String, true=>表示显示DIV; false=>h表示隐藏DIV; 'string'=>表示显示DIV和文字",
+                "label [可选参数] : String, 忙标签id"
             ],
             $snippet:[
                 "xui.Dom.setCover(true); xui.asyRun(function(){xui.Dom.setCover(false)},2000);",
                 "xui.Dom.setCover('a'); xui.asyRun(function(){xui.Dom.setCover('b')},1000); xui.asyRun(function(){xui.Dom.setCover('c')},2000); xui.asyRun(function(){xui.Dom.setCover(false)},3000);",
                 "xui.Dom.setCover('<div style=\\\'font-weight:bold;padding:5px;border:solid 1px;background:#CCC;\\\'> Loading... </div>'); xui.asyRun(function(){xui.Dom.setCover(false)},2000);",
-                "xui.Dom.setCover(true,'key'); xui.asyRun(function(){xui.message('The cover is still visible');xui.Dom.setCover(false)},1000); xui.asyRun(function(){xui.message('The cover is hidded.');xui.Dom.setCover(false,'key')},5000);"
+                "xui.Dom.setCover(true,'key'); xui.asyRun(function(){xui.message('The cover is still visible');xui.Dom.setCover(false)},1000); xui.asyRun(function(){xui.message('The cover is hidded');xui.Dom.setCover(false,'key')},5000);"
             ]
         },
         css3Support:{
-            $desc:"获取浏览器是否支持CSS特性.",
+            $desc:"获取浏览器是否支持CSS特性",
             $rtn:"Boolean",
             $paras:[
-                "name [必需参数] : CSS3属性名. 'opacity,textShadow,animationName,columnCount,flexWrap,boxDirection,backgroundSize,perspective,boxShadow,borderImage,borderRadius,boxReflect,transform,transition,generatedContent,fontFace,rgba,hsla,multiplebgs,gradient,transform3d' 之一"
+                "name [必需参数] : CSS3属性名'opacity,textShadow,animationName,columnCount,flexWrap,boxDirection,backgroundSize,perspective,boxShadow,borderImage,borderRadius,boxReflect,transform,transition,generatedContent,fontFace,rgba,hsla,multiplebgs,gradient,transform3d' 之一"
             ],
             $snippet:[
                 "var arr='opacity,textShadow,animationName,columnCount,flexWrap,boxDirection,backgroundSize,perspective,boxShadow,borderImage,borderRadius,boxReflect,transform,transition,generatedContent,fontFace,rgba,hsla,multiplebgs,gradient,transform3d'.split(',');"+
@@ -2648,13 +2645,13 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         submit:{
-            $desc:"提交一个HTML form(表单). ",
+            $desc:"提交一个HTML form(表单)",
             $paras:[
-                "action [必需参数] : String(URL), 提交到哪个URL.",
-                "data [必需参数] : Object[键值对], 提交数据的键值对.",
-                "method [可选参数] : String, . HTTP method . 可以是[get|post], 默认为'get'.",
-                "target [可选参数] : String, 返回显示的窗口位置. [_blank|_parent|_self|_top], 默认为'_blank'.",
-                "enctype [可选参数] : String, 表单enctype属性(设置MIME以用来编码表单内容), 默认值为 'application/x-www-form-urlencoded'. 当表单内容包含文件时为 'multipart/form-data'."
+                "action [必需参数] : String(URL), 提交到哪个URL",
+                "data [必需参数] : Object[键值对], 提交数据的键值对",
+                "method [可选参数] : String, . HTTP method . 可以是[get|post], 默认为'get'",
+                "target [可选参数] : String, 返回显示的窗口位置. [_blank|_parent|_self|_top], 默认为'_blank'",
+                "enctype [可选参数] : String, 表单enctype属性(设置MIME以用来编码表单内容), 默认值为 'application/x-www-form-urlencoded'. 当表单内容包含文件时为 'multipart/form-data'"
             ],
             $snippet:[
                 "xui.Dom.submit('http://www.google.com/search',{q:'ajax ria'},'get')",
@@ -2664,127 +2661,127 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             each:{
-                $desc:"将函数应用于数组中的每一个箱内元素.",
+                $desc:"将函数应用于数组中的每一个箱内元素",
                 $rtn:'[self]',
                 $paras:[
-                    "fun [必需参数]: Function, [this]指针是 xui.absBox Object, 函数参数: [element, array index]. 应用到每一个箱内元素的函数."
+                    "fun [必需参数]: Function, [this]指针是 xui.absBox Object, 函数参数: [element, array index]. 应用到每一个箱内元素的函数"
                 ],
                 $snippet:[
                     "xui(['xui.UI.Layout:a:','btnLang']).each(function(o,i){alert(i+' -> #'+o.id)})"
                 ]
             },
             get:{
-                $desc:"根据给定位置得到箱内元素,或者得到箱内所有元素.",
+                $desc:"根据给定位置得到箱内元素,或者得到箱内所有元素",
                 $rtn:"Object/Array",
                 $paras:[
-                    "index [可选参数] : Number."
+                    "index [可选参数] : Number"
                 ],
                 $snippet:[
                     "var n=xui(['xui.UI.Layout:a:','btnLang']); alert(n.get(1).id); alert(n.get()[0].id+' , '+n.get()[1].id);"
                 ]
             },
             addBorder:{
-                $desc:"为第一个元素添加边框. ",
+                $desc:"为第一个元素添加边框",
                 $rtn:"xui.UI.Border",
                 $paras:[
-                    "properties [可选参数] : 键值对, 边框的属性. 一般的用法是: {borderActive: [Boolean]}."
+                    "properties [可选参数] : 键值对, 边框的属性. 一般的用法是: {borderActive: [Boolean]}"
                 ],
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addBorder();},1000);xui.asyRun(function(){div.removeBorder();},2000);xui.asyRun(function(){div.remove();},3000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});xui.asyRun(function(){div.remove();},5000);"
                 ],
-                $memo:"依赖: xui.UI.Border."
+                $memo:"依赖: xui.UI.Border"
             },
             removeBorder:{
-                $desc:"移除第一个元素的边框. ",
+                $desc:"移除第一个元素的边框",
                 $rtn:"[self]",
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addBorder();},1000);xui.asyRun(function(){div.removeBorder();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"依赖: xui.UI.Border."
+                $memo:"依赖: xui.UI.Border"
             },
             addResizer:{
-                $desc:"为第一个元素添加大小调节器. ",
+                $desc:"为第一个元素添加大小调节器",
                 $rtn:"xui.UI.Resizer",
                 $paras:[
-                    "properties [可选参数] : 键值对, 边框的属性.",
-                    "onUpdate [可选参数] : Function, 大小修改后的回调函数.",
-                    "onChange [可选参数] : Function, 大小试图改变的回调函数.",
+                    "properties [可选参数] : 键值对, 边框的属性",
+                    "onUpdate [可选参数] : Function, 大小修改后的回调函数",
+                    "onChange [可选参数] : Function, 大小试图改变的回调函数",
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();xui.asyRun(function(){div.remove();},10000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});xui.asyRun(function(){div.remove();},10000);"
                 ],
-                $memo:"依赖: xui.UI.Resizer."
+                $memo:"依赖: xui.UI.Resizer"
             },
             removeResizer:{
-                $desc:"移除第一个元素的大小调节器. ",
+                $desc:"移除第一个元素的大小调节器",
                 $rtn:"[self]",
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addResizer({forceVisible:true})},1000);xui.asyRun(function(){div.removeResizer();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependencies: xui.UI.Resizer."
+                $memo:"Dependencies: xui.UI.Resizer"
             },
             addClass:{
                 $desc:"为每一个元素添加CSS类",
                 $rtn:"[self]",
                 $paras:[
-                    "name [必需参数] : String, CSS类名."
+                    "name [必需参数] : String, CSS类名"
                 ],
                 $snippet:[
                     "var n=xui('btnLang');alert(n.attr('className'));n.addClass('cls');alert(n.attr('className'));n.removeClass('cls');alert(n.attr('className'));"
                 ]
             },
             removeClass:{
-                $desc:"为每一个元素移除CSS类.",
+                $desc:"为每一个元素移除CSS类",
                 $rtn:"[self]",
                 $paras:[
-                    "name [必需参数] : String, CSS类名."
+                    "name [必需参数] : String, CSS类名"
                 ],
                 $snippet:[
                     "var n=xui('btnLang');alert(n.attr('className'));n.addClass('cls');alert(n.attr('className'));n.removeClass('cls');alert(n.attr('className'));"
                 ]
             },
             hasClass:{
-                $desc:"判断第一个元素的CSS样式中是否含有指定的类名.",
+                $desc:"判断第一个元素的CSS样式中是否含有指定的类名",
                 $rtn:"Boolean",
                 $paras:[
-                    "name [必需参数] : String, CSS类名."
+                    "name [必需参数] : String, CSS类名"
                 ],
                 $snippet:[
                     "var n=xui('btnLang');alert(n.attr('className'));alert(n.hasClass('xui-div'));alert(n.hasClass('cls'));"
                 ]
             },
             replaceClass:{
-                $desc:"将每一个元素中的某个CSS类名替换为另一个类名.",
+                $desc:"将每一个元素中的某个CSS类名替换为另一个类名",
                 $rtn:"[self]",
                 $paras:[
-                    "regexp [必需参数] : 查找的正则表达式.",
-                    "replace [必需参数] : String."
+                    "regexp [必需参数] : 查找的正则表达式",
+                    "replace [必需参数] : String"
                 ],
                 $snippet:[
                     "var n=xui('btnLang');alert(n.attr('className'));n.replaceClass(/ui/,'cls');alert(n.attr('className'));n.replaceClass(/cls/,'ui');"
                 ]
             },
             tagClass:{
-                $desc:"对于箱中的每个元素的className,拷贝这些className并在每个className后添加一个给定的标签.或者将有特定标签的className移除.",
+                $desc:"对于箱中的每个元素的className,拷贝这些className并在每个className后添加一个给定的标签.或者将有特定标签的className移除",
                 $rtn:"[self]",
                 $paras:[
-                    "tag [必需参数] : String, 标签字符串.",
-                    "isAdd [可选参数] : Boolean, 添加标签或移除标签. 默认为 [true]."
+                    "tag [必需参数] : String, 标签字符串",
+                    "isAdd [可选参数] : Boolean, 添加标签或移除标签. 默认为 [true]"
                 ],
                 $snippet:[
                     "var n=xui('btnLang');n.tagClass('-checked').tagClass('-mouseover');alert(n.attr('className')); n.tagClass('-checked',false).tagClass('-mouseover',false);alert(n.attr('className'));"
                 ]
             },
             append:{
-                $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己内部的第一个元素后面.",
+                $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己内部的第一个元素后面",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象).",
-                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'append to' 默认 [false].",
-                    "force [可选参数] : Boolean, 如果是 [true], 表示即使target已在本DOM中，也要调用appendChild将target加到最后, 默认 [false]."
+                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象)",
+                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'append to' 默认 [false]",
+                    "force [可选参数] : Boolean, 如果是 [true], 表示即使target已在本DOM中，也要调用appendChild将target加到最后, 默认 [false]"
                 ],
                 $snippet:[
                 "var id='xui.temp.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2795,11 +2792,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             prepend:{
-                $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己内部的第一个元素前面.",
+                $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己内部的第一个元素前面",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象).",
-                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'prepend to' 默认 [false]."
+                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象)",
+                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'prepend to' 默认 [false]"
                 ],
                 $snippet:[
                 "var id='xui.temp.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2813,8 +2810,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己的前面",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象).",
-                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'addPrev to' 默认 [false]."
+                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象)",
+                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'addPrev to' 默认 [false]"
                 ],
                 $snippet:[
                 "var id='xui.temp.3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2826,11 +2823,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             addNext:{
-                $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己的后面.",
+                $desc:"将一个xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象) 附着在自己的后面",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象).",
-                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'addNext to' 默认 [false]."
+                    "target [必需参数] : xui.Dom对象(包含有一系列的DOM elements 或xui.UIProile 对象)",
+                    "reversed [可选参数] : Boolean, 如果是 [true], 表示本操作是'addNext to' 默认 [false]"
                 ],
                 $snippet:[
                 "var id='xui.temp.4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2842,11 +2839,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             offset:{
-                $desc:"获取(第一个元素)或设置(所有元素)相对边界的偏移量.",
+                $desc:"获取(第一个元素)或设置(所有元素)相对边界的偏移量",
                 $rtn:"Object/[self]",
                 $paras:[
-                    "pos [可选参数] : {left:value,top:value}, 目标的绝对位置.",
-                    "boundary [可选参数] : 相对的边界(DOM 元素或document.body). 默认为document.body."
+                    "pos [可选参数] : {left:value,top:value}, 目标的绝对位置",
+                    "boundary [可选参数] : 相对的边界(DOM 元素或document.body). 默认为document.body"
                 ],
                 $snippet:[
                     "alert(xui.serialize(xui(this).offset()));alert(xui.serialize(xui(this).offset()));",
@@ -2854,27 +2851,27 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             cssPos:{
-                $desc:"获取(第一个元素)或设置(所有元素) CSS偏移量.",
+                $desc:"获取(第一个元素)或设置(所有元素) CSS偏移量",
                 $rtn:"Object/[self]",
                 $paras:[
-                    "pos [可选参数] : {left:value,top:value}, 目标的绝对位置.",
-                    "flag [可选参数] : Boolean, 指示是否触发元素的onMove事件. 默认为false."
+                    "pos [可选参数] : {left:value,top:value}, 目标的绝对位置",
+                    "flag [可选参数] : Boolean, 指示是否触发元素的onMove事件. 默认为false"
                 ],
                 $snippet:[
                     "var n=xui(this),pos=n.cssPos(); pos.top+=20;pos.left+=20; n.css('position','relative').cssPos(pos); n.onMove(function(){xui.message('Fired onmove event')});pos.top+=20;pos.left+=20; n.cssPos(pos,true); xui.asyRun(function(){n.css({top:'',position:''}).onMove(null)},1000)"
                 ]
             },
             animate:{
-                $desc:"包装特殊效果的动画到一个xui.Thread对象中(shell线程).",
+                $desc:"包装特殊效果的动画到一个xui.Thread对象中(shell线程)",
                 $rtn:"xui.Thread",
                 $paras:[
                     "params [必需参数] : Object[Key/value([from value, to value]) pairs] . 渐变的CSS样式",
-                    "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数.",
-                    "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数.",
-                    "duration [可选参数]: Number(ms), 动画的持续时间. 默认为300.",
-                    "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated] 建议不要使用.",
-                    "type [可选参数]: String, 动画的特效形式. 'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'. 默认为'linear'.",
-                    "threadid [可选参数]: String, shell线程的全局识别id."
+                    "onStart [可选参数]: Function(threadid:String). 线程第一个任务开始前的回调函数",
+                    "onEnd [可选参数]: Function(threadid:String). 整个shell线程结束后的回调函数",
+                    "duration [可选参数]: Number(ms), 动画的持续时间. 默认为300",
+                    "step [可选参数]: Number, 动画步长. 默认为0. [Deprecated] 建议不要使用",
+                    "type [可选参数]: String, 动画的特效形式'linear','expoIn','expoOut','expoInOut','sineIn','sineOut','sineInOut','backIn','backOut','backInOut' 或 'bounceOut'. 默认为'linear'",
+                    "threadid [可选参数]: String, shell线程的全局识别id"
                 ],
                 $snippet:[
                     "var node=xui.create('div').css({opacity:0,zIndex:xui.Dom.TOP_ZINDEX, backgroundColor:'#0000ff', position:'absolute',left:'100px', top:'100px',width:'100px',height:'100px'});"+
@@ -2887,11 +2884,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             attr:{
-                $desc:"获取第一个元素的某个属性值, 或设置所有元素的一个属性值(键值对), 或移除所有元素的某个属性值.",
+                $desc:"获取第一个元素的某个属性值, 或设置所有元素的一个属性值(键值对), 或移除所有元素的某个属性值",
                 $rtn:"String/[self]",
                 $paras:[
-                    "name [必需参数] : 属性名,或表示属性值的键值对.",
-                    "value [可选参数] : 属性值, [null]表示移除,不传入任何参数表示获取."
+                    "name [必需参数] : 属性名,或表示属性值的键值对",
+                    "value [可选参数] : 属性值, [null]表示移除,不传入任何参数表示获取"
                 ],
                 $snippet:[
                     "var n=xui('btnLang'); alert(n.attr('style')); alert(n.attr('tagName')); alert(n.attr('className'));",
@@ -2901,11 +2898,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             caret:{
-                $desc:"获取或设置第一个元素的光标(必须是Input或Textarea).",
+                $desc:"获取或设置第一个元素的光标(必须是Input或Textarea)",
                 $rtn:"Array/[self]",
                 $paras:[
-                    "begin [可选参数] : Number, 光标开始位置.",
-                    "end [可选参数] : Number, 光标结束位置."
+                    "begin [可选参数] : Number, 光标开始位置",
+                    "end [可选参数] : Number, 光标结束位置"
                 ],
                 $snippet:[
                     "var id='xui.temp.caret'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<input id='+id+'1 value=0123456789/><'+'textarea id='+id+'2></'+'textarea><br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2914,7 +2911,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             children:{
-                $desc:"获取一个xui.Dom,该对象包含所有元素的直接子元素.",
+                $desc:"获取一个xui.Dom,该对象包含所有元素的直接子元素",
                 $rtn:"xui.Dom",
                 $snippet:[
                     "var id='xui.temp.children'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<input/><input/><div style=\"padding:5px;\"><input/><input/></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2923,10 +2920,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             width:{
-                $desc:"获取(第一个元素) 或设置(所有元素)css的宽度值.",
+                $desc:"获取(第一个元素) 或设置(所有元素)css的宽度值",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2935,14 +2932,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             serialize:{
-                $desc:"将一个DOM概要对象(profile)序列化为一个JSON字符串或一个JSON对象.",
+                $desc:"将一个DOM概要对象(profile)序列化为一个JSON字符串或一个JSON对象",
                 $rtn:"String",
                 $snippet:[
                     "alert(xui('btnLang').serialize());"
                 ]
             },
             scrollWidth:{
-                $desc:"获取(第一个元素) 滚动条宽度.",
+                $desc:"获取(第一个元素) 滚动条宽度",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.w2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2951,10 +2948,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             innerWidth:{
-                $desc:"获取(第一个元素)或设置(所有元素)内部宽度(包含内补丁padding).",
+                $desc:"获取(第一个元素)或设置(所有元素)内部宽度(包含内补丁padding)",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2963,10 +2960,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             offsetWidth:{
-                $desc:"获取(第一个元素)或设置(所有元素)的偏移宽度(包括padding and border).",
+                $desc:"获取(第一个元素)或设置(所有元素)的偏移宽度(包括padding and border)",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2975,10 +2972,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             outerWidth:{
-                $desc:"获取(第一个元素)或设置(所有元素)外部宽度(includes the padding, border and margin).",
+                $desc:"获取(第一个元素)或设置(所有元素)外部宽度(includes the padding, border and margin)",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -2988,10 +2985,10 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             height:{
-                $desc:"获取(第一个元素)或设置(所有元素)CSS高度值.",
+                $desc:"获取(第一个元素)或设置(所有元素)CSS高度值",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3000,7 +2997,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             scrollHeight:{
-                $desc:"Gets(第一个元素)scroll高度.",
+                $desc:"Gets(第一个元素)scroll高度",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.w7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3009,10 +3006,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             innerHeight:{
-                $desc:"获取(第一个元素)或设置(所有元素)内部宽度(包括内补丁padding).",
+                $desc:"获取(第一个元素)或设置(所有元素)内部宽度(包括内补丁padding)",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3021,10 +3018,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             offsetHeight:{
-                $desc:"获取(第一个元素)或设置(所有元素) 偏移高度(包括内补丁padding 和 border).",
+                $desc:"获取(第一个元素)或设置(所有元素) 偏移高度(包括内补丁padding 和 border)",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3033,10 +3030,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             outerHeight:{
-                $desc:"获取(第一个元素)或设置(所有元素)外部高度(包括内补丁padding, border 和外补丁 margin).",
+                $desc:"获取(第一个元素)或设置(所有元素)外部高度(包括内补丁padding, border 和外补丁 margin)",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.w11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div style=\"background:#888;position:relative;width:80px;height:80px;\"><div id='+id+' style=\"overflow:auto;position:absolute;margin:10px;border:solid 10px #ccc;padding:10px;\"> 1111111111111111111 2222222222222222 333333333333</div></div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3045,10 +3042,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             clone:{
-                $desc:"拷贝一系列DOM元素.",
+                $desc:"拷贝一系列DOM元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "deep [可选参数] : Boolean, 指示是否递归克隆子DOM元素. 默认为[false]."
+                    "deep [可选参数] : Boolean, 指示是否递归克隆子DOM元素. 默认为[false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.w11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<div id='+id+' style=\"background:#ccc;border:solid 1px;padding:10px;\"><div style=\"background:#fff;border:solid 1px;padding:10px;\">inner<input /></div>outer</div> <br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3057,29 +3054,29 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             nativeEvent : {
-                $desc:"触发DOM内部事件.",
+                $desc:"触发DOM内部事件",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "name [必需参数] : String, 事件名称."
+                    "name [必需参数] : String, 事件名称"
                 ]
             },
             scrollIntoView:{
-                $desc:"使控件可视.",
+                $desc:"使控件可视",
                 $rtn:"[self]"
             },
             isScrollBarShowed:{
-                $desc:"是否有滚动栏.",
+                $desc:"是否有滚动栏",
                 $rtn:"Boolean",
                 $paras:[
-                    "type [必需参数] : x表示横向滚动栏，y表示纵向滚动栏."
+                    "type [必需参数] : x表示横向滚动栏，y表示纵向滚动栏"
                 ]
             },
             css:{
-                $desc:"获取第一个元素的某个CSS属性值, 或设置所有元素的某个属性值.",
+                $desc:"获取第一个元素的某个CSS属性值, 或设置所有元素的某个属性值",
                 $rtn:"String/[self]",
                 $paras:[
-                    "name [必需参数] : CSS属性名或键值对.",
-                    "value [可选参数] : CSS属性值."
+                    "name [必需参数] : CSS属性名或键值对",
+                    "value [可选参数] : CSS属性值"
                 ],
                 $snippet:[
                     "var n=xui('btnLang'); alert(n.css('background')); alert(n.css('overflow')); alert(n.css('top'));",
@@ -3088,11 +3085,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             cssPos:{
-                $desc:"获取或设置第一个元素的left 和 top值.",
+                $desc:"获取或设置第一个元素的left 和 top值",
                 $rtn:"Object/[self]",
                 $paras:[
-                    "pos [可选参数] : {left:Number or String,top:Number or String}.",
-                    "triggerEvent [可选参数] : Boolean, 指示是否触发事件."
+                    "pos [可选参数] : {left:Number or String,top:Number or String}",
+                    "triggerEvent [可选参数] : Boolean, 指示是否触发事件"
 
                 ],
                 $snippet:[
@@ -3100,34 +3097,34 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             cssSize:{
-                $desc:"获取或设置第一个元素的width 和 height值.",
+                $desc:"获取或设置第一个元素的width 和 height值",
                 $rtn:"Object/[self]",
                 $paras:[
-                    "value [可选参数] : {width:Number or String,height:Number or String}.",
-                    "triggerEvent [可选参数] : Boolean, 指示是否触发事件."
+                    "value [可选参数] : {width:Number or String,height:Number or String}",
+                    "triggerEvent [可选参数] : Boolean, 指示是否触发事件"
                 ],
                 $snippet:[
                     "var n=xui('btnLang'), bak=n.cssSize(); n.cssSize({width:50,height:50}); alert(xui.serialize(n.cssSize())); n.cssSize(bak)"
                 ]
             },
             cssRegion:{
-                $desc:"获取或设置第一个元素的region值.",
+                $desc:"获取或设置第一个元素的region值",
                 $rtn:"Object/[self]",
                 $paras:[
-                    "value [可选参数] : {left:Number or String,top:Number or String,right:Number or String,bottom:Number or String,width:Number or String,height:Number or String}.",
-                    "triggerEvent [可选参数] : Boolean, 指示是否触发事件."
+                    "value [可选参数] : {left:Number or String,top:Number or String,right:Number or String,bottom:Number or String,width:Number or String,height:Number or String}",
+                    "triggerEvent [可选参数] : Boolean, 指示是否触发事件"
                 ],
                 $snippet:[
                     "var n=xui('btnLang'),bak=n.cssRegion(); n.cssRegion({left:100,top:100,width:50,height:50}); alert(xui.serialize(n.cssRegion())); bak.left=bak.top='auto'; n.cssRegion(bak);"
                 ]
             },
             query:{
-                $desc:"查找所有元素,寻找满足特定参数的元素.",
+                $desc:"查找所有元素,寻找满足特定参数的元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "tagName [可选参数] : DOM元素的tagName.",
-                    "property [可选参数] : DOM 元素的属性名或函数.",
-                    "expr [可选参数] : DOM元素的属性值或值的正则表达式."
+                    "tagName [可选参数] : DOM元素的tagName",
+                    "property [可选参数] : DOM 元素的属性名或函数",
+                    "expr [可选参数] : DOM元素的属性值或值的正则表达式"
                 ],
                 $snippet:[
                     "var id='xui.temp.query'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<div id=id1 style=\"border:solid 1px;padding:5px;\"><div style=\"border:solid 1px;padding:5px;\"> <input /><input /></div></div>  <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3136,30 +3133,30 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             startDrag:{
-                $desc:"开始拖动第一个元素.",
+                $desc:"开始拖动第一个元素",
                 $rtn:"[self]",
                 $paras:[
-                    "e [必需参数] : DOM 事件对象.",
-                    "profile [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容.",
-                    "dragKey [可选参数] : String, 拖动数据的标识符.",
-                    "dragData [可选参数] : Object, 拖动数据."
+                    "e [必需参数] : DOM 事件对象",
+                    "profile [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容",
+                    "dragKey [可选参数] : String, 拖动数据的标识符",
+                    "dragData [可选参数] : Object, 拖动数据"
                 ],
                 $snippet:[
                     "var id='xui.temp.dd0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><button id='+id+'>drag me</button>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui(id).onMousedown(function(p,e,s){xui(s).startDrag(e)})"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop."
+                $memo:"Dependencies: xui.DragDrop"
             },
             draggable:{
-                $desc:"启用或禁止元素是否可拖动.",
+                $desc:"启用或禁止元素是否可拖动",
                 $rtn:"[self]",
                 $paras:[
                     "flag [必需参数] : Boolean, [true]: 表示可拖动; [false]: 表示不可拖动. 默认为[true]",
-                    "profile [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容.",
-                    "key [可选参数] : String, 拖动数据的标识符.",
-                    "data [可选参数] : Object, 拖动数据.",
-                    "target [可选参数] : xui.Dom, 拖动目标."
+                    "profile [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容",
+                    "key [可选参数] : String, 拖动数据的标识符",
+                    "data [可选参数] : Object, 拖动数据",
+                    "target [可选参数] : xui.Dom, 拖动目标"
                 ],
                 $snippet:[
                     "var id='xui.temp.dd_a'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:80px;\">' + '<div id='+id+'a style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:10px;top:30px;\">1</div>' + '<div id='+id+'b style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:50px;top:30px;\">2</div>'+ '<div id='+id+'c style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:100px;top:30px;\">3</div>'+ '<div id='+id+'d style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:150px;top:30px;\">4</div>'+ '<div id='+id+'e style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:200px;top:30px;\">5</div>'+ '<div id='+id+'f style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:250px;top:30px;\">6</div>'+ '<div id='+id+'g style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:300px;top:30px;\">7</div>'+ '<div id='+id+'h style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:350px;top:30px;\">8</div>'+ '<div id='+id+'i style=\"background:#ccc;position:absolute;border:solid 1px;padding:15px;left:400px;top:30px;\">9</div>'+ ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));" +
@@ -3175,27 +3172,27 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui(id+'i').draggable(true,{maxLeftOffset:50,maxTopOffset:50,maxRightOffset:50,maxBottomOffset:50,targetReposition:false});"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop."
+                $memo:"Dependencies: xui.DragDrop"
             },
             droppable:{
-                $desc:"启用或禁止元素是否可丢放.",
+                $desc:"启用或禁止元素是否可丢放",
                 $rtn:"[self]",
                 $paras:[
                     "flag [必需参数] : Boolean, [true]: 表示可丢放; [false]: 表示不可丢放. 默认为[true]",
-                    "key [必需参数] : String, 丢放数据标志符. 默认为'default'."
+                    "key [必需参数] : String, 丢放数据标志符. 默认为'default'"
                 ],
                 $snippet:[
                     "var id='xui.temp.dd2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">draggable</div>' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">droppable</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.DragDrop.getProfile().dragData);})"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop."
+                $memo:"Dependencies: xui.DragDrop"
             },
             empty:{
-                $desc:"清空包含的所有DOM元素.",
+                $desc:"清空包含的所有DOM元素",
                 $rtn:"[self]",
                 $paras:[
-                    "triggerGC [可选参数] : Boolean, 指示是否触发GC(垃圾回收)."
+                    "triggerGC [可选参数] : Boolean, 指示是否触发GC(垃圾回收)"
                 ],
                 $snippet:[
                     "var id='xui.temp.empty'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div id='+id+' style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">content in div<br /><button onclick=\"xui(\\\''+id+'\\\').empty()\">Empty me</button></div>'+ '<button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3203,10 +3200,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             remove:{
-                $desc:"移除包含的所有DOM元素.",
+                $desc:"移除包含的所有DOM元素",
                 $rtn:"[self]",
                 $paras:[
-                    "triggerGC [可选参数] : Boolean, 指示是否触发GC(垃圾回收)."
+                    "triggerGC [可选参数] : Boolean, 指示是否触发GC(垃圾回收)"
                 ],
                 $snippet:[
                     "var id='xui.temp.empty'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">content in div'+ '<button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3214,11 +3211,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             replace:{
-                $desc:"用一系列的DOM元素替换第一个元素.",
+                $desc:"用一系列的DOM元素替换第一个元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "target [必需参数] : xui.Dom, 该对象包含一系列的DOM元素,用于替换当前第一个元素.",
-                    "triggerGC [可选参数] : Boolean, 指示是否触发GC(垃圾回收)."
+                    "target [必需参数] : xui.Dom, 该对象包含一系列的DOM元素,用于替换当前第一个元素",
+                    "triggerGC [可选参数] : Boolean, 指示是否触发GC(垃圾回收)"
                 ],
                 $snippet:[
                     "var id='xui.temp.replace'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><div id='+id+' style=\"border:solid 1px;padding:5px;\"></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3227,7 +3224,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             swap:{
-                $desc:"交换第一个元素和参数指定的元素.",
+                $desc:"交换第一个元素和参数指定的元素",
                 $rtn:"[self]",
                 $paras:[
                     "target [必需参数] : xui.Dom 对象. 该对象包含有要交换的DOM元素"
@@ -3239,7 +3236,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setInlineBlock:{
-                $desc:"将所有的元素CSS的display属性设置为'inline'. ",
+                $desc:"将所有的元素CSS的display属性设置为'inline'",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.sib'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div  style=\"border:solid 1px;padding:10px;\"><div id='+id+'  style=\"border:solid 1px;padding:5px;\">1</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3248,10 +3245,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelectable:{
-                $desc:"启用或禁止包含的元素可用鼠标选择.",
+                $desc:"启用或禁止包含的元素可用鼠标选择",
                 $rtn:"[self]",
                 $paras:[
-                    "value [可选参数] : Boolean, 默认为禁止[false]."
+                    "value [可选参数] : Boolean, 默认为禁止[false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.ssable'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div  style=\"border:solid 1px;padding:10px;\"><div id='+id+'1  style=\"border:solid 1px;padding:5px;\">selectable</div><div id='+id+'2 style=\"border:solid 1px;padding:5px;\">not selectable</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3260,10 +3257,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             first:{
-                $desc:"获取包含所有的DOM元素的第一个子元素.",
+                $desc:"获取包含所有的DOM元素的第一个子元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "index [可选参数] : Number, 迭代器索引."
+                    "index [可选参数] : Number, 迭代器索引"
                 ],
                 $snippet:[
                     "var id='xui.temp.first'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\"><div style=\"border:solid 1px;padding:5px;\">1<div style=\"border:solid 1px;padding:5px;\">2<div style=\"border:solid 1px;padding:5px;\">3<div style=\"border:solid 1px;padding:5px;\">4</div></div></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3272,10 +3269,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             parent:{
-                $desc:"获取包含所有的DOM元素的父元素.",
+                $desc:"获取包含所有的DOM元素的父元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "index [可选参数] : Number, 迭代器索引."
+                    "index [可选参数] : Number, 迭代器索引"
                 ],
                 $snippet:[
                     "var id='xui.temp.parent'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><div style=\"border:solid 1px;padding:5px;\">1<div style=\"border:solid 1px;padding:5px;\">2<div style=\"border:solid 1px;padding:5px;\">3<div style=\"border:solid 1px;padding:5px;\" id='+id+' >4</div></div></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3284,10 +3281,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             last:{
-                $desc:"获取包含所有的DOM元素的最后一个子元素.",
+                $desc:"获取包含所有的DOM元素的最后一个子元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "index [可选参数] : Number, 迭代器索引."
+                    "index [可选参数] : Number, 迭代器索引"
                 ],
                 $snippet:[
                     "var id='xui.temp.last'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\"><button onclick=\"xui(this).parent().remove()\">remove this example</button><div style=\"border:solid 1px;padding:5px;\">1<input /><div style=\"border:solid 1px;padding:5px;\">2<input /><div style=\"border:solid 1px;padding:5px;\">3<input /><div style=\"border:solid 1px;padding:5px;\">4</div></div></div></div></div>'));"+
@@ -3296,10 +3293,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             prev:{
-                $desc:"获取包含所有的DOM元素的前一个兄弟元素.",
+                $desc:"获取包含所有的DOM元素的前一个兄弟元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "index [可选参数] : Number, 迭代器索引."
+                    "index [可选参数] : Number, 迭代器索引"
                 ],
                 $snippet:[
                     "var id='xui.temp.prev'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\"><div style=\"border:solid 1px;padding:5px;\">1</div><div style=\"border:solid 1px;padding:5px;\">2</div><div style=\"border:solid 1px;padding:5px;\">3</div><div style=\"border:solid 1px;padding:5px;\">4</div><button onclick=\"xui(this).parent().remove()\">remove this example</button></div>'));"+
@@ -3308,10 +3305,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             next:{
-                $desc:"获取包含所有的DOM元素的后一个兄弟元素.",
+                $desc:"获取包含所有的DOM元素的后一个兄弟元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "index [可选参数] : Number, 迭代器索引."
+                    "index [可选参数] : Number, 迭代器索引"
                 ],
                 $snippet:[
                     "var id='xui.temp.next'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\"><button onclick=\"xui(this).parent().remove()\">remove this example</button><div style=\"border:solid 1px;padding:5px;\">1</div><div style=\"border:solid 1px;padding:5px;\">2</div><div style=\"border:solid 1px;padding:5px;\">3</div><div style=\"border:solid 1px;padding:5px;\">4</div></div>'));"+
@@ -3320,10 +3317,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             focus:{
-                $desc:"让第一个元素获取焦点, 如果不能获取焦点则忽略.",
+                $desc:"让第一个元素获取焦点, 如果不能获取焦点则忽略",
                 $rtn:"[self]",
                 $paras:[
-                    "force [可选参数] : Boolean, 强迫设置焦点."
+                    "force [可选参数] : Boolean, 强迫设置焦点"
                 ],
                 $snippet:[
                     "var id='xui.temp.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3332,11 +3329,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             leftBy:{
-                $desc:"增加或减少元素的left值.",
+                $desc:"增加或减少元素的left值",
                 $rtn:"[self]",
                 $paras:[
-                    "offset [必需参数] : Number, 增加或减少（负数）的值.",
-                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件."
+                    "offset [必需参数] : Number, 增加或减少（负数）的值",
+                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件"
                 ],
                 $snippet:[
                     "var id='xui.temp.leftBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3345,11 +3342,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             topBy:{
-                $desc:"增加或减少元素的top值.",
+                $desc:"增加或减少元素的top值",
                 $rtn:"[self]",
                 $paras:[
-                    "offset [必需参数] : Number, 增加或减少（负数）的值.",
-                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件."
+                    "offset [必需参数] : Number, 增加或减少（负数）的值",
+                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件"
                 ],
                 $snippet:[
                     "var id='xui.temp.topBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3358,11 +3355,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             widthBy:{
-                $desc:"增加或减少元素的width值.",
+                $desc:"增加或减少元素的width值",
                 $rtn:"[self]",
                 $paras:[
-                    "offset [必需参数] : Number, 增加或减少（负数）的值.",
-                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件."
+                    "offset [必需参数] : Number, 增加或减少（负数）的值",
+                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件"
                 ],
                 $snippet:[
                     "var id='xui.temp.widthBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3371,11 +3368,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             heightBy:{
-                $desc:"增加或减少元素的height值.",
+                $desc:"增加或减少元素的height值",
                 $rtn:"[self]",
                 $paras:[
-                    "offset [必需参数] : Number, 增加或减少（负数）的值.",
-                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件."
+                    "offset [必需参数] : Number, 增加或减少（负数）的值",
+                    "triggerEvent [可选参数] : Boolean, 标志是否触发事件"
                 ],
                 $snippet:[
                     "var id='xui.temp.heightBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3384,28 +3381,28 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             hide:{
-                $desc:"隐藏所有的元素.",
+                $desc:"隐藏所有的元素",
                 $rtn:"[self]",
                 $snippet:[
                     "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             show:{
-                $desc:"显示所有的元素.",
+                $desc:"显示所有的元素",
                 $rtn:"[self]",
                 $paras:[
-                    "left [可选参数] : Number, left值.",
-                    "top [可选参数] : Number, top值."
+                    "left [可选参数] : Number, left值",
+                    "top [可选参数] : Number, top值"
                 ],
                 $snippet:[
                     "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             text:{
-                $desc:"获取第一个元素的文本内容,或设置所有元素的文本内容.",
+                $desc:"获取第一个元素的文本内容,或设置所有元素的文本内容",
                 $rtn:"String/[self]",
                 $paras:[
-                    "content [可选参数] : String, 文本内容."
+                    "content [可选参数] : String, 文本内容"
                 ],
                 $snippet:[
                     "var id='xui.temp.text'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><div style=\"padding:5px;border:solid 1px;\" id='+id+' ></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3414,12 +3411,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             html:{
-                $desc:"获取或设置第一个元素的innerHTML.",
+                $desc:"获取或设置第一个元素的innerHTML",
                 $rtn:"String/[self]",
                 $paras:[
-                    "content [可选参数] : String, innerHTML的值.",
+                    "content [可选参数] : String, innerHTML的值",
                     "triggerGC [可选参数] : Boolean, 是否触发GC(垃圾回收). 默认是true",
-                    "loadScripts [可选参数] : Boolean, 是否执行内部的script. 默认是 false."
+                    "loadScripts [可选参数] : Boolean, 是否执行内部的script. 默认是 false"
 
                 ],
                 $snippet:[
@@ -3429,28 +3426,28 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             loadHtml:{
-                $desc:"加载一个同域的html文件到当前节点内.",
+                $desc:"加载一个同域的html文件到当前节点内",
                 $rtn:"[self]",
                 $paras:[
-                    "options [必需参数] : String或Object, 包括url的加载参数.",
-                    "onStart [可选参数] : Function, 开始加载的回调函数.",
-                    "onEnd [可选参数] : Function, 结束加载的回调函数."
+                    "options [必需参数] : String或Object, 包括url的加载参数",
+                    "onStart [可选参数] : Function, 开始加载的回调函数",
+                    "onEnd [可选参数] : Function, 结束加载的回调函数"
                 ]
             },
             loadIframe:{
-                $desc:"通过iframe加载一个的html文件到当前节点内.",
+                $desc:"通过iframe加载一个的html文件到当前节点内",
                 $rtn:"[self]",
                 $paras:[
-                    "options [必需参数] : String或Object, 包括url的加载参数.",
-                    "domId [可选参数] : String, IFrame的DOM ID."
+                    "options [必需参数] : String或Object, 包括url的加载参数",
+                    "domId [可选参数] : String, IFrame的DOM ID"
                 ]
             },
             outerHTML:{
-                $desc:"获取或设置第一个元素的outerHTML.",
+                $desc:"获取或设置第一个元素的outerHTML",
                 $rtn:"String/[self]",
                 $paras:[
-                    "content [可选参数] : String, outerHTML的值.",
-                    "triggerGC [可选参数] : Boolean,  指示是否触发GC(垃圾回收)."
+                    "content [可选参数] : String, outerHTML的值",
+                    "triggerGC [可选参数] : Boolean,  指示是否触发GC(垃圾回收)"
                 ],
                 $snippet:[
                     "var id='xui.temp.html1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><div style=\"padding:5px;border:solid 1px;\" id='+id+' ></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3459,10 +3456,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             "id":{
-                $desc:"获取(第一个元素)或设置(所有元素)的DOM id.",
+                $desc:"获取(第一个元素)或设置(所有元素)的DOM id",
                 $rtn:"String/[self]",
                 $paras:[
-                    "value [可选参数] : String, DOM id value.",
+                    "value [可选参数] : String, DOM id value",
                     "ignoreCache [可选参数] : Boolean, indicates if ignore to reset cache. 默认为[false]"
                 ],
                 $snippet:[
@@ -3470,21 +3467,21 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             fixPng:{
-                $desc: "修复IE6的png文件显示问题.",
+                $desc: "修复IE6的png文件显示问题",
                 $rtn:"[self]",
-                $memo:"只用于IE6."
+                $memo:"只用于IE6"
             },
             ieRemedy:{
-                $desc: "在IE中,触发DOM 元素的内部重画函数."+
-                    "在某些IE的旧版本中, DOM的尺寸改变(例如. 改变 overflow='visible'的元素css高度)不会触发布局的变化 .",
+                $desc: "在IE中,触发DOM 元素的内部重画函数"+
+                    "在某些IE的旧版本中, DOM的尺寸改变(例如. 改变 overflow='visible'的元素css高度)不会触发布局的变化 ",
                 $rtn:"[self]",
-                $memo:"只用于IE."
+                $memo:"只用于IE"
             },
             scrollLeft:{
-                $desc:"获取(第一个元素)或设置(所有元素)CSS样式中的scrollLeft值.",
+                $desc:"获取(第一个元素)或设置(所有元素)CSS样式中的scrollLeft值",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.scrollLeft'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative; border:solid 1px;padding:10px;\"><div style=\"overflow:auto; width:50px;height:50px;\" id='+id+' />aaaaaaaaaaaaa bbbbbbbbbbb cccccccccc dddddddd</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3493,59 +3490,59 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             rotate:{
-                $desc:"获取第一个元素的CSS变形属性中的旋转角度, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的旋转角度, 或设置到所有元素",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ]
             },
             scaleX:{
-                $desc:"获取第一个元素的CSS变形属性中的X方向伸缩度, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的X方向伸缩度, 或设置到所有元素",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ]
             },
             scaleY:{
-                $desc:"获取第一个元素的CSS变形属性中的Y方向伸缩度, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的Y方向伸缩度, 或设置到所有元素",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ]
             },
             translateX:{
-                $desc:"获取第一个元素的CSS变形属性中的X方向平移, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的X方向平移, 或设置到所有元素",
                 $rtn:"String/[self]",
                 $paras:[
-                    "value [可选参数] : String."
+                    "value [可选参数] : String"
                 ]
             },
             translateY:{
-                $desc:"获取第一个元素的CSS变形属性中的Y方向平移, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的Y方向平移, 或设置到所有元素",
                 $rtn:"String/[self]",
                 $paras:[
-                    "value [可选参数] : String."
+                    "value [可选参数] : String"
                 ]
             },
             skewX:{
-                $desc:"获取第一个元素的CSS变形属性中的X方向倾斜度, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的X方向倾斜度, 或设置到所有元素",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ]
             },
             skewY:{
-                $desc:"获取第一个元素的CSS变形属性中的Y方向倾斜度, 或设置到所有元素.",
+                $desc:"获取第一个元素的CSS变形属性中的Y方向倾斜度, 或设置到所有元素",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ]
             },
             scrollTop:{
-                $desc:"获取(第一个元素)或设置(所有元素)CSS样式中的scrollTop值.",
+                $desc:"获取(第一个元素)或设置(所有元素)CSS样式中的scrollTop值",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.scrollTop'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative; border:solid 1px;padding:10px;\"><div style=\"overflow:auto; width:50px;height:50px;\" id='+id+' />aaaaaaaaaaaaa bbbbbbbbbbb cccccccccc dddddddd</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3555,10 +3552,10 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             left:{
-                $desc:"获取(第一个元素)或设置(所有元素)CSS样式中的left值.",
+                $desc:"获取(第一个元素)或设置(所有元素)CSS样式中的left值",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.left'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3567,10 +3564,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             top:{
-                $desc:"获取(第一个元素) 或设置(所有元素)CSS样式中的top值.",
+                $desc:"获取(第一个元素) 或设置(所有元素)CSS样式中的top值",
                 $rtn:"Number/[self]",
                 $paras:[
-                    "value [可选参数] : Number."
+                    "value [可选参数] : Number"
                 ],
                 $snippet:[
                     "var id='xui.temp.top'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3579,12 +3576,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             nextFocus:{
-                $desc:"获取下一个将要获取焦点的元素.",
+                $desc:"获取下一个将要获取焦点的元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "downwards [可选参数] : Boolean, 指示向下([true])还是向上([false])移动焦点. 默认为[true].",
-                    "includeChild [可选参数] : Boolean, 指示是否包括子元素. 默认为[true].",
-                    "setFocus [可选参数] : Boolean, 指示是否要让下一个元素真正获取焦点. 默认为[true]."
+                    "downwards [可选参数] : Boolean, 指示向下([true])还是向上([false])移动焦点. 默认为[true]",
+                    "includeChild [可选参数] : Boolean, 指示是否包括子元素. 默认为[true]",
+                    "setFocus [可选参数] : Boolean, 指示是否要让下一个元素真正获取焦点. 默认为[true]"
                 ],
                 $snippet:[
                     "var id='xui.temp.nextFocus'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input value=upwards /><input id='+id+' /><button>downwards</button>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3593,51 +3590,51 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             offsetLeft:{
-                $desc:"获取第一个元素的左边偏移量.",
+                $desc:"获取第一个元素的左边偏移量",
                 $rtn:"Number",
                 $snippet:[
                     "alert(this.offsetLeft())"
                 ]
             },
             offsetTop:{
-                $desc:"获取第一个元素的上边偏移量.",
+                $desc:"获取第一个元素的上边偏移量",
                 $rtn:"Number",
                 $snippet:[
                 "alert(this.offsetTop())"
                 ]
             },
             hoverPop:{
-                $desc:"设置鼠标悬停弹出窗口.",
+                $desc:"设置鼠标悬停弹出窗口",
                  $rtn:"[self]",
                 $paras:[
                     "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
                     "type [可选参数] : String, 参考popToTop, 如果为null，取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger), 窗口隐藏之前调用",
-                    "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body].",
+                    "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body]",
                     "groupid[Optional] : String.  组标识 id",
                     "showEffects[Optional] : Object, 出现动画的配置",
                     "hideEffects[Optional] : Object, 隐去动画的配置"
                 ]
             },
             pop:{
-                $desc:"将第一个元素显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用.",
+                $desc:"将第一个元素显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
                 $rtn:"String, 区域外点击隐藏的唯一标示",
                 $paras:[
-                    "pos [必需参数] : Object/xui.Dom/Element.",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
-                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body].",
-                    "trigger [必需参数] : Function or [null] :  隐藏触发函数.",
-                    "group [可选参数] : xui.Dom, 触发函数的组对象."
+                    "pos [必需参数] : Object/xui.Dom/Element",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
+                    "trigger [必需参数] : Function or [null] :  隐藏触发函数",
+                    "group [可选参数] : xui.Dom, 触发函数的组对象"
                 ]
             },
             popToTop:{
-                $desc:"将第一个元素显示成父元素的顶层.",
+                $desc:"将第一个元素显示成父元素的顶层",
                 $rtn:"[self]",
                 $paras:[
-                    "pos [必需参数] : Object/xui.Dom/Element.",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
-                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]."
+                    "pos [必需参数] : Object/xui.Dom/Element",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]"
                 ],
                 $snippet:[
                     "var id='xui.temp.p2p'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative; border:solid 1px;padding:10px;\"><button id='+id+' style=\"height:100px;width:100px;\">downwards</button>' + '<br /><br /><br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3649,12 +3646,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBlurTrigger:{
-                $desc:"设置或取消设置一个区域外点击触发函数, 该函数将在用户单击第一个元素之外的区域时被调用.",
+                $desc:"设置或取消设置一个区域外点击触发函数, 该函数将在用户单击第一个元素之外的区域时被调用",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 触发函数的标志符.",
-                    "trigger [必需参数] : Function or [null] :  隐藏触发函数.",
-                    "group [可选参数] : xui.Dom, 触发函数的组对象."
+                    "id [必需参数] : String, 触发函数的标志符",
+                    "trigger [必需参数] : Function or [null] :  隐藏触发函数",
+                    "group [可选参数] : xui.Dom, 触发函数的组对象"
                 ],
                 $snippet:[
                 "var id='xui.temp.sbt'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"> <div id='+id+' style=\"border:solid 1px;padding:5px;width:50px;height:50px;\"> </div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3666,10 +3663,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             topZindex:{
-                $desc:"获取最小的zIndex值,该值可以让第一个元素显示在其父元素的最顶层; 或直接第一个元素成为其父元素的最顶层.",
+                $desc:"获取最小的zIndex值,该值可以让第一个元素显示在其父元素的最顶层; 或直接第一个元素成为其父元素的最顶层",
                 $rtn:"Get: Number, Set:[self]",
                 $paras:[
-                    "flag [可选参数] : Boolean, 指示是否设置第一个元素为最顶层. 默认为[false]."
+                    "flag [可选参数] : Boolean, 指示是否设置第一个元素为最顶层. 默认为[false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.tzi'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:130px;\">' + '<div id='+id+'1 style=\"z-index:1;background:#ccc;position:absolute;border:solid 1px;padding:50px;left:10px;top:30px;\">1</div>' + '<div id='+id+'2 style=\"z-index:2;background:#aaa;position:absolute;border:solid 1px;padding:50px;left:50px;top:30px;\">2</div>'+ '<div id='+id+'3 style=\"z-index:3;background:#888;position:absolute;border:solid 1px;padding:50px;left:100px;top:30px;\">3</div>'+ '<div id='+id+'4 style=\"z-index:4;background:#444;position:absolute;border:solid 1px;padding:50px;left:150px;top:30px;\">4</div>'+ ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));" +
@@ -3683,9 +3680,9 @@ xui.set(xui.Locale,["cn","app"], {
             afterClick:{
                 $rtn:"[self]",
                 $paras:[
-                    "fun [可选参数]: Function, 函数参数是 [xui.DomProfile Object, DOM event Object, the current element's xid].",
-                    "label [可选参数]: String, 事件标签.",
-                    "flag  [可选参数]: Boolean, 移除事件标志."
+                    "fun [可选参数]: Function, 函数参数是 [xui.DomProfile Object, DOM event Object, the current element's xid]",
+                    "label [可选参数]: String, 事件标签",
+                    "flag  [可选参数]: Boolean, 移除事件标志"
                 ],
                 $snippet:[
                 "var id='xui.temp.event'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"></p><button style=\"height:50px;\" id='+id+'>BUTTON element for testing.</button></p>' + '<br /><br /><button onclick=\"xui(\\\''+id+'\\\').onClick();\">fire event:[onclick] group functions</button> - <button onclick=\"xui(\\\''+id+'\\\').onClick(true);\">fire event: all functions</button> - <button onclick=\"xui(\\\''+id+'\\\').onClick(null,\\\'1#\\\');\">remove [onclick] 1#</button> - <button onclick=\"xui(\\\''+id+'\\\').beforeClick(null);\">remove all [beforeclick] functions</button> - <button onclick=\"xui(\\\''+id+'\\\').onClick(null,null,true);\">remove all functions</button><br /><br /><br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3787,7 +3784,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.DragDrop 类(静态类)",
         abort:{
-            $desc:"取消当前的D&D(Drag & Drop)操作.",
+            $desc:"取消当前的D&D(Drag & Drop)操作",
             $snippet:[
                 "var id='xui.temp.ddo1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">draggable</div>' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">droppable</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                 "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDragenter(function(){xui.DragDrop.abort();xui.message('the current dd is aborted!')})"+
@@ -3795,9 +3792,9 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getProfile:{
-            $desc:"获取所有的(Profile)拖动信息.",
+            $desc:"获取所有的(Profile)拖动信息",
             $rtn:"xui.DragDrop",
-            $rtn:"key/value Object.",
+            $rtn:"key/value Object",
             $snippet:[
                 "var id='xui.temp.ddo2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">draggable</div>' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">droppable</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                 "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.Coder.formatText(xui.serialize(xui.DragDrop.getProfile())))})"+
@@ -3805,7 +3802,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setDragIcon:{
-            $desc:"设置拖动时鼠标显示的图标.",
+            $desc:"设置拖动时鼠标显示的图标",
             $rtn:"xui.DragDrop",
             $paras:[
                 "key [可选参数] : String, 拖动时的图标编号. 默认为 'move'"
@@ -3815,13 +3812,13 @@ xui.set(xui.Locale,["cn","app"], {
                 "var numb; xui(id).onMousedown(function(p,e,s){numb=0;xui(s).startDrag(e,{dragType:'icon'})}).onDrag(function(){numb++; if(numb<=200){if(numb==50)xui.DragDrop.setDragIcon('move');else if(numb==100)xui.DragDrop.setDragIcon('link');else if(numb==150)xui.DragDrop.setDragIcon('copy');else if(numb==200)xui.DragDrop.setDragIcon('none');}});"+
                 "}"
             ],
-            $memo:"请在[dragType]仅为'move'时使用该函数."
+            $memo:"请在[dragType]仅为'move'时使用该函数"
         },
         setDropElement:{
-            $desc:"设置丢放的DOM元素.",
+            $desc:"设置丢放的DOM元素",
             $rtn:"xui.DragDrop",
             $snippet:[
-                "src [必需参数] : DOM元素, 放下的DOM元素."
+                "src [必需参数] : DOM元素, 放下的DOM元素"
             ],
             $snippet:[
                 "var id='xui.temp.ddo41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">draggable</div>' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">droppable</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3833,11 +3830,11 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setDropFace:{
-            $desc:"设置丢放对象丢放时的外形.",
+            $desc:"设置丢放对象丢放时的外形",
             $rtn:"xui.DragDrop",
             $paras:[
-                "target [必需参数] : DOM 元素或 xui.Dom 对象.",
-                "dragIcon [可选参数] : String, 拖动时的图标编号. 默认为 'move'."
+                "target [必需参数] : DOM 元素或 xui.Dom 对象",
+                "dragIcon [可选参数] : String, 拖动时的图标编号. 默认为 'move'"
             ],
             $snippet:[
                 "var id='xui.temp.ddo42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">setDropFace</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3846,10 +3843,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         startDrag:{
-            $desc:"<p>开始拖动.",
+            $desc:"<p>开始拖动",
             $paras:[
-                "e [必需参数] : DOM 事件对象.",
-                "targetNode [必需参数] : 能包装成 xui.Dom 对象的输入.",
+                "e [必需参数] : DOM 事件对象",
+                "targetNode [必需参数] : 能包装成 xui.Dom 对象的输入",
                 "profile [可选参数] : 键值对, 拖拽的概要对象.包括:" +
                 "<div>{<ul>" +
                 "<li><strong>dragType</strong>: 'move','copy','deep_copy','shape','icon', 'blank' 或 'none', 设置拖拽类型,默认为 'shape';</li>"+
@@ -3896,8 +3893,8 @@ xui.set(xui.Locale,["cn","app"], {
                 "<li><strong>proxyNode</strong>: xui.Dom, 得到当前拖拽代理的DOM元素; <strong>只读</strong></li>"+
                 "<li><strong>dropElement</strong>: String, 得到可以放下(drop)当前拖拽的DOM元素的xid. <strong>只读</strong></li>"+
                 "</ul>}</div>",
-                "dragKey [可选参数] : String, 得到拖拽的数据键.",
-                "dragData [可选参数] : Object, 得到拖拽的具体数据."
+                "dragKey [可选参数] : String, 得到拖拽的数据键",
+                "dragData [可选参数] : Object, 得到拖拽的具体数据"
             ],
             $snippet:[
                 "var id='xui.temp.ddo9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><button id='+id+'>drag me</button>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3911,15 +3908,15 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.CSS 类(静态类)",
         resetCSS:{
-            $desc:"给当前文档添加reset CSS."
+            $desc:"给当前文档添加reset CSS"
         },
         addStyleSheet:{
-            $desc:"添加一个&lt;style>元素到&lt;head>区域中.",
+            $desc:"添加一个&lt;style>元素到&lt;head>区域中",
             $rtn:"Element",
             $paras:[
-                "txt [必需参数] : String, CSS声明字符串.",
-                "id [可选参数] : String, 元素id. 如果在&lt;head>已经存在该id, 该函数将被忽略.",
-                "backOf [可选参数] : Boolean, 指示是否添加CSS到 &lt;head> 的最后. 默认为 false."
+                "txt [必需参数] : String, CSS声明字符串",
+                "id [可选参数] : String, 元素id. 如果在&lt;head>已经存在该id, 该函数将被忽略",
+                "backOf [可选参数] : Boolean, 指示是否添加CSS到 &lt;head> 的最后. 默认为 false"
             ],
             $snippet:[
                 "var id='xui.temp.add'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' class=testadded style=\"border:solid 1px;padding:10px;\">' + '<button onclick=\"xui.CSS.addStyleSheet(\\\'.testadded{background:#ccc;}\\\',\\\'testadded\\\')\">addStyleSheet</button> - '+ '<button onclick=\"alert(xui.CSS.get(\\\'id\\\',\\\'testadded\\\'))\">get</button> - '+  '<button onclick=\"xui.CSS.remove(\\\'id\\\',\\\'testadded\\\')\">remove</button>'+ '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3927,10 +3924,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         remove:{
-            $desc:"从 &lt;head> 中移除 &lt;style> 或&lt;link> .",
+            $desc:"从 &lt;head> 中移除 &lt;style> 或&lt;link> ",
             $paras:[
-                "property [必需参数] : String, style元素的属性名.",
-                "value [必需参数] : String, style元素的属性值."
+                "property [必需参数] : String, style元素的属性名",
+                "value [必需参数] : String, style元素的属性值"
             ],
             $snippet:[
                 "var id='xui.temp.rm'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' class=testadded style=\"border:solid 1px;padding:10px;\">' + '<button onclick=\"xui.CSS.addStyleSheet(\\\'.testadded{background:#ccc;}\\\',\\\'testadded\\\')\">addStyleSheet</button> - '+ '<button onclick=\"alert(xui.CSS.get(\\\'id\\\',\\\'testadded\\\'))\">get</button> - '+  '<button onclick=\"xui.CSS.remove(\\\'id\\\',\\\'testadded\\\')\">remove</button>'+ '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3938,11 +3935,11 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         get:{
-            $desc:"获取&lt;head>中 &lt;style> 或 &lt;link>元素 .",
+            $desc:"获取&lt;head>中 &lt;style> 或 &lt;link>元素 ",
             $rtn:"Element",
             $paras:[
-                "property [必需参数] : String, style元素的属性名.",
-                "value [必需参数] : String, style元素的属性值."
+                "property [必需参数] : String, style元素的属性名",
+                "value [必需参数] : String, style元素的属性值"
             ],
             $snippet:[
                 "var id='xui.temp.get'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' class=testadded style=\"border:solid 1px;padding:10px;\">' + '<button onclick=\"xui.CSS.addStyleSheet(\\\'.testadded{background:#ccc;}\\\',\\\'testadded\\\')\">addStyleSheet</button> - '+ '<button onclick=\"alert(xui.CSS.get(\\\'id\\\',\\\'testadded\\\'))\">get</button> - '+  '<button onclick=\"xui.CSS.remove(\\\'id\\\',\\\'testadded\\\')\">remove</button>'+ '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3950,12 +3947,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setStyleRules:{
-            $desc:"设置样式的规则.",
+            $desc:"设置样式的规则",
             $rtn:"xui.CSS",
             $paras:[
-                "selector [必需参数] : String, CSS样式选择子(不包含逗号',').",
+                "selector [必需参数] : String, CSS样式选择子(不包含逗号',')",
                 "value [可选参数] : 键值对. 如果不指定,[selector]指定的选择子将被移除",
-                "force [可选参数] : 设置该参数为真可强制增加选择子和CSS样式值到样式表, 即使该样式表已经存在该选择子."
+                "force [可选参数] : 设置该参数为真可强制增加选择子和CSS样式值到样式表, 即使该样式表已经存在该选择子"
             ],
             $snippet:[
                 "var id='xui.temp.ar'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' class=testadded style=\"border:solid 1px;padding:10px;\">' + '<button onclick=\"xui.CSS.setStyleRules(\\\'.testadded\\\',{background:\\\'#888\\\'})\">add rules</button> - '+'<button onclick=\"xui.CSS.setStyleRules(\\\'.testadded\\\',{background:\\\'#ccc\\\'})\">update rules</button> - '+'<button onclick=\"xui.CSS.setStyleRules(\\\'.testadded\\\')\">remove rules</button>'+ '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -3963,25 +3960,25 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         replaceLink:{
-            $desc:" 将样式表(&lt;style> 或 &lt;link>中的样式元素)中的为旧值的某个属性,替换为新值.",
+            $desc:" 将样式表(&lt;style> 或 &lt;link>中的样式元素)中的为旧值的某个属性,替换为新值",
             $paras:[
-                "href [必需参数] : String, 样式表的文件路径.",
-                "property [必需参数] : String, 指定的属性名.",
-                "oValue [必需参数] : String, 旧属性值.",
-                "nValue [必需参数] : String, 新属性值."
+                "href [必需参数] : String, 样式表的文件路径",
+                "property [必需参数] : String, 指定的属性名",
+                "oValue [必需参数] : String, 旧属性值",
+                "nValue [必需参数] : String, 新属性值"
             ],
             $snippet:[
                 "//xui.CSS.replaceLink('http://xxx.com/a.css', 'id', 'oldid', 'newid');"
             ]
         },
         includeLink:{
-            $desc:"包含一个特定的[href](作为&lt;link>元素)到DOM的&lt;head>里面.",
+            $desc:"包含一个特定的[href](作为&lt;link>元素)到DOM的&lt;head>里面",
             $rtn:"Element",
             $paras:[
-                "href [必需参数] : String, CSS文件的url路径.",
-                "id [可选参数] : String, 元素的id.",
-                "front [可选参数] : Boolean, 指示是否添加&lt;link>元素到&lt;head>的前面. 默认为 false.",
-                "attr [可选参数] : key/value Object, 元素&lt;link> 的属性."
+                "href [必需参数] : String, CSS文件的url路径",
+                "id [可选参数] : String, 元素的id",
+                "front [可选参数] : Boolean, 指示是否添加&lt;link>元素到&lt;head>的前面. 默认为 false",
+                "attr [可选参数] : key/value Object, 元素&lt;link> 的属性"
             ],
             $snippet:[
                 "//xui.CSS.includeLink('http://xxx.com/a.css', 'id', flase, {title:'title'});"
@@ -3993,17 +3990,17 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.History 类(静态类)",
         setCallback:{
-            $desc:"设置回调函数. 该函数会在片段标志符(Fragement Identifier)改变时被调用.",
+            $desc:"设置回调函数. 该函数会在片段标志符(Fragement Identifier)改变时被调用",
             $rtn:"xui.History",
             $paras:[
-                "callback [必需参数] : Function, 回调函数."
+                "callback [必需参数] : Function, 回调函数"
             ],
             $snippet:[
                 "//xui.History.setCallback(function(str){alert('Fragement Identifier is: '+str)})"
             ]
         },
         getFI:{
-            $desc:"获取当前的片段标志符(Fragement Identifier).",
+            $desc:"获取当前的片段标志符(Fragement Identifier)",
             $rtn:"String",
             $snippet:[
                 "//xui.History.setCallback(function(str){alert('Fragement Identifier is: '+str)})\n"+
@@ -4012,10 +4009,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setFI:{
-            $desc:"设置当前的片段标志符(Fragement Identifier).",
+            $desc:"设置当前的片段标志符(Fragement Identifier)",
             $paras:[
                 "fi [必需参数] : String, 片段标志符",
-                "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]."
+                "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]"
             ],
             $snippet:[
                 "//xui.History.setCallback(function(str){alert('Fragement Identifier is: '+str)});\n"+
@@ -4029,58 +4026,58 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Cookies 类(静态类)",
         get:{
-            $desc:"获取全部或指定名字的cookie值.",
+            $desc:"获取全部或指定名字的cookie值",
             $rtn:"String",
             $paras:[
-                "name [必需参数] : String, cookie名字."
+                "name [必需参数] : String, cookie名字"
             ],
             $snippet:[
                 "var o=xui.Cookies; o.set('a','b',1); alert(o.get('a')); o.remove('a'); alert(o.get('a')); "
             ]
         },
         set:{
-            $desc:"保存一个cookie名,cookie值 和其他参数等.",
+            $desc:"保存一个cookie名,cookie值 和其他参数等",
             $rtn:"xui.Cookies",
             $paras:[
-                "name [必需参数] : String, Cookie名.",
-                "value [必需参数] : String, cookie值.",
-                "days [可选参数] : Number, 过期天数. 默认为 0.",
-                "path [可选参数] : String, cookie有效的目录. 默认为当前 URL.",
-                "domain [可选参数] : String, 网站域名. 默认为当前URL的域名.",
-                "isSecure [可选参数] : Boolean, 指示cookie是否只能被安全的主机获取. 默认为 [false]."
+                "name [必需参数] : String, Cookie名",
+                "value [必需参数] : String, cookie值",
+                "days [可选参数] : Number, 过期天数. 默认为 0",
+                "path [可选参数] : String, cookie有效的目录. 默认为当前 URL",
+                "domain [可选参数] : String, 网站域名. 默认为当前URL的域名",
+                "isSecure [可选参数] : Boolean, 指示cookie是否只能被安全的主机获取. 默认为 [false]"
             ],
             $snippet:[
                 "var o=xui.Cookies; o.set('a','b',1); alert(o.get('a')); o.remove('a'); alert(o.get('a')); "
             ]
         },
         remove:{
-            $desc:"移除指定名字的cookie.",
+            $desc:"移除指定名字的cookie",
             $rtn:"xui.Cookies",
             $paras:[
-                "name [必需参数] : String, cookie名字."
+                "name [必需参数] : String, cookie名字"
             ],
             $snippet:[
                 "var o=xui.Cookies; o.set('a','b',1); alert(o.get('a')); o.remove('a'); alert(o.get('a')); "
             ]
         },
         clear:{
-            $desc:"移除当前域名下的所有cookie."
+            $desc:"移除当前域名下的所有cookie"
         }
     });
     xui.set(xui.Locale,["cn","doc","xui","Debugger"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Debugger 类(静态)",
         'log':{
-            $desc:"在Debugger窗口中打印日志信息.",
+            $desc:"在Debugger窗口中打印日志信息",
             $snippet:[
                 "//可以输入多个参数:\n"+
                 "xui.Debugger.log(9,'a',[1,2],{a:1,b:2})"
             ]
         },
         trace:{
-            $desc:"在Debugger窗口中打印对象的成员属性值和函数的调用关系信息.",
+            $desc:"在Debugger窗口中打印对象的成员属性值和函数的调用关系信息",
             $paras:[
-                "obj [可选参数] : Object."
+                "obj [可选参数] : Object"
             ],
             $snippet:[
                 "xui.Debugger.trace({a:1,b:2})"
@@ -4098,12 +4095,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Date 类(静态类)",
         add:{
-            $desc:"在基准时间戳加上一个时间段.",
-            $rtn:"Object, the result Date Object.",
+            $desc:"在基准时间戳加上一个时间段",
+            $rtn:"Object, the result Date Object",
             $paras:[
-                "date [必需参数] : Date Object, 基准时间戳.",
-                "datepart [必需参数] : String, 时间段单位. 'ms','s','n','h','d','ww','m','q','y','de' or 'c'.",
-                "count [必需参数] : Number, 时间段的值."
+                "date [必需参数] : Date Object, 基准时间戳",
+                "datepart [必需参数] : String, 时间段单位'ms','s','n','h','d','ww','m','q','y','de' or 'c'",
+                "count [必需参数] : Number, 时间段的值"
             ],
             $snippet:[
                 "var date=xui.Date,d=date.parse('1/1/2000'),arr=[];"+
@@ -4122,13 +4119,13 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         diff:{
-            $desc:"获取两个时间戳之间的时间段.",
+            $desc:"获取两个时间戳之间的时间段",
             $rtn:"Number",
             $paras:[
-                "startdate [必需参数] : Date, 开始时间.",
-                "enddate [必需参数] : Date, 结束时间.",
-                "datepart [必需参数] : String, 时间段单位.  'ms','s','n','h','d','ww','m','q','y','de' or 'c'.",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "startdate [必需参数] : Date, 开始时间",
+                "enddate [必需参数] : Date, 结束时间",
+                "datepart [必需参数] : String, 时间段单位.  'ms','s','n','h','d','ww','m','q','y','de' or 'c'",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "var date=xui.Date,sd=date.parse('1/1/2000'),ed=new Date,arr=[];"+
@@ -4147,12 +4144,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         get:{
-            $desc:"获取时间戳在某个单位上的整数值.",
+            $desc:"获取时间戳在某个单位上的整数值",
             $rtn:"Number",
             $paras:[
-                "date [必需参数] : Date Object, 时间戳.",
-                "datepart [必需参数] : String, 时间单位. 'ms','s','n','h','d','ww','m','q','y','de' or 'c'.",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "date [必需参数] : Date Object, 时间戳",
+                "datepart [必需参数] : String, 时间单位'ms','s','n','h','d','ww','m','q','y','de' or 'c'",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "var date=xui.Date,d=new Date();"+
@@ -4171,13 +4168,13 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getTimSpanStart:{
-            $desc:"Gets the 'from' time of the given time span(e.g. 3 hours, 2 day, 1 week...).",
+            $desc:"Gets the 'from' time of the given time span(e.g. 3 hours, 2 day, 1 week...)",
             $rtn:"Object, Date Object",
             $paras:[
-                "date [必需参数] : Date Object, a date to caculate the time span.",
-                "datepart [必需参数] : String, the time span's datepart: 'ms','s','n','h','d','ww','m','q','y','de' or 'c'.",
-                "count [可选参数] : Number, how many [datepart]s in the time span. 默认为 1.",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "date [必需参数] : Date Object, a date to caculate the time span",
+                "datepart [必需参数] : String, the time span's datepart: 'ms','s','n','h','d','ww','m','q','y','de' or 'c'",
+                "count [可选参数] : Number, how many [datepart]s in the time span. 默认为 1",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "var date=xui.Date,d=new Date,arr=[];"+
@@ -4197,13 +4194,13 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getTimSpanEnd:{
-            $desc:"Gets the 'to' time of the given time span(e.g. 3 hours, 2 day, 1 week...).",
+            $desc:"Gets the 'to' time of the given time span(e.g. 3 hours, 2 day, 1 week...)",
             $rtn:"Object, Date Object",
             $paras:[
-                "date [必需参数] : Date Object, a date to caculate the time span.",
-                "datepart [必需参数] : String, time span's datepart: 'ms','s','n','h','d','ww','m','q','y','de' or 'c'.",
-                "count [可选参数] : Number, how many [datepart]s in the time span. 默认为 1.",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "date [必需参数] : Date Object, a date to caculate the time span",
+                "datepart [必需参数] : String, time span's datepart: 'ms','s','n','h','d','ww','m','q','y','de' or 'c'",
+                "count [可选参数] : Number, how many [datepart]s in the time span. 默认为 1",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "var date=xui.Date,d=new Date,arr=[];"+
@@ -4223,12 +4220,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         format:{
-            $desc:"按照给定的格式格式化日期.",
+            $desc:"按照给定的格式格式化日期",
             $rtn:"String",
             $paras:[
-                "date [必需参数] : Date Object, 时间戳.",
-                "format [必需参数] : String, 时间格式. 可用的时间元素有： (utciso|iso|yyyy|mm|ww|dd|hh|nn|ss|ms|de|c|y|q|m|w|d|h|n|s). ",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "date [必需参数] : Date Object, 时间戳",
+                "format [必需参数] : String, 时间格式. 可用的时间元素有： (utciso|iso|yyyy|mm|ww|dd|hh|nn|ss|ms|de|c|y|q|m|w|d|h|n|s)",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "var arr=[],date=xui.Date,d=new Date;"+
@@ -4258,12 +4255,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getText:{
-            $desc:"将时间戳转化为一个可以显示的字符串.",
+            $desc:"将时间戳转化为一个可以显示的字符串",
             $rtn:"String",
             $paras:[
-                "date [必需参数] : Date Object, 时间戳.",
-                "datepart [必需参数] : String, 显示的时间格式.",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "date [必需参数] : Date Object, 时间戳",
+                "datepart [必需参数] : String, 显示的时间格式",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "var arr=[],date=xui.Date,d=new Date;"+
@@ -4298,22 +4295,22 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getWeek:{
-            $desc:"获取时间戳是一年的第几周.",
+            $desc:"获取时间戳是一年的第几周",
             $rtn:"Number",
             $paras:[
-                "date [必需参数] : Date Object, 时间戳.",
-                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0."
+                "date [必需参数] : Date Object, 时间戳",
+                "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
                 "alert(xui.Date.getWeek(new Date))"
             ]
         },
         parse:{
-            $desc:"解析一个字符串,并转化为相应的[Date]对象.",
+            $desc:"解析一个字符串,并转化为相应的[Date]对象",
             $rtn:"Object, Date Object",
             $paras:[
-                "str [必需参数] : String, 表示时间的字符串.",
-                "foramt [可选参数] : String, 可选的日期时间格式(例如,yyyy-mm-dd 或 dd/mm/yyyy hh:nn:ss ms)."
+                "str [必需参数] : String, 表示时间的字符串",
+                "foramt [可选参数] : String, 可选的日期时间格式(例如,yyyy-mm-dd 或 dd/mm/yyyy hh:nn:ss ms)"
             ],
             $snippet:[
                 "alert(xui.Date.parse('1/1/1998'))",
@@ -4323,12 +4320,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         offsetTimeZone:{
-            $desc:"计算时间戳在在指定的time zone上的时间.",
+            $desc:"计算时间戳在在指定的time zone上的时间",
             $rtn:"Object, Date Object",
             $paras:[
-                "date [必需参数] : Date Object, 时间戳.",
-                "timeZone [必需参数] : integer Number, time zone的编号.",
-                "back [可选参数] : Boolean, 指示是否使用相反的偏移量. 默认为 [false]."
+                "date [必需参数] : Date Object, 时间戳",
+                "timeZone [必需参数] : integer Number, time zone的编号",
+                "back [可选参数] : Boolean, 指示是否使用相反的偏移量. 默认为 [false]"
             ],
             $snippet:[
                 "var localDate = new Date, timezone9Date=xui.Date.offsetTimeZone(localDate, 9);"+
@@ -4339,21 +4336,21 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","absObj"], {
         getAll:{
-            $desc:"获取该类的所有对象实例.",
+            $desc:"获取该类的所有对象实例",
             $rtn:"xui.absObj, 当前类对象",
             $snippet:[
                 "alert(xui.UI.getAll().get().length)"
             ]
         },
         pickAlias:{
-            $desc:"为类选择一个可用的对象的别名.",
+            $desc:"为类选择一个可用的对象的别名",
             $rtn:'String',
             $snippet:[
                 "alert(xui.UI.Button.pickAlias())"
             ]
         },
         setDataModel:{
-            $desc:"设置类的一系列数据模型.",
+            $desc:"设置类的一系列数据模型",
             $rtn:"xui.absObject",
             $paras:[
                 "hash [必需参数] : 键值对"
@@ -4363,7 +4360,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setEventHandlers:{
-            $desc:"设置类的一系列事件.",
+            $desc:"设置类的一系列事件",
             $rtn:"xui.absObject",
             $paras:[
                 "hash [必需参数] : 键值对"
@@ -4373,11 +4370,11 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         unserialize:{
-            $desc:"将JSON字符串或数组反序列化为xui.absObj对象.",
+            $desc:"将JSON字符串或数组反序列化为xui.absObj对象",
             $rtn:"xui.UI",
             $paras:[
-                "target [必需参数] : String/Array.",
-                "keepSerialId [可选参数] : Boolean, 指示是否保留序列号. 默认为 [false]."
+                "target [必需参数] : String/Array",
+                "keepSerialId [可选参数] : Boolean, 指示是否保留序列号. 默认为 [false]"
             ],
             $snippet:[
                 "var s=xui.UIProfile.getFromDom('btnLang').boxing().serialize(false); alert(xui.serialize(s)); alert(xui.UI.unserialize(s))"
@@ -4392,7 +4389,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"@Deprecated.(请用 setAlias/getAlias)"
             },
             getHost:{
-                $desc:"获取宿主对象.",
+                $desc:"获取宿主对象",
                 $rtn:'Object',
                 $snippet:[
                     "var o=xui.UIProfile.getFromDom('btnLang'); alert(o.host===SPA);",
@@ -4400,11 +4397,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHost:{
-                $desc:"设置借宿对象和别名.",
+                $desc:"设置借宿对象和别名",
                 $rtn:'[self]',
                 $paras:[
-                    "host [可选参数 : Object, 宿主.",
-                    "alias [可选参数 : String, 别名字符串."
+                    "host [可选参数 : Object, 宿主",
+                    "alias [可选参数 : String, 别名字符串"
                 ],
                 $snippet:[
                     "var o=xui.UIProfile.getFromDom('btnLang'); alert(o.host===SPA);",
@@ -4412,34 +4409,34 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getProperties:{
-                $desc:"取得当前对象所有的属性或某个指定的属性.",
+                $desc:"取得当前对象所有的属性或某个指定的属性",
                 $rtn:"Object",
                 $paras:[
-                    "key [可选参数] : String或Boolean, 属性名称.如果为true,将返回包括隐藏属性的所有属性."
+                    "key [可选参数] : String或Boolean, 属性名称.如果为true,将返回包括隐藏属性的所有属性"
                 ]
             },
             setProperties:{
-                $desc:"设置一系列的属性或某个指定的属性到所有对象.",
+                $desc:"设置一系列的属性或某个指定的属性到所有对象",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Object/String, 属性键/值对或属性关键字.",
-                    "value [可选参数] : Object, 属性值."
+                    "key [必需参数] : Object/String, 属性键/值对或属性关键字",
+                    "value [可选参数] : Object, 属性值"
                 ]
             },
             getEvents:{
-                $desc:"获取当前对象的所有事件或某个指定的事件.",
+                $desc:"获取当前对象的所有事件或某个指定的事件",
                 $rtn:"Object"
             },
             setEvents:{
-                $desc:"设置一系列的事件或某个指定的事件到所有对象.",
+                $desc:"设置一系列的事件或某个指定的事件到所有对象",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Object, 事件键/值对或事件关键字.",
-                    "value [可选参数] : Object, 事件函数."
+                    "key [必需参数] : Object, 事件键/值对或事件关键字",
+                    "value [可选参数] : Object, 事件函数"
                 ]
             },
             getAlias:{
-                $desc:"获取别名.",
+                $desc:"获取别名",
                 $rtn:'String',
                 $snippet:[
                     "var o=xui.UIProfile.getFromDom('btnLang'); alert(o.alias); alert(o.host[o.alias].get(0)===o)",
@@ -4447,10 +4444,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAlias:{
-                $desc:"设置别名.",
+                $desc:"设置别名",
                 $rtn:'[self]',
                 $paras:[
-                    "str [可选参数] : String, 别名字符串."
+                    "str [可选参数] : String, 别名字符串"
                 ],
                 $snippet:[
                     "var o=xui.UIProfile.getFromDom('btnLang'); alert(o.alias); alert(o.host[o.alias].get(0)===o)",
@@ -4462,10 +4459,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setDesc:{
-                $desc:"设置控件的描述值.",
+                $desc:"设置控件的描述值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -4474,10 +4471,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setName:{
-                $desc:"设置输入性控件的名字.",
+                $desc:"设置输入性控件的名字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -4492,10 +4489,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTag:{
-                $desc:"设置控件的附加值.",
+                $desc:"设置控件的附加值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -4513,7 +4510,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件的附属性绑定配置",
                  $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
@@ -4535,10 +4532,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTagVar:{
-                $desc:"设置控件的附加对象.",
+                $desc:"设置控件的附加对象",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ],
                 $snippet:[
@@ -4559,10 +4556,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDataBinder:{
-                $desc:"设置数据绑定器名称.",
+                $desc:"设置数据绑定器名称",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -4583,10 +4580,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDataField:{
-                $desc:"设置数据字段名称.",
+                $desc:"设置数据字段名称",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -4597,11 +4594,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             serialize:{
-                $desc:"将当前对象序列化为JSON字符串.",
+                $desc:"将当前对象序列化为JSON字符串",
                 $rtn:"String",
                 $paras:[
-                    "rtnString [可选参数] : Boolean, to indicate whether or not it returns String or Object. 默认为 true.",
-                    "keepHost [可选参数] : Boolean, to keep host Object link or not. 默认为 false."
+                    "rtnString [可选参数] : Boolean, to indicate whether or not it returns String or Object. 默认为 true",
+                    "keepHost [可选参数] : Boolean, to keep host Object link or not. 默认为 false"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').boxing().serialize());" +
@@ -4614,36 +4611,36 @@ xui.set(xui.Locale,["cn","app"], {
     xui.set(xui.Locale,["cn","doc","xui","absProfile"], {
         prototype:{
             getId:{
-                $desc:"获取唯一的标志符.",
+                $desc:"获取唯一的标志符",
                 $rtn:"String",
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').getId())"
                 ]
             },
             link:{
-                $desc:"将 [target] 参数链接到一个对象或数组,并指定链接的识别字符串[id]. 可以调用'unLink'去除链接.",
+                $desc:"将 [target] 参数链接到一个对象或数组,并指定链接的识别字符串[id]. 可以调用'unLink'去除链接",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [必需参数] : Object or Array.",
-                    "id [必需参数] : String, link id.",
-                    "target [可选参数] : Object, 默认为 [self]."
+                    "obj [必需参数] : Object or Array",
+                    "id [必需参数] : String, link id",
+                    "target [可选参数] : Object, 默认为 [self]"
                 ],
                 $snippet:[
                     "var profile=new xui.Profile(), a1=[],a2=[],a3=[]; profile.link(a1,'a').link(a2,'b').link(a3,'c'); alert(a1+':'+a2+':'+a3); profile.unLink('a'); alert(a1+':'+a2+':'+a3); profile.unLinkAll(); alert(a1+':'+a2+':'+a3); "
                 ],
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $memo:"一般情况下,程序员无需直接调用该函数"
 
             },
             unLink:{
-                $desc:"移除指定的识别字符串[id]的到对象或数组的链接.",
+                $desc:"移除指定的识别字符串[id]的到对象或数组的链接",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 在link函数中指定的链接的识别字符串[id]."
+                    "id [必需参数] : String, 在link函数中指定的链接的识别字符串[id]"
                 ],
                 $snippet:[
                     "var profile=new xui.Profile(), a1=[],a2=[],a3=[]; profile.link(a1,'a').link(a2,'b').link(a3,'c'); alert(a1+':'+a2+':'+a3); profile.unLink('a'); alert(a1+':'+a2+':'+a3); profile.unLinkAll(); alert(a1+':'+a2+':'+a3); "
                 ],
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $memo:"一般情况下,程序员无需直接调用该函数"
             },
             unLinkAll:{
                 $desc:"移除所有链接",
@@ -4651,7 +4648,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var profile=new xui.Profile(), a1=[],a2=[],a3=[]; profile.link(a1,'a').link(a2,'b').link(a3,'c'); alert(a1+':'+a2+':'+a3); profile.unLink('a'); alert(a1+':'+a2+':'+a3); profile.unLinkAll(); alert(a1+':'+a2+':'+a3); "
                 ],
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $memo:"一般情况下,程序员无需直接调用该函数"
             }
         }
     });
@@ -4661,16 +4658,16 @@ xui.set(xui.Locale,["cn","app"], {
         $desc:"xui.Profile 类",
         constructor:{
             $desc:"生成一个概要对象",
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             serialize:{
-                $desc:"将一个控件概要对象(profile)序列化为一个JSON字符串或一个JSON对象.",
+                $desc:"将一个控件概要对象(profile)序列化为一个JSON字符串或一个JSON对象",
                 $rtn:"String",
                 $paras:[
-                    "rtnString [可选参数] : Boolean, 指示返回一个JSON字符串还是一个JSON对象. 默认为字符串.",
-                    "keepHost [可选参数] : Boolean, 指示是否保持和宿主的联系. 默认为 false."
+                    "rtnString [可选参数] : Boolean, 指示返回一个JSON字符串还是一个JSON对象. 默认为字符串",
+                    "keepHost [可选参数] : Boolean, 指示是否保持和宿主的联系. 默认为 false"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').serialize());" +
@@ -4678,34 +4675,34 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getProperties:{
-                $desc:"取得所有的属性或某个指定的属性.",
+                $desc:"取得所有的属性或某个指定的属性",
                 $rtn:"Object",
                 $paras:[
-                    "key [可选参数] : String, 属性名称."
+                    "key [可选参数] : String, 属性名称"
                 ]
             },
             setProperties:{
-                $desc:"设置一系列的属性或某个指定的属性.",
+                $desc:"设置一系列的属性或某个指定的属性",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Object/String, 属性键/值对或属性关键字.",
-                    "value [可选参数] : Object, 属性值."
+                    "key [必需参数] : Object/String, 属性键/值对或属性关键字",
+                    "value [可选参数] : Object, 属性值"
                 ]
             },
             getEvents:{
-                $desc:"获取该对象的所有事件或某个指定的事件.",
+                $desc:"获取该对象的所有事件或某个指定的事件",
                 $rtn:"Object"
             },
             setEvents:{
-                $desc:"设置一系列的事件或某个指定的事件.",
+                $desc:"设置一系列的事件或某个指定的事件",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Object, 事件键/值对或事件关键字.",
-                    "value [可选参数] : Object, 事件函数."
+                    "key [必需参数] : Object, 事件键/值对或事件关键字",
+                    "value [可选参数] : Object, 事件函数"
                 ]
             },
             boxing:{
-                $desc:"将当前的控件概要对象(profile)打包为一个xui.absBox对象,并返回打包后的对象.",
+                $desc:"将当前的控件概要对象(profile)打包为一个xui.absBox对象,并返回打包后的对象",
                 $rtn:'xui.absBox',
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').boxing().KEY)"
@@ -4719,13 +4716,13 @@ xui.set(xui.Locale,["cn","app"], {
         $desc:"xui.UIProfile 类",
         constructor:{
             $desc:"生成一个控件概要对象(profile)",
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         getFromDom:{
-            $desc:"从一个指定的DOM元素的id上获取一个控件概要对象(profile).",
+            $desc:"从一个指定的DOM元素的id上获取一个控件概要对象(profile)",
             $rtn:"xui.UIProfile",
             $paras:[
-                "id [必需参数] : String, DOM元素或id."
+                "id [必需参数] : String, DOM元素或id"
             ],
             $snippet:[
                 "alert(xui.UIProfile.getFromDom('btnLang').serialize());",
@@ -4735,35 +4732,35 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             renderId:{
-                $desc:"String, 指示一个控件概要对象(profile)是否被渲染(生成了对应的Dom节点)."
+                $desc:"String, 指示一个控件概要对象(profile)是否被渲染(生成了对应的Dom节点)"
             },
             getContainer:{
-                $desc:"获得容器(xui.Dom)对象,如果没有容器返回根节点.",
+                $desc:"获得容器(xui.Dom)对象,如果没有容器返回根节点",
                 $rtn:"xui.Dom",
                 $paras:[
                     "subId [可选参数] : 容器的sub id"
                 ]
             },
             getRoot:{
-                $desc:"获取控件概要对象(profile)的根节点.",
+                $desc:"获取控件概要对象(profile)的根节点",
                 $rtn:"xui.Dom",
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').getRoot());"
                 ]
             },
             getRootNode:{
-                $desc:"获取控件概要对象(profile)的根节点Element.",
+                $desc:"获取控件概要对象(profile)的根节点Element",
                 $rtn:"Element",
                 $snippet:[
                 "alert(xui.UIProfile.getFromDom('btnLang').getRootNode());"
                 ]
             },
             serialize:{
-                $desc:"将一个控件概要对象(profile)序列化为一个JSON字符串或一个JSON对象.",
+                $desc:"将一个控件概要对象(profile)序列化为一个JSON字符串或一个JSON对象",
                 $rtn:"String",
                 $paras:[
-                    "rtnString [可选参数] : Boolean, 指示返回一个JSON字符串还是一个JSON对象. 默认为字符串.",
-                    "keepHost [可选参数] : Boolean, 指示是否保持和宿主的联系. 默认为 false."
+                    "rtnString [可选参数] : Boolean, 指示返回一个JSON字符串还是一个JSON对象. 默认为字符串",
+                    "keepHost [可选参数] : Boolean, 指示是否保持和宿主的联系. 默认为 false"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').serialize());" +
@@ -4771,32 +4768,32 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             toHtml:{
-                $desc:"将当前的控件概要对象(profile)构造为一个html字符串, 并返回.",
+                $desc:"将当前的控件概要对象(profile)构造为一个html字符串, 并返回",
                 $rtn:"String",
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').toHtml())"
                 ]
             },
             getClass:{
-                $desc:"获取控件概要对象(profile)特定节点的CSS类名.",
+                $desc:"获取控件概要对象(profile)特定节点的CSS类名",
                 $rtn:"String",
                 $paras:[
-                    "key [必需参数] : String, 控件节点的键值.",
-                    "tag [可选参数] : String, 附加字符串."
+                    "key [必需参数] : String, 控件节点的键值",
+                    "tag [可选参数] : String, 附加字符串"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').getClass('CAPTION','-mouseover'))"
                 ]
             },
             getDomId:{
-                $desc:"获取控件概要对象(profile)根节点的DOM id.",
+                $desc:"获取控件概要对象(profile)根节点的DOM id",
                 $rtn:"String",
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').getDomId())"
                 ]
             },
             setDomId:{
-                $desc:"设置控件概要对象(profile)根节点的dom id.",
+                $desc:"设置控件概要对象(profile)根节点的dom id",
                 $rtn:"[self]",
                 $paras:[
                     "id [必需参数] : String, id 字符串"
@@ -4806,59 +4803,59 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             queryItems:{
-                 $desc:"从一个对象数组中查询对应的子项对象.",
+                 $desc:"从一个对象数组中查询对应的子项对象",
                  $rtn:"Array",
                  $paras:[
-                    "items [必需参数] : 对象数组.",
-                    "fun [必需参数] : Function, 查询过滤函数.",
-                    "deep [可选参数] : Boolean, 指示是否查询子项. 默认为 [false].",
-                    "single [可选参数] : Boolean, 指示是否返回一个值. 默认为 [false].",
-                    "flag [可选参数] : Boolean, 指示是否返回包括链接信息的复杂值. 默认为 [false]."
+                    "items [必需参数] : 对象数组",
+                    "fun [必需参数] : Function, 查询过滤函数",
+                    "deep [可选参数] : Boolean, 指示是否查询子项. 默认为 [false]",
+                    "single [可选参数] : Boolean, 指示是否返回一个值. 默认为 [false]",
+                    "flag [可选参数] : Boolean, 指示是否返回包括链接信息的复杂值. 默认为 [false]"
                 ],
                 $snippet:[
-                    "var profile=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:'), items=[{id:'a'},{id:'.b',sub:[{id:'aa'},{id:'.bb'}]}], filter=function(o,i){return o.id.indexOf('.')!=-1},results= profile.queryItems(items,filter);alert(results.length);results= profile.queryItems(items,filter,true);alert(results.length);results= profile.queryItems(items,filter,true,true);alert(results.length);results= profile.queryItems(items,filter,false,true);alert(results.length);",
-                    "var profile=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:'), items=profile.properties.items, filter=function(o,i){return o.id.indexOf('.')!=-1},results= profile.queryItems(items,filter);alert(results.length);results= profile.queryItems(items,filter,true);alert(results.length);results= profile.queryItems(items,filter,true,true);alert(results.length);results= profile.queryItems(items,filter,false,true);alert(results.length);"
+                    "var profile=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:'), items=[{id:'a'},{id:'.b',sub:[{id:'aa'},{id:'.bb'}]}], filter=function(o,i){return o.id.indexOf(\".\")!=-1},results= profile.queryItems(items,filter);alert(results.length);results= profile.queryItems(items,filter,true);alert(results.length);results= profile.queryItems(items,filter,true,true);alert(results.length);results= profile.queryItems(items,filter,false,true);alert(results.length);",
+                    "var profile=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:'), items=profile.properties.items, filter=function(o,i){return o.id.indexOf(\".\")!=-1},results= profile.queryItems(items,filter);alert(results.length);results= profile.queryItems(items,filter,true);alert(results.length);results= profile.queryItems(items,filter,true,true);alert(results.length);results= profile.queryItems(items,filter,false,true);alert(results.length);"
 
                 ]
             },
             getItemByDom:{
-                $desc:"从指定的DOM节点(或DOM id)中获取子项对象.",
-                $rtn:"Object, 键值对.",
+                $desc:"从指定的DOM节点(或DOM id)中获取子项对象",
+                $rtn:"Object, 键值对",
                 $paras:[
-                    "src [必需参数] : DOM(或DOM的id)."
+                    "src [必需参数] : DOM(或DOM的id)"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(xui.serialize( pro.getItemByDom('xui.UI.TreeBar-ITEM:a:a') ))"
                 ],
-                $memo:"该函数只对[xui.absList]及其派生类有效. 一般情况下, 我们在事件回调函数使用该函数."
+                $memo:"该函数只对[xui.absList]及其派生类有效. 一般情况下, 我们在事件回调函数使用该函数"
             },
             getItemIdByDom:{
-                $desc:"从指定的DOM节点(或DOM的id)中获取一个项的id.",
+                $desc:"从指定的DOM节点(或DOM的id)中获取一个项的id",
                 $rtn:"String",
                 $paras:[
-                    "src [必需参数] : DOM(或DOM的id)."
+                    "src [必需参数] : DOM(或DOM的id)"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(xui.serialize( pro.getItemIdByDom('xui.UI.TreeBar-ITEM:a:a') ))"
                 ],
-                $memo:"该函数只对[xui.absList]及其派生类有效. 一般情况下, 我们在事件回调函数使用该函数."
+                $memo:"该函数只对[xui.absList]及其派生类有效. 一般情况下, 我们在事件回调函数使用该函数"
             },
             getItemByItemId:{
-                $desc:"根据一个subId来获取对应的子项对象.",
-                $rtn:"Object, 键值对.",
+                $desc:"根据一个subId来获取对应的子项对象",
+                $rtn:"Object, 键值对",
                 $paras:[
-                    "itemId [必需参数] :String, item id."
+                    "itemId [必需参数] :String, item id"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(xui.serialize( pro.getItemByItemId('Class') ))"
                 ],
-                $memo:"该函数只对[xui.absList]及其派生类有效. "
+                $memo:"该函数只对[xui.absList]及其派生类有效"
             },
             getSubIdByItemId:{
-                $desc:"根据一个项id来获取对应的subId.",
+                $desc:"根据一个项id来获取对应的subId",
                 $rtn:"String",
                 $paras:[
-                    "itemId [必需参数] :String, 项id."
+                    "itemId [必需参数] :String, 项id"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getSubIdByItemId('Class') )"
@@ -4866,11 +4863,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $memo:"该函数只对[xui.absList]及其派生类有效"
             },
             getSubNode:{
-                $desc:"按照给定的[key]和subId来获取控件中特定的DOM节点.",
+                $desc:"按照给定的[key]和subId来获取控件中特定的DOM节点",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "key [必需参数] : String, 键字符串.",
-                    "subId [可选参数] : String/Boolean. 如果是 [true] 代表得到给定键的所有DOM节点；如果是字符串代表只得到 subId 为给定的值的DOM节点."
+                    "key [必需参数] : String, 键字符串",
+                    "subId [可选参数] : String/Boolean. 如果是 [true] 代表得到给定键的所有DOM节点；如果是字符串代表只得到 subId 为给定的值的DOM节点"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').getSubNode('KEY').id());"+
@@ -4880,10 +4877,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $memo:"参数[subId]只对[xui.absList]及其派生类有效"
             },
             getSubNodes:{
-                $desc:"按照给定的一组[key]和subId来获取控件中特定一组DOM节点.",
+                $desc:"按照给定的一组[key]和subId来获取控件中特定一组DOM节点",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "arr [必需参数] : String/Array, 一组key.",
+                    "arr [必需参数] : String/Array, 一组key",
                     "subId [可选参数] : String/Array/Boolean. 如果是 [true] 代表得到给定键的所有节点；如果是字符串或字符串数组代表只得到 subId 为给定的值的DOM节点. 默认为[true]"
                 ],
                 $snippet:[
@@ -4894,77 +4891,77 @@ xui.set(xui.Locale,["cn","app"], {
                 $memo:"参数[subId]只对[xui.absList]及其派生类有效"
             },
             getSubNodeByItemId:{
-                $desc:"按照给定的[key]和[itemId]来获取控件中特定DOM节点.",
+                $desc:"按照给定的[key]和[itemId]来获取控件中特定DOM节点",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "key [必需参数] : String, key 字符串.",
-                    "itemId [可选参数] : String, item id 字符串."
+                    "key [必需参数] : String, key 字符串",
+                    "itemId [可选参数] : String, item id 字符串"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').getSubNodeByItemId('ITEM','Class').id())"
                 ],
-                $memo:"从 [xui.absList] 派生出来的类才有这个函数."
+                $memo:"从 [xui.absList] 派生出来的类才有这个函数"
             },
             getKey:{
-                $desc:"从一个给定的DOM id中得到节点的键值.",
+                $desc:"从一个给定的DOM id中得到节点的键值",
                 $rtn:"String",
                 $paras:[
-                    "id [必需参数] :String, DOM id."
+                    "id [必需参数] :String, DOM id"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getKey('xui.UI.TreeBar:a:') )"
                 ]
             },
             getSubId:{
-                $desc:"从一个给定的DOM id中得到subId值.",
+                $desc:"从一个给定的DOM id中得到subId值",
                 $rtn:"String",
                 $paras:[
-                    "id [必需参数] :String, item id."
+                    "id [必需参数] :String, item id"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(pro.getSubId('xui.UI.TreeBar:a:ab') )"
                 ]
             },
             clearCache:{
-                $desc:"清除这个控件概要对象(profile)中的缓存数据.",
+                $desc:"清除这个控件概要对象(profile)中的缓存数据",
                 $rtn:"[self]",
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $memo:"一般情况下,程序员无需直接调用该函数"
             },
             pickSubId:{
-                $desc:"根据给定的节点键值得到一个sub id.",
+                $desc:"根据给定的节点键值得到一个sub id",
                 $rtn:"String",
                 $paras:[
-                    "key [必需参数] : String, key 字符串."
+                    "key [必需参数] : String, key 字符串"
                 ],
                 $snippet:[
                     "var profile=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:'), id1=profile.pickSubId('items'), id2=profile.pickSubId('items');profile.reclaimSubId(id1,'items');var id3=profile.pickSubId('items');alert(id1+':'+id2+':'+id3);"
                 ],
-                $memo:"一般情况下,程序员不需要手动调用该函数."
+                $memo:"一般情况下,程序员不需要手动调用该函数"
             },
             reclaimSubId:{
-                $desc:"回收一个节点键值的sub id.",
+                $desc:"回收一个节点键值的sub id",
                 $paras:[
-                    "id [必需参数] : String, id 字符串.",
-                    "key [必需参数] : String, key 字符串."
+                    "id [必需参数] : String, id 字符串",
+                    "key [必需参数] : String, key 字符串"
                 ],
                 $snippet:[
                     "var profile=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:'), id1=profile.pickSubId('items'), id2=profile.pickSubId('items');profile.reclaimSubId(id1,'items');var id3=profile.pickSubId('items');alert(id1+':'+id2+':'+id3);"
                 ],
-                $memo:"一般情况下,程序员不需要手动调用该函数."
+                $memo:"一般情况下,程序员不需要手动调用该函数"
             },
             linkParent:{
-                $desc:"链接一个控件概要对象(profile)到父控件概要对象(profile).",
+                $desc:"链接一个控件概要对象(profile)到父控件概要对象(profile)",
                 $rtn:"[self]",
                 $paras:[
-                    "parentProfile [必需参数] : UIProfile, 父UIProfile.",
-                    "linkId [可选参数] : String, 链接id."
+                    "parentProfile [必需参数] : UIProfile, 父UIProfile",
+                    "linkId [可选参数] : String, 链接id"
                 ],
-                $memo:"一般情况下,程序员不需要手动调用该函数."
+                $memo:"一般情况下,程序员不需要手动调用该函数"
             },
             unlinkParent:{
-                $desc:"从父控件概要对象(profile)上断开链接.",
+                $desc:"从父控件概要对象(profile)上断开链接",
                 $rtn:"[self]",
-                $memo:"一般情况下,程序员不需要手动调用该函数."
+                $memo:"一般情况下,程序员不需要手动调用该函数"
             }
         }
     });
@@ -4973,10 +4970,10 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Template 类",
         getFromDom:{
-            $desc:"从一个DOM元素中获取一个模板(template)对象.",
+            $desc:"从一个DOM元素中获取一个模板(template)对象",
             $rtn:"xui.Template",
             $paras:[
-                "id [必需参数] : String, DOM元素或id."
+                "id [必需参数] : String, DOM元素或id"
             ],
             $snippet:[
                 "var id='xui.temp.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -4985,12 +4982,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         constructor:{
-            $desc:"HTML模板.",
+            $desc:"HTML模板",
             $paras:[
-                "template [可选参数] : String, HTML模板.",
-                "properties [可选参数] : 键值对, 模板的填充参数.",
-                "events [可选参数] : 键值对, 一系列的事件.",
-                "domId [可选参数] : String, 模板根节点的DOM id."
+                "template [可选参数] : String, HTML模板",
+                "properties [可选参数] : 键值对, 模板的填充参数",
+                "events [可选参数] : 键值对, 一系列的事件",
+                "domId [可选参数] : String, 模板根节点的DOM id"
             ],
             $snippet:[
                 "var id='xui.temp.t1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5003,17 +5000,17 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             renderId:{
-                $desc:"String, 指示模板是否被渲染(生成了DOM)."
+                $desc:"String, 指示模板是否被渲染(生成了DOM)"
             },
             show:{
-                $desc:"显示模板对象.",
+                $desc:"显示模板对象",
                 $rtn:"[self]",
                 $paras:[
-                    "parent [可选参数]: String/Element/xui.Dom 父DOM节点."
+                    "parent [可选参数]: String/Element/xui.Dom 父DOM节点"
                 ]
             },
             refresh:{
-                $desc:"刷新模板.",
+                $desc:"刷新模板",
                 $rtn:"[self]",
                 $snippet:[
                 "var id='xui.temp.0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5023,7 +5020,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRoot:{
-                $desc:"获取模板生成实例的DOM的根节点(只对已生成的模板有效).",
+                $desc:"获取模板生成实例的DOM的根节点(只对已生成的模板有效)",
                 $rtn:"Element",
                 $snippet:[
                 "var id='xui.temp.01'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5032,7 +5029,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRootNode:{
-                $desc:"获取模板生成实例的的根节点DOM Element(只对已生成的模板有效).",
+                $desc:"获取模板生成实例的的根节点DOM Element(只对已生成的模板有效)",
                 $rtn:"Element",
                 $snippet:[
                 "var id='xui.temp.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5041,7 +5038,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItem:{
-                $desc:"从一个DOM元素上获取项的数据.",
+                $desc:"从一个DOM元素上获取项的数据",
                 $rtn:"Object",
                 $paras:[
                     "src [必需参数] : Dom 元素"
@@ -5053,34 +5050,34 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             toHtml:{
-                $desc:"将参数填入模板,返回并构造后的HTML串.",
+                $desc:"将参数填入模板,返回并构造后的HTML串",
                 $rtn:"String",
                 $paras:[
-                    "properties [可选参数] : 构造参数."
+                    "properties [可选参数] : 构造参数"
                 ],
                 $snippet:[
                     "var t=new xui.Template({'':'<div>{caption}</div>'},{id:'1',caption:'cap'}); alert(t.toHtml())"
                 ]
             },
             serialize:{
-                $desc:"将当前的模板序列化为字符串.",
+                $desc:"将当前的模板序列化为字符串",
                 $rtn:"String",
                 $snippet:[
                     "var t=new xui.Template({'':'<div>{caption}</div>'},{id:'1',caption:'cap'}); alert(t.serialize())"
                 ]
             },
             destroy:{
-                $desc:"销毁当前模板."
+                $desc:"销毁当前模板"
             },
             getDomId:{
-                $desc:"从当前模板中获取DOM id.",
+                $desc:"从当前模板中获取DOM id",
                 $rtn:"String",
                 $snippet:[
                     "var t=new xui.Template({'':'<div>{caption}</div>'},{id:'1',caption:'cap'}); t.setDomId('t_1'); alert(t.getDomId())"
                 ]
             },
             render:{
-                $desc:"将模板渲染成一个DOM元素.",
+                $desc:"将模板渲染成一个DOM元素",
                 $rtn:"[self]",
                 $snippet:[
                 "var id='xui.temp.3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5089,9 +5086,9 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             renderOnto:{
-                $desc:"将模板渲染成一个DOM元素, 并提换一个现有的DOM元素.",
+                $desc:"将模板渲染成一个DOM元素, 并提换一个现有的DOM元素",
                 $paras:[
-                    "node [必需参数] : DOM element, 要被替换的DOM元素."
+                    "node [必需参数] : DOM element, 要被替换的DOM元素"
                 ],
                 $snippet:[
                 "var id='xui.temp.4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><div id=\"renderOnto\"></div><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5100,10 +5097,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDomId:{
-                $desc:"设置当前模板的DOM id.",
+                $desc:"设置当前模板的DOM id",
                 $rtn:'[self]',
                 $paras:[
-                    "id [必需参数] : String, DOM id."
+                    "id [必需参数] : String, DOM id"
                 ],
                 $snippet:[
                 "var id='xui.temp.5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5112,11 +5109,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setEvents:{
-                $desc:"设置当前模板的事件.",
+                $desc:"设置当前模板的事件",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : 模板空位名.",
-                    "value [可选参数] : Function, 事件函数."
+                    "key [必需参数] : 模板空位名",
+                    "value [可选参数] : Function, 事件函数"
                 ],
                 $snippet:[
                 "var id='xui.temp.tt1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5126,10 +5123,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setProperties:{
-                $desc:"设置当前模板的参数.",
+                $desc:"设置当前模板的参数",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : 模板空位名.",
+                    "key [必需参数] : 模板空位名",
                     "value [可选参数] : Object. 模板空位的值"
                 ],
                 $snippet:[
@@ -5140,11 +5137,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTemplate:{
-                $desc:"设置模板的HTML串.",
+                $desc:"设置模板的HTML串",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : 模板键.",
-                    "value [可选参数] : String, 模板键值."
+                    "key [必需参数] : 模板键",
+                    "value [可选参数] : String, 模板键值"
                 ],
                 $snippet:[
                 "var id='xui.temp.tt3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -5163,9 +5160,9 @@ xui.set(xui.Locale,["cn","app"], {
         constructor:{
             $desc:"xui.Module的构造函数",
             $paras:[
-                "properties [可选参数] : Object, key/value(any) pairs. the Module properties Object. 默认为 {}.",
-                "events [可选参数] : Object, key/value(Function) pairs. the Module event Object. 默认为 {}.",
-                "host [可选参数] : Object, the Module's host Object. 默认为 itself."
+                "properties [可选参数] : Object, key/value(any) pairs. the Module properties Object. 默认为 {}",
+                "events [可选参数] : Object, key/value(Function) pairs. the Module event Object. 默认为 {}",
+                "host [可选参数] : Object, the Module's host Object. 默认为 itself"
             ],
             $snippet:[
                 "var order=[], module = new xui.Module({"+
@@ -5196,7 +5193,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "   order.push('onEnd'); "+
                 "});",
 
-                "Class('App1','xui.Module',{" +
+                "xui.Class('App1','xui.Module',{" +
                 "    Instance:{" +
                 "        Dependencies : ['xui.UI', 'xui.Date']," +
                 "        Required : ['xui.UI.Dialog', 'xui.UI.Button']," +
@@ -5266,7 +5263,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "var module = new App1;" +
                 "module.show();",
 
-                "Class('App2','xui.Module',{" +
+                "xui.Class('App2','xui.Module',{" +
                 "    Instance:{" +
                 "        Dependencies : ['xui.UI']," +
                 "        Required : ['xui.UI.Dialog']," +
@@ -5313,12 +5310,12 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         'load':{
-            $desc:"从远程文件加载一个 xui.Module 的代码,然后新建它的 xui.Module 的实例,最后返回这个实例.",
+            $desc:"从远程文件加载一个 xui.Module 的代码,然后新建它的 xui.Module 的实例,最后返回这个实例",
             $paras:[
-                "cls [必需参数] : String, 类名字.",
-                "onEnd [可选参数]: Function(err:Error/String, module: xui.Module). 类加载完之后调用.",
-                "lang [可选参数] : String, 语言名称.(例如, 'en').",
-                "theme [可选参数] : String, 主题名称.(例如, 'vista').",
+                "cls [必需参数] : String, 类名字",
+                "onEnd [可选参数]: Function(err:Error/String, module: xui.Module). 类加载完之后调用",
+                "lang [可选参数] : String, 语言名称.(例如, 'en')",
+                "theme [可选参数] : String, 主题名称.(例如, 'vista')",
                 "showUI [可选参数] : Boolean, 是否显示界面. 默认为 true;"
             ],
             $snippet:[
@@ -5329,82 +5326,82 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getFromDom:{
-            $desc:"从一个指定的DOM元素获取 xui.Module 实例.",
+            $desc:"从一个指定的DOM元素获取 xui.Module 实例",
             $paras:[
-                "id [必需参数] : String, DOM元素或xid."
+                "id [必需参数] : String, DOM元素或xid"
             ]
         },
         getClsFromDom:{
-            $desc:"从一个指定的DOM元素获取 xui.Module 类名.",
+            $desc:"从一个指定的DOM元素获取 xui.Module 类名",
             $paras:[
-                "id [必需参数] : String, DOM元素或xid."
+                "id [必需参数] : String, DOM元素或xid"
             ]
         },
         getAllInstance:{
-            $desc:"得到所有实例."
+            $desc:"得到所有实例"
         },
         destroyAll:{
-            $desc:"销毁所有实例."
+            $desc:"销毁所有实例"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             autoDestroy:{
-                $desc:"本Module是否随着第一个内UI控件的销毁而销毁."
+                $desc:"本Module是否随着第一个内UI控件的销毁而销毁"
             },
             isDestroyed:{
-                $desc:"判断当前对象是否已被销毁."
+                $desc:"判断当前对象是否已被销毁"
             },
             fireEvent:{
                 $desc:"触发自定义的事件",
                 $rtn:"Object",
                 $paras:[
-                    "event: [必需参数] : String, 自定义事件的名字. ",
-                    "args [可选参数]: Array, 事件的参数.",
-                    "host [可选参数]: Object, 事件函数的作用域对象."
+                    "event: [必需参数] : String, 自定义事件的名字",
+                    "args [可选参数]: Array, 事件的参数",
+                    "host [可选参数]: Object, 事件函数的作用域对象"
                 ],
                 $snippet:[
-                 "Class('Temp.Demo', 'xui.Module',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
+                 "xui.Class('Temp.Demo', 'xui.Module',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
                  "xui.ModuleFactory.getModule('Temp.Demo',function(){this.setEvents('onCall',function(){alert(xui.toArr(arguments))});this.trigger();});"
                 ]
             },
             render:{
-                $desc:'渲染内部的 UI 组件.',
+                $desc:'渲染内部的 UI 组件',
                 $rtn:"[self]",
-                $demo:"You have to call this function after the module was created. And xui.Module.show will trigger this function automatically."
+                $demo:"You have to call this function after the module was created. And xui.Module.show will trigger this function automatically"
             },
             getAlias:{
-                $desc:"得到别名.",
+                $desc:"得到别名",
                 $rtn:'String'
             },
             setAlias:{
-                $desc:"设置别名.",
+                $desc:"设置别名",
                 $rtn:'[self]',
                 $paras:[
-                    "str [可选参数] : String, the alias value."
+                    "str [可选参数] : String, the alias value"
                 ]
             },
             AddComponents:{
-                $desc:"向当前 Module 中添加控件.",
+                $desc:"向当前 Module 中添加控件",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [必需参数] : xui.absObj Object."
+                    "obj [必需参数] : xui.absObj Object"
                 ]
             },
             setComponents:{
-                $desc:"设置目前Module的内部组件.",
+                $desc:"设置目前Module的内部组件",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [必需参数]  : xui.absObj Object."
+                    "obj [必需参数]  : xui.absObj Object"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setComponents((new xui.UI.Button()).setHost(window,'btn') ); alert(module.getComponents().get(0).alias); });},false);"
                 ]
             },
             getComponents:{
-                $desc:"得到所有的内部组件.",
+                $desc:"得到所有的内部组件",
                 $rtn:"xui.absObj",
                 $snippet:[
-                    "Class('App1','xui.Module',{" +
+                    "xui.Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5426,14 +5423,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDataBinders:{
-                $desc:"获取指定xui.Module对象包含的所有DataBinder组件.",
+                $desc:"获取指定xui.Module对象包含的所有DataBinder组件",
                 $rtn:"Array"
             },
             getUIComponents:{
-                $desc:"获取指定xui.Module对象包含的所有UI组件.",
+                $desc:"获取指定xui.Module对象包含的所有UI组件",
                 $rtn:"xui.UI",
                 $snippet:[
-                    "Class('App1','xui.Module',{" +
+                    "xui.Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5455,48 +5452,48 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getAllComponents:{
-                $desc:"得到所有的内部组件.",
+                $desc:"得到所有的内部组件",
                 $rtn:"xui.absObj"
             },
             getProfile:{
-                $desc:"获取所有内部控件的侧写.",
+                $desc:"获取所有内部控件的侧写",
                 $rtn:"Object, 键值对"
             },
             setProfile:{
-                $desc:"设置内部控件的侧写.",
+                $desc:"设置内部控件的侧写",
                 $rtn:"[self]",
                  $paras:[
                     "profiles [必需参数] : Object, 键值对"
                 ]
             },
             getData:{
-                $desc:"获取所有内部控件的数据.",
+                $desc:"获取所有内部控件的数据",
                 $rtn:"Object, 键值对"
             },
             setData:{
-                $desc:"设置数据到内部控件.",
+                $desc:"设置数据到内部控件",
                 $rtn:"[self]",
                  $paras:[
                     "data [必需参数] : Object, 键值对"
                 ]
             },
             getValue:{
-                $desc:"获取所有内部值控件的真实值.",
+                $desc:"获取所有内部值控件的真实值",
                 $rtn:"Object, 键值对"
             },
            setValue:{
-                $desc:"设置值到内部的值控件.",
+                $desc:"设置值到内部的值控件",
                 $rtn:"[self]",
                  $paras:[
                     "values [必需参数] : Object, 键值对"
                 ]
             },
             getUIValue:{
-                $desc:"获取Module对象上的所有界面值控件的界面值.",
+                $desc:"获取Module对象上的所有界面值控件的界面值",
                 $rtn:"Object, 键值对"
             },
             setUIValue:{
-                $desc:"设置Module对象上的所有界面值控件的界面值.",
+                $desc:"设置Module对象上的所有界面值控件的界面值",
                 $rtn:"[self]",
                  $paras:[
                     "values [必需参数] : Object, 键值对"
@@ -5510,7 +5507,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getEvents:{
-                $desc:"获取Module对象上的所有事件处理函数.",
+                $desc:"获取Module对象上的所有事件处理函数",
                 $rtn:"Object, String or Function",
                 $paras:[
                     "key [可选参数] : String"
@@ -5521,71 +5518,71 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setEvents:{
-                $desc:"将一系列的事件处理函数(或一个带有key的事件处理函数)附加到Module对象.",
+                $desc:"将一系列的事件处理函数(或一个带有key的事件处理函数)附加到Module对象",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Objecyt/String, 一系列的事件处理函数或key值.",
-                    "value [可选参数] : Function, event function."
+                    "key [必需参数] : Objecyt/String, 一系列的事件处理函数或key值",
+                    "value [可选参数] : Function, event function"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setEvents('onA',function(){}); alert(module.getEvents('onA'))});},false);"
                 ]
             },
             create:{
-                $desc:"使用异步方式生成Module对象.",
+                $desc:"使用异步方式生成Module对象",
                 $paras:[
-                    "onEnd [Optiona] : Function. 回调函数,在Module对象成功生成后执行.",
-                    "threadid [可选参数] : String, 内部线程id.  如本参数为 false, 表示生成Module的过程不会异步调用函数（不用xui.Thread）."
+                    "onEnd [Optiona] : Function. 回调函数,在Module对象成功生成后执行",
+                    "threadid [可选参数] : String, 内部线程id.  如本参数为 false, 表示生成Module的过程不会异步调用函数（不用xui.Thread）"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert('created!')});},false);"
                 ]
             },
             customAppend:{
-                $desc:"把UI控件加到DOM.如果函数内没有做任何appen的工作,并返回false,show函数会把所有的UI控件都将加入到DOM.",
+                $desc:"把UI控件加到DOM.如果函数内没有做任何appen的工作,并返回false,show函数会把所有的UI控件都将加入到DOM",
                 $paras:[
-                    "parent [必需参数] : xui.UI, xui.UI 或 xui.Dom对象.",
-                    "subId [可选参数] : String, the sub id that Determines the set of UIProfiles will be added to.",
-                    "left [可选参数] : Number, 显示的左边坐标.",
-                    "top [可选参数] : Number, 显示的上边坐标.",
-                    "threadid [可选参数] : String, 线程Id."
+                    "parent [必需参数] : xui.UI, xui.UI 或 xui.Dom对象",
+                    "subId [可选参数] : String, the sub id that Determines the set of UIProfiles will be added to",
+                    "left [可选参数] : Number, 显示的左边坐标",
+                    "top [可选参数] : Number, 显示的上边坐标",
+                    "threadid [可选参数] : String, 线程Id"
                 ]
             },
             iniExModules:{
-                $desc:"加载其他Module可以用本函数.",
+                $desc:"加载其他Module可以用本函数",
                 $paras:[
-                    "module [必需参数] : xui.Module, 当前Module对象.",
-                    "threadid [可选参数] : String, 线程Id."
+                    "module [必需参数] : xui.Module, 当前Module对象",
+                    "threadid [可选参数] : String, 线程Id"
                 ]
             },
             iniResource:{
-                $desc:"加载外部的资源（通过Ajax取得数据）可以用本函数.",
+                $desc:"加载外部的资源（通过Ajax取得数据）可以用本函数",
                 $paras:[
-                    "module [必需参数] : xui.Module, 当前Module对象.",
-                    "threadid [可选参数] : String, 线程Id."
+                    "module [必需参数] : xui.Module, 当前Module对象",
+                    "threadid [可选参数] : String, 线程Id"
                 ]
             },
             show:{
-                $desc:"显示Module对象.",
+                $desc:"显示Module对象",
                 $paras:[
-                    "onEnd [Optiona] : Function. 回调函数,在Module对象成功显示后执行.",
-                    "parent [可选参数] : String/Element/xui.Dom, 父DOM节点或xui.UI对象.",
-                    "subId [可选参数] : String, 该参数在parent为xui.UI对象时有效.该子id. The sub id that Determines the [target] will be added to which sub DOM node. 该参数也可以设置成[false], that means the [target] will be appended to DOM only, no link created between the [target] UIProfiles and the parent UIProfile.",
-                    "threadid [可选参数] : String, 内部线程id. 如本参数为 false, 表示显示Module的过程不会异步调用函数（不用xui.Thread）."
+                    "onEnd [Optiona] : Function. 回调函数,在Module对象成功显示后执行",
+                    "parent [可选参数] : String/Element/xui.Dom, 父DOM节点或xui.UI对象",
+                    "subId [可选参数] : String, 该参数在parent为xui.UI对象时有效.该子id. The sub id that Determines the [target] will be added to which sub DOM node. 该参数也可以设置成[false], that means the [target] will be appended to DOM only, no link created between the [target] UIProfiles and the parent UIProfile",
+                    "threadid [可选参数] : String, 内部线程id. 如本参数为 false, 表示显示Module的过程不会异步调用函数（不用xui.Thread）"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; Module.show(function(){});},false);"
                 ]
             },
             destroy:{
-                $desc:"销毁对象.",
-                $memo:"通常情况下, 程序员不必直接调用该函数."
+                $desc:"销毁对象",
+                $memo:"通常情况下, 程序员不必直接调用该函数"
             },
             iniComponents:{
-                $desc:"生成内部的组件并返回内部组件数组(xui.absObj Object).",
-                $rtn:"Array, xui.absObj对象数组.",
+                $desc:"生成内部的组件并返回内部组件数组(xui.absObj Object)",
+                $rtn:"Array, xui.absObj对象数组",
                 $snippet:[
-                    "Class('App1','xui.Module',{" +
+                    "xui.Class('App1','xui.Module',{" +
                     "   Instance:{"+
                     "        iniComponents : function(){" +
                     "            var host=this, children=[], append=function(child){children.push(child.get(0))};" +
@@ -5607,10 +5604,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getProperties:{
-                $desc:"取得Module对象所有的属性或某个指定的属性.",
+                $desc:"取得Module对象所有的属性或某个指定的属性",
                 $rtn:"Object",
                 $paras:[
-                    "key [可选参数] : String, 属性名称."
+                    "key [可选参数] : String, 属性名称"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(xui.serialize(module.getProperties()))});},false);",
@@ -5618,29 +5615,29 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setProperties:{
-                $desc:"设置Module对象的一系列的属性或某个指定的属性.",
+                $desc:"设置Module对象的一系列的属性或某个指定的属性",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Object/String, 属性或key数组.",
-                    "value [可选参数] : Object, a property value."
+                    "key [必需参数] : Object/String, 属性或key数组",
+                    "value [可选参数] : Object, a property value"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setProperties('p3','p3 value'); alert(module.getProperties('p3'))});},false);"
                 ]
             },
             setHost:{
-                $desc:"设置host对象.",
+                $desc:"设置host对象",
                 $rtn:"[self]",
                 $paras:[
-                    "host [必需参数] : Object, host对象.",
-                    "alias [可选参数] : String, 别名."
+                    "host [必需参数] : Object, host对象",
+                    "alias [可选参数] : String, 别名"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setHost(window,'module_alias'); alert(module.getHost()===window); alert(window.module_alias)});},false);"
                 ]
             },
             getHost:{
-                $desc:"获取host对象.",
+                $desc:"获取host对象",
                 $rtn:"Object",
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setHost(window,'module_alias'); alert(module.getHost()===window); alert(window.module_alias)});},false);"
@@ -5648,108 +5645,108 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             beforeCreated:{
-                $desc:'在Module生成之前触发.如果返回false,当前Module对象将不会生成.',
+                $desc:'在Module生成之前触发.如果返回false,当前Module对象将不会生成',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             onCreated:{
-                $desc:'在Module生成的时候触发.',
+                $desc:'在Module生成的时候触发',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             beforeShow:{
-                $desc:'在Module显示前触发.',
+                $desc:'在Module显示前触发',
                 $paras:[
-                    'module : xui.Module 对象.'
+                    'module : xui.Module 对象'
                 ]
             },
             afterShow:{
-                $desc:'在Module显示后触发.',
+                $desc:'在Module显示后触发',
                 $paras:[
-                    'module : xui.Module 对象.'
+                    'module : xui.Module 对象'
                 ]
             },
             onLoadBaseClass:{
-                $desc:'当Module加载基类的时候触发本事件.',
+                $desc:'当Module加载基类的时候触发本事件',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.',
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id',
                     'uri: String 类的uri',
-                    'key: String, 基类的类名.'
+                    'key: String, 基类的类名'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             onLoadBaseClassErr:{
-                $desc:'当Module加载基类出错的时候触发本事件.',
+                $desc:'当Module加载基类出错的时候触发本事件',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.',
-                    'key: String, 基类的类名.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id',
+                    'key: String, 基类的类名'
                 ]
             },
             onIniResource:{
-                $desc:'当Module加载资源的时候触发本事件.',
+                $desc:'当Module加载资源的时候触发本事件',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             beforeIniComponents:{
-                $desc:'当Module初始化组件前触发本事件.如果返回false,iniComponents函数将不被执行.',
+                $desc:'当Module初始化组件前触发本事件.如果返回false,iniComponents函数将不被执行',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             afterIniComponents:{
-                $desc:'当 Module 运行iniComponents函数之后触发.',
+                $desc:'当 Module 运行iniComponents函数之后触发',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             onLoadRequiredClass:{
-                $desc:'当 Module 加载所需要的类时触发.',
+                $desc:'当 Module 加载所需要的类时触发',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.',
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id',
                     'uri: String 类的uri',
-                    'key: String, 加载的类名.'
+                    'key: String, 加载的类名'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             onLoadRequiredClassErr:{
-                $desc:'当 Module 加载所需要的类出错时触发.',
+                $desc:'当 Module 加载所需要的类出错时触发',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.',
-                    'key: String, 加载的类名.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id',
+                    'key: String, 加载的类名'
                 ]
             },
             onReady:{
-                $desc:'当 Module 构建完成后触发.',
+                $desc:'当 Module 构建完成后触发',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             },
             onRender:{
-                $desc:'当 Module 的UI部分被加到DOM时触发.',
+                $desc:'当 Module 的UI部分被加到DOM时触发',
                 $paras:[
-                    'module : xui.Module 对象.',
-                    'threadid : String, 线程 id.'
+                    'module : xui.Module 对象',
+                    'threadid : String, 线程 id'
                 ],
-                $memo:'See constructor.'
+                $memo:'See constructor'
             }
         }
     });
@@ -5759,11 +5756,11 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.ModuleFactory 类(静态类)",
         setProfile:{
-            $desc:"设置应用模块工厂(ModuleFatory)的profile.",
+            $desc:"设置应用模块工厂(ModuleFatory)的profile",
             $rtn:'xui.ModuleFactory',
             $paras:[
-                "key [必需参数] : String或键值对.",
-                "value [可选参数] : String 或 键值对."
+                "key [必需参数] : String或键值对",
+                "value [可选参数] : String 或 键值对"
             ],
             $snippet:[
                 "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
@@ -5775,10 +5772,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getProfile:{
-            $desc:"获取应用模块工厂(ModuleFatory)的profile.",
+            $desc:"获取应用模块工厂(ModuleFatory)的profile",
             $rtn:'String/Object',
             $paras:[
-                "key [可选参数] : String."
+                "key [可选参数] : String"
             ],
             $snippet:[
                 "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
@@ -5787,9 +5784,9 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         broadcast:{
-            $desc:"广播一个消息(function)到所有的应用模块(xui.Module)中.",
+            $desc:"广播一个消息(function)到所有的应用模块(xui.Module)中",
             $paras:[
-                "fun [必需参数] : Function, 要广播的函数."
+                "fun [必需参数] : Function, 要广播的函数"
             ],
             $snippet:[
                 "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1', (new this));},false);"+
@@ -5798,7 +5795,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         destroyAll:{
-            $desc:"销毁应用模块工厂(ModuleFatory)加载的所有模块.",
+            $desc:"销毁应用模块工厂(ModuleFatory)加载的所有模块",
             $snippet:[
                 "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
                 "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
@@ -5807,10 +5804,10 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getModuleFromCache:{
-            $desc:"获取一个缓存中已经存在的应用模块对象(Module Object).",
+            $desc:"获取一个缓存中已经存在的应用模块对象(Module Object)",
             $rtn:"xui.Module",
             $paras:[
-                "id [必需参数] : String, 应用模块对象id."
+                "id [必需参数] : String, 应用模块对象id"
             ],
             $snippet:[
                 "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
@@ -5819,30 +5816,30 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         getModule :{
-            $desc:"获取一个缓存中已经存在的应用模块对象(Module Object), 如果不存在,则加载应用模块对应的js文件,再生成应用模块对象(Module Object).",
+            $desc:"获取一个缓存中已经存在的应用模块对象(Module Object), 如果不存在,则加载应用模块对应的js文件,再生成应用模块对象(Module Object)",
             $rtn:"xui.Module",
             $paras:[
-                "cls [必需参数] : String, 应用模块对象类名.",
-                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 生成应用模块对象(Module Object)成功后被调用.",
+                "cls [必需参数] : String, 应用模块对象类名",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数, 生成应用模块对象(Module Object)成功后被调用",
                 "threadid [可选参数] : String, 内部线程id",
-                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newModule.",
-                "properties [可选参数] : Object, 键值对,module的属性.",
-                "events [可选参数] : Object, 键值对,module的事件."
+                "cached [可选参数] : Boolean, 默认为 true,优先从缓存中获取，加载后缓存. 当 cached 为 false 的时候相当于 newModule",
+                "properties [可选参数] : Object, 键值对,module的属性",
+                "events [可选参数] : Object, 键值对,module的事件"
             ],
             $snippet:[
-                "xui.ModuleFactory.getModule('App.Test1',function(){alert('The Module loaded successfully.')});",
+                "xui.ModuleFactory.getModule('App.Test1',function(){alert('The Module loaded successfully')});",
 
                 "xui.ModuleFactory.destroyAll();"+
                 "xui.ModuleFactory.setProfile({test1:{cls:'App.Test1',properties:{key1:1},events:{ev1:function(){alert(2)}}},test2:'App.Test2'});"+
-                "xui.ModuleFactory.getModule('test1',function(){alert('The Module loaded successfully.');alert(this.properties.key1); this.events.ev1();});"
+                "xui.ModuleFactory.getModule('test1',function(){alert('The Module loaded successfully');alert(this.properties.key1); this.events.ev1();});"
             ]
         },
         setModule:{
-            $desc:"设置一个应用模块对象(Module Object),并和一个Module id关联.",
+            $desc:"设置一个应用模块对象(Module Object),并和一个Module id关联",
             $rtn:"xui.ModuleFactory",
             $paras:[
-                "id [必需参数] : String, Module id关联.",
-                "obj [必需参数] : Object, 应用模块对象(Module Object)."
+                "id [必需参数] : String, Module id关联",
+                "obj [必需参数] : Object, 应用模块对象(Module Object)"
             ],
             $snippet:[
                 "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1',(new this));},false);"+
@@ -5851,21 +5848,21 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         newModule :{
-            $desc:"生成一个新的应用模块类, 或加载一个应用模块类, 生成并返回它.",
+            $desc:"生成一个新的应用模块类, 或加载一个应用模块类, 生成并返回它",
             $paras:[
-                "cls [必需参数] : String, 应用模块类的路径名字.",
-                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数,加载应用模块类成功后被调用.",
+                "cls [必需参数] : String, 应用模块类的路径名字",
+                "onEnd [可选参数] : Function(err:Error/String, module: xui.Module, threadid:String), 回调函数,加载应用模块类成功后被调用",
                 "threadid [可选参数] : String, the inner threadid",
-                "properties [可选参数] : Object, 键值对,module的属性.",
-                "events [可选参数] : Object, 键值对,module的事件."
+                "properties [可选参数] : Object, 键值对,module的属性",
+                "events [可选参数] : Object, 键值对,module的事件"
             ],
             $snippet:[
                 "xui.ModuleFactory.destroyAll();"+
-                "xui.ModuleFactory.newModule('App.Test1',function(){alert('The module loaded successfully.')});"
+                "xui.ModuleFactory.newModule('App.Test1',function(){alert('The module loaded successfully')});"
             ]
         },
         prepareModules:{
-            $desc:"在后台加载并生成一些列的应用模块, 这些模块需要在profile中事先被定义.",
+            $desc:"在后台加载并生成一些列的应用模块, 这些模块需要在profile中事先被定义",
             $rtn:"xui.ModuleFactory",
             $snippet:[
                 "//xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});\n"+
@@ -5875,7 +5872,7 @@ xui.set(xui.Locale,["cn","app"], {
         storeModule:{
             $desc:"存储一个应用模块. (切断和父DOM节点的关联, 并存放到一个隐藏的div.)",
             $paras:[
-                "id [Require] : 应用模块id."
+                "id [Require] : 应用模块id"
             ],
             $snippet:[
                 "xui.ModuleFactory.destroyAll();"+
@@ -5893,51 +5890,51 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Timer 类",
         constructor:{
-            $desc:"生成一个Timer对象."
+            $desc:"生成一个Timer对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             destroy:{
-                $desc:"销毁该对象.",
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $desc:"销毁该对象",
+                $memo:"一般情况下,程序员无需直接调用该函数"
             },
             getInteval:{
-                $desc:"获取定时器间隔.",
+                $desc:"获取定时器间隔",
                 $rtn:"Number"
             },
             setInteval:{
-                $desc:"设置定时器间隔.",
-                $rtn:"[self].",
+                $desc:"设置定时器间隔",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
             onTime:{
-                $desc:"定时器到期触发. 如返回[false]将终止定时器.",
+                $desc:"定时器到期触发. 如返回[false]将终止定时器",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "threadId : String"
                 ]
             },
             onStart:{
-                $desc:"当定时器开始运行.",
+                $desc:"当定时器开始运行",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "threadId : String"
                 ]
             },
             onSuspend:{
-                $desc:"当定时器挂起.",
+                $desc:"当定时器挂起",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "threadId : String"
                 ]
             },
             onEnd:{
-                $desc:"当定时器结束.",
+                $desc:"当定时器结束",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "threadId : String"
                 ]
             }
@@ -5948,131 +5945,131 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.APICaller 类",
         WDSLCache:{
-            $desc:"SOAP的WDSL缓存."
+            $desc:"SOAP的WDSL缓存"
         },
         constructor:{
-            $desc:"生成一个 APICaller 对象."
+            $desc:"生成一个 APICaller 对象"
         },
         destroyAll:{
-            $desc:"销毁所有xui.APICaller.",
+            $desc:"销毁所有xui.APICaller",
             $snippet:[
                 "//xui.DataBinder.destroyAll()"
             ]
         },
         getFromName:{
-            $desc:"获取名字为指定值的xui.DataBinder对象.",
-            $rtn:'xui.DataBinder Object.',
+            $desc:"获取名字为指定值的xui.DataBinder对象",
+            $rtn:'xui.DataBinder Object',
             $paras:[
-                "name [必需参数] : String, DataBinder名字."
+                "name [必需参数] : String, DataBinder名字"
             ]
         },
         prototype:{
             KEY:{$desc:"本类名"},
             setHost:{
-                $desc:"设置借宿对象和别名.",
+                $desc:"设置借宿对象和别名",
                 $rtn:'[self]',
                 $paras:[
-                    "host [可选参数 : Object, 宿主.",
-                    "alias [可选参数 : String, 别名字符串."
+                    "host [可选参数 : Object, 宿主",
+                    "alias [可选参数 : String, 别名字符串"
                 ]
             },
             destroy:{
-                $desc:"销毁该对象.",
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $desc:"销毁该对象",
+                $memo:"一般情况下,程序员无需直接调用该函数"
             },
             setName:{
-                $desc:"设置名称.",
+                $desc:"设置名称",
                 $rtn:'[self]',
                 $paras:[
                     "value [必需参数] : String, 名字字符串"
                 ],
-                $memo:"参看'getValue'代码片段. "
+                $memo:"参看'getValue'代码片段"
             },
             getName:{
-                $desc:"返回名字.",
+                $desc:"返回名字",
                 $rtn:'String',
-                $memo:"参看'getValue'代码片段. "
+                $memo:"参看'getValue'代码片段"
             },
             getAvoidCache:{
-                $desc:"得到是否要为了避免浏览器缓存，而添加一个随机参数.",
+                $desc:"得到是否要为了避免浏览器缓存，而添加一个随机参数",
                 $rtn:'[self]'
             },
             setAvoidCache:{
-                $desc:"决定是否要为了避免浏览器缓存，而添加一个随机参数.",
+                $desc:"决定是否要为了避免浏览器缓存，而添加一个随机参数",
                 $rtn:'[self]',
                 $paras:[
                     "value [必需参数] : Boolean"
                 ]
             },
             getQueryURL:{
-                $desc:"获取远程数据源的URL请求地址.",
+                $desc:"获取远程数据源的URL请求地址",
                 $rtn:"String"
             },
             setQueryURL:{
-                $desc:"设置远程数据源的URL请求地址.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的URL请求地址",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
                     $force
                 ]
             },
             getQueryUserName:{
-                $desc:"获取远程数据源的URL请求用户名.",
+                $desc:"获取远程数据源的URL请求用户名",
                 $rtn:"String"
             },
             setQueryUserName:{
-                $desc:"设置远程数据源的URL请求用户名.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的URL请求用户名",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
                     $force
                 ]
             },
             getQueryPassword:{
-                $desc:"获取远程数据源的URL请求密码.",
+                $desc:"获取远程数据源的URL请求密码",
                 $rtn:"String"
             },
             setQueryPassword:{
-                $desc:"设置远程数据源的URL请求密码.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的URL请求密码",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
                     $force
                 ]
             },
             getQueryMethod:{
-                $desc:"获取远程数据源的URL请求方式.",
+                $desc:"获取远程数据源的URL请求方式",
                 $rtn:"String"
             },
             setQueryMethod:{
-                $desc:"设置远程数据源的URL请求方式.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的URL请求方式",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 'auto','GET'或'POST', 默认为auto.",
+                    "value [必需参数] : String'auto','GET'或'POST', 默认为auto",
                     $force
                 ]
             },
             getQueryAsync:{
-                $desc:"获取远程数据源的数据请求是否为异步方式.",
+                $desc:"获取远程数据源的数据请求是否为异步方式",
                 $rtn:"Boolean"
             },
             setQueryAsync:{
-                $desc:"设置远程数据源的数据请求是否为异步方式.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的数据请求是否为异步方式",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getFakeCookies:{
-                $desc:"获取Cookies伪装.",
+                $desc:"获取Cookies伪装",
                 $rtn:"Object"
             },
             setFakeCookies:{
-                $desc:"设置Cookies伪装.",
-                $rtn:"[self].",
+                $desc:"设置Cookies伪装",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
@@ -6081,10 +6078,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object"
             },
             setQueryHeader:{
-                $desc:"设置需要附加的请求头.",
-                $rtn:"[self].",
+                $desc:"设置需要附加的请求头",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
@@ -6093,8 +6090,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Array"
             },
             setRequestDataSource:{
-                $desc:"设置请求的数据源.",
-                $rtn:"[self].",
+                $desc:"设置请求的数据源",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array. [{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
                     $force
@@ -6105,139 +6102,139 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Array"
             },
             setResponseDataTarget:{
-                $desc:"设置响应数据的呈现方式.",
-                $rtn:"[self].",
+                $desc:"设置响应数据的呈现方式",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array. [{bindertype:'alert',path:'xx'},{bindertype:'log',path:'xx'},{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
                     $force
                 ]
             },
             getQueryArgs:{
-                $desc:"获取远程数据源的数据请求参数.",
+                $desc:"获取远程数据源的数据请求参数",
                 $rtn:"Object"
             },
             setQueryArgs:{
-                $desc:"设置远程数据源的数据请求参数.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的数据请求参数",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
             getOAuth2Token:{
-                $desc:"获取数据请求的 OAuth2Token.",
+                $desc:"获取数据请求的 OAuth2Token",
                 $rtn:"String"
             },
             setOAuth2Token:{
-                $desc:"设置数据请求的 OAuth2Token.",
-                $rtn:"[self].",
+                $desc:"设置数据请求的 OAuth2Token",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getQueryOptions:{
-                $desc:"获取远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
+                $desc:"获取远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options]",
                 $rtn:"Object"
             },
             setQueryOptions:{
-                $desc:"设置远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options].",
-                $rtn:"[self].",
+                $desc:"设置远程数据源数据请求时的自定义选项[同 Ajax/SAjax/IAjax 的 options]",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
             getProxyType:{
-                $desc:"获取远程数据源的数据请求代理种类.",
+                $desc:"获取远程数据源的数据请求代理种类",
                 $rtn:"String"
             },
             setProxyType:{
-                $desc:"设置远程数据源的数据请求代理种类.",
-                $rtn:"[self].",
+                $desc:"设置远程数据源的数据请求代理种类",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. auto/Ajax/SAjax/IAjax之一,默认为auto.",
+                    "value [必需参数] : String. auto/Ajax/SAjax/IAjax之一,默认为auto",
                     $force
                 ]
             },
             getRequestId:{
-                $desc:"获取远程数请求的标识ID.",
+                $desc:"获取远程数请求的标识ID",
                 $rtn:"String"
             },
             setRequestId:{
-                $desc:"设置远程数请求的标识ID.",
-                $rtn:"[self].",
+                $desc:"设置远程数请求的标识ID",
+                $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 自定义的请求标识.",
+                    "value [必需参数] : String. 自定义的请求标识",
                     $force
                 ]
             },
             getRequestType:{
-                $desc:"获取向远程数据源发送数据请求的数类型.",
+                $desc:"获取向远程数据源发送数据请求的数类型",
                 $rtn:"String"
             },
             setRequestType:{
-                $desc:"设置向远程数据源发送数据请求的数类型.",
-                $rtn:"[self].",
+                $desc:"设置向远程数据源发送数据请求的数类型",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. HTTP,JSON,XML,SOAP 之一",
                     $force
                 ]
             },
             getResponseType:{
-                $desc:"获取从远程数据源得到的数据类型.",
+                $desc:"获取从远程数据源得到的数据类型",
                 $rtn:"String"
             },
             setResponseType:{
-                $desc:"设置从远程数据源得到的数据类型.",
-                $rtn:"[self].",
+                $desc:"设置从远程数据源得到的数据类型",
+                $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String. JSON,XML,SOAP 之一",
                     $force
                 ]
             },
             invoke:{
-                $desc:"远程数据调用.",
+                $desc:"远程数据调用",
                 $rtn:"[xui.absIO]",
                 $paras:[
-                    "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数.",
-                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数.",
-                    "onStart [可选参数] : Function, ajax开始时的载的回调函数.",
-                    "onEnd [可选参数] : Function, ajax结束时的回调函数.",
-                    "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal.",
+                    "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
+                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                    "onStart [可选参数] : Function, ajax开始时的载的回调函数",
+                    "onEnd [可选参数] : Function, ajax结束时的回调函数",
+                    "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal",
                     "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
-                    "options [可选参数]: Object, 一组配置数据."
+                    "options [可选参数]: Object, 一组配置数据"
                 ]
             },
 
             beforeInvoke:{
-                $desc:"在invoke之前调用.  返回false可以阻止远程调用.",
+                $desc:"在invoke之前调用.  返回false可以阻止远程调用",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "requestId : String"
                 ]
             },
             onData:{
-                $desc:"在得到数据之后调用.",
+                $desc:"在得到数据之后调用",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "rspData : Object, 从远程调用返回的数据",
                     "requestId : String"
                 ]
             },
             onError:{
-                $desc:"在出现错误后调用.",
+                $desc:"在出现错误后调用",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "rspData : Object, 从远程调用返回的数据",
                     "requestId : String"
                 ]
             },
             afterInvoke:{
-                $desc:"在invoke之后调用.",
+                $desc:"在invoke之后调用",
                 $paras:[
-                    "profile : xui.Profile.",
+                    "profile : xui.Profile",
                     "rspData : Object, 从远程调用返回的数据",
                     "requestId : String"
                 ]
@@ -6249,19 +6246,19 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.DataBinder 类",
         constructor:{
-            $desc:"生成一个databinder对象."
+            $desc:"生成一个databinder对象"
         },
         destroyAll:{
-            $desc:"销毁所有xui.DataBinder对象.",
+            $desc:"销毁所有xui.DataBinder对象",
             $snippet:[
                 "//xui.DataBinder.destroyAll()"
             ]
         },
         getFromName:{
-            $desc:"获取名字为指定值的xui.DataBinder对象.",
-            $rtn:'xui.DataBinder Object.',
+            $desc:"获取名字为指定值的xui.DataBinder对象",
+            $rtn:'xui.DataBinder Object',
             $paras:[
-                "name [必需参数] : String, DataBinder名字."
+                "name [必需参数] : String, DataBinder名字"
             ],
             $snippet:[
                 "var db=new xui.DataBinder();db.setName('abc');"+
@@ -6273,56 +6270,56 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             setHost:{
-                $desc:"设置借宿对象和别名.",
+                $desc:"设置借宿对象和别名",
                 $rtn:'[self]',
                 $paras:[
-                    "host [可选参数 : Object, 宿主.",
-                    "alias [可选参数 : String, 别名字符串."
+                    "host [可选参数 : Object, 宿主",
+                    "alias [可选参数 : String, 别名字符串"
                 ]
             },
             getUIValue:{
                 $desc:"得到绑定控件的界面值",
-                $rtn:"Object, 键值对.",
+                $rtn:"Object, 键值对",
                 $paras:[
                     "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false",
                     "dirtied [可选参数] : Boolean, 是否只获得脏控件的界面值"
                 ]
             },
             isDirtied:{
-                $desc:"判断绑定控件是否已经被修改.",
+                $desc:"判断绑定控件是否已经被修改",
                 $rtn:"Boolean"
             },
             getDirtied:{
                 $desc:"得到脏绑定控件的界面值",
-                $rtn:"Object, 键值对.",
+                $rtn:"Object, 键值对",
                 $paras:[
                     "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false"
                 ]
             },
             updateValue:{
-                $desc:"将绑定控件的内部值更新为界面值,并去掉脏标识.",
+                $desc:"将绑定控件的内部值更新为界面值,并去掉脏标识",
                 $rtn:"[self]"
             },
             checkValid:{
-                $desc:"检查所有绑定值是否有效. 例如: 用户输入了字符到数字框里面,而数字框又绑定了databinder, 这个函数就会返回[false].",
+                $desc:"检查所有绑定值是否有效. 例如: 用户输入了字符到数字框里面,而数字框又绑定了databinder, 这个函数就会返回[false]",
                 $rtn:"xui.absValue"
             },
             destroy:{
-                $desc:"销毁该对象.",
-                $memo:"一般情况下,程序员无需直接调用该函数."
+                $desc:"销毁该对象",
+                $memo:"一般情况下,程序员无需直接调用该函数"
             },
             setName:{
-                $desc:"设置数据绑定器的名称.",
+                $desc:"设置数据绑定器的名称",
                 $rtn:'[self]',
                 $paras:[
                     "value [必需参数] : String, 名字字符串"
                 ],
-                $memo:"参看'getValue'代码片段. "
+                $memo:"参看'getValue'代码片段"
             },
             getUI:{
-                $desc:"获取绑定在本对象上的UI.",
-                $rtn:'xui.UI.',
-                $memo:"To see the 'getValue' snippets. ",
+                $desc:"获取绑定在本对象上的UI",
+                $rtn:'xui.UI',
+                $memo:"To see the 'getValue' snippets",
                 $snippet:[
                     "var id='xui.temp.ui'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui(id).append(new xui.UI.Input({position:'relative',dataBinder:'abc'}));"+
@@ -6331,59 +6328,59 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getName:{
-                $desc:"返回数据绑定器名字.",
+                $desc:"返回数据绑定器名字",
                 $rtn:'String',
-                $memo:"参看'getValue'代码片段. "
+                $memo:"参看'getValue'代码片段"
             },
             getData:{
-                $desc:"获取内部数据.",
-                $rtn:"Object, 键值对.",
+                $desc:"获取内部数据",
+                $rtn:"Object, 键值对",
                 $paras:[
                     "key [可选参数] : String, 如指定key表示只获取特定键的内部数据"
                 ]
             },
             setData:{
-                $desc:"设置内部数据.",
-                $rtn:"[self].",
+                $desc:"设置内部数据",
+                $rtn:"[self]",
                 $paras:[
-                    "key [必需参数] : Object/String, 键/值对或键关键字.",
-                    "value [可选参数] : Object, 值关键字,只有在key为String的时候有效."
+                    "key [必需参数] : Object/String, 键/值对或键关键字",
+                    "value [可选参数] : Object, 值关键字,只有在key为String的时候有效"
                 ]
             },
             updateDataToUI:{
-                $desc:"从内部数据data设置数据到所绑定的UI.",
+                $desc:"从内部数据data设置数据到所绑定的UI",
                 $rtn:"[self]",
                 $paras:[
-                    "adjustData [可选参数] : Function, 对内部数据做调整的函数(在设置到UI之前).",
-                    "dataKeys [可选参数] : String/Array, 设置的数据项."
+                    "adjustData [可选参数] : Function, 对内部数据做调整的函数(在设置到UI之前)",
+                    "dataKeys [可选参数] : String/Array, 设置的数据项"
                 ]
             },
             updateDataFromUI:{
-                $desc:"从绑定的UI上获取值,并设置到内部数据data.",
+                $desc:"从绑定的UI上获取值,并设置到内部数据data",
                 $rtn:"[Boolean]",
                 $paras:[
                     "updateUIValue [可选参数] : Boolean, 立即重新设置界面数据和清理脏数据标识, 默认为true",
                     "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false",
                     "returnArr [可选参数] : Boolean, 是否得到数组格式(只针对可多选择absList控件), 默认为false",
                     "adjustData [可选参数] : Function, 对从UI获取到的数据做调整的函数(在设置到内部data之前)",
-                    "dataKeys [可选参数] : String/Array, 获取的数据项.",
-                    "ignoreAlert[可选参数] : Boolean, 不显示警告信息.",
+                    "dataKeys [可选参数] : String/Array, 获取的数据项",
+                    "ignoreAlert[可选参数] : Boolean, 不显示警告信息",
                 ]
             },
             beforeUpdateDataToUI:{
-                $desc:"在updateDataToUI函数设置数据到UI前被调用,用来调整数据对象. 本事件可以返回调整后的数据对象.",
+                $desc:"在updateDataToUI函数设置数据到UI前被调用,用来调整数据对象. 本事件可以返回调整后的数据对象",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile.",
-                    "dataToUI : Object, 即将设置到UI的数据对象."
+                    "profile : xui.Profile",
+                    "dataToUI : Object, 即将设置到UI的数据对象"
                 ]
             },
             afterUpdateDataFromUI:{
-                $desc:"在updateDataFromUI函数从得到UI数据后被调用,用来调整数据对象. 本事件可以返回调整后的数据对象.",
+                $desc:"在updateDataFromUI函数从得到UI数据后被调用,用来调整数据对象. 本事件可以返回调整后的数据对象",
                 $rtn:"Object",
                 $paras:[
-                    "profile : xui.Profile.",
-                    "dataFromUI : Object, 从UI得到的数据对象."
+                    "profile : xui.Profile",
+                    "dataFromUI : Object, 从UI得到的数据对象"
                 ]
             }
         }
@@ -6393,27 +6390,27 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Tips 类(静态类)",
         AUTOHIDETIME:{
-            $desc:"Number, 指示多少毫秒后tip自动隐藏. 该参数在MOABLE设置为[false]时才有效.",
+            $desc:"Number, 指示多少毫秒后tip自动隐藏. 该参数在MOABLE设置为[false]时才有效",
             $snippet:["alert(xui.Tips.AUTOHIDETIME)"]
         },
         DELAYTIME:{
-            $desc:"Number, 指示在function 'xui.Tips.show'调用后多少毫秒后显示tip.",
+            $desc:"Number, 指示在function 'xui.Tips.show'调用后多少毫秒后显示tip",
             $snippet:["alert(xui.Tips.DELAYTIME)"]
         },
         MAXWIDTH:{
-            $desc:"Number, 提示的最大宽度.",
+            $desc:"Number, 提示的最大宽度",
             $snippet:["alert(xui.Tips.MAXWIDTH)"]
         },
         MOVABLE:{
-            $desc:"Boolean, 指示是否跟随鼠标移动.",
+            $desc:"Boolean, 指示是否跟随鼠标移动",
             $snippet:["alert(xui.Tips.MOVABLE)"]
         },
         TIPSKEY:{
-            $desc:"String, 提示的文字键. 默认为'tips'.",
+            $desc:"String, 提示的文字键. 默认为'tips'",
             $snippet:["alert(xui.Tips.TIPSKEY)"]
         },
         getTips:{
-            $desc:"获取提示字符串.",
+            $desc:"获取提示字符串",
             $rtn:"String",
             $snippet:[
                 "xui.Tips.show({left:100,top:100}, 'a string');"+
@@ -6423,30 +6420,30 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         setTips:{
-            $desc:"设置提示字符串.",
+            $desc:"设置提示字符串",
             $paras:[
                 "s [必需参数] : String"
             ]
         },
         setPos:{
-            $desc:"设置提示显示的位置.",
+            $desc:"设置提示显示的位置",
             $paras:[
                 "left [可选参数] : Number, 以px表示的横坐标。",
                 "top [可选参数] : Number, 以px表示的纵坐标。"
             ]
         },
         hide:{
-            $desc:"隐藏提示信息.",
+            $desc:"隐藏提示信息",
             $snippet:[
                 "xui.Tips.show({left:100,top:100}, 'a string'); xui.asyRun(function(){xui.Tips.hide();},1000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); xui.asyRun(function(){xui.Tips.hide();},3000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);xui.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         },
         show:{
-            $desc:"显示提示信息.",
+            $desc:"显示提示信息",
             $paras:[
-                "pos [必需参数] : Object, {left:Number,top:Number}, 提示信息的位置.",
-                "item [必需参数] : String/Object, 提示信息的内容.",
-                "key [可选参数] : String, 得到提示信息的键值. 默认为 'tips'."
+                "pos [必需参数] : Object, {left:Number,top:Number}, 提示信息的位置",
+                "item [必需参数] : String/Object, 提示信息的内容",
+                "key [可选参数] : String, 得到提示信息的键值. 默认为 'tips'"
             ],
             $snippet:[
                 "xui.Tips.show({left:100,top:100}, 'a string'); xui.asyRun(function(){xui.Tips.hide();},1000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); xui.asyRun(function(){xui.Tips.hide();},3000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);xui.asyRun(function(){xui.Tips.hide();},5000);"
@@ -6458,17 +6455,17 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Coder 类(静态类)",
         isSafeJSON:{
-            $desc:"检测一个字符串是否是一个安全的 JSON 文本.",
+            $desc:"检测一个字符串是否是一个安全的 JSON 文本",
             $rtn:"Boolean",
             $paras:[
-                "s [必需参数] : String."
+                "s [必需参数] : String"
             ]
         },
         formatText:{
-            $desc:"将js/css/php/html代码片段格式化为更加可读的格式.",
+            $desc:"将js/css/php/html代码片段格式化为更加可读的格式",
             $rtn:"String",
             $paras:[
-                "code [必需参数] : String, 代码片段.",
+                "code [必需参数] : String, 代码片段",
                 "type [可选参数] : String, 代码片段类型. 默认是 'js'"
             ],
             $snippet:[
@@ -6479,15 +6476,15 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         formatHTML:{
-            $desc:"将js/css/php/html代码片段转化为更可读的HTML.",
+            $desc:"将js/css/php/html代码片段转化为更可读的HTML",
             $rtn:"String",
             $paras:[
-                "code [必需参数] : String, code snippet.",
+                "code [必需参数] : String, code snippet",
                 "type [可选参数] : String, code type. Defalut is 'js'",
                 "paras [可选参数] : String[], Commands, e.g. ['plain','run']",
-                "fold [可选参数] : String, fold the code.",
-                "id [可选参数] : String, the output HTML DOM id.",
-                "height [可选参数] : Number, the output HTML height."
+                "fold [可选参数] : String, fold the code",
+                "id [可选参数] : String, the output HTML DOM id",
+                "height [可选参数] : Number, the output HTML height"
             ],
             $snippet:[
                 "var str=xui.Coder.formatHTML('var a=function(){var a=1;var b=2;var c={a:1,b:2};};alert(1);','js',['plain','run'],'i-d'); xui.UI.Dialog.alert('xui.Coder', str)",
@@ -6497,15 +6494,15 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         formatAll:{
-            $desc:"将js/css/php/html代码片段转化为HTML. 相当于formatText + formatHTML.",
+            $desc:"将js/css/php/html代码片段转化为HTML. 相当于formatText + formatHTML",
             $rtn:"String",
             $paras:[
-                "code [必需参数] : String, 代码片段.",
+                "code [必需参数] : String, 代码片段",
                 "type [可选参数] : String, 代码类型. 默认的 'js'",
                 "paras [可选参数] : String[], 指令, 例如 ['plain','run']",
-                "fold [可选参数] : String, fold the code.",
-                "id [可选参数] : String, the output HTML DOM id.",
-                "height [可选参数] : Number, 输出的HTML高度."
+                "fold [可选参数] : String, fold the code",
+                "id [可选参数] : String, the output HTML DOM id",
+                "height [可选参数] : Number, 输出的HTML高度"
             ],
             $snippet:[
                 "var str=xui.Coder.formatAll('var a=function(){var a=1;var b=2;var c={a:1,b:2};};alert(1);','js',['plain','run'],'i-d'); xui.UI.Dialog.alert('xui.Coder', str)",
@@ -6515,13 +6512,13 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         replace:{
-            $desc:"高级字符串替换.",
+            $desc:"高级字符串替换",
             $rtn:"String",
             $paras:[
-                "str [必需参数] : string, 目标串.",
-                "reg [必需参数] : Array: [string, string] 或 [RegExp, string].",
-                "replace [可选参数] : String, 替换串.",
-                "ignore_case [可选参数] : Boolean, 指示是否忽略大小写.."
+                "str [必需参数] : string, 目标串",
+                "reg [必需参数] : Array: [string, string] 或 [RegExp, string]",
+                "replace [可选参数] : String, 替换串",
+                "ignore_case [可选参数] : Boolean, 指示是否忽略大小写."
             ],
             $snippet:[
                 'alert(xui.Coder.replace("aAa","a","*",true));'+
@@ -6536,19 +6533,19 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         applyById:{
-            $desc:"将xui.Coder应用于给定id的所有元素.",
+            $desc:"将xui.Coder应用于给定id的所有元素",
             $paras:[
-                "id [必需参数] : String, DOM id.",
-                "formatAll [可选参数] : Boolean, 指示使用'formatAll'还是'formatHTML', 默认为'formatHTML'."
+                "id [必需参数] : String, DOM id",
+                "formatAll [可选参数] : Boolean, 指示使用'formatAll'还是'formatHTML', 默认为'formatHTML'"
             ],
-            $memo:"该函数仅用于突出显示."
+            $memo:"该函数仅用于突出显示"
         }
     });
 
     xui.set(xui.Locale,["cn","doc","xui","absList"], {
         prototype:{
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.abs10-l2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6558,10 +6555,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             fireItemClickEvent:{
-                $desc:"模拟鼠标点击,以选中list中的某一项.",
+                $desc:"模拟鼠标点击,以选中list中的某一项",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 项的id."
+                    "subId [必需参数] : String, 项的id"
                 ],
                 $snippet:[
                     "var id='xui.temp.absl0-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6571,25 +6568,25 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             hideItems:{
-                $desc:"隐藏一个或多个项.",
+                $desc:"隐藏一个或多个项",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String/Array, 项的标识号,可以是多个."
+                    "subId [必需参数] : String/Array, 项的标识号,可以是多个"
                 ]
             },
             hideItems:{
-                $desc:"显示一个或多个项.",
+                $desc:"显示一个或多个项",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String/Array, 项的标识号,可以是多个."
+                    "subId [必需参数] : String/Array, 项的标识号,可以是多个"
                 ]
             },
             updateItem:{
-                $desc:"更新一个项,并刷新对应的DOM界面.",
+                $desc:"更新一个项,并刷新对应的DOM界面",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 项的标识号.",
-                    "options [必需参数] : Object/String, 要更新的选项."
+                    "id [必需参数] : String, 项的标识号",
+                    "options [必需参数] : Object/String, 要更新的选项"
                 ],
                 $snippet:[
                     "var id='xui.temp.absl0-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6601,7 +6598,7 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             getItems:{
-                $desc:"获取所有项.",
+                $desc:"获取所有项",
                 $rtn:"Array",
                 $snippet:[
                     "var id='xui.temp.absl1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6611,10 +6608,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置项.",
+                $desc:"设置项",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 项数组.",
+                    "value [必需参数] : Array, 项数组",
                     $force
                 ],
                 $snippet:[
@@ -6625,11 +6622,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             insertItems:{
-                $desc:"添加一些项.",
+                $desc:"添加一些项",
                 $rtn:"[self]",
                 $paras:[
-                    "arr [必需参数] : Array, 项数组.",
-                    "base [可选参数] : String, 基准项id.",
+                    "arr [必需参数] : Array, 项数组",
+                    "base [可选参数] : String, 基准项id",
                     "before [可选参数] : Boolean, 指示在基准项前还是项后插入. 默认为项后;"
                 ],
                 $snippet:[
@@ -6644,10 +6641,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeItems:{
-                $desc:"移除一系列项.",
+                $desc:"移除一系列项",
                 $rtn:"[self]",
                 $paras:[
-                    "arr [必需参数] : Array, 要移除的项id数组."
+                    "arr [必需参数] : Array, 要移除的项id数组"
                 ],
                 $snippet:[
                     "var id='xui.temp.absl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6657,10 +6654,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             clearItems:{
-                $desc:"移除所有的项.",
+                $desc:"移除所有的项",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String, 包含所有项的临时键. 默认为 'ITEMS'."
+                    "key [可选参数] : String, 包含所有项的临时键. 默认为 'ITEMS'"
                 ],
                 $snippet:[
                     "var id='xui.temp.absl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6674,11 +6671,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setValueSeparator:{
-                $desc:"设置字符串值的分隔符(只对selMode为multi或multibycheckbox的情况有效).",
+                $desc:"设置字符串值的分隔符(只对selMode为multi或multibycheckbox的情况有效)",
                 $rtn:"[self]"
             },
             getListKey:{
-                $desc:"获取列表键.",
+                $desc:"获取列表键",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.abs6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6690,10 +6687,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setListKey:{
-                $desc:"设置列表键.",
+                $desc:"设置列表键",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 列表键.",
+                    "value [必需参数] : String, 列表键",
                     $force
                 ],
                 $snippet:[
@@ -6706,78 +6703,78 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemByItemId:{
-                $desc:"获取id为指定值的子项对象.",
+                $desc:"获取id为指定值的子项对象",
                 $rtn:"Object",
                 $paras:[
-                    "itemId [必需参数] :String, 子项唯一标识."
+                    "itemId [必需参数] :String, 子项唯一标识"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(xui.serialize( pro.getItemByItemId('Class') ))"
                 ]
             },
             getItemByDom:{
-                $desc:"获取DOM节点或DOM id对应的子项对象.",
+                $desc:"获取DOM节点或DOM id对应的子项对象",
                 $rtn:"Object",
                 $paras:[
-                    "src [必需参数] : DOM节点或DOM id."
+                    "src [必需参数] : DOM节点或DOM id"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(xui.serialize( pro.getItemByDom('xui.UI.TreeBar-ITEM:a:a') ))"
                 ]
             },
             getSubIdByItemId:{
-                $desc:"获取项的子项id.",
+                $desc:"获取项的子项id",
                 $rtn:"String",
                 $paras:[
-                    "itemId [必需参数] :String, 子项唯一标识."
+                    "itemId [必需参数] :String, 子项唯一标识"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubIdByItemId('Class') )"
                 ]
             },
             getSubNodeByItemId:{
-                $desc:"获取子项对应的DOM元素.",
+                $desc:"获取子项对应的DOM元素",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "key [必需参数] : String, key 字符串.",
-                    "itemId [必需参数] :String, 子项唯一标识."
+                    "key [必需参数] : String, key 字符串",
+                    "itemId [必需参数] :String, 子项唯一标识"
                 ],
                 $snippet:[
                     "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(pro.getSubNodeByItemId('ITEM','Class') )"
                 ]
             },
             beforeIniEditor:{
-                $desc:"在子项编辑之前调用. 如果返回false,默认的功能会被禁止.",
+                $desc:"在子项编辑之前调用. 如果返回false,默认的功能会被禁止",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象.",
+                    "item : Object, 子项对象",
                     "captionNode : xui.Dom, 子项标题的Dom对象"
                 ]
             },
             onBeginEdit:{
-                $desc:"在编辑器显示前调用.",
+                $desc:"在编辑器显示前调用",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象.",
-                    "editor: Object, 编辑器对象."
+                    "item : Object, 子项对象",
+                    "editor: Object, 编辑器对象"
                 ]
             },
             beforeEditApply:{
-                $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
+                $desc:"在编辑内容生效前调用,返回false可以阻止该动作",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象.",
+                    "item : Object, 子项对象",
                     "caption: String. 要更新的内容",
-                    "editor: Object, 编辑器对象.",
+                    "editor: Object, 编辑器对象",
                     "tag: String, 动作来源"
                 ]
             },
             onEndEdit:{
-                $desc:"在编辑器消失前调用.",
+                $desc:"在编辑器消失前调用",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象.",
-                    "editor: Object, 编辑器对象."
+                    "item : Object, 子项对象",
+                    "editor: Object, 编辑器对象"
                 ]
             }
         }
@@ -6790,10 +6787,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setReadonly:{
-                $desc:"设置控件是否为只读.",
+                $desc:"设置控件是否为只读",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -6825,7 +6822,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置输入性控件是否要必须输入",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -6846,8 +6843,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置用户界面值和控件值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, 强行赋值,即使赋值和现有值已经相同. 默认为 [false]."
+                    "value [必需参数] : Object",
+                    "force [可选参数] : Boolean, 强行赋值,即使赋值和现有值已经相同. 默认为 [false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6855,7 +6852,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){o.setUIValue('ini2'); alert(o.getUIValue());},1000)"+
                     "}"
                 ],
-                $memo:"调用该函数时,以下两个事件将被触发beforeUIValueSet and afterUIValueSet."
+                $memo:"调用该函数时,以下两个事件将被触发beforeUIValueSet and afterUIValueSet"
             },
 
             updateValue:{
@@ -6885,8 +6882,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置内部值,界面值,和控件值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
-                    "force [可选参数] : Boolean, force to set the value even if the same value already exists. 默认为 [false]."
+                    "value [必需参数] : Object",
+                    "force [可选参数] : Boolean, force to set the value even if the same value already exists. 默认为 [false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6894,13 +6891,13 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){o.setValue('ini2'); alert(o.getValue());},1000)"+
                     "}"
                 ],
-                $memo:"调用该函数时,以下两个事件将被触发: beforeValueSet and afterValueSet."
+                $memo:"调用该函数时,以下两个事件将被触发: beforeValueSet and afterValueSet"
             },
             checkValid:{
                 $desc:"检查界面值是否有效",
                 $rtn:"Boolean",
                 $paras:[
-                    "value [可选参数] : Object, 检测目标值,如果没有输入,则检测的是控件的界面值."
+                    "value [可选参数] : Object, 检测目标值,如果没有输入,则检测的是控件的界面值"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6910,7 +6907,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             isDirtied:{
-                $desc:"判断界面值已经被修改.",
+                $desc:"判断界面值已经被修改",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.absv13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6920,10 +6917,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             resetValue:{
-                $desc:"重新设置内部值, 界面值和控件值. 该函数不会触发任何事件.",
+                $desc:"重新设置内部值, 界面值和控件值. 该函数不会触发任何事件",
                 $rtn:'[self]',
                 $paras:[
-                    "value [可选参数] : Object, 重设的新值. 默认为 ''."
+                    "value [可选参数] : Object, 重设的新值. 默认为 ''"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -6934,11 +6931,11 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             beforeUIValueSet:{
-                $desc:"在setUIValue调用之前被调用. 返回false会阻止setUIValue被调用.",
+                $desc:"在setUIValue调用之前被调用. 返回false会阻止setUIValue被调用",
                 $paras:[
                     $profile,
-                    "oldValue : String, 旧的界面值.",
-                    "newValue : String, 新的界面值.",
+                    "oldValue : String, 旧的界面值",
+                    "newValue : String, 新的界面值",
                     "force : Boolean, 是否为强制调用",
                     "tag : String, 调用时的附加值"
                 ],
@@ -6954,11 +6951,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterUIValueSet:{
-                $desc:"在setUIValue调用之后被调用.",
+                $desc:"在setUIValue调用之后被调用",
                 $paras:[
                     $profile,
-                    "oldValue : String, 旧的界面值.",
-                    "newValue : String, 新的界面值.",
+                    "oldValue : String, 旧的界面值",
+                    "newValue : String, 新的界面值",
                     "force : Boolean, 是否为强制调用",
                     "tag : String, 调用时的附加值"
                 ],
@@ -6974,31 +6971,31 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onChange:{
-                $desc:"当有值的控件在界面值改变时被调用.",
+                $desc:"当有值的控件在界面值改变时被调用",
                 $paras:[
                     $profile,
-                    "oldValue : String, 旧的界面值.",
-                    "newValue : String, 新的界面值.",
+                    "oldValue : String, 旧的界面值",
+                    "newValue : String, 新的界面值",
                     "force : Boolean, 是否为强制调用",
                     "tag : String, 调用时的附加值"
                 ]
             },
             onValueChange:{
-                $desc:"当有值的控件在内部值改变时被调用.",
+                $desc:"当有值的控件在内部值改变时被调用",
                 $paras:[
                     $profile,
-                    "oldValue : String, 旧值.",
-                    "newValue : String, 新值.",
+                    "oldValue : String, 旧值",
+                    "newValue : String, 新值",
                     "force : Boolean, 是否为强制调用",
                     "tag : String, 调用时的附加值"
                 ]
             },
             beforeValueSet:{
-                $desc:"在setValue调用之前被调用. 返回false会阻止setValue被调用.",
+                $desc:"在setValue调用之前被调用. 返回false会阻止setValue被调用",
                 $paras:[
                     $profile,
-                    "oldValue :String, 旧的内部值.",
-                    "newValue : String, 新的内部值.",
+                    "oldValue :String, 旧的内部值",
+                    "newValue : String, 新的内部值",
                     "force : Boolean, 是否为强制调用",
                     "tag : String, 调用时的附加值"
                 ],
@@ -7014,11 +7011,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterValueSet:{
-                $desc:"在setValue调用之后被调用.",
+                $desc:"在setValue调用之后被调用",
                 $paras:[
                     $profile,
-                    "oldValue : String, 旧的内部值.",
-                    "newValue : String, 新的内部值.",
+                    "oldValue : String, 旧的内部值",
+                    "newValue : String, 新的内部值",
                     "force : Boolean, 是否为强制调用",
                     "tag : String, 调用时的附加值"
                 ],
@@ -7036,10 +7033,10 @@ xui.set(xui.Locale,["cn","app"], {
 
 
             beforeDirtyMark:{
-                $desc:"在_setDirtyMark调用之前被调用. 返回false将阻止设置脏标志.",
+                $desc:"在_setDirtyMark调用之前被调用. 返回false将阻止设置脏标志",
                 $paras:[
                     $profile,
-                    "dirty : Boolean, 脏标志."
+                    "dirty : Boolean, 脏标志"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7096,10 +7093,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             addPanel:{
-                $desc:"添加一个面板.",
+                $desc:"添加一个面板",
                 $paras:[
-                    "paras [必需参数] : 键值对.",
-                    "children [必需参数] : Array, 面板的子控件.",
+                    "paras [必需参数] : 键值对",
+                    "children [必需参数] : Array, 面板的子控件",
                     "item [可选参数] : Object, 面板子项对象"
                 ],
                 $snippet:[
@@ -7113,14 +7110,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             dumpContainer:{
-                $desc:"移除容器内部所有内容.",
+                $desc:"移除容器内部所有内容",
                 $rtn:"[self]",
                 $paras:[
                     "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有. 默认为[true]"
                 ]
             },
             removePanel:{
-                $desc:"移除面板.",
+                $desc:"移除面板",
                 $snippet:[
                     "var id='xui.temp.d6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var panel, tabs;"+
@@ -7132,7 +7129,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelPara:{
-                $desc:"获取面板参数.",
+                $desc:"获取面板参数",
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.d8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7145,7 +7142,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelChildren:{
-                $desc:"获取面板的子控件.",
+                $desc:"获取面板的子控件",
                 $rtn:"Array",
                 $snippet:[
                     "var id='xui.temp.d9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7158,11 +7155,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
+                $desc:"获取当前对象容器的CSS overflow属性",
                 $rtn:"String"
             },
             setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
+                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'auto','hidden','visible','' ",
@@ -7170,11 +7167,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelBgCrl:{
-                $desc:"获得容器的背景色属性.",
+                $desc:"获得容器的背景色属性",
                 $rtn:"String"
             },
             setPanelBgCrl:{
-                $desc:"设置容器的背景色属性.",
+                $desc:"设置容器的背景色属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
@@ -7182,11 +7179,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelBgImg:{
-                $desc:"获得容器的背景图像属性.",
+                $desc:"获得容器的背景图像属性",
                 $rtn:"String"
             },
             setPanelBgImg:{
-                $desc:"容器的背景图像属性.",
+                $desc:"容器的背景图像属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
@@ -7194,11 +7191,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelBgImgPos:{
-                $desc:"获得容器的背景图像偏移属性.",
+                $desc:"获得容器的背景图像偏移属性",
                 $rtn:"String"
             },
             setPanelBgImgPos:{
-                $desc:"设置容器的背景图像偏移属性.",
+                $desc:"设置容器的背景图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
@@ -7206,11 +7203,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelBgImgRepeat:{
-                $desc:"获得容器的背景图像重复属性.",
+                $desc:"获得容器的背景图像重复属性",
                 $rtn:"String"
             },
             setPanelBgImgRepeat:{
-                $desc:"设置容器的背景图像重复属性.",
+                $desc:"设置容器的背景图像重复属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
@@ -7218,11 +7215,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelBgImgAttachment:{
-                $desc:"得到的背景图像附着属性.",
+                $desc:"得到的背景图像附着属性",
                 $rtn:"String"
             },
             setPanelBgImgAttachment:{
-                $desc:"设置容器的背景图像附着属性.",
+                $desc:"设置容器的背景图像附着属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
@@ -7230,11 +7227,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getConDockPadding:{
-                $desc:"得到容器中子控件停靠的内留白.",
+                $desc:"得到容器中子控件停靠的内留白",
                 $rtn:"Object"
             },
             setConDockPadding:{
-                $desc:"设置容器中子控件停靠的内留白.",
+                $desc:"设置容器中子控件停靠的内留白",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. {left:,top:,bottom:right}",
@@ -7250,11 +7247,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getConDockSpacing:{
-                $desc:"得到容器中子控件停靠的间距.",
+                $desc:"得到容器中子控件停靠的间距",
                 $rtn:"Object"
             },
             setConDockSpacing:{
-                $desc:"设置容器中子控件停靠的间距.",
+                $desc:"设置容器中子控件停靠的间距",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. {width:,height:}",
@@ -7270,14 +7267,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getConDockFlexFill:{
-                $desc:"得到容器中子控件停靠是否应用柔性填充（次轴方向）.",
+                $desc:"得到容器中子控件停靠是否应用柔性填充（次轴方向）",
                 $rtn:"Object"
             },
             setConDockFlexFill:{
-                $desc:"设置容器中子控件停靠是否应用柔性填充（次轴方向）.",
+                $desc:"设置容器中子控件停靠是否应用柔性填充（次轴方向）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -7294,10 +7291,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setConDockStretch:{
-                $desc:"设置容器中子控件停靠的延展（主轴方向）参数. 子容器的dockStretch参数可以覆盖本选项功能.",
+                $desc:"设置容器中子控件停靠的延展（主轴方向）参数. 子容器的dockStretch参数可以覆盖本选项功能",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -7310,12 +7307,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             }, 
             onHotKeydown:{
-                $desc:"当热键按下时被调用.",
+                $desc:"当热键按下时被调用",
                 $paras:[
                     $profile,
-                    "keyboard : Object, keyboard 对象.",
-                    "e : Event, DOM 事件.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "keyboard : Object, keyboard 对象",
+                    "e : Event, DOM 事件",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.c1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7328,12 +7325,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onHotKeyup:{
-                $desc:"当热键弹起时被调用..",
+                $desc:"当热键弹起时被调用.",
                 $paras:[
                     $profile,
-                    "keyboard : Object, keyboard 对象.",
-                    "e : Event, DOM 事件.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "keyboard : Object, keyboard 对象",
+                    "e : Event, DOM 事件",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.c2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7346,12 +7343,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onHotKeypress:{
-                $desc:"当热键被按后调用.",
+                $desc:"当热键被按后调用",
                 $paras:[
                     $profile,
-                    "keyboard : Object, keyboard 对象.",
-                    "e : Event, DOM 事件.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "keyboard : Object, keyboard 对象",
+                    "e : Event, DOM 事件",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.c3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7364,14 +7361,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onDragEnter:{
-                $desc:"当用户拖动某个对象到该对象上空时.",
+                $desc:"当用户拖动某个对象到该对象上空时",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, 进入的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, 进入的子项对象.可能为空"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7389,14 +7386,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onDragLeave:{
-                $desc:"当用户拖动某个对象离开该对象上空时.",
+                $desc:"当用户拖动某个对象离开该对象上空时",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, leave的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, leave的子项对象.可能为空"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7415,14 +7412,14 @@ xui.set(xui.Locale,["cn","app"], {
 
             },
             onDrop:{
-                $desc:"当用户拖动某个对象在该对象上空放下时.",
+                $desc:"当用户拖动某个对象在该对象上空放下时",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, drop到的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, drop到的子项对象.可能为空"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7440,36 +7437,36 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeDrop:{
-                $desc:"在用户拖动某个对象在该对象上空放下前调用,如返回 false,onDrop和afterDrop不会调用.",
+                $desc:"在用户拖动某个对象在该对象上空放下前调用,如返回 false,onDrop和afterDrop不会调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, drop到的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, drop到的子项对象.可能为空"
                 ]
             },
             afterDrop:{
-                $desc:"在用户拖动某个对象在该对象上空放下后调用.",
+                $desc:"在用户拖动某个对象在该对象上空放下后调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, drop到的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, drop到的子项对象.可能为空"
                 ]
             },
             onDropMarkClear:{
-                $desc:"当丢放标志被清除时调用.",
+                $desc:"当丢放标志被清除时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, 进入的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, 进入的子项对象.可能为空"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7487,14 +7484,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onDropMarkShow:{
-                $desc:"当丢放标志被显示时调用.",
+                $desc:"当丢放标志被显示时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, 进入的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, 进入的子项对象.可能为空"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7512,14 +7509,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onDropTest:{
-                $desc:"当判断该对象是否接受拖动时被调用.",
+                $desc:"当判断该对象是否接受拖动时被调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "dragKey : String, 被拖动物体的拖动标志串.",
-                    "dragData : Object, 拖动物体代表的数据.",
-                    "item : Object, 进入的子项对象.可能为空."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "dragKey : String, 被拖动物体的拖动标志串",
+                    "dragData : Object, 拖动物体代表的数据",
+                    "item : Object, 进入的子项对象.可能为空"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab61'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7537,11 +7534,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onStartDrag:{
-                $desc:"当用户开始拖动该对象时被触发.",
+                $desc:"当用户开始拖动该对象时被触发",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab661'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7553,11 +7550,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onGetDragData:{
-                $desc:"当用户开始拖动该对象时(这时候会取得拖拽的数据)调用.",
+                $desc:"当用户开始拖动该对象时(这时候会取得拖拽的数据)调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab661-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7568,11 +7565,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onDragstop:{
-                $desc:"当用户结束拖动该对象时调用.",
+                $desc:"当用户结束拖动该对象时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab662'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7584,13 +7581,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClickEffect:{
-                $desc:"在用户单击控件的某一部分,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
+                $desc:"在用户单击控件的某一部分,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "type : String, 'mousedown'或'mouseup'."
+                    "item : Object, 子项对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "type : String, 'mousedown'或'mouseup'"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7600,13 +7597,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeHoverEffect:{
-                $desc:"在鼠标悬停在控件的某一部分上,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示.",
+                $desc:"在鼠标悬停在控件的某一部分上,控件响应该事件,要改变外观（例如反白等）前被调用. 返回false时, 默认的效果（如反白）将不会被显示",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "type : String, 'mouseover'或'mouseout'."
+                    "item : Object, 子项对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "type : String, 'mouseover'或'mouseout'"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7616,13 +7613,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeNextFocus:{
-                $desc:"在下一个控件获取焦点时调用. 返回false可以阻止下一个控件获取焦点.",
+                $desc:"在下一个控件获取焦点时调用. 返回false可以阻止下一个控件获取焦点",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
+                    "e : Event, DOM事件元素",
                     "k : Object, {key:按键字符, type:事件种类, ctrlKey: ctrl键状态, shiftKey: shift 键状态, altKey:alt 键状态}",
-                    "shift: Boolean, 指示用户是否按下了Shift键.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "shift: Boolean, 指示用户是否按下了Shift键",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ab9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7632,42 +7629,42 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeInputAlert:{
-                $desc:"在容器表单中的一个控件出现警示框前调用. 返回false可以阻止警示框弹出.",
+                $desc:"在容器表单中的一个控件出现警示框前调用. 返回false可以阻止警示框弹出",
                 $paras:[
                     $profile,
-                    "ctrlPrf : xui.UIProfile, 引起警示的输入控件.",
+                    "ctrlPrf : xui.UIProfile, 引起警示的输入控件",
                     "type : String, 警示类型. invalid or required"
                 ]
             },
             beforeFormReset:{
-                $desc:"在容器表单重置前调用. 返回false可以阻止表单重置.",
+                $desc:"在容器表单重置前调用. 返回false可以阻止表单重置",
                 $paras:[
                     $profile,
-                    "elems : xui.absValue, 所有输入控件.",
+                    "elems : xui.absValue, 所有输入控件",
                     "subId: String, 子容器id"
                 ]
             },
             afterFormReset:{
-                $desc:"在容器表单重置后调用.",
+                $desc:"在容器表单重置后调用",
                 $paras:[
                     $profile,
-                    "elems : xui.absValue, 所有输入控件.",
+                    "elems : xui.absValue, 所有输入控件",
                     "subId: String, 子容器id"
                 ]
             },
             beforeFormSubmit:{
-                $desc:"在容器表单提交前调用. 返回false可以阻止表单重置.",
+                $desc:"在容器表单提交前调用. 返回false可以阻止表单重置",
                 $paras:[
                     $profile,
-                    "data : Ojbect, 要提交的数据.",
+                    "data : Ojbect, 要提交的数据",
                     "subId: String, 子容器id"
                 ]
             },
             afterFormSubmit:{
-                $desc:"在容器表单提交后调用. ",
+                $desc:"在容器表单提交后调用",
                 $paras:[
                     $profile,
-                    "data : Ojbect, 要提交的数据.",
+                    "data : Ojbect, 要提交的数据",
                     "subId: String, 子容器id"
                 ]
             }
@@ -7678,27 +7675,27 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI 类",
         getFromDom:{
-            $desc:"从一个指定的DOM元素的id上获取一个UI Object.",
+            $desc:"从一个指定的DOM元素的id上获取一个UI Object",
             $rtn:"xui.UI",
             $paras:[
-                "id [必需参数] : String, DOM元素或id."
+                "id [必需参数] : String, DOM元素或id"
             ],
             $snippet:[
                 "alert(xui.UI.getFromDom('xui.UI.TreeBar-CMD:a:1').getAlias());"
             ]
         },
         setDftProp:{
-            $desc:"指定所有控件类的默认属性.",
+            $desc:"指定所有控件类的默认属性",
             $rtn:"xui.UI",
             $paras:[
-                "prop [必需参数] : 键值对."
+                "prop [必需参数] : 键值对"
             ]
         },
         buildCSSText:{
-            $desc:"由指定的键值对生成CSS样式.",
+            $desc:"由指定的键值对生成CSS样式",
             $rtn:"String",
             $paras:[
-                "hash [必需参数] : 键值对."
+                "hash [必需参数] : 键值对"
             ],
             $snippet:[
                 "alert(xui.UI.Button.buildCSSText({KEY:{left:xui.browser.ie?0:null,overflow:xui.browser.gek?'auto':null,'font-size':'12px'},BORDER:{'_line-height':10,'-moz-display':'none'}}));"+
@@ -7706,27 +7703,27 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         adjustData:{
-            $desc:"调整输入的键值对,输出合适的数据格式以便UI控件生成.",
+            $desc:"调整输入的键值对,输出合适的数据格式以便UI控件生成",
             $rtn:"Object",
             $paras:[
                 "profile [必需参数] : 目标profile",
-                "hashIn [必需参数] : 键值对, 输入参数.",
-                "hashOut [可选参数] : 键值对, 输出参数."
+                "hashIn [必需参数] : 键值对, 输入参数",
+                "hashOut [可选参数] : 键值对, 输出参数"
             ],
             $snippet:[
                 "alert(xui.serialize(xui.UI.adjustData(null, {a:1,b:2,c:'$date.MS',d:'@xui.ini.path',renderer:function(){return 'cap';}})))"
             ]
         },
         addTemplateKeys:{
-            $desc:"添加一系列模板键到当前的UI控件.",
+            $desc:"添加一系列模板键到当前的UI控件",
             $rtn:'[self]',
             $paras:[
-                "arr [必需参数] : Array, 模板键数组."
+                "arr [必需参数] : Array, 模板键数组"
             ],
             $snippet:[
                 "alert(xui.serialize(xui.UI.Div.$Keys)); alert(xui.serialize(xui.UI.Div.addTemplateKeys(['A','B']).$Keys))"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         getAppearance:{
             $desc:"获取控件外表对象",
@@ -7734,97 +7731,97 @@ xui.set(xui.Locale,["cn","app"], {
             $snippet:[
                 "alert(xui.serialize(xui.UI.Div.getAppearance()))"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         getTemplate:{
-            $desc:"从一个缓存id中设置获取模板对象.",
+            $desc:"从一个缓存id中设置获取模板对象",
             $rtn:'Object',
             $paras:[
-                "cacheId [可选参数] : String."
+                "cacheId [可选参数] : String"
             ],
             $snippet:[
                 "alert(xui.serialize(xui.UI.Div.getTemplate()))"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         getBehavior:{
-            $desc:"获取控件行为对象.",
+            $desc:"获取控件行为对象",
             $rtn:'Object',
             $snippet:[
                 "alert(xui.serialize(xui.UI.Link.getBehavior()))"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         setAppearance:{
-            $desc:"设置控件外表对象.",
+            $desc:"设置控件外表对象",
             $rtn:'[self]',
             $paras:[
-                "hash [必需参数] : 键值对."
+                "hash [必需参数] : 键值对"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         setTemplate:{
-            $desc:"设置一个模板对象到指定的缓存id中.",
+            $desc:"设置一个模板对象到指定的缓存id中",
             $rtn:'[self]',
             $paras:[
-                "hash [必需参数] : 键值对.",
-                "cacheId [可选参数] : String."
+                "hash [必需参数] : 键值对",
+                "cacheId [可选参数] : String"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         setBehavior:{
-            $desc:"设置行为对象.",
+            $desc:"设置行为对象",
             $rtn:'[self]',
-            $memo:"一般情况下,程序员无需直接调用该函数."
+            $memo:"一般情况下,程序员无需直接调用该函数"
         },
         cacheData:{
-            $desc:"缓存数据或移除缓存数据.并为该缓存数据指定一个唯一标志.",
+            $desc:"缓存数据或移除缓存数据.并为该缓存数据指定一个唯一标志",
             $rtn:'[self]',
             $paras:[
-                "key [必需参数] : String, 缓存数据的唯一标志.",
-                "data [可选参数] : Object. 如果设置为undefined, 则移除标志为key的缓存数据."
+                "key [必需参数] : String, 缓存数据的唯一标志",
+                "data [可选参数] : Object. 如果设置为undefined, 则移除标志为key的缓存数据"
             ],
             $snippet:[
                 "xui.UI.cacheData('a',1); alert(xui.UI.getCachedData('a')); xui.UI.cacheData('a')"
             ]
         },
         getCachedData:{
-            $desc:"获取指定标志的缓存数据.",
+            $desc:"获取指定标志的缓存数据",
             $rtn:"Object",
             $paras:[
-                "key [必需参数] : String, cache key."
+                "key [必需参数] : String, cache key"
             ],
             $snippet:[
                 "xui.UI.cacheData('a',1); alert(xui.UI.getCachedData('a')); xui.UI.cacheData('a')"
             ]
         },
         getDragData:{
-            $desc:"获取拖动数据.",
+            $desc:"获取拖动数据",
             $rtn:"Object",
             $paras:[
                 "profile [必需参数] : 目标概要对象",
-                "event: DOM 事件对象.",
-                "node [必需参数] : 相关的DOM元素."
+                "event: DOM 事件对象",
+                "node [必需参数] : 相关的DOM元素"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数. 该函数会被部分子类覆盖."
+            $memo:"一般情况下,程序员无需直接调用该函数. 该函数会被部分子类覆盖"
         },
         getDragKey:{
-            $desc:"获取拖动时的键名字.",
+            $desc:"获取拖动时的键名字",
             $rtn:"String",
             $paras:[
                 "profile [必需参数] : 目标概要对象",
-                "node [必需参数] : 相关的DOM元素."
+                "node [必需参数] : 相关的DOM元素"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数. 该函数会被部分子类覆盖."
+            $memo:"一般情况下,程序员无需直接调用该函数. 该函数会被部分子类覆盖"
         },
         getDropKeys:{
-            $desc:"设置拖动时的键名字.",
+            $desc:"设置拖动时的键名字",
             $rtn:"Array",
             $paras:[
                 "profile [必需参数] : xui.UIProfile, 目标概要对象",
-                "node [必需参数] : String, 事件所属DOM元素的xid."
+                "node [必需参数] : String, 事件所属DOM元素的xid"
             ],
-            $memo:"一般情况下,程序员无需直接调用该函数. 该函数会被部分子类覆盖."
+            $memo:"一般情况下,程序员无需直接调用该函数. 该函数会被部分子类覆盖"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -7836,79 +7833,79 @@ xui.set(xui.Locale,["cn","app"], {
               $desc:"设置当前控件是否会自动显示文字提示",
               $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getClassName:{
-              $desc:"得到css类.",
+              $desc:"得到css类",
               $rtn:"String"
             },
             setClassName:{
-                $desc:"设置css类.",
+                $desc:"设置css类",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             hoverPop:{
-                $desc:"设置鼠标悬停弹出窗口.",
+                $desc:"设置鼠标悬停弹出窗口",
                  $rtn:"[self]",
                 $paras:[
                     "node [必需参数]  : Object/xui.Dom/Element. 弹出窗口",
                     "type [可选参数] : String, 参考houverPosType属性, 如果为null, 取消设置",
                     "beforePop[可选参数] : Function(prf, node, e, src, item), 窗口弹出之前调用",
                     "beforeHide[可选参数] : Function(prf, node, e, src, trigger, item), 窗口隐藏之前调用",
-                     "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body].",
+                     "parent [可选参数] : xui.Dom, 父窗口. 默认为[document.body]",
                     "groupid[Optional] : String.  组标识 id"
                 ]
             },
             getTheme:{
-                $desc:"获取当前控件的皮肤关键字.",
+                $desc:"获取当前控件的皮肤关键字",
                 $rtn:"String"
             },
             setTheme:{
-                $desc:"通过设置当前控件的皮肤关键字来更改控件的皮肤.",
+                $desc:"通过设置当前控件的皮肤关键字来更改控件的皮肤",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String, 皮肤键字符串."
+                    "key [可选参数] : String, 皮肤键字符串"
                 ]
             },
             busy:{
-                $desc:"将鼠标显示为沙漏(并将一个div覆盖在当前控件上). ",
+                $desc:"将鼠标显示为沙漏(并将一个div覆盖在当前控件上)",
                 $rtn:"[self]",
                 $paras:[
-                    "message [可选参数] : String, 说明文字.",
-                    "html [可选参数] : String, 说明html字符串.",
-                    "key [可选参数] : String, 覆盖div的父key. 默认为 'BORDER'."
+                    "message [可选参数] : String, 说明文字",
+                    "html [可选参数] : String, 说明html字符串",
+                    "key [可选参数] : String, 覆盖div的父key. 默认为 'BORDER'"
                 ]
             },
             free:{
-                $desc:"将鼠标显示为正常(并将覆盖div移除).",
+                $desc:"将鼠标显示为正常(并将覆盖div移除)",
                 $rtn:"[self]"
             },
             reLayout:{
                 $desc:"重新布局本控件",
                 $rtn:"[self]",
                 $paras:[
-                    "force [可选参数] : Boolean, 是否强制."
+                    "force [可选参数] : Boolean, 是否强制"
                 ]
             },
             getParent:{
-                $desc:"得到目前控件的所有父控件.",
+                $desc:"得到目前控件的所有父控件",
                 $rtn:"xui.UI"
             },
             getChildrenId:{
-                $desc:"得到目前控件在父控件的容器子项.",
+                $desc:"得到目前控件在父控件的容器子项",
                 $rtn:"String"
             },
             getChildren:{
-                $desc:"得到目前控件的所有子控件.",
+                $desc:"得到目前控件的所有子控件",
                 $rtn:"xui.UI",
                 $paras:[
-                    "subId [可选参数] : String, 子容器的id，不指定或[true]表示全部子容器. ",
-                    "all [可选参数] : Boolean, 是否返回所有层对象."
+                    "subId [可选参数] : String, 子容器的id，不指定或[true]表示全部子容器",
+                    "all [可选参数] : Boolean, 是否返回所有层对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui-1e'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7918,14 +7915,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             toHtml:{
-                $desc:"得到控件的html字符串.",
+                $desc:"得到控件的html字符串",
                 $rtn:"String",
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').boxing().toHtml())"
                 ]
             },
             getRenderer:{
-                $desc:"获取渲染函数.",
+                $desc:"获取渲染函数",
                 $rtn:"Function",
                 $snippet:[
                     "var id='xui.temp.ui-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7937,7 +7934,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRenderer:{
-                $desc:"设置渲染函数.",
+                $desc:"设置渲染函数",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Function",
@@ -7953,32 +7950,32 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getContainer:{
-                $desc:"获得控件的容器(xui.Dom)对象,如果没有容器返回根节点.",
+                $desc:"获得控件的容器(xui.Dom)对象,如果没有容器返回根节点",
                 $rtn:"xui.Dom",
                 $paras:[
                     "subId [可选参数] : 容器的sub id"
                 ]
             },
             getRoot:{
-                $desc:"获取控件的根节点(xui.Dom)对象.",
+                $desc:"获取控件的根节点(xui.Dom)对象",
                 $rtn:"xui.Dom",
                 $snippet:[
                 "alert(xui.UIProfile.getFromDom('btnLang').boxing().getRoot());"
                 ]
             },
             getRootNode:{
-                $desc:"获取控件的根节点DOM元素.",
+                $desc:"获取控件的根节点DOM元素",
                 $rtn:"Element",
                 $snippet:[
                 "alert(xui.UIProfile.getFromDom('btnLang').boxing().getRootNode());"
                 ]
             },
             append:{
-                $desc:"添加一系列的控件添加到到当前控件对象上.",
+                $desc:"添加一系列的控件添加到到当前控件对象上",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.UIProfile[],  子控件的 xui.UI 对象(里面可以包括多个控件概要对象).",
-                    "subId [可选参数] : String, subid会指示子控件加到那个DOM节点上.这个参数可以为 [false] ,表示控件不会做为子控件添加到当前控件对象上,只进行在DOM界面上添加UI的工作."
+                    "target [必需参数] : xui.UIProfile[],  子控件的 xui.UI 对象(里面可以包括多个控件概要对象)",
+                    "subId [可选参数] : String, subid会指示子控件加到那个DOM节点上.这个参数可以为 [false] ,表示控件不会做为子控件添加到当前控件对象上,只进行在DOM界面上添加UI的工作"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7989,7 +7986,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeChildren:{
-                $desc:"移除内部所有的子控件.",
+                $desc:"移除内部所有的子控件",
                 $rtn:"[self]",
                 $paras:[
                     "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有. 默认为[true]",
@@ -8004,7 +8001,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             clone:{
-                $desc:"克隆这个控件对象（里面可以包括多个控件概要对象）.",
+                $desc:"克隆这个控件对象（里面可以包括多个控件概要对象）",
                 $rtn:"xui.UI",
                 $snippet:[
                     "var id='xui.temp.ui3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8016,7 +8013,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             destroy:{
-                $desc:"销毁当前的对象.",
+                $desc:"销毁当前的对象",
                 $snippet:[
                     "var id='xui.temp.ui4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block;xui(id).prepend(block=new xui.UI.Block({position:'relative',border:true}));"+
@@ -8025,17 +8022,17 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             isDestroyed:{
-                $desc:"判断当前对象是否已被销毁."
+                $desc:"判断当前对象是否已被销毁"
             },
             draggable:{
-                $desc:"允许或禁止用户拖动当前对象.",
+                $desc:"允许或禁止用户拖动当前对象",
                 $rtn:"[self]",
                 $paras:[
-                    "dragKey [可选参数] : String, 拖动时的标志键.",
-                    "dragData [可选参数] : Object, 拖动时的数据.",
-                    "key [可选参数] : String, 模板键,指示哪一个DOM节点回作为可拖拽的目标节点. 默认为 'KEY'.",
-                    "option [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容.",
-                    "target [可选参数] : xui.Dom, 拖动目标."
+                    "dragKey [可选参数] : String, 拖动时的标志键",
+                    "dragData [可选参数] : Object, 拖动时的数据",
+                    "key [可选参数] : String, 模板键,指示哪一个DOM节点回作为可拖拽的目标节点. 默认为 'KEY'",
+                    "option [可选参数] : Object, 拖动参数,参见<strong>xui.DragDrop.startDrag</strong>中profile的具体内容",
+                    "target [可选参数] : xui.Dom, 拖动目标"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8056,7 +8053,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setLeft:{
-                $desc:"设置控件的左边坐标.（相对于父控件的距离,单位px）.",
+                $desc:"设置控件的左边坐标.（相对于父控件的距离,单位px）",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number",
@@ -8080,10 +8077,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRight:{
-                $desc:"设置控件的右边坐标.（相对于父控件的距离,单位px）.",
+                $desc:"设置控件的右边坐标.（相对于父控件的距离,单位px）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8104,10 +8101,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTop:{
-                $desc:"设置控件的上边沿坐标.（相对于父控件的距离,单位px）.",
+                $desc:"设置控件的上边沿坐标.（相对于父控件的距离,单位px）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8128,10 +8125,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBottom:{
-                $desc:"设置控件的下边沿坐标.（相对于父控件的距离,单位px）.",
+                $desc:"设置控件的下边沿坐标.（相对于父控件的距离,单位px）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8152,10 +8149,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setWidth:{
-                $desc:"设置控件的宽度.（单位px）.",
+                $desc:"设置控件的宽度.（单位px）",
                 $rtn:"[self]",
                  $paras:[
-                    "value [必需参数] : nonnegative Number.",
+                    "value [必需参数] : nonnegative Number",
                     $force
                 ],
                $snippet:[
@@ -8176,10 +8173,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHeight:{
-                $desc:"设置控件的高度.（单位px）.",
+                $desc:"设置控件的高度.（单位px）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 非负 Number.",
+                    "value [必需参数] : 非负 Number",
                     $force
                 ],
                 $snippet:[
@@ -8200,10 +8197,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDisplay:{
-                $desc:"设置控件的显示(display)属性.",
+                $desc:"设置控件的显示(display)属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 显示(display)属性的CSS值.",
+                    "value [必需参数] : 显示(display)属性的CSS值",
                     $force
                 ],
                 $snippet:[
@@ -8224,10 +8221,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setVisibility:{
-                $desc:"设置控件的可见性.",
+                $desc:"设置控件的可见性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : corresponding CSS value.",
+                    "value [必需参数] : corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -8248,10 +8245,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setZIndex:{
-                $desc:"设置控件的z-index,该属性决定了控件之间的覆盖关系.",
+                $desc:"设置控件的z-index,该属性决定了控件之间的覆盖关系",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : corresponding CSS value.",
+                    "value [必需参数] : corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -8269,7 +8266,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件的selectable属性,该属性决定了控件的html内容是否可以选定",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -8284,10 +8281,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPosition:{
-                $desc:"设置控件的位置属性,和CSS中的position对应.",
+                $desc:"设置控件的位置属性,和CSS中的position对应",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : corresponding CSS value.",
+                    "value [必需参数] : corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -8308,10 +8305,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTabindex:{
-                $desc:"设置tab键值.",
+                $desc:"设置tab键值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8322,7 +8319,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTips:{
-                $desc:"获取控件的提示文字(当鼠标停留时会显示该文字).",
+                $desc:"获取控件的提示文字(当鼠标停留时会显示该文字)",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ui44'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8332,10 +8329,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTips:{
-                $desc:"设置控件的提示文字(当鼠标停留时会显示该文字).",
+                $desc:"设置控件的提示文字(当鼠标停留时会显示该文字)",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -8346,43 +8343,43 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDisableTips:{
-                $desc:"判断控件是否已经去掉tips效果.",
+                $desc:"判断控件是否已经去掉tips效果",
                 $rtn:"Boolean"
             },
             setDisableTips:{
-                $desc:"设置控件是否去掉tips效果.",
+                $desc:"设置控件是否去掉tips效果",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getDisableClickEffect:{
-                $desc:"判断控件是否已经去掉鼠标点击效果.",
+                $desc:"判断控件是否已经去掉鼠标点击效果",
                 $rtn:"Boolean"
             },
             setDisableClickEffect:{
-                $desc:"设置控件是否去掉鼠标点击效果.",
+                $desc:"设置控件是否去掉鼠标点击效果",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getDisableHoverEffect:{
-                $desc:"判断控件是否已经去掉鼠标Hover效果.",
+                $desc:"判断控件是否已经去掉鼠标Hover效果",
                 $rtn:"Boolean"
             },
             setDisableHoverEffect:{
-                $desc:"设置控件是否去掉鼠标Hover效果.",
+                $desc:"设置控件是否去掉鼠标Hover效果",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getDisabled:{
-                $desc:"判断控件是否变灰(不可用).",
+                $desc:"判断控件是否变灰(不可用)",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.ui46'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8392,10 +8389,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDisabled:{
-                $desc:"设置控件是否变灰(不可用).",
+                $desc:"设置控件是否变灰(不可用)",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -8413,7 +8410,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件是否为锁定状态",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean, 默认为[false].",
+                    "value [必需参数] : Boolean, 默认为[false]",
                     $force
                 ]
             },
@@ -8425,7 +8422,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件是否为自动获得焦点",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean, 默认为[false].",
+                    "value [必需参数] : Boolean, 默认为[false]",
                     $force
                 ]
             },
@@ -8434,10 +8431,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHoverPop:{
-                $desc:"设置控件的悬停弹出目标.",
+                $desc:"设置控件的悬停弹出目标",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 弹出目标的别名，弹出目标必须要在当前控件的 host 中.",
+                    "value [必需参数] : String, 弹出目标的别名，弹出目标必须要在当前控件的 host 中",
                     $force
                 ]
             },
@@ -8446,10 +8443,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHoverPopType:{
-                $desc:"设置控件的悬停弹出类型.",
+                $desc:"设置控件的悬停弹出类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer.",
+                    "value [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     $force
                 ]
             },
@@ -8464,10 +8461,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDock:{
-                $desc:"设置控件的停靠属性（相对于父控件的停靠位置）.",
+                $desc:"设置控件的停靠属性（相对于父控件的停靠位置）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'.",
+                    "value [必需参数] : 'none','top','bottom','left','right','center','middle','origin','width','height','fill','cover'",
                     $force
                 ],
                 $snippet:[
@@ -8489,10 +8486,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockFloat:{
-                $desc:"设置否是停靠漂浮.",
+                $desc:"设置否是停靠漂浮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -8521,10 +8518,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockMargin:{
-                $desc:"设置停靠的外补丁.",
+                $desc:"设置停靠的外补丁",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : {left:Number,right:Number,top:Number,bottom:Number}.",
+                    "value [必需参数] : {left:Number,right:Number,top:Number,bottom:Number}",
                     $force
                 ],
                 $snippet:[
@@ -8553,10 +8550,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockOrder:{
-                $desc:"设置停靠的优先顺序.",
+                $desc:"设置停靠的优先顺序",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8579,10 +8576,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockIgnore:{
-                $desc:"设置是否停靠忽略.",
+                $desc:"设置是否停靠忽略",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -8602,7 +8599,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置停靠延展（主轴方向）参数，会覆盖父容器的conDockStretch设置）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -8622,7 +8619,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置停靠次轴方向的柔性忽略（会忽略父容器的conDockFlexFill设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -8645,10 +8642,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockMinH:{
-                $desc:"设置停靠的最小高度.",
+                $desc:"设置停靠的最小高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8664,10 +8661,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setDockMaxH:{
-                $desc:"设置停靠的最大高度.",
+                $desc:"设置停靠的最大高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -8682,10 +8679,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDockMinW:{
-                $desc:"设置停靠的最小宽度.",
+                $desc:"设置停靠的最小宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -8701,10 +8698,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setDockMaxW:{
-                $desc:"设置停靠的最大宽度.",
+                $desc:"设置停靠的最大宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -8716,7 +8713,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件的出现动画特效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String or Object.",
+                    "value [必需参数] : String or Object",
                     $force
                 ]
             },
@@ -8728,7 +8725,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件的隐去或销毁动画特效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String or Object.",
+                    "value [必需参数] : String or Object",
                     $force
                 ]
             },
@@ -8737,7 +8734,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setRotate:{
-                $desc:"设置控件旋转角度.",
+                $desc:"设置控件旋转角度",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 0~360",
@@ -8745,28 +8742,28 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDomId:{
-                $desc:"获取dom元素的id.",
+                $desc:"获取dom元素的id",
                 $rtn:"String",
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').boxing().getDomId())"
                 ]
             },
             getSubNode:{
-                $desc:"获取带有指定[key]和[subId]的dom元素内部的子节点.",
+                $desc:"获取带有指定[key]和[subId]的dom元素内部的子节点",
                 $rtn:"xui.dom",
                 $paras:[
-                    "key [必需参数] : String, key string.",
-                    "subId [可选参数] : String or [true]. [true] for getting all the sub nodes with the specified [key]."
+                    "key [必需参数] : String, key string",
+                    "subId [可选参数] : String or [true]. [true] for getting all the sub nodes with the specified [key]"
                 ],
                 $snippet:[
                     "alert(xui.UIProfile.getFromDom('btnLang').boxing().getSubNode('KEY').id());"+
                     "alert(xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing().getSubNode('ITEM','a').id());"+
                     "alert(xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing().getSubNode('ITEM',true).get().length);"
                 ],
-                $memo:"The [subId] parameter is for those [xui.absList] profiles only."
+                $memo:"The [subId] parameter is for those [xui.absList] profiles only"
             },
             setDomId:{
-                $desc:"设置DOM元素id.",
+                $desc:"设置DOM元素id",
                 $rtn:"[self]",
                 $paras:[
                     "id [必需参数] : String, id 字符串"
@@ -8776,27 +8773,27 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             hide:{
-                $desc:"隐藏该控件对象.",
+                $desc:"隐藏该控件对象",
                 $rtn:"[self]",
                 $snippet:[
                     "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
                 ]
             },
             show:{
-                $desc:"显示该控件对象.",
+                $desc:"显示该控件对象",
                 $rtn:"[self]",
                 $paras:[
-                    "parent [必需参数] : xui.UIProfile/xui.UI/Element/xui.Dom.",
-                    "subId [可选参数] : String, the sub id that Determines the set of UIProfiles will be added to.",
-                    "left [可选参数] : Number, 显示的左边坐标.",
-                    "top [可选参数] : Number, 显示的上边坐标."
+                    "parent [必需参数] : xui.UIProfile/xui.UI/Element/xui.Dom",
+                    "subId [可选参数] : String, the sub id that Determines the set of UIProfiles will be added to",
+                    "left [可选参数] : Number, 显示的左边坐标",
+                    "top [可选参数] : Number, 显示的上边坐标"
                 ],
                 $snippet:[
                     "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
                 ]
             },
             refresh:{
-                $desc:"刷新组件.",
+                $desc:"刷新组件",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.ui91'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8807,21 +8804,21 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             render:{
-                $desc:"将控件渲染成DOM.",
+                $desc:"将控件渲染成DOM",
                 $rtn:"[self]",
                 $paras:[
-                    "triggerLayOut [可选参数] : Boolean, 指示是否触发布局. 默认为 [false]."
+                    "triggerLayOut [可选参数] : Boolean, 指示是否触发布局. 默认为 [false]"
                 ],
                 $snippet:[
                     "var btn=new xui.UI.Button; alert(btn.get(0).renderId); btn.render(); alert(btn.get(0).renderId); btn.destroy()"
                 ]
             },
             renderOnto:{
-                $desc:"将控件渲染, 并替换已经存在的一个DOM元素.",
+                $desc:"将控件渲染, 并替换已经存在的一个DOM元素",
                 $rtn:"[self]",
                 $paras:[
-                    "domId [必需参数] : String, DOM元素id.",
-                    "host [可选参数] : Object, 宿主对象. 默认为 [window]."
+                    "domId [必需参数] : String, DOM元素id",
+                    "host [可选参数] : Object, 宿主对象. 默认为 [window]"
                 ],
                 $snippet:[
                     "var id='xui.temp.a1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8832,19 +8829,19 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCustomAttr:{
-                $desc:"设置自定义的DOM节点属性.",
+                $desc:"设置自定义的DOM节点属性",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String/Object, 模板字符串键, 或键值对.",
-                    "value [可选参数] : Object, DOM节点属性对象."
+                    "key [可选参数] : String/Object, 模板字符串键, 或键值对",
+                    "value [可选参数] : Object, DOM节点属性对象"
                 ]
             },
             setCustomStyle:{
-                $desc:"设置自定义的CSS对象.",
+                $desc:"设置自定义的CSS对象",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String/Object, 模板字符串键, 或键值对.",
-                    "value [可选参数] : String, CSS字符串."
+                    "key [可选参数] : String/Object, 模板字符串键, 或键值对",
+                    "value [可选参数] : String, CSS字符串"
                 ],
                 $snippet:[
                     "var id='xui.temp.a2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8857,11 +8854,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCustomClass:{
-                $desc:"设置自定义的CSS class.",
+                $desc:"设置自定义的CSS class",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String/Object, 模板字符串键, 或键值对.",
-                    "value [可选参数] : String, CSS class 字符串."
+                    "key [可选参数] : String/Object, 模板字符串键, 或键值对",
+                    "value [可选参数] : String, CSS class 字符串"
                 ],
                 $snippet:[
                     "var id='xui.temp.a4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8876,15 +8873,15 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             adjustDock:{
-                $desc:"调整停靠.",
+                $desc:"调整停靠",
                 $rtn:"[self]"
             },
             setCustomBehavior:{
-                $desc:"设置自定义行为函数.",
+                $desc:"设置自定义行为函数",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String/Object, 模板字符串键, 或键值对.",
-                    "value [可选参数] : Object, 键值对."
+                    "key [可选参数] : String/Object, 模板字符串键, 或键值对",
+                    "value [可选参数] : Object, 键值对"
                 ],
                 $snippet:[
                     "var id='xui.temp.a3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8894,11 +8891,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCustomFunction:{
-                $desc:"设置自定义函数. 这些函数可以被序列化.",
+                $desc:"设置自定义函数. 这些函数可以被序列化",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String/Object, 模板字符串键, 或键值对.",
-                    "value [可选参数] : Function, 自定义函数."
+                    "key [可选参数] : String/Object, 模板字符串键, 或键值对",
+                    "value [可选参数] : Function, 自定义函数"
                 ],
                 $snippet:[
                     "var id='xui.temp.a5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8910,7 +8907,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeDestroy:{
-                $desc:"在控件被销毁前触发,如果返回false,控件销毁的动作将被取消.",
+                $desc:"在控件被销毁前触发,如果返回false,控件销毁的动作将被取消",
                 $paras:[
                     $profile
                 ],
@@ -8923,13 +8920,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterDestroy:{
-                $desc:"在控件被销毁后触发.",
+                $desc:"在控件被销毁后触发",
                 $paras:[
                     $profile
                 ]
             },
             onDestroy:{
-                $desc:"当控件被销毁时调用.",
+                $desc:"当控件被销毁时调用",
                 $paras:[
                     $profile
                 ],
@@ -8942,12 +8939,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onContextmenu:{
-                $desc:"当根dom元素的 contextmenu 激活时会激活本事件. 如果返回 false, 系统默认的 contextmenu 会被屏蔽(opera下无效).",
+                $desc:"当根dom元素的 contextmenu 激活时会激活本事件. 如果返回 false, 系统默认的 contextmenu 会被屏蔽(opera下无效)",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "item: Object, 鼠标点击节点所对应的item对象."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "item: Object, 鼠标点击节点所对应的item对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.b2-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -8957,19 +8954,19 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onCreated:{
-                $desc:'在控件生成的时候触发.',
+                $desc:'在控件生成的时候触发',
                 $paras:[
                    $profile
                 ]
             },
             beforeRender:{
-                $desc:"当控件被渲染前(生成DOM节点)调用. 如返回 false, 渲染事件取消.",
+                $desc:"当控件被渲染前(生成DOM节点)调用. 如返回 false, 渲染事件取消",
                 $paras:[
                    $profile
                 ]
             },
             onRender:{
-                $desc:"当控件被渲染时(生成DOM节点)调用.",
+                $desc:"当控件被渲染时(生成DOM节点)调用",
                 $paras:[
                     $profile
                 ],
@@ -8982,7 +8979,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onLayout:{
-                $desc:"当控件被重新布局的时候调用.",
+                $desc:"当控件被重新布局的时候调用",
                 $paras:[
                     $profile
                 ],
@@ -8997,7 +8994,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onResize:{
-                $desc:"控件被改变大小的时候调用.",
+                $desc:"控件被改变大小的时候调用",
                 $paras:[
                     $profile,
                     "width : Number, 目标宽",
@@ -9013,7 +9010,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onMove:{
-                $desc:"控件被改变位置的时候调用.",
+                $desc:"控件被改变位置的时候调用",
                 $paras:[
                     $profile,
                     "left : Number, 目标左边值",
@@ -9031,7 +9028,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onDock:{
-                $desc:"控件被dock机制改变大小或位置的时候调用.",
+                $desc:"控件被dock机制改变大小或位置的时候调用",
                 $paras:[
                     $profile,
                     "region : Object"
@@ -9046,7 +9043,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforePropertyChanged:{
-                $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变.",
+                $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变",
                 $paras:[
                     $profile,
                     "name : String, 属性名",
@@ -9063,7 +9060,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterPropertyChanged:{
-                $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变.",
+                $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变",
                 $paras:[
                     $profile,
                     "name : String, 属性名",
@@ -9080,10 +9077,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeAppend:{
-                $desc:"当向控件添加子控件前触发,返回false可以阻止该动作.",
+                $desc:"当向控件添加子控件前触发,返回false可以阻止该动作",
                 $paras:[
                     $profile,
-                    "child : xui.UI, 添加的子控件."
+                    "child : xui.UI, 添加的子控件"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-f'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9095,10 +9092,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterAppend:{
-                $desc:"当向控件添加子控件后触发.",
+                $desc:"当向控件添加子控件后触发",
                 $paras:[
                     $profile,
-                    "child : xui.UI, 添加的子控件."
+                    "child : xui.UI, 添加的子控件"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-g'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9110,10 +9107,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeRemove:{
-                $desc:"当从控件中移除子控件前触发,返回false可以阻止该动作.",
+                $desc:"当从控件中移除子控件前触发,返回false可以阻止该动作",
                 $paras:[
                     $profile,
-                    "child : xui.UIProfile, 移除的子控件.",
+                    "child : xui.UIProfile, 移除的子控件",
                     "subId : String, 子控件在父控件的容器标识",
                     "bdestroy : Boolean, 是否在移除后被销毁"
                 ],
@@ -9127,10 +9124,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterRemove:{
-                $desc:"当从控件中移除子控件后触发.",
+                $desc:"当从控件中移除子控件后触发",
                 $paras:[
                     $profile,
-                    "child : xui.UIProfile, 移除的子控件.",
+                    "child : xui.UIProfile, 移除的子控件",
                     "subId : String, 子控件在父控件的容器标识",
                     "bdestroy : Boolean, 是否在移除后被销毁"
                 ],
@@ -9147,7 +9144,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"当控件显示tips时调用. 如返回false将会阻止系统默认的工具信息显示",
                 $paras:[
                     $profile,
-                    "src: String, 事件所属DOM元素的xid.",
+                    "src: String, 事件所属DOM元素的xid",
                     "pos : Object, {left:Number, top:Number}"
                 ],
                 $snippet:[
@@ -9164,67 +9161,67 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.CSSBox 类",
         constructor:{
-            $desc:"生成一个xui.UI.CSSBox对象."
+            $desc:"生成一个xui.UI.CSSBox对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getClassName:{
-              $desc:"得到目标css类名.",
+              $desc:"得到目标css类名",
               $rtn:"String"
             },
             setClassName:{
-                $desc:"设置目标css类名.",
+                $desc:"设置目标css类名",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getNormalStatus:{
-                $desc:"得到正常状态的CSS设置.",
+                $desc:"得到正常状态的CSS设置",
                 $rtn:"Object, 键值对"
             },
             setNormalStatus:{
-                $desc:"设置正常状态的CSS.",
+                $desc:"设置正常状态的CSS",
                 $rtn:"[self],",
                 $paras:[
-                    "value [必需参数] : Object, 键值对 .",
+                    "value [必需参数] : Object, 键值对 ",
                     $force
                 ]
             },
             getHoverStatus:{
-                $desc:"得到悬停状态的CSS设置.",
+                $desc:"得到悬停状态的CSS设置",
                 $rtn:"Object, 键值对"
             },
             setHoverStatus:{
-                $desc:"设置悬停状态的CSS.",
+                $desc:"设置悬停状态的CSS",
                 $rtn:"[self],",
                 $paras:[
-                    "value [必需参数] : Object, 键值对 .",
+                    "value [必需参数] : Object, 键值对 ",
                     $force
                 ]
             },
             getActiveStatus:{
-                $desc:"得到激活状态的CSS设置.",
+                $desc:"得到激活状态的CSS设置",
                 $rtn:"Object, 键值对"
             },
             setActiveStatus:{
-                $desc:"设置激活状态的CSS.",
+                $desc:"设置激活状态的CSS",
                 $rtn:"[self],",
                 $paras:[
-                    "value [必需参数] : Object, 键值对 .",
+                    "value [必需参数] : Object, 键值对 ",
                     $force
                 ]
             },
             getFocusStatus:{
-                $desc:"得到焦点状态的CSS设置.",
+                $desc:"得到焦点状态的CSS设置",
                 $rtn:"Object, 键值对"
             },
             setFocusStatus:{
-                $desc:"设置焦点状态的CSS.",
+                $desc:"设置焦点状态的CSS",
                 $rtn:"[self],",
                 $paras:[
-                    "value [必需参数] : Object, 键值对 .",
+                    "value [必需参数] : Object, 键值对 ",
                     $force
                 ]
             }
@@ -9235,12 +9232,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Widget 类",
         constructor:{
-            $desc:"生成一个xui.UI.Widget对象."
+            $desc:"生成一个xui.UI.Widget对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getBorder:{
-                $desc:"判断控件是否显示边缘线.",
+                $desc:"判断控件是否显示边缘线",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.w1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9253,7 +9250,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件是否显示边缘线",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -9264,7 +9261,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getShadow:{
-                $desc:"判断控件是否显示阴影.",
+                $desc:"判断控件是否显示阴影",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.w3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9277,7 +9274,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件是否显示阴影",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -9288,7 +9285,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getResizer:{
-                $desc:"判断控件是否可以调整大小.",
+                $desc:"判断控件是否可以调整大小",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.w5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9301,7 +9298,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件是否可以调整大小",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -9312,11 +9309,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getResizerProp:{
-                $desc:"得到Resizer的属性.",
+                $desc:"得到Resizer的属性",
                 $rtn:"Object"
             },
             setResizerProp:{
-                $desc:"设置Resizer的属性.",
+                $desc:"设置Resizer的属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object. {forceVisible:/*Boolean*/,forceMovable:/*Boolean*/,singleDir:/*Boolean*/,vertical:/*Boolean*/,horizontal:/*Boolean*/,minHeight:/*Number*/,minWidth:/*Number*/,maxHeight:/*Number*/,maxWidth:/*Number*/,handlerSize:/*Number*/,handlerOffset:/*Number*/}",
@@ -9330,7 +9327,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Div 类",
         constructor:{
-            $desc:"生成一个xui.UI.Div对象."
+            $desc:"生成一个xui.UI.Div对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -9339,10 +9336,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setIframeAutoLoad:{
-                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置.",
+                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -9351,15 +9348,15 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setAjaxAutoLoad:{
-                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置.",
+                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
+                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax",
                     $force
                 ]
             },
             getHtml:{
-                $desc:"获取当前层对象(xui.UI.Div)的内部html代码.",
+                $desc:"获取当前层对象(xui.UI.Div)的内部html代码",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.div1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9369,7 +9366,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHtml:{
-                $desc:"设置当前层对象(xui.UI.Div)的内部html代码.",
+                $desc:"设置当前层对象(xui.UI.Div)的内部html代码",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, Html代码",
@@ -9383,11 +9380,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"当鼠标单击时调用.",
+                $desc:"当鼠标单击时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -9397,7 +9394,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Pane 类",
         constructor:{
-            $desc:"生成一个xui.UI.Pane对象."
+            $desc:"生成一个xui.UI.Pane对象"
         }
     });
 
@@ -9405,12 +9402,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Link 类",
         constructor:{
-            $desc:"生成一个xui.UI.Link对象."
+            $desc:"生成一个xui.UI.Link对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getCaption:{
-                $desc:"获取超链接的文本内容.",
+                $desc:"获取超链接的文本内容",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.link1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9420,10 +9417,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption:{
-                $desc:"设置超链接的文本内容.",
+                $desc:"设置超链接的文本内容",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 文本内容.",
+                    "value [必需参数] : String, 文本内容",
                     $force
                 ],
                 $snippet:[
@@ -9434,7 +9431,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTarget:{
-                $desc:"获取超链接打开的目标窗口.",
+                $desc:"获取超链接打开的目标窗口",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.link3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9444,10 +9441,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTarget:{
-                $desc:"设置超链接打开的目标窗口.",
+                $desc:"设置超链接打开的目标窗口",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 值.",
+                    "value [必需参数] : String, 值",
                     $force
                 ],
                 $snippet:[
@@ -9458,7 +9455,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getHref:{
-                $desc:"获取超链接的href属性.",
+                $desc:"获取超链接的href属性",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.link5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9468,10 +9465,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHref :{
-                $desc:"设置超链接的href属性.",
+                $desc:"设置超链接的href属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, the href.",
+                    "value [必需参数] : String, the href",
                     $force
                 ],
                 $snippet:[
@@ -9484,10 +9481,10 @@ xui.set(xui.Locale,["cn","app"], {
 
 
             onClick:{
-                $desc:"当用户单击超链接时调用.",
+                $desc:"当用户单击超链接时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素."            ],
+                    "e : Event, DOM事件元素"            ],
                 $snippet:[
                     "var id='xui.temp.link7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui(id).prepend((new xui.UI.Link()).setCaption('cap').onClick(function(profile){alert(profile.properties.caption)}));"+
@@ -9507,7 +9504,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Block 类",
         constructor:{
-            $desc:"生成一个xui.UI.Block 对象."
+            $desc:"生成一个xui.UI.Block 对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -9516,10 +9513,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setIframeAutoLoad:{
-                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置.",
+                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -9528,15 +9525,15 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setAjaxAutoLoad:{
-                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置.",
+                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
+                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax",
                     $force
                 ]
             },
             getHtml:{
-                $desc:"获取块控件的内部html.",
+                $desc:"获取块控件的内部html",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.blk1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9546,10 +9543,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHtml:{
-                $desc:"设置块控件的内部html.",
+                $desc:"设置块控件的内部html",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, the html string.",
+                    "value [必需参数] : String, the html string",
                     $force
                 ],
                 $snippet:[
@@ -9560,7 +9557,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBackground:{
-                $desc:"获取块控件的背景.",
+                $desc:"获取块控件的背景",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.blk3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9570,10 +9567,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBackground:{
-                $desc:"设置获取块控件的背景.",
+                $desc:"设置获取块控件的背景",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 背景的CSS字符串.",
+                    "value [必需参数] : String, 背景的CSS字符串",
                     $force
                 ],
                 $snippet:[
@@ -9584,7 +9581,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBorderType:{
-                $desc:"获取块控件的边框种类.",
+                $desc:"获取块控件的边框种类",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.blk5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9594,10 +9591,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBorderType:{
-                $desc:"设置块控件的边框种类.",
+                $desc:"设置块控件的边框种类",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
+                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'",
                     $force
                 ],
                 $snippet:[
@@ -9608,11 +9605,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickPanel:{
-                $desc:"当鼠标单击容器时调用.",
+                $desc:"当鼠标单击容器时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -9622,7 +9619,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.ProgressBar 类",
         constructor:{
-            $desc:"生成一个xui.UI.ProgressBar对象."
+            $desc:"生成一个xui.UI.ProgressBar对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -9631,15 +9628,15 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setType:{
-                $desc:"设置显示类型.",
+                $desc:"设置显示类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
+                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平)",
                     $force
                 ]
             },
             getCaptionTpl :{
-                $desc:"得到标题模板字符串.",
+                $desc:"得到标题模板字符串",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.pb1-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9650,10 +9647,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaptionTpl :{
-                $desc:"设置标题模板字符串.",
+                $desc:"设置标题模板字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -9676,10 +9673,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFillBG:{
-                $desc:"设置进度条背景填充颜色.",
+                $desc:"设置进度条背景填充颜色",
                 $rtn:"[self]",
                  $paras:[
-                    "value [必需参数] : nonnegative Number.",
+                    "value [必需参数] : nonnegative Number",
                     $force
                 ],
                $snippet:[
@@ -9697,12 +9694,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Label 类",
         constructor:{
-            $desc:"生成一个xui.UI.Label."
+            $desc:"生成一个xui.UI.Label"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getCaption :{
-                $desc:"获取文字.",
+                $desc:"获取文字",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.Label1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9712,10 +9709,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置文字.",
+                $desc:"设置文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -9726,7 +9723,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },            
             getHAlign :{
-                $desc:"获取水平对齐方式.",
+                $desc:"获取水平对齐方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.Label7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9736,10 +9733,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式.",
+                $desc:"设置水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'",
                     $force
                 ],
                 $snippet:[
@@ -9754,10 +9751,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setFontColor :{
-                $desc:"设置标签字体颜色.",
+                $desc:"设置标签字体颜色",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 字体颜色.",
+                    "value [必需参数] : 字体颜色",
                     $force
                 ]
             },            
@@ -9772,10 +9769,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFontSize :{
-                $desc:"设置标签字体大小.",
+                $desc:"设置标签字体大小",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 字体大小.",
+                    "value [必需参数] : 字体大小",
                     $force
                 ],
                 $snippet:[
@@ -9796,10 +9793,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFontWeight :{
-                $desc:"设置标签字体粗细.",
+                $desc:"设置标签字体粗细",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : corresponding CSS value.",
+                    "value [必需参数] : corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -9820,10 +9817,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置图标url路径.",
+                $desc:"设置图标url路径",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] :String, 图标url路径.",
+                    "value [必需参数] :String, 图标url路径",
                     $force
                 ],
                 $snippet:[
@@ -9844,10 +9841,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的图像偏移属性.",
+                $desc:"设置图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 图标的显示位置.",
+                    "value [必需参数] : String, 图标的显示位置",
                     $force
                 ],
                 $snippet:[
@@ -9858,11 +9855,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },            
             onClick:{
-                $desc:"当鼠标单击时调用.",
+                $desc:"当鼠标单击时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -9873,48 +9870,48 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.RichEditor 类",
         constructor:{
-            $desc:"生成一个 xui.UI.RichEditor 对象."
+            $desc:"生成一个 xui.UI.RichEditor 对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getFrameTemplate:{
-                $desc:"得到内部iFrame的html模板.",
+                $desc:"得到内部iFrame的html模板",
                 $rtn:"String"
             },
             setFrameTemplate:{
-                $desc:"设置内部iFrame的html模板.",
+                $desc:"设置内部iFrame的html模板",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getFrameStyle:{
-                $desc:"得到内部iFrame的附加css样式.",
+                $desc:"得到内部iFrame的附加css样式",
                 $rtn:"String"
             },
             setFrameStyle:{
-                $desc:"设置内部iFrame的附加css样式.",
+                $desc:"设置内部iFrame的附加css样式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getCmdFilter:{
-                $desc:"得到过滤掉的控件中命令按钮.",
+                $desc:"得到过滤掉的控件中命令按钮",
                 $rtn:"String"
             },
             setCmdFilter:{
-                $desc:"设置过滤掉的控件中命令按钮.",
+                $desc:"设置过滤掉的控件中命令按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 设置'font1;font2'是隐藏font1和font2.",
+                    "value [必需参数] : String. 设置'font1;font2'是隐藏font1和font2",
                     $force
                 ]
             },
             getCmdList :{
-                $desc:"得到控件中命令按钮的出现和排列方式.",
+                $desc:"得到控件中命令按钮的出现和排列方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.rich'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:300px;width:400px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9924,10 +9921,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCmdList :{
-                $desc:"设置控件中命令按钮的出现和排列方式.",
+                $desc:"设置控件中命令按钮的出现和排列方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -9942,10 +9939,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -9954,10 +9951,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置.",
+                $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一.",
+                    "value [必需参数] : left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -9966,10 +9963,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -9978,57 +9975,57 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字.",
+                $desc:"设置标签的文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getLabelHAlign:{
-                $desc:"获取标签的水平对齐方式.",
+                $desc:"获取标签的水平对齐方式",
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 .",
+                $desc:"设置按标签的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ]
             },
             onLabelClick:{
-                $desc:"在单击标签的时候触发该事件.",
+                $desc:"在单击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelDblClick:{
-                $desc:"在双击标签的时候触发该事件.",
+                $desc:"在双击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelActive:{
-                $desc:"当鼠标在标签上按下时调用.",
+                $desc:"当鼠标在标签上按下时调用",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onReady:{
-                $desc:"当内部Frame准备好.",
+                $desc:"当内部Frame准备好",
                 $paras:[
                     $profile
                 ]
             },
             onUpdateToolbar:{
-                $desc:"当命令按钮更新状态.",
+                $desc:"当命令按钮更新状态",
                 $paras:[
                     $profile,
                     "etype: String,  事件类型",
@@ -10036,12 +10033,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onInnerEvent:{
-                $desc:"当命令按钮更新状态.",
+                $desc:"当命令按钮更新状态",
                 $paras:[
                     $profile,
                     "type : String,  事件类型",
-                    "node : Element, 相应的DOM元素.",
-                    "e : Event, DOM事件元素."
+                    "node : Element, 相应的DOM元素",
+                    "e : Event, DOM事件元素"
                 ]
             }
         }
@@ -10051,12 +10048,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.CheckBox 类",
         constructor:{
-            $desc:"生成一个xui.UI.Button对象."
+            $desc:"生成一个xui.UI.Button对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.SCbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10066,7 +10063,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCaption :{
-                $desc:"获取按题文字.",
+                $desc:"获取按题文字",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.scbtn1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10076,10 +10073,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置按题文字.",
+                $desc:"设置按题文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10094,10 +10091,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setImage :{
-                $desc:"设置图标url路径.",
+                $desc:"设置图标url路径",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] :String, 图标url路径.",
+                    "value [必需参数] :String, 图标url路径",
                     $force
                 ]
             },
@@ -10106,19 +10103,19 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setImagePos :{
-                $desc:"设置图标的图像偏移属性.",
+                $desc:"设置图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 图标的显示位置.",
+                    "value [必需参数] : String, 图标的显示位置",
                     $force
                 ]
             },
             onChecked:{
-                $desc:"Fired when CheckBox is checked.",
+                $desc:"Fired when CheckBox is checked",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "value : String, 按下或弹起."
+                    "e : Event, DOM事件元素",
+                    "value : String, 按下或弹起"
                 ],
                 $snippet:[
                     "var id='xui.temp.Scbtn18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10134,7 +10131,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Button 类",
         constructor:{
-            $desc:"生成一个xui.UI.Button对象."
+            $desc:"生成一个xui.UI.Button对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -10142,20 +10139,20 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"重新内部值, 显示值和控件值. 该函数不激活任何事件",
                 $rtn:'[self]',
                 $paras:[
-                    "value [可选参数] : Boolean, 重新设置的新值,默认为 false."
+                    "value [可选参数] : Boolean, 重新设置的新值,默认为 false"
                 ]
             },
             setUIValue:{
                 $desc:"设置用户界面值和控件值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
-                    "force [可选参数] : Boolean, 强行赋值,即使赋值和现有值已经相同. 默认为 [false]."
+                    "value [必需参数] : Boolean",
+                    "force [可选参数] : Boolean, 强行赋值,即使赋值和现有值已经相同. 默认为 [false]"
                 ],
-                $memo:"调用该函数时,以下两个事件将被触发beforeUIValueSet and afterUIValueSet."
+                $memo:"调用该函数时,以下两个事件将被触发beforeUIValueSet and afterUIValueSet"
             },
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.btn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10165,7 +10162,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCaption :{
-                $desc:"获取按钮标题文字.",
+                $desc:"获取按钮标题文字",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10175,10 +10172,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置按钮标题文字.",
+                $desc:"设置按钮标题文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10189,7 +10186,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getType:{
-                $desc:"得到按钮的类型.",
+                $desc:"得到按钮的类型",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10199,10 +10196,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置按钮的类型.",
+                $desc:"设置按钮的类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'normal', 'drop' 或 'status'.",
+                    "value [必需参数] : String, 'normal', 'drop' 或 'status'",
                     $force
                 ],
                 $snippet:[
@@ -10213,7 +10210,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getHAlign :{
-                $desc:"获取水平对齐方式.",
+                $desc:"获取水平对齐方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10223,10 +10220,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式.",
+                $desc:"设置水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'",
                     $force
                 ],
                 $snippet:[
@@ -10237,7 +10234,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getVAlign :{
-                $desc:"获取垂直对齐方式.",
+                $desc:"获取垂直对齐方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10247,10 +10244,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setVAlign :{
-                $desc:"设置垂直对齐方式.",
+                $desc:"设置垂直对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'top', 'middle' or 'bottom'.",
+                    "value [必需参数] : String, 'top', 'middle' or 'bottom'",
                     $force
                 ],
                 $snippet:[
@@ -10261,7 +10258,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImage :{
-                $desc:"获取图标的url.",
+                $desc:"获取图标的url",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10271,10 +10268,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置图标的url.",
+                $desc:"设置图标的url",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] :String,  image path.",
+                    "value [必需参数] :String,  image path",
                     $force
                 ],
                 $snippet:[
@@ -10285,7 +10282,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImagePos :{
-                $desc:"获取图标的图像偏移属性.",
+                $desc:"获取图标的图像偏移属性",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.btn15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10295,10 +10292,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的图像偏移属性.",
+                $desc:"设置图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, corresponding CSS value.",
+                    "value [必需参数] : String, corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -10310,12 +10307,12 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             onClick:{
-                $desc:"当鼠标单击时调用.",
+                $desc:"当鼠标单击时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "value : Boolean, 值."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "value : Boolean, 值"
                 ],
                 $snippet:[
                     "var id='xui.temp.btn17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10324,11 +10321,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onChecked:{
-                $desc:"在按钮按下时触发（当按钮的 type 为'status'时才有效）.",
+                $desc:"在按钮按下时触发（当按钮的 type 为'status'时才有效）",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "value : Boolean, 按下或弹起."
+                    "e : Event, DOM事件元素",
+                    "value : Boolean, 按下或弹起"
                 ],
                 $snippet:[
                     "var id='xui.temp.btn18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10344,12 +10341,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Input 类",
         constructor:{
-            $desc:"生成一个xui.UI.Input对象."
+            $desc:"生成一个xui.UI.Input对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.input0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10369,10 +10366,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDynCheck:{
-                $desc:"设置当用户输入时,编辑框是否实时校验输入的有效性. 设置为false时,编辑框只在用户离开编辑框时检查有效性.",
+                $desc:"设置当用户输入时,编辑框是否实时校验输入的有效性. 设置为false时,编辑框只在用户离开编辑框时检查有效性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -10383,14 +10380,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPlaceholder:{
-                $desc:"获得HTML 5  空白提示字符串.",
+                $desc:"获得HTML 5  空白提示字符串",
                 $rtn:"String"
             },
             setPlaceholder:{
-                $desc:"设置HTML 5  空白提示字符串.",
+                $desc:"设置HTML 5  空白提示字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force                ]
             },
             getHAlign :{
@@ -10398,10 +10395,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHAlign :{
-                $desc:"设置标签水平对齐方式.",
+                $desc:"设置标签水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'",
                     $force
                 ]
             },
@@ -10416,10 +10413,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMultiLines:{
-                $desc:"设置是否允许输入多行文本.",
+                $desc:"设置是否允许输入多行文本",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -10430,7 +10427,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getMask:{
-                $desc:"获取有效的格式模式,用来避免错误的输入.",
+                $desc:"获取有效的格式模式,用来避免错误的输入",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.input7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10472,10 +10469,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setReadonly:{
-                $desc:"设置编辑框是否为只读.",
+                $desc:"设置编辑框是否为只读",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -10500,7 +10497,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置有效性提示的绑定器. (提示的文本出现在什么控件上)",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10523,10 +10520,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTipsErr:{
-                $desc:"设置输入无效时的提示文本.",
+                $desc:"设置输入无效时的提示文本",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10549,10 +10546,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTipsOK:{
-                $desc:"设置输入有效是的提示文本.",
+                $desc:"设置输入有效是的提示文本",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10564,7 +10561,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getValueFormat:{
-                $desc:"获取有效输入的模式（正则表达式）.",
+                $desc:"获取有效输入的模式（正则表达式）",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.input17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10574,10 +10571,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setValueFormat:{
-                $desc:"设置有效输入的模式（正则表达式）.",
+                $desc:"设置有效输入的模式（正则表达式）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10588,19 +10585,19 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getSelectOnFocus:{
-                $desc:"获取是否在获得焦点时自动选择文本.",
+                $desc:"获取是否在获得焦点时自动选择文本",
                 $rtn:"Boolean"
             },
             setSelectOnFocus:{
-                $desc:"设置是否在获得焦点时自动选择文本.",
+                $desc:"设置是否在获得焦点时自动选择文本",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getType:{
-                $desc:"获取输入框的类型. 可以是'input'(普通输入框)或 'password'(密码输入框). 默认为 'input'.",
+                $desc:"获取输入框的类型. 可以是'input'(普通输入框)或 'password'(密码输入框). 默认为 'input'",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.input19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10610,10 +10607,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置输入框的类型.",
+                $desc:"设置输入框的类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'input' or 'password'. 默认为 'input'.",
+                    "value [必需参数] : 'input' or 'password'. 默认为 'input'",
                     $force
                 ],
                 $snippet:[
@@ -10624,14 +10621,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getMaxlength:{
-                $desc:"获取输入框的工最大长度. 只有multiline为false的时候有效(for html input type='text' or type='password').",
+                $desc:"获取输入框的工最大长度. 只有multiline为false的时候有效(for html input type='text' or type='password')",
                 $rtn:"Number"
             },
             setMaxlength:{
-                $desc:"设置输入框的工最大长度. 只有multiline为false的时候有效(for html input type='text' or type='password').",
+                $desc:"设置输入框的工最大长度. 只有multiline为false的时候有效(for html input type='text' or type='password')",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 最大长度.",
+                    "value [必需参数] : 最大长度",
                     $force
                 ]
             },
@@ -10640,10 +10637,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -10652,10 +10649,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置.",
+                $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一.",
+                    "value [必需参数] : left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -10664,10 +10661,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -10676,61 +10673,61 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字.",
+                $desc:"设置标签的文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getLabelHAlign:{
-                $desc:"获取标签的水平对齐方式.",
+                $desc:"获取标签的水平对齐方式",
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 .",
+                $desc:"设置按标签的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ]
             },
             onClick:{
-                $desc:"在单击按钮的时候触发该事件.",
+                $desc:"在单击按钮的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid.",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid",
                     "btn: String, 点击的按钮",
                     "value: String, 界面值"
                 ]
             },
             onLabelClick:{
-                $desc:"在单击标签的时候触发该事件.",
+                $desc:"在单击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelDblClick:{
-                $desc:"在双击标签的时候触发该事件.",
+                $desc:"在双击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelActive:{
-                $desc:"当鼠标在标签上按下时调用.",
+                $desc:"当鼠标在标签上按下时调用",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onBlur:{
-                $desc:"当输入框失去焦点时调用.",
+                $desc:"当输入框失去焦点时调用",
                 $paras:[
                     $profile
                 ],
@@ -10742,7 +10739,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onFocus:{
-                $desc:"当输入框得到焦点时调用.",
+                $desc:"当输入框得到焦点时调用",
                 $paras:[
                     $profile
                 ],
@@ -10754,16 +10751,16 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onCancel:{
-                $desc:"按ESC键触发本事件,表示本次编辑无效.",
+                $desc:"按ESC键触发本事件,表示本次编辑无效",
                 $paras:[
                     $profile
                 ]
             },
             beforeFormatCheck:{
-                $desc:"在输入框做有效性检查时调用. 返回false可以阻止有效性的检查.",
+                $desc:"在输入框做有效性检查时调用. 返回false可以阻止有效性的检查",
                 $paras:[
                     $profile,
-                    "value: String, 需要做有效性检查的值."
+                    "value: String, 需要做有效性检查的值"
                 ],
                 $snippet:[
                     "var id='xui.temp.input21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10773,10 +10770,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeFormatMark:{
-                $desc:"在设置有效的格式模式前调用. 如果返回false, 将阻止格式模式设置.",
+                $desc:"在设置有效的格式模式前调用. 如果返回false, 将阻止格式模式设置",
                 $paras:[
                     $profile,
-                    "formatErr: Boolean, 是否格式有错误."
+                    "formatErr: Boolean, 是否格式有错误"
                 ],
                 $snippet:[
                     "var id='xui.temp.input21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10791,24 +10788,24 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Group 类",
         constructor:{
-            $desc:"生成一个xui.UI.Group对象."
+            $desc:"生成一个xui.UI.Group对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             resetPanelView:{
-                $desc:"清空Group的容器,恢复到初始状态，然后折叠.",
+                $desc:"清空Group的容器,恢复到初始状态，然后折叠",
                 $rtn:"[self]",
                 $paras:[
-                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
-                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
+                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件",
+                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件"
                 ]
             },
             iniPanelView:{
-                $desc:"触发onIniPanelView事件.",
+                $desc:"触发onIniPanelView事件",
                 $rtn:"[self]"
             },
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.grp0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10828,10 +10825,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置编组框的标题文字.",
+                $desc:"设置编组框的标题文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -10846,10 +10843,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHAlign :{
-                $desc:"设置标签水平对齐方式.",
+                $desc:"设置标签水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'",
                     $force
                 ]
             },
@@ -10864,10 +10861,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置编组框图标的url.",
+                $desc:"设置编组框图标的url",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] :String, image url.",
+                    "value [必需参数] :String, image url",
                     $force
                 ],
                 $snippet:[
@@ -10888,10 +10885,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置编组框图标的图像偏移属性.",
+                $desc:"设置编组框图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 图标的位置(CSS值).",
+                    "value [必需参数] : String, 图标的位置(CSS值)",
                     $force
                 ],
                 $snippet:[
@@ -10902,7 +10899,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getToggle:{
-                $desc:"判断编组框是打开还是收缩的.",
+                $desc:"判断编组框是打开还是收缩的",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.fs3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10912,10 +10909,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggle :{
-                $desc:"设置编组框是打开还是收缩的.",
+                $desc:"设置编组框是打开还是收缩的",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -10926,7 +10923,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getToggleBtn:{
-                $desc:"判断编组框是否带有收缩/打开按钮.",
+                $desc:"判断编组框是否带有收缩/打开按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.fs3-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10936,10 +10933,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggleBtn :{
-                $desc:"设置编组框是否带有收缩/打开按钮.",
+                $desc:"设置编组框是否带有收缩/打开按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -10952,7 +10949,7 @@ xui.set(xui.Locale,["cn","app"], {
 
 
             beforeExpand:{
-                $desc:"在编组框打开前调用.如返回 false, 编组框不会打开.",
+                $desc:"在编组框打开前调用.如返回 false, 编组框不会打开",
                 $paras:[
                     $profile
                 ],
@@ -10965,7 +10962,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeFold:{
-                $desc:"当编组框收缩前调用.如返回 false, 编组框不会收缩.",
+                $desc:"当编组框收缩前调用.如返回 false, 编组框不会收缩",
                 $paras:[
                     $profile
                 ],
@@ -10978,13 +10975,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterExpand:{
-                $desc:"在编组框打开后调用."
+                $desc:"在编组框打开后调用"
             },
             afterFold:{
-                $desc:"在编组框收缩后调用."
+                $desc:"在编组框收缩后调用"
             },
             onIniPanelView:{
-                $desc:"当Panel初始化时调用.",
+                $desc:"当Panel初始化时调用",
                 $paras:[
                     $profile
                 ],
@@ -10997,11 +10994,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickPanel:{
-                $desc:"当鼠标单击容器时调用.",
+                $desc:"当鼠标单击容器时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -11011,37 +11008,37 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.ComboInput 类",
         constructor:{
-            $desc:"生成一个xui.UI.ComboInput对象."
+            $desc:"生成一个xui.UI.ComboInput对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getInputReadonly:{
-                $desc:"获取内部文本的只读属性.",
+                $desc:"获取内部文本的只读属性",
                 $rtn:"Boolean"
             },
             setInputReadonly:{
-                $desc:"设置内部文本的只读属性.",
+                $desc:"设置内部文本的只读属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean, 是否只读.",
+                    "value [必需参数] : Boolean, 是否只读",
                     $force
                 ]
             },
             getCaption:{
-                $desc:"获取显示的文本内容.",
+                $desc:"获取显示的文本内容",
                 $rtn:"String"
             },
             setCaption:{
-                $desc:"设置显示的文本内容.",
+                $desc:"设置显示的文本内容",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 文本内容.",
+                    "value [必需参数] : String, 文本内容",
                     $force
                 ],
                 $memo:"在只读状态下,用作临时显示用"
             },
             getShowValue:{
-                $desc:"获取控件的显示值.",
+                $desc:"获取控件的显示值",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ci001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11054,7 +11051,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"重新内部值, 显示值和控件值. 该函数不激活任何事件",
                 $rtn:'[self]',
                 $paras:[
-                    "value [可选参数] : String, 重新设置的新值,默认为 ''."
+                    "value [可选参数] : String, 重新设置的新值,默认为 ''"
                 ],
                 $snippet:[
                     "var id='xui.temp.ci1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11064,24 +11061,24 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             clearPopCache:{
-                $desc:"清除弹出的下拉控件的缓存.",
+                $desc:"清除弹出的下拉控件的缓存",
                 $rtn:"[self]"
             },
             expand:{
-                $desc:"打开弹出窗口."
+                $desc:"打开弹出窗口"
             },
             collapse:{
-                $desc:"关闭弹出窗口."
+                $desc:"关闭弹出窗口"
             },
             setUplaodObj:{
-                $desc:"设置上传文件对象,仅对上传框有效.",
+                $desc:"设置上传文件对象,仅对上传框有效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : file input 对象."
+                    "value [必需参数] : file input 对象"
                 ]
             },
             getUploadObj:{
-                $desc:"获取上传文件对象,仅对上传框有效.",
+                $desc:"获取上传文件对象,仅对上传框有效",
                 $rtn:"xui.Dom",
                 $snippet:[
                     "var id='xui.temp.ci2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11091,10 +11088,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置下拉框类型.",
+                $desc:"设置下拉框类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'none'代表是普通的输入框,'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,'helpinput'代表帮助框,'cmd'代表按钮,'cmdbox'代表命令框,'popbox'代表弹出框,'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,'currency'代表货币,'number'代表数字,'spin'代表是spin输入框. 默认为 'combobox'.",                    $force
+                    "value [必需参数] : 'none'代表是普通的输入框,'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,'helpinput'代表帮助框,'cmd'代表按钮,'cmdbox'代表命令框,'popbox'代表弹出框,'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,'currency'代表货币,'number'代表数字,'spin'代表是spin输入框. 默认为 'combobox'",                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11105,7 +11102,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItems:{
-                $desc:"获取下拉框的所有项目.",
+                $desc:"获取下拉框的所有项目",
                 $rtn:"Array",
                 $snippet:[
                     "var id='xui.temp.ci5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11115,10 +11112,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置下拉框的项目.",
+                $desc:"设置下拉框的项目",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 项目数组.",
+                    "value [必需参数] : Array, 项目数组",
                     $force
                 ],
                 $snippet:[
@@ -11129,11 +11126,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDropListHeight:{
-                $desc:"获取弹出窗口高（只对listbox,combobox,helpinput有效）.",
+                $desc:"获取弹出窗口高（只对listbox,combobox,helpinput有效）",
                 $rtn:"Number"
             },
             setDropListHeight:{
-                $desc:"设置弹出窗口高（只对listbox,combobox,helpinput有效）.",
+                $desc:"设置弹出窗口高（只对listbox,combobox,helpinput有效）",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number, 高",
@@ -11141,11 +11138,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDropListWidth:{
-                $desc:"获取默认的弹出窗口宽（只对listbox,combobox,helpinput有效）.",
+                $desc:"获取默认的弹出窗口宽（只对listbox,combobox,helpinput有效）",
                 $rtn:"Number"
             },
             setDropListWidth:{
-                $desc:"设置弹出窗口宽（只对listbox,combobox,helpinput有效）.",
+                $desc:"设置弹出窗口宽（只对listbox,combobox,helpinput有效）",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number, 宽",
@@ -11153,7 +11150,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getListKey:{
-                $desc:"获取列表键.",
+                $desc:"获取列表键",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ci7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11165,7 +11162,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setListKey:{
-                $desc:"设置列表键.",
+                $desc:"设置列表键",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 列表键",
@@ -11193,79 +11190,79 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDateEditorTpl:{
-                $desc:"得到 date/datetime 编辑模式下的模板.",
+                $desc:"得到 date/datetime 编辑模式下的模板",
                 $rtn:"String"
             },
             setDateEditorTpl:{
-                $desc:"设置 date/datetime 编辑模式下的模板.",
+                $desc:"设置 date/datetime 编辑模式下的模板",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getGroupingSeparator:{
-                $desc:"得到千位分隔符.",
+                $desc:"得到千位分隔符",
                 $rtn:"String"
             },
             setGroupingSeparator:{
-                $desc:"设置千位分隔符.",
+                $desc:"设置千位分隔符",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getDecimalSeparator:{
-                $desc:"得到小数分隔符.",
+                $desc:"得到小数分隔符",
                 $rtn:"String"
             },
             setDecimalSeparator:{
-                $desc:"设置小数分隔符.",
+                $desc:"设置小数分隔符",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getForceFillZero:{
-                $desc:"得到是否强制用0填充精度选项.",
+                $desc:"得到是否强制用0填充精度选项",
                 $rtn:"Boolean"
             },
             setForceFillZero:{
-                $desc:"设置是否强制用0填充精度选项.",
+                $desc:"设置是否强制用0填充精度选项",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getPopCtrlProp:{
-                $desc:"得到固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的属性.",
+                $desc:"得到固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的属性",
                 $rtn:"Object"
             },
             setPopCtrlProp:{
-                $desc:"设置固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的属性.",
+                $desc:"设置固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ],
                 $memo:"需要在控件产生前调用"
             },
             getPopWnd:{
-                $desc:"得到弹出窗口.",
+                $desc:"得到弹出窗口",
                 $rtn:"[xui.UI]"
             },
             getPopCtrlEvents:{
-                $desc:"得到固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的事件.",
+                $desc:"得到固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的事件",
                 $rtn:"Object"
             },
             setPopCtrlEvents:{
-                $desc:"设置固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的事件.",
+                $desc:"设置固定弹出窗口('combobox,listbox,helpinput,date,time,datetime,color')的事件",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ],
                 $memo:"需要在控件产生前调用"
@@ -11295,7 +11292,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCommandBtn:{
-                $desc:"得到命令按钮显示关键字.",
+                $desc:"得到命令按钮显示关键字",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.ci8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11308,7 +11305,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置命令按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -11319,7 +11316,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPrecision:{
-                $desc:"获取precision值.只对 'spin' 类型有效.",
+                $desc:"获取precision值.只对 'spin' 类型有效",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.ci11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11329,10 +11326,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPrecision:{
-                $desc:"设置precision值.只对 'spin' 类型有效.",
+                $desc:"设置precision值.只对 'spin' 类型有效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -11343,7 +11340,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getIncrement:{
-                $desc:"获取增量值.只对 'spin' 类型有效.",
+                $desc:"获取增量值.只对 'spin' 类型有效",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.ci13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11353,10 +11350,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIncrement:{
-                $desc:"设置增量值.只对 'spin' 类型有效.",
+                $desc:"设置增量值.只对 'spin' 类型有效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -11367,7 +11364,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getMin:{
-                $desc:"获取最小值.只对 'spin' 类型有效.",
+                $desc:"获取最小值.只对 'spin' 类型有效",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.ci15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11377,10 +11374,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMin:{
-                $desc:"设置最小值.只对 'spin' 类型有效.",
+                $desc:"设置最小值.只对 'spin' 类型有效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -11391,7 +11388,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getMax:{
-                $desc:"获取最大值.只对 'spin' 类型有效.",
+                $desc:"获取最大值.只对 'spin' 类型有效",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.ci17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11401,10 +11398,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMax:{
-                $desc:"设置最大值.只对 'spin' 类型有效.",
+                $desc:"设置最大值.只对 'spin' 类型有效",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -11425,10 +11422,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBtnImage :{
-                $desc:"设置按钮图标的url.",
+                $desc:"设置按钮图标的url",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 对应的 CSS 值.",
+                    "value [必需参数] : String, 对应的 CSS 值",
                     $force
                 ],
                 $snippet:[
@@ -11449,10 +11446,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBtnImagePos :{
-                $desc:"设置按钮图标的图像偏移属性.",
+                $desc:"设置按钮图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 对应的 CSS 值.",
+                    "value [必需参数] : String, 对应的 CSS 值",
                     $force
                 ],
                 $snippet:[
@@ -11463,25 +11460,25 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onFileDlgOpen:{
-                $desc:"当上载文件选择对话框打开时调用.",
+                $desc:"当上载文件选择对话框打开时调用",
                 $paras:[
                     $profile,
-                    "src : String, 事件源的 xid."
+                    "src : String, 事件源的 xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ci99'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({type:'file'}));"+
-                    "o.onFileDlgOpen(function(){alert('File upload dialog is open.')});"+
+                    "o.onFileDlgOpen(function(){alert('File upload dialog is open')});"+
                     "}"
                 ]
             },
             beforeComboPop:{
-                $desc:"当命令按钮按下时（弹出窗口弹出前）调用.如返false,系统默认的弹出窗口不会出现.",
+                $desc:"当命令按钮按下时（弹出窗口弹出前）调用.如返false,系统默认的弹出窗口不会出现",
                 $paras:[
                     $profile,
-                    "pos : Object, 鼠标位置.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "pos : Object, 鼠标位置",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ci10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11491,40 +11488,40 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforePopShow:{
-                $desc:"在弹出窗口显示前调用.如返false,弹出窗口不会显示.",
+                $desc:"在弹出窗口显示前调用.如返false,弹出窗口不会显示",
                 $paras:[
                     $profile,
-                    "popCtl : xui.UIProfile, 弹出窗口对象."
+                    "popCtl : xui.UIProfile, 弹出窗口对象"
                 ]
             },
             afterPopShow:{
-                $desc:"在弹出窗口显示后调用.",
+                $desc:"在弹出窗口显示后调用",
                 $paras:[
-                    "profile : xui.UIdestroyed.",
-                    "popCtl : xui.UI, 弹出窗口对象."
+                    "profile : xui.UIdestroyed",
+                    "popCtl : xui.UI, 弹出窗口对象"
                 ]
             },
             afterPopHide:{
-                $desc:"在弹出窗口隐去后调用.",
+                $desc:"在弹出窗口隐去后调用",
                 $paras:[
-                    "profile : xui.UIdestroyed.",
-                    "popCtl : xui.UI, 弹出窗口对象."
+                    "profile : xui.UIdestroyed",
+                    "popCtl : xui.UI, 弹出窗口对象"
                 ]
             },
             onClick:{
-                $desc:"当鼠标单击控件pop按钮时调用(只对 'popbox' 或 'getter'类型的有效).",
+                $desc:"当鼠标单击控件pop按钮时调用(只对 'popbox' 或 'getter'类型的有效)",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
-                    "value: String, 控件的显示值."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
+                    "value: String, 控件的显示值"
                 ]
             },
             onCommand:{
                 $desc:"当command按钮按下时调用. 只对带有保存按钮的多选框有效",
                 $paras:[
                     $profile,
-                    "src : String, 按钮 DOM 元素的xid."
+                    "src : String, 按钮 DOM 元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.ci11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11540,7 +11537,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Stacks 类",
         constructor:{
-            $desc:"生成一个xui.UI.Stacks对象."
+            $desc:"生成一个xui.UI.Stacks对象"
         }
     });
 
@@ -11548,15 +11545,15 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.ButtonViews 类",
         constructor:{
-            $desc:"生成一个xui.UI.ButtonViews对象."
+            $desc:"生成一个xui.UI.ButtonViews对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             setBarLocation:{
-                $desc:"设置按钮条的位置.",
+                $desc:"设置按钮条的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'top','bottom','left' or 'right'. 默认为 'top'.",
+                    "value [必需参数] : 'top','bottom','left' or 'right'. 默认为 'top'",
                     $force
                 ],
                 $snippet:[
@@ -11568,7 +11565,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBarLocation:{
-                $desc:"获取按钮条的位置.",
+                $desc:"获取按钮条的位置",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.bv2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11579,10 +11576,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarHAlign:{
-                $desc:"设置按钮条的水平对齐方式 .",
+                $desc:"设置按钮条的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ],
                 $snippet:[
@@ -11593,7 +11590,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBarHAlign:{
-                $desc:"获取按钮条的水平对齐方式.",
+                $desc:"获取按钮条的水平对齐方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.bv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11603,10 +11600,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarVAlign:{
-                $desc:"设置按钮条的垂直对齐方式.",
+                $desc:"设置按钮条的垂直对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'top' or 'bottom'. 默认为 'top'.",
+                    "value [必需参数] : 'top' or 'bottom'. 默认为 'top'",
                     $force
                 ],
                 $snippet:[
@@ -11617,7 +11614,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBarVAlign:{
-                $desc:"获取按钮条的垂直对齐方式.",
+                $desc:"获取按钮条的垂直对齐方式",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.bv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11627,10 +11624,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarSize:{
-                $desc:"设置按钮条的大小.",
+                $desc:"设置按钮条的大小",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -11641,7 +11638,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBarSize:{
-                $desc:"按钮条的大小.",
+                $desc:"按钮条的大小",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.bv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11657,19 +11654,19 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.RadioBox 类",
         constructor:{
-            $desc:"生成xui.UI.RadioBox对象."
+            $desc:"生成xui.UI.RadioBox对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getCheckBox:{
-                $desc:"得到是否是显示成checkbox样式.",
+                $desc:"得到是否是显示成checkbox样式",
                 $rtn:"Boolean"
             },
             setCheckBox:{
-                $desc:"设置是否显示成checkbox样式.",
+                $desc:"设置是否显示成checkbox样式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -11678,10 +11675,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -11690,10 +11687,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置.",
+                $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一.",
+                    "value [必需参数] : left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -11702,10 +11699,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -11714,47 +11711,47 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字.",
+                $desc:"设置标签的文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getLabelHAlign:{
-                $desc:"获取标签的水平对齐方式.",
+                $desc:"获取标签的水平对齐方式",
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 .",
+                $desc:"设置按标签的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ]
             },
             onLabelClick:{
-                $desc:"在单击标签的时候触发该事件.",
+                $desc:"在单击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelDblClick:{
-                $desc:"在双击标签的时候触发该事件.",
+                $desc:"在双击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelActive:{
-                $desc:"当鼠标在标签上按下时调用.",
+                $desc:"当鼠标在标签上按下时调用",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -11765,30 +11762,30 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.ColorPicker 类",
         constructor:{
-            $desc:"生成一个xui.UI.ColorPicker对象."
+            $desc:"生成一个xui.UI.ColorPicker对象"
         },
         getTextColor:{
-            $desc:"获取在指定颜色背景上显示最醒目的前景颜色.",
+            $desc:"获取在指定颜色背景上显示最醒目的前景颜色",
             $rtn:'String',
             $paras:[
-                "value [必需参数] : String, 颜色值,例如 '#FFFFFF' ."
+                "value [必需参数] : String, 颜色值,例如 '#FFFFFF' "
             ],
             $snippet:[
                 "alert(xui.UI.ColorPicker.getTextColor('#00ff00'));alert(xui.UI.ColorPicker.getTextColor('#333333'));"
             ]
         },
         hex2rgb:{
-            $desc:"将16进制颜色编码(如 #FF00FF)转化为RGB颜色编码(如[-16, 15, 240]).",
+            $desc:"将16进制颜色编码(如 #FF00FF)转化为RGB颜色编码(如[-16, 15, 240])",
             $rtn:'Array',
             $paras:[
-                "hex [必需参数] : String."
+                "hex [必需参数] : String"
             ],
             $snippet:[
                 "alert(xui.UI.ColorPicker.hex2rgb('#00ff00'))"
             ]
         },
         hsv2rgb:{
-            $desc:"将一个HSV颜色编码(如[233, 1, 0.94])转化为RGB颜色编码(如[-16, 15, 240]).",
+            $desc:"将一个HSV颜色编码(如[233, 1, 0.94])转化为RGB颜色编码(如[-16, 15, 240])",
             $rtn:'Array',
             $paras:[
                 "h [必需参数] : Number. 0-360",
@@ -11800,7 +11797,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         rgb2hsv:{
-            $desc:"将一个RGB颜色编码(如[-16, 15, 240])转化为HSV颜色编码(如[233, 1, 0.94]).",
+            $desc:"将一个RGB颜色编码(如[-16, 15, 240])转化为HSV颜色编码(如[233, 1, 0.94])",
             $rtn:'Array',
             $paras:[
                 "r [必需参数] : Number. 0-255",
@@ -11812,7 +11809,7 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         rgb2hex:{
-            $desc:"将RGB颜色编码(如[-16, 15, 240])转化为16进制颜色编码(如 #FF00FF).",
+            $desc:"将RGB颜色编码(如[-16, 15, 240])转化为16进制颜色编码(如 #FF00FF)",
             $rtn:'Array',
             $paras:[
                 "r [必需参数] : Number. 0-255",
@@ -11826,11 +11823,11 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]"
             },
             getColorName:{
-                $desc:"获取颜色名字(如果有的话,如深红,咖啡色).",
+                $desc:"获取颜色名字(如果有的话,如深红,咖啡色)",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.clr1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11840,7 +11837,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getAdvance:{
-                $desc:"判断是否显示颜色框又半部分以便选择更多颜色.",
+                $desc:"判断是否显示颜色框又半部分以便选择更多颜色",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11850,7 +11847,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAdvance:{
-                $desc:"设置是否显示颜色框又半部分以便选择更多颜色.",
+                $desc:"设置是否显示颜色框又半部分以便选择更多颜色",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11870,7 +11867,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置是否带有关闭按钮.",
+                $desc:"设置是否带有关闭按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11880,7 +11877,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBarDisplay:{
-                $desc:"判断是否带有显示条.",
+                $desc:"判断是否带有显示条",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11890,7 +11887,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setBarDisplay:{
-                $desc:"设置是否带有显示条.",
+                $desc:"设置是否带有显示条",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.clr6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11901,7 +11898,7 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             beforeClose:{
-                $desc:"在颜色框关闭前调用. 返回false可以阻止颜色框关闭.",
+                $desc:"在颜色框关闭前调用. 返回false可以阻止颜色框关闭",
                 $paras:[
                     $profile
                 ],
@@ -11919,23 +11916,23 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.DatePicker 类",
         constructor:{
-            $desc:"生成一个xui.UI.DatePicker对象."
+            $desc:"生成一个xui.UI.DatePicker对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]"
             },
             getTimeInput:{
-                $desc:"得到日期选择框是否带有时间输入功能.",
+                $desc:"得到日期选择框是否带有时间输入功能",
                 $rtn:"Boolean"
             },
             setTimeInput:{
-                $desc:"设置日期选择框是否带有时间输入功能.",
+                $desc:"设置日期选择框是否带有时间输入功能",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -11964,19 +11961,19 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getHideWeekLabels:{
-                $desc:"得到日期选择框是否带有周信息.",
+                $desc:"得到日期选择框是否带有周信息",
                 $rtn:"Boolean"
             },
             setHideWeekLabels:{
-                $desc:"设置日期选择框是否带有带有周信息.",
+                $desc:"设置日期选择框是否带有带有周信息",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getDateInputFormat:{
-                $desc:"得到日期选择框的日期输入格式.",
+                $desc:"得到日期选择框的日期输入格式",
                 $rtn:"String"
             },
             setDateInputFormat:{
@@ -11988,7 +11985,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCloseBtn:{
-                $desc:"判断日期选择框是否带有关闭按钮.",
+                $desc:"判断日期选择框是否带有关闭按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.dp1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11998,7 +11995,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置日期选择框是否带有关闭按钮.",
+                $desc:"设置日期选择框是否带有关闭按钮",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.dp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12008,7 +12005,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDateFrom:{
-                $desc:"获取日期选择器的开始日期.",
+                $desc:"获取日期选择器的开始日期",
                 $rtn:"Object, Date Object",
                 $snippet:[
                     "var id='xui.temp.dp2-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12019,7 +12016,7 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             beforeClose:{
-                $desc:"当用户单击关闭或取消按钮时调用. 返回false可阻止日期选择器被关闭.",
+                $desc:"当用户单击关闭或取消按钮时调用. 返回false可阻止日期选择器被关闭",
                 $paras:[
                     $profile
                 ],
@@ -12037,16 +12034,16 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.TimePicker 类",
         constructor:{
-            $desc:"生成一个xui.UI.TimePicker对象."
+            $desc:"生成一个xui.UI.TimePicker对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]"
             },
             getCloseBtn:{
-                $desc:"判断时间选择器是否带有关闭按钮.",
+                $desc:"判断时间选择器是否带有关闭按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.tp1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12056,7 +12053,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置时间选择器是否带有关闭按钮..",
+                $desc:"设置时间选择器是否带有关闭按钮.",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.tp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12066,7 +12063,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClose:{
-                $desc:"在关闭选择器前调用. 返回false将阻止选择器关闭.",
+                $desc:"在关闭选择器前调用. 返回false将阻止选择器关闭",
                 $paras:[
                     $profile
                 ],
@@ -12084,7 +12081,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Slider 类",
         constructor:{
-            $desc:"生成一个xui.UI.Slider对象."
+            $desc:"生成一个xui.UI.Slider对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -12099,10 +12096,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置Slider的显示类型.",
+                $desc:"设置Slider的显示类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
+                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平)",
                     $force
                 ],
                 $snippet:[
@@ -12113,7 +12110,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getSteps:{
-                $desc:"获取Slider的步长.",
+                $desc:"获取Slider的步长",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.sl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12123,7 +12120,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSteps:{
-                $desc:"设置Slider的步长.",
+                $desc:"设置Slider的步长",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number, 步长整数值",
@@ -12137,7 +12134,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getShowIncreaseHandle:{
-                $desc:"获取是否显示增加按钮属性.",
+                $desc:"获取是否显示增加按钮属性",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.sl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12147,10 +12144,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setShowIncreaseHandle:{
-                $desc:"设置是否显示增加按钮属性.",
+                $desc:"设置是否显示增加按钮属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -12161,7 +12158,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getShowDecreaseHandle:{
-                $desc:"获取是否显示减小按钮属性.",
+                $desc:"获取是否显示减小按钮属性",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.sl8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12171,10 +12168,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setShowDecreaseHandle:{
-                $desc:"设置是否显示减小按钮属性.",
+                $desc:"设置是否显示减小按钮属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -12185,7 +12182,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getIsRange:{
-                $desc:"获取是否为Range类型（显示两个拖拽点）的Slider.",
+                $desc:"获取是否为Range类型（显示两个拖拽点）的Slider",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.sl10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12195,10 +12192,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIsRange:{
-                $desc:"设置是否为Range类型（显示两个拖拽点）的Slider.",
+                $desc:"设置是否为Range类型（显示两个拖拽点）的Slider",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -12213,10 +12210,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12225,10 +12222,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置.",
+                $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一.",
+                    "value [必需参数] : left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -12237,10 +12234,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12249,47 +12246,47 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字.",
+                $desc:"设置标签的文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getLabelHAlign:{
-                $desc:"获取标签的水平对齐方式.",
+                $desc:"获取标签的水平对齐方式",
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 .",
+                $desc:"设置按标签的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ]
             },
             onLabelClick:{
-                $desc:"在单击标签的时候触发该事件.",
+                $desc:"在单击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelDblClick:{
-                $desc:"在双击标签的时候触发该事件.",
+                $desc:"在双击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelActive:{
-                $desc:"当鼠标在标签上按下时调用.",
+                $desc:"当鼠标在标签上按下时调用",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -12300,12 +12297,12 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.List 类",
         constructor:{
-            $desc:"生成一个xui.UI.List对象."
+            $desc:"生成一个xui.UI.List对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getShowValue:{
-                $desc:"获取控件的显示值.",
+                $desc:"获取控件的显示值",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.list00'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12315,7 +12312,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.list0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12325,7 +12322,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             adjustSize:{
-                $desc:"按照菜单的内容自动调整宽度.",
+                $desc:"按照菜单的内容自动调整宽度",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.list3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12335,7 +12332,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getMaxHeight:{
-                $desc:"获取最大高度.",
+                $desc:"获取最大高度",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.list4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12345,10 +12342,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxHeight:{
-                $desc:"设置最大高度.",
+                $desc:"设置最大高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12359,7 +12356,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getSelMode:{
-                $desc:"获取选择模式. 'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选, 'multibycheckbox'表示可多选,并且只能点击checkbox来选中.",
+                $desc:"获取选择模式'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选, 'multibycheckbox'表示可多选,并且只能点击checkbox来选中",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.list6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12369,10 +12366,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelMode:{
-                $desc:"设置选择模式.",
+                $desc:"设置选择模式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'none' 为不选, 'multi'为多选, 'multibycheckbox'表示可多选并且只能点击checkbox来选中 or 'single'为单选.",
+                    "value [必需参数] : String, 'none' 为不选, 'multi'为多选, 'multibycheckbox'表示可多选并且只能点击checkbox来选中 or 'single'为单选",
                     $force
                 ],
                 $snippet:[
@@ -12383,38 +12380,38 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getNoCtrlKey:{
-                $desc:"获取是否在多选择模式下需要用Ctrl来辅助多选.",
+                $desc:"获取是否在多选择模式下需要用Ctrl来辅助多选",
                 $rtn:"Boolean"
             },
             setNoCtrlKey:{
-                $desc:"设置是否在多选择模式下需要用Ctrl来辅助多选.",
+                $desc:"设置是否在多选择模式下需要用Ctrl来辅助多选",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getBorderType:{
-                $desc:"获取块控件的边框种类.",
+                $desc:"获取块控件的边框种类",
                 $rtn:"String"
             },
             setBorderType:{
-                $desc:"设置块控件的边框种类.",
+                $desc:"设置块控件的边框种类",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
+                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'",
                     $force
                 ]
             },
             getItemRow:{
-                $desc:"得到是否是显示成行样式.",
+                $desc:"得到是否是显示成行样式",
                 $rtn:"Boolean"
             },
             setItemRow:{
-                $desc:"设置是否是显示成行样式.",
+                $desc:"设置是否是显示成行样式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -12426,7 +12423,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置命令按钮集",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 项数组.",
+                    "value [必需参数] : Array, 项数组",
                     $force
                 ]
             },
@@ -12435,10 +12432,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setOptBtn:{
-                $desc:"设置是否带有选项按钮.",
+                $desc:"设置是否带有选项按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -12447,10 +12444,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12459,10 +12456,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置.",
+                $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一.",
+                    "value [必需参数] : left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -12471,10 +12468,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12483,56 +12480,56 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字.",
+                $desc:"设置标签的文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getLabelHAlign:{
-                $desc:"获取标签的水平对齐方式.",
+                $desc:"获取标签的水平对齐方式",
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 .",
+                $desc:"设置按标签的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ]
             },
             onLabelClick:{
-                $desc:"在单击标签的时候触发该事件.",
+                $desc:"在单击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelDblClick:{
-                $desc:"在双击标签的时候触发该事件.",
+                $desc:"在双击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelActive:{
-                $desc:"当鼠标在标签上按下时调用.",
+                $desc:"当鼠标在标签上按下时调用",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onItemSelected:{
-                $desc:"当列表项被选择时调用.",
+                $desc:"当列表项被选择时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid.",
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid",
                     "type: Number, 0:没有影响;1:item被选中;-1:item被清除选中"
                 ],
                 $snippet:[
@@ -12543,39 +12540,39 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClick:{
-                $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
+                $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onClick:{
-                $desc:"在单击条目的时候触发该事件.",
+                $desc:"在单击条目的时候触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             afterClick:{
                 $desc:"在单击条目后触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onDblclick:{
-                $desc:"在双击条目的时候触发该事件.",
+                $desc:"在双击条目的时候触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.list9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12585,22 +12582,22 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowOptions :{
-                $desc:"当鼠标单击选项按钮的时候触发.",
+                $desc:"当鼠标单击选项按钮的时候触发",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onCmd:{
-                $desc:"当用户单击内部按钮的时候调用.",
+                $desc:"当用户单击内部按钮的时候调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "cmdKey: String, 命令的键值.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "cmdKey: String, 命令的键值",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -12610,7 +12607,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.StatusButtons 类",
         constructor:{
-            $desc:"生成一个xui.UI.StatusButtons对象."
+            $desc:"生成一个xui.UI.StatusButtons对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -12625,10 +12622,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"设置超链接队列的外补丁.",
+                $desc:"设置超链接队列的外补丁",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12645,26 +12642,26 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"Deprecated"
             },
             getItemAlign:{
-                $desc:"获取状态按钮的对齐方式.",
+                $desc:"获取状态按钮的对齐方式",
                 $rtn:"String"
             },
             setItemAlign:{
-                $desc:"设置状态按钮的对齐方式.",
+                $desc:"设置状态按钮的对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 'left', 'center' or 'right'.",
+                    "value [必需参数] : String'left', 'center' or 'right'",
                     $force
                 ]
             },
             getItemWidth:{
-                $desc:"获取状态按钮的宽度.",
+                $desc:"获取状态按钮的宽度",
                 $rtn:"Number"
             },
             setItemWidth:{
-                $desc:"设置状态按钮的宽度.",
+                $desc:"设置状态按钮的宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12673,10 +12670,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelSize:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12685,10 +12682,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelPos:{
-                $desc:"设置标签的位置.",
+                $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一.",
+                    "value [必需参数] : left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -12697,10 +12694,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Number"
             },
             setLabelGap:{
-                $desc:"设置标签的大小.当标签的大小为0时,不显示标签.",
+                $desc:"设置标签的大小.当标签的大小为0时,不显示标签",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -12709,55 +12706,55 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setLabelCaption:{
-                $desc:"设置标签的文字.",
+                $desc:"设置标签的文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getLabelHAlign:{
-                $desc:"获取标签的水平对齐方式.",
+                $desc:"获取标签的水平对齐方式",
                 $rtn:"String"
             },
             setLabelHAlign:{
-                $desc:"设置按标签的水平对齐方式 .",
+                $desc:"设置按标签的水平对齐方式 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'. 默认为 'left'",
                     $force
                 ]
             },
             onLabelClick:{
-                $desc:"在单击标签的时候触发该事件.",
+                $desc:"在单击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelDblClick:{
-                $desc:"在双击标签的时候触发该事件.",
+                $desc:"在双击标签的时候触发该事件",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onLabelActive:{
-                $desc:"当鼠标在标签上按下时调用.",
+                $desc:"当鼠标在标签上按下时调用",
                 $paras:[
                     $profile,
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onItemClick:{
-                $desc:"当某个超链接队列项被单击时调用.",
+                $desc:"当某个超链接队列项被单击时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.llist8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12773,16 +12770,16 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Gallery 类",
         constructor:{
-            $desc:"生成一个xui.UI.Gallery (画廊)对象."
+            $desc:"生成一个xui.UI.Gallery (画廊)对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getStatus:{
-                $desc:"获取某个画廊项的状态.",
+                $desc:"获取某个画廊项的状态",
                 $paras:[
-                    "subId [必需参数] : String, 画廊项id."
+                    "subId [必需参数] : String, 画廊项id"
                 ],
-                $rtn:"String, 'ini'表示初始化, 'error'表示装载错误, 'loaded'表示装载成功.",
+                $rtn:"String, 'ini'表示初始化, 'error'表示装载错误, 'loaded'表示装载成功",
                 $snippet:[
                     "var id='xui.temp.ga001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
@@ -12792,38 +12789,38 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getLoadingImg:{
-                $desc:"得到加载图片地址.",
+                $desc:"得到加载图片地址",
                 $rtn:"String"
             },
             setLoadingImg:{
-                $desc:"设置加载图片地址.",
+                $desc:"设置加载图片地址",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getErrImg:{
-                $desc:"得到加载错误代替图片地址.",
+                $desc:"得到加载错误代替图片地址",
                 $rtn:"String"
             },
             setErrImg:{
-                $desc:"设置加载错误代替图片地址.",
+                $desc:"设置加载错误代替图片地址",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getAutoItemSize:{
-                $desc:"得到子项的尺寸是否随图片的大小自动变化.",
+                $desc:"得到子项的尺寸是否随图片的大小自动变化",
                 $rtn:"Boolean"
             },
             setAutoItemSize:{
-                $desc:"设置子项的尺寸是否随图片的大小自动变化.",
+                $desc:"设置子项的尺寸是否随图片的大小自动变化",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -12838,10 +12835,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImgHeight:{
-                $desc:"设置画廊项的高度.",
+                $desc:"设置画廊项的高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12862,10 +12859,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImgWidth:{
-                $desc:"设置画廊项的图片宽度.",
+                $desc:"设置画廊项的图片宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12876,7 +12873,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemWidth:{
-                $desc:"获取画廊项的宽度.",
+                $desc:"获取画廊项的宽度",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.ga5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12886,10 +12883,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemWidth:{
-                $desc:"设置画廊项的宽度.",
+                $desc:"设置画廊项的宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12910,10 +12907,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemHeight:{
-                $desc:"设置画廊项的宽度.",
+                $desc:"设置画廊项的宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12924,7 +12921,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemMargin:{
-                $desc:"获取画廊项的外补丁.",
+                $desc:"获取画廊项的外补丁",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.ga9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -12934,10 +12931,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"设置画廊项的外补丁.",
+                $desc:"设置画廊项的外补丁",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12958,10 +12955,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemPadding:{
-                $desc:"设置画廊项的内补丁.",
+                $desc:"设置画廊项的内补丁",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -12978,16 +12975,16 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.IconList 类",
         constructor:{
-            $desc:"生成xui.UI.IconList 对象."
+            $desc:"生成xui.UI.IconList 对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getStatus:{
-                $desc:"获取指定图标项状态.",
+                $desc:"获取指定图标项状态",
                 $paras:[
-                    "subId [必需参数] : String, 图标项id."
+                    "subId [必需参数] : String, 图标项id"
                 ],
-                $rtn:"String, 'ini', 'error' or 'loaded'.",
+                $rtn:"String, 'ini', 'error' or 'loaded'",
                 $snippet:[
                     "var id='xui.temp.ga001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
@@ -12997,26 +12994,26 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
            getLoadingImg:{
-                $desc:"得到加载图片地址.",
+                $desc:"得到加载图片地址",
                 $rtn:"String"
             },
             setLoadingImg:{
-                $desc:"设置加载图片地址.",
+                $desc:"设置加载图片地址",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getAutoItemSize:{
-                $desc:"得到子项的尺寸是否随图片的大小自动变化.",
+                $desc:"得到子项的尺寸是否随图片的大小自动变化",
                 $rtn:"Boolean"
             },
             setAutoItemSize:{
-                $desc:"设置子项的尺寸是否随图片的大小自动变化.",
+                $desc:"设置子项的尺寸是否随图片的大小自动变化",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -13031,10 +13028,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemWidth:{
-                $desc:"设置图标项宽度.",
+                $desc:"设置图标项宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -13055,10 +13052,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemHeight:{
-                $desc:"设置图标项高度.",
+                $desc:"设置图标项高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -13079,10 +13076,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemMargin:{
-                $desc:"设置图标项外补丁.",
+                $desc:"设置图标项外补丁",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -13103,10 +13100,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItemPadding:{
-                $desc:"设置图标项内补丁.",
+                $desc:"设置图标项内补丁",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -13123,27 +13120,27 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Panel 类",
         constructor:{
-            $desc:"生辰一个xui.UI.Panel对象."
+            $desc:"生辰一个xui.UI.Panel对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             resetPanelView:{
-                $desc:"清空Panel容器，到初始状态,然后折叠.",
+                $desc:"清空Panel容器，到初始状态,然后折叠",
                 $rtn:"[self]",
                 $paras:[
-                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
-                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
+                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件",
+                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件"
                 ]
             },
             iniPanelView:{
-                $desc:"触发onIniPanelView事件.",
+                $desc:"触发onIniPanelView事件",
                 $rtn:"[self]"
             },
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $paras:[
-                    "flag [可选参数] : Boolean, false表示去掉激活."
+                    "flag [可选参数] : Boolean, false表示去掉激活"
                 ],
                 $snippet:[
                     "var id='xui.temp.panel01'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13153,7 +13150,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCloseBtn :{
-                $desc:"判断面板是否带有关闭按钮.",
+                $desc:"判断面板是否带有关闭按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.panel35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13163,10 +13160,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn :{
-                $desc:"设置面板是否带有关闭按钮.",
+                $desc:"设置面板是否带有关闭按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -13177,19 +13174,19 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getNoFrame:{
-                $desc:"判断面板是否带有外框架.",
+                $desc:"判断面板是否带有外框架",
                 $rtn:"Boolean"
             },
             setNoFrame:{
-                $desc:"设置面板是否带有外框架.",
+                $desc:"设置面板是否带有外框架",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getPopBtn :{
-                $desc:"获取面板是否带有弹出按钮.",
+                $desc:"获取面板是否带有弹出按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.panel37'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13199,10 +13196,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPopBtn :{
-                $desc:"设置面板是否带有弹出按钮.",
+                $desc:"设置面板是否带有弹出按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -13223,10 +13220,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setOptBtn :{
-                $desc:"设置面板是否带有选项按钮.",
+                $desc:"设置面板是否带有选项按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -13241,10 +13238,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setInfoBtn :{
-                $desc:"设置面板是否带有帮助按钮.",
+                $desc:"设置面板是否带有帮助按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -13253,15 +13250,15 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setRefreshBtn :{
-                $desc:"设置面板是否带有刷新按钮.",
+                $desc:"设置面板是否带有刷新按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getToggleBtn :{
-                $desc:"获取面板是否带有打开/收缩按钮.",
+                $desc:"获取面板是否带有打开/收缩按钮",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.panel41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13271,10 +13268,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggleBtn :{
-                $desc:"设置面板是否带有打开/收缩按钮.",
+                $desc:"设置面板是否带有打开/收缩按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -13285,7 +13282,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCaption :{
-                $desc:"获取标题文字.",
+                $desc:"获取标题文字",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.panel1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13295,10 +13292,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption :{
-                $desc:"设置标题文字.",
+                $desc:"设置标题文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -13319,10 +13316,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImage :{
-                $desc:"设置图标的url.",
+                $desc:"设置图标的url",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] :String, 图标的url.",
+                    "value [必需参数] :String, 图标的url",
                     $force
                 ],
                 $snippet:[
@@ -13343,10 +13340,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置图标的图像偏移属性.",
+                $desc:"设置图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, corresponding CSS value.",
+                    "value [必需参数] : String, corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -13367,10 +13364,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setToggle :{
-                $desc:"设置面板处于打开或收缩状态.",
+                $desc:"设置面板处于打开或收缩状态",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -13381,19 +13378,19 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getBorderType:{
-                $desc:"获取块控件PANEL的边框种类.",
+                $desc:"获取块控件PANEL的边框种类",
                 $rtn:"String"
             },
             setBorderType:{
-                $desc:"设置块控件PANEL的边框种类.",
+                $desc:"设置块控件PANEL的边框种类",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'.",
+                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'",
                     $force
                 ]
             },
             beforeExpand:{
-                $desc:"在面板打开前调用.如返回 false, 面板不会打开.",
+                $desc:"在面板打开前调用.如返回 false, 面板不会打开",
                 $paras:[
                     $profile
                 ],
@@ -13406,7 +13403,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeFold:{
-                $desc:"当面板收缩时调用.如返回 false, 面板不会打开.",
+                $desc:"当面板收缩时调用.如返回 false, 面板不会打开",
                 $paras:[
                     $profile
                 ],
@@ -13419,13 +13416,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterExpand:{
-                $desc:"在面板打开后调用."
+                $desc:"在面板打开后调用"
             },
             afterFold:{
-                $desc:"在面板收缩后调用."
+                $desc:"在面板收缩后调用"
             },
             onIniPanelView:{
-                $desc:"当面板初始化时调用.",
+                $desc:"当面板初始化时调用",
                 $paras:[
                     $profile
                 ],
@@ -13438,10 +13435,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickBar:{
-                $desc:"当单击标题栏时调用.",
+                $desc:"当单击标题栏时调用",
                 $paras:[
                     $profile,
-                    "src: String, 事件所属DOM元素的xid."
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.panel12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13451,16 +13448,16 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforePop:{
-                $desc:"在面板被弹出前调用. 返回false可阻止面板被弹出.",
+                $desc:"在面板被弹出前调用. 返回false可阻止面板被弹出",
                 $paras:[
                     $profile,
                     "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             beforeClose:{
-                $desc:"在面板被关闭前调用. 返回false可阻止面板被关闭.",
+                $desc:"在面板被关闭前调用. 返回false可阻止面板被关闭",
                 $paras:[
                     $profile
                 ],
@@ -13472,23 +13469,23 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowInfo:{
-                $desc:"在用户单击帮助按钮时调用.",
+                $desc:"在用户单击帮助按钮时调用",
                 $paras:[
                     $profile
                 ]
             },
             onRefresh:{
-                $desc:"在用户单击刷新按钮时调用.",
+                $desc:"在用户单击刷新按钮时调用",
                 $paras:[
                     $profile
                 ]
             },
             onShowOptions :{
-                $desc:"当用户单击选项按钮时调用.",
+                $desc:"当用户单击选项按钮时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.panel14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13498,11 +13495,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickPanel:{
-                $desc:"当鼠标单击容器时调用.",
+                $desc:"当鼠标单击容器时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -13512,15 +13509,15 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.PageBar 类",
         constructor:{
-            $desc:"生成一个xui.UI.PageBar对象."
+            $desc:"生成一个xui.UI.PageBar对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             setPage:{
-                $desc:"设置目前页.",
+                $desc:"设置目前页",
                 $rtn:"[self]",
                 $paras:[
-                    "value: Number. 页代码."
+                    "value: Number. 页代码"
                 ],
                 $snippet:[
                     "var id='xui.temp.pb0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13530,7 +13527,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCaption:{
-                $desc:"得到 caption 字符串.",
+                $desc:"得到 caption 字符串",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.pb1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13540,10 +13537,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption:{
-                $desc:"设置caption字符串.",
+                $desc:"设置caption字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, caption字符串.",
+                    "value [必需参数] : String, caption字符串",
                     $force
                 ],
                 $snippet:[
@@ -13554,7 +13551,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getNextMark:{
-                $desc:"得到下一页的显示字符串.",
+                $desc:"得到下一页的显示字符串",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.pb3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13564,10 +13561,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setNextMark:{
-                $desc:"设置下一页的显示字符串.",
+                $desc:"设置下一页的显示字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 下一页的显示字符串.",
+                    "value [必需参数] : String, 下一页的显示字符串",
                     $force
                 ],
                 $snippet:[
@@ -13578,7 +13575,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPrevMark:{
-                $desc:"得到前一页的显示字符串.",
+                $desc:"得到前一页的显示字符串",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.pb5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13588,10 +13585,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPrevMark:{
-                $desc:"设置前一页显示字符串.",
+                $desc:"设置前一页显示字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 前一页显示字符串.",
+                    "value [必需参数] : String, 前一页显示字符串",
                     $force
                 ],
                 $snippet:[
@@ -13602,7 +13599,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getTextTpl:{
-                $desc:"得到文字显示模板字符串.",
+                $desc:"得到文字显示模板字符串",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.pb7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13612,10 +13609,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setTextTpl:{
-                $desc:"设置文字显示模板字符串.",
+                $desc:"设置文字显示模板字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 文字显示模板字符串.",
+                    "value [必需参数] : String, 文字显示模板字符串",
                     $force
                 ],
                 $snippet:[
@@ -13626,7 +13623,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getUriTpl:{
-                $desc:"获取URL模板字符串.",
+                $desc:"获取URL模板字符串",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.pb9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13636,10 +13633,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setUriTpl:{
-                $desc:"设置URL模板字符串.",
+                $desc:"设置URL模板字符串",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, URL模板字符串.",
+                    "value [必需参数] : String, URL模板字符串",
                     $force
                 ],
                 $snippet:[
@@ -13652,10 +13649,10 @@ xui.set(xui.Locale,["cn","app"], {
 
 
             onClick:{
-                $desc:"当鼠标单击一个按钮时触发.",
+                $desc:"当鼠标单击一个按钮时触发",
                 $paras:[
                     $profile,
-                    "page : Number, 目标页码."
+                    "page : Number, 目标页码"
                 ],
                 $snippet:[
                     "var id='xui.temp.pb11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13664,11 +13661,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onPageSet:{
-                $desc:"当调用 setPage 函数时触发.",
+                $desc:"当调用 setPage 函数时触发",
                 $paras:[
                     $profile,
-                    "page : Number, 新页码.",
-                   "opage : Number, 旧页码."
+                    "page : Number, 新页码",
+                   "opage : Number, 旧页码"
                 ]
             }
         }
@@ -13678,16 +13675,16 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Layout 类",
         constructor:{
-            $desc:"生成一个xui.UI.Layout对象."
+            $desc:"生成一个xui.UI.Layout对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             append:{
-                $desc:"将一系列的xui.UIProfile添加到布局的内部.",
+                $desc:"将一系列的xui.UIProfile添加到布局的内部",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.UIProfile/xui.UIProfile[], 一个xui.UIProfile概要对象(或一组xui.UIProfile概要对象).",
-                    "subId [可选参数] : String, 布局的子项id. 该参数可以设置为[false], 表示[target]只是添加到DOM上, 并不产生和父布局项的链接关系."
+                    "target [必需参数] : xui.UIProfile/xui.UIProfile[], 一个xui.UIProfile概要对象(或一组xui.UIProfile概要对象)",
+                    "subId [可选参数] : String, 布局的子项id. 该参数可以设置为[false], 表示[target]只是添加到DOM上, 并不产生和父布局项的链接关系"
                 ],
                 $snippet:[
                     "var id='xui.temp.lo0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13697,10 +13694,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanel:{
-                $desc:"获取布局子项的面板.",
+                $desc:"获取布局子项的面板",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "subId [可选参数] : String, 布局子项的id. 默认为'main'(主面板)."
+                    "subId [可选参数] : String, 布局子项的id. 默认为'main'(主面板)"
                 ],
                 $snippet:[
                     "var id='xui.temp.lo1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13720,10 +13717,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setType:{
-                $desc:"设置布局类型.",
+                $desc:"设置布局类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平).",
+                    "value [必需参数] : 可以是'vertical'(垂直) 或 'horizontal'(水平)",
                     $force
                 ],
                 $snippet:[
@@ -13734,11 +13731,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             insertItems:{
-                $desc:"添加一些布局项.",
+                $desc:"添加一些布局项",
                 $rtn:"[self]",
                 $paras:[
-                    "arr [必需参数] : Array, 项数组.",
-                    "base [可选参数] : String, 基准项id.",
+                    "arr [必需参数] : Array, 项数组",
+                    "base [可选参数] : String, 基准项id",
                     "before [可选参数] : Boolean, 指示在基准项前还是项后插入. 默认为项后;"
                 ],
                 $snippet:[
@@ -13753,11 +13750,11 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             updateItem:{
-                $desc:"更新一个布局项,并刷新对应的DOM界面.",
+                $desc:"更新一个布局项,并刷新对应的DOM界面",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 项的标识号.",
-                    "options [必需参数] : Object/String, 要更新的选项."
+                    "id [必需参数] : String, 项的标识号",
+                    "options [必需参数] : Object/String, 要更新的选项"
                 ],
                 $snippet:[
                     "var id='xui.temp.lo3-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13771,10 +13768,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setItems:{
-                $desc:"设置布局项.",
+                $desc:"设置布局项",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 布局项."
+                    "value [必需参数] : Array, 布局项"
                 ],
                 $snippet:[
                     "var id='xui.temp.lo4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13785,10 +13782,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             fireCmdClickEvent:{
-                $desc:"触发折叠/打开面板的click事件.",
+                $desc:"触发折叠/打开面板的click事件",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 面板的subId字符串."
+                    "subId [必需参数] : String, 面板的subId字符串"
                 ],
                 $snippet:[
                     "var id='xui.temp.lo6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13798,12 +13795,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickPanel:{
-                $desc:"当鼠标单击容器时调用.",
+                $desc:"当鼠标单击容器时调用",
                 $paras:[
                     $profile,
-                     "item: Object, 当前容器对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                     "item: Object, 当前容器对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -13812,25 +13809,25 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Tabs 类",
         constructor:{
-            $desc:"生成一个xui.UI.Tabs对象."
+            $desc:"生成一个xui.UI.Tabs对象"
         },
         getDropKeys:{
-            $desc:"从指定的profile中获取拖动键值.",
+            $desc:"从指定的profile中获取拖动键值",
             $rtn:"String",
             $paras:[
                 "profile [必需参数] : 目标的profile",
-                "node [必需参数] : 相应DOM元素的xid."
+                "node [必需参数] : 相应DOM元素的xid"
             ],
-            $memo:"一般情况下,程序员不需要调用该函数. 该函数可能被子类覆盖."
+            $memo:"一般情况下,程序员不需要调用该函数. 该函数可能被子类覆盖"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             append:{
-                $desc:"将一系列xui.UIProfile概要对象添加到标签中.",
+                $desc:"将一系列xui.UIProfile概要对象添加到标签中",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.UIProfile/xui.UIProfile[], 一个xui.UI对象(或一系列xui.UIProfile概要对象).",
-                    "subId [可选参数] : String, 标签项id. 如果该参数为false, [target]只被添加到DOM中, 而不在[target]和父元素中建立链接."
+                    "target [必需参数] : xui.UIProfile/xui.UIProfile[], 一个xui.UI对象(或一系列xui.UIProfile概要对象)",
+                    "subId [可选参数] : String, 标签项id. 如果该参数为false, [target]只被添加到DOM中, 而不在[target]和父元素中建立链接"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13840,10 +13837,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             fireItemClickEvent:{
-                $desc:"触发给定标签的click事件.",
+                $desc:"触发给定标签的click事件",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 标签项的subId字符串."
+                    "subId [必需参数] : String, 标签项的subId字符串"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs004'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13853,26 +13850,26 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             resetPanelView:{
-                $desc:"清空Tab的容器,并恢复到最初状态.",
+                $desc:"清空Tab的容器,并恢复到最初状态",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 标签项的subId字符串, [true]表示全部子容器.",
-                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件.",
-                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件."
+                    "subId [必需参数] : String, 标签项的subId字符串, [true]表示全部子容器",
+                    "remvoeChildren [可选参数] : Boolean, 是否移除子控件",
+                    "destroyChildren [可选参数] : Boolean, 是否销毁子控件"
                 ]
             },
             iniPanelView:{
-                $desc:"触发onIniPanelView事件.",
+                $desc:"触发onIniPanelView事件",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 标签项的subId字符串."
+                    "subId [必需参数] : String, 标签项的subId字符串"
                 ]
             },
             setItems:{
-                $desc:"设置一系列的标签项.",
+                $desc:"设置一系列的标签项",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 标签项数组."
+                    "value [必需参数] : Array, 标签项数组"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13882,10 +13879,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeItems:{
-                $desc:"从标签中移除一系列标签项.",
+                $desc:"从标签中移除一系列标签项",
                 $rtn:"[self]",
                 $paras:[
-                    "arr [必需参数] : Array, 标签项id数组."
+                    "arr [必需参数] : Array, 标签项id数组"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13895,10 +13892,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             clearItems:{
-                $desc:"清除所有标签项.",
+                $desc:"清除所有标签项",
                 $rtn:"[self]",
                 $paras:[
-                    "key [可选参数] : String, 模板键值,该值对应的节点包括所有的标签项节点. 默认为'ITEMS'."
+                    "key [可选参数] : String, 模板键值,该值对应的节点包括所有的标签项节点. 默认为'ITEMS'"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13908,7 +13905,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getHAlign :{
-                $desc:"获取水平对齐方式. 可以为'left', 'center' or 'right'.",
+                $desc:"获取水平对齐方式. 可以为'left', 'center' or 'right'",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.tabs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13918,10 +13915,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式.",
+                $desc:"设置水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left', 'center' or 'right'.",
+                    "value [必需参数] : String, 'left', 'center' or 'right'",
                     $force
                 ],
                 $snippet:[
@@ -13932,26 +13929,26 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemAlign:{
-                $desc:"获取按钮的对齐方式.",
+                $desc:"获取按钮的对齐方式",
                 $rtn:"String"
             },
             setItemAlign:{
-                $desc:"设置按钮的对齐方式.",
+                $desc:"设置按钮的对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 'left', 'center' or 'right'.",
+                    "value [必需参数] : String'left', 'center' or 'right'",
                     $force
                 ]
             },
             getItemWidth:{
-                $desc:"获取按钮的宽度.",
+                $desc:"获取按钮的宽度",
                 $rtn:"Number"
             },
             setItemWidth:{
-                $desc:"设置按钮的宽度.",
+                $desc:"设置按钮的宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -13960,10 +13957,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setLazyAppend :{
-                $desc:"设置面板是否是延迟加载的.",
+                $desc:"设置面板是否是延迟加载的",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -13978,10 +13975,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setNoPanel :{
-                $desc:"设置当前页面控件是否有面板.",
+                $desc:"设置当前页面控件是否有面板",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -13996,15 +13993,15 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setNoHandler :{
-                $desc:"设置当前页面控件是否有控制版.",
+                $desc:"设置当前页面控件是否有控制版",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getDropKeysPanel :{
-                $desc:"得到面板的drop键值.",
+                $desc:"得到面板的drop键值",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.tabs11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14014,10 +14011,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDropKeysPanel :{
-                $desc:"设置面板的drop键值.",
+                $desc:"设置面板的drop键值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -14028,7 +14025,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCurPanel:{
-                $desc:"获取当前激活的标签项的面板.",
+                $desc:"获取当前激活的标签项的面板",
                 $rtn:"xui.Dom",
                 $snippet:[
                     "var id='xui.temp.tabs13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14038,10 +14035,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanel:{
-                $desc:"获取id为指定id的标签项的面板.",
+                $desc:"获取id为指定id的标签项的面板",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "subId [可选参数] : String, 标签项的id."
+                    "subId [可选参数] : String, 标签项的id"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14051,12 +14048,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             markItemCaption:{
-                $desc:"在标签项的标题上做一个标记,或去除标题上的标记.",
+                $desc:"在标签项的标题上做一个标记,或去除标题上的标记",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 标签项id.",
-                    "mark [必需参数] : Boolean, 指示做标记还是去除标记. ",
-                    "force [可选参数]: Boolean, 强行设置该属性. 默认为 false."
+                    "subId [必需参数] : String, 标签项id",
+                    "mark [必需参数] : Boolean, 指示做标记还是去除标记",
+                    "force [可选参数]: Boolean, 强行设置该属性. 默认为 false"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14066,11 +14063,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getSelMode :{
-                $desc:"获取选择模式. 'single'表示可单选, 'multi'表示可多选. 只针对noPanel的控件有效.",
+                $desc:"获取选择模式'single'表示可单选, 'multi'表示可多选. 只针对noPanel的控件有效",
                 $rtn:"String"
             },
             setSelMode :{
-                $desc:"设置选择模式. 只针对noPanel的控件有效.",
+                $desc:"设置选择模式. 只针对noPanel的控件有效",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'single'表示可单选, 'multi'表示可多选. 默认为'single'",
@@ -14078,11 +14075,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             addPanel:{
-                $desc:"添加一个面板到标签中.",
+                $desc:"添加一个面板到标签中",
                 $rtn:"[self]",
                 $paras:[
-                    "paras [必需参数] : Object, 键值对.",
-                    "children [必需参数] : Array, 子控件.",
+                    "paras [必需参数] : Object, 键值对",
+                    "children [必需参数] : Array, 子控件",
                     "item [可选参数] : Object, 面板子项对象"
                 ],
                 $snippet:[
@@ -14096,10 +14093,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removePanel:{
-                $desc:"移除一个标签项.",
+                $desc:"移除一个标签项",
                 $rtn:"[self]",
                 $paras:[
-                    "domId [可选参数] : String, 要移除的标签项id."
+                    "domId [可选参数] : String, 要移除的标签项id"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14110,7 +14107,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelPara:{
-                $desc:"获取面板参数.",
+                $desc:"获取面板参数",
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.tabs18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14123,7 +14120,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getPanelChildren:{
-                $desc:"获取面板的子元素.",
+                $desc:"获取面板的子元素",
                 $rtn:"Array",
                 $snippet:[
                     "var id='xui.temp.tabs19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14136,21 +14133,21 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforePagePop:{
-                $desc:"当用户点击POP按钮前调用. 返回false可以阻止页面POP.",
+                $desc:"当用户点击POP按钮前调用. 返回false可以阻止页面POP",
                 $paras:[
                     $profile,
-                    "item: Object, 当前标签项.",
+                    "item: Object, 当前标签项",
                     "options : Object. 可以包括以下键值: parent, host, properties, events, host, theme, CS, CC, CB, CF",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             beforePageClose:{
-                $desc:"当用户关闭某个标签项之前调用. 返回false可以阻止标签项被关闭.",
+                $desc:"当用户关闭某个标签项之前调用. 返回false可以阻止标签项被关闭",
                 $paras:[
                     $profile,
-                    "item: Object, 当前标签项.",
-                    "src : String, 事件所在DOM的xid."
+                    "item: Object, 当前标签项",
+                    "src : String, 事件所在DOM的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14160,10 +14157,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterPageClose:{
-                $desc:"当用户关闭某个标签项之后调用.",
+                $desc:"当用户关闭某个标签项之后调用",
                 $paras:[
                     $profile,
-                    "item: Object, 当前标签项."
+                    "item: Object, 当前标签项"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs22'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14173,12 +14170,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onItemSelected:{
-                $desc:"当某个标签项被选择时调用.",
+                $desc:"当某个标签项被选择时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 被选择的标签项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 被选择的标签项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14188,12 +14185,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onCaptionActive:{
-                $desc:"当用户单击当前标签项的标签头时调用.",
+                $desc:"当用户单击当前标签项的标签头时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 当前标签项.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 当前标签项",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs24'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14203,12 +14200,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowOptions :{
-                $desc:"当用户单击option按钮时触发.",
+                $desc:"当用户单击option按钮时触发",
                 $paras:[
                     $profile,
-                    "item: Object, 当前标签项.",
-                    "e: Event, 事件对象.",
-                    "src: 事件发生的DOM元素的xid."
+                    "item: Object, 当前标签项",
+                    "e: Event, 事件对象",
+                    "src: 事件发生的DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14218,10 +14215,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onIniPanelView:{
-                $desc:"当每个页的容器面板初始化时调用.",
+                $desc:"当每个页的容器面板初始化时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 当前标签项."
+                    "item: Object, 当前标签项"
                 ],
                 $snippet:[
                     "var id='xui.temp.tabs25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14232,12 +14229,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClickPanel:{
-                $desc:"当鼠标单击容器时调用.",
+                $desc:"当鼠标单击容器时调用",
                 $paras:[
                     $profile,
-                     "item: Object, 当前容器对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                     "item: Object, 当前容器对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -14247,7 +14244,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.FoldingTabs 类",
         constructor:{
-            $desc:"生成一个xui.UI.FoldingTabs对象."
+            $desc:"生成一个xui.UI.FoldingTabs对象"
         }
     });
 
@@ -14255,16 +14252,16 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.ToolBar 类",
         constructor:{
-            $desc:"生成一个xui.UI.ToolBar对象."
+            $desc:"生成一个xui.UI.ToolBar对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             updateItem:{
-                $desc:"更新一个tool项,并刷新对应的DOM界面.",
+                $desc:"更新一个tool项,并刷新对应的DOM界面",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 项的标识号.",
-                    "options [必需参数] : Object/String, 要更新的选项."
+                    "id [必需参数] : String, 项的标识号",
+                    "options [必需参数] : Object/String, 要更新的选项"
                 ],
                 $snippet:[
                     "var id='xui.temp.tool01'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14285,10 +14282,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHAlign :{
-                $desc:"设置水平对齐方式.",
+                $desc:"设置水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'left'代表左对齐, 'center'代表居中对齐, 'right'代表右对齐.",
+                    "value [必需参数] : 'left'代表左对齐, 'center'代表居中对齐, 'right'代表右对齐",
                     $force
                 ],
                 $snippet:[
@@ -14309,7 +14306,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHandler :{
-                $desc:"设置工具栏是否带有手柄.",
+                $desc:"设置工具栏是否带有手柄",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Boolean",
@@ -14323,7 +14320,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             showGroup:{
-                $desc:"显示或隐藏某个分组.",
+                $desc:"显示或隐藏某个分组",
                 $rtn:"[self]",
                 $paras:[
                     "grpId [必需参数] : String, 分组的id",
@@ -14337,11 +14334,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             showItem:{
-                $desc:"显示或隐藏指定工具栏按钮项.",
+                $desc:"显示或隐藏指定工具栏按钮项",
                 $rtn:"[self]",
                 $paras:[
                     "itemId [必需参数] : String, 工具栏按钮id",
-                    "value: [可选参数] : Boolean, true表示显示,false表示隐藏.默认为true."
+                    "value: [可选参数] : Boolean, true表示显示,false表示隐藏.默认为true"
                 ],
                 $snippet:[
                     "var id='xui.temp.tool7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14352,13 +14349,13 @@ xui.set(xui.Locale,["cn","app"], {
 
             },
             onClick:{
-                $desc:"在工具栏按钮项被单击时调用.",
+                $desc:"在工具栏按钮项被单击时调用",
                 $paras:[
                     $profile,
-                    "item : Object, 工具栏按钮子项对象.",
-                    "group : Object, 工具栏按钮项所在组对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item : Object, 工具栏按钮子项对象",
+                    "group : Object, 工具栏按钮项所在组对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.tool8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14375,47 +14372,47 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.PopMenu 类",
         constructor:{
-            $desc:"生成一个xui.UI.PopMenu对象."
+            $desc:"生成一个xui.UI.PopMenu对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             adjustSize:{
-                $desc:"按照列表的内容自动调整列表的宽度和高度.",
+                $desc:"按照列表的内容自动调整列表的宽度和高度",
                 $rtn:"[self]"
             },
             pop:{
-                $desc:"弹出菜单.",
+                $desc:"弹出菜单",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number}或是DOM元素.",
-                    "type [可选参数] : Number, 从1到4, 代表菜单相对弹出点的方位,东北,东南,西北,西南. 默认为1.",
-                    "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象. "
+                    "obj [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number}或是DOM元素",
+                    "type [可选参数] : Number, 从1到4, 代表菜单相对弹出点的方位,东北,东南,西北,西南. 默认为1",
+                    "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象"
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
                     "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); })"+
                     "}"
                 ]
             },
             hide:{
-                $desc:"隐藏菜单.",
+                $desc:"隐藏菜单",
                 $rtn:"[self]",
                 $paras:[
-                    "triggerEvent [可选参数] : Boolean, 是否触发onHide事件."
+                    "triggerEvent [可选参数] : Boolean, 是否触发onHide事件"
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
                     "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); xui.asyRun(function(){o.hide();},3000);})"+
                     "}"
                 ]
             },
             getAutoHide:{
-                $desc:"判断菜单显示一段时间后是否自动隐藏.",
+                $desc:"判断菜单显示一段时间后是否自动隐藏",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var id='xui.temp.pm2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true}]}));"+
                     "o.setAutoHide(true);"+
                     "alert(o.getAutoHide());"+
@@ -14424,14 +14421,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAutoHide:{
-                $desc:"设置菜单显示一段时间后是否自动隐藏 .",
+                $desc:"设置菜单显示一段时间后是否自动隐藏 ",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',tips:'item c'},{id:'d',Object:new xui.UI.CheckBox}]}));"+
                     "o.setAutoHide(true);"+
                     "alert(o.getAutoHide());"+
@@ -14440,10 +14437,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getHideAfterClick:{
-                $desc:"判断菜单在被单击后是否自动隐藏.",
+                $desc:"判断菜单在被单击后是否自动隐藏",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var id='xui.temp.pm4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true}]}));"+
                     "o.setHideAfterClick(false);"+
                     "alert(o.getHideAfterClick());"+
@@ -14452,14 +14449,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHideAfterClick:{
-                $desc:"设置菜单在被单击后是否自动隐藏.",
+                $desc:"设置菜单在被单击后是否自动隐藏",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',tips:'item c'},{id:'d',Object:new xui.UI.CheckBox}]}));"+
                     "o.setHideAfterClick(false);"+
                     "alert(o.getHideAfterClick());"+
@@ -14469,12 +14466,12 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             beforeHide:{
-                $desc:"在菜单隐藏前被调用. 返回false可以阻止菜单隐藏.",
+                $desc:"在菜单隐藏前被调用. 返回false可以阻止菜单隐藏",
                 $paras:[
                     "profile : xui.UIProfile, 当前控件的配置"
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm31'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
                     "o.beforeHide(function(){alert('before hide')});"+
                     "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s);})"+
@@ -14482,12 +14479,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onHide:{
-                $desc:"在菜单隐藏时调用.",
+                $desc:"在菜单隐藏时调用",
                 $paras:[
                     "profile : xui.UIProfile, 当前控件的配置"
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
                     "o.onHide(function(){alert('hidden')});"+
                     "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s);})"+
@@ -14499,10 +14496,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "profile : xui.UIProfile, 当前控件的配置",
                     "item : Object, 菜单子项对象",
-                    "src: String, 事件所属DOM元素的xid."
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
                     "o.onMenuSelected(function(p,item){if(item.type=='checkbox')alert(item.value); else alert(item.id); });"+
                     "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s);})"+
@@ -14510,14 +14507,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowSubMenu:{
-                $desc:"在子菜单显示时调用.",
+                $desc:"在子菜单显示时调用",
                 $paras:[
                     "profile : xui.UIProfile, 当前控件的配置",
                     "item : Object, 父菜单子项对象",
-                    "src: String, 事件所属DOM元素的xid."
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
-                    "var id='xui.temp.pm13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
+                    "var id='xui.temp.pm13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({autoHide:true, items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:true},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
                     "var cp=(new xui.UI.ColorPicker).render(true);"+
                     "cp.beforeClose(function(){cp.hide();return false;})"+
@@ -14537,22 +14534,22 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.MenuBar 类",
         constructor:{
-            $desc:"生成一个xui.UI.MenuBar对象."
+            $desc:"生成一个xui.UI.MenuBar对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             clearPopCache:{
-                $desc:"清除所有的缓存菜单项."
+                $desc:"清除所有的缓存菜单项"
             },
             hide:{
                 $desc:"隐藏菜单"
             },
             getParentID:{
-                $desc:"获取父对象的DOM元素id.",
+                $desc:"获取父对象的DOM元素id",
                 $rtn:"String"
             },
             setParentID:{
-                $desc:"通过设置DOM元素的id来设置父对象.",
+                $desc:"通过设置DOM元素的id来设置父对象",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 父对象id",
@@ -14560,7 +14557,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getAutoShowTime:{
-                $desc:"获取鼠标在悬浮多少秒后菜单项自动显示.",
+                $desc:"获取鼠标在悬浮多少秒后菜单项自动显示",
                 $rtn:"Number. 多少秒",
                 $snippet:[
                     "var id='xui.temp.menu2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14572,10 +14569,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAutoShowTime:{
-                $desc:"设置鼠标在悬浮多少秒后菜单项自动显示.",
+                $desc:"设置鼠标在悬浮多少秒后菜单项自动显示",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -14600,11 +14597,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateItem:{
-                $desc:"更新一个项,并刷新对应的DOM界面.",
+                $desc:"更新一个项,并刷新对应的DOM界面",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 项的标识号.",
-                    "options [必需参数] : Object/String, 要更新的选项."
+                    "id [必需参数] : String, 项的标识号",
+                    "options [必需参数] : Object/String, 要更新的选项"
                 ],
                 $snippet:[
                     "var id='xui.temp.menu4-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14615,10 +14612,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHandler:{
-                $desc:"设置菜单条前是否有一个手柄,以供鼠标拖动.",
+                $desc:"设置菜单条前是否有一个手柄,以供鼠标拖动",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -14631,36 +14628,36 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onGetPopMenu:{
-                $desc:"在下拉菜单弹出前调用.",
+                $desc:"在下拉菜单弹出前调用",
                 $paras:[
                     "profile : 菜单条的xui.UIProfile",
                     "item : Object, ",
-                    "callback: String, callback函数."
+                    "callback: String, callback函数"
                 ]
             },
             onMenuBtnClick:{
-                $desc:"在菜单项被点击时调用.只有sub为空的item才会有这个事件.",
+                $desc:"在菜单项被点击时调用.只有sub为空的item才会有这个事件",
                 $paras:[
                     "profile : 菜单条的xui.UIProfile",
                     "item : Object, ",
-                    "src: String, 事件所属DOM元素的xid."
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             beforePopMenu:{
-                $desc:"在菜单项被点击前调用,如果返回false,默认的下拉菜单将不会显示.",
+                $desc:"在菜单项被点击前调用,如果返回false,默认的下拉菜单将不会显示",
                 $paras:[
                     "profile : 菜单条的xui.UIProfile",
                     "item : Object, ",
-                    "src: String, 事件所属DOM元素的xid."
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onMenuSelected:{
-                $desc:"在菜单项被选择时调用.",
+                $desc:"在菜单项被选择时调用",
                 $paras:[
                     "profile : 菜单条的xui.UIProfile",
-                    "popProfile: xui.UIProfile, 当前弹出菜单的profile.",
+                    "popProfile: xui.UIProfile, 当前弹出菜单的profile",
                     "item : Object, ",
-                    "src: String, 事件所属DOM元素的xid."
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.pm12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14671,12 +14668,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowSubMenu:{
-                $desc:"当显示子菜单时调用.",
+                $desc:"当显示子菜单时调用",
                 $paras:[
-                    "profile : 菜单条的xui.UIProfile.",
-                    "popProfile: xui.UIProfile, 当前弹出菜单的profile.",
-                    "item : Object.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "profile : 菜单条的xui.UIProfile",
+                    "popProfile: xui.UIProfile, 当前弹出菜单的profile",
+                    "item : Object",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.menu13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14700,21 +14697,21 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Dialog 类",
         constructor:{
-            $desc:"生成一个xui.UI.Dialog对象."
+            $desc:"生成一个xui.UI.Dialog对象"
         },
         alert:{
-            $desc:"弹出一个警告框.",
+            $desc:"弹出一个警告框",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 警告框标题.",
-                "content [可选参数] : String, 警告语句.",
-                "btnCap  [可选参数] : String, 按钮文字.",
-                "onClose [可选参数] : Function, alert窗口关闭的回调函数.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "title [可选参数] : String, 警告框标题",
+                "content [可选参数] : String, 警告语句",
+                "btnCap  [可选参数] : String, 按钮文字",
+                "onClose [可选参数] : Function, alert窗口关闭的回调函数",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "noCache [可选参数] : Boolean, 是否用缓存的alert窗口,默认为[false]."
+                "noCache [可选参数] : Boolean, 是否用缓存的alert窗口,默认为[false]"
             ],
             $snippet:[
                 "xui.UI.Dialog.alert('title','content',function(){alert('ok')})",
@@ -14722,20 +14719,20 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         confirm:{
-            $desc:"弹出一个确认框.",
+            $desc:"弹出一个确认框",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 确认框的标题.",
-                "content [可选参数] : String, 确认的提示语句.",
-                "onYes [可选参数] : Function, the Yes 回调函数.",
-                "onNo [可选参数] : Function, the No 回调函数.",
-                "btnCapYes [可选参数] : String, Yes按钮的文字.",
-                "btnCapNo [可选参数] : String, No按钮的文字.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "title [可选参数] : String, 确认框的标题",
+                "content [可选参数] : String, 确认的提示语句",
+                "onYes [可选参数] : Function, the Yes 回调函数",
+                "onNo [可选参数] : Function, the No 回调函数",
+                "btnCapYes [可选参数] : String, Yes按钮的文字",
+                "btnCapNo [可选参数] : String, No按钮的文字",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "noCache [可选参数] : Boolean, 是否用缓存的confirm窗口,默认为[false]."
+                "noCache [可选参数] : Boolean, 是否用缓存的confirm窗口,默认为[false]"
             ],
             $snippet:[
                 "xui.UI.Dialog.confirm('title','content',function(){alert('yes')},function(){alert('no')})",
@@ -14746,12 +14743,12 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"弹出一个简易对话框.（非模态）",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 简易对话框标题文字.",
+                "title [可选参数] : String, 简易对话框标题文字",
                 "content [可选参数] : String, 窗体内容输入文字",
-                "btnCap [可选参数] : String, OK按钮文字.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "btnCap [可选参数] : String, OK按钮文字",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id"
             ],
             $snippet:[
@@ -14760,21 +14757,21 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         prompt:{
-            $desc:"弹出一个输入框.",
+            $desc:"弹出一个输入框",
             $rtn:"xui.Dialog",
             $paras:[
-                "title [可选参数] : String, 输入框标题文字.",
-                "caption [可选参数] : String, 提示文字.",
-                "content [可选参数] : String, 默认输入文字.",
-                "onYes [可选参数] : Function, 用户单击Yes 回调函数.",
-                "onNo [可选参数] : Function, 用户单击 No 回调函数.",
-                "left [可选参数] : Number, 对话框左边坐标.",
-                "top [可选参数] : Number, 对话框上边坐标.",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "title [可选参数] : String, 输入框标题文字",
+                "caption [可选参数] : String, 提示文字",
+                "content [可选参数] : String, 默认输入文字",
+                "onYes [可选参数] : Function, 用户单击Yes 回调函数",
+                "onNo [可选参数] : Function, 用户单击 No 回调函数",
+                "left [可选参数] : Number, 对话框左边坐标",
+                "top [可选参数] : Number, 对话框上边坐标",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "parent [可选参数] : xui.Dom, 或xui.UI对象.",
+                "parent [可选参数] : xui.Dom, 或xui.UI对象",
                 "subId [可选参数] : String, 容器的 sub id",
-                "noCache [可选参数] : Boolean, 是否用缓存的prompt窗口,默认为[false]."
+                "noCache [可选参数] : Boolean, 是否用缓存的prompt窗口,默认为[false]"
             ],
             $snippet:[
                 "xui.UI.Dialog.prompt('title','caption', 'content content ',function(str){alert(str)})"
@@ -14783,7 +14780,7 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
                 $paras:[
                     "flag [可选参数] : Boolean, false表示去掉激活"
@@ -14793,11 +14790,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             isPinned:{
-                $desc:"是否被固定.",
+                $desc:"是否被固定",
                 $rtn:"Boolean"
             },
             close:{
-                $desc:"关闭对话框.",
+                $desc:"关闭对话框",
                 $rtn:"[self]",
                 $paras:[
                     "triggerEvent [可选参数] : Boolean, 指示是否触发beforeClose事件. 默认为[true]"
@@ -14807,13 +14804,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             showModal:{
-                $desc:"显示模式对话框.",
+                $desc:"显示模式对话框",
                 $rtn:"[self]",
                 $paras:[
-                    "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body').",
-                    "left [可选参数] Number, 对话框左边坐标.",
-                    "top [可选参数] Number, 对话框上边坐标.",
-                    "callback[可选参数] Fucntion, 回调函数."
+                    "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body')",
+                    "left [可选参数] Number, 对话框左边坐标",
+                    "top [可选参数] Number, 对话框上边坐标",
+                    "callback[可选参数] Fucntion, 回调函数"
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).showModal();",
@@ -14821,14 +14818,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             show:{
-                $desc:"显示对话框.",
+                $desc:"显示对话框",
                 $rtn:"[self]",
                 $paras:[
-                    "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body').",
-                    "modal [可选参数] : Boolean, 模式对话框,或者是非模式对话框.默认为非模式（false）.",
-                    "left [可选参数] Number, 对话框左边坐标.",
-                    "top [可选参数] Number, 对话框上边坐标.",
-                    "callback[可选参数] Fucntion, 回调函数."
+                    "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body')",
+                    "modal [可选参数] : Boolean, 模式对话框,或者是非模式对话框.默认为非模式（false）",
+                    "left [可选参数] Number, 对话框左边坐标",
+                    "top [可选参数] Number, 对话框上边坐标",
+                    "callback[可选参数] Fucntion, 回调函数"
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100);",
@@ -14837,7 +14834,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             hide:{
-                $desc:"隐藏对话框.",
+                $desc:"隐藏对话框",
                 $rtn:"[self]",
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.hide();},1000); xui.asyRun(function(){dlg.show();},2000);"
@@ -14848,10 +14845,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setIframeAutoLoad:{
-                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置.",
+                $desc:"设置用iframe自动加载html（可以是异域）的地址.需要提前设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -14860,10 +14857,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setAjaxAutoLoad:{
-                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置.",
+                $desc:"设置用Ajax自动加载html文件（同域下）的路径属性.需要提前设置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax.",
+                    "value [必需参数] : String. 也可以是一个object,object的内容对应xui.Ajax",
                     $force
                 ]
             },
@@ -14875,10 +14872,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCaption:{
-                $desc:"设置对话框标题文字.",
+                $desc:"设置对话框标题文字",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -14886,13 +14883,13 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getInitPos:{
-                $desc:"得到窗口的初始化位置."
+                $desc:"得到窗口的初始化位置"
             },
             setInitPos:{
-                $desc:"设置窗口的初始化位置.",
+                $desc:"设置窗口的初始化位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [可选参数] : String. 'auto','center'之一。默认是'center'。"
+                    "value [可选参数] : String'auto','center'之一。默认是'center'。"
                 ]
             },
             getCloseBtn:{
@@ -14903,10 +14900,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setCloseBtn:{
-                $desc:"设置对话框右上角是否带有关闭按钮.",
+                $desc:"设置对话框右上角是否带有关闭按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -14922,10 +14919,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRestoreBtn:{
-                $desc:"设置对话框右上角是否带有从最大最小状态返回正常按钮.",
+                $desc:"设置对话框右上角是否带有从最大最小状态返回正常按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -14937,10 +14934,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMinBtn:{
-                $desc:"设置对话框右上角是否带有最小化按钮.",
+                $desc:"设置对话框右上角是否带有最小化按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -14955,10 +14952,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxBtn:{
-                $desc:"设置对话框右上角是否带有最大化按钮.",
+                $desc:"设置对话框右上角是否带有最大化按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -14973,10 +14970,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setPinBtn:{
-                $desc:"设置对话框右上角是否带有钉针按钮.",
+                $desc:"设置对话框右上角是否带有钉针按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -14988,10 +14985,10 @@ xui.set(xui.Locale,["cn","app"], {
                  $rtn:"Boolean"
             },
             setModal:{
-                $desc:"设置是否为模式对话框.",
+                $desc:"设置是否为模式对话框",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -15003,10 +15000,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setLandBtn:{
-                $desc:"设置对话框右上角是否带有降落按钮.",
+                $desc:"设置对话框右上角是否带有降落按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15021,10 +15018,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setOptBtn:{
-                $desc:"设置对话框右上角是否带有选项按钮.",
+                $desc:"设置对话框右上角是否带有选项按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15036,10 +15033,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setInfoBtn :{
-                $desc:"设置对话框是否带有帮助按钮.",
+                $desc:"设置对话框是否带有帮助按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -15048,25 +15045,25 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setRefreshBtn :{
-                $desc:"设置对话框是否带有刷新按钮.",
+                $desc:"设置对话框是否带有刷新按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getMovable:{
-                $desc:"判断对话框是否可以拖动.",
+                $desc:"判断对话框是否可以拖动",
                 $rtn:"Boolean",
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());xui.asyRun(function(){dlg.setMovable(false);},1000);"
                 ]
             },
             setMovable:{
-                $desc:"设置对话框是否可以拖动.",
+                $desc:"设置对话框是否可以拖动",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15074,17 +15071,17 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getImage :{
-                $desc:"获取对话框左上角的图标url.",
+                $desc:"获取对话框左上角的图标url",
                 $rtn:"String",
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());xui.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
                 ]
             },
             setImage :{
-                $desc:"设置对话框左上角的图标url.",
+                $desc:"设置对话框左上角的图标url",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] :String,  image path.",
+                    "value [必需参数] :String,  image path",
                     $force
                 ],
                 $snippet:[
@@ -15099,10 +15096,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setImagePos :{
-                $desc:"设置对话框左上角图标的图像偏移属性.",
+                $desc:"设置对话框左上角图标的图像偏移属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, corresponding CSS value.",
+                    "value [必需参数] : String, corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -15117,10 +15114,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHtml:{
-                $desc:"设置对话框的内部内容HTML.",
+                $desc:"设置对话框的内部内容HTML",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -15128,17 +15125,17 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getStatus:{
-                $desc:"获取对话框的大小状态. 可以是'normal'(通常), 'min'(最小话) or 'max'(最大化).",
+                $desc:"获取对话框的大小状态. 可以是'normal'(通常), 'min'(最小话) or 'max'(最大化)",
                 $rtn:"String",
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.setStatus('min');alert(dlg.getStatus());},1000);"
                 ]
             },
             setStatus:{
-                $desc:"设置对话框的大小状态.",
+                $desc:"设置对话框的大小状态",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 可以是'normal'(通常), 'min'(最小话) or 'max'(最大化).",
+                    "value [必需参数] : String, 可以是'normal'(通常), 'min'(最小话) or 'max'(最大化)",
                     $force
                 ],
                 $snippet:[
@@ -15146,7 +15143,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getMinHeight:{
-                $desc:"获取对话框的最小高度限制.",
+                $desc:"获取对话框的最小高度限制",
                 $rtn:"Number",
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); "+
@@ -15155,10 +15152,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMinHeight:{
-                $desc:"设置对话框的最小高度限制.",
+                $desc:"设置对话框的最小高度限制",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -15177,10 +15174,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMinWidth:{
-                $desc:"设置对话框的最小宽度限制.",
+                $desc:"设置对话框的最小宽度限制",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -15190,7 +15187,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getFromRegion:{
-                $desc:"获取对话框的弹出源.",
+                $desc:"获取对话框的弹出源",
                 $rtn:"Object",
                 $snippet:[
                     "var dl=(new xui.UI.Dialog);"+
@@ -15200,7 +15197,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setFromRegion:{
-                $desc:"设置对话框的弹出源.",
+                $desc:"设置对话框的弹出源",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Object.{left:Number,top:Number,width:Number,height:Number}",
@@ -15214,7 +15211,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShow:{
-                $desc:"当对话框显示的时候调用.",
+                $desc:"当对话框显示的时候调用",
                 $paras:[
                     "profile : xui.UIProfile, 当前控件的配置"
                 ],
@@ -15225,7 +15222,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClose:{
-                $desc:"当对话框关闭时调用. 返回false可以阻止对话框关闭.",
+                $desc:"当对话框关闭时调用. 返回false可以阻止对话框关闭",
                 $paras:[
                     $profile
                 ],
@@ -15237,23 +15234,23 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowInfo:{
-                $desc:"在用户单击帮助按钮时调用.",
+                $desc:"在用户单击帮助按钮时调用",
                 $paras:[
                     $profile
                 ]
             },
             onRefresh:{
-                $desc:"在用户单击刷新按钮时调用.",
+                $desc:"在用户单击刷新按钮时调用",
                 $paras:[
                     $profile
                 ]
             },
             onShowOptions :{
-                $desc:"在用户单击选项按钮时调用.",
+                $desc:"在用户单击选项按钮时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var dlg=new xui.UI.Dialog({optBtn:true}); "+
@@ -15262,21 +15259,21 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onLand:{
-                $desc:"在用户单击LAND按钮时调用.",
+                $desc:"在用户单击LAND按钮时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onActivated:{
-                $desc:"在对话框被激活时(获得焦点)调用.",
+                $desc:"在对话框被激活时(获得焦点)调用",
                 $paras:[
                     $profile
                 ]
             },
             beforeStatusChanged:{
-                $desc:"当对话框状态在最大、最小或普通状态之间改变前调用. 返回false可以阻止状态该变.",
+                $desc:"当对话框状态在最大、最小或普通状态之间改变前调用. 返回false可以阻止状态该变",
                 $paras:[
                     $profile,
                     "oldStatus: String, 改变之前的状态, min/max/normal",
@@ -15284,7 +15281,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterStatusChanged:{
-                $desc:"当对话框状态在最大、最小或普通状态之间改变后调用.",
+                $desc:"当对话框状态在最大、最小或普通状态之间改变后调用",
                 $paras:[
                     $profile,
                     "oldStatus: String, 改变之前的状态, min/max/normal",
@@ -15292,18 +15289,18 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforePin:{
-                $desc:"在顶针按钮点击之前触发.",
+                $desc:"在顶针按钮点击之前触发",
                 $paras:[
                     $profile,
-                    "value: Boolean, 顶针状态."
+                    "value: Boolean, 顶针状态"
                 ]
             },
             onClickPanel:{
-                $desc:"当鼠标单击容器时调用.",
+                $desc:"当鼠标单击容器时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -15313,31 +15310,31 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Element 类",
         constructor:{
-            $desc:"生成一个xui.UI.Element对象."
+            $desc:"生成一个xui.UI.Element对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getHtml:{
-                $desc:"获取对象的内部html代码.",
+                $desc:"获取对象的内部html代码",
                 $rtn:"String"
             },
             setHtml:{
-                $desc:"设置对象的内部html代码.",
+                $desc:"设置对象的内部html代码",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getNodeName:{
-                $desc:"得到控件的Dom node name.",
+                $desc:"得到控件的Dom node name",
                 $rtn:"String"
             },
             setNodeName:{
-                $desc:"设置控件的Dom node name.",
+                $desc:"设置控件的Dom node name",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -15346,19 +15343,19 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object"
             },
             setAttributes:{
-                $desc:"设置控件的Attributes.",
+                $desc:"设置控件的Attributes",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : 键值对.",
+                    "value [Required] : 键值对",
                     $force
                 ]
             },
             onClick:{
-                $desc:"当鼠标单击时调用.",
+                $desc:"当鼠标单击时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -15368,7 +15365,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.HTMLButton 类",
         constructor:{
-            $desc:"生成一个xui.UI.HTMLButton."
+            $desc:"生成一个xui.UI.HTMLButton"
         },
         prototype:{
             KEY:{$desc:"本类名"}
@@ -15379,28 +15376,28 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Span 类",
         constructor:{
-            $desc:"生成一个xui.UI.Span对象."
+            $desc:"生成一个xui.UI.Span对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getHtml:{
-                $desc:"获取对象的内部html代码.",
+                $desc:"获取对象的内部html代码",
                 $rtn:"String"
             },
             setHtml:{
-                $desc:"设置对象的内部html代码.",
+                $desc:"设置对象的内部html代码",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getOverflow:{
-                $desc:"获取当前对象容器的CSS overflow属性.",
+                $desc:"获取当前对象容器的CSS overflow属性",
                 $rtn:"String"
             },
             setOverflow:{
-                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面.",
+                $desc:"设置当前对象容器的CSS overflow属性,并反映到界面",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'auto','hidden','visible','' ",
@@ -15408,11 +15405,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"当鼠标单击时调用.",
+                $desc:"当鼠标单击时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -15422,7 +15419,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Image 类",
         constructor:{
-            $desc:"生成一个xui.UI.Image对象."
+            $desc:"生成一个xui.UI.Image对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -15437,7 +15434,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxHeight:{
-                $desc:"设置图片的最大高度.",
+                $desc:"设置图片的最大高度",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number. 图片高度（像素）",
@@ -15461,10 +15458,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setMaxWidth:{
-                $desc:"设置图像的最大宽度（像素）.",
+                $desc:"设置图像的最大宽度（像素）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -15475,14 +15472,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
            },
             getItems:{
-                $desc:"得到图像字典项目列表.",
+                $desc:"得到图像字典项目列表",
                 $rtn:"Array"
             },
             setItems:{
-                $desc:"设置图像字典项目列表.",
+                $desc:"设置图像字典项目列表",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array.",
+                    "value [必需参数] : Array",
                     $force
                 ]
             },
@@ -15494,7 +15491,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置当前图像关键字（图像字典项目列表中）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -15509,10 +15506,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAlt:{
-                $desc:"设置图像的 Alt 值.",
+                $desc:"设置图像的 Alt 值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -15534,10 +15531,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSrc:{
-                $desc:"设置图像的src值.",
+                $desc:"设置图像的src值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -15553,10 +15550,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setCursor:{
-                $desc:"设置图像的鼠标状态.",
+                $desc:"设置图像的鼠标状态",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -15572,7 +15569,7 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             onError:{
-                $desc:"当图像文件无法获取（文件地址不存在等情况）调用.",
+                $desc:"当图像文件无法获取（文件地址不存在等情况）调用",
                 $paras:[
                     $profile
                 ],
@@ -15585,7 +15582,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeLoad:{
-                $desc:"在图像装载前调用.",
+                $desc:"在图像装载前调用",
                 $paras:[
                     $profile
                 ],
@@ -15598,10 +15595,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterLoad:{
-                $desc:"当图像装载后调用.",
+                $desc:"当图像装载后调用",
                 $paras:[
                     $profile,
-                    "path : String, 图片的文件路径.",
+                    "path : String, 图片的文件路径",
                     "width : Number, 图片宽",
                     "height : Number, 图片高"
                 ],
@@ -15614,20 +15611,20 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onClick:{
-                $desc:"在click图片的时候触发该事件.",
+                $desc:"在click图片的时候触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onDblclick:{
-                $desc:"在双击图片的时候触发该事件.",
+                $desc:"在双击图片的时候触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -15637,7 +15634,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.FoldingList 类",
         constructor:{
-            $desc:"生成一个xui.UI.FoldingList对象."
+            $desc:"生成一个xui.UI.FoldingList对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
@@ -15653,10 +15650,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setActiveLast :{
-                $desc:"设置是否激活最后一个文件夹项.",
+                $desc:"设置是否激活最后一个文件夹项",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15668,10 +15665,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             toggle:{
-                $desc:"打开或关闭一个文件夹项.",
+                $desc:"打开或关闭一个文件夹项",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] :String, 文件夹项目id."
+                    "id [必需参数] :String, 文件夹项目id"
                 ],
                 $snippet:[
                     "var id='xui.temp.fl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15682,11 +15679,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             fillContent:{
-                $desc:"填充指定文件夹项的内容.",
+                $desc:"填充指定文件夹项的内容",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] :String, 文件夹项id.",
-                    "obj [必需参数]: xui.Dom对象或xui.UI对象. 如果设置为null将清空该项目的内容."
+                    "id [必需参数] :String, 文件夹项id",
+                    "obj [必需参数]: xui.Dom对象或xui.UI对象. 如果设置为null将清空该项目的内容"
                 ],
                 $snippet:[
                     "var id='xui.temp.fl8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15699,12 +15696,12 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             onShowOptions :{
-                $desc:"当用户单击选项按钮时调用.",
+                $desc:"当用户单击选项按钮时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.fl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15716,11 +15713,11 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             onGetContent:{
-                $desc:"当某个文件夹项需要填充内容时调用.",
+                $desc:"当某个文件夹项需要填充内容时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "callback : Function, 填充完成后的回调函数."
+                    "item: Object, 子项对象",
+                    "callback : Function, 填充完成后的回调函数"
                 ],
                 $snippet:[
                     "var id='xui.temp.fl11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15738,15 +15735,15 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.TreeBar 类",
         constructor:{
-            $desc:"生成一个xui.UI.TreeBar对象."
+            $desc:"生成一个xui.UI.TreeBar对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             fireItemClickEvent:{
-                $desc:"模拟鼠标点击,以选中TreeBar中的某一项.",
+                $desc:"模拟鼠标点击,以选中TreeBar中的某一项",
                 $rtn:"[self]",
                 $paras:[
-                    "subId [必需参数] : String, 项的id."
+                    "subId [必需参数] : String, 项的id"
                 ],
                 $snippet:[
                     "var id='xui.temp.tb01'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15758,7 +15755,7 @@ xui.set(xui.Locale,["cn","app"], {
             },
 
             getAnimCollapse :{
-                $desc:"判断在父节点打开时,是否显示动画.",
+                $desc:"判断在父节点打开时,是否显示动画",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.tb1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15769,10 +15766,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAnimCollapse :{
-                $desc:"设置在父节点打开时,是否显示动画.",
+                $desc:"设置在父节点打开时,是否显示动画",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15788,10 +15785,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setOptBtn:{
-                $desc:"设置是否带有选项按钮.",
+                $desc:"设置是否带有选项按钮",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -15803,7 +15800,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置命令按钮集",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 项数组.",
+                    "value [必需参数] : Array, 项数组",
                     $force
                 ]
             },
@@ -15819,10 +15816,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setGroup :{
-                $desc:"设置树是否分组.",
+                $desc:"设置树是否分组",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15834,7 +15831,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDynDestory:{
-                $desc:"判断是否在节点折叠时动态销毁DOM,以便收回内存.",
+                $desc:"判断是否在节点折叠时动态销毁DOM,以便收回内存",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.tb5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15846,10 +15843,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setDynDestory :{
-                $desc:"设置是否在节点折叠时动态销毁DOM（以便收回内存）.",
+                $desc:"设置是否在节点折叠时动态销毁DOM（以便收回内存）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15869,7 +15866,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置没有子节点的条目是否有切换按钮占位",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -15885,10 +15882,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"设置树在初始化是打开或收缩子行.",
+                $desc:"设置树在初始化是打开或收缩子行",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15900,7 +15897,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getSelMode :{
-                $desc:"获取选择模式. 'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选, 'multibycheckbox'表示可多选,并且只能点击checkbox来选中.",
+                $desc:"获取选择模式'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选, 'multibycheckbox'表示可多选,并且只能点击checkbox来选中",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.tb9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -15912,7 +15909,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelMode :{
-                $desc:"设置选择模式.",
+                $desc:"设置选择模式",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选. 默认为'single'",
@@ -15928,14 +15925,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getNoCtrlKey:{
-                $desc:"获取是否在多选择模式下需要用Ctrl来辅助多选.",
+                $desc:"获取是否在多选择模式下需要用Ctrl来辅助多选",
                 $rtn:"Boolean"
             },
             setNoCtrlKey:{
-                $desc:"设置是否在多选择模式下需要用Ctrl来辅助多选.",
+                $desc:"设置是否在多选择模式下需要用Ctrl来辅助多选",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -15952,10 +15949,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSingleOpen :{
-                $desc:"设置是否每一次只能有一个父节点能够被打开. 设置为true时,当一个父节点被打开,其他的打开的父节点将自动合拢.",
+                $desc:"设置是否每一次只能有一个父节点能够被打开. 设置为true时,当一个父节点被打开,其他的打开的父节点将自动合拢",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -15968,12 +15965,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             insertItems:{
-                $desc:"插入一系列节点项.",
+                $desc:"插入一系列节点项",
                 $rtn:"[self]",
                 $paras:[
-                    "arr [必需参数] : Array, 节点项目数组.",
-                    "pid [可选参数] : String, 父节点id.",
-                    "base [可选参数] : String, 基准节点id.",
+                    "arr [必需参数] : Array, 节点项目数组",
+                    "pid [可选参数] : String, 父节点id",
+                    "base [可选参数] : String, 基准节点id",
                     "before [可选参数] : Boolean, true表示在基准节点前插入,false在基准节点后插入. 默认为false;"
                 ],
                 $snippet:[
@@ -15991,7 +15988,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"打开到某个节点.调用该函数后,他的父节点,祖父节点直到根节点都会被展开",
                 $rtn:"String",
                 $paras:[
-                    "id [必需参数] : String, 要展开的节点id."
+                    "id [必需参数] : String, 要展开的节点id"
                 ],
                 $snippet:[
                     "var id='xui.temp.tb14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16002,12 +15999,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             toggleNode:{
-                $desc:"打开或折叠某个父节点.",
+                $desc:"打开或折叠某个父节点",
                 $rtn:"[self]",
                 $paras:[
-                    "id [必需参数] : String, 父节点id, 如果为空,表示根节点.",
-                    "expand [可选参数] : Boolean, true表示打开,false表示折叠.",
-                    "recursive [可选参数] : Boolean, 是否递归应用于父节点的所有子节点."
+                    "id [必需参数] : String, 父节点id, 如果为空,表示根节点",
+                    "expand [可选参数] : Boolean, true表示打开,false表示折叠",
+                    "recursive [可选参数] : Boolean, 是否递归应用于父节点的所有子节点"
                 ],
                 $snippet:[
                     "var id='xui.temp.tb17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16022,11 +16019,11 @@ xui.set(xui.Locale,["cn","app"], {
 
 
             onGetContent:{
-                $desc:"在父节点展开时,需要子节点数据时调用.",
+                $desc:"在父节点展开时,需要子节点数据时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "callback : Function, 回调函数."
+                    "item: Object, 子项对象",
+                    "callback : Function, 回调函数"
                 ],
                 $snippet:[
                     "var id='xui.temp.tb18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16038,12 +16035,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onItemSelected:{
-                $desc:"在某个节点被单击时调用时调用.",
+                $desc:"在某个节点被单击时调用时调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid.",
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid",
                     "type: Number, 0:没有影响;1:item被选中;-1:item被清除选中"
                 ],
                 $snippet:[
@@ -16055,78 +16052,78 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeClick:{
-                $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消.",
+                $desc:"在单击条目前触发该事件.如返回 false, 单击事件取消",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onDblclick:{
-                $desc:"在双击条目的时候触发该事件.",
+                $desc:"在双击条目的时候触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onClick:{
-                $desc:"在单击条目的时候触发该事件.",
+                $desc:"在单击条目的时候触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             afterClick:{
                 $desc:"在单击条目后触发该事件",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e: Event, 事件对象.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e: Event, 事件对象",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             beforeExpand:{
-                $desc:"在某个节点展开前调用. 如返回 false,节点将不会展开.",
+                $desc:"在某个节点展开前调用. 如返回 false,节点将不会展开",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象."
+                    "item: Object, 子项对象"
                 ]
             },
             beforeFold:{
-                $desc:"在某个节点折叠前调用. 如返回 false,节点将不会展开.",
+                $desc:"在某个节点折叠前调用. 如返回 false,节点将不会展开",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象."
+                    "item: Object, 子项对象"
                 ]
             },
             afterExpand:{
-                $desc:"在某个节点展开后调用."
+                $desc:"在某个节点展开后调用"
             },
             afterFold:{
-                $desc:"在某个节点折叠后调用."
+                $desc:"在某个节点折叠后调用"
             },
             onShowOptions :{
-                $desc:"当鼠标单击选项按钮的时候触发.",
+                $desc:"当鼠标单击选项按钮的时候触发",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onCmd:{
-                $desc:"当用户单击内部按钮的时候调用.",
+                $desc:"当用户单击内部按钮的时候调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "cmdKey: String, 命令的键值.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "cmdKey: String, 命令的键值",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -16135,7 +16132,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.TreeView 类",
         constructor:{
-            $desc:"生成xui.UI.TreeView."
+            $desc:"生成xui.UI.TreeView"
         },
         prototype:{
             getNoIcon:{
@@ -16143,10 +16140,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boolean"
             },
             setNoIcon:{
-                $desc:"设置是否带有图标.",
+                $desc:"设置是否带有图标",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             }
@@ -16157,15 +16154,15 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.TreeGrid 类",
         constructor:{
-            $desc:"生成xui.UI.TreeGrid对象."
+            $desc:"生成xui.UI.TreeGrid对象"
         },
         getCellOption:{
-            $desc:"获取指定单元格的属性值,属性名称由参数指定.",
+            $desc:"获取指定单元格的属性值,属性名称由参数指定",
             $rtn:"String",
             $paras:[
-                "profile [必需参数] : TreeGrid的xui.UIProfile.",
-                "cell [必需参数] : 单元格对象.",
-                "key [必需参数] : String, 属性名称."
+                "profile [必需参数] : TreeGrid的xui.UIProfile",
+                "cell [必需参数] : 单元格对象",
+                "key [必需参数] : String, 属性名称"
             ],
             $snippet:[
                 "var id='xui.temp.grid0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16177,21 +16174,21 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         isHotRow:{
-            $desc:"是否是热行.",
+            $desc:"是否是热行",
             $rtn:"Boolean",
             $paras:[
-                "row [必需参数] : String/Object, 行对象或id."
+                "row [必需参数] : String/Object, 行对象或id"
             ]
         },
         prototype:{
             KEY:{$desc:"本类名"},
             activate:{
-                $desc:"激活控件(获得焦点).",
+                $desc:"激活控件(获得焦点)",
                 $rtn:"[self]"
             },
             getActiveMode :{
-                $desc:"获取表格的选取模式.",
-                $rtn:"String, 'cell', 'row' 或 'none'.",
+                $desc:"获取表格的选取模式",
+                $rtn:"String, 'cell', 'row' 或 'none'",
                 $snippet:[
                     "var id='xui.temp.grid1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false, position:'relative'});"+
@@ -16202,10 +16199,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setActiveMode :{
-                $desc:"设置表格的选取模式.",
+                $desc:"设置表格的选取模式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 可以是'cell', 'row' 或 'none'. 默认为'row'.",
+                    "value [必需参数] : String, 可以是'cell', 'row' 或 'none'. 默认为'row'",
                     $force
                 ],
                 $snippet:[
@@ -16218,47 +16215,47 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             offEditor:{
-                $desc:"解除单元格的编辑模式."
+                $desc:"解除单元格的编辑模式"
             },
             autoRowHeight:{
-                $desc:"自动适应行高.",
+                $desc:"自动适应行高",
                 $paras:[
-                    "rowId [可选参数] : String, 行id. 没有行id表示自动适应所有的行高."
+                    "rowId [可选参数] : String, 行id. 没有行id表示自动适应所有的行高"
                 ]
             },
             autoColWidth:{
-                $desc:"自动适应列宽.",
+                $desc:"自动适应列宽",
                 $paras:[
-                    "colId [可选参数] : String, 列id. 没有列id表示自动适应所有的列宽."
+                    "colId [可选参数] : String, 列id. 没有列id表示自动适应所有的列宽"
                 ]
             },
             autoColHeight:{
-                $desc:"自动适应表头高."
+                $desc:"自动适应表头高"
             },
             editCell:{
-                $desc:"将单元格绑定到指定的编辑器上.",
+                $desc:"将单元格绑定到指定的编辑器上",
                 $paras:[
-                    "cell [必需参数] : String, cell's id值 或 cell 对象."
+                    "cell [必需参数] : String, cell's id值 或 cell 对象"
                 ]
             },
             focusCell:{
-                $desc:"单元格获得焦点.",
+                $desc:"单元格获得焦点",
                 $paras:[
-                    "cell [必需参数] : String, cell's id值 或 cell 对象."
+                    "cell [必需参数] : String, cell's id值 或 cell 对象"
                 ]
             },
             focusCellbyRowCol:{
-                $desc:"单元格获得焦点.",
+                $desc:"单元格获得焦点",
                 $paras:[
-                    "rowId [必需参数] : String, 单元格行id.",
-                    "colId [必需参数] : String, 单元格列id."
+                    "rowId [必需参数] : String, 单元格行id",
+                    "colId [必需参数] : String, 单元格列id"
                 ]
             },
             editCellbyRowCol:{
-                $desc:"将单元格绑定到指定的编辑器上.",
+                $desc:"将单元格绑定到指定的编辑器上",
                 $paras:[
-                    "rowId [必需参数] : String, 单元格行id.",
-                    "colId [必需参数] : String, 单元格列id."
+                    "rowId [必需参数] : String, 单元格行id",
+                    "colId [必需参数] : String, 单元格列id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16274,7 +16271,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setValueSeparator:{
-                $desc:"设置字符串值的分隔符(只对selMode为multi或multibycheckbox的情况有效).",
+                $desc:"设置字符串值的分隔符(只对selMode为multi或multibycheckbox的情况有效)",
                 $rtn:"[self]"
             },
             getCurrencyTpl:{
@@ -16285,7 +16282,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置货币的显示模板",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -16314,10 +16311,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAltRowsBg :{
-                $desc:"设置是否使用不同的背景色区分相邻的两行.",
+                $desc:"设置是否使用不同的背景色区分相邻的两行",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16330,14 +16327,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getDirectInput:{
-                $desc:"判断在编辑状态下的 Editor 是否用直接输入的方式（不需要用回车键来确认）输入.",
+                $desc:"判断在编辑状态下的 Editor 是否用直接输入的方式（不需要用回车键来确认）输入",
                 $rtn:"Boolean"
             },
             setDirectInput:{
-                $desc:"设置在编辑状态下的 Editor 是否用直接输入的方式（不需要用回车键来确认）输入.",
+                $desc:"设置在编辑状态下的 Editor 是否用直接输入的方式（不需要用回车键来确认）输入",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -16354,10 +16351,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setAnimCollapse :{
-                $desc:"设置 Animate 属性.",
+                $desc:"设置 Animate 属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16370,41 +16367,41 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCell:{
-                $desc:"由单元格id获取单元格对象.",
+                $desc:"由单元格id获取单元格对象",
                 $rtn:"Ojbect",
                 $paras:[
-                    "cellId : [必需参数] : String.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "cellId : [必需参数] : String",
+                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             isDirtied:{
-                $desc:"判断界面值已经被修改.",
+                $desc:"判断界面值已经被修改",
                 $rtn:"Boolean"
             },
             getCells:{
-                $desc:"返回所有单元格的值.",
+                $desc:"返回所有单元格的值",
                 $rtn:"Objcet. {cellId:{rowId:, colId:, value:, oValue:}}",
                 $paras:[
-                    "rowId : [可选参数] : String, 只返回本行的.",
-                    "colId : [可选参数] : String, 只返回本列的.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "rowId : [可选参数] : String, 只返回本行的",
+                    "colId : [可选参数] : String, 只返回本列的",
+                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             getDirtied:{
-                $desc:"返回所有被更改过的值.",
+                $desc:"返回所有被更改过的值",
                 $rtn:"Objcet. {cellId:{rowId:, colId:, value:, oValue:}}",
                 $paras:[
-                    "rowId : [可选参数] : String, 只返回本行的.",
-                    "colId : [可选参数] : String, 只返回本列的."
+                    "rowId : [可选参数] : String, 只返回本行的",
+                    "colId : [可选参数] : String, 只返回本列的"
                 ]
             },
             getCellbyRowCol:{
-                $desc:"获取单元格对象. 行id和列id由参数指定.",
+                $desc:"获取单元格对象. 行id和列id由参数指定",
                 $rtn:"Ojbect",
                 $paras:[
-                    "rowId : [必需参数] : String, 行 id.",
-                    "colId : [必需参数] : String, 列 id.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "rowId : [必需参数] : String, 行 id",
+                    "colId : [必需参数] : String, 列 id",
+                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16416,7 +16413,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColHidable:{
-                $desc:"判断是否可手工隐藏列.",
+                $desc:"判断是否可手工隐藏列",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid8.2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16428,10 +16425,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColHidable :{
-                $desc:"设置是否可手工隐藏列.",
+                $desc:"设置是否可手工隐藏列",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16444,7 +16441,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColMovable :{
-                $desc:"判断是否可手工移动列的相对位置.",
+                $desc:"判断是否可手工移动列的相对位置",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16456,10 +16453,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColMovable :{
-                $desc:"设置是否可手工移动列的相对位置.",
+                $desc:"设置是否可手工移动列的相对位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16472,7 +16469,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColResizer :{
-                $desc:"判断是否可手工拖动列的宽度.",
+                $desc:"判断是否可手工拖动列的宽度",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16484,10 +16481,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColResizer :{
-                $desc:"设置端用户是否可手工拖动列的宽度.",
+                $desc:"设置端用户是否可手工拖动列的宽度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16500,7 +16497,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getColSortable :{
-                $desc:"判断是否可手工对列进行排序.",
+                $desc:"判断是否可手工对列进行排序",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16512,10 +16509,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setColSortable :{
-                $desc:"设置是否可手工对列进行排序.",
+                $desc:"设置是否可手工对列进行排序",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16528,7 +16525,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getEditable :{
-                $desc:"判断表格为只读或可写.",
+                $desc:"判断表格为只读或可写",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16540,10 +16537,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setEditable :{
-                $desc:"表格为只读或可写.",
+                $desc:"表格为只读或可写",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16556,7 +16553,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getHeaderHeight :{
-                $desc:"获取表头高度.",
+                $desc:"获取表头高度",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.grid16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16568,10 +16565,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHeaderHeight :{
-                $desc:"设置表头高度.",
+                $desc:"设置表头高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -16584,7 +16581,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowHandlerWidth :{
-                $desc:"得到行手柄宽.",
+                $desc:"得到行手柄宽",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.grid16-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16596,10 +16593,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowHandlerWidth :{
-                $desc:"设置行手柄宽,并反映到界面.",
+                $desc:"设置行手柄宽,并反映到界面",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -16612,7 +16609,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getGridHandlerCaption :{
-                $desc:"得到 grid 左上角的标题.",
+                $desc:"得到 grid 左上角的标题",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.grid16-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16624,10 +16621,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setGridHandlerCaption :{
-                $desc:"设置 grid 左上角的标题.",
+                $desc:"设置 grid 左上角的标题",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $snippet:[
@@ -16640,7 +16637,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowHeight :{
-                $desc:"获取行高度.",
+                $desc:"获取行高度",
                 $rtn:"Number",
                 $snippet:[
                     "var id='xui.temp.grid18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16652,10 +16649,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowHeight :{
-                $desc:"设置行高度.",
+                $desc:"设置行高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ],
                 $snippet:[
@@ -16668,26 +16665,26 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getFreezedColumn:{
-                $desc:"获取冻结列.",
+                $desc:"获取冻结列",
                 $rtn:"Number"
             },
             setFreezedColumn :{
-                $desc:"设置冻结列.",
+                $desc:"设置冻结列",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
             getFreezedRow:{
-                $desc:"获取冻结行.",
+                $desc:"获取冻结行",
                 $rtn:"Number"
             },
             setFreezedRow:{
-                $desc:"设置冻结行.",
+                $desc:"设置冻结行",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number.",
+                    "value [必需参数] : Number",
                     $force
                 ]
             },
@@ -16704,10 +16701,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setIniFold :{
-                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）.",
+                $desc:"设置表格在初始化是打开或收缩子行（用于带有子行的树形表格）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16720,7 +16717,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowResizer :{
-                $desc:"判断是否可以拖动改变行高.",
+                $desc:"判断是否可以拖动改变行高",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid22'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16732,10 +16729,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowResizer :{
-                $desc:"设置是否可以拖动改变行高.",
+                $desc:"设置是否可以拖动改变行高",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16748,7 +16745,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowHandler :{
-                $desc:"判断行前是否带有用以拖动的行头.",
+                $desc:"判断行前是否带有用以拖动的行头",
                 $rtn:"Boolean",
                 $snippet:[
                     "var id='xui.temp.grid124'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16760,10 +16757,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowHandler :{
-                $desc:"设置行前是否带有用以拖动的行头.",
+                $desc:"设置行前是否带有用以拖动的行头",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -16776,7 +16773,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getSelMode :{
-                $desc:"获取表格的选择模式. 'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选, 'multibycheckbox'表示可多选,并且只能点击checkbox来选中.",
+                $desc:"获取表格的选择模式'none'表示不能选择, 'single'表示可单选, 'multi'表示可多选, 'multibycheckbox'表示可多选,并且只能点击checkbox来选中",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.grid126'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16788,10 +16785,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setSelMode :{
-                $desc:"设置表格的选择模式.",
+                $desc:"设置表格的选择模式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'none', 'single' or 'multi'. 默认为 'single'.",
+                    "value [必需参数] : String, 'none', 'single' or 'multi'. 默认为 'single'",
                     $force
                 ],
                 $snippet:[
@@ -16804,24 +16801,24 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getNoCtrlKey:{
-                $desc:"获取是否在多选择模式下需要用Ctrl来辅助多选.",
+                $desc:"获取是否在多选择模式下需要用Ctrl来辅助多选",
                 $rtn:"Boolean"
             },
             setNoCtrlKey:{
-                $desc:"设置是否在多选择模式下需要用Ctrl来辅助多选.",
+                $desc:"设置是否在多选择模式下需要用Ctrl来辅助多选",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             insertRows:{
-                 $desc:"添加一组行.",
+                 $desc:"添加一组行",
                  $rtn:"[self]",
                  $paras:[
-                    "arr [必需参数] : Array, 行项目数组.",
-                    "pid [可选参数] : String, 父行id.",
-                    "base [可选参数] : String, 基准行id.",
+                    "arr [必需参数] : Array, 行项目数组",
+                    "pid [可选参数] : String, 父行id",
+                    "base [可选参数] : String, 基准行id",
                     "before [可选参数] : Boolean, 插入行在基准行之前或之后. 默认为 false;"
                  ],
                 $snippet:[
@@ -16837,10 +16834,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             toggleRow:{
-                $desc:"打开或折叠指定的行. 该函数只对带有子行的行有效.",
+                $desc:"打开或折叠指定的行. 该函数只对带有子行的行有效",
                 $paras:[
-                    "id [必需参数] : String, 节点id.",
-                    "expand [可选参数] : Boolean, true为打开,false为折叠. 如果不制定本参数,展开的会折叠,折叠的会展开."
+                    "id [必需参数] : String, 节点id",
+                    "expand [可选参数] : Boolean, true为打开,false为折叠. 如果不制定本参数,展开的会折叠,折叠的会展开"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid129'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16852,11 +16849,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateRow:{
-                $desc:"更新指定行.",
+                $desc:"更新指定行",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必需参数] : String, 行id.",
-                    "options [必需参数] : key/value Object, 需要更新的键值对."
+                    "rowId [必需参数] : String, 行id",
+                    "options [必需参数] : key/value Object, 需要更新的键值对"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid130-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16868,12 +16865,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateCell:{
-                $desc:"更新指定单元格.",
+                $desc:"更新指定单元格",
                 $rtn:"[self]",
                 $paras:[
-                    "cellId [必需参数] : String, 单元格id.",
-                    "options [必需参数] : key/value Object, 需要更新的键值对.",
-                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true]."
+                    "cellId [必需参数] : String, 单元格id",
+                    "options [必需参数] : key/value Object, 需要更新的键值对",
+                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true]"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid130'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16885,24 +16882,24 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateCellByRowCol2:{
-                $desc:"按指定格式的行序号和列序号字符串来更新指定的单元格.",
+                $desc:"按指定格式的行序号和列序号字符串来更新指定的单元格",
                 $rtn:"[self]",
                 $paras:[
                     "mixedId [必需参数] : String, 格式：[行序号:列序号]",
-                    "hash [必需参数] : key/value Object, 需要更新的键值对.",
-                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识. 默认值是 [true].",
-                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]."
+                    "hash [必需参数] : key/value Object, 需要更新的键值对",
+                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识. 默认值是 [true]",
+                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]"
                 ]
             },
             updateCellByRowCol:{
-                $desc:"更新行id和列id的单元格.",
+                $desc:"更新行id和列id的单元格",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必需参数] : String, 单元格在的行id.",
-                    "colId [必需参数] : String, 单元格在的列id.",
-                    "hash [必需参数] : key/value Object, 需要更新的键值对.",
-                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true].",
-                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]."
+                    "rowId [必需参数] : String, 单元格在的行id",
+                    "colId [必需参数] : String, 单元格在的列id",
+                    "hash [必需参数] : key/value Object, 需要更新的键值对",
+                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true]",
+                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid131'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16914,7 +16911,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getActiveRow:{
-                $desc:"得到当前的活动行.",
+                $desc:"得到当前的活动行",
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.grid1311'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16927,10 +16924,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setActiveRow:{
-                $desc:"设置当前的活动行.",
+                $desc:"设置当前的活动行",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必须参数] : String, 行id."
+                    "rowId [必须参数] : String, 行id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid1312'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16943,7 +16940,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getActiveCell:{
-                $desc:"得到当前的活动单元格.",
+                $desc:"得到当前的活动单元格",
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.grid1313'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16956,11 +16953,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setActiveCell:{
-                $desc:"设置当前的活动单元格.",
+                $desc:"设置当前的活动单元格",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必须参数] : String, 行id.",
-                    "colId [必须参数] : String, 列id."
+                    "rowId [必须参数] : String, 行id",
+                    "colId [必须参数] : String, 列id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid1314'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16985,10 +16982,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowDraggable :{
-                $desc:"设置是否可以拖动行以改变行排序或父子关系.",
+                $desc:"设置是否可以拖动行以改变行排序或父子关系",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -17003,7 +17000,7 @@ xui.set(xui.Locale,["cn","app"], {
             getRows :{
                 $desc:"获取表格的所有行",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17016,10 +17013,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRows :{
-                $desc:"设置表格的所有行.",
+                $desc:"设置表格的所有行",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array.",
+                    "value [必需参数] : Array",
                     $force
                 ],
                 $snippet:[
@@ -17036,7 +17033,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Array"
             },
             setRawData :{
-                $desc:"设置表格的键值对数据.",
+                $desc:"设置表格的键值对数据",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Array. [{col1:v1,col2:v1}]",
@@ -17046,7 +17043,7 @@ xui.set(xui.Locale,["cn","app"], {
             getHeader :{
                 $desc:"获取表头对象",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到列数据; 'min': 得到列的最简化数据; 其他值,得到内存中列的原数据."
+                    "type [可选参数] : String, 'data': 得到列数据; 'min': 得到列的最简化数据; 其他值,得到内存中列的原数据"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17061,10 +17058,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setHeader :{
-                $desc:"设置表头对象.",
+                $desc:"设置表头对象",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ],
                 $snippet:[
@@ -17084,27 +17081,27 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置命令按钮集",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array, 项数组.",
+                    "value [必需参数] : Array, 项数组",
                     $force
                 ]
             },
             setGrpCols :{
-                $desc:"设置表头组数组对象.",
+                $desc:"设置表头组数组对象",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array.",
+                    "value [必需参数] : Array",
                     $force
                 ]
             },
             getGrpCols :{
-                $desc:"得到表头组对象.",
+                $desc:"得到表头组对象",
                 $rtn:"[Array]"
             },
             getHeaderByColId:{
-                $desc:"获取某个列的表头值.",
+                $desc:"获取某个列的表头值",
                 $rtn:"Ojbect",
                 $paras:[
-                    "colId : [必需参数] : String, 列 id."
+                    "colId : [必需参数] : String, 列 id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17116,11 +17113,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateHeader:{
-                $desc:"更新某个列的表头值.",
+                $desc:"更新某个列的表头值",
                 $rtn:"[self]",
                 $paras:[
-                    "colId [必需参数] : String, 列的id.",
-                    "options [必需参数] : key/value Object, 需要更新的键值对."
+                    "colId [必需参数] : String, 列的id",
+                    "options [必需参数] : key/value Object, 需要更新的键值对"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17132,32 +17129,32 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowByDom:{
-                $desc:"从指定的DOM节点(或DOM id)中获取行对象.",
-                $rtn:"Object, 行对象.",
+                $desc:"从指定的DOM节点(或DOM id)中获取行对象",
+                $rtn:"Object, 行对象",
                 $paras:[
-                    "src [必需参数] : DOM(或DOM的id)."
+                    "src [必需参数] : DOM(或DOM的id)"
                 ]
             },
             getHeaderByDom:{
-                $desc:"从指定的DOM节点(或DOM id)中获取列头对象.",
-                $rtn:"Object, 列头对象.",
+                $desc:"从指定的DOM节点(或DOM id)中获取列头对象",
+                $rtn:"Object, 列头对象",
                 $paras:[
-                    "src [必需参数] : DOM(或DOM的id)."
+                    "src [必需参数] : DOM(或DOM的id)"
                 ]
             },
             getCellByDom:{
-                $desc:"从指定的DOM节点(或DOM id)中获取单元格对象.",
-                $rtn:"Object, 单元格对象.",
+                $desc:"从指定的DOM节点(或DOM id)中获取单元格对象",
+                $rtn:"Object, 单元格对象",
                 $paras:[
-                    "src [必需参数] : DOM(或DOM的id)."
+                    "src [必需参数] : DOM(或DOM的id)"
                 ]
             },
             getRowbyRowId  :{
-                $desc:"更新行id为指定值的行.",
+                $desc:"更新行id为指定值的行",
                 $rtn:"Object",
                 $paras:[
-                    "rowId [必需参数] : String.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "rowId [必需参数] : String",
+                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17169,36 +17166,36 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowbyCell:{
-                $desc:"根据一个单元格得到行对象.",
+                $desc:"根据一个单元格得到行对象",
                 $rtn:"Object",
                 $paras:[
-                    "cell [必需参数] : Object.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "cell [必需参数] : Object",
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             getHeaderByCell:{
-                $desc:"根据一个单元格得到列对象.",
+                $desc:"根据一个单元格得到列对象",
                 $rtn:"Object",
                 $paras:[
-                    "cell [必需参数] : Object.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "cell [必需参数] : Object",
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             getHeaderbyCell:{
-                $desc:"根据一个单元格得到列头对象.",
+                $desc:"根据一个单元格得到列头对象",
                 $rtn:"Object",
                 $paras:[
-                    "cell [必需参数] : Object.",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据."
+                    "cell [必需参数] : Object",
+                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             getSubNodeInGrid:{
-                $desc:"获取grid的子节点.",
+                $desc:"获取grid的子节点",
                 $rtn:"xui.Dom",
                 $paras:[
-                    "key [必需参数] : String, 项标志符.",
-                    "rowId [可选参数] : String 行id.",
-                    "colId [可选参数] : String 列id."
+                    "key [必需参数] : String, 项标志符",
+                    "rowId [可选参数] : String 行id",
+                    "colId [可选参数] : String 列id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17213,18 +17210,18 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             adjustEditor:{
-                $desc:"调节单元格编辑器.",
+                $desc:"调节单元格编辑器",
                 $rtn:"[self]",
                 $paras:[
-                    "adjustFun [可选参数] : Function(/Object:editor, Object:cell/), 调节函数，如果不输入调节函数，会自动调节编辑器的位置和大小."
+                    "adjustFun [可选参数] : Function(/Object:editor, Object:cell/), 调节函数，如果不输入调节函数，会自动调节编辑器的位置和大小"
                 ]
             },
             getEditor:{
-                $desc:"得到当前的单元格编辑器.",
+                $desc:"得到当前的单元格编辑器",
                 $rtn:"Object"
             },
             getEditCell:{
-                $desc:"得到当前正在编辑的单元格.",
+                $desc:"得到当前正在编辑的单元格",
                 $rtn:"Object"
             },
             getRowMap:{
@@ -17252,10 +17249,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setRowNumbered :{
-                $desc:"设置是否在行前显示行号.",
+                $desc:"设置是否在行前显示行号",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -17268,14 +17265,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getEditMode:{
-                $desc:"获取编辑模式. 'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'.",
+                $desc:"获取编辑模式'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'",
                 $rtn:"String"
             },
             setEditMode:{
-                $desc:"设置编辑模式. ",
+                $desc:"设置编辑模式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'.",
+                    "value [必需参数] : String'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'",
                     $force
                 ]
             },
@@ -17292,10 +17289,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             setShowHeader :{
-                $desc:"设置是否显示表头.",
+                $desc:"设置是否显示表头",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ],
                 $snippet:[
@@ -17308,67 +17305,67 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getRowOptions:{
-                $desc:"得到行的自定义属性.",
+                $desc:"得到行的自定义属性",
                 $rtn:"Object"
             },
             setRowOptions :{
-                $desc:"设置行的自定义属性.",
+                $desc:"设置行的自定义属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
             getColOptions:{
-                $desc:"得到列的自定义属性.",
+                $desc:"得到列的自定义属性",
                 $rtn:"Object"
             },
             setColOptions:{
-                $desc:"设置列的自定义属性.",
+                $desc:"设置列的自定义属性",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
             getTreeMode:{
-                $desc:"得到Grid的树状模式.",
+                $desc:"得到Grid的树状模式",
                 $rtn:"String"
             },
             setTreeMode:{
                 $desc:"设置Grid的树状模式. 可以是'无树形'，'树形在行柄'，或'树形在首格'",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 'none','inhandler' or 'infirstcell'",
+                    "value [必需参数] : String'none','inhandler' or 'infirstcell'",
                     $force
                 ]
             },
             getHotRowMode:{
-                $desc:"得到Grid的[热行]模式.",
-                $rtn:"String. 'none'[没有热行模式], 'show'[热行始终显示] 或 'hide'[不符合规定(beforeHotRowAdded返回false)的热行自动隐藏] 或 'auto'[不符合规定(beforeHotRowAdded返回false)的热行自动隐藏，并且自动给空表加热行]."
+                $desc:"得到Grid的[热行]模式",
+                $rtn:"String'none'[没有热行模式], 'show'[热行始终显示] 或 'hide'[不符合规定(beforeHotRowAdded返回false)的热行自动隐藏] 或 'auto'[不符合规定(beforeHotRowAdded返回false)的热行自动隐藏，并且自动给空表加热行]"
             },
             setHotRowMode:{
-                $desc:"设置Grid的[热行]模式.",
+                $desc:"设置Grid的[热行]模式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. 'none'[没有热行模式], 'auto'[热行自动显示或隐藏] 或 'show'[热行始终显示] 之一.",
+                    "value [必需参数] : String'none'[没有热行模式], 'auto'[热行自动显示或隐藏] 或 'show'[热行始终显示] 之一",
                     $force
                 ]
             },
             getHotRowNumber:{
-                $desc:"得到Grid[热行]的自定义行号.",
-                $rtn:"String."
+                $desc:"得到Grid[热行]的自定义行号",
+                $rtn:"String"
             },
             setHotRowNumber:{
-                $desc:"设置Grid[热行]的自定义行号.",
+                $desc:"设置Grid[热行]的自定义行号",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             resetGridValue:{
-                $desc:"重新设置所有单元格的值, 并清除脏标志.",
+                $desc:"重新设置所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.grid41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17381,18 +17378,18 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             resetColValue:{
-                $desc:"重新设置某列的所有单元格的值, 并清除脏标志.",
+                $desc:"重新设置某列的所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
                 $paras:[
-                    "colId [必需参数] : String, 列id值."
+                    "colId [必需参数] : String, 列id值"
                 ]
             },
 
             resetRowValue:{
-                $desc:"重新设置某行的所有单元格的值, 并清除脏标志.",
+                $desc:"重新设置某行的所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必需参数] : String, 行id值."
+                    "rowId [必需参数] : String, 行id值"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid41-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17405,11 +17402,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             showColumn :{
-                $desc:"显示或隐藏指定的列.",
+                $desc:"显示或隐藏指定的列",
                 $rtn:"[self]",
                 $paras:[
-                    "colId [必需参数] : String, 列id.",
-                    "flag [可选参数] : Boolean, True为显示,false为隐藏. 默认为 true."
+                    "colId [必需参数] : String, 列id",
+                    "flag [可选参数] : Boolean, True为显示,false为隐藏. 默认为 true"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17422,16 +17419,16 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             sortColumn:{
-                $desc:"列排序.",
+                $desc:"列排序",
                 $rtn:"[self]",
                 $paras:[
-                    "colId [必需参数] : String, 列id.",
-                    "desc [可选参数] : Boolean, True为递降排序,false为递增排序. 不指定或null为当前排序的逆序.",
+                    "colId [必需参数] : String, 列id",
+                    "desc [可选参数] : Boolean, True为递降排序,false为递增排序. 不指定或null为当前排序的逆序",
                     "sortby [可选参数] : Function, 排序函数. function(x,y,values,asc,colIndex,colCells){return 0|1|-1}"
                 ]
             },
             removeAllRows:{
-                $desc:"去除所有行.",
+                $desc:"去除所有行",
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.grid43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17443,17 +17440,17 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeCols:{
-                $desc:"去除指定列.",
+                $desc:"去除指定列",
                 $rtn:"[self]",
                 $paras:[
-                    "ids [必需参数] : String 或 Array, 列id, 或多个列id的数组."
+                    "ids [必需参数] : String 或 Array, 列id, 或多个列id的数组"
                 ]
             },
             removeRows:{
-                $desc:"去除指定行.",
+                $desc:"去除指定行",
                 $rtn:"[self]",
                 $paras:[
-                    "ids [必需参数] : String 或 Array, 行id, 或多个行id的数组."
+                    "ids [必需参数] : String 或 Array, 行id, 或多个行id的数组"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid44'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17465,21 +17462,21 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             addHotRow:{
-                $desc:"加[热行](如果没有的话).",
+                $desc:"加[热行](如果没有的话)",
                 $rtn:"[self]",
                 $paras:[
-                    "focusColId [可选参数] : String, [热行]获得焦点的列 ."
+                    "focusColId [可选参数] : String, [热行]获得焦点的列 "
                 ]
             },
             removeHotRow:{
-                $desc:"去除[热行].",
+                $desc:"去除[热行]",
                 $rtn:"[self]"
             },
             beforeCellActive:{
-                $desc:"在单元格激活前被调用. 返回false将阻止单元格被激活.",
+                $desc:"在单元格激活前被调用. 返回false将阻止单元格被激活",
                 $paras:[
                     $profile,
-                    "cell : 单元格对象."
+                    "cell : 单元格对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid50'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17492,17 +17489,17 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onBodyLayout:{
-                $desc:"在表格主体界面布局完成后触发.",
+                $desc:"在表格主体界面布局完成后触发",
                 $paras:[
                     $profile,
-                    "trigger : String, 触发事件类型."
+                    "trigger : String, 触发事件类型"
                 ]
             },
             beforeRowActive:{
-                $desc:"在行激活前被调用. 返回false将阻止行被激活.",
+                $desc:"在行激活前被调用. 返回false将阻止行被激活",
                 $paras:[
                     $profile,
-                    "row : Object, 行对象."
+                    "row : Object, 行对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid51'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17515,10 +17512,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterCellActive:{
-                $desc:"在单元格激活后被调用.",
+                $desc:"在单元格激活后被调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象."
+                    "cell : Object, 单元格对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid52'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17531,96 +17528,96 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeCellKeydown:{
-                $desc:"在单元格键盘事件前被调用.",
+                $desc:"在单元格键盘事件前被调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
+                    "cell : Object, 单元格对象",
                     "keys : Object, 参见xui.Event.getKey函数"
                 ]
             },
             afterCellFocused:{
-                $desc:"在单元格获得焦点后被调用.",
+                $desc:"在单元格获得焦点后被调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
+                    "cell : Object, 单元格对象",
                     "row : Object, 单元格的行对象"
                 ]
             },
             onBeginEdit:{
-                $desc:"在编辑器显示前调用.",
+                $desc:"在编辑器显示前调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
-                    "editor: Object, 编辑器对象."
+                    "cell : Object, 单元格对象",
+                    "editor: Object, 编辑器对象"
                 ]
             },
             beforeEditApply:{
-                $desc:"在编辑内容生效前调用,返回false可以阻止该动作.",
+                $desc:"在编辑内容生效前调用,返回false可以阻止该动作",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
+                    "cell : Object, 单元格对象",
                     "options: Object. 要更新的内容",
-                    "editor: Object, 编辑器对象.",
+                    "editor: Object, 编辑器对象",
                     "tag: String, 动作来源"
                 ]
             },
             onEndEdit:{
-                $desc:"在编辑器消失前调用.",
+                $desc:"在编辑器消失前调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
-                    "editor: Object, 编辑器对象."
+                    "cell : Object, 单元格对象",
+                    "editor: Object, 编辑器对象"
                 ]
             },
             beforeIniEditor:{
-                $desc:"在单元格编辑之前调用. 如果返回false,默认的功能会被禁止.",
+                $desc:"在单元格编辑之前调用. 如果返回false,默认的功能会被禁止",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
+                    "cell : Object, 单元格对象",
                     "cellNode : xui.Dom, 单元格的Dom对象"
                 ]
             },
             beforeInitHotRow:{
-                $desc:"在Hot Row初始化之前调用.[当hotRowMode不为'none'] 如果返回false,默认的功能会被禁止.",
+                $desc:"在Hot Row初始化之前调用.[当hotRowMode不为'none'] 如果返回false,默认的功能会被禁止",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
+                    "cell : Object, 单元格对象",
                     "row : Object, 单元格的行对象"
                 ]
             },
             onInitHotRow:{
-                $desc:"当[热行]需要数据初始化时调用, 需要返回初始化的行数据.",
+                $desc:"当[热行]需要数据初始化时调用, 需要返回初始化的行数据",
                 $paras:[
                     $profile
                 ]
             },
             beforeHotRowAdded:{
-                $desc:"在[热行]被加到Grid前调用. 如果返回[true], [热行]被加入; 如果返回[false],[热行]被删除; 如果返回cell，[热行]保留，并且cell获得焦点; 如果返回[null],没有影响.",
+                $desc:"在[热行]被加到Grid前调用. 如果返回[true], [热行]被加入; 如果返回[false],[热行]被删除; 如果返回cell，[热行]保留，并且cell获得焦点; 如果返回[null],没有影响",
                 $paras:[
                     $profile,
                     "row : Object. 行对象",
-                    "leaveGrid : Booean. 是否触发事件的光标在Grid之外."
+                    "leaveGrid : Booean. 是否触发事件的光标在Grid之外"
                 ]
             },
             afterHotRowAdded:{
-                $desc:"在[热行]被加到Grid后调用.",
+                $desc:"在[热行]被加到Grid后调用",
                 $paras:[
                     $profile,
                     "row : Object. 行对象"
                 ]
             },
             onRowDirtied:{
-                $desc:"当行被改变后调用，[异步调用].",
+                $desc:"当行被改变后调用，[异步调用]",
                 $paras:[
                     $profile,
                     "row : Object. 行对象"
                 ]
             },
             afterRowActive:{
-                $desc:"在行被激活后被调用.",
+                $desc:"在行被激活后被调用",
                 $paras:[
                     $profile,
-                    "row : Object, 行对象."
+                    "row : Object, 行对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid53'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17633,11 +17630,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeColMoved:{
-                $desc:"在改变列位置前被调用. 返回false将阻止列位置被改变.",
+                $desc:"在改变列位置前被调用. 返回false将阻止列位置被改变",
                 $paras:[
                     $profile,
-                    "colId : String, 被移动的列id.",
-                    "toId : String, 基准列id,移动的列将放在该列之前."
+                    "colId : String, 被移动的列id",
+                    "toId : String, 基准列id,移动的列将放在该列之前"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid54'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17651,11 +17648,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterColMoved:{
-                $desc:"在改变列位置后被调用.",
+                $desc:"在改变列位置后被调用",
                 $paras:[
                     $profile,
-                    "colId : String, 被移动的列id.",
-                    "toId : String, 基准列id,移动的列将放在该列之前."
+                    "colId : String, 被移动的列id",
+                    "toId : String, 基准列id,移动的列将放在该列之前"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid55'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17669,72 +17666,72 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeColSorted:{
-                $desc:"在对列排序前调用.返回false将阻止列排序.",
+                $desc:"在对列排序前调用.返回false将阻止列排序",
                 $paras:[
                     $profile,
-                    "col : Object, 被排序的列."
+                    "col : Object, 被排序的列"
                 ]
             },
             afterColSorted:{
-                $desc:"在对列排序后调用.",
+                $desc:"在对列排序后调用",
                 $paras:[
                     $profile,
-                    "col : Object, 被排序的列."
+                    "col : Object, 被排序的列"
                 ]
             },
             beforeColShowHide:{
-                $desc:"在显示或隐藏列前调用.返回false将阻止列显示或隐藏.",
+                $desc:"在显示或隐藏列前调用.返回false将阻止列显示或隐藏",
                 $paras:[
                     $profile,
-                    "colId : String, 被影响的列.",
+                    "colId : String, 被影响的列",
                     "flag: Boolean, true->显示; false->隐藏"
                 ]
             },
             afterColShowHide:{
-                $desc:"在显示或隐藏列后调用.",
+                $desc:"在显示或隐藏列后调用",
                 $paras:[
                     $profile,
-                    "colId : String, 被影响的列.",
+                    "colId : String, 被影响的列",
                     "flag: Boolean, true->显示; false->隐藏"
                 ]
             },
             beforeColResized:{
-                $desc:"在从界面改变列宽度前调用，返回false表示阻止改变列宽.",
+                $desc:"在从界面改变列宽度前调用，返回false表示阻止改变列宽",
                 $paras:[
                     $profile,
-                    "colId : String, 所影响的列id.",
+                    "colId : String, 所影响的列id",
                     "width: Number, 列宽"
                 ]
             },
             afterColResized:{
-                $desc:"在从界面改变列宽度后调用.",
+                $desc:"在从界面改变列宽度后调用",
                 $paras:[
                     $profile,
-                    "col : Object, 所影响的列id.",
+                    "col : Object, 所影响的列id",
                     "width: Number, 列宽"
                 ]
             },
             beforeRowResized:{
-                $desc:"在从界面改变行的高度前调用，返回false表示阻止改变行高.",
+                $desc:"在从界面改变行的高度前调用，返回false表示阻止改变行高",
                 $paras:[
                     $profile,
-                    "rowId : String, 所影响的行id.",
+                    "rowId : String, 所影响的行id",
                     "height: Number, 高"
                 ]
             },
             afterRowResized:{
-                $desc:"在从界面改变行的高度后调用.",
+                $desc:"在从界面改变行的高度后调用",
                 $paras:[
                     $profile,
-                    "rowId : String, 所影响的行id.",
+                    "rowId : String, 所影响的行id",
                     "height: Number, 高"
                 ]
             },
             beforeColDrag:{
-                $desc:"在拖动列之前被调用. 返回false将阻止列拖动.",
+                $desc:"在拖动列之前被调用. 返回false将阻止列拖动",
                 $paras:[
                     $profile,
-                    "colId : String, 列id."
+                    "colId : String, 列id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid56'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17751,15 +17748,15 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui(id).prepend(o);"+
                     "}"
                ],
-                $memo:"Equals to set 'colMovable' to false in the specified column in header array."
+                $memo:"Equals to set 'colMovable' to false in the specified column in header array"
             },
 
             onGetContent:{
-                $desc:"在父行被展开,需要子行数据是被调用.",
+                $desc:"在父行被展开,需要子行数据是被调用",
                 $paras:[
                     $profile,
-                    "row : Object, 父行对象.",
-                    "callback : Function, 回调函数."
+                    "row : Object, 父行对象",
+                    "callback : Function, 回调函数"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid57'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17771,12 +17768,12 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
             onRowSelected:{
-                $desc:"在行被选择时被调用.",
+                $desc:"在行被选择时被调用",
                 $paras:[
                     $profile,
-                    "row: Object, 行对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid.",
+                    "row: Object, 行对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid",
                     "type: Number, 0:没有影响;1:行被选中;-1:行被清除选中"
                 ],
                 $snippet:[
@@ -17789,12 +17786,12 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
             onDblclickRow:{
-                $desc:"在行被双击时调用.",
+                $desc:"在行被双击时调用",
                 $paras:[
                     $profile,
-                    "row: Object, 行对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "row: Object, 行对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid59'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17806,14 +17803,14 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
             beforeComboPop :{
-                $desc:"当单元格的编辑控件Pop按钮被单击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
+                $desc:"当单元格的编辑控件Pop按钮被单击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效",
                 $paras:[
                     $profile,
-                    "cell: Object, cell 对象.",
-                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
-                    "pos: Object, 鼠标位置.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "cell: Object, cell 对象",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象",
+                    "pos: Object, 鼠标位置",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid60'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17826,104 +17823,104 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
             beforePopShow :{
-                $desc:"在单元格的编辑控件的下拉框被显示前调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
+                $desc:"在单元格的编辑控件的下拉框被显示前调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效",
                 $paras:[
                     $profile,
-                    "cell: Object, cell 对象.",
-                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
-                    "popCtl : xui.UIProfile, 弹出窗口对象."
+                    "cell: Object, cell 对象",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象",
+                    "popCtl : xui.UIProfile, 弹出窗口对象"
                 ]
             },
             afterPopShow :{
-                $desc:"在单元格的编辑控件的下拉框被显示后调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效.",
+                $desc:"在单元格的编辑控件的下拉框被显示后调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color'时有效",
                 $paras:[
                     $profile,
-                    "cell: Object, cell 对象.",
-                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
-                    "popCtl : xui.UIProfile, 弹出窗口对象."
+                    "cell: Object, cell 对象",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象",
+                    "popCtl : xui.UIProfile, 弹出窗口对象"
                 ]
             },
             onCommand :{
-                $desc:"在单元格的编辑控件的命令按钮被点击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效.",
+                $desc:"在单元格的编辑控件的命令按钮被点击时调用,只对单元格为'date,time,datetime,listbox,combobox,helpinput,color,getter,popbox,cmdbox'时有效",
                 $paras:[
                     $profile,
-                    "cell: Object, cell 对象.",
-                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
-                    "src : String, 按钮 DOM 元素的xid."
+                    "cell: Object, cell 对象",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象",
+                    "src : String, 按钮 DOM 元素的xid"
                 ]
             },
             onEditorclick :{
-                $desc:"在单元格的编辑控件被点击时调用.",
+                $desc:"在单元格的编辑控件被点击时调用",
                 $paras:[
                     $profile,
-                    "cell: Object, cell 对象.",
-                    "proEditor: xui.UIProfile, 编辑器的控件概要对象.",
+                    "cell: Object, cell 对象",
+                    "proEditor: xui.UIProfile, 编辑器的控件概要对象",
                     "type: String, 点击的位置类型",
-                    "src : String, 按钮 DOM 元素的xid."
+                    "src : String, 按钮 DOM 元素的xid"
                 ]
             },
             onClickGridHandler:{
-                $desc:"当点击列头和行头的共同区域时触发.",
+                $desc:"当点击列头和行头的共同区域时触发",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onRowHover:{
-                $desc:"当鼠标经过某行的时候触发.",
+                $desc:"当鼠标经过某行的时候触发",
                 $paras:[
                     $profile,
-                    "row: Object,  row 对象.",
+                    "row: Object,  row 对象",
                     "hover : Boolean, 进入或离开",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onClickHeader:{
-                $desc:"当点击某列标题的时候触发.",
+                $desc:"当点击某列标题的时候触发",
                 $paras:[
                     $profile,
-                    "col: Object,  列对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "col: Object,  列对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onCmd:{
-                $desc:"当用户单击内部按钮的时候调用.",
+                $desc:"当用户单击内部按钮的时候调用",
                 $paras:[
                     $profile,
-                    "item: Object, 子项对象.",
-                    "cmdKey: String, 命令的键值.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "item: Object, 子项对象",
+                    "cmdKey: String, 命令的键值",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onClickRow:{
-                $desc:"当点击某行的时候触发.",
+                $desc:"当点击某行的时候触发",
                 $paras:[
                     $profile,
-                    "row: Object,  row 对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "row: Object,  row 对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onClickRowHandler:{
-                $desc:"当点击某行手柄的时候触发.",
+                $desc:"当点击某行手柄的时候触发",
                 $paras:[
                     $profile,
-                    "row: Object,  row 对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "row: Object,  row 对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onClickCell:{
-                $desc:"当点击一个cell(当cell不在编辑状态时)的时候触发.",
+                $desc:"当点击一个cell(当cell不在编辑状态时)的时候触发",
                 $paras:[
                     $profile,
-                    "cell: Object,  cell 对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "cell: Object,  cell 对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid60-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17935,12 +17932,12 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
             onDblclickCell:{
-                $desc:"当双击一个cell(当cell不在编辑状态时)的时候触发.",
+                $desc:"当双击一个cell(当cell不在编辑状态时)的时候触发",
                 $paras:[
                     $profile,
-                    "cell: Object,  cell 对象.",
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "cell: Object,  cell 对象",
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid60-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17952,10 +17949,10 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
            beforeIniEditorr: {
-                $desc:"在单元格由展示状态变为编辑状态时调用(将编辑器附着在单元格上). 返回false或自定义编辑器会阻止默认的编辑器出现.",
+                $desc:"在单元格由展示状态变为编辑状态时调用(将编辑器附着在单元格上). 返回false或自定义编辑器会阻止默认的编辑器出现",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
+                    "cell : Object, 单元格对象",
                     "cellNode: xui.Dom, 单元格节点",
                     "pNode: xui.Dom, 编辑器的容器节点"
                 ],
@@ -17969,11 +17966,11 @@ xui.set(xui.Locale,["cn","app"], {
                ]
             },
             beforeCellUpdated: {
-                $desc:"在单元格的值被更新前调用. 返回false将阻止单元格值被更新.",
+                $desc:"在单元格的值被更新前调用. 返回false将阻止单元格值被更新",
                 $paras:[
                     $profile,
-                    "cell : Object,  cell 对象.",
-                    "hash : Object, 将要更新的键值对."
+                    "cell : Object,  cell 对象",
+                    "hash : Object, 将要更新的键值对"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid61'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17989,8 +17986,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在单元格的值被更新后调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象.",
-                    "hash : Object, 更新的键值对."
+                    "cell : Object, 单元格对象",
+                    "hash : Object, 更新的键值对"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid62'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18010,35 +18007,35 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Flash 类",
         constructor:{
-            $desc:"生成一个xui.UI.Flash对象."
+            $desc:"生成一个xui.UI.Flash对象"
         },
         getFlashVersion:{
-            $desc:"得到当前浏览器的Flash插件版本.",
+            $desc:"得到当前浏览器的Flash插件版本",
             $rtn:"String"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             getParameters:{
-                $desc:"得到 Flash 的参数.",
+                $desc:"得到 Flash 的参数",
                 $rtn:'Object'
             },
             setParameters:{
-                $desc:"设置  Flash 的参数.",
+                $desc:"设置  Flash 的参数",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
             getFlashvars:{
-                $desc:"得到 Flash 的变量.",
+                $desc:"得到 Flash 的变量",
                 $rtn:'Object'
             },
             setFlashvars:{
-                $desc:"设置  Flash 的变量.",
+                $desc:"设置  Flash 的变量",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ]
             },
@@ -18051,27 +18048,27 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setSrc:{
-                $desc:"设置Flash的src值.",
+                $desc:"设置Flash的src值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             getCover:{
-                $desc:"得到 Flash 上面是否覆盖了一个div.",
+                $desc:"得到 Flash 上面是否覆盖了一个div",
                 $rtn:"Boolean"
             },
             setCover:{
-                $desc:"设置 Flash 上面是否覆盖了一个div.",
+                $desc:"设置 Flash 上面是否覆盖了一个div",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             refreshFlash:{
-                $desc:"刷新Flash."
+                $desc:"刷新Flash"
             }
         }
     });
@@ -18080,40 +18077,40 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.FusionChartsXT 类",
         constructor:{
-            $desc:"生成一个xui.UI.FusionChartsXT对象."
+            $desc:"生成一个xui.UI.FusionChartsXT对象"
         },
         prototype:{
             KEY:{$desc:"本类名"},
             callFC:{
-                $desc:"调用 FusionChartsXT 内部函数.",
+                $desc:"调用 FusionChartsXT 内部函数",
                 $rtn:"Object",
                 $paras:[
-                    "funName [必需参数] : String, 函数名称.",
-                    "params [可选参数] : Array, 函数参数."
+                    "funName [必需参数] : String, 函数名称",
+                    "params [可选参数] : Array, 函数参数"
                 ]
             },
             configure:{
-                $desc:"配置 FusionChartsXT 的 print Manager.",
+                $desc:"配置 FusionChartsXT 的 print Manager",
                 $paras:[
-                    "options [必需参数] : Object."
+                    "options [必需参数] : Object"
                 ],
                 $memo:"请参见 FusionChartsXT 的configure函数"
             },
             getChartType:{
-                $desc:"得到图类型.",
+                $desc:"得到图类型",
                 $rtn:'String'
             },
             setChartType:{
                 $desc:"设置图类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String. ",
+                    "value [必需参数] : String",
                     $force
                 ],
                 $memo:"请参见 FusionChartsXT 所支持的图标类型"
             },
             getChartAttribute:{
-                $desc:"得到 FusionChartsXT 的Attribute配置对象.",
+                $desc:"得到 FusionChartsXT 的Attribute配置对象",
                 $rtn:'Object',
                 $memo:"请参见 FusionChartsXT 的 getChartAttribute 函数"
             },
@@ -18121,95 +18118,95 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置 FusionChartsXT 的Attribute配置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object.",
+                    "value [必需参数] : Object",
                     $force
                 ],
                 $memo:"请参见 FusionChartsXT 的 setChartAttribute 函数"
             },
             getConfigure:{
-                $desc:"得到 FusionChartsXT 的configure配置对象.",
+                $desc:"得到 FusionChartsXT 的configure配置对象",
                 $rtn:'Object',
                 $memo:"请参见 FusionChartsXT 的configure函数"
             },
             getJSONData:{
-                $desc:"得到JSON数据.",
+                $desc:"得到JSON数据",
                 $rtn:"Object"
             },
             setJSONData:{
-                $desc:"设置JSON数据.",
+                $desc:"设置JSON数据",
                 $rtn:"[self]",
                 $paras:[
-                    "JSON: Object, JSON 对象."
+                    "JSON: Object, JSON 对象"
                 ]
             },
             getPlotData:{
-                $desc:"得到图块数据.",
+                $desc:"得到图块数据",
                 $rtn:"Object"
             },
             setPlotData:{
-                $desc:"设置图块数据.",
+                $desc:"设置图块数据",
                 $rtn:"[self]",
                 $paras:[
-                    "data: Object, 数据对象."
+                    "data: Object, 数据对象"
                 ]
             },
             getFeedData:{
-                $desc:"得到实时数据.",
+                $desc:"得到实时数据",
                 $rtn:"Object"
             },
             setFeedData:{
-                $desc:"设置实时数据.",
+                $desc:"设置实时数据",
                 $rtn:"[self]",
                 $paras:[
-                    "data: Object, 数据对象."
+                    "data: Object, 数据对象"
                 ]
             },
             getJSONUrl:{
-                $desc:"得到JSON数据地址.",
+                $desc:"得到JSON数据地址",
                 $rtn:"String"
             },
             setJSONUrl:{
-                $desc:"设置JSON数据地址.",
+                $desc:"设置JSON数据地址",
                 $rtn:"[self]",
                 $paras:[
-                    "url: String, 地址字符串."
+                    "url: String, 地址字符串"
                 ]
             },
             getXMLData:{
-                $desc:"得到xml数据.",
+                $desc:"得到xml数据",
                 $rtn:"String"
             },
             setXMLData:{
-                $desc:"设置xml数据.",
+                $desc:"设置xml数据",
                 $rtn:"[self]",
                 $paras:[
-                    "xml: String, xml 字符串."
+                    "xml: String, xml 字符串"
                 ]
             },
             getXMLUrl:{
-                $desc:"得到xml数据地址.",
+                $desc:"得到xml数据地址",
                 $rtn:"String"
             },
             setXMLUrl:{
-                $desc:"设置xml数据地址.",
+                $desc:"设置xml数据地址",
                 $rtn:"[self]",
                 $paras:[
-                    "url: String, 地址字符串."
+                    "url: String, 地址字符串"
                 ]
             },
             getSVGString:{
-                $desc:"得到FusionChartsXT的SVG数据.",
+                $desc:"得到FusionChartsXT的SVG数据",
                 $rtn:"String"
             },
             setTransparent:{
-                $desc:"设置FusionChartsXT背景透明.",
+                $desc:"设置FusionChartsXT背景透明",
                 $rtn:"[self]",
                 $paras:[
-                    "isTransparent: Boolean, 是否透明."
+                    "isTransparent: Boolean, 是否透明"
                 ]
             },
             fillData:{
-                $desc:"为FusionChartsXT填充数据.",
+                $desc:"为FusionChartsXT填充数据",
                 $rtn:"[self]",
                 $paras:[
                     "data: Object, 数据",
@@ -18218,7 +18215,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             updateData:{
-                $desc:"为实时高斯图更新数据。如果是单高斯(LEDs, Bulb, Cylinder, Thermometer),第一个参数为刻度值; 如果是Angular gauge 或 Horizontal Linear gauge, 第一个参数是刻度索引, 第二个参数是刻度值.",
+                $desc:"为实时高斯图更新数据。如果是单高斯(LEDs, Bulb, Cylinder, Thermometer),第一个参数为刻度值; 如果是Angular gauge 或 Horizontal Linear gauge, 第一个参数是刻度索引, 第二个参数是刻度值",
                 $rtn:"[self]",
                 $paras:[
                     "index: Number, index or value",
@@ -18234,39 +18231,39 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getFCObject:{
-                $desc:"得到FusionChartsXT 对象.",
+                $desc:"得到FusionChartsXT 对象",
                 $rtn:"Object"
             },
             refreshChart:{
-                $desc:"刷新 FusionChart."
+                $desc:"刷新 FusionChart"
             },
             onDataClick:{
-                $desc:"在点击 FusionChart 数据图形的时候触发.",
+                $desc:"在点击 FusionChart 数据图形的时候触发",
                 $paras:[
-                    "prf : xui.UIProfile.",
-                    "argsMap: Object, 事件参数集合."
+                    "prf : xui.UIProfile",
+                    "argsMap: Object, 事件参数集合"
                 ]
             },
             onLabelClick:{
-                $desc:"在点击 FusionChart X轴标签的时候触发.",
+                $desc:"在点击 FusionChart X轴标签的时候触发",
                 $paras:[
-                    "prf : xui.UIProfile.",
-                    "argsMap: Object, 事件参数集合."
+                    "prf : xui.UIProfile",
+                    "argsMap: Object, 事件参数集合"
                 ]
             },
             onAnnotationClick:{
-                $desc:"在点击 FusionChart 注释的时候触发.",
+                $desc:"在点击 FusionChart 注释的时候触发",
                 $paras:[
-                    "prf : xui.UIProfile.",
-                    "argsMap: Object, 事件参数集合."
+                    "prf : xui.UIProfile",
+                    "argsMap: Object, 事件参数集合"
                 ]
             },
             onFusionChartsEvent:{
-                $desc:"所有 FusionChart 事件.",
+                $desc:"所有 FusionChart 事件",
                 $paras:[
-                    "prf : xui.UIProfile.",
-                    "eventObject: Object, FusionChartsXT事件的eventObject.",
-                    "argumentsObject : Object, FusionChartsXT事件的argumentsObject."
+                    "prf : xui.UIProfile",
+                    "eventObject: Object, FusionChartsXT事件的eventObject",
+                    "argumentsObject : Object, FusionChartsXT事件的argumentsObject"
                 ],
                 $memo:"请参见 FusionChartsXT 的所有内置事件"
             }
@@ -18277,29 +18274,29 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.SVGPaper 类",
         constructor:{
-            $desc:"生成一个xui.UI.SVGPaper对象."
+            $desc:"生成一个xui.UI.SVGPaper对象"
         },
         prototype:{
             append:{
-                $desc:"添加对象.",
+                $desc:"添加对象",
                 $rtn:"[self]",
                 $paras:[
-                    "target [必需参数] : xui.UIProfile/xui.UIProfile[], 一个xui.UI对象(或一系列xui.UIProfile概要对象)."
+                    "target [必需参数] : xui.UIProfile/xui.UIProfile[], 一个xui.UI对象(或一系列xui.UIProfile概要对象)"
                 ]
             },
             getPaper:{
-                $desc:"得到SVG的Paper对象(Raphael Paper).",
+                $desc:"得到SVG的Paper对象(Raphael Paper)",
                 $rtn:'Object'
             },
             getScaleChildren:{
-                $desc:"得到是否是按比例改变子控件.",
+                $desc:"得到是否是按比例改变子控件",
                 $rtn:"Boolean"
             },
             setScaleChildren:{
                 $desc:"设置是否按比例改变子控件",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             }
@@ -18311,109 +18308,109 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg 类",
         constructor:{
-            $desc:"生成一个xui.svg对象."
+            $desc:"生成一个xui.svg对象"
         },
         prototype:{
             getLeft:{
-                $desc:"获取控件的左边坐标.",
+                $desc:"获取控件的左边坐标",
                 $rtn:"Number"
             },
             setLeft:{
-                $desc:"设置控件的左边坐标.",
+                $desc:"设置控件的左边坐标",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : Number"
                 ]
             },
             getTop:{
-                $desc:"获取控件的上边沿坐标.",
+                $desc:"获取控件的上边沿坐标",
                 $rtn:"Number"
             },
             setTop:{
-                $desc:"设置控件的上边沿坐标.",
+                $desc:"设置控件的上边沿坐标",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Number."
+                    "value [必需参数] : Number"
                 ]
             },
             getWidth:{
-                $desc:"获取控件的宽度.",
+                $desc:"获取控件的宽度",
                 $rtn:"Number"
             },
             setWidth:{
-                $desc:"设置控件的宽度.",
+                $desc:"设置控件的宽度",
                 $rtn:"[self]",
                  $paras:[
-                    "value [必需参数] : nonnegative Number."
+                    "value [必需参数] : nonnegative Number"
                 ]
             },
             getHeight:{
-                $desc:"获取控件的高度.",
+                $desc:"获取控件的高度",
                 $rtn:"Number"
             },
             setHeight:{
-                $desc:"设置控件的高度.",
+                $desc:"设置控件的高度",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 非负 Number."
+                    "value [必需参数] : 非负 Number"
                 ]
             },
             toFront:{
-                $desc:"把控件移到最上层.",
+                $desc:"把控件移到最上层",
                 $rtn:"[self]"
             },
             toBack:{
-                $desc:"把控件移到最下层.",
+                $desc:"把控件移到最下层",
                 $rtn:"[self]"
             },
             getAttr:{
-                $desc:"获得控件中某节点的属性.",
+                $desc:"获得控件中某节点的属性",
                 $rtn:"Object",
                 $paras:[
-                    "key [必须参数] : 节点的键值."
+                    "key [必须参数] : 节点的键值"
                 ]
             },
             setAttr:{
-                $desc:"设置控件中某节点的属性.",
+                $desc:"设置控件中某节点的属性",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必须参数] : String, 节点的键值.",
-                    "atrr [必须参数] : Object, 属性键值对.",
+                    "key [必须参数] : String, 节点的键值",
+                    "atrr [必须参数] : Object, 属性键值对",
                     "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
                     "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
                 ]
             },
             getAllNodes:{
-                $desc:"获得控件的全部节点.",
+                $desc:"获得控件的全部节点",
                 $rtn:"xui.Dom"
             },
             getElemSet:{
-                $desc:"获得控件的全部元素集合(Raphael Set).",
+                $desc:"获得控件的全部元素集合(Raphael Set)",
                 $rtn:"Object"
             },
             getPaper:{
-                $desc:"获得控件的容器(Raphael Paper).",
+                $desc:"获得控件的容器(Raphael Paper)",
                 $rtn:"xui.Dom"
             },
             animate:{
-                $desc:"控件所有元素的动画.",
+                $desc:"控件所有元素的动画",
                 $rtn:'Object',
                 $paras:[
-                    "params [必须参数] : Object, 元素在动画末的最终属性.",
-                    "ms [必须参数] : Number, 动画持续的毫秒数.",
-                    "easing [可选参数] : String, 动画类型. 'linear', '<' or 'easeIn' or 'ease-in', '>' or 'easeOut' or 'ease-out', '<>' or 'easeInOut' or 'ease-in-out', 'backIn' or 'back-in', 'backOut' or 'back-out', 'elastic', 'bounce'. 默认是 'linear'.",
-                    "callback [可选参数] : Function, 动画完毕调用的回调函数."
+                    "params [必须参数] : Object, 元素在动画末的最终属性",
+                    "ms [必须参数] : Number, 动画持续的毫秒数",
+                    "easing [可选参数] : String, 动画类型'linear', '<' or 'easeIn' or 'ease-in', '>' or 'easeOut' or 'ease-out', '<>' or 'easeInOut' or 'ease-in-out', 'backIn' or 'back-in', 'backOut' or 'back-out', 'elastic', 'bounce'. 默认是 'linear'",
+                    "callback [可选参数] : Function, 动画完毕调用的回调函数"
                 ]
             },
             getShadow:{
-                $desc:"判断控件是否显示阴影.",
+                $desc:"判断控件是否显示阴影",
                 $rtn:"Boolean"
             },
             setShadow:{
                 $desc:"设置控件是否显示阴影",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
@@ -18422,19 +18419,19 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setSvgTag:{
-                $desc:"设置控件的svg tag值.",
+                $desc:"设置控件的svg tag值",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String.",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
             onClick:{
-                $desc:"当单击控件时调用.",
+                $desc:"当单击控件时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -18444,7 +18441,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.circle 类",
         constructor:{
-            $desc:"生成一个xui.svg.circle对象."
+            $desc:"生成一个xui.svg.circle对象"
         },
         prototype:{
         }
@@ -18454,7 +18451,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.ellipse 类",
         constructor:{
-            $desc:"生成一个xui.svg.ellipse对象."
+            $desc:"生成一个xui.svg.ellipse对象"
         },
         prototype:{
         }
@@ -18464,7 +18461,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.rect 类",
         constructor:{
-            $desc:"生成一个xui.svg.rect对象."
+            $desc:"生成一个xui.svg.rect对象"
         },
         prototype:{
         }
@@ -18474,7 +18471,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.image 类",
         constructor:{
-            $desc:"生成一个xui.svg.image对象."
+            $desc:"生成一个xui.svg.image对象"
         },
         prototype:{
         }
@@ -18484,7 +18481,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.text 类",
         constructor:{
-            $desc:"生成一个xui.svg.text对象."
+            $desc:"生成一个xui.svg.text对象"
         },
         prototype:{
         }
@@ -18494,7 +18491,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.path 类",
         constructor:{
-            $desc:"生成一个xui.svg.path对象."
+            $desc:"生成一个xui.svg.path对象"
         },
         prototype:{
             getPath:{
@@ -18508,22 +18505,22 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.absComb 类",
         constructor:{
-            $desc:"生成一个xui.svg.absComb对象."
+            $desc:"生成一个xui.svg.absComb对象"
         },
         prototype:{
             getAttr:{
-                $desc:"获得控件中某节点的属性.",
+                $desc:"获得控件中某节点的属性",
                 $rtn:"Object",
                 $paras:[
-                    "key [必须参数] : 节点的键值."
+                    "key [必须参数] : 节点的键值"
                 ]
             },
             setAttr:{
-                $desc:"设置控件中某节点的属性.",
+                $desc:"设置控件中某节点的属性",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必须参数] : String, 节点的键值.",
-                    "atrr [必须参数] : Object, 属性键值对.",
+                    "key [必须参数] : String, 节点的键值",
+                    "atrr [必须参数] : Object, 属性键值对",
                     "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
                     "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
                 ]
@@ -18533,10 +18530,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setHAlign :{
-                $desc:"设置标签水平对齐方式.",
+                $desc:"设置标签水平对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'left','25%','center','75%','right','outterleft','outterright'.",
+                    "value [必需参数] : String, 'left','25%','center','75%','right','outterleft','outterright'",
                     $force
                 ]
             },
@@ -18545,27 +18542,27 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String"
             },
             setVAlign :{
-                $desc:"设置标签垂直对齐方式.",
+                $desc:"设置标签垂直对齐方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'.",
+                    "value [必需参数] : String, 'top','25%','middle','75%','bottom','outtertop','outterbottom'",
                     $force
                 ]
             },
             onClick:{
-                $desc:"当单击控件时调用.",
+                $desc:"当单击控件时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             },
             onTextClick:{
-                $desc:"当单击控件文字时调用.",
+                $desc:"当单击控件文字时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素.",
-                    "src: String, 事件所属DOM元素的xid."
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
                 ]
             }
         }
@@ -18575,7 +18572,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.rectComb 类",
         constructor:{
-            $desc:"生成一个xui.svg.rectComb对象."
+            $desc:"生成一个xui.svg.rectComb对象"
         },
         prototype:{
         }
@@ -18585,7 +18582,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.circleComb 类",
         constructor:{
-            $desc:"生成一个xui.svg.circleComb对象."
+            $desc:"生成一个xui.svg.circleComb对象"
         },
         prototype:{
         }
@@ -18595,7 +18592,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.ellipseComb 类",
         constructor:{
-            $desc:"生成一个xui.svg.ellipseComb对象."
+            $desc:"生成一个xui.svg.ellipseComb对象"
         },
         prototype:{
         }
@@ -18605,7 +18602,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.pathComb 类",
         constructor:{
-            $desc:"生成一个xui.svg.pathComb对象."
+            $desc:"生成一个xui.svg.pathComb对象"
         },
         prototype:{
         }
@@ -18615,7 +18612,7 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.imageComb 类",
         constructor:{
-            $desc:"生成一个xui.svg.imageComb对象."
+            $desc:"生成一个xui.svg.imageComb对象"
         },
         prototype:{
         }
@@ -18625,39 +18622,39 @@ xui.set(xui.Locale,["cn","app"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.svg.connector 类",
         constructor:{
-            $desc:"生成一个xui.svg.connector对象."
+            $desc:"生成一个xui.svg.connector对象"
         },
         prototype:{
             getBgLine:{
-                $desc:"得到是否隐藏背景线.",
+                $desc:"得到是否隐藏背景线",
                 $rtn:"Boolean"
             },
             setBgLine:{
-                $desc:"设置是否隐藏背景线.",
+                $desc:"设置是否隐藏背景线",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean.",
+                    "value [必需参数] : Boolean",
                     $force
                 ]
             },
             getType:{
-                $desc:"得到链接器的类型.",
+                $desc:"得到链接器的类型",
                 $rtn:"String"
             },
             setType:{
-                $desc:"设置链接器的类型（只有在控件渲染前有效）.",
+                $desc:"设置链接器的类型（只有在控件渲染前有效）",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, 'straight','bezier','flowchart', 默认为 'straight'.",
+                    "value [必需参数] : String, 'straight','bezier','flowchart', 默认为 'straight'",
                     $force
                 ]
             },
             getFromObj:{
-                $desc:"得到链接器的'链接自'对象名.",
+                $desc:"得到链接器的'链接自'对象名",
                 $rtn:"String"
             },
             setFromObj:{
-                $desc:"设置连接器的'链接自'对象名.",
+                $desc:"设置连接器的'链接自'对象名",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 与链接器在同一画布上的对象别名",
@@ -18665,11 +18662,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getFromPoint:{
-                $desc:"得到链接器的'链接自'位置.",
+                $desc:"得到链接器的'链接自'位置",
                 $rtn:"String"
             },
             setFromPoint:{
-                $desc:"设置连接器的'链接自'位置.",
+                $desc:"设置连接器的'链接自'位置",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left','top','right','bottom'之一",
@@ -18677,11 +18674,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getToObj:{
-                $desc:"得到链接器的'链接至'对象名.",
+                $desc:"得到链接器的'链接至'对象名",
                 $rtn:"String"
             },
             setToObj:{
-                $desc:"设置连接器的'链接至'对象名.",
+                $desc:"设置连接器的'链接至'对象名",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 与链接器在同一画布上的对象别名",
@@ -18689,11 +18686,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getToPoint:{
-                $desc:"得到链接器的'链接至'位置.",
+                $desc:"得到链接器的'链接至'位置",
                 $rtn:"String"
             },
             setToPoint:{
-                $desc:"设置连接器的'链接至'位置.",
+                $desc:"设置连接器的'链接至'位置",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 'left','top','right','bottom'之一",
@@ -18701,18 +18698,18 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getAttr:{
-                $desc:"获得控件中某节点的属性.",
+                $desc:"获得控件中某节点的属性",
                 $rtn:"Object",
                 $paras:[
-                    "key [必须参数] : 节点的键值."
+                    "key [必须参数] : 节点的键值"
                 ]
             },
             setAttr:{
-                $desc:"设置控件中某节点的属性.",
+                $desc:"设置控件中某节点的属性",
                 $rtn:"[self]",
                 $paras:[
-                    "key [必须参数] : String, 节点的键值.",
-                    "atrr [必须参数] : Object, 属性键值对.",
+                    "key [必须参数] : String, 节点的键值",
+                    "atrr [必须参数] : Object, 属性键值对",
                     "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
                     "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
                 ]

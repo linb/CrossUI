@@ -152,8 +152,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             },
             html:{
-                action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
+                action:function(v,ov,force){
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
                 }
             },
             toggleBtn:{

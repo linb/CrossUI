@@ -13,12 +13,13 @@ Class('App', 'xui.Com',{
         arr.push('.totop{position:absolute;padding-left:3px;padding-right:3px;left:4px;top:4px;}');
 
         arr.push('.xui-custom-block{margin:2px 2px 2px 18px;display:none;}');
-        arr.push('.xui-custom-icon{margin:2px;width:16px;height:16px;background-image:url(img/img.gif);vertical-align: bottom;}');
+        arr.push('.xui-custom-icon{margin:2px;width:16px;height:16px;background-image:url(img/img.gif);vertical-align: middle;}');
 
         arr.push('.inndiv {margin:3px;}');
         arr.push('.inndiv li{padding-left:20px;}');
 
         arr.push('.required{color:red;}');
+        arr.push('.desc{color:red;font-weight:normal;padding-left:22px;}');
 
         arr.push('.xui-custom-block .p{margin:2px;border: 1px solid #E9D3F4;position:relative;}');
         arr.push('.xui-custom-block .con{display:none;padding:8px; font: 12px "Trebuchet MS","Lucida Grande",Verdana,sans-serif;background:#FFF;border-top: 1px solid #E9D3F4;}');
@@ -110,12 +111,12 @@ Class('App', 'xui.Com',{
                             ;
 
                         //build html
-                        SPA.divHead.setHtml( html );
+                        SPA.divHead.setHtml( html, true);
                         node.setSelectable(true);
                         //attach event
-                        node.query('h2').css('cursor','pointer').onClick(f).first().css('backgroundPosition',ics.close);
-                        node.query('h3').css('cursor','pointer').onClick(f).first().css('backgroundPosition',ics.close);
-                        node.query('h4').css('cursor','pointer').onClick(f).first().css('backgroundPosition',ics.close);
+                        node.query('h2').css('cursor','pointer').onClick(f,true).first().css('backgroundPosition',ics.close);
+                        node.query('h3').css('cursor','pointer').onClick(f,true).first().css('backgroundPosition',ics.close);
+                        node.query('h4').css('cursor','pointer').onClick(f,true).first().css('backgroundPosition',ics.close);
                     }
                     //for IE :  getElementById, name property has priority over id property.
                     if(id4)id4+='_';
@@ -328,17 +329,15 @@ Class('App', 'xui.Com',{
         }, 
         _objtree_aftercreated:function (profile) {
             var items=[
-                {id:'Class', href:'#!Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'},
                 {id:'xui', href:'#!xui', caption:'xui',image:'img/img.gif', imagePos:'left top',iniFold:false, sub:[]}
             ];
             var self=this,
-                o=items[1], id=o.id, sub=o.sub,
+                o=items[0], id=o.id, sub=o.sub,
                 getClass=function(o, ref, id){
                     var arr=[],temp,id=id||o.KEY, temp, sub;
                     for(var i in o)
                         if('prototype'!=i && 'constructor' != i&& 'upper' !=i)
                             if(typeof o[i]=='function'&& o[i].$xui$){
-
                                 temp={id:id+'.'+i, href:'#!'+id+'.'+i, caption:id+'.'+i, image:'img/img.gif',imagePos:ref._iconPosMap['cls']};
                                 if(typeof xui.getRes('doc.'+id+'.'+i)!='object')
                                     temp.itemClass='ccss-item';
@@ -347,7 +346,7 @@ Class('App', 'xui.Com',{
                                 arr.push(temp);
                             }
                     arr.sort(function(x,y){
-                        return x.id>y.id?1:-1;
+                        return  (x.sub&&!y.sub) ? -1 : (!x.sub&&y.sub)  ? 1 : x.id.toLowerCase()>y.id.toLowerCase() ? 1 : -1;
                     });
                     return arr;
                 };
@@ -361,10 +360,14 @@ Class('App', 'xui.Com',{
                 }
             }
 
-            o=items[1];
+            o=items[0];
             sub=o.sub;
             id='xui';
             o.sub=getClass(xui, self, id);
+
+            // Add Class to the first one
+            items[0].sub.unshift({id:'Namespace', href:'#!xui.Namespace', caption:'Namespace', image:'img/img.gif', imagePos:'left -48px'});
+            items[0].sub.unshift({id:'Class', href:'#!xui.Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'});
 
             profile.boxing().setItems(items);
         }, 
@@ -372,16 +375,19 @@ Class('App', 'xui.Com',{
             with (''+(i?f[i]:f)) return (i||'') + ' ( ' + slice(indexOf("(") + 1, indexOf(")")) + ' )';
         }, 
         _getItem:function(pos, head, key, okey, flag){
-            var con = this.getDoc(key),t;
+            var con = this.getDoc(key),t,
+                desc = con ? con[0] : "";
             okey=okey||key;
             //for IE :  getElementById, name property has priority over id property.
-            return '<a name="'+okey+'"></a> <div class="p"> <h4 id="'+okey+'_">' +
+            return '<a name="'+okey+'"></a> <div class="p">' +
+             (desc?"  <div class=desc>&#10148;&nbsp;&nbsp;" +desc+"</div>  ":"") +     
+            ' <h4 id="'+okey+'_">' +
                     (con?'<span class="xui-custom-icon" style="background-position:' +pos+';"></span>':'') +
                     head +
 //for show original code
-(flag !==false?((t=xui.SC.get(key)) && (t.$event$||t.$xui$||t.$auto$) ?"":'<a href="javascript:;" onclick="return SPA.showCode(event,\''+key+'\');">&nbsp;&nbsp;&nbsp;&nbsp;['+xui.getRes('app.oCode')+']</a>'):"") +
+(flag !==false?((t=xui.SC.get(key)) && (t.$event$||t.$xui$||t.$auto$) ?"":'&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="return SPA.showCode(event,\''+key+'\');">['+xui.getRes('app.oCode')+']</a>'):"") +
                     '</h4>' +
-                    (con?'<div class="con">'+con+'</div>':"") +
+                    (con?'<div class="con">'+con[1]+'</div>':"") +
                     (flag!==false?'<a class="totop" href="#!'+okey+'._list"> ^ </a>':'')+
                     '</div>'
                     ;
@@ -514,7 +520,7 @@ Class('App', 'xui.Com',{
             if(obj.events){
                 arr.push('<h2 id="'+key+'._event'+'" ><span class="xui-custom-cmd"></span>'+xui.getRes('app.events')+'</h2>');
                 arr.push('<div class="xui-custom-block">');
-                arr.push('<div>'+SPA.getDoc(obj.key=='xui.Dom'?'xui.Dom.Events':'xui.UI.Events')+'</div>');
+                arr.push('<div>'+SPA.getDoc(obj.key=='xui.Dom'?'xui.Dom.Events':'xui.UI.Events')[0] +'</div>');
 
                 if(obj.events.self){
                     obj.events.self.sort();
@@ -768,20 +774,18 @@ Class('App', 'xui.Com',{
                "xui.UI.TreeGrid.prototype.getColByColId":"xui.UI.TreeGrid.prototype.getHeaderByColId",
                "xui.UI.TreeGrid.prototype.getColByCell":"xui.UI.TreeGrid.prototype.getHeaderByCell"
             };
-            if(!key)return '';
+            if(!key)return ['',''];
             
             if(map[key])key=map[key];
             
             var o = xui.getRes("doc."+key);
             if(typeof o == 'string')
-                return o;
+                return [o,o];
             return this.buildDoc(o);
         }, 
         buildDoc:function(o){
             var arr=[];
             if(o){
-                if(o.$desc)
-                    arr.push('<div class="inndiv">' + o.$desc + '</div>');
                 if(o.$rtn)
                     arr.push('<div class="inndiv">' + '<strong>'+xui.getRes('app.retV')+': </strong>' + o.$rtn + '</div>');
                 if(o.$paras){
@@ -811,7 +815,7 @@ Class('App', 'xui.Com',{
                     arr.push("</ul></div>");
                 }
             }
-            return arr.join('');
+            return [o.$desc, arr.join('')];
         }, 
         __itemsel:function(profile, item, src){
             xui.History.setFI(item.href);

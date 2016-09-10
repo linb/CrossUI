@@ -348,7 +348,7 @@ Class('xui.Dom','xui.absBox',{
             return self;
         },
         //flag : false => remove from dom tree, not free memory
-        remove:function(triggerGC, purgeNow){
+        remove:function(triggerGC, purgeNow, callback){
             if(triggerGC===false)
                 this.each(function(o,i){
                     if(o.raphael&&o.remove)o.remove();
@@ -363,6 +363,10 @@ Class('xui.Dom','xui.absBox',{
                 var f=function(){
                     xui.$purgeChildren(c);
                     c.innerHTML='';
+                    if(callback){
+                        xui.tryF(callback);
+                        callback=null;
+                    }
                     c=null;
                 };
                 // for performance
@@ -379,7 +383,7 @@ Class('xui.Dom','xui.absBox',{
         },
 
         //flag = false: no gc
-        html:function(content,triggerGC,loadScripts,purgeNow){
+        html:function(content,triggerGC,loadScripts,purgeNow, callback){
             var s='',t,o=this.get(0);triggerGC=triggerGC!==false;
             if(content!==undefined){
                 if(o){
@@ -400,6 +404,10 @@ Class('xui.Dom','xui.absBox',{
                             var f=function(){
                                 xui.$purgeChildren(c);
                                 c.innerHTML='';
+                                if(callback){
+                                    xui.tryF(callback);
+                                    callback=null;
+                                }
                                 c=null;
                             };
                             // for performance
