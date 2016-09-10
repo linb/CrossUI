@@ -63,8 +63,8 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             selectable:true,
             html:{
                 html:1,
-                action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
+                action:function(v,ov,force){
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
                 }
             },
             borderType:{

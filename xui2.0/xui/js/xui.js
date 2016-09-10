@@ -3902,8 +3902,8 @@ Class('xui.Profile','xui.absProfile',{
                 this.properties[key]=value;
             if(this.propSetAction)this.propSetAction(this.properties);
         },
-        _applySetAction:function(fun, value){
-            return fun.call(this,value);
+        _applySetAction:function(fun, value, ovalue, force, tag, tag2){
+            return fun.call(this,value, ovalue, force, tag, tag2);
         },
         __gc:function(){
             var ns=this;
